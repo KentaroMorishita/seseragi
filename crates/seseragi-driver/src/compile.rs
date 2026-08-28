@@ -1056,6 +1056,42 @@ pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
     }
 
     #[test]
+    fn compiles_random_and_entropy_through_provider_runtime_imports() {
+        let source =
+            include_str!("../../../examples/spec/fixtures/compile/random-and-entropy.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/random-and-entropy",
+            source,
+        ))
+        .expect("Random and Entropy source should compile");
+
+        for runtime_name in ["_ssrg_random_randomBytes", "_ssrg_entropy_secureBytes"] {
+            assert!(
+                compiled.generated.typescript.contains(runtime_name),
+                "missing runtime import for {runtime_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+        for type_name in [
+            "Random",
+            "RandomSize",
+            "Entropy",
+            "EntropySize",
+            "EntropyError",
+        ] {
+            assert!(
+                compiled
+                    .generated
+                    .typescript
+                    .contains(&format!("type {type_name}")),
+                "missing runtime type import for {type_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+    }
+
+    #[test]
     fn compiles_json_core_and_codec_evidence_through_runtime_imports() {
         let source = include_str!("../../../examples/spec/fixtures/compile/json-core.ssrg");
         let compiled = compile_module(CompileInput::new("main.ssrg", "artifact/json-core", source))

@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/entropy::Entropy",
+  "version": { "major": 1, "minor": 0 },
+  "requirement": { "field": "entropy", "type": "std/entropy::Entropy" },
+  "operations": [
+    { "identity": "std/entropy::Entropy#secureBytes", "kind": "one-shot", "input": { "kind": "primitive", "name": "int" }, "success": { "kind": "primitive", "name": "bytes" }, "failure": { "kind": "named", "identity": "std/entropy::EntropyError" }, "portability": { "kind": "portable" }, "summary": "Read a complete byte sequence from the host CSPRNG." }
+  ]
+}

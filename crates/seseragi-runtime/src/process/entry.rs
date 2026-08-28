@@ -1,6 +1,6 @@
 use crate::{
     DisplayDictionary, FailureRenderer, HostService, MainContract, ProcessRunOptions,
-    ProcessSignalMode,
+    ProcessSignalMode, RandomSeed,
 };
 use seseragi_driver::ProviderResolution;
 
@@ -15,6 +15,12 @@ pub(super) fn entry_source(
         "import { installProcessShutdown } from \"@seseragi/runtime/process\";".to_owned(),
     ];
     let mut setup = Vec::new();
+    setup.push(match options.random_seed {
+        RandomSeed::Entropy => "delete process.env.SESERAGI_RANDOM_SEED;".to_owned(),
+        RandomSeed::Fixed(seed) => {
+            format!("process.env.SESERAGI_RANDOM_SEED = {:?};", seed.to_string())
+        }
+    });
     let mut fields = Vec::new();
     let mut cleanup = Vec::new();
     let mut imports_console = false;
@@ -24,6 +30,8 @@ pub(super) fn entry_source(
     let mut imports_provider_child_process = false;
     let mut imports_provider_runtime = false;
     let mut imports_provider_clock = false;
+    let mut imports_provider_random = false;
+    let mut imports_provider_entropy = false;
     let mut imports_provider_filesystem = false;
     let mut imports_provider_http_client = false;
     let mut imports_provider_http_server = false;
@@ -154,6 +162,67 @@ pub(super) fn entry_source(
                 let local = format!("clockProvider{index}");
                 setup.push(format!(
                     "const {local} = createProviderClock(await {loader}.load({:?}));",
+                    selection.provider
+                ));
+                fields.push(format!("{field}: {local}"));
+            }
+            HostService::Random | HostService::Entropy => {
+                let (service, adapter_module, adapter_export, local_prefix) = match binding.service
+                {
+                    HostService::Random => (
+                        "std/random::Random",
+                        "@seseragi/runtime/provider-random",
+                        "createProviderRandom",
+                        "randomProvider",
+                    ),
+                    HostService::Entropy => (
+                        "std/entropy::Entropy",
+                        "@seseragi/runtime/provider-entropy",
+                        "createProviderEntropy",
+                        "entropyProvider",
+                    ),
+                    _ => unreachable!(),
+                };
+                let selection = providers
+                    .and_then(|resolution| {
+                        resolution
+                            .selected
+                            .iter()
+                            .find(|selection| selection.service == service)
+                    })
+                    .expect("random/entropy entry requires a resolved provider");
+                if !imports_provider_runtime {
+                    imports.push(
+                        "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
+                            .to_owned(),
+                    );
+                    imports_provider_runtime = true;
+                }
+                let needs_import = match binding.service {
+                    HostService::Random => &mut imports_provider_random,
+                    HostService::Entropy => &mut imports_provider_entropy,
+                    _ => unreachable!(),
+                };
+                if !*needs_import {
+                    imports.push(format!(
+                        "import {{ {adapter_export} }} from \"{adapter_module}\";"
+                    ));
+                    *needs_import = true;
+                }
+                let loader = format!("providerLoader{index}");
+                setup.push(format!(
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    selection.provider,
+                    selection.service,
+                    selection.entry_module,
+                    selection.entry_export,
+                    selection.entry_module,
+                ));
+                setup.push(format!("await {loader}.start();"));
+                cleanup.push(format!("await {loader}.shutdown();"));
+                let local = format!("{local_prefix}{index}");
+                setup.push(format!(
+                    "const {local} = {adapter_export}(await {loader}.load({:?}));",
                     selection.provider
                 ));
                 fields.push(format!("{field}: {local}"));
@@ -546,7 +615,7 @@ mod tests {
     use super::entry_source;
     use crate::{
         DisplayDictionary, EnvironmentBinding, FailureRenderer, HostService, MainContract,
-        ProcessRunOptions, ProcessSignalMode,
+        ProcessRunOptions, ProcessSignalMode, RandomSeed,
     };
     #[test]
     fn prepares_live_process_services_and_typed_failure_rendering() {
@@ -632,6 +701,7 @@ mod tests {
             ProcessRunOptions {
                 signal_mode: ProcessSignalMode::Forward,
                 shutdown_grace_ms: 250,
+                random_seed: RandomSeed::Entropy,
             },
         );
 

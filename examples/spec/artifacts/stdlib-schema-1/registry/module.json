@@ -58455,14 +58455,311 @@
     {
       "specifier": "std/entropy",
       "identity": "std/entropy",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
       ],
       "capabilityServices": [
         "std/entropy::Entropy"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/entropy",
+        "source": "std/entropy.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/entropy::Entropy",
+            "namespace": "type",
+            "name": "Entropy",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Entropy",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/entropy::EntropyConfigError",
+            "namespace": "type",
+            "name": "EntropyConfigError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "EntropyConfigError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/entropy::NonPositiveEntropySize",
+            "namespace": "value",
+            "name": "NonPositiveEntropySize",
+            "constructorOf": "std/entropy::EntropyConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "EntropyConfigError",
+                  "canonical": "std/entropy::EntropyConfigError",
+                  "providerModule": "std/entropy",
+                  "providerExport": "EntropyConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/entropy::EntropySizeTooLarge",
+            "namespace": "value",
+            "name": "EntropySizeTooLarge",
+            "constructorOf": "std/entropy::EntropyConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "EntropyConfigError",
+                  "canonical": "std/entropy::EntropyConfigError",
+                  "providerModule": "std/entropy",
+                  "providerExport": "EntropyConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/entropy::EntropyError",
+            "namespace": "type",
+            "name": "EntropyError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "EntropyError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/entropy::EntropyUnavailable",
+            "namespace": "value",
+            "name": "EntropyUnavailable",
+            "constructorOf": "std/entropy::EntropyError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "EntropyError",
+                "canonical": "std/entropy::EntropyError",
+                "providerModule": "std/entropy",
+                "providerExport": "EntropyError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/entropy::EntropyReadFailure",
+            "namespace": "value",
+            "name": "EntropyReadFailure",
+            "constructorOf": "std/entropy::EntropyError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "EntropyError",
+                "canonical": "std/entropy::EntropyError",
+                "providerModule": "std/entropy",
+                "providerExport": "EntropyError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/entropy::EntropySize",
+            "namespace": "type",
+            "name": "EntropySize",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "EntropySize",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/entropy::entropySize",
+            "namespace": "value",
+            "name": "entropySize",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "EntropyConfigError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "EntropySize",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/entropy::secureBytes",
+            "namespace": "value",
+            "name": "secureBytes",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "EntropySize",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "entropy",
+                          "type": {
+                            "kind": "named",
+                            "name": "Entropy",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "EntropyError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/fs",
@@ -65395,14 +65692,801 @@
     {
       "specifier": "std/random",
       "identity": "std/random",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
       ],
       "capabilityServices": [
         "std/random::Random"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/random",
+        "source": "std/random.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/random::Random",
+            "namespace": "type",
+            "name": "Random",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Random",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/random::RandomRangeError",
+            "namespace": "type",
+            "name": "RandomRangeError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "RandomRangeError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/random::EmptyRandomIntRange",
+            "namespace": "value",
+            "name": "EmptyRandomIntRange",
+            "constructorOf": "std/random::RandomRangeError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "lower",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "upperExclusive",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "RandomRangeError",
+                  "canonical": "std/random::RandomRangeError",
+                  "providerModule": "std/random",
+                  "providerExport": "RandomRangeError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::InvalidProbability",
+            "namespace": "value",
+            "name": "InvalidProbability",
+            "constructorOf": "std/random::RandomRangeError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "RandomRangeError",
+                  "canonical": "std/random::RandomRangeError",
+                  "providerModule": "std/random",
+                  "providerExport": "RandomRangeError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::RandomConfigError",
+            "namespace": "type",
+            "name": "RandomConfigError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "RandomConfigError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/random::NonPositiveRandomSize",
+            "namespace": "value",
+            "name": "NonPositiveRandomSize",
+            "constructorOf": "std/random::RandomConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "RandomConfigError",
+                  "canonical": "std/random::RandomConfigError",
+                  "providerModule": "std/random",
+                  "providerExport": "RandomConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::RandomSizeTooLarge",
+            "namespace": "value",
+            "name": "RandomSizeTooLarge",
+            "constructorOf": "std/random::RandomConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "RandomConfigError",
+                  "canonical": "std/random::RandomConfigError",
+                  "providerModule": "std/random",
+                  "providerExport": "RandomConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::RandomSize",
+            "namespace": "type",
+            "name": "RandomSize",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "RandomSize",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/random::randomSize",
+            "namespace": "value",
+            "name": "randomSize",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "RandomConfigError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "RandomSize",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::algorithmId",
+            "namespace": "value",
+            "name": "algorithmId",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "random",
+                          "type": {
+                            "kind": "named",
+                            "name": "Random",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::nextBool",
+            "namespace": "value",
+            "name": "nextBool",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "random",
+                          "type": {
+                            "kind": "named",
+                            "name": "Random",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::nextInt",
+            "namespace": "value",
+            "name": "nextInt",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "random",
+                          "type": {
+                            "kind": "named",
+                            "name": "Random",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::intBetween",
+            "namespace": "value",
+            "name": "intBetween",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "random",
+                            "type": {
+                              "kind": "named",
+                              "name": "Random",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "RandomRangeError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::unitFloat",
+            "namespace": "value",
+            "name": "unitFloat",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "random",
+                          "type": {
+                            "kind": "named",
+                            "name": "Random",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::chance",
+            "namespace": "value",
+            "name": "chance",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "random",
+                          "type": {
+                            "kind": "named",
+                            "name": "Random",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "RandomRangeError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::randomBytes",
+            "namespace": "value",
+            "name": "randomBytes",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "RandomSize",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "random",
+                          "type": {
+                            "kind": "named",
+                            "name": "Random",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::choose",
+            "namespace": "value",
+            "name": "choose",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "NonEmptyList",
+                  "canonical": "std/non-empty-list::NonEmptyList",
+                  "providerModule": "std/non-empty-list",
+                  "providerExport": "NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "random",
+                          "type": {
+                            "kind": "named",
+                            "name": "Random",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/random::shuffle",
+            "namespace": "value",
+            "name": "shuffle",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "random",
+                          "type": {
+                            "kind": "named",
+                            "name": "Random",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/ref",

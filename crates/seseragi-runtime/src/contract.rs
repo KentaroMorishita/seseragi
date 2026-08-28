@@ -26,6 +26,8 @@ pub enum HostService {
     ChildProcesses,
     Dom,
     Clock,
+    Random,
+    Entropy,
     FileSystem,
     Navigation,
     Storage,
@@ -47,6 +49,8 @@ impl HostService {
             Self::ChildProcesses => "childProcesses",
             Self::Dom => "dom",
             Self::Clock => "clock",
+            Self::Random => "random",
+            Self::Entropy => "entropy",
             Self::FileSystem => "fileSystem",
             Self::Navigation => "navigation",
             Self::Storage => "storage",
@@ -101,6 +105,16 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
         spelling: "Clock",
         canonical: "std/clock::Clock",
         service: HostService::Clock,
+    },
+    HostServiceSpec {
+        spelling: "Random",
+        canonical: "std/random::Random",
+        service: HostService::Random,
+    },
+    HostServiceSpec {
+        spelling: "Entropy",
+        canonical: "std/entropy::Entropy",
+        service: HostService::Entropy,
     },
     HostServiceSpec {
         spelling: "FileSystem",
@@ -477,6 +491,10 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
             }
             "std/child-process::ChildProcessError" => Some(dictionary("childProcessErrorShow")),
             "std/child-process::ChildExitStatus" => Some(dictionary("childExitStatusShow")),
+            "std/random::RandomRangeError" => Some(dictionary("randomRangeErrorShow")),
+            "std/random::RandomConfigError" => Some(dictionary("randomConfigErrorShow")),
+            "std/entropy::EntropyConfigError" => Some(dictionary("entropyConfigErrorShow")),
+            "std/entropy::EntropyError" => Some(dictionary("entropyErrorShow")),
             _ => None,
         },
         TypedType::ExternalNamed {

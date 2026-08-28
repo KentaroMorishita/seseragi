@@ -5989,6 +5989,94 @@
       "constraints": []
     },
     {
+      "identity": "std/random::EmptyRandomIntRange",
+      "name": "EmptyRandomIntRange",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "EmptyRandomIntRange arg1: { lower: Int, upperExclusive: Int } -> RandomRangeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/entropy::Entropy",
+      "name": "Entropy",
+      "module": "std/entropy",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Entropy",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/entropy::EntropyConfigError",
+      "name": "EntropyConfigError",
+      "module": "std/entropy",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "EntropyConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/entropy::EntropyError",
+      "name": "EntropyError",
+      "module": "std/entropy",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "EntropyError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/entropy::EntropyReadFailure",
+      "name": "EntropyReadFailure",
+      "module": "std/entropy",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "EntropyError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/entropy::EntropySize",
+      "name": "EntropySize",
+      "module": "std/entropy",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "EntropySize",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/entropy::EntropySizeTooLarge",
+      "name": "EntropySizeTooLarge",
+      "module": "std/entropy",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "EntropySizeTooLarge arg1: Int -> EntropyConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/entropy::EntropyUnavailable",
+      "name": "EntropyUnavailable",
+      "module": "std/entropy",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "EntropyError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/child-process::EnvironmentNameContainsNul",
       "name": "EnvironmentNameContainsNul",
       "module": "std/child-process",
@@ -6775,6 +6863,17 @@
       "constraints": []
     },
     {
+      "identity": "std/random::InvalidProbability",
+      "name": "InvalidProbability",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidProbability arg1: Float -> RandomRangeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/sse::InvalidSseComment",
       "name": "InvalidSseComment",
       "module": "std/sse",
@@ -7231,6 +7330,17 @@
       "constraints": []
     },
     {
+      "identity": "std/entropy::NonPositiveEntropySize",
+      "name": "NonPositiveEntropySize",
+      "module": "std/entropy",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NonPositiveEntropySize arg1: Int -> EntropyConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/stdin::NonPositiveLineLimit",
       "name": "NonPositiveLineLimit",
       "module": "std/stdin",
@@ -7248,6 +7358,17 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "NonPositivePermits arg1: Int -> SemaphoreCreateError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::NonPositiveRandomSize",
+      "name": "NonPositiveRandomSize",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NonPositiveRandomSize arg1: Int -> RandomConfigError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -7470,6 +7591,61 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "ProcessSignal",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::Random",
+      "name": "Random",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Random",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::RandomConfigError",
+      "name": "RandomConfigError",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "RandomConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::RandomRangeError",
+      "name": "RandomRangeError",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "RandomRangeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::RandomSize",
+      "name": "RandomSize",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "RandomSize",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::RandomSizeTooLarge",
+      "name": "RandomSizeTooLarge",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "RandomSizeTooLarge arg1: Int -> RandomConfigError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -8251,6 +8427,17 @@
       "constraints": []
     },
     {
+      "identity": "std/random::algorithmId",
+      "name": "algorithmId",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "algorithmId arg1: Unit -> Effect<{ random: Random }, Never, String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/multipart::appendBody",
       "name": "appendBody",
       "module": "std/http/multipart",
@@ -8495,6 +8682,17 @@
       "constraints": []
     },
     {
+      "identity": "std/random::chance",
+      "name": "chance",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "chance arg1: Float -> Effect<{ random: Random }, RandomRangeError, Bool>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/path::child",
       "name": "child",
       "module": "std/path",
@@ -8503,6 +8701,19 @@
       "signature": "child arg1: String -> arg2: Path -> Either<PathError, Path>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::choose",
+      "name": "choose",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "choose<A> arg1: NonEmptyList<A> -> Effect<{ random: Random }, Never, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -8951,6 +9162,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "encode arg1: Event -> Bytes",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/entropy::entropySize",
+      "name": "entropySize",
+      "module": "std/entropy",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "entropySize arg1: Int -> Either<EntropyConfigError, EntropySize>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -9442,6 +9664,17 @@
       "constraints": []
     },
     {
+      "identity": "std/random::intBetween",
+      "name": "intBetween",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "intBetween arg1: Int -> arg2: Int -> Effect<{ random: Random }, RandomRangeError, Int>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/path::isAbsolute",
       "name": "isAbsolute",
       "module": "std/path",
@@ -9853,6 +10086,28 @@
       "constraints": []
     },
     {
+      "identity": "std/random::nextBool",
+      "name": "nextBool",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "nextBool arg1: Unit -> Effect<{ random: Random }, Never, Bool>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::nextInt",
+      "name": "nextInt",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "nextInt arg1: Unit -> Effect<{ random: Random }, Never, Int>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/path::normalize",
       "name": "normalize",
       "module": "std/path",
@@ -10099,6 +10354,28 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "queryValues arg1: String -> arg2: Query -> Array<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::randomBytes",
+      "name": "randomBytes",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "randomBytes arg1: RandomSize -> Effect<{ random: Random }, Never, Bytes>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::randomSize",
+      "name": "randomSize",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "randomSize arg1: Int -> Either<RandomConfigError, RandomSize>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10589,6 +10866,17 @@
       "constraints": []
     },
     {
+      "identity": "std/entropy::secureBytes",
+      "name": "secureBytes",
+      "module": "std/entropy",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "secureBytes arg1: EntropySize -> Effect<{ entropy: Entropy }, EntropyError, Bytes>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/websocket::selectedProtocol",
       "name": "selectedProtocol",
       "module": "std/websocket",
@@ -10727,6 +11015,19 @@
       "constraints": [
         "Show<A>"
       ]
+    },
+    {
+      "identity": "std/random::shuffle",
+      "name": "shuffle",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "shuffle<A> arg1: Array<A> -> Effect<{ random: Random }, Never, Array<A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
     },
     {
       "identity": "std/process::signals",
@@ -11038,6 +11339,17 @@
         "E",
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/random::unitFloat",
+      "name": "unitFloat",
+      "module": "std/random",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "unitFloat arg1: Unit -> Effect<{ random: Random }, Never, Float>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {

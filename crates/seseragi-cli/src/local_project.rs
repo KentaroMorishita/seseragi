@@ -5,6 +5,7 @@ use seseragi_driver::{
 use seseragi_project::{select_project_target, ProjectCommand, ProjectTarget};
 use seseragi_runtime::{
     project_main_contract, validate_target, ExecutionTarget, ProcessRunOptions, ProcessSignalMode,
+    RandomSeed,
 };
 use std::path::Path;
 
@@ -166,6 +167,10 @@ fn project_run_options(project: &seseragi_project::LoadedLocalProject) -> Proces
             seseragi_project::SignalMode::Forward => ProcessSignalMode::Forward,
         },
         shutdown_grace_ms: run.shutdown_grace_ms.unwrap_or(10_000),
+        random_seed: match run.random_seed {
+            seseragi_project::RunSeed::Entropy => RandomSeed::Entropy,
+            seseragi_project::RunSeed::Fixed(value) => RandomSeed::Fixed(value),
+        },
     }
 }
 

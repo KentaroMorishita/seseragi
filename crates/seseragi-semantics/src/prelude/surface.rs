@@ -158,7 +158,7 @@ mod tests {
                 .count(),
             10
         );
-        assert_eq!(surface.instances.len(), 142);
+        assert_eq!(surface.instances.len(), 150);
         for identity in [
             "Show<std/bytes::ByteError>",
             "Debug<std/bytes::BytesSliceError>",
@@ -182,6 +182,14 @@ mod tests {
             "Show<std/child-process::ChildProcessConfigError>",
             "Debug<std/child-process::ChildProcessError>",
             "Show<std/child-process::ChildExitStatus>",
+            "Show<std/random::RandomRangeError>",
+            "Debug<std/random::RandomRangeError>",
+            "Show<std/random::RandomConfigError>",
+            "Debug<std/random::RandomConfigError>",
+            "Show<std/entropy::EntropyConfigError>",
+            "Debug<std/entropy::EntropyConfigError>",
+            "Show<std/entropy::EntropyError>",
+            "Debug<std/entropy::EntropyError>",
             "Debug<std/fs::FileSystemError>",
             "Show<std/fs::FileTextError>",
             "Debug<std/time::DurationError>",

@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "kind": "runtime-provider",
+  "identity": "seseragi/runtime#random",
+  "service": "std/random::Random",
+  "contractVersion": { "major": 1, "minor": 0 },
+  "backend": { "family": "typescript", "abiMajor": 1 },
+  "targets": ["bun-process"],
+  "entry": { "module": "seseragi/runtime-bun/random", "export": "provider" },
+  "requires": { "runtimeFeatures": ["foreign.task-load"], "hostPackages": [] }
+}

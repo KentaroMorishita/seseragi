@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/random::Random",
+  "version": { "major": 1, "minor": 0 },
+  "requirement": { "field": "random", "type": "std/random::Random" },
+  "operations": [
+    { "identity": "std/random::Random#algorithmId", "kind": "one-shot", "input": { "kind": "unit" }, "success": { "kind": "primitive", "name": "string" }, "failure": { "kind": "never" }, "portability": { "kind": "portable" }, "summary": "Return the fixed reproducible algorithm identity." },
+    { "identity": "std/random::Random#nextBool", "kind": "one-shot", "input": { "kind": "unit" }, "success": { "kind": "primitive", "name": "bool" }, "failure": { "kind": "never" }, "portability": { "kind": "portable" }, "summary": "Draw one random boolean." },
+    { "identity": "std/random::Random#nextInt", "kind": "one-shot", "input": { "kind": "unit" }, "success": { "kind": "primitive", "name": "int" }, "failure": { "kind": "never" }, "portability": { "kind": "portable" }, "summary": "Draw one signed 53-bit Int." },
+    { "identity": "std/random::Random#intBetween", "kind": "one-shot", "input": { "kind": "record", "fields": [{ "name": "lower", "type": { "kind": "primitive", "name": "int" } }, { "name": "upperExclusive", "type": { "kind": "primitive", "name": "int" } }] }, "success": { "kind": "primitive", "name": "int" }, "failure": { "kind": "named", "identity": "std/random::RandomRangeError" }, "portability": { "kind": "portable" }, "summary": "Sample an Int range without modulo bias." },
+    { "identity": "std/random::Random#unitFloat", "kind": "one-shot", "input": { "kind": "unit" }, "success": { "kind": "primitive", "name": "float" }, "failure": { "kind": "never" }, "portability": { "kind": "portable" }, "summary": "Draw a binary64 value in [0, 1)." },
+    { "identity": "std/random::Random#chance", "kind": "one-shot", "input": { "kind": "primitive", "name": "float" }, "success": { "kind": "primitive", "name": "bool" }, "failure": { "kind": "named", "identity": "std/random::RandomRangeError" }, "portability": { "kind": "portable" }, "summary": "Draw a boolean with the requested probability." },
+    { "identity": "std/random::Random#randomBytes", "kind": "one-shot", "input": { "kind": "primitive", "name": "int" }, "success": { "kind": "primitive", "name": "bytes" }, "failure": { "kind": "never" }, "portability": { "kind": "portable" }, "summary": "Draw reproducible pseudo-random bytes." },
+    { "identity": "std/random::Random#chooseIndex", "kind": "one-shot", "input": { "kind": "primitive", "name": "int" }, "success": { "kind": "primitive", "name": "int" }, "failure": { "kind": "never" }, "portability": { "kind": "portable" }, "summary": "Choose an index for a non-empty application collection." },
+    { "identity": "std/random::Random#shuffleIndices", "kind": "one-shot", "input": { "kind": "primitive", "name": "int" }, "success": { "kind": "array", "items": { "kind": "primitive", "name": "int" } }, "failure": { "kind": "never" }, "portability": { "kind": "portable" }, "summary": "Return a Fisher-Yates permutation atomically." }
+  ]
+}

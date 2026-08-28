@@ -1,10 +1,11 @@
-use crate::{DisplayDictionary, FailureRenderer, MainContract};
+use crate::{DisplayDictionary, FailureRenderer, MainContract, ProcessRunOptions, RandomSeed};
 use seseragi_driver::ProviderResolution;
 
 pub(super) fn web_entry_source(
     contract: &MainContract,
     entry_module: &str,
     providers: Option<&ProviderResolution>,
+    options: ProcessRunOptions,
 ) -> String {
     let environment = serde_json::to_string(&contract.environment)
         .expect("the validated browser environment contract must serialize");
@@ -67,6 +68,7 @@ const browserDom = createBrowserDom(document, () => {{
   document.documentElement.dataset.seseragiStatus = "mounted";
 }});
 const browserProviderModules = new Map([{}]);
+{}
 const browserProviders = await startBrowserProviders({}, async (specifier) => {{
   const module = browserProviderModules.get(specifier);
   if (module === undefined) throw new Error(`unsupported browser provider module: ${{specifier}}`);
@@ -105,6 +107,13 @@ try {{
 "#,
         imports.join("\n"),
         provider_modules.join(", "),
+        match options.random_seed {
+            RandomSeed::Entropy => "delete globalThis.__SESERAGI_RANDOM_SEED__;".to_owned(),
+            RandomSeed::Fixed(seed) => format!(
+                "globalThis.__SESERAGI_RANDOM_SEED__ = {:?};",
+                seed.to_string()
+            ),
+        },
         provider_selections,
         environment,
         failure,
@@ -144,7 +153,9 @@ fn display_dictionary_expression(
 #[cfg(test)]
 mod tests {
     use super::web_entry_source;
-    use crate::{EnvironmentBinding, FailureRenderer, HostService, MainContract};
+    use crate::{
+        EnvironmentBinding, FailureRenderer, HostService, MainContract, ProcessRunOptions,
+    };
 
     #[test]
     fn starts_browser_services_and_reports_defect_details() {
@@ -158,6 +169,7 @@ mod tests {
             },
             "./main.ts",
             None,
+            ProcessRunOptions::default(),
         );
 
         assert!(source.contains("createBrowserDom(document"));

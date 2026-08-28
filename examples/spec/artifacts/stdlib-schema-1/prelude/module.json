@@ -651,6 +651,70 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "RandomRangeError",
+      "typeConstructorCanonical": "std/random::RandomRangeError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/random::RandomRangeError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "RandomRangeError",
+      "typeConstructorCanonical": "std/random::RandomRangeError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/random::RandomRangeError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "RandomConfigError",
+      "typeConstructorCanonical": "std/random::RandomConfigError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/random::RandomConfigError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "RandomConfigError",
+      "typeConstructorCanonical": "std/random::RandomConfigError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/random::RandomConfigError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "EntropyConfigError",
+      "typeConstructorCanonical": "std/entropy::EntropyConfigError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/entropy::EntropyConfigError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "EntropyConfigError",
+      "typeConstructorCanonical": "std/entropy::EntropyConfigError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/entropy::EntropyConfigError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "EntropyError",
+      "typeConstructorCanonical": "std/entropy::EntropyError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/entropy::EntropyError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "EntropyError",
+      "typeConstructorCanonical": "std/entropy::EntropyError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/entropy::EntropyError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "StdinConfigError",
       "typeConstructorCanonical": "std/stdin::StdinConfigError",
       "typeConstructorArity": 0,

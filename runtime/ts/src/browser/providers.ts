@@ -1,6 +1,8 @@
 import { createProviderClock } from "../provider-clock"
+import { createProviderEntropy } from "../provider-entropy"
 import { createProviderHttpClient } from "../provider-http-client"
 import { createProviderNavigation } from "../provider-navigation"
+import { createProviderRandom } from "../provider-random"
 import { ProviderPackageLoader } from "../provider-package"
 import { createProviderStorage } from "../provider-storage"
 import { createProviderWebSocketClient } from "../provider-websocket"
@@ -19,6 +21,8 @@ export type BrowserProviderServices = Readonly<{
   webSocketClient?: ReturnType<typeof createProviderWebSocketClient>
   navigation?: ReturnType<typeof createProviderNavigation>
   storage?: ReturnType<typeof createProviderStorage>
+  random?: ReturnType<typeof createProviderRandom>
+  entropy?: ReturnType<typeof createProviderEntropy>
 }>
 
 export type BrowserProviderRuntime = Readonly<{
@@ -50,6 +54,8 @@ export async function startBrowserProviders(
       webSocketClient?: ReturnType<typeof createProviderWebSocketClient>
       navigation?: ReturnType<typeof createProviderNavigation>
       storage?: ReturnType<typeof createProviderStorage>
+      random?: ReturnType<typeof createProviderRandom>
+      entropy?: ReturnType<typeof createProviderEntropy>
     } = {}
     for (const selection of selections) {
       const loaded = await loader.load(selection.provider)
@@ -68,6 +74,12 @@ export async function startBrowserProviders(
           break
         case "std/web/storage::Storage":
           services.storage = createProviderStorage(loaded)
+          break
+        case "std/random::Random":
+          services.random = createProviderRandom(loaded)
+          break
+        case "std/entropy::Entropy":
+          services.entropy = createProviderEntropy(loaded)
           break
       }
     }
