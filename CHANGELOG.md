@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.34.3] - 2026-08-29
+
+- Fixed Stream branch ownership so partial `zip` and `merge` opens, buffered
+  producers, terminal failures, and cancellation always drain cursors and
+  child Effect scopes exactly once.
+- Preserved cleanup-defect priority and ordered suppressed defects without
+  allowing a cursor close failure to skip later resource finalizers.
+
 ## [0.34.2] - 2026-08-29
 
 - Fixed same-module calls to compact `effect fn` declarations by connecting

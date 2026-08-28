@@ -1,3 +1,4 @@
+import { defectWithSuppressed } from "./cleanup-defect"
 import type { Iterable } from "./collection"
 import {
   awaitEffectValue,
@@ -305,7 +306,9 @@ export function zip<Environment, Failure, LeftValue, RightValue>(
 ): Stream<Environment, Failure, readonly [LeftValue, RightValue]> {
   return makeStream(async (environment, context) => {
     const leftBranch = await openBranch(left, environment, context)
-    const rightBranch = await openBranch(right, environment, context)
+    const rightBranch = await openBranch(right, environment, context).catch(
+      (error) => cleanupThenThrow(error, [() => closeBranch(leftBranch)])
+    )
     let closed = false
     const close = async (): Promise<void> => {
       if (closed) return
@@ -326,8 +329,7 @@ export function zip<Environment, Failure, LeftValue, RightValue>(
           }
           return item([leftResult.value, rightResult.value] as const)
         } catch (error) {
-          await close()
-          throw error
+          return await cleanupThenThrow(error, [close])
         }
       },
       close,
@@ -340,10 +342,13 @@ export function merge<Environment, Failure, Value>(
   left: Stream<Environment, Failure, Value>
 ): Stream<Environment, Failure, Value> {
   return makeStream(async (environment, context) => {
-    const branches = [
-      await openMergeBranch(left, environment, context),
-      await openMergeBranch(right, environment, context),
-    ] as const
+    const leftBranch = await openMergeBranch(left, environment, context)
+    const rightBranch = await openMergeBranch(
+      right,
+      environment,
+      context
+    ).catch((error) => cleanupThenThrow(error, [() => closeBranch(leftBranch)]))
+    const branches = [leftBranch, rightBranch] as const
     let closed = false
     const close = async (): Promise<void> => {
       if (closed) return
@@ -370,8 +375,7 @@ export function merge<Environment, Failure, Value>(
             (branch) => branch.settled?.kind === "failure"
           )?.settled
           if (failure?.kind === "failure") {
-            await close()
-            throw failure.error
+            return await cleanupThenThrow(failure.error, [close])
           }
           const ready = branches.find(
             (branch) => branch.settled?.kind === "result"
@@ -438,8 +442,7 @@ export function buffer<Environment, Failure, Value>(
           )
           if (result.done) {
             terminal = "complete"
-            await branch.cursor.close()
-            await branch.execution.close()
+            await settleBranch(branch, "close")
             notifyChange()
             return
           }
@@ -449,12 +452,10 @@ export function buffer<Environment, Failure, Value>(
       } catch (error) {
         if (!closed) {
           values.length = 0
-          failure = error
-          try {
-            await closeBranch(branch)
-          } catch (cleanupDefect) {
-            failure = cleanupDefect
-          }
+          failure =
+            terminal === "complete"
+              ? error
+              : await errorAfterCleanup(error, [() => closeBranch(branch)])
           notifyChange()
         }
       }
@@ -467,8 +468,7 @@ export function buffer<Environment, Failure, Value>(
       values.length = 0
       notifySpace()
       notifyChange()
-      await closeBranch(branch)
-      await producer
+      await runCleanups([() => closeBranch(branch), () => producer])
     }
     return Object.freeze({
       async next() {
@@ -596,19 +596,27 @@ function terminal<Environment, Failure, Value, Result>(
     const execution = createEffectExecution(parent)
     let sourceCursor: StreamCursor<Value> | undefined
     let completed = false
+    let result: Result | undefined
+    let failure: { readonly error: unknown } | undefined
     try {
       sourceCursor = await source.open(environment, execution.context)
-      const result = await consume(sourceCursor, environment, execution.context)
+      result = await consume(sourceCursor, environment, execution.context)
       completed = true
-      return result
-    } finally {
-      await sourceCursor?.close()
-      if (completed) {
-        await execution.close()
-      } else {
-        await execution.cancel()
-      }
+    } catch (error) {
+      failure = { error }
     }
+    const cleanupDefects = await collectCleanupDefects([
+      () => sourceCursor?.close(),
+      () => (completed ? execution.close() : execution.cancel()),
+    ])
+    if (cleanupDefects.length > 0) {
+      throw defectWithSuppressed([
+        ...cleanupDefects,
+        ...(failure === undefined ? [] : [failure.error]),
+      ])
+    }
+    if (failure !== undefined) throw failure.error
+    return result as Result
   }
 }
 
@@ -629,34 +637,33 @@ async function openBranch<Environment, Failure, Value>(
       execution,
     }
   } catch (error) {
-    await execution.cancel()
-    throw error
+    return await cleanupThenThrow(error, [() => execution.cancel()])
   }
 }
 
 async function closeBranch(branch: Branch<unknown>): Promise<void> {
-  let defect: unknown
-  try {
-    await branch.cursor.close()
-  } catch (error) {
-    defect = error
-  }
-  try {
-    await branch.execution.cancel()
-  } catch (error) {
-    defect ??= error
-  }
-  if (defect !== undefined) throw defect
+  await settleBranch(branch, "cancel")
+}
+
+async function settleBranch(
+  branch: Branch<unknown>,
+  mode: "cancel" | "close"
+): Promise<void> {
+  await runCleanups([
+    () => branch.cursor.close(),
+    () =>
+      mode === "close" ? branch.execution.close() : branch.execution.cancel(),
+  ])
 }
 
 async function closeBranches(
   branches: ReadonlyArray<Branch<unknown>>
 ): Promise<void> {
   const outcomes = await Promise.allSettled(branches.map(closeBranch))
-  const defect = outcomes.find(
-    (outcome): outcome is PromiseRejectedResult => outcome.status === "rejected"
+  const defects = outcomes.flatMap((outcome) =>
+    outcome.status === "rejected" ? [outcome.reason] : []
   )
-  if (defect !== undefined) throw defect.reason
+  if (defects.length > 0) throw defectWithSuppressed(defects)
 }
 
 type MergeSettlement<Value> =
@@ -700,10 +707,46 @@ async function closeAll(
   const outcomes = await Promise.allSettled(
     cursors.map((source) => source?.close())
   )
-  const defect = outcomes.find(
-    (outcome): outcome is PromiseRejectedResult => outcome.status === "rejected"
+  const defects = outcomes.flatMap((outcome) =>
+    outcome.status === "rejected" ? [outcome.reason] : []
   )
-  if (defect !== undefined) throw defect.reason
+  if (defects.length > 0) throw defectWithSuppressed(defects)
+}
+
+type Cleanup = () => void | Promise<void>
+
+async function collectCleanupDefects(
+  cleanups: ReadonlyArray<Cleanup>
+): Promise<unknown[]> {
+  const defects: unknown[] = []
+  for (const cleanup of cleanups) {
+    try {
+      await cleanup()
+    } catch (error) {
+      defects.push(error)
+    }
+  }
+  return defects
+}
+
+async function runCleanups(cleanups: ReadonlyArray<Cleanup>): Promise<void> {
+  const defects = await collectCleanupDefects(cleanups)
+  if (defects.length > 0) throw defectWithSuppressed(defects)
+}
+
+async function errorAfterCleanup(
+  error: unknown,
+  cleanups: ReadonlyArray<Cleanup>
+): Promise<unknown> {
+  const defects = await collectCleanupDefects(cleanups)
+  return defects.length > 0 ? defectWithSuppressed([...defects, error]) : error
+}
+
+async function cleanupThenThrow(
+  error: unknown,
+  cleanups: ReadonlyArray<Cleanup>
+): Promise<never> {
+  throw await errorAfterCleanup(error, cleanups)
 }
 
 function onceAsync(action: () => Promise<void>): () => Promise<void> {

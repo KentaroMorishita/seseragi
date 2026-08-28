@@ -1,4 +1,5 @@
 import { createDuration, type Duration } from "./clock-value"
+import { defectWithSuppressed } from "./cleanup-defect"
 import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 
 export type Unit = undefined
@@ -86,7 +87,7 @@ class ResourceScope {
       }
     }
     this.state = "closed"
-    if (defects.length > 0) throw finalizerDefect(defects)
+    if (defects.length > 0) throw defectWithSuppressed(defects)
   }
 }
 
@@ -315,28 +316,6 @@ function normalizeFinalizerDefect(error: unknown): unknown {
     })
   }
   return error
-}
-
-function finalizerDefect(defects: ReadonlyArray<unknown>): unknown {
-  const first = defects[0]
-  if (defects.length === 1) return first
-  if (
-    (typeof first === "object" && first !== null) ||
-    typeof first === "function"
-  ) {
-    try {
-      Object.defineProperty(first, "suppressed", {
-        configurable: true,
-        enumerable: false,
-        value: Object.freeze(defects.slice(1)),
-      })
-      return first
-    } catch {
-      // Frozen or otherwise non-extensible host errors still retain the
-      // primary defect as AggregateError.cause.
-    }
-  }
-  return new AggregateError(defects.slice(1), String(first), { cause: first })
 }
 
 export const unit: Unit = undefined
