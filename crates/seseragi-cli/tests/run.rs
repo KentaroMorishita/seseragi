@@ -491,7 +491,7 @@ fn runs_filesystem_temporary_cleanup() {
 }
 
 #[test]
-fn runs_captured_child_process_from_seseragi_source() {
+fn runs_captured_child_process_from_relative_and_absolute_package_paths() {
     let package = LockedProject::copy(
         &repository_root().join("examples/spec/fixtures/projects/child-process-captured"),
     );
@@ -499,9 +499,17 @@ fn runs_captured_child_process_from_seseragi_source() {
     assert!(!source.contains("runtime-bun"));
     assert!(!source.contains("node:child_process"));
 
+    let expected = std::fs::read_to_string(package.join("expected.stdout")).unwrap();
+    assert_child_process_run(&package, Path::new("."), &expected);
+    assert_child_process_run(&package.root, Path::new("./project"), &expected);
+    assert_child_process_run(&repository_root(), &package, &expected);
+}
+
+fn assert_child_process_run(current_directory: &Path, package: &Path, expected: &str) {
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
-        .arg(&package)
+        .arg(package)
+        .current_dir(current_directory)
         .output()
         .unwrap();
 
@@ -511,10 +519,7 @@ fn runs_captured_child_process_from_seseragi_source() {
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
-    assert_eq!(
-        String::from_utf8_lossy(&output.stdout),
-        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
-    );
+    assert_eq!(String::from_utf8_lossy(&output.stdout), expected);
     assert_eq!(String::from_utf8_lossy(&output.stderr), "");
 }
 
