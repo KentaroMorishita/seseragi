@@ -5,10 +5,15 @@ import { ProviderPackageLoader } from "@seseragi/runtime/provider-package"
 import { runCollect } from "@seseragi/runtime/stream"
 import { provider as bunProvider } from "seseragi/runtime-bun/child-process"
 import { provider as nodeProvider } from "seseragi/runtime-node/child-process"
+import { basename, dirname } from "node:path"
 import {
   cancellableFixture,
   capturedFixture,
+  executablePathFixture,
+  explicitSearchPathFixture,
   limitedFixture,
+  missingSearchPathFixture,
+  relativeExecutablePathFixture,
   streamingFixture,
 } from "./child-process-application.ts"
 
@@ -56,6 +61,58 @@ assert(
   "capture limit failure must preserve channel and bound"
 )
 
+const executableName = basename(process.execPath)
+const missingPath = await run(
+  missingSearchPathFixture(executableName),
+  environment
+)
+assert(
+  missingPath.kind === "failure" &&
+    missingPath.error.tag === "ChildSpawnFailed" &&
+    missingPath.error.value.executable.tag === "SearchPath" &&
+    missingPath.error.value.executable.value === executableName,
+  "SearchPath without PATH must be a typed spawn failure"
+)
+
+const explicitPath = await run(
+  explicitSearchPathFixture(executableName, dirname(process.execPath)),
+  environment
+)
+assert(explicitPath.kind === "success", "explicit PATH must enable SearchPath")
+assert(
+  text(explicitPath.value.stdout) === "EXPLICIT_PATH",
+  "explicit PATH must execute the selected host binary"
+)
+
+const executablePath = await run(
+  executablePathFixture(process.execPath.replaceAll("\\", "/")),
+  environment
+)
+assert(
+  executablePath.kind === "success",
+  "ExecutablePath must not require PATH"
+)
+assert(
+  text(executablePath.value.stdout) === "EXECUTABLE_PATH",
+  "ExecutablePath must preserve direct execution"
+)
+
+const relativeExecutablePath = await run(
+  relativeExecutablePathFixture(
+    executableName,
+    dirname(process.execPath).replaceAll("\\", "/")
+  ),
+  environment
+)
+assert(
+  relativeExecutablePath.kind === "success",
+  "relative ExecutablePath must resolve from the command directory"
+)
+assert(
+  text(relativeExecutablePath.value.stdout) === "RELATIVE_EXECUTABLE_PATH",
+  "relative ExecutablePath must preserve direct execution"
+)
+
 const streamed = await run(runCollect(streamingFixture()), environment)
 assert(streamed.kind === "success", "streaming child must succeed")
 const events = streamed.value
@@ -79,7 +136,10 @@ assert(
 const execution = createEffectExecution()
 const cursor = await cancellableFixture().open(environment, execution.context)
 const first = await cursor.next()
-assert(!first.done && first.value.tag === "ChildStdoutChunk", "pid event missing")
+assert(
+  !first.done && first.value.tag === "ChildStdoutChunk",
+  "pid event missing"
+)
 const pid = Number.parseInt(text(first.value.value), 10)
 assert(Number.isSafeInteger(pid) && pid > 0, "child pid must be valid")
 await execution.cancel()
@@ -93,7 +153,12 @@ assertProviderConformanceCase({
 })
 
 await loader.shutdown()
-assertProviderConformanceCase({ id: "cleanup", acquired: 4, released: 4, active: 0 })
+assertProviderConformanceCase({
+  id: "cleanup",
+  acquired: 8,
+  released: 8,
+  active: 0,
+})
 assertProviderConformanceCase({ id: "leak", activeAfterCleanup: 0 })
 process.stdout.write(`child process provider probe passed: ${target}\n`)
 
@@ -112,7 +177,8 @@ function processExists(pid: number): boolean {
 
 function requiredEnvironment(name: string): string {
   const value = process.env[name]
-  if (value === undefined || value.length === 0) throw new Error(`missing ${name}`)
+  if (value === undefined || value.length === 0)
+    throw new Error(`missing ${name}`)
   return value
 }
 
