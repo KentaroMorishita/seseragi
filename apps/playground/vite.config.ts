@@ -151,6 +151,9 @@ export default defineConfig({
     new URL("../../assets/brand/public", import.meta.url)
   ),
   plugins: [brandSurfacePlugin],
+  resolve: {
+    dedupe: ["@seseragi/runtime"],
+  },
   build: {
     target: "es2022",
     outDir: "dist",

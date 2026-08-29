@@ -6,7 +6,6 @@ cd "$ROOT"
 
 BIOME="$ROOT/node_modules/.bin/biome"
 PLAYGROUND_TSC="$ROOT/apps/playground/node_modules/.bin/tsc"
-PLAYGROUND_VITE="$ROOT/apps/playground/node_modules/.bin/vite"
 EXTENSION_ESBUILD="$ROOT/extensions/seseragi/node_modules/.bin/esbuild"
 EXTENSION_VSCE="$ROOT/extensions/seseragi/node_modules/.bin/vsce"
 
@@ -45,7 +44,6 @@ require_root_tools() {
 
 require_playground_tools() {
   require_executable "$PLAYGROUND_TSC" "cd apps/playground && bun install --frozen-lockfile"
-  require_executable "$PLAYGROUND_VITE" "cd apps/playground && bun install --frozen-lockfile"
 }
 
 require_extension_tools() {
@@ -108,12 +106,18 @@ run_playground_lint() {
     scripts/check-samples-cli.ts \
     scripts/check-project-fixtures.ts \
     scripts/check-project-fixtures.test.ts \
+    scripts/check-playground-isolated-build.ts \
     scripts/generate-playground-samples.ts \
     scripts/generate-playground-tour.ts \
     scripts/tour-curriculum.ts \
     scripts/tour-lessons.ts \
     scripts/release-contract.ts \
     scripts/release-contract.test.ts
+}
+
+run_playground_bundle_build() {
+  echo "Building the Playground bundle from an isolated dependency install..."
+  bun scripts/check-playground-isolated-build.ts
 }
 
 run_playground_checks() {
@@ -134,11 +138,7 @@ run_playground_checks() {
     "$PLAYGROUND_TSC" --noEmit
   )
 
-  echo "Building the Playground bundle..."
-  (
-    cd apps/playground
-    "$PLAYGROUND_VITE" build
-  )
+  run_playground_bundle_build
 }
 
 run_cargo_tests() {
@@ -391,8 +391,8 @@ run_full_checks() {
     bun run tour:check
     bun test tests
     "$PLAYGROUND_TSC" --noEmit
-    "$PLAYGROUND_VITE" build
   )
+  run_playground_bundle_build
 
   if [[ "$artifact_mode" == "delegate" ]]; then
     echo "Checking the VS Code extension contract..."

@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.34.4] - 2026-08-29
+
+- Fixed isolated Playground and Vercel production builds by declaring and
+  locking the canonical local TypeScript runtime package dependency.
+- Added an isolated frozen-install production build gate so runtime package
+  imports are resolved and bundled without repository-root dependencies.
+
 ## [0.34.3] - 2026-08-29
 
 - Fixed Stream branch ownership so partial `zip` and `merge` opens, buffered
