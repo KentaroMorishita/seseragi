@@ -139,6 +139,8 @@ type TransactionState = {
   readonly loaded: LoadedProviderEntry
   readonly parent: DatabaseState
   unregisterCleanup: () => void
+  commitCompletion?: Promise<ServiceResult<SqliteError, Unit>>
+  rollbackCompletion?: Promise<ServiceResult<SqliteError, Unit>>
   closeCompletion?: Promise<ServiceResult<SqliteError, Unit>>
 }
 type DatabaseState = {
@@ -326,19 +328,47 @@ function closeTransactionState(
   state: TransactionState,
   operation: "commit" | "rollback"
 ): Promise<ServiceResult<SqliteError, Unit>> {
-  state.unregisterCleanup()
-  state.closeCompletion ??= (async () => {
-    const result = operationResult<Unit>(
-      await invoke(
-        state.loaded,
-        operation === "commit" ? contracts.commit : contracts.rollback,
-        state.handle
-      )
+  if (operation === "commit") {
+    if (state.rollbackCompletion !== undefined) return state.rollbackCompletion
+    state.commitCompletion ??= runTransactionOperation(state, "commit")
+    state.closeCompletion ??= state.commitCompletion
+    return state.commitCompletion
+  }
+  state.rollbackCompletion ??= rollbackTransactionState(state)
+  state.closeCompletion ??= state.rollbackCompletion
+  return state.rollbackCompletion
+}
+
+async function rollbackTransactionState(
+  state: TransactionState
+): Promise<ServiceResult<SqliteError, Unit>> {
+  if (state.commitCompletion !== undefined) {
+    try {
+      const committed = await state.commitCompletion
+      if (committed.kind === "success") return committed
+    } catch {
+      // Cleanup still owns rollback after a defective commit.
+    }
+  }
+  return runTransactionOperation(state, "rollback")
+}
+
+async function runTransactionOperation(
+  state: TransactionState,
+  operation: "commit" | "rollback"
+): Promise<ServiceResult<SqliteError, Unit>> {
+  const result = operationResult<Unit>(
+    await invoke(
+      state.loaded,
+      operation === "commit" ? contracts.commit : contracts.rollback,
+      state.handle
     )
+  )
+  if (result.kind === "success") {
+    state.unregisterCleanup()
     state.parent.transactions.delete(state)
-    return result
-  })()
-  return state.closeCompletion
+  }
+  return result
 }
 
 function closeDatabaseState(

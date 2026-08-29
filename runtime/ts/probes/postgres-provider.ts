@@ -30,6 +30,7 @@ function assert(condition: unknown, message: string): asserts condition {
 }
 
 const trace: string[] = []
+let failCommit = false
 const rows = Object.freeze([
   Object.freeze({ id: 1, name: "Ada", active: true }),
   Object.freeze({ id: 2, name: "Grace", active: false }),
@@ -62,6 +63,11 @@ const driver: PostgresDriver = Object.freeze({
         return {
           async query(text) {
             trace.push(text.toLowerCase())
+            if (text === "COMMIT" && failCommit) {
+              throw Object.assign(new Error("commit failed"), {
+                code: "40001",
+              })
+            }
             if (text === "fail") {
               throw Object.assign(new Error("transaction failed"), {
                 code: "40001",
@@ -171,6 +177,19 @@ const committed = await run(
   execution.context
 )
 assert(committed.kind === "success", "transaction must commit")
+failCommit = true
+const commitFailed = await run(
+  transactionFixture(opened.value, "select transaction"),
+  environment,
+  execution.context
+)
+failCommit = false
+assert(commitFailed.kind === "failure", "commit failure must stay typed")
+assert(
+  commitFailed.error.tag === "DriverFailure" &&
+    trace.slice(-3).join(",") === "commit,rollback,client-release",
+  "failed commit must rollback before releasing the client"
+)
 const rolledBack = await run(
   transactionFixture(opened.value, "fail"),
   environment,

@@ -5454,15 +5454,30 @@ function createPostgresProvider(driver) {
     return token.closeCompletion;
   }
   function closeTransaction(token, command) {
-    token.closeCompletion ??= (async () => {
+    if (command === "COMMIT") {
+      if (token.rollbackCompletion !== undefined)
+        return token.rollbackCompletion;
+      token.commitCompletion ??= runTransactionCommand(token, "COMMIT");
+      token.closeCompletion ??= token.commitCompletion;
+      return token.commitCompletion;
+    }
+    token.rollbackCompletion ??= rollbackTransaction(token);
+    token.closeCompletion ??= token.rollbackCompletion;
+    return token.rollbackCompletion;
+  }
+  async function rollbackTransaction(token) {
+    if (token.commitCompletion !== undefined) {
       try {
-        await token.client.query(command);
-      } finally {
-        token.client.release();
-        token.parent.transactions.delete(token);
-      }
-    })();
-    return token.closeCompletion;
+        await token.commitCompletion;
+        return;
+      } catch {}
+    }
+    await runTransactionCommand(token, "ROLLBACK");
+  }
+  async function runTransactionCommand(token, command) {
+    await token.client.query(command);
+    token.client.release();
+    token.parent.transactions.delete(token);
   }
 }
 function ownedPool(value, pools) {

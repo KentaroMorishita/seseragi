@@ -41,6 +41,8 @@ type DatabaseToken = {
 }
 type TransactionToken = {
   readonly parent: DatabaseToken
+  commitCompletion?: Promise<void>
+  rollbackCompletion?: Promise<void>
   closeCompletion?: Promise<void>
 }
 type Operation =
@@ -209,25 +211,37 @@ export function createSqliteProvider(
     token: TransactionToken,
     operation: "commit" | "rollback"
   ): Promise<void> {
-    token.closeCompletion ??= Promise.resolve().then(() => {
+    if (operation === "commit") {
+      if (token.rollbackCompletion !== undefined)
+        return token.rollbackCompletion
+      token.commitCompletion ??= runTransactionOperation(token, "commit")
+      token.closeCompletion ??= token.commitCompletion
+      return token.commitCompletion
+    }
+    token.rollbackCompletion ??= rollbackTransaction(token)
+    token.closeCompletion ??= token.rollbackCompletion
+    return token.rollbackCompletion
+  }
+
+  async function rollbackTransaction(token: TransactionToken): Promise<void> {
+    if (token.commitCompletion !== undefined) {
       try {
-        token.parent.database[operation]()
-      } catch (cause) {
-        if (operation === "commit") {
-          try {
-            token.parent.database.rollback()
-          } catch {
-            // Preserve the commit failure. Database cleanup remains the final
-            // fallback when the host cannot roll the transaction back either.
-          }
-        }
-        throw cause
-      } finally {
-        token.parent.transaction = undefined
-        transactions.delete(token)
+        await token.commitCompletion
+        return
+      } catch {
+        // A failed commit retains ownership for the rollback below.
       }
-    })
-    return token.closeCompletion
+    }
+    await runTransactionOperation(token, "rollback")
+  }
+
+  async function runTransactionOperation(
+    token: TransactionToken,
+    operation: "commit" | "rollback"
+  ): Promise<void> {
+    token.parent.database[operation]()
+    token.parent.transaction = undefined
+    transactions.delete(token)
   }
 
   function closeDatabase(token: DatabaseToken): Promise<void> {
