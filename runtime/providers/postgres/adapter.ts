@@ -65,6 +65,8 @@ type CursorToken = {
 type TransactionToken = {
   readonly parent: PoolToken
   readonly client: DriverClient
+  commitCompletion?: Promise<void>
+  rollbackCompletion?: Promise<void>
   closeCompletion?: Promise<void>
 }
 type Operation =
@@ -282,15 +284,37 @@ export function createPostgresProvider(
     token: TransactionToken,
     command: "COMMIT" | "ROLLBACK"
   ): Promise<void> {
-    token.closeCompletion ??= (async () => {
+    if (command === "COMMIT") {
+      if (token.rollbackCompletion !== undefined)
+        return token.rollbackCompletion
+      token.commitCompletion ??= runTransactionCommand(token, "COMMIT")
+      token.closeCompletion ??= token.commitCompletion
+      return token.commitCompletion
+    }
+    token.rollbackCompletion ??= rollbackTransaction(token)
+    token.closeCompletion ??= token.rollbackCompletion
+    return token.rollbackCompletion
+  }
+
+  async function rollbackTransaction(token: TransactionToken): Promise<void> {
+    if (token.commitCompletion !== undefined) {
       try {
-        await token.client.query(command)
-      } finally {
-        token.client.release()
-        token.parent.transactions.delete(token)
+        await token.commitCompletion
+        return
+      } catch {
+        // A failed commit retains ownership for the rollback below.
       }
-    })()
-    return token.closeCompletion
+    }
+    await runTransactionCommand(token, "ROLLBACK")
+  }
+
+  async function runTransactionCommand(
+    token: TransactionToken,
+    command: "COMMIT" | "ROLLBACK"
+  ): Promise<void> {
+    await token.client.query(command)
+    token.client.release()
+    token.parent.transactions.delete(token)
   }
 }
 

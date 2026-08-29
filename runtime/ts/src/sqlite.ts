@@ -278,10 +278,18 @@ export function transaction<Value>(
             environment,
             active
           )
-          completed =
-            committed.kind === "failure"
-              ? sqliteFailure(committed.error)
-              : sqliteSuccess(used.value)
+          if (committed.kind === "failure") {
+            const rolledBack = await run(
+              rollbackSqlite(begun.value),
+              environment,
+              active
+            )
+            completed = sqliteFailure(
+              rolledBack.kind === "failure" ? rolledBack.error : committed.error
+            )
+          } else {
+            completed = sqliteSuccess(used.value)
+          }
         }
       } catch (cause) {
         await rollbackAfterInterruption(begun.value, environment)

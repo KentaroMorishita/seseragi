@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.34.5] - 2026-08-29
+
+- Retained SQLite and PostgreSQL rollback ownership until transaction commit or
+  rollback succeeds, including typed commit failures and cancellation races.
+- Kept transaction cleanup idempotent and parent-owned cleanup in reverse order
+  while preserving primary and suppressed cleanup defects.
+
 ## [0.34.4] - 2026-08-29
 
 - Fixed isolated Playground and Vercel production builds by declaring and

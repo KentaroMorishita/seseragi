@@ -144,7 +144,10 @@ type CursorState = {
 type TransactionState = {
   readonly handle: PostgresTransaction
   readonly loaded: LoadedProviderEntry
+  readonly parent: PoolState
   unregisterCleanup: () => void
+  commitCompletion?: Promise<ServiceResult<PostgresError, Unit>>
+  rollbackCompletion?: Promise<ServiceResult<PostgresError, Unit>>
   closeCompletion?: Promise<ServiceResult<PostgresError, Unit>>
 }
 type PoolState = {
@@ -203,8 +206,7 @@ export function createProviderPostgres(loaded: LoadedProviderEntry): Postgres {
       return operationResult<PostgresRawQueryResult>(outcome)
     },
     async begin(pool: PostgresPool, context: EffectContext) {
-      const poolState = pools.get(pool)
-      ensureOpen(poolState, "PostgreSQL pool")
+      const poolState = ensureOpen(pools.get(pool), "PostgreSQL pool")
       const outcome = await invoke(loaded, contracts.begin, pool, context)
       if (outcome.kind !== "success")
         return operationResult<PostgresTransaction>(outcome)
@@ -212,10 +214,11 @@ export function createProviderPostgres(loaded: LoadedProviderEntry): Postgres {
       const state: TransactionState = {
         handle,
         loaded,
+        parent: poolState,
         unregisterCleanup: () => undefined,
       }
       transactions.set(handle, state)
-      poolState?.transactions.add(state)
+      poolState.transactions.add(state)
       const registration = registerResourceFinalizer(context, () =>
         cleanup(closeTransactionState(state, "rollback"))
       )
@@ -344,16 +347,47 @@ function closeTransactionState(
   state: TransactionState,
   operation: "commit" | "rollback"
 ): Promise<ServiceResult<PostgresError, Unit>> {
-  state.unregisterCleanup()
-  state.closeCompletion ??= (async () =>
-    operationResult<Unit>(
-      await invoke(
-        state.loaded,
-        operation === "commit" ? contracts.commit : contracts.rollback,
-        state.handle
-      )
-    ))()
-  return state.closeCompletion
+  if (operation === "commit") {
+    if (state.rollbackCompletion !== undefined) return state.rollbackCompletion
+    state.commitCompletion ??= runTransactionOperation(state, "commit")
+    state.closeCompletion ??= state.commitCompletion
+    return state.commitCompletion
+  }
+  state.rollbackCompletion ??= rollbackTransactionState(state)
+  state.closeCompletion ??= state.rollbackCompletion
+  return state.rollbackCompletion
+}
+
+async function rollbackTransactionState(
+  state: TransactionState
+): Promise<ServiceResult<PostgresError, Unit>> {
+  if (state.commitCompletion !== undefined) {
+    try {
+      const committed = await state.commitCompletion
+      if (committed.kind === "success") return committed
+    } catch {
+      // Cleanup still owns rollback after a defective commit.
+    }
+  }
+  return runTransactionOperation(state, "rollback")
+}
+
+async function runTransactionOperation(
+  state: TransactionState,
+  operation: "commit" | "rollback"
+): Promise<ServiceResult<PostgresError, Unit>> {
+  const result = operationResult<Unit>(
+    await invoke(
+      state.loaded,
+      operation === "commit" ? contracts.commit : contracts.rollback,
+      state.handle
+    )
+  )
+  if (result.kind === "success") {
+    state.unregisterCleanup()
+    state.parent.transactions.delete(state)
+  }
+  return result
 }
 
 function closePoolState(
@@ -382,13 +416,15 @@ function closePoolState(
   return state.closeCompletion
 }
 
-function ensureOpen(
-  state: { closeCompletion?: Promise<unknown> } | undefined,
+function ensureOpen<State extends { closeCompletion?: Promise<unknown> }>(
+  state: State | undefined,
   name: string
-): void {
-  if (state?.closeCompletion !== undefined) {
+): State {
+  if (state === undefined) throw new TypeError(`${name} is not owned`)
+  if (state.closeCompletion !== undefined) {
     throw new TypeError(`${name} resource is closed`)
   }
+  return state
 }
 
 async function cleanup(
