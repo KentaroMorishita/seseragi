@@ -3,7 +3,8 @@ use crate::{
     ProjectModuleInput, ProjectProviderConfiguration,
 };
 use seseragi_project::{
-    logical_module_id, logical_package_scope, LoadedLocalProject, ModuleGraph, ModuleIdentity,
+    logical_module_id, logical_package_scope, LoadedLocalProject, LoadedLocalTests, ModuleGraph,
+    ModuleIdentity, ModuleRoot,
 };
 use std::collections::BTreeMap;
 
@@ -11,6 +12,24 @@ use std::collections::BTreeMap;
 pub struct CompiledLocalProject {
     pub compiled: CompiledProject,
     pub entry_module: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CompiledLocalTests {
+    pub compiled: CompiledProject,
+    pub test_modules: Vec<CompiledTestModule>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CompiledTestModule {
+    pub name: String,
+    pub module_id: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum LocalTestCompileError {
+    Compile(LocalProjectCompileError),
+    Discovery { module: String, reason: String },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -49,6 +68,92 @@ pub fn compile_local_project_with_providers(
 ) -> Result<CompiledLocalProject, LocalProjectCompileError> {
     configuration.entry_module = logical_module_id(project.entry());
     compile_local_project_inner(project, Some(configuration))
+}
+
+/// Compiles all test source through the ordinary linked project pipeline, then
+/// selects modules with the exact `pub let tests: std/test::Test` export.
+pub fn compile_local_tests(
+    project: &LoadedLocalTests,
+) -> Result<CompiledLocalTests, LocalTestCompileError> {
+    let mut graph = ModuleGraph::new();
+    let mut identities_by_id = BTreeMap::new();
+    for (identity, _) in project.modules() {
+        let module = test_aware_module_id(identity);
+        identities_by_id.insert(module.clone(), identity.clone());
+        let dependencies = project
+            .graph()
+            .dependencies_for(identity)
+            .expect("loaded local test graph contains every module")
+            .into_iter()
+            .map(|(specifier, dependency)| (specifier, test_aware_module_id(&dependency)));
+        graph
+            .add_module(module, dependencies)
+            .expect("loaded local test graph was already validated");
+    }
+    let inputs = project.modules().map(|(identity, module)| {
+        ProjectModuleInput::new(
+            module.source_path().to_string_lossy(),
+            test_aware_module_id(identity),
+            module.source(),
+            test_output_path(identity),
+        )
+        .with_package_scope(logical_package_scope(identity.package()))
+    });
+    let compiled = compile_project(graph, inputs).map_err(|error| {
+        LocalTestCompileError::Compile(LocalProjectCompileError {
+            module: error_module(&error)
+                .and_then(|module| identities_by_id.get(module).cloned())
+                .map(Box::new),
+            error: Box::new(error),
+        })
+    })?;
+    let mut test_modules = Vec::new();
+    for identity in project.roots() {
+        let module_id = test_aware_module_id(identity);
+        let module = compiled
+            .modules
+            .get(&module_id)
+            .expect("compiled test project contains every root");
+        let matching = module
+            .typed_interface
+            .exports
+            .iter()
+            .filter(|export| export.namespace == "value" && export.name == "tests")
+            .collect::<Vec<_>>();
+        if matching.is_empty() {
+            continue;
+        }
+        let [export] = matching.as_slice() else {
+            return Err(LocalTestCompileError::Discovery {
+                module: identity.path().as_str().to_owned(),
+                reason: "test module must export exactly one `pub let tests: test.Test`".to_owned(),
+            });
+        };
+        let exact = export.scheme.type_parameters.is_empty()
+            && export.scheme.constraints.is_empty()
+            && matches!(
+                &export.scheme.type_ref,
+                seseragi_syntax::InterfaceType::ExternalNamed {
+                    canonical,
+                    arguments,
+                    ..
+                } if canonical == "std/test::Test" && arguments.is_empty()
+            );
+        if !exact {
+            return Err(LocalTestCompileError::Discovery {
+                module: identity.path().as_str().to_owned(),
+                reason: "`tests` must have the exact type `std/test::Test`".to_owned(),
+            });
+        }
+        test_modules.push(CompiledTestModule {
+            name: identity.path().as_str().to_owned(),
+            module_id,
+        });
+    }
+    Ok(CompiledLocalTests {
+        compiled,
+        test_modules,
+    })
 }
 
 fn compile_local_project_inner(
@@ -100,6 +205,33 @@ fn output_path(identity: &ModuleIdentity) -> String {
         "dist/packages/{}/{}/{}.js",
         identity.package().name().as_str(),
         identity.package().version(),
+        identity.path().as_str()
+    )
+}
+
+fn test_aware_module_id(identity: &ModuleIdentity) -> String {
+    match identity.root() {
+        ModuleRoot::Test => format!(
+            "{}::test/{}",
+            logical_package_scope(identity.package()),
+            identity.path().as_str()
+        ),
+        _ => logical_module_id(identity),
+    }
+}
+
+fn test_output_path(identity: &ModuleIdentity) -> String {
+    let root = match identity.root() {
+        ModuleRoot::Test => "tests",
+        ModuleRoot::Source => "src",
+        ModuleRoot::Benchmark => "benchmarks",
+        ModuleRoot::Generated => "generated",
+    };
+    format!(
+        "dist/packages/{}/{}/{}/{}.js",
+        identity.package().name().as_str(),
+        identity.package().version(),
+        root,
         identity.path().as_str()
     )
 }
@@ -161,5 +293,25 @@ mod tests {
             .generated
             .typescript
             .contains("math-basic/1.0.0/lib.js"));
+    }
+
+    #[test]
+    fn compiles_the_canonical_std_test_fixture() {
+        let root = repository_root().join("examples/spec/fixtures/projects/test-discovery");
+        let project = seseragi_project::load_local_tests(root).unwrap();
+        let compiled = compile_local_tests(&project).unwrap();
+
+        assert_eq!(compiled.test_modules.len(), 1);
+        assert_eq!(compiled.test_modules[0].name, "basic");
+        let module = compiled
+            .compiled
+            .modules
+            .get(&compiled.test_modules[0].module_id)
+            .unwrap();
+        assert!(module.generated.typescript.contains("_ssrg_test_suite"));
+        assert!(!module
+            .generated
+            .typescript
+            .contains("export const tests: unknown = _;"));
     }
 }

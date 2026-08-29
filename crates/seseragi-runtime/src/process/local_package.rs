@@ -3,7 +3,9 @@ use super::{
     RunOutcome,
 };
 use crate::{project_main_contract, validate_target, ExecutionTarget};
-use seseragi_driver::{CompiledLocalPackage, CompiledLocalProject, CompiledProject};
+use seseragi_driver::{
+    CompiledLocalPackage, CompiledLocalProject, CompiledLocalTests, CompiledProject,
+};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -44,6 +46,84 @@ pub fn run_local_project_in_directory_with_options(
         options,
         Some(&application_directory),
     )
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TestRunOptions {
+    pub filter: Option<String>,
+    pub exact: Option<String>,
+    pub jobs: usize,
+    pub timeout_ms: u64,
+    pub cleanup_grace_ms: u64,
+    pub seed: i64,
+}
+
+/// Runs compiled test modules through the embedded deterministic test host.
+pub fn run_local_tests_in_directory(
+    project: &CompiledLocalTests,
+    application_directory: &Path,
+    options: &TestRunOptions,
+) -> Result<RunOutcome, RunError> {
+    let application_directory = absolute_application_directory(application_directory)?;
+    let directory = prepare_directory().map_err(RunError::Host)?;
+    let result = (|| {
+        stage_project_modules(&project.compiled, &directory).map_err(RunError::Host)?;
+        crate::stage_typescript_package(&directory).map_err(RunError::Host)?;
+        fs::write(
+            directory.join("entry.ts"),
+            test_entry_source(project, options)?,
+        )
+        .map_err(|error| RunError::Host(format!("failed to stage test entry: {error}")))?;
+        run_target(&directory, Some(&application_directory))
+    })();
+    finish_run(result, &directory)
+}
+
+fn test_entry_source(
+    project: &CompiledLocalTests,
+    options: &TestRunOptions,
+) -> Result<String, RunError> {
+    let mut source = String::from("import { runTestModules } from \"@seseragi/runtime/test\";\n");
+    let mut modules = Vec::new();
+    for (index, test) in project.test_modules.iter().enumerate() {
+        let module = project
+            .compiled
+            .modules
+            .get(&test.module_id)
+            .ok_or_else(|| RunError::Host(format!("compiled tests omitted {}", test.module_id)))?;
+        let path = canonical_output_path(&module.generated.metadata.outputs.typescript)
+            .map_err(RunError::Host)?;
+        source.push_str(&format!(
+            "import {{ tests as tests{index} }} from \"./{}\";\n",
+            path.to_string_lossy()
+        ));
+        modules.push(serde_json::json!({
+            "name": test.name,
+            "binding": format!("tests{index}"),
+        }));
+    }
+    let module_source = modules
+        .iter()
+        .map(|module| {
+            let name =
+                serde_json::to_string(&module["name"]).expect("test module name is JSON encodable");
+            let binding = module["binding"].as_str().expect("binding is a string");
+            format!("{{ name: {name}, tests: {binding} }}")
+        })
+        .collect::<Vec<_>>()
+        .join(", ");
+    let filter = serde_json::to_string(&options.filter)
+        .map_err(|error| RunError::Host(format!("failed to encode test filter: {error}")))?;
+    let exact = serde_json::to_string(&options.exact)
+        .map_err(|error| RunError::Host(format!("failed to encode exact test name: {error}")))?;
+    source.push_str(&format!(
+        "const exitCode = await runTestModules([{module_source}], {{ filter: {filter} ?? undefined, exact: {exact} ?? undefined, jobs: {}, timeoutMs: {}, cleanupGraceMs: {}, seed: {} }});\nprocess.exitCode = exitCode;\n",
+        options.jobs,
+        options.timeout_ms,
+        options.cleanup_grace_ms,
+        options.seed,
+    ));
+    Ok(source)
 }
 
 fn absolute_application_directory(directory: &Path) -> Result<PathBuf, RunError> {

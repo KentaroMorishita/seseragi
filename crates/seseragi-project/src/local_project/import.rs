@@ -13,6 +13,42 @@ pub(super) fn resolve_import(
         Ok(SourceImportResolution::Local(path)) => (current.package().clone(), path),
         Ok(SourceImportResolution::Standard) => return Ok(ResolvedImport::Standard),
         Err(SourceImportError::Unsupported(ImportSpecifier::Package(_))) => {
+            let package_name = current.package().name().as_str();
+            if specifier == package_name
+                || specifier
+                    .strip_prefix(package_name)
+                    .is_some_and(|suffix| suffix.starts_with('/'))
+            {
+                let suffix = specifier
+                    .strip_prefix(package_name)
+                    .expect("self prefix matched");
+                let export = if suffix.is_empty() {
+                    "."
+                } else {
+                    suffix
+                        .strip_prefix('/')
+                        .expect("self subpath starts with slash")
+                };
+                let package = packages
+                    .package(current.package())
+                    .expect("current package belongs to graph");
+                let path = package
+                    .manifest()
+                    .exports
+                    .get(export)
+                    .cloned()
+                    .ok_or_else(|| {
+                        ImportFailure::new(
+                            "SES-N0104",
+                            format!("package `{package_name}` does not export `{export}`"),
+                        )
+                    })?;
+                return Ok(ResolvedImport::Module(ModuleIdentity::new(
+                    current.package().clone(),
+                    ModuleRoot::Source,
+                    path,
+                )));
+            }
             let resolved = packages
                 .resolve_package_import(current.package(), specifier)
                 .map_err(|error| ImportFailure::new(error.code(), error.to_string()))?;
@@ -31,10 +67,17 @@ pub(super) fn resolve_import(
             return Err(ImportFailure::new("SES-N0104", reason));
         }
     };
+    let root = if current.root() == ModuleRoot::Test
+        && matches!(
+            crate::classify_specifier(specifier),
+            Ok(ImportSpecifier::Relative(_))
+        ) {
+        ModuleRoot::Test
+    } else {
+        ModuleRoot::Source
+    };
     Ok(ResolvedImport::Module(ModuleIdentity::new(
-        package,
-        ModuleRoot::Source,
-        path,
+        package, root, path,
     )))
 }
 

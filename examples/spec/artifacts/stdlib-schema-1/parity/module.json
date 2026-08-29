@@ -198,6 +198,16 @@
       "modules": [
         "std/entropy"
       ]
+    },
+    {
+      "id": "test-runner-project",
+      "evidence": "examples/spec/fixtures/projects/test-discovery",
+      "products": [
+        "cli-test"
+      ],
+      "modules": [
+        "std/test"
+      ]
     }
   ],
   "targetDiagnostic": {
@@ -622,6 +632,16 @@
       "interfaceFingerprint": "fnv1a64:9b29d73685fe87b0",
       "implementation": "lowering-runtime",
       "route": "stream-core-project"
+    },
+    {
+      "specifier": "std/test",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:b7a59e1d89a25bc4",
+      "implementation": "lowering-runtime",
+      "route": "test-runner-project"
     },
     {
       "specifier": "std/text",

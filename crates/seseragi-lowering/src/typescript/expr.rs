@@ -472,6 +472,41 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_effect_operation(&callee) {
+                if matches!(callee.as_str(), "std/test::equal" | "std/test::notEqual") {
+                    let equality = evidence
+                        .iter()
+                        .find(|selected| selected.constraint.name == "Eq")
+                        .expect("std/test equality assertion requires selected Eq evidence");
+                    arguments.push(
+                        equality_reference_from_evidence(
+                            std::slice::from_ref(equality),
+                            imported_values,
+                            imported_types,
+                        )
+                        .expect("std/test equality assertion requires Eq evidence"),
+                    );
+                    let debug = evidence
+                        .iter()
+                        .find(|selected| selected.constraint.name == "Debug")
+                        .and_then(|selected| {
+                            local_dictionary_expression(
+                                &selected.evidence,
+                                imported_values,
+                                imported_types,
+                            )
+                        })
+                        .expect("std/test equality assertion requires Debug evidence");
+                    arguments.push(debug);
+                } else if callee == "std/test::expectFailure" {
+                    arguments.extend(evidence.iter().map(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
+                        .expect("std/test failure assertion requires materializable evidence")
+                    }));
+                }
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,

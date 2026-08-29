@@ -24,9 +24,9 @@ pub use package::stage_typescript_package;
 pub use process::{
     build_local_project, build_local_project_with_options, build_main, build_main_with_options,
     run_local_package, run_local_package_with_options, run_local_project,
-    run_local_project_in_directory_with_options, run_local_project_with_options, run_main,
-    run_main_with_options, BuildError, BuildTarget, ProcessRunOptions, ProcessSignalMode,
-    RandomSeed, RunError, RunOutcome,
+    run_local_project_in_directory_with_options, run_local_project_with_options,
+    run_local_tests_in_directory, run_main, run_main_with_options, BuildError, BuildTarget,
+    ProcessRunOptions, ProcessSignalMode, RandomSeed, RunError, RunOutcome, TestRunOptions,
 };
 pub use provider_catalog::{
     browser_provider_configuration, browser_provider_selections,

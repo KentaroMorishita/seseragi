@@ -71293,11 +71293,880 @@
     {
       "specifier": "std/test",
       "identity": "std/test",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/test",
+        "source": "std/test.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/test::TestEnvironment",
+            "namespace": "type",
+            "name": "TestEnvironment",
+            "visibility": "public",
+            "declarationKind": "alias",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "TestEnvironment",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "clock",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Clock",
+                    "canonical": "std/clock::Clock",
+                    "providerModule": "std/clock",
+                    "providerExport": "Clock",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "random",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Random",
+                    "canonical": "std/random::Random",
+                    "providerModule": "std/random",
+                    "providerExport": "Random",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Console",
+                    "canonical": "std/prelude::Console",
+                    "providerModule": "std/prelude",
+                    "providerExport": "Console",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "logger",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Logger",
+                    "canonical": "std/log::Logger",
+                    "providerModule": "std/log",
+                    "providerExport": "Logger",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/test::TestFailure",
+            "namespace": "type",
+            "name": "TestFailure",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "TestFailure",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/test::AssertionFailed",
+            "namespace": "value",
+            "name": "AssertionFailed",
+            "constructorOf": "std/test::TestFailure",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "message",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "expected",
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "actual",
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "TestFailure",
+                  "canonical": "std/test::TestFailure",
+                  "providerModule": "std/test",
+                  "providerExport": "TestFailure",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::ExpectedTypedFailure",
+            "namespace": "value",
+            "name": "ExpectedTypedFailure",
+            "constructorOf": "std/test::TestFailure",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "TestFailure",
+                "canonical": "std/test::TestFailure",
+                "providerModule": "std/test",
+                "providerExport": "TestFailure",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/test::TypedFailureDidNotMatch",
+            "namespace": "value",
+            "name": "TypedFailureDidNotMatch",
+            "constructorOf": "std/test::TestFailure",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "TestFailure",
+                  "canonical": "std/test::TestFailure",
+                  "providerModule": "std/test",
+                  "providerExport": "TestFailure",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::ExplicitTestFailure",
+            "namespace": "value",
+            "name": "ExplicitTestFailure",
+            "constructorOf": "std/test::TestFailure",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "TestFailure",
+                  "canonical": "std/test::TestFailure",
+                  "providerModule": "std/test",
+                  "providerExport": "TestFailure",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::Test",
+            "namespace": "type",
+            "name": "Test",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Test",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/test::test",
+            "namespace": "value",
+            "name": "test",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "clock",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "Clock",
+                              "canonical": "std/clock::Clock",
+                              "providerModule": "std/clock",
+                              "providerExport": "Clock",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "random",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "Random",
+                              "canonical": "std/random::Random",
+                              "providerModule": "std/random",
+                              "providerExport": "Random",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "console",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "Console",
+                              "canonical": "std/prelude::Console",
+                              "providerModule": "std/prelude",
+                              "providerExport": "Console",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "logger",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "Logger",
+                              "canonical": "std/log::Logger",
+                              "providerModule": "std/log",
+                              "providerExport": "Logger",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "TestFailure",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Test",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::suite",
+            "namespace": "value",
+            "name": "suite",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Test",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Test",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::skip",
+            "namespace": "value",
+            "name": "skip",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Test",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Test",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::timeout",
+            "namespace": "value",
+            "name": "timeout",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Duration",
+                  "canonical": "std/time::Duration",
+                  "providerModule": "std/time",
+                  "providerExport": "Duration",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Test",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Test",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::equal",
+            "namespace": "value",
+            "name": "equal",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Debug",
+                  "traitIdentity": "std/prelude::Debug",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "TestFailure",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::notEqual",
+            "namespace": "value",
+            "name": "notEqual",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Debug",
+                  "traitIdentity": "std/prelude::Debug",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "TestFailure",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::isTrue",
+            "namespace": "value",
+            "name": "isTrue",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "TestFailure",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::isFalse",
+            "namespace": "value",
+            "name": "isFalse",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "TestFailure",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::fail",
+            "namespace": "value",
+            "name": "fail",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "TestFailure",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/test::expectFailure",
+            "namespace": "value",
+            "name": "expectFailure",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E",
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Debug",
+                  "traitIdentity": "std/prelude::Debug",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "TestFailure",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/text",

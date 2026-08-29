@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.35.0] - 2026-08-29
+
+- Added the normal-source `std/test` tree and assertion surface with isolated
+  Clock, Random, Console, Logger, and root resource scopes per case.
+- Added recursive test discovery and `seseragi test` filtering, exact-name,
+  parallelism, timeout, seed, stable reporting, and canonical exit behavior.
+
 ## [0.34.6] - 2026-08-29
 
 - Made child-process `SearchPath` execution reject a missing command `PATH`

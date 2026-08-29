@@ -47,7 +47,8 @@ pub use local_graph::{
     PackageImportError, ResolvedPackageImport,
 };
 pub use local_project::{
-    load_local_project, load_local_project_with_overlays, LoadedLocalProject, LocalProjectLoadError,
+    load_local_project, load_local_project_with_overlays, load_local_tests, LoadedLocalProject,
+    LoadedLocalTests, LocalProjectLoadError,
 };
 pub use lockfile::{
     generate_lockfile, parse_lockfile, read_and_validate_development_lockfile,
@@ -57,7 +58,8 @@ pub use lockfile::{
 pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,
     LanguageRequirement, LayoutPath, Manifest, ManifestDependency, ManifestError, ManifestLayout,
-    ManifestPackage, ManifestRun, ProviderArtifactPath, RunSeed, SignalMode, TargetId,
+    ManifestPackage, ManifestRun, ManifestTest, ProviderArtifactPath, RunSeed, SignalMode,
+    TargetId,
 };
 pub use module_path::{ModulePath, ModulePathError};
 pub use package_name::{PackageName, PackageNameError};

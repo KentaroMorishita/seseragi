@@ -7891,6 +7891,17 @@
       "constraints": []
     },
     {
+      "identity": "std/test::AssertionFailed",
+      "name": "AssertionFailed",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "AssertionFailed arg1: { message: String, expected: Maybe<String>, actual: Maybe<String> } -> TestFailure",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/file::Blob",
       "name": "Blob",
       "module": "std/web/file",
@@ -8662,6 +8673,28 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "ExecutablePath arg1: Path -> Executable",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/test::ExpectedTypedFailure",
+      "name": "ExpectedTypedFailure",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "TestFailure",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/test::ExplicitTestFailure",
+      "name": "ExplicitTestFailure",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ExplicitTestFailure arg1: String -> TestFailure",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10808,6 +10841,39 @@
       "constraints": []
     },
     {
+      "identity": "std/test::Test",
+      "name": "Test",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Test",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/test::TestEnvironment",
+      "name": "TestEnvironment",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "alias",
+      "signature": "TestEnvironment",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/test::TestFailure",
+      "name": "TestFailure",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "TestFailure",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::TimeZone",
       "name": "TimeZone",
       "module": "std/time",
@@ -10859,6 +10925,17 @@
       "kind": "opaque-type",
       "signature": "TimeZones",
       "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/test::TypedFailureDidNotMatch",
+      "name": "TypedFailureDidNotMatch",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "TypedFailureDidNotMatch arg1: String -> TestFailure",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -11955,6 +12032,22 @@
       "constraints": []
     },
     {
+      "identity": "std/test::equal",
+      "name": "equal",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "equal<A> arg1: A -> arg2: A -> Effect<{}, TestFailure, Unit> where Eq<A>, Debug<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>",
+        "Debug<A>"
+      ]
+    },
+    {
       "identity": "std/console::error",
       "name": "error",
       "module": "std/console",
@@ -12126,6 +12219,23 @@
       "constraints": []
     },
     {
+      "identity": "std/test::expectFailure",
+      "name": "expectFailure",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "expectFailure<R, E, A> arg1: (E -> Bool) -> arg2: Effect<R, E, A> -> Effect<R, TestFailure, Unit> where Debug<E>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": [
+        "Debug<E>"
+      ]
+    },
+    {
       "identity": "std/path::extension",
       "name": "extension",
       "module": "std/path",
@@ -12148,6 +12258,17 @@
         "E",
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/test::fail",
+      "name": "fail",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "fail arg1: String -> Effect<{}, TestFailure, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -12507,6 +12628,17 @@
       "constraints": []
     },
     {
+      "identity": "std/test::isFalse",
+      "name": "isFalse",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "isFalse arg1: Bool -> Effect<{}, TestFailure, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::isInformational",
       "name": "isInformational",
       "module": "std/http",
@@ -12547,6 +12679,17 @@
       "kind": "function",
       "signature": "isSuccess arg1: Status -> Bool",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/test::isTrue",
+      "name": "isTrue",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "isTrue arg1: Bool -> Effect<{}, TestFailure, Unit>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -12971,6 +13114,22 @@
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
+    },
+    {
+      "identity": "std/test::notEqual",
+      "name": "notEqual",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "notEqual<A> arg1: A -> arg2: A -> Effect<{}, TestFailure, Unit> where Eq<A>, Debug<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>",
+        "Debug<A>"
+      ]
     },
     {
       "identity": "std/clock::now",
@@ -14024,6 +14183,17 @@
       "constraints": []
     },
     {
+      "identity": "std/test::skip",
+      "name": "skip",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "skip arg1: String -> arg2: Test -> Test",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/clock::sleep",
       "name": "sleep",
       "module": "std/clock",
@@ -14098,6 +14268,17 @@
       "constraints": []
     },
     {
+      "identity": "std/test::suite",
+      "name": "suite",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "suite arg1: String -> arg2: Array<Test> -> Test",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/fs::symlinkMetadata",
       "name": "symlinkMetadata",
       "module": "std/fs",
@@ -14161,6 +14342,17 @@
       "constraints": []
     },
     {
+      "identity": "std/test::test",
+      "name": "test",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "test arg1: String -> arg2: Effect<{ clock: Clock, random: Random, console: Console, logger: Logger }, TestFailure, Unit> -> Test",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::textResponse",
       "name": "textResponse",
       "module": "std/http/server",
@@ -14190,6 +14382,17 @@
       "kind": "function",
       "signature": "timeZoneVersion arg1: TimeZone -> String",
       "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/test::timeout",
+      "name": "timeout",
+      "module": "std/test",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "timeout arg1: Duration -> arg2: Test -> Test",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },

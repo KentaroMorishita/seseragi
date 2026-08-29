@@ -89,9 +89,33 @@ fn parses_path_dependencies_without_assigning_resolved_identity() {
             if package.as_str() == "fixture/math" && path.as_str() == "vendor/math"
     ));
     assert!(manifest.deferred.foreign.is_none());
-    assert!(manifest.deferred.test.is_none());
+    assert!(manifest.test.is_none());
     assert!(manifest.deferred.benchmark.is_none());
     assert!(manifest.deferred.tool.is_none());
+}
+
+#[test]
+fn parses_test_settings_and_rejects_non_positive_limits() {
+    let manifest = parse_manifest(
+        "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n\n[test]\ntarget = \"node\"\njobs = 4\ntimeout_ms = 250\ncleanup_grace_ms = 10\nseed = -7\n",
+    )
+    .unwrap();
+    let test = manifest.test.expect("test table");
+    assert_eq!(test.target.unwrap().as_str(), "node");
+    assert_eq!(test.jobs, 4);
+    assert_eq!(test.timeout_ms, 250);
+    assert_eq!(test.cleanup_grace_ms, 10);
+    assert_eq!(test.seed, -7);
+
+    for setting in ["jobs = 0", "timeout_ms = 0"] {
+        let source = format!(
+            "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n\n[test]\n{setting}\n"
+        );
+        assert!(matches!(
+            parse_manifest(&source),
+            Err(ManifestError::InvalidTestSetting(_))
+        ));
+    }
 }
 
 #[test]

@@ -11,6 +11,7 @@ pub struct Manifest {
     pub provider_artifacts: Vec<ProviderArtifactPath>,
     pub providers: BTreeMap<String, String>,
     pub run: Option<ManifestRun>,
+    pub test: Option<ManifestTest>,
     pub(crate) deferred: DeferredTables,
 }
 
@@ -156,6 +157,15 @@ pub struct ManifestRun {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ManifestTest {
+    pub target: Option<TargetId>,
+    pub jobs: usize,
+    pub timeout_ms: u64,
+    pub cleanup_grace_ms: u64,
+    pub seed: i64,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct TargetId(String);
 
 impl TargetId {
@@ -183,7 +193,6 @@ pub enum RunSeed {
 #[derive(Clone, Debug, Default, PartialEq)]
 pub(crate) struct DeferredTables {
     pub foreign: Option<toml::Table>,
-    pub test: Option<toml::Table>,
     pub benchmark: Option<toml::Table>,
     pub tool: Option<toml::Table>,
 }

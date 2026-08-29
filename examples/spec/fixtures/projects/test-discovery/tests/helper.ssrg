@@ -1,0 +1,2 @@
+// Test root内の通常moduleはcompileされますが、固定exportがなければcase discovery対象外です。
+pub let fixtureValue: Int = 1
