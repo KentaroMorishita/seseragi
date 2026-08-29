@@ -17,8 +17,8 @@ pub use build::{
 };
 use entry::entry_source;
 pub use local_package::{
-    run_local_package, run_local_package_with_options, run_local_project,
-    run_local_project_in_directory_with_options, run_local_project_with_options,
+    run_document_entry_in_directory, run_local_package, run_local_package_with_options,
+    run_local_project, run_local_project_in_directory_with_options, run_local_project_with_options,
     run_local_tests_in_directory, TestRunOptions,
 };
 
@@ -57,6 +57,13 @@ static NEXT_RUN: AtomicU64 = AtomicU64::new(0);
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct RunOutcome {
     pub exit_code: i32,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CapturedRunOutcome {
+    pub exit_code: i32,
+    pub stdout: String,
+    pub stderr: String,
 }
 
 #[derive(Debug)]
@@ -158,6 +165,29 @@ pub(super) fn run_target(
         RunError::Host("Bun target adapter terminated without an exit code".to_owned())
     })?;
     Ok(RunOutcome { exit_code })
+}
+
+pub(super) fn run_target_captured(
+    directory: &Path,
+    application_directory: &Path,
+) -> Result<CapturedRunOutcome, RunError> {
+    let output = Command::new("bun")
+        .arg("run")
+        .arg(directory.join("entry.ts"))
+        .current_dir(application_directory)
+        .env("SESERAGI_APPLICATION_ROOT", application_directory)
+        .output()
+        .map_err(|error| RunError::Host(format!("failed to launch Bun target adapter: {error}")))?;
+    let exit_code = output.status.code().ok_or_else(|| {
+        RunError::Host("Bun target adapter terminated without an exit code".to_owned())
+    })?;
+    Ok(CapturedRunOutcome {
+        exit_code,
+        stdout: String::from_utf8(output.stdout)
+            .map_err(|_| RunError::Host("documentation stdout was not UTF-8".to_owned()))?,
+        stderr: String::from_utf8(output.stderr)
+            .map_err(|_| RunError::Host("documentation stderr was not UTF-8".to_owned()))?,
+    })
 }
 
 pub(super) fn prepare_directory() -> Result<PathBuf, String> {

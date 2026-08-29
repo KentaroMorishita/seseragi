@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.36.0] - 2026-08-30
+
+- Added `seseragi doc --test` with lexical module/item documentation discovery,
+  stable block identities, and ordinary project compilation for check, run,
+  and diagnostic-code-aware compile-fail blocks.
+- Added deterministic captured Effect execution, exact stdout comparison,
+  original-comment diagnostic locations, canonical exit behavior, and product
+  fixture coverage without rewriting package sources.
+
 ## [0.35.0] - 2026-08-29
 
 - Added the normal-source `std/test` tree and assertion surface with isolated

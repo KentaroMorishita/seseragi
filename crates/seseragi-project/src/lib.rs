@@ -47,8 +47,8 @@ pub use local_graph::{
     PackageImportError, ResolvedPackageImport,
 };
 pub use local_project::{
-    load_local_project, load_local_project_with_overlays, load_local_tests, LoadedLocalProject,
-    LoadedLocalTests, LocalProjectLoadError,
+    load_local_documents, load_local_project, load_local_project_with_overlays, load_local_tests,
+    LoadedLocalDocuments, LoadedLocalProject, LoadedLocalTests, LocalProjectLoadError,
 };
 pub use lockfile::{
     generate_lockfile, parse_lockfile, read_and_validate_development_lockfile,

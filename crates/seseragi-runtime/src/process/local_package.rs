@@ -1,8 +1,8 @@
 use super::{
-    entry_source, finish_run, prepare_directory, run_target, ProcessRunOptions, RunError,
-    RunOutcome,
+    entry_source, finish_run, prepare_directory, run_target, CapturedRunOutcome, ProcessRunOptions,
+    RunError, RunOutcome,
 };
-use crate::{project_main_contract, validate_target, ExecutionTarget};
+use crate::{project_main_contract, validate_target, ExecutionTarget, HostService};
 use seseragi_driver::{
     CompiledLocalPackage, CompiledLocalProject, CompiledLocalTests, CompiledProject,
 };
@@ -46,6 +46,60 @@ pub fn run_local_project_in_directory_with_options(
         options,
         Some(&application_directory),
     )
+}
+
+/// Runs one synthetic documentation entry with captured output and only the
+/// deterministic built-in Console/Logger services.
+pub fn run_document_entry_in_directory(
+    compiled: &CompiledProject,
+    entry_module: &str,
+    application_directory: &Path,
+) -> Result<CapturedRunOutcome, RunError> {
+    let contract = project_main_contract(compiled, entry_module).map_err(RunError::InvalidEntry)?;
+    validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
+    if let Some(binding) = contract
+        .environment
+        .iter()
+        .find(|binding| !matches!(binding.service, HostService::Console | HostService::Logger))
+    {
+        return Err(RunError::InvalidEntry(format!(
+            "documentation tests do not provide the {:?} service",
+            binding.service
+        )));
+    }
+    let application_directory = absolute_application_directory(application_directory)?;
+    let directory = prepare_directory().map_err(RunError::Host)?;
+    let result = (|| {
+        stage_project_modules(compiled, &directory).map_err(RunError::Host)?;
+        crate::stage_typescript_package(&directory).map_err(RunError::Host)?;
+        let entry = compiled
+            .modules
+            .get(entry_module)
+            .expect("entry was validated");
+        let entry_path = canonical_output_path(&entry.generated.metadata.outputs.typescript)
+            .map_err(RunError::Host)?;
+        fs::write(
+            directory.join("entry.ts"),
+            entry_source(
+                &contract,
+                &format!("./{}", entry_path.to_string_lossy()),
+                None,
+                ProcessRunOptions {
+                    random_seed: super::RandomSeed::Fixed(0),
+                    ..ProcessRunOptions::default()
+                },
+            ),
+        )
+        .map_err(|error| RunError::Host(format!("failed to stage documentation entry: {error}")))?;
+        super::run_target_captured(&directory, &application_directory)
+    })();
+    let cleanup = fs::remove_dir_all(&directory)
+        .map_err(|error| RunError::Host(format!("failed to clean execution directory: {error}")));
+    match (result, cleanup) {
+        (Ok(outcome), Ok(())) => Ok(outcome),
+        (Err(error), _) => Err(error),
+        (Ok(_), Err(error)) => Err(error),
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

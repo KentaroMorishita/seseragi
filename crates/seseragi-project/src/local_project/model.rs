@@ -17,6 +17,46 @@ pub struct LoadedLocalTests {
     modules: BTreeMap<ModuleIdentity, LoadedModule>,
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub struct LoadedLocalDocuments {
+    packages: LocalPackageGraph,
+    roots: Vec<ModuleIdentity>,
+    graph: ModuleGraph<ModuleIdentity>,
+    modules: BTreeMap<ModuleIdentity, LoadedModule>,
+}
+
+impl LoadedLocalDocuments {
+    pub(super) const fn new(
+        packages: LocalPackageGraph,
+        roots: Vec<ModuleIdentity>,
+        graph: ModuleGraph<ModuleIdentity>,
+        modules: BTreeMap<ModuleIdentity, LoadedModule>,
+    ) -> Self {
+        Self {
+            packages,
+            roots,
+            graph,
+            modules,
+        }
+    }
+
+    pub const fn packages(&self) -> &LocalPackageGraph {
+        &self.packages
+    }
+    pub fn roots(&self) -> impl Iterator<Item = &ModuleIdentity> {
+        self.roots.iter()
+    }
+    pub const fn graph(&self) -> &ModuleGraph<ModuleIdentity> {
+        &self.graph
+    }
+    pub fn modules(&self) -> impl Iterator<Item = (&ModuleIdentity, &LoadedModule)> {
+        self.modules.iter()
+    }
+    pub fn module(&self, identity: &ModuleIdentity) -> Option<&LoadedModule> {
+        self.modules.get(identity)
+    }
+}
+
 impl LoadedLocalTests {
     pub(super) const fn new(
         packages: LocalPackageGraph,
