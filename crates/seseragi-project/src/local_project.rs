@@ -6,7 +6,7 @@ mod model;
 mod tests;
 
 pub use error::LocalProjectLoadError;
-pub use model::{LoadedLocalProject, LoadedLocalTests};
+pub use model::{LoadedLocalDocuments, LoadedLocalProject, LoadedLocalTests};
 
 use crate::loader::audit;
 use crate::loader::filesystem;
@@ -58,12 +58,47 @@ pub fn load_local_tests(root: impl AsRef<Path>) -> Result<LoadedLocalTests, Loca
     Ok(LoadedLocalTests::new(packages, roots, graph, modules))
 }
 
+/// Discovers every source module in the root package for API documentation,
+/// plus only the dependency modules reachable from those roots.
+pub fn load_local_documents(
+    root: impl AsRef<Path>,
+) -> Result<LoadedLocalDocuments, LocalProjectLoadError> {
+    let packages = discover_local_package_graph(root).map_err(LocalProjectLoadError::Packages)?;
+    let root = packages.root().clone();
+    let package = packages
+        .package(&root)
+        .expect("discovered package graph contains its root");
+    let source_root =
+        filesystem::resolve_source_root(package.root(), &package.manifest().layout.source)
+            .map_err(|error| LocalProjectLoadError::Filesystem {
+                package: Box::new(root.clone()),
+                error: Box::new(error),
+            })?;
+    let roots = discover_modules(&root, ModuleRoot::Source, &source_root)?;
+    let (graph, modules) = {
+        let mut state = SourceDiscovery::new(&packages, BTreeMap::new())?;
+        state.discover_all(roots.iter().cloned())?;
+        let graph = state.finish()?;
+        (graph, state.modules)
+    };
+    Ok(LoadedLocalDocuments::new(packages, roots, graph, modules))
+}
+
 fn discover_test_modules(
     package: &PackageIdentity,
     test_root: &Path,
 ) -> Result<Vec<ModuleIdentity>, LocalProjectLoadError> {
+    discover_modules(package, ModuleRoot::Test, test_root)
+}
+
+fn discover_modules(
+    package: &PackageIdentity,
+    module_root: ModuleRoot,
+    source_root: &Path,
+) -> Result<Vec<ModuleIdentity>, LocalProjectLoadError> {
     fn visit(
         package: &PackageIdentity,
+        module_root: ModuleRoot,
         root: &Path,
         directory: &Path,
         modules: &mut Vec<ModuleIdentity>,
@@ -101,7 +136,7 @@ fn discover_test_modules(
                         )),
                     })?;
             if file_type.is_dir() {
-                visit(package, root, &path, modules)?;
+                visit(package, module_root, root, &path, modules)?;
             } else if file_type.is_file()
                 && path.extension().and_then(|value| value.to_str()) == Some("ssrg")
             {
@@ -112,7 +147,7 @@ fn discover_test_modules(
                     LocalProjectLoadError::Import {
                         module: Box::new(ModuleIdentity::new(
                             package.clone(),
-                            ModuleRoot::Test,
+                            module_root,
                             crate::ModulePath::parse("invalid").expect("literal module path"),
                         )),
                         specifier: module,
@@ -121,18 +156,14 @@ fn discover_test_modules(
                         reason: error.to_string(),
                     }
                 })?;
-                modules.push(ModuleIdentity::new(
-                    package.clone(),
-                    ModuleRoot::Test,
-                    module,
-                ));
+                modules.push(ModuleIdentity::new(package.clone(), module_root, module));
             }
         }
         Ok(())
     }
 
     let mut modules = Vec::new();
-    visit(package, test_root, test_root, &mut modules)?;
+    visit(package, module_root, source_root, source_root, &mut modules)?;
     modules.sort();
     Ok(modules)
 }

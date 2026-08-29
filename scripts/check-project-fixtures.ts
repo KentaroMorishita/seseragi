@@ -17,6 +17,7 @@ const phases = new Set([
 ])
 const productRunners = new Set([
   "cli-build",
+  "cli-doc",
   "cli-run",
   "cli-test",
   "lsp-project",

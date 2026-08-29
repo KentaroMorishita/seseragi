@@ -3,12 +3,13 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (39)
+## Current product-route fixtures (40)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
 | `child-process-captured` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `cli-build-nested` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs` |
+| `doc-tests` | `tooling` | `cli-doc` | `crates/seseragi-cli/tests/doc.rs` |
 | `dom-hydration-mismatch` | `run` | `cli-build` | `apps/playground/tests/dom-lifecycle-browser.test.ts` |
 | `dom-reactive-bindings` | `run` | `cli-build` | `apps/playground/tests/dom-lifecycle-browser.test.ts` |
 | `dom-signal-lifecycle` | `run` | `cli-build` | `apps/playground/tests/dom-lifecycle-browser.test.ts` |
@@ -47,12 +48,11 @@
 | `test-discovery` | `test` | `cli-test` | `crates/seseragi-cli/src/test.rs` |
 | `typeclass-operator-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 
-## Contract-only fixtures (28)
+## Contract-only fixtures (27)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
 | `benchmark-discovery` | `tooling` | `planned-tooling` | - |
-| `doc-tests` | `tooling` | `planned-tooling` | - |
 | `dts-basic-conversion` | `convert` | `planned-converter` | - |
 | `dts-callback-during-call` | `convert` | `planned-converter` | - |
 | `dts-callback-missing-release` | `diagnostic` | `planned-converter` | - |

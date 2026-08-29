@@ -15,4 +15,5 @@ seseragi-driver = { path = "../seseragi-driver" }
 seseragi-project = { path = "../seseragi-project" }
 seseragi-release = { path = "../seseragi-release" }
 seseragi-runtime = { path = "../seseragi-runtime" }
+seseragi-syntax = { path = "../seseragi-syntax" }
 serde_json.workspace = true
