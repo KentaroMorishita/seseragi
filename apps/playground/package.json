@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/playground",
-  "version": "0.34.3",
+  "version": "0.34.4",
   "private": true,
   "type": "module",
   "scripts": {
@@ -23,6 +23,7 @@
     "typecheck": "bun run catalog:check && tsc --noEmit"
   },
   "dependencies": {
+    "@seseragi/runtime": "file:../../runtime/ts",
     "@codemirror/autocomplete": "^6.0.0",
     "@codemirror/commands": "^6.10.1",
     "@codemirror/language": "^6.11.3",
