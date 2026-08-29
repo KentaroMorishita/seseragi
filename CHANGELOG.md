@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.34.6] - 2026-08-29
+
+- Made child-process `SearchPath` execution reject a missing command `PATH`
+  before Node, Bun, or the host OS can apply an implicit fallback.
+- Rejected unknown and malformed child-process Provider failures as boundary
+  defects while preserving explicit `PATH` and direct `ExecutablePath` runs.
+
 ## [0.34.5] - 2026-08-29
 
 - Retained SQLite and PostgreSQL rollback ownership until transaction commit or

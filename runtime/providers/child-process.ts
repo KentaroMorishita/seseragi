@@ -262,9 +262,11 @@ function start(
   stdio: "inherit" | "pipe",
   active: Set<RunState>
 ): RunState {
+  const environment = environmentFor(command)
+  ensureSearchPathEnvironment(command, environment)
   const options: SpawnOptions = {
     stdio,
-    env: environmentFor(command),
+    env: environment,
     ...(command.hasDirectory ? { cwd: command.directory } : {}),
   }
   let resolveExited = (): void => undefined
@@ -315,6 +317,27 @@ function environmentFor(command: CommandRequest): NodeJS.ProcessEnv {
     else environment[entry.name] = entry.value
   }
   return environment
+}
+
+function ensureSearchPathEnvironment(
+  command: CommandRequest,
+  environment: NodeJS.ProcessEnv
+): void {
+  if (
+    command.executable.tag === "search-path" &&
+    searchPathValue(environment) === undefined
+  ) {
+    throw new SpawnFailure(
+      "SearchPath executable requires PATH in the child environment"
+    )
+  }
+}
+
+function searchPathValue(environment: NodeJS.ProcessEnv): string | undefined {
+  if (nodeProcess.platform !== "win32") return environment.PATH
+  return Object.entries(environment).find(
+    ([name]) => name.toUpperCase() === "PATH"
+  )?.[1]
 }
 
 function waitStatus(state: RunState): Promise<ChildStatus> {

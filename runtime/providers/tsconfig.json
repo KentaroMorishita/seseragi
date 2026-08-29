@@ -7,6 +7,7 @@
     }
   },
   "include": [
+    "child-process.ts",
     "filesystem.ts",
     "http1-stream.ts",
     "http-client.ts",

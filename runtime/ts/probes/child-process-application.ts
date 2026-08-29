@@ -3,6 +3,7 @@ import {
   addArguments,
   captureLimit,
   type CaptureLimit,
+  clearEnvironment,
   CloseChildStdin,
   command,
   type Command,
@@ -10,12 +11,17 @@ import {
   type ChildProcessesEnvironment,
   type ChildProcessError,
   type CapturedProcess,
+  type Executable,
+  ExecutablePath,
+  inDirectory,
   runCaptured,
   runStreaming,
   SearchPath,
+  setEnvironment,
   WriteChildStdin,
 } from "@seseragi/runtime/child-process"
 import type { Effect } from "@seseragi/runtime/effect"
+import { parse } from "@seseragi/runtime/path"
 import { fromArray, type Stream } from "@seseragi/runtime/stream"
 
 export function capturedFixture(): Effect<
@@ -71,8 +77,85 @@ export function cancellableFixture(): Stream<
   )
 }
 
+export function missingSearchPathFixture(
+  executable: string
+): Effect<ChildProcessesEnvironment, ChildProcessError, CapturedProcess> {
+  return runCaptured(
+    limit(1024),
+    bytes(""),
+    clearEnvironment(configuredCommand(SearchPath(executable), []))
+  )
+}
+
+export function explicitSearchPathFixture(
+  executable: string,
+  path: string
+): Effect<ChildProcessesEnvironment, ChildProcessError, CapturedProcess> {
+  const cleared = clearEnvironment(
+    configuredCommand(SearchPath(executable), [
+      "-e",
+      "process.stdout.write('EXPLICIT_PATH')",
+    ])
+  )
+  const configured = setEnvironment("PATH", path, cleared)
+  if (configured.tag === "Left") {
+    throw new Error("static PATH environment must be valid")
+  }
+  return runCaptured(limit(1024), bytes(""), configured.value)
+}
+
+export function executablePathFixture(
+  executable: string
+): Effect<ChildProcessesEnvironment, ChildProcessError, CapturedProcess> {
+  const parsed = parse(executable)
+  if (parsed.tag === "Left") {
+    throw new Error("host executable path must be portable")
+  }
+  return runCaptured(
+    limit(1024),
+    bytes(""),
+    clearEnvironment(
+      configuredCommand(ExecutablePath(parsed.value), [
+        "-e",
+        "process.stdout.write('EXECUTABLE_PATH')",
+      ])
+    )
+  )
+}
+
+export function relativeExecutablePathFixture(
+  executable: string,
+  directory: string
+): Effect<ChildProcessesEnvironment, ChildProcessError, CapturedProcess> {
+  const executablePath = parse(executable)
+  const workingDirectory = parse(directory)
+  if (executablePath.tag === "Left" || workingDirectory.tag === "Left") {
+    throw new Error("host executable path and directory must be portable")
+  }
+  return runCaptured(
+    limit(1024),
+    bytes(""),
+    clearEnvironment(
+      inDirectory(
+        workingDirectory.value,
+        configuredCommand(ExecutablePath(executablePath.value), [
+          "-e",
+          "process.stdout.write('RELATIVE_EXECUTABLE_PATH')",
+        ])
+      )
+    )
+  )
+}
+
 function nodeCommand(arguments_: ReadonlyArray<string>): Command {
-  const base = command(SearchPath("node"))
+  return configuredCommand(SearchPath("node"), arguments_)
+}
+
+function configuredCommand(
+  executable: Executable,
+  arguments_: ReadonlyArray<string>
+): Command {
+  const base = command(executable)
   if (base.tag === "Left") throw new Error("node command must be valid")
   const configured = addArguments(arguments_, base.value)
   if (configured.tag === "Left") {

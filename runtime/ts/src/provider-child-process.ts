@@ -437,6 +437,7 @@ function validateError(value: unknown): ChildProcessError {
         }),
       })
   }
+  return invalid("child failure")
 }
 
 function validSignal(value: unknown): value is ProcessSignal {
