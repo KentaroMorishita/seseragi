@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/test-discovery@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/test-discovery@0.0.0#workspace:."
+name = "fixture/test-discovery"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:6b7d30b3937c06fa8b468cc86de96882c3aabb48b9c038528a5f32aff602301a"
+content_digest = "sha256:09f6baf4291780ebd78659a1d01e4da423351edd8406936981bcc6fccc6491ad"
+dependencies = []

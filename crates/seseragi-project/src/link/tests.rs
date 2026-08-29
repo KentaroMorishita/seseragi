@@ -70,14 +70,14 @@ fn exposes_public_named_imports_under_their_local_names() {
 
 #[test]
 fn distinguishes_a_contract_only_standard_module_from_an_unknown_specifier() {
-    let source = "import * as tests from \"std/test\"\n";
+    let source = "import * as benchmark from \"std/benchmark\"\n";
     let main = parse_unlinked_module_interface("src/main.ssrg", "fixture::main", source);
     let origin = main.imports[0].span;
 
     assert!(matches!(
         link_module(main, &BTreeMap::new()).unwrap_err().as_slice(),
         [LinkError::UnavailableStandardModule { specifier, origin: actual }]
-            if specifier == "std/test" && *actual == origin
+            if specifier == "std/benchmark" && *actual == origin
     ));
 }
 

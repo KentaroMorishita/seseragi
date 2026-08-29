@@ -18,6 +18,7 @@ const phases = new Set([
 const productRunners = new Set([
   "cli-build",
   "cli-run",
+  "cli-test",
   "lsp-project",
   "project-loader",
   "wasm-project",

@@ -7,7 +7,7 @@ language = ">=0.1.0 <0.2.0"
 "." = "library"
 
 [test]
-target = "test-js"
+target = "node"
 jobs = 2
 timeout_ms = 30000
 cleanup_grace_ms = 5000

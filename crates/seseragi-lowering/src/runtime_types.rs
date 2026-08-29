@@ -8,6 +8,18 @@ pub(crate) struct RuntimeTypeImport {
 
 const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
     RuntimeTypeImport {
+        canonical: "std/test::Test",
+        runtime_feature: "test.tree.type",
+        module: "@seseragi/runtime/test",
+        export_name: "Test",
+    },
+    RuntimeTypeImport {
+        canonical: "std/test::TestFailure",
+        runtime_feature: "test.failure.type",
+        module: "@seseragi/runtime/test",
+        export_name: "TestFailure",
+    },
+    RuntimeTypeImport {
         canonical: "std/prelude::Show",
         runtime_feature: "core.show.dictionary",
         module: "@seseragi/runtime/show",

@@ -1,7 +1,7 @@
 use super::dependency::{parse_dependencies, RawDependency};
 use super::model::{
     DeferredTables, LanguageRequirement, LayoutPath, Manifest, ManifestLayout, ManifestPackage,
-    ManifestRun, RunSeed, SignalMode, TargetId,
+    ManifestRun, ManifestTest, RunSeed, SignalMode, TargetId,
 };
 use super::ManifestError;
 use crate::{ModulePath, PackageName};
@@ -19,6 +19,7 @@ pub fn parse_manifest(source: &str) -> Result<Manifest, ManifestError> {
     let provider_artifacts = parse_provider_artifacts(raw.provider)?;
     let providers = parse_provider_selections(raw.providers)?;
     let run = raw.run.map(parse_run).transpose()?;
+    let test = raw.test.map(parse_test).transpose()?;
 
     Ok(Manifest {
         package,
@@ -28,9 +29,9 @@ pub fn parse_manifest(source: &str) -> Result<Manifest, ManifestError> {
         provider_artifacts,
         providers,
         run,
+        test,
         deferred: DeferredTables {
             foreign: raw.foreign,
-            test: raw.test,
             benchmark: raw.benchmark,
             tool: raw.tool,
         },
@@ -56,7 +57,7 @@ struct RawManifest {
     #[serde(default)]
     run: Option<RawRun>,
     #[serde(default)]
-    test: Option<toml::Table>,
+    test: Option<RawTest>,
     #[serde(default)]
     benchmark: Option<toml::Table>,
     #[serde(default)]
@@ -111,6 +112,28 @@ struct RawRun {
     hash_seed: RawSeed,
     #[serde(default)]
     random_seed: RawSeed,
+}
+
+#[derive(Deserialize)]
+#[serde(default, deny_unknown_fields)]
+struct RawTest {
+    target: Option<String>,
+    jobs: usize,
+    timeout_ms: u64,
+    cleanup_grace_ms: u64,
+    seed: i64,
+}
+
+impl Default for RawTest {
+    fn default() -> Self {
+        Self {
+            target: None,
+            jobs: 1,
+            timeout_ms: 30_000,
+            cleanup_grace_ms: 5_000,
+            seed: 0,
+        }
+    }
 }
 
 #[derive(Clone, Copy, Default, Deserialize)]
@@ -234,6 +257,26 @@ fn parse_run(raw: RawRun) -> Result<ManifestRun, ManifestError> {
         },
         hash_seed: parse_seed("run.hash_seed", raw.hash_seed)?,
         random_seed: parse_seed("run.random_seed", raw.random_seed)?,
+    })
+}
+
+fn parse_test(raw: RawTest) -> Result<ManifestTest, ManifestError> {
+    if raw.jobs == 0 {
+        return Err(ManifestError::InvalidTestSetting(
+            "test.jobs must be positive".to_owned(),
+        ));
+    }
+    if raw.timeout_ms == 0 {
+        return Err(ManifestError::InvalidTestSetting(
+            "test.timeout_ms must be positive".to_owned(),
+        ));
+    }
+    Ok(ManifestTest {
+        target: raw.target.map(parse_target).transpose()?,
+        jobs: raw.jobs,
+        timeout_ms: raw.timeout_ms,
+        cleanup_grace_ms: raw.cleanup_grace_ms,
+        seed: raw.seed,
     })
 }
 

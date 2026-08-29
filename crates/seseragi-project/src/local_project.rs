@@ -6,7 +6,7 @@ mod model;
 mod tests;
 
 pub use error::LocalProjectLoadError;
-pub use model::LoadedLocalProject;
+pub use model::{LoadedLocalProject, LoadedLocalTests};
 
 use crate::loader::audit;
 use crate::loader::filesystem;
@@ -24,6 +24,117 @@ pub fn load_local_project(
     root: impl AsRef<Path>,
 ) -> Result<LoadedLocalProject, LocalProjectLoadError> {
     load_local_project_with_overlays(root, std::iter::empty())
+}
+
+/// Discovers every canonical test module under the root package's configured
+/// test directory and links its normal source dependencies through the same
+/// package graph as production compilation.
+pub fn load_local_tests(root: impl AsRef<Path>) -> Result<LoadedLocalTests, LocalProjectLoadError> {
+    let packages = discover_local_package_graph(root).map_err(LocalProjectLoadError::Packages)?;
+    let root = packages.root().clone();
+    let package = packages
+        .package(&root)
+        .expect("discovered package graph contains its root");
+    let candidate = package
+        .root()
+        .join(package.manifest().layout.tests.as_str());
+    let roots = if candidate.exists() {
+        let test_root =
+            filesystem::resolve_source_root(package.root(), &package.manifest().layout.tests)
+                .map_err(|error| LocalProjectLoadError::Filesystem {
+                    package: Box::new(root.clone()),
+                    error: Box::new(error),
+                })?;
+        discover_test_modules(&root, &test_root)?
+    } else {
+        Vec::new()
+    };
+    let (graph, modules) = {
+        let mut state = SourceDiscovery::new_with_tests(&packages, BTreeMap::new())?;
+        state.discover_all(roots.iter().cloned())?;
+        let graph = state.finish()?;
+        (graph, state.modules)
+    };
+    Ok(LoadedLocalTests::new(packages, roots, graph, modules))
+}
+
+fn discover_test_modules(
+    package: &PackageIdentity,
+    test_root: &Path,
+) -> Result<Vec<ModuleIdentity>, LocalProjectLoadError> {
+    fn visit(
+        package: &PackageIdentity,
+        root: &Path,
+        directory: &Path,
+        modules: &mut Vec<ModuleIdentity>,
+    ) -> Result<(), LocalProjectLoadError> {
+        let mut entries = fs::read_dir(directory)
+            .map_err(|error| LocalProjectLoadError::Filesystem {
+                package: Box::new(package.clone()),
+                error: Box::new(PackageLoadError::io(
+                    "read test directory",
+                    directory.to_owned(),
+                    error,
+                )),
+            })?
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|error| LocalProjectLoadError::Filesystem {
+                package: Box::new(package.clone()),
+                error: Box::new(PackageLoadError::io(
+                    "read test entry",
+                    directory.to_owned(),
+                    error,
+                )),
+            })?;
+        entries.sort_by_key(|entry| entry.file_name());
+        for entry in entries {
+            let path = entry.path();
+            let file_type =
+                entry
+                    .file_type()
+                    .map_err(|error| LocalProjectLoadError::Filesystem {
+                        package: Box::new(package.clone()),
+                        error: Box::new(PackageLoadError::io(
+                            "inspect test entry",
+                            path.clone(),
+                            error,
+                        )),
+                    })?;
+            if file_type.is_dir() {
+                visit(package, root, &path, modules)?;
+            } else if file_type.is_file()
+                && path.extension().and_then(|value| value.to_str()) == Some("ssrg")
+            {
+                let relative = path.strip_prefix(root).expect("walk stays under test root");
+                let mut module = relative.to_string_lossy().replace('\\', "/");
+                module.truncate(module.len() - ".ssrg".len());
+                let module = crate::ModulePath::parse(&module).map_err(|error| {
+                    LocalProjectLoadError::Import {
+                        module: Box::new(ModuleIdentity::new(
+                            package.clone(),
+                            ModuleRoot::Test,
+                            crate::ModulePath::parse("invalid").expect("literal module path"),
+                        )),
+                        specifier: module,
+                        origin: seseragi_syntax::ByteSpan { start: 0, end: 0 },
+                        code: "SES-N0104",
+                        reason: error.to_string(),
+                    }
+                })?;
+                modules.push(ModuleIdentity::new(
+                    package.clone(),
+                    ModuleRoot::Test,
+                    module,
+                ));
+            }
+        }
+        Ok(())
+    }
+
+    let mut modules = Vec::new();
+    visit(package, test_root, test_root, &mut modules)?;
+    modules.sort();
+    Ok(modules)
 }
 
 /// Loads a local package project while allowing editor buffers to shadow the
@@ -74,7 +185,7 @@ fn normalize_overlays(
 
 struct SourceDiscovery<'a> {
     packages: &'a LocalPackageGraph,
-    source_roots: BTreeMap<PackageIdentity, PathBuf>,
+    source_roots: BTreeMap<(PackageIdentity, ModuleRoot), PathBuf>,
     pending: BTreeSet<ModuleIdentity>,
     modules: BTreeMap<ModuleIdentity, LoadedModule>,
     edges: BTreeMap<ModuleIdentity, BTreeMap<String, ModuleIdentity>>,
@@ -86,6 +197,21 @@ impl<'a> SourceDiscovery<'a> {
     fn new(
         packages: &'a LocalPackageGraph,
         overlays: BTreeMap<PathBuf, String>,
+    ) -> Result<Self, LocalProjectLoadError> {
+        Self::new_inner(packages, overlays, false)
+    }
+
+    fn new_with_tests(
+        packages: &'a LocalPackageGraph,
+        overlays: BTreeMap<PathBuf, String>,
+    ) -> Result<Self, LocalProjectLoadError> {
+        Self::new_inner(packages, overlays, true)
+    }
+
+    fn new_inner(
+        packages: &'a LocalPackageGraph,
+        overlays: BTreeMap<PathBuf, String>,
+        include_tests: bool,
     ) -> Result<Self, LocalProjectLoadError> {
         let mut source_roots = BTreeMap::new();
         for (identity, package) in packages.packages() {
@@ -101,7 +227,29 @@ impl<'a> SourceDiscovery<'a> {
                     error: Box::new(error),
                 }
             })?;
-            source_roots.insert(identity.clone(), source_root);
+            source_roots.insert((identity.clone(), ModuleRoot::Source), source_root);
+            if include_tests && identity == packages.root() {
+                let candidate = package
+                    .root()
+                    .join(package.manifest().layout.tests.as_str());
+                if candidate.exists() {
+                    let test_root = filesystem::resolve_source_root(
+                        package.root(),
+                        &package.manifest().layout.tests,
+                    )
+                    .map_err(|error| LocalProjectLoadError::Filesystem {
+                        package: Box::new(identity.clone()),
+                        error: Box::new(error),
+                    })?;
+                    audit::audit_source_root(&test_root).map_err(|error| {
+                        LocalProjectLoadError::Filesystem {
+                            package: Box::new(identity.clone()),
+                            error: Box::new(error),
+                        }
+                    })?;
+                    source_roots.insert((identity.clone(), ModuleRoot::Test), test_root);
+                }
+            }
         }
         Ok(Self {
             packages,
@@ -115,7 +263,14 @@ impl<'a> SourceDiscovery<'a> {
     }
 
     fn discover(&mut self, entry: ModuleIdentity) -> Result<(), LocalProjectLoadError> {
-        self.pending.insert(entry);
+        self.discover_all([entry])
+    }
+
+    fn discover_all(
+        &mut self,
+        entries: impl IntoIterator<Item = ModuleIdentity>,
+    ) -> Result<(), LocalProjectLoadError> {
+        self.pending.extend(entries);
         while let Some(module) = self.pending.pop_first() {
             if self.modules.contains_key(&module) {
                 continue;
@@ -128,8 +283,8 @@ impl<'a> SourceDiscovery<'a> {
     fn discover_module(&mut self, module: ModuleIdentity) -> Result<(), LocalProjectLoadError> {
         let source_root = self
             .source_roots
-            .get(module.package())
-            .expect("package graph has a source root for every package");
+            .get(&(module.package().clone(), module.root()))
+            .expect("package graph has a filesystem root for every discovered module");
         let source_path =
             filesystem::resolve_module_file(source_root, module.path()).map_err(|error| {
                 LocalProjectLoadError::Filesystem {

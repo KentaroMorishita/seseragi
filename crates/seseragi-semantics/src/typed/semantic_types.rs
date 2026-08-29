@@ -140,10 +140,14 @@ pub(crate) fn semantic_values_are_compatible(
         ) => {
             expected_name == actual_name
                 && expected_arguments.len() == actual_arguments.len()
-                && expected_arguments
-                    .iter()
-                    .zip(actual_arguments)
-                    .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+                && if expected_name == "Effect" {
+                    semantic_effect_arguments_are_compatible(expected_arguments, actual_arguments)
+                } else {
+                    expected_arguments
+                        .iter()
+                        .zip(actual_arguments)
+                        .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+                }
         }
         (SemanticTypeKey::NamedGeneric { .. }, SemanticTypeKey::Other)
         | (SemanticTypeKey::Other, SemanticTypeKey::NamedGeneric { .. }) => {
@@ -320,6 +324,28 @@ fn semantic_arguments_have_same_identity(
             .all(|(expected, actual)| semantic_values_have_same_identity(expected, actual))
 }
 
+fn semantic_effect_arguments_are_compatible(
+    expected: &[SemanticValueType],
+    actual: &[SemanticValueType],
+) -> bool {
+    let (
+        [expected_environment, expected_failure, expected_success],
+        [actual_environment, actual_failure, actual_success],
+    ) = (expected, actual)
+    else {
+        return expected.len() == actual.len()
+            && expected
+                .iter()
+                .zip(actual)
+                .all(|(expected, actual)| semantic_values_are_compatible(expected, actual));
+    };
+    // Effects that need fewer services can run in a host that supplies the
+    // wider expected environment. Failure and success remain covariant.
+    semantic_values_are_compatible(actual_environment, expected_environment)
+        && semantic_values_are_compatible(expected_failure, actual_failure)
+        && semantic_values_are_compatible(expected_success, actual_success)
+}
+
 fn record_is_compatible(
     expected: &[crate::TypedRecordField],
     actual: &[crate::TypedRecordField],
@@ -365,7 +391,11 @@ fn structural_types_are_compatible(expected: &TypedType, actual: &TypedType) -> 
             },
         ) => {
             expected_name == actual_name
-                && type_arguments_are_compatible(expected_arguments, actual_arguments)
+                && if expected_name == "Effect" {
+                    structural_effect_arguments_are_compatible(expected_arguments, actual_arguments)
+                } else {
+                    type_arguments_are_compatible(expected_arguments, actual_arguments)
+                }
         }
         (
             TypedType::Function {
@@ -408,6 +438,22 @@ fn type_arguments_are_compatible(expected: &[TypedType], actual: &[TypedType]) -
             .iter()
             .zip(actual)
             .all(|(expected, actual)| structural_types_are_compatible(expected, actual))
+}
+
+fn structural_effect_arguments_are_compatible(
+    expected: &[TypedType],
+    actual: &[TypedType],
+) -> bool {
+    let (
+        [expected_environment, expected_failure, expected_success],
+        [actual_environment, actual_failure, actual_success],
+    ) = (expected, actual)
+    else {
+        return type_arguments_are_compatible(expected, actual);
+    };
+    structural_types_are_compatible(actual_environment, expected_environment)
+        && structural_types_are_compatible(expected_failure, actual_failure)
+        && structural_types_are_compatible(expected_success, actual_success)
 }
 
 #[derive(Clone, Debug)]
@@ -1073,5 +1119,51 @@ mod tests {
 
         assert!(semantic_values_are_compatible(&hydrated, &unhydrated));
         assert!(semantic_values_have_same_identity(&hydrated, &unhydrated));
+    }
+
+    #[test]
+    fn widens_effect_requirements_but_keeps_results_covariant() {
+        let empty = TypedType::Record {
+            fields: Vec::new(),
+            closed: true,
+        };
+        let environment = TypedType::Record {
+            fields: vec![crate::TypedRecordField {
+                name: "clock".to_owned(),
+                type_ref: TypedType::Named {
+                    name: "Clock".to_owned(),
+                    arguments: Vec::new(),
+                },
+                optional: false,
+            }],
+            closed: true,
+        };
+        let effect = |requirement: TypedType, success: &str| TypedType::Named {
+            name: "Effect".to_owned(),
+            arguments: vec![
+                requirement,
+                TypedType::Named {
+                    name: "Failure".to_owned(),
+                    arguments: Vec::new(),
+                },
+                TypedType::Named {
+                    name: success.to_owned(),
+                    arguments: Vec::new(),
+                },
+            ],
+        };
+
+        assert!(structural_types_are_compatible(
+            &effect(environment.clone(), "Unit"),
+            &effect(empty.clone(), "Unit"),
+        ));
+        assert!(!structural_types_are_compatible(
+            &effect(empty, "Unit"),
+            &effect(environment.clone(), "Unit"),
+        ));
+        assert!(!structural_types_are_compatible(
+            &effect(environment.clone(), "Unit"),
+            &effect(environment, "String"),
+        ));
     }
 }

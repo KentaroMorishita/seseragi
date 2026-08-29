@@ -27,8 +27,9 @@ pub use format::{format_module, format_module_with_options};
 pub use input::CompileInput;
 pub use local_package::{compile_local_package, CompiledLocalPackage, LocalPackageCompileError};
 pub use local_project::{
-    compile_local_project, compile_local_project_with_providers, CompiledLocalProject,
-    LocalProjectCompileError,
+    compile_local_project, compile_local_project_with_providers, compile_local_tests,
+    CompiledLocalProject, CompiledLocalTests, CompiledTestModule, LocalProjectCompileError,
+    LocalTestCompileError,
 };
 pub use output::CompiledModule;
 pub use output_plan::{

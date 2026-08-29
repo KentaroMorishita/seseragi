@@ -5,6 +5,7 @@ mod local_project;
 mod lock;
 mod new;
 mod run;
+mod test;
 
 fn main() {
     let exit = match run(std::env::args().skip(1)) {
@@ -21,6 +22,7 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
     let arguments = arguments.into_iter().collect::<Vec<_>>();
     match arguments.as_slice() {
         [command, path] if command == "run" => run::run_path(path.as_ref()),
+        [command, arguments @ ..] if command == "test" => test::test(arguments),
         [command, arguments @ ..] if command == "build" => build::build(arguments),
         [command, arguments @ ..] if command == "dev" => dev::dev(arguments),
         [command, arguments @ ..] if command == "new" => new::new(arguments),
@@ -53,6 +55,6 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
 
 fn print_usage() {
     println!(
-        "Usage:\n  seseragi --version\n  seseragi --version-json\n  seseragi new web path/to/my-app\n  seseragi lock update [path/to/package]\n  seseragi run path/to/app.ssrg\n  seseragi run path/to/package\n  seseragi build path/to/app.ssrg [--target process|web] [--out-dir path/to/dist]\n  seseragi build path/to/package [--target process|web] [--out-dir path/to/dist]\n  seseragi dev [path/to/package] [--host 127.0.0.1] [--port 3000] [--open]\n  seseragi format [--check] path/to/app.ssrg"
+        "Usage:\n  seseragi --version\n  seseragi --version-json\n  seseragi new web path/to/my-app\n  seseragi lock update [path/to/package]\n  seseragi run path/to/app.ssrg\n  seseragi run path/to/package\n  seseragi test [path/to/package] [--filter text | --exact module::suite::case] [--jobs n] [--timeout ms] [--seed int] [--target node]\n  seseragi build path/to/app.ssrg [--target process|web] [--out-dir path/to/dist]\n  seseragi build path/to/package [--target process|web] [--out-dir path/to/dist]\n  seseragi dev [path/to/package] [--host 127.0.0.1] [--port 3000] [--open]\n  seseragi format [--check] path/to/app.ssrg"
     );
 }

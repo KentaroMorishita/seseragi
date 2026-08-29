@@ -19,6 +19,7 @@ use entry::entry_source;
 pub use local_package::{
     run_local_package, run_local_package_with_options, run_local_project,
     run_local_project_in_directory_with_options, run_local_project_with_options,
+    run_local_tests_in_directory, TestRunOptions,
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
