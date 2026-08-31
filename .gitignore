@@ -1,5 +1,9 @@
 # Dependencies
 node_modules/
+!examples/spec/fixtures/projects/dts-namespace-runtime/host/node_modules/
+!examples/spec/fixtures/projects/dts-namespace-runtime/host/node_modules/analytics/
+!examples/spec/fixtures/projects/dts-namespace-runtime/host/node_modules/analytics/package.json
+!examples/spec/fixtures/projects/dts-namespace-runtime/host/node_modules/analytics/index.mjs
 bun.lock
 !/bun.lock
 !apps/playground/bun.lock
