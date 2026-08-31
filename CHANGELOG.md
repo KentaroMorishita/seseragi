@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.39.0] - 2026-08-31
+
+- Added the embedded `.d.ts` converter and `seseragi dts convert`, including
+  deterministic generated foreign modules, metadata and reports, all-entry or
+  selected-entry conversion, callbacks, overload selection, generics,
+  namespace/declaration merging, and precise unsupported-type diagnostics.
+- Added exact foreign host identity and input/settings digests to generated
+  metadata, atomic per-entry replacement, previous-output change reports, and
+  pre-build `SES-F0103` rejection for missing or stale bindings.
+- Connected `gen/` modules to the normal project graph and made exported nested
+  foreign namespaces link and lower across modules, then verified generated
+  bindings through the ordinary locked TypeScript host runtime.
+- Promoted every `dts-*` project fixture to real CLI conversion evidence and
+  added overload, metadata/report, entry-selection, non-update-on-error, stale
+  build, and end-to-end runtime coverage.
+
 ## [0.38.0] - 2026-08-31
 
 - Added the complete `seseragi run` option contract for process/web target

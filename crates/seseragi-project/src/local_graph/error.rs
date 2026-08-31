@@ -20,6 +20,10 @@ pub enum LocalPackageGraphError {
         requirement: String,
         implemented: String,
     },
+    StaleGeneratedBindings {
+        package: PackageName,
+        errors: Vec<String>,
+    },
     RegistryDependencyUnsupported {
         package: Box<PackageIdentity>,
         key: String,
@@ -50,6 +54,7 @@ impl LocalPackageGraphError {
     pub const fn code(&self) -> &'static str {
         match self {
             Self::Manifest { .. } | Self::UnsupportedLanguageVersion { .. } => "SES-K0101",
+            Self::StaleGeneratedBindings { .. } => "SES-F0103",
             Self::RegistryDependencyUnsupported { .. } => "SES-K0102",
             Self::DependencyNameMismatch { .. } | Self::DependencyConfusion { .. } => "SES-K0104",
             _ => "SES-K0001",
@@ -77,6 +82,12 @@ impl fmt::Display for LocalPackageGraphError {
                 formatter,
                 "package `{}` requires Seseragi `{requirement}`, but this compiler implements `{implemented}`",
                 package.as_str()
+            ),
+            Self::StaleGeneratedBindings { package, errors } => write!(
+                formatter,
+                "package `{}` has stale generated TypeScript bindings: {}",
+                package.as_str(),
+                errors.join("; ")
             ),
             Self::RegistryDependencyUnsupported { package, key } => write!(
                 formatter,

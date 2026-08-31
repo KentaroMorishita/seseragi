@@ -20,6 +20,9 @@ pub enum PackageLoadError {
         requirement: String,
         implemented: String,
     },
+    StaleGeneratedBindings {
+        errors: Vec<String>,
+    },
     NonCanonicalSpelling {
         expected: String,
         actual: String,
@@ -89,6 +92,7 @@ impl PackageLoadError {
     pub const fn code(&self) -> &'static str {
         match self {
             Self::Manifest { .. } | Self::UnsupportedLanguageVersion { .. } => "SES-K0101",
+            Self::StaleGeneratedBindings { .. } => "SES-F0103",
             Self::UnsupportedImport {
                 kind: ImportSpecifier::Package(_),
                 ..
@@ -114,6 +118,11 @@ impl fmt::Display for PackageLoadError {
             } => write!(
                 formatter,
                 "package requires Seseragi `{requirement}`, but this compiler implements `{implemented}`"
+            ),
+            Self::StaleGeneratedBindings { errors } => write!(
+                formatter,
+                "package has stale generated TypeScript bindings: {}",
+                errors.join("; ")
             ),
             Self::NonCanonicalSpelling { expected, actual, directory } => write!(
                 formatter,

@@ -1,5 +1,8 @@
 {
-  "name": "analytics",
+  "name": "dts-namespace-runtime-host",
   "version": "1.0.0",
-  "types": "index.d.ts"
+  "type": "module",
+  "dependencies": {
+    "analytics": "1.0.0"
+  }
 }

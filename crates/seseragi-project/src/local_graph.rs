@@ -67,6 +67,33 @@ impl DiscoveryState {
                 implemented: IMPLEMENTED_LANGUAGE_VERSION.to_owned(),
             });
         }
+        if let Some(bindings) = manifest
+            .foreign_typescript
+            .as_ref()
+            .and_then(|foreign| foreign.bindings.as_ref())
+        {
+            let generated_root = root.join(manifest.layout.generated.as_str());
+            crate::generated_bindings::validate_generated_bindings(
+                &root,
+                &generated_root,
+                Path::new(bindings.as_str()),
+                Path::new(
+                    manifest
+                        .foreign_typescript
+                        .as_ref()
+                        .expect("binding belongs to foreign TypeScript settings")
+                        .manifest
+                        .as_str(),
+                ),
+            )
+            .map_err(|errors| LocalPackageGraphError::StaleGeneratedBindings {
+                package: manifest.package.name.clone(),
+                errors: errors
+                    .into_iter()
+                    .map(|error| format!("{}: {}", error.entry, error.message))
+                    .collect(),
+            })?;
+        }
         let identity = PackageIdentity::new(
             manifest.package.name.clone(),
             manifest.package.version.clone(),

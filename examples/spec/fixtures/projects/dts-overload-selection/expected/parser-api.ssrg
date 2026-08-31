@@ -1,0 +1,6 @@
+pub foreign "typescript" from "parser-api" {
+  opaque type Node
+
+  task fn parseBytes bytes: Bytes -> Node = "parse"
+  task fn parseText text: String -> Node = "parse"
+}

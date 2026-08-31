@@ -44,6 +44,31 @@ pub fn load_package(root: impl AsRef<Path>) -> Result<LoadedPackage, PackageLoad
             implemented: IMPLEMENTED_LANGUAGE_VERSION.to_owned(),
         });
     }
+    if let Some(bindings) = manifest
+        .foreign_typescript
+        .as_ref()
+        .and_then(|foreign| foreign.bindings.as_ref())
+    {
+        crate::generated_bindings::validate_generated_bindings(
+            &root,
+            &root.join(manifest.layout.generated.as_str()),
+            Path::new(bindings.as_str()),
+            Path::new(
+                manifest
+                    .foreign_typescript
+                    .as_ref()
+                    .expect("binding belongs to foreign TypeScript settings")
+                    .manifest
+                    .as_str(),
+            ),
+        )
+        .map_err(|errors| PackageLoadError::StaleGeneratedBindings {
+            errors: errors
+                .into_iter()
+                .map(|error| format!("{}: {}", error.entry, error.message))
+                .collect(),
+        })?;
+    }
     let entry = manifest
         .run
         .as_ref()

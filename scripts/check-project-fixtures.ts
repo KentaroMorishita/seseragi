@@ -17,6 +17,7 @@ const phases = new Set([
 ])
 const productRunners = new Set([
   "cli-build",
+  "cli-dts",
   "cli-doc",
   "cli-run",
   "cli-test",

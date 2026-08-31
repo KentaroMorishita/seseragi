@@ -20,7 +20,7 @@
 
 - `phase`: `compile`、`diagnostic`、`run`、`test`、`convert`、`tooling`のいずれか。
 - `availability`: `current`または`contract-only`。currentは通常product routeのtest evidenceがあるcaseだけに使います。
-- `runners`: currentでは`cli-run`、`cli-build`、`lsp-project`、`project-loader`、`wasm-project`の組み合わせ、contract-onlyでは
+- `runners`: currentでは`cli-run`、`cli-build`、`cli-dts`、`lsp-project`、`project-loader`、`wasm-project`の組み合わせ、contract-onlyでは
   planned runnerを一つ指定します。
 - `evidence`: currentへ昇格したfixtureをdirectoryから直接実行するtest source。専用synthetic resolverはevidenceにできません。
 - `spec`: 根拠となる正本section。
