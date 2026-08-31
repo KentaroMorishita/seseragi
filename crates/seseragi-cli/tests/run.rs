@@ -266,6 +266,32 @@ fn renders_typed_failure_and_preserves_the_program_exit_class() {
 }
 
 #[test]
+fn renders_unhandled_typed_failure_as_one_json_runtime_diagnostic() {
+    let program = repository_root()
+        .join("examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg");
+    let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(program)
+        .args(["--diagnostic-format", "json"])
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    child.stdin.take().unwrap().write_all(b"lizard\n").unwrap();
+    let output = child.wait_with_output().unwrap();
+
+    assert_eq!(output.status.code(), Some(1));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let diagnostic: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
+    assert_eq!(diagnostic["schema"], 1);
+    assert_eq!(diagnostic["kind"], "TypedFailure");
+    assert_eq!(diagnostic["phase"], serde_json::Value::Null);
+    assert_eq!(diagnostic["message"], "UnknownHand lizard");
+    assert_eq!(diagnostic["groups"], serde_json::json!([]));
+}
+
+#[test]
 fn runs_the_manifest_discovered_split_phase_one_program() {
     let package = LockedProject::copy(
         &repository_root()
@@ -440,6 +466,33 @@ fn runs_reproducible_random_seed() {
         assert_eq!(String::from_utf8_lossy(&output.stdout), expected);
         assert_eq!(String::from_utf8_lossy(&output.stderr), "");
     }
+}
+
+#[test]
+fn command_line_random_seed_overrides_the_manifest_for_one_run() {
+    let package =
+        LockedProject::copy(&repository_root().join("examples/spec/fixtures/projects/random-seed"));
+    let run = || {
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(&package)
+            .args(["--random-seed", "17"])
+            .output()
+            .unwrap()
+    };
+    let first = run();
+    let second = run();
+
+    assert_eq!(first.status.code(), Some(0));
+    assert_eq!(second.status.code(), Some(0));
+    assert_eq!(first.stdout, second.stdout);
+    assert_ne!(
+        first.stdout,
+        fs::read(package.join("expected.stdout")).unwrap(),
+        "the manifest seed must not win over the invocation"
+    );
+    assert_eq!(String::from_utf8_lossy(&first.stderr), "");
+    assert_eq!(String::from_utf8_lossy(&second.stderr), "");
 }
 
 #[test]
@@ -629,6 +682,36 @@ fn forwards_interrupt_to_the_process_signal_stream() {
         fs::read(package.join("expected.stdout")).unwrap()
     );
     assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
+fn command_line_signal_policy_overrides_the_manifest_for_one_run() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/process-shutdown-forward"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .args([
+            "--signal-mode",
+            "cancel",
+            "--shutdown-grace-ms",
+            "0",
+            "--diagnostic-format",
+            "json",
+        ])
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(1));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let diagnostic: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
+    assert_eq!(diagnostic["kind"], "TypedFailure");
+    assert_eq!(diagnostic["phase"], serde_json::Value::Null);
+    assert!(diagnostic["message"]
+        .as_str()
+        .unwrap()
+        .contains("ReservedProcessSignal Interrupt"));
 }
 
 #[cfg(unix)]
@@ -1090,13 +1173,21 @@ fn runs_foreign_typescript_project_fixtures() {
 
 #[test]
 fn runs_source_map_rejection_as_a_typed_foreign_failure() {
-    let package = LockedProject::copy(
-        &repository_root().join("examples/spec/fixtures/projects/source-map-rejection"),
-    );
+    let fixture = repository_root().join("examples/spec/fixtures/projects/source-map-rejection");
+    let package = LockedProject::copy(&fixture);
+    let expectation: serde_json::Value =
+        serde_json::from_str(&fs::read_to_string(fixture.join("project.expect.json")).unwrap())
+            .unwrap();
+    let arguments = expectation["args"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|argument| argument.as_str().unwrap())
+        .collect::<Vec<_>>();
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(&package)
-        .args(["--diagnostic-format", "json"])
+        .args(arguments)
         .output()
         .unwrap();
 
@@ -1106,6 +1197,148 @@ fn runs_source_map_rejection_as_a_typed_foreign_failure() {
         String::from_utf8_lossy(&output.stderr),
         std::fs::read_to_string(package.join("expected.stderr")).unwrap()
     );
+}
+
+#[test]
+fn renders_runtime_defects_as_json_without_changing_the_exit_class() {
+    let package = LockedProject::copy(
+        &repository_root().join("crates/seseragi-cli/tests/fixtures/runtime-defect-project"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .args(["--diagnostic-format", "json"])
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(70));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let diagnostic: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
+    assert_eq!(diagnostic["schema"], 1);
+    assert_eq!(diagnostic["kind"], "Defect");
+    assert_eq!(diagnostic["phase"], serde_json::Value::Null);
+    assert!(diagnostic["message"]
+        .as_str()
+        .unwrap()
+        .contains("foreign pure binding explode threw"));
+    assert!(diagnostic["groups"].is_array());
+}
+
+#[test]
+fn invocation_target_overrides_the_manifest_without_rewriting_it() {
+    let package = LockedProject::copy(
+        &repository_root().join("crates/seseragi-cli/tests/fixtures/run-option-project"),
+    );
+    let manifest_before = fs::read(package.join("seseragi.toml")).unwrap();
+    let unsupported = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert_eq!(unsupported.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&unsupported.stderr)
+        .contains("run does not support the `web` target"));
+
+    let overridden = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args(["run", "--target", "process"])
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert_eq!(
+        overridden.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&overridden.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&overridden.stdout),
+        "process override\n"
+    );
+    assert_eq!(
+        fs::read(package.join("seseragi.toml")).unwrap(),
+        manifest_before
+    );
+}
+
+#[test]
+fn single_file_and_package_compile_diagnostics_share_the_json_envelope() {
+    let fixture = repository_root()
+        .join("crates/seseragi-cli/tests/fixtures/typeclass-signal-monad-negative.ssrg");
+    let single = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&fixture)
+        .args(["--diagnostic-format", "json"])
+        .output()
+        .unwrap();
+
+    let package = LockedProject::copy(
+        &repository_root().join("crates/seseragi-cli/tests/fixtures/compile-diagnostic-project"),
+    );
+    let project = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .args(["--target", "process", "--diagnostic-format", "json"])
+        .output()
+        .unwrap();
+
+    for output in [single, project] {
+        assert_eq!(output.status.code(), Some(2));
+        assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+        let envelope: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
+        assert_eq!(envelope["schema"], 1);
+        assert_eq!(envelope["toolVersion"], env!("CARGO_PKG_VERSION"));
+        assert_eq!(envelope["languageVersion"], "0.1.0");
+        assert_eq!(envelope["unicodeVersion"], "16.0.0");
+        let diagnostics = envelope["diagnostics"].as_array().unwrap();
+        assert!(!diagnostics.is_empty());
+        assert!(diagnostics
+            .iter()
+            .any(|document| document["diagnostics"]["diagnostics"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|diagnostic| diagnostic["code"] == "SES-T0201")));
+    }
+}
+
+#[test]
+fn rejects_invalid_run_options_before_execution_and_documents_the_contract() {
+    let source = repository_root()
+        .join("examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg");
+    for arguments in [
+        vec!["--diagnostic-format", "human"],
+        vec!["--target", "browser"],
+        vec!["--random-seed", "not-an-integer"],
+        vec!["--signal-mode", "forward", "--shutdown-grace-ms", "1"],
+        vec!["--target", "process", "--target", "process"],
+        vec!["--unknown"],
+    ] {
+        let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(&source)
+            .args(arguments)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(2));
+        assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+        assert!(String::from_utf8_lossy(&output.stderr).starts_with("seseragi: "));
+    }
+
+    let help = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("--help")
+        .output()
+        .unwrap();
+    let stdout = String::from_utf8_lossy(&help.stdout);
+    for expected in [
+        "--target process|web",
+        "--diagnostic-format text|json",
+        "--signal-mode cancel|forward",
+        "--shutdown-grace-ms ms",
+        "--hash-seed entropy|int",
+        "--random-seed entropy|int",
+    ] {
+        assert!(stdout.contains(expected), "missing {expected:?} in help");
+    }
 }
 
 #[test]

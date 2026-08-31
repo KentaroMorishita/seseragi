@@ -1,13 +1,15 @@
 use seseragi_driver::{
-    compile_local_project, compile_local_project_with_providers, render_terminal_diagnostics,
-    LinkedCompileError, ProjectCompileError,
+    compile_local_project, compile_local_project_with_providers, LinkedCompileError,
+    ProjectCompileError,
 };
 use seseragi_project::{select_project_target, ProjectCommand, ProjectTarget};
 use seseragi_runtime::{
-    project_main_contract, validate_target, ExecutionTarget, ProcessRunOptions, ProcessSignalMode,
-    RandomSeed,
+    project_main_contract, validate_target, DiagnosticFormat, ExecutionTarget, ProcessRunOptions,
+    ProcessSignalMode, RandomSeed,
 };
 use std::path::Path;
+
+use crate::diagnostics::{render_diagnostics, DiagnosticDocument};
 
 pub(crate) fn containing_package(path: &Path) -> Option<std::path::PathBuf> {
     let mut directory = if path.is_dir() { path } else { path.parent()? };
@@ -34,22 +36,25 @@ pub(crate) fn compile_path(
     path: &Path,
     command: ProjectCommand,
     invocation_target: Option<ProjectTarget>,
+    diagnostic_format: DiagnosticFormat,
 ) -> Result<LocalProjectCompilation, String> {
-    compile_path_inner(path, command, invocation_target, true)
+    compile_path_inner(path, command, invocation_target, diagnostic_format, true)
 }
 
 pub(crate) fn compile_path_unlocked(
     path: &Path,
     command: ProjectCommand,
     invocation_target: Option<ProjectTarget>,
+    diagnostic_format: DiagnosticFormat,
 ) -> Result<LocalProjectCompilation, String> {
-    compile_path_inner(path, command, invocation_target, false)
+    compile_path_inner(path, command, invocation_target, diagnostic_format, false)
 }
 
 fn compile_path_inner(
     path: &Path,
     command: ProjectCommand,
     invocation_target: Option<ProjectTarget>,
+    diagnostic_format: DiagnosticFormat,
     validate_lock: bool,
 ) -> Result<LocalProjectCompilation, String> {
     let lockfile = if !validate_lock {
@@ -63,7 +68,11 @@ fn compile_path_inner(
     let project = seseragi_project::load_local_project(path)
         .map_err(|error| format!("{}: {error}", error.code()))?;
     let process_run_options = project_run_options(&project);
-    let baseline = match render_compile_result(&project, compile_local_project(&project))? {
+    let baseline = match render_compile_result(
+        &project,
+        compile_local_project(&project),
+        diagnostic_format,
+    )? {
         Some(compiled) => compiled,
         None => return Ok(LocalProjectCompilation::Diagnostics),
     };
@@ -122,35 +131,37 @@ fn compile_path_inner(
             )
         }
     };
-    Ok(match render_compile_result(&project, result)? {
-        Some(compiled) => {
-            if let Some(lockfile) = lockfile {
-                let expected = lockfile
-                    .providers
-                    .into_iter()
-                    .filter(|provider| provider.target == provider_target)
-                    .collect::<Vec<_>>();
-                let actual = compiled
-                    .compiled
-                    .provider_resolution
-                    .as_ref()
-                    .map(|resolution| resolution.lock.project_lock_selections())
-                    .unwrap_or_default();
-                if expected != actual {
-                    return Err(
+    Ok(
+        match render_compile_result(&project, result, diagnostic_format)? {
+            Some(compiled) => {
+                if let Some(lockfile) = lockfile {
+                    let expected = lockfile
+                        .providers
+                        .into_iter()
+                        .filter(|provider| provider.target == provider_target)
+                        .collect::<Vec<_>>();
+                    let actual = compiled
+                        .compiled
+                        .provider_resolution
+                        .as_ref()
+                        .map(|resolution| resolution.lock.project_lock_selections())
+                        .unwrap_or_default();
+                    if expected != actual {
+                        return Err(
                         "SES-K0102: seseragi.lock is stale: provider selection metadata changed; run `seseragi lock update` explicitly"
                             .to_owned(),
                     );
+                    }
                 }
+                LocalProjectCompilation::Compiled(ResolvedLocalProject {
+                    compiled,
+                    target: selection.target,
+                    process_run_options,
+                })
             }
-            LocalProjectCompilation::Compiled(ResolvedLocalProject {
-                compiled,
-                target: selection.target,
-                process_run_options,
-            })
-        }
-        None => LocalProjectCompilation::Diagnostics,
-    })
+            None => LocalProjectCompilation::Diagnostics,
+        },
+    )
 }
 
 fn project_run_options(project: &seseragi_project::LoadedLocalProject) -> ProcessRunOptions {
@@ -167,11 +178,15 @@ fn project_run_options(project: &seseragi_project::LoadedLocalProject) -> Proces
             seseragi_project::SignalMode::Forward => ProcessSignalMode::Forward,
         },
         shutdown_grace_ms: run.shutdown_grace_ms.unwrap_or(10_000),
+        hash_seed: match run.hash_seed {
+            seseragi_project::RunSeed::Entropy => RandomSeed::Entropy,
+            seseragi_project::RunSeed::Fixed(value) => RandomSeed::Fixed(value),
+        },
         random_seed: match run.random_seed {
             seseragi_project::RunSeed::Entropy => RandomSeed::Entropy,
             seseragi_project::RunSeed::Fixed(value) => RandomSeed::Fixed(value),
         },
-        diagnostic_format: seseragi_runtime::DiagnosticFormat::Human,
+        diagnostic_format: seseragi_runtime::DiagnosticFormat::Text,
     }
 }
 
@@ -194,28 +209,40 @@ fn render_compile_result(
         seseragi_driver::CompiledLocalProject,
         seseragi_driver::LocalProjectCompileError,
     >,
+    diagnostic_format: DiagnosticFormat,
 ) -> Result<Option<seseragi_driver::CompiledLocalProject>, String> {
     match result {
         Ok(compiled) => Ok(Some(compiled)),
         Err(error) => {
-            let diagnostics = match error.error() {
-                ProjectCompileError::Diagnostics { modules } => {
-                    modules.first().map(|diagnostics| &diagnostics.diagnostics)
-                }
+            let diagnostic_modules = match error.error() {
+                ProjectCompileError::Diagnostics { modules } => modules
+                    .iter()
+                    .map(|entry| (entry.module.as_str(), &entry.diagnostics))
+                    .collect::<Vec<_>>(),
                 ProjectCompileError::Compile {
+                    module,
                     error: LinkedCompileError::Diagnostics(diagnostics),
-                    ..
-                } => Some(diagnostics),
-                _ => None,
+                } => vec![(module.as_str(), diagnostics)],
+                _ => Vec::new(),
             };
-            if let (Some(module_path), Some(diagnostics)) = (error.module(), diagnostics) {
-                let module = project
-                    .module(module_path)
-                    .expect("compiler diagnostic module came from the loaded project");
-                eprint!(
-                    "{}",
-                    render_terminal_diagnostics(diagnostics, module.source())
-                );
+            if !diagnostic_modules.is_empty() {
+                let mut documents = Vec::with_capacity(diagnostic_modules.len());
+                for (module_id, diagnostics) in diagnostic_modules {
+                    let (_, module) = project
+                        .modules()
+                        .find(|(identity, _)| {
+                            seseragi_project::logical_module_id(identity) == module_id
+                        })
+                        .ok_or_else(|| {
+                            format!("compiler diagnostic module is missing: {module_id}")
+                        })?;
+                    documents.push(DiagnosticDocument {
+                        path: &diagnostics.source,
+                        source: module.source(),
+                        artifact: diagnostics,
+                    });
+                }
+                eprint!("{}", render_diagnostics(diagnostic_format, &documents)?);
                 return Ok(None);
             }
             if let ProjectCompileError::Provider { diagnostic } = error.error() {

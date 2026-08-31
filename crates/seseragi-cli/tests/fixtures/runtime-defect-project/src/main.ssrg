@@ -1,0 +1,8 @@
+import * as effects from "std/effect"
+
+foreign "typescript" from "../host/defect.mjs" {
+  pure fn explode unit: Unit -> Unit
+}
+
+pub effect fn main -> Unit =
+  effects.succeed $ explode ()

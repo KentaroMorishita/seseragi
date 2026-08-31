@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.38.0] - 2026-08-31
+
+- Added the complete `seseragi run` option contract for process/web target
+  selection, text/JSON diagnostics, signal and shutdown policy, and independent
+  hash and Random seeds with invocation-over-manifest precedence.
+- Unified single-file and package compile diagnostics and added one-line JSON
+  runtime diagnostics for typed failures, defects, and cancellation while
+  preserving their canonical exit classes and cross-language source frames.
+- Connected project fixture `args` to the normal CLI route and added execution
+  coverage for invalid options, target and runner overrides, compile failures,
+  typed failures, defects, and source-mapped Promise rejection.
+
 ## [0.37.0] - 2026-08-31
 
 - Added the canonical `foreign "typescript"` syntax through parsing, typed

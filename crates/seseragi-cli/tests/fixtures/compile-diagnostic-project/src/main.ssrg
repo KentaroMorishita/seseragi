@@ -1,0 +1,9 @@
+import * as signals from "std/signal"
+
+let source = signals.constant 1
+
+let invalid =
+  source >>= (\value: Int -> signals.constant value)
+
+pub effect fn main -> Unit =
+  effects.succeed ()
