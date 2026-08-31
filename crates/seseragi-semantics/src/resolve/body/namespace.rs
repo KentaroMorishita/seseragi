@@ -159,9 +159,6 @@ impl Resolver {
         let Some((alias, member)) = spelling.split_once('.') else {
             return Ok(None);
         };
-        if member.contains('.') {
-            return Ok(None);
-        }
         if self.lookup(scope, SymbolNamespace::Module, alias).is_none() {
             return Ok(None);
         }

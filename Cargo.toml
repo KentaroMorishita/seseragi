@@ -3,6 +3,7 @@ members = [
   "crates/seseragi-cli",
   "crates/seseragi-conformance",
   "crates/seseragi-driver",
+  "crates/seseragi-dts",
   "crates/seseragi-formatter",
   "crates/seseragi-lowering",
   "crates/seseragi-lsp",
@@ -18,7 +19,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.38.0"
+version = "0.39.0"
 edition = "2021"
 license = "Apache-2.0"
 repository = "https://github.com/morishita/seseragi"
@@ -29,6 +30,8 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 sha2 = "0.10"
 toml = "=0.8.23"
+tree-sitter = "0.26"
+tree-sitter-typescript = "0.23.2"
 unicode-normalization = "0.1"
 unicode-ident = "1.0"
 url = "2.5"

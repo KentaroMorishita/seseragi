@@ -3,7 +3,7 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (46)
+## Current product-route fixtures (54)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -13,6 +13,14 @@
 | `dom-hydration-mismatch` | `run` | `cli-build` | `apps/playground/tests/dom-lifecycle-browser.test.ts` |
 | `dom-reactive-bindings` | `run` | `cli-build` | `apps/playground/tests/dom-lifecycle-browser.test.ts` |
 | `dom-signal-lifecycle` | `run` | `cli-build` | `apps/playground/tests/dom-lifecycle-browser.test.ts` |
+| `dts-basic-conversion` | `convert` | `cli-dts` | `crates/seseragi-cli/tests/dts.rs` |
+| `dts-callback-during-call` | `convert` | `cli-dts` | `crates/seseragi-cli/tests/dts.rs` |
+| `dts-callback-missing-release` | `diagnostic` | `cli-dts` | `crates/seseragi-cli/tests/dts.rs` |
+| `dts-declaration-merge` | `convert` | `cli-dts` | `crates/seseragi-cli/tests/dts.rs` |
+| `dts-generated-name` | `convert` | `cli-dts` | `crates/seseragi-cli/tests/dts.rs` |
+| `dts-namespace-runtime` | `convert` | `cli-dts`, `cli-run` | `crates/seseragi-cli/tests/dts.rs` |
+| `dts-overload-selection` | `convert` | `cli-dts` | `crates/seseragi-cli/tests/dts.rs` |
+| `dts-unsupported-any` | `diagnostic` | `cli-dts` | `crates/seseragi-cli/tests/dts.rs` |
 | `effect-concurrency-primitives` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `effect-resource-scope` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `effect-stream-simultaneous-failure` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
@@ -54,18 +62,11 @@
 | `test-discovery` | `test` | `cli-test` | `crates/seseragi-cli/src/test.rs` |
 | `typeclass-operator-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 
-## Contract-only fixtures (23)
+## Contract-only fixtures (16)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
 | `benchmark-discovery` | `tooling` | `planned-tooling` | - |
-| `dts-basic-conversion` | `convert` | `planned-converter` | - |
-| `dts-callback-during-call` | `convert` | `planned-converter` | - |
-| `dts-callback-missing-release` | `diagnostic` | `planned-converter` | - |
-| `dts-declaration-merge` | `convert` | `planned-converter` | - |
-| `dts-generated-name` | `convert` | `planned-converter` | - |
-| `dts-namespace-runtime` | `convert` | `planned-converter` | - |
-| `dts-unsupported-any` | `diagnostic` | `planned-converter` | - |
 | `http-non-success-response` | `run` | `planned-conformance` | - |
 | `http-stream-events` | `run` | `planned-conformance` | - |
 | `imported-derived-show-debug` | `run` | `planned-conformance` | - |

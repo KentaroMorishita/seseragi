@@ -4,6 +4,7 @@
 //! from diagnostic source labels or process working directories.
 
 mod foreign;
+mod generated_bindings;
 mod graph;
 mod identity;
 mod link;

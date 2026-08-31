@@ -1,0 +1,21 @@
+import * as effects from "std/effect"
+import * as analytics from "gen/analytics"
+
+type AppError deriving Show =
+  | ConsoleFailure ConsoleError
+  | ForeignFailure Js.Error
+
+pub effect fn main -> Unit
+with Console
+fails AppError =
+  do {
+    count <-
+      analytics.metrics.count [1.0, 2.0, 3.0]
+        |> effects.mapError ForeignFailure
+
+    label <-
+      analytics.metrics.format.label count
+        |> effects.mapError ForeignFailure
+
+    println label |> effects.mapError ConsoleFailure
+  }

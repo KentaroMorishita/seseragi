@@ -1,8 +1,8 @@
 {
   "files.associations": {
-    "examples/spec/fixtures/projects/{benchmark-discovery,dts-basic-conversion,dts-callback-during-call,dts-callback-missing-release,dts-declaration-merge,dts-generated-name,dts-namespace-runtime,dts-unsupported-any,http-non-success-response,http-stream-events,imported-derived-show-debug,modules-cycle,modules-private-access,modules-reexport-run,package-invalid-manifest,package-undeclared-dependency,performance-profile-equivalence,performance-release-shapes,performance-stack-safety,signal-transaction-lifetime,target-capabilities,typescript-abi-constrained,typescript-abi-generic}/**/*.ssrg": "plaintext"
+    "examples/spec/fixtures/projects/{benchmark-discovery,http-non-success-response,http-stream-events,imported-derived-show-debug,modules-cycle,modules-private-access,modules-reexport-run,package-invalid-manifest,package-undeclared-dependency,performance-profile-equivalence,performance-release-shapes,performance-stack-safety,signal-transaction-lifetime,target-capabilities,typescript-abi-constrained,typescript-abi-generic}/**/*.ssrg": "plaintext"
   },
   "files.watcherExclude": {
-    "examples/spec/fixtures/projects/{benchmark-discovery,dts-basic-conversion,dts-callback-during-call,dts-callback-missing-release,dts-declaration-merge,dts-generated-name,dts-namespace-runtime,dts-unsupported-any,http-non-success-response,http-stream-events,imported-derived-show-debug,modules-cycle,modules-private-access,modules-reexport-run,package-invalid-manifest,package-undeclared-dependency,performance-profile-equivalence,performance-release-shapes,performance-stack-safety,signal-transaction-lifetime,target-capabilities,typescript-abi-constrained,typescript-abi-generic}/**/*.ssrg": true
+    "examples/spec/fixtures/projects/{benchmark-discovery,http-non-success-response,http-stream-events,imported-derived-show-debug,modules-cycle,modules-private-access,modules-reexport-run,package-invalid-manifest,package-undeclared-dependency,performance-profile-equivalence,performance-release-shapes,performance-stack-safety,signal-transaction-lifetime,target-capabilities,typescript-abi-constrained,typescript-abi-generic}/**/*.ssrg": true
   }
 }

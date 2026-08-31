@@ -1,0 +1,11 @@
+schema = 1
+
+[entries.parser]
+declaration = "host/index.d.ts"
+specifier = "parser-api"
+output = "parser-api"
+evaluation = "task"
+
+[entries.parser.symbols.parse.overloads]
+parseBytes = { signature = 1 }
+parseText = { signature = 0 }

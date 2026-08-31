@@ -229,7 +229,14 @@ fn render_foreign_modules(output: &mut String, module: &TypeScriptModule) {
             );
         }
         for namespace in &foreign.namespaces {
-            render_foreign_namespace_bindings(output, namespace, module_index, &loader, &[]);
+            render_foreign_namespace_bindings(
+                output,
+                namespace,
+                foreign.exported,
+                module_index,
+                &loader,
+                &[],
+            );
             render_foreign_namespace(
                 output,
                 namespace,
@@ -276,6 +283,7 @@ fn render_foreign_namespace_types(
 fn render_foreign_namespace_bindings(
     output: &mut String,
     namespace: &TypeScriptForeignNamespace,
+    exported: bool,
     module_index: usize,
     loader: &str,
     parent_path: &[String],
@@ -286,7 +294,8 @@ fn render_foreign_namespace_bindings(
         let mut member_path = path.clone();
         member_path.push(value.host_name.clone());
         output.push_str(&format!(
-            "const {}: {} = _ssrg_foreign_readPureValue(_ssrg_foreign_module_{module_index}, {}, {}) as {};\n",
+            "{}const {}: {} = _ssrg_foreign_readPureValue(_ssrg_foreign_module_{module_index}, {}, {}) as {};\n",
+            if exported { "export " } else { "" },
             value.name,
             render_typescript_type(&value.type_ref),
             foreign_path(&member_path),
@@ -297,10 +306,10 @@ fn render_foreign_namespace_bindings(
     for member in &namespace.members {
         let mut member_path = path.clone();
         member_path.push(member.host_name.clone());
-        render_foreign_function(output, member, false, module_index, loader, &member_path);
+        render_foreign_function(output, member, exported, module_index, loader, &member_path);
     }
     for child in &namespace.namespaces {
-        render_foreign_namespace_bindings(output, child, module_index, loader, &path);
+        render_foreign_namespace_bindings(output, child, exported, module_index, loader, &path);
     }
 }
 

@@ -313,3 +313,31 @@ fn reports_a_private_namespace_type_member() {
         .iter()
         .any(|diagnostic| diagnostic.code == "SES-N0102"));
 }
+
+#[test]
+fn resolves_a_nested_foreign_namespace_through_a_module_namespace_import() {
+    let domain_source = concat!(
+        "pub foreign \"typescript\" from \"analytics\" {\n",
+        "  namespace metrics = \"Metrics\" {\n",
+        "    namespace format = \"Format\" {\n",
+        "      task fn label value: Float -> String\n",
+        "    }\n",
+        "  }\n",
+        "}\n",
+    );
+    let main_source = concat!(
+        "import * as analytics from \"./analytics\"\n\n",
+        "let label = analytics.metrics.format.label\n",
+    );
+    let linked = linked_program(
+        main_source,
+        [("./analytics", "fixture/game::analytics", domain_source)],
+    );
+
+    let resolved = resolve_linked_module(linked, main_source);
+    assert!(resolved.issues.is_empty(), "{:?}", resolved.issues);
+    assert!(resolved.imports.iter().any(|import| {
+        import.local_name == "analytics.metrics.format.label"
+            && import.export.name == "metrics.format.label"
+    }));
+}

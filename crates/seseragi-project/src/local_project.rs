@@ -259,6 +259,26 @@ impl<'a> SourceDiscovery<'a> {
                 }
             })?;
             source_roots.insert((identity.clone(), ModuleRoot::Source), source_root);
+            let generated_candidate = package
+                .root()
+                .join(package.manifest().layout.generated.as_str());
+            if generated_candidate.exists() {
+                let generated_root = filesystem::resolve_source_root(
+                    package.root(),
+                    &package.manifest().layout.generated,
+                )
+                .map_err(|error| LocalProjectLoadError::Filesystem {
+                    package: Box::new(identity.clone()),
+                    error: Box::new(error),
+                })?;
+                audit::audit_source_root(&generated_root).map_err(|error| {
+                    LocalProjectLoadError::Filesystem {
+                        package: Box::new(identity.clone()),
+                        error: Box::new(error),
+                    }
+                })?;
+                source_roots.insert((identity.clone(), ModuleRoot::Generated), generated_root);
+            }
             if include_tests && identity == packages.root() {
                 let candidate = package
                     .root()
