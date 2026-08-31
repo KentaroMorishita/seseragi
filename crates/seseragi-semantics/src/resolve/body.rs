@@ -404,6 +404,12 @@ impl Resolver {
                 Err(issue) => namespace_issue = Some(issue),
             }
         }
+        if target.is_none()
+            && namespace == SymbolNamespace::Value
+            && is_standalone_symbol(namespace, spelling)
+        {
+            target = self.ensure_prelude(namespace, spelling);
+        }
         if target.is_none() && namespace == SymbolNamespace::Value {
             candidates = self.lookup_trait_methods(scope, spelling);
             if candidates.is_empty() {

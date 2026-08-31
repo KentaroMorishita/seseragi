@@ -69,13 +69,18 @@ pub(super) fn select_trait_method_candidate(
         _ => {
             let evidence_matches = type_matches
                 .iter()
-                .filter(|(_, application)| {
-                    context
-                        .select_call_evidence(
-                            &application.constraints,
-                            &application.constraint_identities,
-                        )
-                        .is_ok()
+                .filter(|(signature, application)| {
+                    let select = if signature.trait_method.is_some() {
+                        PureExpressionContext::select_trait_call_evidence
+                    } else {
+                        PureExpressionContext::select_call_evidence
+                    };
+                    select(
+                        context,
+                        &application.constraints,
+                        &application.constraint_identities,
+                    )
+                    .is_ok()
                 })
                 .map(|(signature, _)| signature.clone())
                 .collect::<Vec<_>>();

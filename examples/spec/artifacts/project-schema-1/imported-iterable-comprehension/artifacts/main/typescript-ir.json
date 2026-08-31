@@ -313,8 +313,15 @@
                 "name": "values"
               },
               {
-                "kind": "identifier",
-                "name": "__ssrg$instance$Reducible$1"
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Reducible$1",
+                "typeArguments": [],
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Iterable$0"
+                  }
+                ]
               }
             ]
           }

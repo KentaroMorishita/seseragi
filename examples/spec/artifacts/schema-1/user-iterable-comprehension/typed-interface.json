@@ -168,7 +168,24 @@
           }
         ]
       },
-      "constraints": [],
+      "constraints": [
+        {
+          "name": "Iterable",
+          "traitIdentity": "std/prelude::Iterable",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Countdown",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      ],
       "origin": {
         "start": 344,
         "end": 547

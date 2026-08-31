@@ -23,6 +23,7 @@
     "add",
     "oddSquares",
     "total",
+    "std/prelude::Reducible<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
     "renderTotals",
     "main",
     "println",
@@ -30,5 +31,5 @@
     "totals",
     "Countdown"
   ],
-  "mappings": ";;;;;;AAEAA;AAGAK;AAGAE;AAKAE;AAMAK;AAMAC"
+  "mappings": ";;;;;;AAEAA;AAGAK;AAGAE;AAKAE;AAMAM;AAMAC"
 }

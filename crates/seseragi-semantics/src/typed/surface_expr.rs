@@ -226,6 +226,21 @@ impl<'a> PureExpressionContext<'a> {
             constraint_identities,
             self.resolution,
             &self.evidence_parameters,
+            false,
+        )
+    }
+
+    pub(super) fn select_trait_call_evidence(
+        &self,
+        constraints: &[crate::TypedConstraint],
+        constraint_identities: &[Option<String>],
+    ) -> Result<Vec<crate::TypedCallEvidence>, crate::TypedConstraint> {
+        super::call_evidence::select_function_call_evidence(
+            constraints,
+            constraint_identities,
+            self.resolution,
+            &self.evidence_parameters,
+            true,
         )
     }
 
@@ -258,6 +273,7 @@ impl<'a> PureExpressionContext<'a> {
             &[Some(trait_identity.clone())],
             self.resolution,
             &self.evidence_parameters,
+            false,
         )?
         .into_iter()
         .next()

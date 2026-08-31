@@ -20,6 +20,7 @@ use crate::range_ops::runtime_range_operation;
 use crate::signal_ops::{runtime_signal_distinct_operation, runtime_signal_operation};
 use crate::stream_ops::runtime_stream_operation;
 use crate::sum_ops::runtime_sum_constructor;
+use crate::trait_method_ops::{runtime_trait_method_operation, RuntimeTraitMethodOperation};
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
     CoreExpr, CoreMonadDoStatement, CoreRecordValueItem, CoreStatement, CoreTemplatePart, CoreType,
@@ -280,6 +281,11 @@ pub(super) fn lower_core_expr_to_typescript(
                     .collect();
                 lower_trait_operator_call(selected, operator, arguments, method_evidence)
             } else if let Some(dispatch) = trait_dispatch {
+                if let Some(lowered) =
+                    lower_abi_trait_method_call(&dispatch.method, &evidence, arguments.clone())
+                {
+                    return lowered;
+                }
                 let (selected, method_evidence) = evidence
                     .split_first()
                     .expect("trait dispatch requires primary instance evidence");
@@ -870,6 +876,39 @@ pub(super) fn lower_core_expr_to_typescript(
                 imported_types,
             )),
         },
+    }
+}
+
+fn lower_abi_trait_method_call(
+    method: &str,
+    evidence: &[crate::CoreCallEvidence],
+    arguments: Vec<TypeScriptExpr>,
+) -> Option<TypeScriptExpr> {
+    let operation = runtime_trait_method_operation(method, evidence)?;
+    let binary = |left, right| match operation {
+        RuntimeTraitMethodOperation::Int(operation) => TypeScriptExpr::RuntimeCall {
+            callee: operation.local_name.to_owned(),
+            arguments: vec![left, right],
+        },
+        RuntimeTraitMethodOperation::Native(operator) => TypeScriptExpr::Binary {
+            operator: operator.to_owned(),
+            left: Box::new(left),
+            right: Box::new(right),
+        },
+    };
+    match arguments.as_slice() {
+        [left, right] => Some(binary(left.clone(), right.clone())),
+        [left] => {
+            let right = "_argument1".to_owned();
+            Some(TypeScriptExpr::Lambda {
+                parameter: right.clone(),
+                body: Box::new(binary(
+                    left.clone(),
+                    TypeScriptExpr::Identifier { name: right },
+                )),
+            })
+        }
+        _ => None,
     }
 }
 

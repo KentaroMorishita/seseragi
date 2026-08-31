@@ -194,6 +194,23 @@
           "kind": "number"
         }
       ],
+      "constraints": [
+        {
+          "name": "Iterable",
+          "traitIdentity": "std/prelude::Iterable",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Countdown",
+              "arguments": []
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
       "origin": {
         "source": "domain.ssrg",
         "start": 344,

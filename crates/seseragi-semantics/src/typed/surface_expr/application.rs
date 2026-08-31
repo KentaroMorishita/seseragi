@@ -345,8 +345,17 @@ pub(crate) fn type_known_application_with_explicit(
         || scoped_partial_evidence.is_some();
     let evidence = if issue.is_none() && requires_evidence {
         match scoped_partial_evidence.map(Ok).unwrap_or_else(|| {
-            context
-                .select_call_evidence(&application.constraints, &application.constraint_identities)
+            if signature.trait_method.is_some() {
+                context.select_trait_call_evidence(
+                    &application.constraints,
+                    &application.constraint_identities,
+                )
+            } else {
+                context.select_call_evidence(
+                    &application.constraints,
+                    &application.constraint_identities,
+                )
+            }
         }) {
             Ok(evidence) => evidence,
             Err(constraint) => {

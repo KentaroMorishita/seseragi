@@ -18,8 +18,9 @@ pub use diagnostics::semantic_diagnostics;
 pub use effect_ops::{known_effect_operation_by_semantic, KnownEffectOperation};
 pub use model::*;
 pub use prelude::{
-    standard_equality_instance_by_identity, standard_prelude_surface, StandardEqualityInstance,
-    StandardModuleSurface,
+    special_standard_instance_by_identity, standard_equality_instance_by_identity,
+    standard_prelude_surface, PreludeSpecialInstance, PreludeSpecialInstanceDispatch,
+    StandardEqualityInstance, StandardModuleSurface,
 };
 pub use query::{
     analysis_document, diagnostics_only_analysis, standard_library_catalog, AnalysisCallable,

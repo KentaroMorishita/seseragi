@@ -10,9 +10,15 @@ pub use surface::{standard_prelude_surface, StandardModuleSurface};
 pub(crate) struct PreludeTrait {
     pub(crate) name: &'static str,
     pub(crate) canonical: &'static str,
-    pub(crate) type_parameter: &'static str,
-    pub(crate) type_parameter_arity: u32,
+    pub(crate) type_parameters: &'static [PreludeTypeParameter],
     pub(crate) supertrait: Option<&'static str>,
+    pub(crate) deriving: bool,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct PreludeTypeParameter {
+    pub(crate) name: &'static str,
+    pub(crate) arity: u32,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -20,6 +26,7 @@ pub(crate) struct PreludeTraitMethod {
     pub(crate) trait_name: &'static str,
     pub(crate) name: &'static str,
     pub(crate) canonical: &'static str,
+    pub(crate) operators: &'static [&'static str],
     kind: PreludeTraitMethodKind,
 }
 
@@ -29,18 +36,29 @@ pub(crate) struct PreludeTraitMethodSignature {
     pub(crate) type_parameters: Vec<TypeParameter>,
     pub(crate) parameters: Vec<TypedType>,
     pub(crate) result: TypedType,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub(crate) constraints: Vec<TypedConstraint>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum PreludeTraitMethodKind {
+    Eq,
+    Compare,
+    Hash,
     Append,
     Empty,
     Show,
     Debug,
+    Zero,
+    One,
     Map,
     Pure,
     Apply,
     FlatMap,
+    Iterate,
+    Reduce,
+    Traverse,
+    Arithmetic,
     EncodeJson,
     DecodeJson,
 }
@@ -61,140 +79,372 @@ pub(crate) struct PreludeStandardInstanceConstraint {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct StandardEqualityInstance {
+pub struct PreludeSpecialInstance {
     pub type_name: &'static str,
     pub identity: &'static str,
     pub strict_equality_compatible: bool,
+    pub trait_name: &'static str,
+    pub arguments: &'static [&'static str],
+    pub dispatch: PreludeSpecialInstanceDispatch,
+    head: PreludeSpecialInstanceHead,
+}
+
+pub type StandardEqualityInstance = PreludeSpecialInstance;
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum PreludeSpecialInstanceDispatch {
+    Dictionary,
+    OperatorAbi,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum PreludeSpecialInstanceHead {
+    Value(&'static str),
+    Homogeneous3(&'static str),
+    Collection {
+        constructor: &'static str,
+        int_element: bool,
+    },
 }
 
 pub(crate) const TRAITS: &[PreludeTrait] = &[
+    value_trait("Eq", "std/prelude::Eq", None, true),
+    value_trait("Ord", "std/prelude::Ord", Some("Eq"), true),
+    value_trait("Hash", "std/prelude::Hash", None, true),
     PreludeTrait {
         name: "Semigroup",
         canonical: "std/prelude::Semigroup",
-        type_parameter: "A",
-        type_parameter_arity: 0,
+        type_parameters: &[PreludeTypeParameter {
+            name: "A",
+            arity: 0,
+        }],
         supertrait: None,
+        deriving: false,
     },
     PreludeTrait {
         name: "Monoid",
         canonical: "std/prelude::Monoid",
-        type_parameter: "A",
-        type_parameter_arity: 0,
+        type_parameters: &[PreludeTypeParameter {
+            name: "A",
+            arity: 0,
+        }],
         supertrait: Some("Semigroup"),
+        deriving: false,
     },
-    PreludeTrait {
-        name: "Show",
-        canonical: "std/prelude::Show",
-        type_parameter: "A",
-        type_parameter_arity: 0,
-        supertrait: None,
-    },
-    PreludeTrait {
-        name: "Debug",
-        canonical: "std/prelude::Debug",
-        type_parameter: "A",
-        type_parameter_arity: 0,
-        supertrait: None,
-    },
+    value_trait("Show", "std/prelude::Show", None, true),
+    value_trait("Debug", "std/prelude::Debug", None, true),
+    value_trait("Zero", "std/prelude::Zero", None, false),
+    value_trait("One", "std/prelude::One", None, false),
     PreludeTrait {
         name: "Functor",
         canonical: "std/prelude::Functor",
-        type_parameter: "F",
-        type_parameter_arity: 1,
+        type_parameters: &[PreludeTypeParameter {
+            name: "F",
+            arity: 1,
+        }],
         supertrait: None,
+        deriving: false,
     },
     PreludeTrait {
         name: "Applicative",
         canonical: "std/prelude::Applicative",
-        type_parameter: "F",
-        type_parameter_arity: 1,
+        type_parameters: &[PreludeTypeParameter {
+            name: "F",
+            arity: 1,
+        }],
         supertrait: Some("Functor"),
+        deriving: false,
     },
     PreludeTrait {
         name: "Monad",
         canonical: "std/prelude::Monad",
-        type_parameter: "M",
-        type_parameter_arity: 1,
+        type_parameters: &[PreludeTypeParameter {
+            name: "M",
+            arity: 1,
+        }],
         supertrait: Some("Applicative"),
+        deriving: false,
+    },
+    value_trait("JsonEncode", "std/prelude::JsonEncode", None, true),
+    value_trait("JsonDecode", "std/prelude::JsonDecode", None, true),
+    PreludeTrait {
+        name: "Iterable",
+        canonical: "std/prelude::Iterable",
+        type_parameters: &[
+            PreludeTypeParameter {
+                name: "C",
+                arity: 0,
+            },
+            PreludeTypeParameter {
+                name: "A",
+                arity: 0,
+            },
+        ],
+        supertrait: None,
+        deriving: false,
     },
     PreludeTrait {
-        name: "JsonEncode",
-        canonical: "std/prelude::JsonEncode",
-        type_parameter: "A",
-        type_parameter_arity: 0,
-        supertrait: None,
+        name: "Reducible",
+        canonical: "std/prelude::Reducible",
+        type_parameters: &[
+            PreludeTypeParameter {
+                name: "C",
+                arity: 0,
+            },
+            PreludeTypeParameter {
+                name: "A",
+                arity: 0,
+            },
+        ],
+        supertrait: Some("Iterable"),
+        deriving: false,
     },
     PreludeTrait {
-        name: "JsonDecode",
-        canonical: "std/prelude::JsonDecode",
-        type_parameter: "A",
-        type_parameter_arity: 0,
-        supertrait: None,
+        name: "Traversable",
+        canonical: "std/prelude::Traversable",
+        type_parameters: &[PreludeTypeParameter {
+            name: "F",
+            arity: 1,
+        }],
+        supertrait: Some("Functor"),
+        deriving: false,
     },
+    arithmetic_trait("Add", "std/prelude::Add"),
+    arithmetic_trait("Sub", "std/prelude::Sub"),
+    arithmetic_trait("Mul", "std/prelude::Mul"),
+    arithmetic_trait("Div", "std/prelude::Div"),
+    arithmetic_trait("Rem", "std/prelude::Rem"),
+    arithmetic_trait("Pow", "std/prelude::Pow"),
 ];
 
+const fn value_trait(
+    name: &'static str,
+    canonical: &'static str,
+    supertrait: Option<&'static str>,
+    deriving: bool,
+) -> PreludeTrait {
+    PreludeTrait {
+        name,
+        canonical,
+        type_parameters: &[PreludeTypeParameter {
+            name: "A",
+            arity: 0,
+        }],
+        supertrait,
+        deriving,
+    }
+}
+
+const fn arithmetic_trait(name: &'static str, canonical: &'static str) -> PreludeTrait {
+    PreludeTrait {
+        name,
+        canonical,
+        type_parameters: &[
+            PreludeTypeParameter {
+                name: "L",
+                arity: 0,
+            },
+            PreludeTypeParameter {
+                name: "R",
+                arity: 0,
+            },
+            PreludeTypeParameter {
+                name: "O",
+                arity: 0,
+            },
+        ],
+        supertrait: None,
+        deriving: false,
+    }
+}
+
 pub(crate) const TRAIT_METHODS: &[PreludeTraitMethod] = &[
+    method(
+        "Eq",
+        "eq",
+        "std/prelude::Eq::eq",
+        PreludeTraitMethodKind::Eq,
+        &["==", "!="],
+    ),
+    method(
+        "Ord",
+        "compare",
+        "std/prelude::Ord::compare",
+        PreludeTraitMethodKind::Compare,
+        &[],
+    ),
+    method(
+        "Hash",
+        "hash",
+        "std/prelude::Hash::hash",
+        PreludeTraitMethodKind::Hash,
+        &[],
+    ),
     PreludeTraitMethod {
         trait_name: "Semigroup",
         name: "append",
         canonical: "std/prelude::Semigroup::append",
+        operators: &[],
         kind: PreludeTraitMethodKind::Append,
     },
     PreludeTraitMethod {
         trait_name: "Monoid",
         name: "empty",
         canonical: "std/prelude::Monoid::empty",
+        operators: &[],
         kind: PreludeTraitMethodKind::Empty,
     },
     PreludeTraitMethod {
         trait_name: "Show",
         name: "show",
         canonical: "std/prelude::Show::show",
+        operators: &[],
         kind: PreludeTraitMethodKind::Show,
     },
     PreludeTraitMethod {
         trait_name: "Debug",
         name: "debug",
         canonical: "std/prelude::Debug::debug",
+        operators: &[],
         kind: PreludeTraitMethodKind::Debug,
     },
+    method(
+        "Zero",
+        "zero",
+        "std/prelude::Zero::zero",
+        PreludeTraitMethodKind::Zero,
+        &[],
+    ),
+    method(
+        "One",
+        "one",
+        "std/prelude::One::one",
+        PreludeTraitMethodKind::One,
+        &[],
+    ),
     PreludeTraitMethod {
         trait_name: "Functor",
         name: "map",
         canonical: "std/prelude::Functor::map",
+        operators: &["<$>"],
         kind: PreludeTraitMethodKind::Map,
     },
     PreludeTraitMethod {
         trait_name: "Applicative",
         name: "pure",
         canonical: "std/prelude::Applicative::pure",
+        operators: &[],
         kind: PreludeTraitMethodKind::Pure,
     },
     PreludeTraitMethod {
         trait_name: "Applicative",
         name: "apply",
         canonical: "std/prelude::Applicative::apply",
+        operators: &["<*>"],
         kind: PreludeTraitMethodKind::Apply,
     },
     PreludeTraitMethod {
         trait_name: "Monad",
         name: "flatMap",
         canonical: "std/prelude::Monad::flatMap",
+        operators: &[">>="],
         kind: PreludeTraitMethodKind::FlatMap,
     },
     PreludeTraitMethod {
         trait_name: "JsonEncode",
         name: "encodeJson",
         canonical: "std/prelude::JsonEncode::encodeJson",
+        operators: &[],
         kind: PreludeTraitMethodKind::EncodeJson,
     },
     PreludeTraitMethod {
         trait_name: "JsonDecode",
         name: "decodeJson",
         canonical: "std/prelude::JsonDecode::decodeJson",
+        operators: &[],
         kind: PreludeTraitMethodKind::DecodeJson,
     },
+    method(
+        "Iterable",
+        "iterate",
+        "std/prelude::Iterable::iterate",
+        PreludeTraitMethodKind::Iterate,
+        &[],
+    ),
+    method(
+        "Reducible",
+        "reduce",
+        "std/prelude::Reducible::reduce",
+        PreludeTraitMethodKind::Reduce,
+        &[],
+    ),
+    method(
+        "Traversable",
+        "traverse",
+        "std/prelude::Traversable::traverse",
+        PreludeTraitMethodKind::Traverse,
+        &[],
+    ),
+    method(
+        "Add",
+        "add",
+        "std/prelude::Add::add",
+        PreludeTraitMethodKind::Arithmetic,
+        &["+"],
+    ),
+    method(
+        "Sub",
+        "sub",
+        "std/prelude::Sub::sub",
+        PreludeTraitMethodKind::Arithmetic,
+        &["-"],
+    ),
+    method(
+        "Mul",
+        "mul",
+        "std/prelude::Mul::mul",
+        PreludeTraitMethodKind::Arithmetic,
+        &["*"],
+    ),
+    method(
+        "Div",
+        "div",
+        "std/prelude::Div::div",
+        PreludeTraitMethodKind::Arithmetic,
+        &["/"],
+    ),
+    method(
+        "Rem",
+        "rem",
+        "std/prelude::Rem::rem",
+        PreludeTraitMethodKind::Arithmetic,
+        &["%"],
+    ),
+    method(
+        "Pow",
+        "pow",
+        "std/prelude::Pow::pow",
+        PreludeTraitMethodKind::Arithmetic,
+        &["**"],
+    ),
 ];
+
+const fn method(
+    trait_name: &'static str,
+    name: &'static str,
+    canonical: &'static str,
+    kind: PreludeTraitMethodKind,
+    operators: &'static [&'static str],
+) -> PreludeTraitMethod {
+    PreludeTraitMethod {
+        trait_name,
+        name,
+        canonical,
+        operators,
+        kind,
+    }
+}
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     PreludeStandardInstance {
@@ -1284,23 +1534,195 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     },
 ];
 
-const STANDARD_EQUALITY_INSTANCES: &[StandardEqualityInstance] = &[
-    StandardEqualityInstance {
-        type_name: "Int",
-        identity: "std/int::Eq",
-        strict_equality_compatible: true,
-    },
-    StandardEqualityInstance {
-        type_name: "Bool",
-        identity: "std/bool::Eq",
-        strict_equality_compatible: true,
-    },
-    StandardEqualityInstance {
-        type_name: "String",
-        identity: "std/string::Eq",
-        strict_equality_compatible: true,
-    },
+pub(crate) const SPECIAL_STANDARD_INSTANCES: &[PreludeSpecialInstance] = &[
+    special_value(
+        "Eq",
+        &["Int"],
+        "std/int::Eq",
+        "Int",
+        true,
+        PreludeSpecialInstanceDispatch::OperatorAbi,
+    ),
+    special_value(
+        "Eq",
+        &["Bool"],
+        "std/bool::Eq",
+        "Bool",
+        true,
+        PreludeSpecialInstanceDispatch::OperatorAbi,
+    ),
+    special_value(
+        "Eq",
+        &["String"],
+        "std/string::Eq",
+        "String",
+        true,
+        PreludeSpecialInstanceDispatch::OperatorAbi,
+    ),
+    special_value(
+        "Zero",
+        &["Int"],
+        "std/int::Zero",
+        "Int",
+        false,
+        PreludeSpecialInstanceDispatch::Dictionary,
+    ),
+    special_value(
+        "One",
+        &["Int"],
+        "std/int::One",
+        "Int",
+        false,
+        PreludeSpecialInstanceDispatch::Dictionary,
+    ),
+    special_homogeneous(
+        "Add",
+        &["String", "String", "String"],
+        "std/string::Add",
+        "String",
+    ),
+    special_homogeneous("Add", &["Int", "Int", "Int"], "std/int::Add", "Int"),
+    special_homogeneous("Sub", &["Int", "Int", "Int"], "std/int::Sub", "Int"),
+    special_homogeneous("Mul", &["Int", "Int", "Int"], "std/int::Mul", "Int"),
+    special_homogeneous("Div", &["Int", "Int", "Int"], "std/int::Div", "Int"),
+    special_homogeneous("Rem", &["Int", "Int", "Int"], "std/int::Rem", "Int"),
+    special_homogeneous("Pow", &["Int", "Int", "Int"], "std/int::Pow", "Int"),
+    special_homogeneous(
+        "Add",
+        &["Float", "Float", "Float"],
+        "std/float::Add",
+        "Float",
+    ),
+    special_homogeneous(
+        "Sub",
+        &["Float", "Float", "Float"],
+        "std/float::Sub",
+        "Float",
+    ),
+    special_homogeneous(
+        "Mul",
+        &["Float", "Float", "Float"],
+        "std/float::Mul",
+        "Float",
+    ),
+    special_homogeneous(
+        "Div",
+        &["Float", "Float", "Float"],
+        "std/float::Div",
+        "Float",
+    ),
+    special_homogeneous(
+        "Rem",
+        &["Float", "Float", "Float"],
+        "std/float::Rem",
+        "Float",
+    ),
+    special_homogeneous(
+        "Pow",
+        &["Float", "Float", "Float"],
+        "std/float::Pow",
+        "Float",
+    ),
+    special_collection(
+        "Iterable",
+        &["Array<A>", "A"],
+        "std/array::Iterable",
+        "Array",
+        false,
+    ),
+    special_collection(
+        "Iterable",
+        &["List<A>", "A"],
+        "std/list::Iterable",
+        "List",
+        false,
+    ),
+    special_collection(
+        "Iterable",
+        &["Range<Int>", "Int"],
+        "std/range::Iterable",
+        "Range",
+        true,
+    ),
+    special_collection(
+        "Reducible",
+        &["Array<A>", "A"],
+        "std/array::Reducible",
+        "Array",
+        false,
+    ),
+    special_collection(
+        "Reducible",
+        &["List<A>", "A"],
+        "std/list::Reducible",
+        "List",
+        false,
+    ),
+    special_collection(
+        "Reducible",
+        &["Range<Int>", "Int"],
+        "std/range::Reducible",
+        "Range",
+        true,
+    ),
 ];
+
+const fn special_value(
+    trait_name: &'static str,
+    arguments: &'static [&'static str],
+    identity: &'static str,
+    type_name: &'static str,
+    strict_equality_compatible: bool,
+    dispatch: PreludeSpecialInstanceDispatch,
+) -> PreludeSpecialInstance {
+    PreludeSpecialInstance {
+        type_name,
+        identity,
+        strict_equality_compatible,
+        trait_name,
+        arguments,
+        dispatch,
+        head: PreludeSpecialInstanceHead::Value(type_name),
+    }
+}
+
+const fn special_homogeneous(
+    trait_name: &'static str,
+    arguments: &'static [&'static str],
+    identity: &'static str,
+    type_name: &'static str,
+) -> PreludeSpecialInstance {
+    PreludeSpecialInstance {
+        type_name,
+        identity,
+        strict_equality_compatible: false,
+        trait_name,
+        arguments,
+        dispatch: PreludeSpecialInstanceDispatch::OperatorAbi,
+        head: PreludeSpecialInstanceHead::Homogeneous3(type_name),
+    }
+}
+
+const fn special_collection(
+    trait_name: &'static str,
+    arguments: &'static [&'static str],
+    identity: &'static str,
+    type_name: &'static str,
+    int_element: bool,
+) -> PreludeSpecialInstance {
+    PreludeSpecialInstance {
+        type_name,
+        identity,
+        strict_equality_compatible: false,
+        trait_name,
+        arguments,
+        dispatch: PreludeSpecialInstanceDispatch::Dictionary,
+        head: PreludeSpecialInstanceHead::Collection {
+            constructor: type_name,
+            int_element,
+        },
+    }
+}
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct PreludeSumType {
@@ -1445,31 +1867,7 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 || seseragi_syntax::standard_trait_operator(spelling).is_some()
                 || matches!(spelling, "<" | "<=" | ">" | ">=")
         }
-        SymbolNamespace::Trait => matches!(
-            spelling,
-            "Eq" | "Ord"
-                | "Hash"
-                | "Show"
-                | "Debug"
-                | "Zero"
-                | "One"
-                | "Semigroup"
-                | "Monoid"
-                | "JsonEncode"
-                | "JsonDecode"
-                | "Functor"
-                | "Applicative"
-                | "Monad"
-                | "Iterable"
-                | "Reducible"
-                | "Traversable"
-                | "Add"
-                | "Sub"
-                | "Mul"
-                | "Div"
-                | "Rem"
-                | "Pow"
-        ),
+        SymbolNamespace::Trait => trait_by_name(spelling).is_some(),
         _ => false,
     }
 }
@@ -1548,36 +1946,75 @@ pub(crate) fn trait_method_by_canonical(canonical: &str) -> Option<&'static Prel
 
 pub(crate) fn trait_method_signature(method: &PreludeTraitMethod) -> PreludeTraitMethodSignature {
     let trait_spec = trait_by_name(method.trait_name).expect("Prelude method trait must exist");
-    let constructor = trait_spec.type_parameter;
+    let mut trait_parameters = trait_spec
+        .type_parameters
+        .iter()
+        .map(|parameter| {
+            if parameter.arity == 0 {
+                TypeParameter::value(parameter.name)
+            } else {
+                TypeParameter::constructor(parameter.name, parameter.arity)
+            }
+        })
+        .collect::<Vec<_>>();
+    let constructor = trait_spec.type_parameters[0].name;
     let a = named("A");
     let b = named("B");
     let applied_a = applied(constructor, a.clone());
     let applied_b = applied(constructor, b.clone());
-    let mut type_parameters = vec![TypeParameter::constructor(constructor, 1)];
+    let mut type_parameters = trait_parameters.clone();
     match method.kind {
+        PreludeTraitMethodKind::Eq => PreludeTraitMethodSignature {
+            type_parameters: trait_parameters,
+            parameters: vec![named("A"), named("A")],
+            result: named("Bool"),
+            constraints: Vec::new(),
+        },
+        PreludeTraitMethodKind::Compare => PreludeTraitMethodSignature {
+            type_parameters: trait_parameters,
+            parameters: vec![named("A"), named("A")],
+            result: named("Ordering"),
+            constraints: Vec::new(),
+        },
+        PreludeTraitMethodKind::Hash => PreludeTraitMethodSignature {
+            type_parameters: trait_parameters,
+            parameters: vec![named("A")],
+            result: named("Int"),
+            constraints: Vec::new(),
+        },
         PreludeTraitMethodKind::Append => PreludeTraitMethodSignature {
-            type_parameters: vec![TypeParameter::value(constructor)],
+            type_parameters: trait_parameters,
             parameters: vec![named(constructor), named(constructor)],
             result: named(constructor),
+            constraints: Vec::new(),
         },
         PreludeTraitMethodKind::Empty => PreludeTraitMethodSignature {
-            type_parameters: vec![TypeParameter::value(constructor)],
+            type_parameters: trait_parameters,
             parameters: vec![named("Unit")],
             result: named(constructor),
+            constraints: Vec::new(),
         },
         PreludeTraitMethodKind::Show | PreludeTraitMethodKind::Debug => {
             PreludeTraitMethodSignature {
-                type_parameters: vec![TypeParameter::value(constructor)],
+                type_parameters: trait_parameters,
                 parameters: vec![named(constructor)],
                 result: named("String"),
+                constraints: Vec::new(),
             }
         }
+        PreludeTraitMethodKind::Zero | PreludeTraitMethodKind::One => PreludeTraitMethodSignature {
+            type_parameters: trait_parameters,
+            parameters: vec![named("Unit")],
+            result: named("A"),
+            constraints: Vec::new(),
+        },
         PreludeTraitMethodKind::Map => {
             type_parameters.extend([TypeParameter::value("A"), TypeParameter::value("B")]);
             PreludeTraitMethodSignature {
                 type_parameters,
                 parameters: vec![function(a, b.clone()), applied_a],
                 result: applied_b,
+                constraints: Vec::new(),
             }
         }
         PreludeTraitMethodKind::Pure => {
@@ -1586,6 +2023,7 @@ pub(crate) fn trait_method_signature(method: &PreludeTraitMethod) -> PreludeTrai
                 type_parameters,
                 parameters: vec![a],
                 result: applied_a,
+                constraints: Vec::new(),
             }
         }
         PreludeTraitMethodKind::Apply => {
@@ -1597,6 +2035,7 @@ pub(crate) fn trait_method_signature(method: &PreludeTraitMethod) -> PreludeTrai
                     applied_a,
                 ],
                 result: applied_b,
+                constraints: Vec::new(),
             }
         }
         PreludeTraitMethodKind::FlatMap => {
@@ -1605,20 +2044,67 @@ pub(crate) fn trait_method_signature(method: &PreludeTraitMethod) -> PreludeTrai
                 type_parameters,
                 parameters: vec![function(a, applied_b.clone()), applied_a],
                 result: applied_b,
+                constraints: Vec::new(),
             }
         }
+        PreludeTraitMethodKind::Iterate => PreludeTraitMethodSignature {
+            type_parameters: trait_parameters,
+            parameters: vec![named("C")],
+            result: applied("Iterator", named("A")),
+            constraints: Vec::new(),
+        },
+        PreludeTraitMethodKind::Reduce => {
+            trait_parameters.push(TypeParameter::value("B"));
+            PreludeTraitMethodSignature {
+                type_parameters: trait_parameters,
+                parameters: vec![
+                    named("B"),
+                    function(named("B"), function(named("A"), named("B"))),
+                    named("C"),
+                ],
+                result: named("B"),
+                constraints: Vec::new(),
+            }
+        }
+        PreludeTraitMethodKind::Traverse => {
+            type_parameters.extend([
+                TypeParameter::constructor("G", 1),
+                TypeParameter::value("A"),
+                TypeParameter::value("B"),
+            ]);
+            PreludeTraitMethodSignature {
+                type_parameters,
+                parameters: vec![
+                    function(named("A"), applied("G", named("B"))),
+                    applied("F", named("A")),
+                ],
+                result: applied("G", applied("F", named("B"))),
+                constraints: vec![TypedConstraint {
+                    name: "Applicative".to_owned(),
+                    arguments: vec![named("G")],
+                }],
+            }
+        }
+        PreludeTraitMethodKind::Arithmetic => PreludeTraitMethodSignature {
+            type_parameters: trait_parameters,
+            parameters: vec![named("L"), named("R")],
+            result: named("O"),
+            constraints: Vec::new(),
+        },
         PreludeTraitMethodKind::EncodeJson => PreludeTraitMethodSignature {
-            type_parameters: vec![TypeParameter::value(constructor)],
+            type_parameters: trait_parameters,
             parameters: vec![named(constructor)],
             result: external("std/json", "Json"),
+            constraints: Vec::new(),
         },
         PreludeTraitMethodKind::DecodeJson => PreludeTraitMethodSignature {
-            type_parameters: vec![TypeParameter::value(constructor)],
+            type_parameters: trait_parameters,
             parameters: vec![external("std/json", "Json")],
             result: TypedType::Named {
                 name: "Either".to_owned(),
                 arguments: vec![external("std/json", "DecodeError"), named(constructor)],
             },
+            constraints: Vec::new(),
         },
     }
 }
@@ -1631,8 +2117,8 @@ pub(crate) fn standard_instance(
         instance.trait_name == trait_name
             && standard_instance_head(instance, type_ref).is_some_and(|arguments| {
                 trait_by_name(trait_name).is_some_and(|trait_spec| {
-                    instance.type_arity.checked_sub(arguments)
-                        == Some(trait_spec.type_parameter_arity)
+                    matches!(trait_spec.type_parameters, [parameter]
+                        if instance.type_arity.checked_sub(arguments) == Some(parameter.arity))
                 })
             })
     })
@@ -1761,24 +2247,103 @@ pub(crate) fn standard_instance_constraint_specs(
     }
 }
 
-pub(crate) fn standard_equality_instance(
-    type_ref: &TypedType,
-) -> Option<&'static StandardEqualityInstance> {
-    let TypedType::Named { name, arguments } = type_ref else {
-        return None;
-    };
-    arguments.is_empty().then_some(())?;
-    STANDARD_EQUALITY_INSTANCES
-        .iter()
-        .find(|instance| instance.type_name == name)
-}
-
 pub fn standard_equality_instance_by_identity(
     identity: &str,
-) -> Option<&'static StandardEqualityInstance> {
-    STANDARD_EQUALITY_INSTANCES
+) -> Option<&'static PreludeSpecialInstance> {
+    SPECIAL_STANDARD_INSTANCES
+        .iter()
+        .find(|instance| instance.trait_name == "Eq" && instance.identity == identity)
+}
+
+pub fn special_standard_instance_by_identity(
+    identity: &str,
+) -> Option<&'static PreludeSpecialInstance> {
+    SPECIAL_STANDARD_INSTANCES
         .iter()
         .find(|instance| instance.identity == identity)
+}
+
+pub(crate) fn special_standard_instance(
+    constraint: &TypedConstraint,
+) -> Option<&'static PreludeSpecialInstance> {
+    SPECIAL_STANDARD_INSTANCES.iter().find(|instance| {
+        if instance.trait_name != constraint.name {
+            return false;
+        }
+        match (instance.head, constraint.arguments.as_slice()) {
+            (PreludeSpecialInstanceHead::Value(expected), [value]) => {
+                prelude_named_type_is(value, expected)
+            }
+            (PreludeSpecialInstanceHead::Homogeneous3(expected), [left, right, output]) => {
+                [left, right, output]
+                    .iter()
+                    .all(|value| prelude_named_type_is(value, expected))
+            }
+            (
+                PreludeSpecialInstanceHead::Collection {
+                    constructor,
+                    int_element,
+                },
+                [collection, element],
+            ) => matches!(collection,
+                TypedType::Named { name, arguments }
+                    if name == constructor
+                        && matches!(arguments.as_slice(), [actual] if actual == element)
+                        && (!int_element || prelude_named_type_is(element, "Int"))),
+            _ => false,
+        }
+    })
+}
+
+pub(crate) fn special_homogeneous_instance_heads(trait_name: &str) -> Vec<[TypedType; 3]> {
+    SPECIAL_STANDARD_INSTANCES
+        .iter()
+        .filter_map(|instance| match instance.head {
+            PreludeSpecialInstanceHead::Homogeneous3(name) if instance.trait_name == trait_name => {
+                let type_ref = TypedType::Named {
+                    name: name.to_owned(),
+                    arguments: Vec::new(),
+                };
+                Some([type_ref.clone(), type_ref.clone(), type_ref])
+            }
+            _ => None,
+        })
+        .collect()
+}
+
+pub(crate) fn special_collection_constraint(
+    trait_name: &str,
+    collection: &TypedType,
+) -> Option<TypedConstraint> {
+    SPECIAL_STANDARD_INSTANCES.iter().find_map(|instance| {
+        let PreludeSpecialInstanceHead::Collection {
+            constructor,
+            int_element,
+        } = instance.head
+        else {
+            return None;
+        };
+        if instance.trait_name != trait_name {
+            return None;
+        }
+        let TypedType::Named { name, arguments } = collection else {
+            return None;
+        };
+        let [element] = arguments.as_slice() else {
+            return None;
+        };
+        (name == constructor && (!int_element || prelude_named_type_is(element, "Int"))).then(
+            || TypedConstraint {
+                name: trait_name.to_owned(),
+                arguments: vec![collection.clone(), element.clone()],
+            },
+        )
+    })
+}
+
+fn prelude_named_type_is(type_ref: &TypedType, expected: &str) -> bool {
+    matches!(type_ref, TypedType::Named { name, arguments }
+        if name == expected && arguments.is_empty())
 }
 
 pub(crate) fn overlapping_standard_instance(
@@ -1789,7 +2354,8 @@ pub(crate) fn overlapping_standard_instance(
     STANDARD_INSTANCES.iter().find(|instance| {
         standard_instance_head(instance, type_ref).is_some_and(|arguments| {
             trait_by_name(instance.trait_name).is_some_and(|trait_spec| {
-                instance.type_arity.checked_sub(arguments) == Some(trait_spec.type_parameter_arity)
+                matches!(trait_spec.type_parameters, [parameter]
+                    if instance.type_arity.checked_sub(arguments) == Some(parameter.arity))
             }) || (arguments == instance.type_arity
                 && matches!(last_type_argument(type_ref), Some(TypedType::Hole)))
         }) && trait_by_name(instance.trait_name)
@@ -1961,6 +2527,43 @@ mod tests {
 
         let debug = trait_method_by_canonical("std/prelude::Debug::debug").unwrap();
         assert_eq!(trait_method_signature(debug), show_signature);
+    }
+
+    #[test]
+    fn keeps_standard_operator_traits_and_methods_in_the_canonical_registry() {
+        for operator in seseragi_syntax::standard_operators() {
+            let method = trait_method(operator.trait_name, operator.method_name)
+                .expect("standard operator method must be registered in the Prelude");
+            assert!(method.operators.contains(&operator.spelling));
+        }
+        for operator in seseragi_syntax::standard_trait_operators() {
+            let method = trait_method(operator.trait_name, operator.method_name)
+                .expect("standard trait operator method must be registered in the Prelude");
+            assert!(method.operators.contains(&operator.spelling));
+        }
+    }
+
+    #[test]
+    fn describes_multi_parameter_collection_and_arithmetic_traits() {
+        let iterable = trait_by_name("Iterable").unwrap();
+        assert_eq!(iterable.type_parameters.len(), 2);
+        assert_eq!(iterable.type_parameters[0].name, "C");
+        assert_eq!(iterable.type_parameters[1].name, "A");
+
+        let reduce = trait_method("Reducible", "reduce").unwrap();
+        let reduce = trait_method_signature(reduce);
+        assert_eq!(
+            reduce.type_parameters.last(),
+            Some(&TypeParameter::value("B"))
+        );
+        assert_eq!(reduce.parameters.len(), 3);
+        assert_eq!(reduce.result, named("B"));
+
+        let add = trait_by_name("Add").unwrap();
+        assert_eq!(add.type_parameters.len(), 3);
+        let add = trait_method_signature(trait_method("Add", "add").unwrap());
+        assert_eq!(add.parameters, vec![named("L"), named("R")]);
+        assert_eq!(add.result, named("O"));
     }
 
     #[test]
@@ -2152,5 +2755,30 @@ mod tests {
             "std/prelude::Either<std/prelude::String,std/prelude::Int>"
         )
         .is_none());
+    }
+
+    #[test]
+    fn keeps_special_instance_heads_and_dispatch_in_the_registry() {
+        let add_heads = special_homogeneous_instance_heads("Add");
+        assert_eq!(add_heads.len(), 3);
+        assert!(add_heads.contains(&[named("String"), named("String"), named("String")]));
+
+        let array = applied("Array", named("String"));
+        assert_eq!(
+            special_collection_constraint("Iterable", &array),
+            Some(TypedConstraint {
+                name: "Iterable".to_owned(),
+                arguments: vec![array, named("String")],
+            })
+        );
+        assert_eq!(
+            special_standard_instance_by_identity("std/int::Add").map(|instance| instance.dispatch),
+            Some(PreludeSpecialInstanceDispatch::OperatorAbi)
+        );
+        assert_eq!(
+            special_standard_instance_by_identity("std/int::Zero")
+                .map(|instance| instance.dispatch),
+            Some(PreludeSpecialInstanceDispatch::Dictionary)
+        );
     }
 }

@@ -772,7 +772,32 @@
                 "evidence": {
                   "kind": "imported",
                   "identity": "std/prelude::Reducible<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
-                  "providerModule": "fixture/imported-iterable-comprehension::domain"
+                  "providerModule": "fixture/imported-iterable-comprehension::domain",
+                  "evidenceArguments": [
+                    {
+                      "constraint": {
+                        "name": "Iterable",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "Countdown",
+                            "canonical": "fixture/imported-iterable-comprehension::domain::Countdown",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "imported",
+                        "identity": "std/prelude::Iterable<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+                        "providerModule": "fixture/imported-iterable-comprehension::domain"
+                      }
+                    }
+                  ]
                 }
               }
             ],

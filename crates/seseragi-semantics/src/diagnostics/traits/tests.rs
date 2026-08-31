@@ -393,6 +393,19 @@ fn rejects_a_user_instance_that_overlaps_a_standard_prelude_head() {
         .contains("std/maybe::Functor"));
 }
 
+#[test]
+fn rejects_a_user_instance_that_overlaps_a_builtin_operator_head() {
+    let source = "instance Eq<Int> { fn eq left: Int -> right: Int -> Bool = left == right }\n";
+
+    let diagnostics = crate::semantic_diagnostics("main.ssrg", source);
+
+    assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0202"
+            && diagnostic.message_key == "trait.instance-duplicate"
+            && diagnostic.related[0].message.contains("std/int::Eq")
+    }));
+}
+
 fn linked_with_instance_targets<const N: usize>(
     source: &str,
     targets: [(&str, ModuleLinkTarget); N],

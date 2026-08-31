@@ -251,7 +251,27 @@
         "fixture/imported-iterable-comprehension::domain::Countdown",
         "std/prelude::Int"
       ],
-      "constraints": [],
+      "constraints": [
+        {
+          "name": "Iterable",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Countdown",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "std/prelude::Iterable"
+      ],
+      "supertraitCount": 1,
       "origin": {
         "start": 344,
         "end": 547

@@ -94,6 +94,21 @@ fn standard_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<Derived
     local_instances
         .iter()
         .filter_map(|local| {
+            if crate::prelude::trait_by_canonical(&local.trait_identity)
+                .is_some_and(|trait_spec| trait_spec.name == local.trait_name)
+            {
+                let constraint = crate::TypedConstraint {
+                    name: local.trait_name.clone(),
+                    arguments: local.arguments.clone(),
+                };
+                if let Some(standard) = crate::prelude::special_standard_instance(&constraint) {
+                    return Some(DerivedInstanceIssue::OverlappingStandardInstance {
+                        trait_name: local.trait_name.clone(),
+                        standard_identity: standard.identity.to_owned(),
+                        primary: local.origin,
+                    });
+                }
+            }
             let [argument] = local.arguments.as_slice() else {
                 return None;
             };

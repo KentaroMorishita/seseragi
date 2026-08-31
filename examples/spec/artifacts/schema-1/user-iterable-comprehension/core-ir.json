@@ -264,6 +264,25 @@
           "arguments": []
         }
       ],
+      "constraints": [
+        {
+          "name": "Iterable",
+          "traitIdentity": "std/prelude::Iterable",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Countdown",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
       "origin": {
         "source": "main.ssrg",
         "start": 344,
@@ -1527,7 +1546,30 @@
                 },
                 "evidence": {
                   "kind": "local",
-                  "identity": "std/prelude::Reducible<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>"
+                  "identity": "std/prelude::Reducible<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>",
+                  "evidenceArguments": [
+                    {
+                      "constraint": {
+                        "name": "Iterable",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Countdown",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "std/prelude::Iterable<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>"
+                      }
+                    }
+                  ]
                 }
               }
             ],
