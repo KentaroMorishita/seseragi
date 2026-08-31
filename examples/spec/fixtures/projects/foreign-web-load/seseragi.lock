@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/foreign-web-load@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/foreign-web-load@0.0.0#workspace:."
+name = "fixture/foreign-web-load"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:704ac8fade707cdd86af891e77056d07b0e56b259486e9395cf3e1ff41c96418"
+content_digest = "sha256:eccae92c7d4996173d64f63fd226af050d71ac32adf5ba8f358d550bafbc863d"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/foreign-web-load@0.0.0#workspace:."
+declaration = "src/main.ssrg#39-176"
+specifier = "foreign-web-host-value"
+exact_identity = "npm:foreign-web-host-value@1.0.0/browser.mjs"
+declaration_digest = "sha256:3d7847526ea476a0112b94c56b93d4a56460f9656e0a4711d9b996cb942c5f01"
+content_digest = "sha256:75ce4a4e545125e4a64d103c88493f604b8cad7f76613c504462743a0f3a2d37"

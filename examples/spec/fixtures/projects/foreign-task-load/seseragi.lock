@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/foreign-task-load@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/foreign-task-load@0.0.0#workspace:."
+name = "fixture/foreign-task-load"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:48cce3ca7f2a6e3b8ed3a472ddfd7ddda8126bdaf69fbf361eddcf6755686dd6"
+content_digest = "sha256:7f4d56477d8b485180e885131513f8b4d889f8f15632070612eab6db2c5828cd"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/foreign-task-load@0.0.0#workspace:."
+declaration = "src/main.ssrg#39-223"
+specifier = "../host/nested/lazy-module.mjs"
+exact_identity = "workspace:host/nested/lazy-module.mjs"
+declaration_digest = "sha256:94f3831bc61c5a91b513f6f4cbc23e13f93af5b074a43592138893f80c01a57d"
+content_digest = "sha256:c4f88fcf76d2cb97ac3297f0a61d33a711ff6e9dfcd4bfe0ca38580483e47db7"

@@ -1,7 +1,8 @@
 use super::dependency::{parse_dependencies, RawDependency};
 use super::model::{
-    DeferredTables, LanguageRequirement, LayoutPath, Manifest, ManifestLayout, ManifestPackage,
-    ManifestRun, ManifestTest, RunSeed, SignalMode, TargetId,
+    DeferredTables, LanguageRequirement, LayoutPath, Manifest, ManifestFilePath,
+    ManifestForeignTypescript, ManifestLayout, ManifestPackage, ManifestRun, ManifestTest, RunSeed,
+    SignalMode, TargetId,
 };
 use super::ManifestError;
 use crate::{ModulePath, PackageName};
@@ -20,6 +21,11 @@ pub fn parse_manifest(source: &str) -> Result<Manifest, ManifestError> {
     let providers = parse_provider_selections(raw.providers)?;
     let run = raw.run.map(parse_run).transpose()?;
     let test = raw.test.map(parse_test).transpose()?;
+    let foreign_typescript = raw
+        .foreign
+        .and_then(|foreign| foreign.typescript)
+        .map(parse_foreign_typescript)
+        .transpose()?;
 
     Ok(Manifest {
         package,
@@ -30,12 +36,67 @@ pub fn parse_manifest(source: &str) -> Result<Manifest, ManifestError> {
         providers,
         run,
         test,
+        foreign_typescript,
         deferred: DeferredTables {
-            foreign: raw.foreign,
+            foreign: None,
             benchmark: raw.benchmark,
             tool: raw.tool,
         },
     })
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RawForeignTypescript {
+    resolver: String,
+    manifest: String,
+    lockfile: String,
+    #[serde(default)]
+    bindings: Option<String>,
+}
+
+fn parse_foreign_typescript(
+    raw: RawForeignTypescript,
+) -> Result<ManifestForeignTypescript, ManifestError> {
+    Ok(ManifestForeignTypescript {
+        resolver: parse_foreign_resolver(raw.resolver)?,
+        manifest: parse_manifest_file_path("foreign.typescript.manifest", raw.manifest)?,
+        lockfile: parse_manifest_file_path("foreign.typescript.lockfile", raw.lockfile)?,
+        bindings: raw
+            .bindings
+            .map(|value| parse_manifest_file_path("foreign.typescript.bindings", value))
+            .transpose()?,
+    })
+}
+
+fn parse_foreign_resolver(value: String) -> Result<TargetId, ManifestError> {
+    if !valid_target_id(&value) {
+        return Err(ManifestError::InvalidForeignResolver(value));
+    }
+    if value != "node" {
+        return Err(ManifestError::UnsupportedForeignResolver(value));
+    }
+    Ok(TargetId::new(value))
+}
+
+fn parse_manifest_file_path(
+    field: &'static str,
+    value: String,
+) -> Result<ManifestFilePath, ManifestError> {
+    if value.is_empty()
+        || value.starts_with('/')
+        || value.contains('\\')
+        || value
+            .split('/')
+            .next()
+            .is_some_and(|segment| segment.contains(':'))
+        || value
+            .split('/')
+            .any(|segment| segment.is_empty() || matches!(segment, "." | ".."))
+    {
+        return Err(ManifestError::InvalidManifestFilePath { field, value });
+    }
+    Ok(ManifestFilePath::new(value))
 }
 
 #[derive(Deserialize)]
@@ -53,7 +114,7 @@ struct RawManifest {
     #[serde(default)]
     providers: BTreeMap<String, String>,
     #[serde(default)]
-    foreign: Option<toml::Table>,
+    foreign: Option<RawForeign>,
     #[serde(default)]
     run: Option<RawRun>,
     #[serde(default)]
@@ -62,6 +123,13 @@ struct RawManifest {
     benchmark: Option<toml::Table>,
     #[serde(default)]
     tool: Option<toml::Table>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RawForeign {
+    #[serde(default)]
+    typescript: Option<RawForeignTypescript>,
 }
 
 #[derive(Deserialize)]

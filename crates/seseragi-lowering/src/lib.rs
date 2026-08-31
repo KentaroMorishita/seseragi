@@ -25,11 +25,12 @@ mod web_html_ops;
 pub use core::{
     lower_typed_module, CoreAdt, CoreAdtVariant, CoreAlias, CoreBinding, CoreCallEvidence,
     CoreComprehensionClause, CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection,
-    CoreDecisionTest, CoreExpr, CoreFunction, CoreInstance, CoreInstanceConstraint,
-    CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod, CoreModule,
-    CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern,
-    CoreRecordField, CoreRecordPatternField, CoreRecordValueItem, CoreShowPayloadEvidence,
-    CoreStatement, CoreStruct, CoreStructField, CoreTemplatePart, CoreTraitDispatch, CoreType,
+    CoreDecisionTest, CoreExpr, CoreForeignMember, CoreForeignModule, CoreFunction, CoreInstance,
+    CoreInstanceConstraint, CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod,
+    CoreModule, CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter,
+    CorePattern, CoreRecordField, CoreRecordPatternField, CoreRecordValueItem,
+    CoreShowPayloadEvidence, CoreStatement, CoreStruct, CoreStructField, CoreTemplatePart,
+    CoreTraitDispatch, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -44,18 +45,21 @@ pub use typescript::{
     TypeScriptAdt, TypeScriptAdtVariant, TypeScriptAlias, TypeScriptBinding,
     TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
     TypeScriptDecisionTest, TypeScriptDerivedShowField, TypeScriptDerivedShowPayload,
-    TypeScriptDerivedShowVariant, TypeScriptExpr, TypeScriptFunction, TypeScriptImport,
-    TypeScriptInstance, TypeScriptInstanceConstraint, TypeScriptInstanceImplementation,
-    TypeScriptInstanceMethod, TypeScriptLoweringError, TypeScriptModule, TypeScriptOutputPlan,
-    TypeScriptParameter, TypeScriptRecordTypeField, TypeScriptRecordValueItem,
-    TypeScriptShowDictionaryReference, TypeScriptSourceImport, TypeScriptSourceImportBinding,
-    TypeScriptStatement, TypeScriptStruct, TypeScriptType, TypeScriptTypeImport,
+    TypeScriptDerivedShowVariant, TypeScriptExpr, TypeScriptForeignMember, TypeScriptForeignModule,
+    TypeScriptForeignNamespace, TypeScriptForeignOpaqueType, TypeScriptForeignValue,
+    TypeScriptFunction, TypeScriptImport, TypeScriptInstance, TypeScriptInstanceConstraint,
+    TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptLoweringError,
+    TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter, TypeScriptRecordTypeField,
+    TypeScriptRecordValueItem, TypeScriptShowDictionaryReference, TypeScriptSourceImport,
+    TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct, TypeScriptType,
+    TypeScriptTypeImport,
 };
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use seseragi_semantics::{type_module, TypedModule, TypedModuleDependency, TypedModuleImport};
+
     use seseragi_syntax::{ByteSpan, Visibility};
 
     #[test]
@@ -68,6 +72,33 @@ mod tests {
         assert_eq!(core.bindings.len(), 1);
         assert!(matches!(core.bindings[0].value, CoreExpr::Integer { .. }));
         assert!(core.functions.is_empty());
+    }
+
+    #[test]
+    fn lowers_foreign_typescript_bindings_with_explicit_boundary_codecs() {
+        let source = concat!(
+            "foreign \"typescript\" from \"./host.mjs\" {\n",
+            "  opaque type Handle\n",
+            "  pure constructor fn make value: Int -> Handle = \"Handle\"\n",
+            "  pure fn inspect value: Js.Nullable<String> -> Js.MutableArray<Int>\n",
+            "  task fn load handle: Handle -> Js.Unknown\n",
+            "}\n",
+        );
+        let typed = type_module("artifact/foreign/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let generated = emit_typescript_module(typescript, source);
+
+        assert!(generated
+            .typescript
+            .contains("type Handle = object & { readonly [__ssrg$foreign$brand$Handle]: true };"));
+        assert!(generated
+            .typescript
+            .contains("[{ nullable: \"string\" }], { mutableArray: \"int\" }"));
+        assert!(generated
+            .typescript
+            .contains("[\"opaque\"], \"js-unknown\""));
+        assert!(!generated.typescript.contains("\"unknown\""));
     }
 
     #[test]
@@ -195,6 +226,7 @@ mod tests {
             stage: "typed-hir".to_owned(),
             source: source.to_owned(),
             module: "fixture/game::main".to_owned(),
+            foreign_modules: Vec::new(),
             external_type_bindings: Vec::new(),
             module_dependencies: vec![TypedModuleDependency {
                 specifier: "./domain".to_owned(),
@@ -922,6 +954,7 @@ pub fn listLength values: List<Int> -> Int = {
             arguments: Vec::new(),
         };
         let core = CoreModule {
+            foreign_modules: Vec::new(),
             schema: 1,
             stage: "core-ir".to_owned(),
             module: "artifact/calls".to_owned(),

@@ -3,6 +3,7 @@
 //! Compiler stages consume identities produced here; they do not infer them
 //! from diagnostic source labels or process working directories.
 
+mod foreign;
 mod graph;
 mod identity;
 mod link;
@@ -20,6 +21,7 @@ mod target;
 mod virtual_package;
 mod workspace;
 
+pub use foreign::{resolve_foreign_typescript_module, ResolvedForeignTypescriptModule};
 pub use graph::{ModuleGraph, ModuleGraphError};
 pub use identity::{
     ModuleIdentity, ModuleRoot, PackageIdentity, PackageSourceIdentity, SourceIdentityError,
@@ -52,14 +54,14 @@ pub use local_project::{
 };
 pub use lockfile::{
     generate_lockfile, parse_lockfile, read_and_validate_development_lockfile,
-    read_and_validate_lockfile, write_lockfile, LockDependency, LockError, LockHostPackage,
-    LockPackage, LockProviderSelection, LockSourceKind, Lockfile,
+    read_and_validate_lockfile, write_lockfile, LockDependency, LockError, LockForeignModule,
+    LockHostPackage, LockPackage, LockProviderSelection, LockSourceKind, Lockfile,
 };
 pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,
-    LanguageRequirement, LayoutPath, Manifest, ManifestDependency, ManifestError, ManifestLayout,
-    ManifestPackage, ManifestRun, ManifestTest, ProviderArtifactPath, RunSeed, SignalMode,
-    TargetId,
+    LanguageRequirement, LayoutPath, Manifest, ManifestDependency, ManifestError, ManifestFilePath,
+    ManifestForeignTypescript, ManifestLayout, ManifestPackage, ManifestRun, ManifestTest,
+    ProviderArtifactPath, RunSeed, SignalMode, TargetId,
 };
 pub use module_path::{ModulePath, ModulePathError};
 pub use package_name::{PackageName, PackageNameError};

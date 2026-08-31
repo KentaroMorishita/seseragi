@@ -1,6 +1,6 @@
 use super::{
-    LockDependency, LockError, LockHostPackage, LockPackage, LockProviderSelection, LockSourceKind,
-    Lockfile, LOCK_SCHEMA,
+    LockDependency, LockError, LockForeignModule, LockHostPackage, LockPackage,
+    LockProviderSelection, LockSourceKind, Lockfile, LOCK_SCHEMA,
 };
 use crate::PackageName;
 use semver::Version;
@@ -18,6 +18,18 @@ struct RawLockfile {
     packages: Vec<RawPackage>,
     #[serde(default)]
     providers: Vec<RawProvider>,
+    #[serde(default)]
+    foreign_modules: Vec<RawForeignModule>,
+}
+
+#[derive(Deserialize)]
+struct RawForeignModule {
+    package: String,
+    declaration: String,
+    specifier: String,
+    exact_identity: String,
+    declaration_digest: String,
+    content_digest: String,
 }
 
 #[derive(Deserialize)]
@@ -122,6 +134,33 @@ pub fn parse_lockfile(source: &str) -> Result<Lockfile, LockError> {
             ));
         }
     }
+    let mut foreign_modules = raw
+        .foreign_modules
+        .into_iter()
+        .map(parse_foreign_module)
+        .collect::<Result<Vec<_>, _>>()?;
+    foreign_modules.sort_by(|left, right| {
+        (
+            left.package.as_bytes(),
+            left.declaration.as_bytes(),
+            left.specifier.as_bytes(),
+        )
+            .cmp(&(
+                right.package.as_bytes(),
+                right.declaration.as_bytes(),
+                right.specifier.as_bytes(),
+            ))
+    });
+    if foreign_modules.windows(2).any(|modules| {
+        modules[0].package == modules[1].package
+            && modules[0].declaration == modules[1].declaration
+            && modules[0].specifier == modules[1].specifier
+    }) {
+        return Err(invalid(
+            "foreign_modules",
+            "duplicate package/declaration/specifier entry",
+        ));
+    }
     Ok(Lockfile {
         schema: raw.schema,
         language,
@@ -131,6 +170,38 @@ pub fn parse_lockfile(source: &str) -> Result<Lockfile, LockError> {
         root: raw.root,
         packages,
         providers,
+        foreign_modules,
+    })
+}
+
+fn parse_foreign_module(raw: RawForeignModule) -> Result<LockForeignModule, LockError> {
+    for (field, value) in [
+        ("foreign_modules.package", raw.package.as_str()),
+        ("foreign_modules.declaration", raw.declaration.as_str()),
+        ("foreign_modules.specifier", raw.specifier.as_str()),
+        (
+            "foreign_modules.exact_identity",
+            raw.exact_identity.as_str(),
+        ),
+    ] {
+        if value.trim().is_empty() || absolute_path(value) {
+            return Err(invalid(field, "must be non-empty and machine-independent"));
+        }
+    }
+    validate_digest(
+        "foreign_modules.declaration_digest",
+        &raw.declaration_digest,
+    )?;
+    if raw.content_digest != "sha256:builtin" {
+        validate_digest("foreign_modules.content_digest", &raw.content_digest)?;
+    }
+    Ok(LockForeignModule {
+        package: raw.package,
+        declaration: raw.declaration,
+        specifier: raw.specifier,
+        exact_identity: raw.exact_identity,
+        declaration_digest: raw.declaration_digest,
+        content_digest: raw.content_digest,
     })
 }
 

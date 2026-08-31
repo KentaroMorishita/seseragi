@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/source-map-rejection@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/source-map-rejection@0.0.0#workspace:."
+name = "fixture/source-map-rejection"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:cdf79895b9f3a4673abc90e2633aeb2945acf2dc774c719031b992f3bb9222a0"
+content_digest = "sha256:158f7bf5717eed4dbb250f79235706e059bb37a4f4b48456fe1ac1992b009e2f"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/source-map-rejection@0.0.0#workspace:."
+declaration = "src/main.ssrg#0-77"
+specifier = "../host/failure.mjs"
+exact_identity = "workspace:host/failure.mjs"
+declaration_digest = "sha256:c79e63c3a09a8c9a1d9cd89f12f36ae375557fa08fa790c92aaddd0ec853aab5"
+content_digest = "sha256:e7f09ed60d696905a12b04c8733eca51129c83adfcfee3e5b272729aceafdfb7"

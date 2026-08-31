@@ -1,0 +1,25 @@
+import * as effects from "std/effect"
+
+foreign "typescript" from "../host/load-failure.mjs" {
+  task fn loadFailure -> Unit = "unreachable"
+}
+
+foreign "typescript" from "../host/failures.mjs" {
+  task fn missing -> Unit
+  task fn syncThrow -> Unit
+  task fn promiseReject -> Unit
+}
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    println "ModuleLoad"
+    loadFailure () |> effects.recover (\_ -> effects.succeed ())
+    println "BindingLookup"
+    missing () |> effects.recover (\_ -> effects.succeed ())
+    println "SynchronousThrow"
+    syncThrow () |> effects.recover (\_ -> effects.succeed ())
+    println "PromiseRejection"
+    promiseReject () |> effects.recover (\_ -> effects.succeed ())
+  }

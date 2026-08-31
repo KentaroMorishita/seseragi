@@ -35,6 +35,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/effect.ts"),
     ),
     (
+        "src/foreign.ts",
+        include_str!("../../../runtime/ts/src/foreign.ts"),
+    ),
+    (
         "src/test.ts",
         include_str!("../../../runtime/ts/src/test.ts"),
     ),
@@ -563,6 +567,7 @@ mod tests {
         assert!(package.join("src/queue.ts").is_file());
         assert!(package.join("src/semaphore.ts").is_file());
         assert!(package.join("src/cleanup-defect.ts").is_file());
+        assert!(package.join("src/foreign.ts").is_file());
         assert!(package.join("src/stream.ts").is_file());
         assert!(package.join("src/sse.ts").is_file());
         assert!(package.join("src/multipart.ts").is_file());

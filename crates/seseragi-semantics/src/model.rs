@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::{
-    ByteSpan, InterfaceDependency, InterfaceExport, InterfaceInstance, InterfaceOperator,
-    Visibility,
+    ByteSpan, ForeignCallKind, ForeignCallMode, InterfaceDependency, InterfaceExport,
+    InterfaceInstance, InterfaceOperator, Visibility,
 };
 
 mod resolved;
@@ -16,6 +16,8 @@ pub struct TypedModule {
     pub stage: String,
     pub source: String,
     pub module: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub foreign_modules: Vec<TypedForeignModule>,
     /// External nominal types referenced by this module and needed by later
     /// target-specific import selection. This is a module import set, not an
     /// occurrence-level replacement for resolved type symbols.
@@ -31,6 +33,56 @@ pub struct TypedModule {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub instances: Vec<TypedInstance>,
     pub declarations: Vec<TypedDecl>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedForeignModule {
+    pub visibility: Visibility,
+    pub language: String,
+    pub specifier: String,
+    pub pure_load: bool,
+    pub members: Vec<TypedForeignMember>,
+    pub origin: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypedForeignMember {
+    Function {
+        mode: ForeignCallMode,
+        call_kind: ForeignCallKind,
+        symbol: String,
+        name: String,
+        host_name: String,
+        parameters: Vec<TypedParameter>,
+        return_type: TypedType,
+        origin: ByteSpan,
+    },
+    Value {
+        symbol: String,
+        name: String,
+        host_name: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    OpaqueType {
+        symbol: String,
+        name: String,
+        origin: ByteSpan,
+    },
+    Namespace {
+        symbol: String,
+        name: String,
+        host_name: String,
+        members: Vec<TypedForeignMember>,
+        origin: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

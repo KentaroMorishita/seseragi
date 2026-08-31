@@ -1,18 +1,19 @@
 use crate::declaration::is_contextual_declaration_start;
 use crate::lexer::lex;
 pub use crate::surface_model::{
-    ByteSpan, SurfaceBlockItem, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl,
-    SurfaceDoItem, SurfaceExpr, SurfaceImplMember, SurfaceImport, SurfaceImportItem,
-    SurfaceInfixStep, SurfaceLambdaParameter, SurfaceMatchArm, SurfaceMethod, SurfaceModule,
-    SurfaceParameter, SurfacePattern, SurfacePatternBinding, SurfaceRecordItem,
-    SurfaceRecordPatternField, SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant,
-    TypeParameter, TypeRef, Visibility,
+    ByteSpan, ForeignCallKind, ForeignCallMode, SurfaceBlockItem, SurfaceComprehensionClause,
+    SurfaceConstraint, SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceForeignMember,
+    SurfaceForeignModule, SurfaceImplMember, SurfaceImport, SurfaceImportItem, SurfaceInfixStep,
+    SurfaceLambdaParameter, SurfaceMatchArm, SurfaceMethod, SurfaceModule, SurfaceParameter,
+    SurfacePattern, SurfacePatternBinding, SurfaceRecordItem, SurfaceRecordPatternField,
+    SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant, TypeParameter, TypeRef, Visibility,
 };
 use crate::token::{Token, TokenKind};
 
 mod constraints;
 mod effects;
 mod expression;
+mod foreign;
 mod functions;
 #[cfg(test)]
 mod impl_tests;
@@ -45,11 +46,21 @@ pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> Surfac
         non_eof_token_count,
     };
 
+    let foreign_modules = parser.parse_foreign_modules();
+    let mut declarations = parser.parse_declarations();
+    declarations.extend(
+        foreign_modules
+            .iter()
+            .flat_map(SurfaceForeignModule::declarations),
+    );
+    declarations.sort_by_key(|declaration| declaration.span().start);
+
     SurfaceModule {
         schema: 1,
         source: stream.source,
         imports: parser.parse_imports(),
-        declarations: parser.parse_declarations(),
+        foreign_modules,
+        declarations,
     }
 }
 

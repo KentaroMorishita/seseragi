@@ -30,24 +30,14 @@ pub(super) fn resolve_expression(
         }
         SurfaceExpr::Member {
             receiver,
-            field,
             type_arguments,
             span,
             ..
         } => {
-            match receiver.as_ref() {
-                SurfaceExpr::Name { name: alias, .. }
-                    if resolver.is_module_binding(scope, alias) =>
-                {
-                    resolver.reference(
-                        scope,
-                        SymbolNamespace::Value,
-                        &format!("{alias}.{field}"),
-                        *span,
-                        true,
-                    );
-                }
-                _ => resolve_expression(resolver, scope, receiver),
+            if let Some(qualified) = qualified_module_member(resolver, scope, expression) {
+                resolver.reference(scope, SymbolNamespace::Value, &qualified, *span, true);
+            } else {
+                resolve_expression(resolver, scope, receiver);
             }
             for argument in type_arguments.iter().flatten() {
                 resolve_type_ref(resolver, scope, argument);
@@ -280,6 +270,31 @@ pub(super) fn resolve_expression(
         | SurfaceExpr::String { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Error { .. } => {}
+    }
+}
+
+fn qualified_module_member(
+    resolver: &Resolver,
+    scope: ScopeId,
+    expression: &SurfaceExpr,
+) -> Option<String> {
+    let mut fields = Vec::new();
+    let mut current = expression;
+    loop {
+        match current {
+            SurfaceExpr::Member {
+                receiver, field, ..
+            } => {
+                fields.push(field.as_str());
+                current = receiver;
+            }
+            SurfaceExpr::Name { name, .. } if resolver.is_module_binding(scope, name) => {
+                fields.push(name.as_str());
+                fields.reverse();
+                return Some(fields.join("."));
+            }
+            _ => return None,
+        }
     }
 }
 

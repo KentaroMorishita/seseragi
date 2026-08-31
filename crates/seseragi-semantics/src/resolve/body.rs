@@ -4,7 +4,8 @@ use crate::{
     ScopeKind, SymbolId, SymbolKind, SymbolNamespace,
 };
 use seseragi_syntax::{
-    parse_module_interface, parse_surface_ast, ByteSpan, ModuleInterface, SurfaceModule,
+    parse_module_interface, parse_surface_ast, ByteSpan, ModuleInterface, SurfaceForeignMember,
+    SurfaceModule,
 };
 use std::collections::BTreeMap;
 
@@ -64,6 +65,7 @@ pub fn resolve_linked_module(
     resolver.issues.extend(operator_issues);
     resolver.issues.extend(dependency_instance_issues);
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
+    register_foreign_namespaces(&mut resolver, &surface.foreign_modules);
     let imports = imports::register_linked_imports(&mut resolver, &linked.dependencies);
     declarations::resolve_declarations(&mut resolver, &surface.declarations);
     finish_resolved_module(
@@ -97,10 +99,35 @@ fn resolve_surface_module(
     let mut resolver = Resolver::new(&interface.module, module_origin);
     resolver.issues.extend(operator_issues);
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
+    register_foreign_namespaces(&mut resolver, &surface.foreign_modules);
     declarations::register_imports(&mut resolver, &interface, &surface);
     declarations::resolve_declarations(&mut resolver, &surface.declarations);
 
     finish_resolved_module(interface, surface, imports, Vec::new(), resolver)
+}
+
+fn register_foreign_namespaces(
+    resolver: &mut Resolver,
+    modules: &[seseragi_syntax::SurfaceForeignModule],
+) {
+    for namespace in modules.iter().flat_map(|module| module.members.iter()) {
+        register_foreign_namespace(resolver, namespace);
+    }
+}
+
+fn register_foreign_namespace(resolver: &mut Resolver, member: &SurfaceForeignMember) {
+    let SurfaceForeignMember::Namespace {
+        name, name_span, ..
+    } = member
+    else {
+        return;
+    };
+    resolver.register_module(
+        SymbolNamespace::Module,
+        SymbolKind::ModuleImport,
+        name,
+        *name_span,
+    );
 }
 
 fn finish_resolved_module(
@@ -119,6 +146,7 @@ fn finish_resolved_module(
         dependencies: interface.dependencies,
         imports,
         dependency_instances,
+        foreign_modules: surface.foreign_modules,
         declarations: surface.declarations,
         scopes: resolver.scopes,
         symbols: resolver.symbols,

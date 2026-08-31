@@ -26,6 +26,7 @@ fn lowers_from_either_to_a_cold_runtime_helper_call() {
         arguments: vec![named("String"), named("String")],
     };
     let module = CoreModule {
+        foreign_modules: Vec::new(),
         schema: 1,
         stage: "core-ir".to_owned(),
         module: "artifact/from-either".to_owned(),

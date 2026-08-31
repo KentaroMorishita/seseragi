@@ -5,6 +5,7 @@ use super::{
 use crate::{project_main_contract, validate_target, ExecutionTarget, HostService};
 use seseragi_driver::{
     CompiledLocalPackage, CompiledLocalProject, CompiledLocalTests, CompiledProject,
+    ForeignHostDirectory,
 };
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -19,7 +20,7 @@ pub fn run_local_package_with_options(
     package: &CompiledLocalPackage,
     options: ProcessRunOptions,
 ) -> Result<RunOutcome, RunError> {
-    run_compiled_project(&package.compiled, &package.entry_module, options, None)
+    run_compiled_project(&package.compiled, &package.entry_module, &[], options, None)
 }
 
 /// Runs a manifest-selected entry from a compiled multi-package local project.
@@ -31,7 +32,13 @@ pub fn run_local_project_with_options(
     project: &CompiledLocalProject,
     options: ProcessRunOptions,
 ) -> Result<RunOutcome, RunError> {
-    run_compiled_project(&project.compiled, &project.entry_module, options, None)
+    run_compiled_project(
+        &project.compiled,
+        &project.entry_module,
+        &project.foreign_host_directories,
+        options,
+        None,
+    )
 }
 
 pub fn run_local_project_in_directory_with_options(
@@ -43,6 +50,7 @@ pub fn run_local_project_in_directory_with_options(
     run_compiled_project(
         &project.compiled,
         &project.entry_module,
+        &project.foreign_host_directories,
         options,
         Some(&application_directory),
     )
@@ -196,6 +204,7 @@ fn absolute_application_directory(directory: &Path) -> Result<PathBuf, RunError>
 fn run_compiled_project(
     compiled: &CompiledProject,
     entry_module: &str,
+    foreign_host_directories: &[ForeignHostDirectory],
     options: ProcessRunOptions,
     application_directory: Option<&Path>,
 ) -> Result<RunOutcome, RunError> {
@@ -205,6 +214,7 @@ fn run_compiled_project(
     let result = run_in_directory(
         compiled,
         entry_module,
+        foreign_host_directories,
         &contract,
         &directory,
         options,
@@ -216,12 +226,14 @@ fn run_compiled_project(
 fn run_in_directory(
     compiled: &CompiledProject,
     entry_module: &str,
+    foreign_host_directories: &[ForeignHostDirectory],
     contract: &crate::MainContract,
     directory: &Path,
     options: ProcessRunOptions,
     application_directory: Option<&Path>,
 ) -> Result<RunOutcome, RunError> {
     stage_project_modules(compiled, directory).map_err(RunError::Host)?;
+    stage_foreign_host_directories(foreign_host_directories, directory).map_err(RunError::Host)?;
     crate::stage_typescript_package(directory).map_err(RunError::Host)?;
     let entry = compiled
         .modules
@@ -241,6 +253,124 @@ fn run_in_directory(
     )
     .map_err(|error| RunError::Host(format!("failed to stage runtime entry: {error}")))?;
     run_target(directory, application_directory)
+}
+
+pub(super) fn stage_foreign_host_directories(
+    directories: &[ForeignHostDirectory],
+    staging: &Path,
+) -> Result<(), String> {
+    let mut targets = std::collections::BTreeMap::<PathBuf, PathBuf>::new();
+    for directory in directories {
+        let package_root = fs::canonicalize(&directory.package_root).map_err(|error| {
+            format!(
+                "failed to resolve foreign host package root {}: {error}",
+                directory.package_root.display()
+            )
+        })?;
+        let source = fs::canonicalize(&directory.source).map_err(|error| {
+            format!(
+                "failed to resolve foreign host directory {}: {error}",
+                directory.source.display()
+            )
+        })?;
+        if !source.starts_with(&package_root) {
+            return Err(format!(
+                "foreign host source must stay inside package root: {}",
+                directory.source.display()
+            ));
+        }
+        for required in &directory.required_files {
+            let resolved = fs::canonicalize(required).map_err(|error| {
+                format!(
+                    "failed to resolve declared foreign host input {}: {error}",
+                    required.display()
+                )
+            })?;
+            if !resolved.starts_with(&package_root) || !resolved.is_file() {
+                return Err(format!(
+                    "declared foreign host input must be a file inside package root: {}",
+                    required.display()
+                ));
+            }
+        }
+        if directory.target.as_os_str().is_empty()
+            || directory.target.is_absolute()
+            || directory
+                .target
+                .components()
+                .any(|component| !matches!(component, std::path::Component::Normal(_)))
+        {
+            return Err(format!(
+                "foreign host target must be a canonical relative path: {}",
+                directory.target.display()
+            ));
+        }
+        if let Some(existing) = targets.insert(directory.target.clone(), source.clone()) {
+            if existing != source {
+                return Err(format!(
+                    "foreign host target {} resolves from multiple source directories",
+                    directory.target.display()
+                ));
+            }
+        }
+        copy_host_directory(&source, &staging.join(&directory.target))?;
+    }
+    Ok(())
+}
+
+fn copy_host_directory(source: &Path, target: &Path) -> Result<(), String> {
+    let metadata = fs::symlink_metadata(source).map_err(|error| {
+        format!(
+            "failed to inspect foreign host directory {}: {error}",
+            source.display()
+        )
+    })?;
+    if !metadata.is_dir() || metadata.file_type().is_symlink() {
+        return Err(format!(
+            "foreign host source must be a real directory: {}",
+            source.display()
+        ));
+    }
+    fs::create_dir_all(target).map_err(|error| {
+        format!(
+            "failed to create foreign host directory {}: {error}",
+            target.display()
+        )
+    })?;
+    let mut entries = fs::read_dir(source)
+        .map_err(|error| format!("failed to read foreign host directory: {error}"))?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|error| format!("failed to read foreign host entry: {error}"))?;
+    entries.sort_by_key(|entry| entry.file_name());
+    for entry in entries {
+        let file_type = entry
+            .file_type()
+            .map_err(|error| format!("failed to inspect foreign host entry: {error}"))?;
+        if file_type.is_symlink() {
+            return Err(format!(
+                "foreign host package must not contain symlinks: {}",
+                entry.path().display()
+            ));
+        }
+        let destination = target.join(entry.file_name());
+        if file_type.is_dir() {
+            copy_host_directory(&entry.path(), &destination)?;
+        } else if file_type.is_file() {
+            if destination.exists() {
+                return Err(format!(
+                    "foreign host file would overwrite staged output: {}",
+                    destination.display()
+                ));
+            }
+            fs::copy(entry.path(), &destination).map_err(|error| {
+                format!(
+                    "failed to stage foreign host file {}: {error}",
+                    entry.path().display()
+                )
+            })?;
+        }
+    }
+    Ok(())
 }
 
 pub(super) fn stage_project_modules(

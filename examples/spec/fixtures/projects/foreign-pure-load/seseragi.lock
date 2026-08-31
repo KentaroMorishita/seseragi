@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/foreign-pure-load@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/foreign-pure-load@0.0.0#workspace:."
+name = "fixture/foreign-pure-load"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:6a42912b94c06112090303d32361d2775adfaea6b47b53d063e30fdb7858b7cf"
+content_digest = "sha256:69ebc4f0a6684f4d4168a31eb8567cfcfdc02d78c4510869c0740dd18f38fc59"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/foreign-pure-load@0.0.0#workspace:."
+declaration = "src/main.ssrg#0-1738"
+specifier = "../host/math.mjs"
+exact_identity = "workspace:host/math.mjs"
+declaration_digest = "sha256:35208db6211ea42f94dd7f61eae61ce1dd685c6fb034230ca1df2f63cfb5ef7e"
+content_digest = "sha256:2ff405d20e0a690cefbc7e14d5e9c8a9558ea500d362ab93cb0b3c64570feec0"

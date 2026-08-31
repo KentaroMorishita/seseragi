@@ -295,7 +295,7 @@ impl SurfaceParser<'_> {
         fields
     }
 
-    fn find_matching_brace(&self, open_brace: usize, end: usize) -> Option<usize> {
+    pub(super) fn find_matching_brace(&self, open_brace: usize, end: usize) -> Option<usize> {
         let mut depth = 0usize;
         for index in open_brace..end {
             match self.kind_at(index) {

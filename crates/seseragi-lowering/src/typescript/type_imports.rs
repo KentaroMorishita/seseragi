@@ -1,4 +1,7 @@
-use crate::runtime_types::{runtime_type_import, runtime_type_imports};
+use crate::runtime_types::{
+    runtime_type_import, runtime_type_import_for_surface, runtime_type_imports,
+    runtime_type_surface_name,
+};
 use crate::{CoreModule, CoreType};
 use seseragi_semantics::ExternalTypeBinding;
 
@@ -13,6 +16,14 @@ pub(super) fn collect_module_type_imports(
     imports: &mut Vec<TypeScriptTypeImport>,
 ) {
     let type_bindings = runtime_type_bindings(module);
+    for foreign in &module.foreign_modules {
+        collect_foreign_member_type_imports(
+            &foreign.members,
+            &type_bindings,
+            requirements,
+            imports,
+        );
+    }
     for adt in &module.adts {
         for variant in &adt.variants {
             if let Some(payload) = &variant.payload {
@@ -68,27 +79,52 @@ pub(super) fn collect_module_type_imports(
 fn runtime_type_bindings(module: &CoreModule) -> Vec<ExternalTypeBinding> {
     let mut bindings = module.external_type_bindings.clone();
     for type_import in runtime_type_imports() {
-        let shadowed_by_local = module
-            .adts
-            .iter()
-            .any(|adt| adt.name == type_import.export_name)
+        let spelling = runtime_type_surface_name(type_import);
+        let shadowed_by_local = module.adts.iter().any(|adt| adt.name == spelling)
             || module
                 .structs
                 .iter()
-                .any(|structure| structure.name == type_import.export_name);
-        let already_bound = bindings
-            .iter()
-            .any(|binding| binding.spelling == type_import.export_name);
+                .any(|structure| structure.name == spelling);
+        let already_bound = bindings.iter().any(|binding| binding.spelling == spelling);
         if shadowed_by_local || already_bound {
             continue;
         }
         bindings.push(ExternalTypeBinding {
-            spelling: type_import.export_name.to_owned(),
+            spelling: spelling.to_owned(),
             canonical: type_import.canonical.to_owned(),
             provider: None,
         });
     }
     bindings
+}
+
+fn collect_foreign_member_type_imports(
+    members: &[crate::CoreForeignMember],
+    bindings: &[ExternalTypeBinding],
+    requirements: &mut Vec<String>,
+    imports: &mut Vec<TypeScriptTypeImport>,
+) {
+    for member in members {
+        match member {
+            crate::CoreForeignMember::Function {
+                parameters,
+                return_type,
+                ..
+            } => {
+                for parameter in parameters {
+                    collect_type_imports(&parameter.type_ref, bindings, requirements, imports);
+                }
+                collect_type_imports(return_type, bindings, requirements, imports);
+            }
+            crate::CoreForeignMember::Value { type_ref, .. } => {
+                collect_type_imports(type_ref, bindings, requirements, imports);
+            }
+            crate::CoreForeignMember::Namespace { members, .. } => {
+                collect_foreign_member_type_imports(members, bindings, requirements, imports);
+            }
+            crate::CoreForeignMember::OpaqueType { .. } => {}
+        }
+    }
 }
 
 fn collect_type_imports(
@@ -169,17 +205,23 @@ fn unambiguous_runtime_type(
     bindings: &[ExternalTypeBinding],
 ) -> Option<crate::runtime_types::RuntimeTypeImport> {
     let mut canonical = None;
+    let mut found = false;
     for binding in bindings
         .iter()
         .filter(|binding| binding.spelling == spelling)
     {
+        found = true;
         match canonical {
             None => canonical = Some(binding.canonical.as_str()),
             Some(existing) if existing == binding.canonical => {}
             Some(_) => return None,
         }
     }
-    canonical.and_then(runtime_type_import)
+    canonical.and_then(runtime_type_import).or_else(|| {
+        (!found && (spelling.starts_with("Js_") || spelling.starts_with("Js::")))
+            .then(|| runtime_type_import_for_surface(spelling))
+            .flatten()
+    })
 }
 
 #[cfg(test)]

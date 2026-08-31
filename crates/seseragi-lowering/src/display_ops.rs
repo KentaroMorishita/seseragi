@@ -87,6 +87,14 @@ const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
         source_map_name: "consoleErrorShow",
     },
     RuntimeDisplayDictionary {
+        semantic_identity: "Show<std/prelude::Js.Error>",
+        runtime_feature: "foreign.js-error.show",
+        local_name: "_ssrg_show_jsErrorShow",
+        module: "@seseragi/runtime/show",
+        export_name: "jsErrorShow",
+        source_map_name: "jsErrorShow",
+    },
+    RuntimeDisplayDictionary {
         semantic_identity: "Debug<std/prelude::ConsoleError>",
         runtime_feature: "effect.console.error.debug",
         local_name: "_ssrg_debug_consoleErrorDebug",

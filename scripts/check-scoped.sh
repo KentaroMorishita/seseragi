@@ -185,6 +185,8 @@ run_conformance_checks() {
   bun test runtime/providers/timezones.test.ts
   echo "Type-checking TypeScript runtime Providers..."
   "$PLAYGROUND_TSC" --noEmit -p "$ROOT/runtime/providers/tsconfig.json"
+  echo "Testing the foreign TypeScript runtime boundary..."
+  bun test runtime/ts/tests/foreign.test.ts
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     cargo run -p seseragi-conformance -- .
@@ -356,6 +358,7 @@ run_full_checks() {
     scripts/release-readiness.ts \
     scripts/release-readiness.test.ts \
     runtime/ts/src \
+    runtime/ts/tests \
     runtime/providers/browser \
     runtime/providers/bun \
     runtime/providers/node \

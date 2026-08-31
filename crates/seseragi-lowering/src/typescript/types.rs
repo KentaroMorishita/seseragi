@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 
 use super::names::{local_name, safe_identifier};
 use super::{TypeScriptParameter, TypeScriptType};
+use crate::runtime_types::runtime_type_import_for_surface;
 
 pub(super) fn type_ref_from_core_expr(
     expr: &CoreExpr,
@@ -154,7 +155,9 @@ pub(super) fn type_ref_from_core_type_with_erasure(
             TypeScriptType::Range
         }
         CoreType::Named { name, arguments } => TypeScriptType::Reference {
-            name: local_name(name),
+            name: runtime_type_import_for_surface(name)
+                .map(|type_import| safe_identifier(type_import.export_name))
+                .unwrap_or_else(|| local_name(name)),
             arguments: arguments
                 .iter()
                 .map(|argument| {

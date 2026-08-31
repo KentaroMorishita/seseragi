@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use seseragi_syntax::{InterfaceDependency, InterfaceExport, SurfaceDecl};
+use seseragi_syntax::{InterfaceDependency, InterfaceExport, SurfaceDecl, SurfaceForeignModule};
 
 mod instances;
 mod interface;
@@ -28,6 +28,8 @@ pub struct ResolvedModule {
     pub imports: Vec<ResolvedImport>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub dependency_instances: Vec<ResolvedDependencyInstance>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub foreign_modules: Vec<SurfaceForeignModule>,
     pub declarations: Vec<SurfaceDecl>,
     pub scopes: Vec<ResolvedScope>,
     pub symbols: Vec<ResolvedSymbol>,

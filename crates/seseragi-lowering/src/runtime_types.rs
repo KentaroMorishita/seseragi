@@ -56,6 +56,84 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "ConsoleError",
     },
     RuntimeTypeImport {
+        canonical: "std/prelude::Js.Error",
+        runtime_feature: "foreign.js-error.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.Unknown",
+        runtime_feature: "foreign.js-unknown.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsUnknown",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.NullOr",
+        runtime_feature: "foreign.js-null-or.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsNullOr",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.Nullable",
+        runtime_feature: "foreign.js-nullable.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsNullable",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.UndefinedOr",
+        runtime_feature: "foreign.js-undefined-or.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsUndefinedOr",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.Promise",
+        runtime_feature: "foreign.js-promise.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsPromise",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.Object",
+        runtime_feature: "foreign.js-object.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsObject",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.Number",
+        runtime_feature: "foreign.js-number.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsNumber",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.String",
+        runtime_feature: "foreign.js-string.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsString",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.Null",
+        runtime_feature: "foreign.js-null.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsNull",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.Undefined",
+        runtime_feature: "foreign.js-undefined.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsUndefined",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.MutableArray",
+        runtime_feature: "foreign.js-mutable-array.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsMutableArray",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Js.Callback",
+        runtime_feature: "foreign.js-callback.type",
+        module: "@seseragi/runtime/foreign",
+        export_name: "JsCallback",
+    },
+    RuntimeTypeImport {
         canonical: "std/prelude::Stdin",
         runtime_feature: "effect.stdin.service",
         module: "@seseragi/runtime/stdin",
@@ -1108,6 +1186,23 @@ pub(crate) fn runtime_type_import(canonical: &str) -> Option<RuntimeTypeImport> 
         .find(|type_import| type_import.canonical == canonical)
 }
 
+pub(crate) fn runtime_type_surface_name(type_import: RuntimeTypeImport) -> &'static str {
+    type_import
+        .canonical
+        .rsplit_once("::")
+        .map_or(type_import.canonical, |(_, name)| name)
+}
+
+pub(crate) fn runtime_type_import_for_surface(surface: &str) -> Option<RuntimeTypeImport> {
+    RUNTIME_TYPE_IMPORTS.iter().copied().find(|type_import| {
+        let declared = runtime_type_surface_name(*type_import);
+        declared == surface
+            || (declared.starts_with("Js.")
+                && (declared.replace('.', "_") == surface
+                    || declared.replace('.', "::") == surface))
+    })
+}
+
 pub(crate) fn runtime_type_imports() -> impl Iterator<Item = RuntimeTypeImport> {
     RUNTIME_TYPE_IMPORTS.iter().copied()
 }
@@ -1145,6 +1240,10 @@ mod tests {
         assert_eq!(binding.runtime_feature, "web.dom.binding-type");
         assert_eq!(binding.module, "@seseragi/runtime/dom");
         assert_eq!(binding.export_name, "DomBinding");
+
+        let nullable = runtime_type_import_for_surface("Js.Nullable").unwrap();
+        assert_eq!(nullable.canonical, "std/prelude::Js.Nullable");
+        assert_eq!(nullable.export_name, "JsNullable");
     }
 
     #[test]

@@ -11,5 +11,6 @@ pub(crate) fn is_contextual_declaration_start(raw: &str) -> bool {
             | "impl"
             | "instance"
             | "trait"
+            | "foreign"
     )
 }

@@ -93,7 +93,74 @@ pub struct SurfaceModule {
     pub source: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub imports: Vec<SurfaceImport>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub foreign_modules: Vec<SurfaceForeignModule>,
     pub declarations: Vec<SurfaceDecl>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceForeignModule {
+    pub visibility: Visibility,
+    pub language: String,
+    pub specifier: String,
+    pub members: Vec<SurfaceForeignMember>,
+    pub span: ByteSpan,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum ForeignCallMode {
+    Pure,
+    Task,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum ForeignCallKind {
+    Function,
+    Constructor,
+    Method,
+    Property,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
+pub enum SurfaceForeignMember {
+    Function {
+        mode: ForeignCallMode,
+        call_kind: ForeignCallKind,
+        name: String,
+        name_span: ByteSpan,
+        host_name: String,
+        parameters: Vec<SurfaceParameter>,
+        return_type: TypeRef,
+        span: ByteSpan,
+    },
+    Value {
+        name: String,
+        name_span: ByteSpan,
+        host_name: String,
+        #[serde(rename = "type")]
+        type_ref: TypeRef,
+        span: ByteSpan,
+    },
+    OpaqueType {
+        name: String,
+        name_span: ByteSpan,
+        span: ByteSpan,
+    },
+    Namespace {
+        name: String,
+        name_span: ByteSpan,
+        host_name: String,
+        members: Vec<SurfaceForeignMember>,
+        span: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

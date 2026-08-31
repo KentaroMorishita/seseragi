@@ -41,7 +41,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | Signal transaction / subscription / switchMap execution fixtureあり | Signalのmake / map / update / transaction / switchMap、Functor / Applicativeまで部分実装。Streamは未着手 |
 | module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | strict manifest + canonical local discovery + exact lock graph / Provider selection + linked compile / executionまで実装 |
-| TypeScript interop、`.d.ts`変換            | 初稿あり      | load・ABI・変換snapshot fixtureあり        | 未着手             |
+| TypeScript interop、`.d.ts`変換            | 初稿あり      | pure / task / failure / single-flight実行、ABI・変換snapshot fixtureあり | `foreign "typescript"`構文、typed interface、relative host staging、pure / task・境界codec・callback実行まで部分実装。`.d.ts`変換は未着手 |
 | collection、text、number、JSON             | 初稿あり      | Range / Array execution、persistent List traversalあり、他は境界fixture不足 | Array / `Range<Int>`のreduce・comprehensionとArray / ListのPrelude Monadまで部分実装 |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
 | filesystem、process、HTTP                  | 初稿あり      | cleanup・shutdown・body stream fixtureあり | 未着手             |

@@ -95,6 +95,42 @@ fn parses_path_dependencies_without_assigning_resolved_identity() {
 }
 
 #[test]
+fn parses_foreign_typescript_host_inputs_as_package_relative_files() {
+    let manifest = parse_manifest(
+        "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n\n[foreign.typescript]\nresolver = \"node\"\nmanifest = \"host/package.json\"\nlockfile = \"host/bun.lock\"\nbindings = \"host/seseragi.bindings.toml\"\n",
+    )
+    .unwrap();
+    let foreign = manifest.foreign_typescript.expect("foreign TypeScript");
+    assert_eq!(foreign.resolver.as_str(), "node");
+    assert_eq!(foreign.manifest.as_str(), "host/package.json");
+    assert_eq!(foreign.lockfile.as_str(), "host/bun.lock");
+    assert_eq!(
+        foreign.bindings.expect("bindings").as_str(),
+        "host/seseragi.bindings.toml"
+    );
+}
+
+#[test]
+fn rejects_unsupported_foreign_resolvers_and_escaping_host_paths() {
+    for (setting, expected) in [
+        (
+            "resolver = \"deno\"\nmanifest = \"package.json\"\nlockfile = \"deno.lock\"",
+            "unsupported foreign TypeScript resolver",
+        ),
+        (
+            "resolver = \"node\"\nmanifest = \"../package.json\"\nlockfile = \"bun.lock\"",
+            "not a package-relative file",
+        ),
+    ] {
+        let source = format!(
+            "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n\n[foreign.typescript]\n{setting}\n"
+        );
+        let error = parse_manifest(&source).unwrap_err();
+        assert!(error.to_string().contains(expected), "{error}");
+    }
+}
+
+#[test]
 fn parses_test_settings_and_rejects_non_positive_limits() {
     let manifest = parse_manifest(
         "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n\n[test]\ntarget = \"node\"\njobs = 4\ntimeout_ms = 250\ncleanup_grace_ms = 10\nseed = -7\n",

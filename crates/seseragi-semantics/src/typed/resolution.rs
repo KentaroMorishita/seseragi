@@ -150,7 +150,7 @@ impl<'a> TypedResolution<'a> {
                 let SurfaceDecl::Let {
                     pattern,
                     type_ref,
-                    body: Some(body),
+                    body,
                     ..
                 } = declaration
                 else {
@@ -159,6 +159,9 @@ impl<'a> TypedResolution<'a> {
                 let input = if let Some(type_ref) = type_ref {
                     self.semantic_value_from_type_ref(type_ref)
                 } else {
+                    let Some(body) = body else {
+                        continue;
+                    };
                     let context = PureExpressionContext::new(&[], self);
                     let analysis = analyze_resolved_expression(body, &context);
                     let type_ref = inferred_type_from_expr(&analysis.value);

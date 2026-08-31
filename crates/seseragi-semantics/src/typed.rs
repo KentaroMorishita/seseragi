@@ -3,6 +3,7 @@ use crate::{
     TypedPattern, TypedScheme, TypedType,
 };
 use seseragi_syntax::{parse_module_interface, ModuleInterface};
+use seseragi_syntax::{SurfaceForeignMember, SurfaceForeignModule};
 
 mod adt;
 #[cfg(test)]
@@ -129,6 +130,7 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
         stage: "typed-hir".to_owned(),
         source: interface.source,
         module: interface.module,
+        foreign_modules: Vec::new(),
         external_type_bindings: Vec::new(),
         module_dependencies: Vec::new(),
         instances: Vec::new(),
@@ -144,6 +146,7 @@ pub fn type_module(source_name: impl Into<String>, source: &str) -> TypedModule 
 
 pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> TypedModule {
     let resolution = TypedResolution::new(&resolved);
+    let foreign_modules = typed_foreign_modules(&resolved.foreign_modules, &resolution);
     let declarations = resolved
         .declarations
         .clone()
@@ -159,10 +162,147 @@ pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> Typ
         stage: "typed-hir".to_owned(),
         source: resolved.source,
         module: resolved.module,
+        foreign_modules,
         external_type_bindings,
         module_dependencies,
         instances,
         declarations,
+    }
+}
+
+fn typed_foreign_modules(
+    modules: &[SurfaceForeignModule],
+    resolution: &TypedResolution<'_>,
+) -> Vec<crate::TypedForeignModule> {
+    let pure_load_specifiers = modules
+        .iter()
+        .filter(|module| module.members.iter().any(foreign_member_requires_pure_load))
+        .map(|module| foreign_specifier_identity(&module.specifier))
+        .collect::<std::collections::BTreeSet<_>>();
+    modules
+        .iter()
+        .map(|module| crate::TypedForeignModule {
+            visibility: module.visibility,
+            language: module.language.clone(),
+            specifier: module.specifier.clone(),
+            pure_load: pure_load_specifiers
+                .contains(&foreign_specifier_identity(&module.specifier)),
+            members: module
+                .members
+                .iter()
+                .map(|member| typed_foreign_member(member, resolution))
+                .collect(),
+            origin: module.span,
+        })
+        .collect()
+}
+
+fn foreign_specifier_identity(specifier: &str) -> String {
+    if !specifier.starts_with('.') {
+        return specifier.to_owned();
+    }
+    let mut components = Vec::new();
+    for component in specifier.split('/') {
+        match component {
+            "" | "." => {}
+            ".." if components.last().is_some_and(|value| *value != "..") => {
+                components.pop();
+            }
+            value => components.push(value),
+        }
+    }
+    format!("./{}", components.join("/"))
+}
+
+fn foreign_member_requires_pure_load(member: &SurfaceForeignMember) -> bool {
+    match member {
+        SurfaceForeignMember::Function { mode, .. } => {
+            *mode == seseragi_syntax::ForeignCallMode::Pure
+        }
+        SurfaceForeignMember::Value { .. } => true,
+        SurfaceForeignMember::OpaqueType { .. } => false,
+        SurfaceForeignMember::Namespace { members, .. } => {
+            members.iter().any(foreign_member_requires_pure_load)
+        }
+    }
+}
+
+fn typed_foreign_member(
+    member: &SurfaceForeignMember,
+    resolution: &TypedResolution<'_>,
+) -> crate::TypedForeignMember {
+    match member {
+        SurfaceForeignMember::Function {
+            mode,
+            call_kind,
+            name,
+            name_span,
+            host_name,
+            parameters,
+            return_type,
+            span,
+        } => crate::TypedForeignMember::Function {
+            mode: *mode,
+            call_kind: *call_kind,
+            symbol: resolution
+                .declaration_symbol(*name_span, crate::SymbolKind::Function)
+                .and_then(|symbol| symbol.canonical.clone())
+                .unwrap_or_else(|| name.clone()),
+            name: name.clone(),
+            host_name: host_name.clone(),
+            parameters: functions::typed_parameters_from_surface(parameters, resolution),
+            return_type: resolution
+                .semantic_value_from_type_ref(return_type)
+                .type_ref,
+            origin: *span,
+        },
+        SurfaceForeignMember::OpaqueType {
+            name,
+            name_span,
+            span,
+        } => crate::TypedForeignMember::OpaqueType {
+            symbol: resolution
+                .declaration_symbol(*name_span, crate::SymbolKind::Type)
+                .and_then(|symbol| symbol.canonical.clone())
+                .unwrap_or_else(|| name.clone()),
+            name: name.clone(),
+            origin: *span,
+        },
+        SurfaceForeignMember::Value {
+            name,
+            name_span,
+            host_name,
+            type_ref,
+            span,
+        } => crate::TypedForeignMember::Value {
+            symbol: resolution
+                .declaration_symbol(*name_span, crate::SymbolKind::PatternBinding)
+                .and_then(|symbol| symbol.canonical.clone())
+                .unwrap_or_else(|| name.clone()),
+            name: name.clone(),
+            host_name: host_name.clone(),
+            type_ref: resolution.semantic_value_from_type_ref(type_ref).type_ref,
+            origin: *span,
+        },
+        SurfaceForeignMember::Namespace {
+            name,
+            name_span,
+            host_name,
+            members,
+            span,
+        } => crate::TypedForeignMember::Namespace {
+            symbol: resolution
+                .declaration_symbol(*name_span, crate::SymbolKind::PatternBinding)
+                .and_then(|symbol| symbol.canonical.clone())
+                .unwrap_or_else(|| name.clone()),
+            name: name.clone(),
+            host_name: host_name.clone(),
+            members: members
+                .iter()
+                .map(|member| typed_foreign_member(member, resolution))
+                .collect(),
+            origin: *span,
+        },
     }
 }
 
@@ -1973,6 +2113,26 @@ pub effect fn main =
                     arguments: Vec::new(),
                 }],
             }
+        );
+    }
+
+    #[test]
+    fn promotes_every_same_specifier_foreign_block_to_pure_load() {
+        assert_eq!(
+            foreign_specifier_identity("./nested/../host.mjs"),
+            foreign_specifier_identity("./host.mjs")
+        );
+        let source = concat!(
+            "foreign \"typescript\" from \"./host.mjs\" {\n  task fn later -> Int\n}\n",
+            "foreign \"typescript\" from \"./nested/../host.mjs\" {\n  pure value version: String\n}\n",
+        );
+        let typed = type_module("artifact/foreign-load-mode/main.ssrg", source);
+
+        assert_eq!(typed.foreign_modules.len(), 2);
+        assert!(
+            typed.foreign_modules.iter().all(|module| module.pure_load),
+            "{:?}",
+            typed.foreign_modules
         );
     }
 

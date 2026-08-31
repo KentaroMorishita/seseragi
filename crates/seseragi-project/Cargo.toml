@@ -8,6 +8,7 @@ repository.workspace = true
 [dependencies]
 semver.workspace = true
 serde.workspace = true
+serde_json.workspace = true
 seseragi-syntax = { path = "../seseragi-syntax" }
 sha2.workspace = true
 toml.workspace = true

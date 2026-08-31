@@ -290,6 +290,13 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     },
     PreludeStandardInstance {
         trait_name: "Show",
+        type_name: "Js.Error",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Show<std/prelude::Js.Error>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
         type_name: "StdinError",
         type_canonical: None,
         type_arity: 0,
@@ -1415,6 +1422,19 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "Stdin"
                 | "StdinError"
                 | "FileSystem"
+                | "Js.Error"
+                | "Js.Unknown"
+                | "Js.NullOr"
+                | "Js.Nullable"
+                | "Js.UndefinedOr"
+                | "Js.Promise"
+                | "Js.Object"
+                | "Js.Number"
+                | "Js.String"
+                | "Js.Null"
+                | "Js.Undefined"
+                | "Js.MutableArray"
+                | "Js.Callback"
         ),
         SymbolNamespace::Value => {
             crate::effect_ops::known_effect_operation_by_surface(spelling).is_some()
@@ -1459,7 +1479,9 @@ pub(crate) fn type_constructor_arity(spelling: &str) -> Option<u32> {
         return Some(sum_type.type_parameters.len() as u32);
     }
     match spelling {
-        "Array" | "List" | "Range" | "Iterator" | "Task" => Some(1),
+        "Array" | "List" | "Range" | "Iterator" | "Task" | "Js.NullOr" | "Js.Nullable"
+        | "Js.UndefinedOr" | "Js.Promise" | "Js.MutableArray" => Some(1),
+        "Js.Callback" => Some(2),
         "Effect" => Some(3),
         name if is_standalone_symbol(SymbolNamespace::Type, name) => Some(0),
         _ => None,
@@ -1471,6 +1493,19 @@ pub(crate) fn is_external_nominal_type(canonical: &str) -> bool {
         canonical,
         "std/prelude::Console"
             | "std/prelude::ConsoleError"
+            | "std/prelude::Js.Error"
+            | "std/prelude::Js.Unknown"
+            | "std/prelude::Js.NullOr"
+            | "std/prelude::Js.Nullable"
+            | "std/prelude::Js.UndefinedOr"
+            | "std/prelude::Js.Promise"
+            | "std/prelude::Js.Object"
+            | "std/prelude::Js.Number"
+            | "std/prelude::Js.String"
+            | "std/prelude::Js.Null"
+            | "std/prelude::Js.Undefined"
+            | "std/prelude::Js.MutableArray"
+            | "std/prelude::Js.Callback"
             | "std/prelude::Stdin"
             | "std/prelude::StdinError"
             | "std/prelude::Effect"
@@ -1878,6 +1913,9 @@ mod tests {
         assert_eq!(type_constructor_arity("Either"), Some(2));
         assert_eq!(type_constructor_arity("Effect"), Some(3));
         assert_eq!(type_constructor_arity("Iterator"), Some(1));
+        assert_eq!(type_constructor_arity("Js.Unknown"), Some(0));
+        assert_eq!(type_constructor_arity("Js.Nullable"), Some(1));
+        assert_eq!(type_constructor_arity("Js.Callback"), Some(2));
     }
 
     #[test]

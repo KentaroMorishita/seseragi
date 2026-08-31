@@ -158,7 +158,7 @@ mod tests {
                 .count(),
             10
         );
-        assert_eq!(surface.instances.len(), 154);
+        assert_eq!(surface.instances.len(), 155);
         for identity in [
             "Show<std/bytes::ByteError>",
             "Debug<std/bytes::BytesSliceError>",

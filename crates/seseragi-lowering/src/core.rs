@@ -1,7 +1,8 @@
 use crate::{source_span, SourceSpan};
 use serde::{Deserialize, Serialize};
-use seseragi_semantics::{ExternalTypeBinding, TypedDecl, TypedModule};
-use seseragi_syntax::{TypeParameter, Visibility};
+use seseragi_semantics::{ExternalTypeBinding, TypedDecl, TypedForeignMember, TypedModule};
+use seseragi_syntax::{ByteSpan, ForeignCallKind, ForeignCallMode, TypeParameter, Visibility};
+use std::collections::BTreeSet;
 
 mod adt;
 mod decision;
@@ -29,6 +30,8 @@ pub struct CoreModule {
     pub stage: String,
     pub module: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub foreign_modules: Vec<CoreForeignModule>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub external_type_bindings: Vec<ExternalTypeBinding>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub module_dependencies: Vec<CoreModuleDependency>,
@@ -44,6 +47,56 @@ pub struct CoreModule {
     pub bindings: Vec<CoreBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub functions: Vec<CoreFunction>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreForeignModule {
+    pub visibility: Visibility,
+    pub language: String,
+    pub specifier: String,
+    pub pure_load: bool,
+    pub members: Vec<CoreForeignMember>,
+    pub origin: SourceSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum CoreForeignMember {
+    Function {
+        mode: ForeignCallMode,
+        call_kind: ForeignCallKind,
+        symbol: String,
+        name: String,
+        host_name: String,
+        parameters: Vec<CoreParameter>,
+        return_type: CoreType,
+        origin: SourceSpan,
+    },
+    Value {
+        symbol: String,
+        name: String,
+        host_name: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    OpaqueType {
+        symbol: String,
+        name: String,
+        origin: SourceSpan,
+    },
+    Namespace {
+        symbol: String,
+        name: String,
+        host_name: String,
+        members: Vec<CoreForeignMember>,
+        origin: SourceSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -540,6 +593,31 @@ pub enum CoreMonadDoStatement {
 }
 
 pub fn lower_typed_module(module: TypedModule) -> CoreModule {
+    let mut foreign_origins = Vec::new();
+    let mut foreign_symbols = BTreeSet::new();
+    for member in module
+        .foreign_modules
+        .iter()
+        .flat_map(|foreign| foreign.members.iter())
+    {
+        collect_foreign_declaration_identity(member, &mut foreign_symbols, &mut foreign_origins);
+    }
+    let foreign_modules = module
+        .foreign_modules
+        .into_iter()
+        .map(|foreign| CoreForeignModule {
+            visibility: foreign.visibility,
+            language: foreign.language,
+            specifier: foreign.specifier,
+            pure_load: foreign.pure_load,
+            members: foreign
+                .members
+                .into_iter()
+                .map(|member| lower_foreign_member(&module.source, member))
+                .collect(),
+            origin: source_span(&module.source, foreign.origin),
+        })
+        .collect();
     let module_dependencies = module
         .module_dependencies
         .into_iter()
@@ -568,6 +646,21 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
     let mut functions = Vec::new();
 
     for declaration in module.declarations {
+        let (declaration_symbol, declaration_origin) = match &declaration {
+            TypedDecl::Alias { symbol, origin, .. }
+            | TypedDecl::Adt { symbol, origin, .. }
+            | TypedDecl::Struct { symbol, origin, .. }
+            | TypedDecl::Fn { symbol, origin, .. }
+            | TypedDecl::EffectFn { symbol, origin, .. } => (Some(symbol), *origin),
+            TypedDecl::Let {
+                bindings, origin, ..
+            } => (bindings.first().map(|binding| &binding.symbol), *origin),
+        };
+        if declaration_symbol.is_some_and(|symbol| foreign_symbols.contains(symbol))
+            || foreign_origins.contains(&declaration_origin)
+        {
+            continue;
+        }
         match declaration {
             TypedDecl::Alias {
                 symbol,
@@ -717,6 +810,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         schema: module.schema,
         stage: "core-ir".to_owned(),
         module: module.module,
+        foreign_modules,
         external_type_bindings: module.external_type_bindings,
         module_dependencies,
         adts,
@@ -725,5 +819,90 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         instances,
         bindings,
         functions,
+    }
+}
+
+fn collect_foreign_declaration_identity(
+    member: &TypedForeignMember,
+    symbols: &mut BTreeSet<String>,
+    origins: &mut Vec<ByteSpan>,
+) {
+    let (symbol, origin, members) = match member {
+        TypedForeignMember::Function { symbol, origin, .. }
+        | TypedForeignMember::OpaqueType { symbol, origin, .. }
+        | TypedForeignMember::Value { symbol, origin, .. } => (symbol, origin, None),
+        TypedForeignMember::Namespace {
+            symbol,
+            origin,
+            members,
+            ..
+        } => (symbol, origin, Some(members.as_slice())),
+    };
+    symbols.insert(symbol.clone());
+    origins.push(*origin);
+    for child in members.into_iter().flatten() {
+        collect_foreign_declaration_identity(child, symbols, origins);
+    }
+}
+
+fn lower_foreign_member(source: &str, member: TypedForeignMember) -> CoreForeignMember {
+    match member {
+        TypedForeignMember::Function {
+            mode,
+            call_kind,
+            symbol,
+            name,
+            host_name,
+            parameters,
+            return_type,
+            origin,
+        } => CoreForeignMember::Function {
+            mode,
+            call_kind,
+            symbol,
+            name,
+            host_name,
+            parameters: parameters.iter().map(lower_parameter).collect(),
+            return_type: types::lower_typed_type(return_type),
+            origin: source_span(source, origin),
+        },
+        TypedForeignMember::OpaqueType {
+            symbol,
+            name,
+            origin,
+        } => CoreForeignMember::OpaqueType {
+            symbol,
+            name,
+            origin: source_span(source, origin),
+        },
+        TypedForeignMember::Value {
+            symbol,
+            name,
+            host_name,
+            type_ref,
+            origin,
+        } => CoreForeignMember::Value {
+            symbol,
+            name,
+            host_name,
+            type_ref: types::lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedForeignMember::Namespace {
+            symbol,
+            name,
+            host_name,
+            members,
+            origin,
+        } => CoreForeignMember::Namespace {
+            symbol,
+            name,
+            host_name,
+            members: members
+                .into_iter()
+                .map(|member| lower_foreign_member(source, member))
+                .collect(),
+            origin: source_span(source, origin),
+        },
     }
 }

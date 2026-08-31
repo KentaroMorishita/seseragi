@@ -1,0 +1,8 @@
+{
+  "name": "foreign-web-load-host",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "foreign-web-host-value": "1.0.0"
+  }
+}

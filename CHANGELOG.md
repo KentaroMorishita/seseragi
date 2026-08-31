@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.37.0] - 2026-08-31
+
+- Added the canonical `foreign "typescript"` syntax through parsing, typed
+  interfaces, lowering, generated TypeScript, and Bun, Node, and Web runtime
+  execution for pure, task, value, opaque, namespace, and callback bindings.
+- Added checked value codecs, cold and cancellation-aware task invocation,
+  exact-identity single-flight module loads, structured `Js.Error` source
+  frames, host staging, manifest-backed bare package resolution, and locked
+  foreign module identities and digests.
+- Promoted pure, failure-phase, single-flight, Web bare-package, callback,
+  copy-boundary, opaque-handle, and source-map rejection fixtures to actual
+  execution coverage.
+
 ## [0.36.0] - 2026-08-30
 
 - Added `seseragi doc --test` with lexical module/item documentation discovery,

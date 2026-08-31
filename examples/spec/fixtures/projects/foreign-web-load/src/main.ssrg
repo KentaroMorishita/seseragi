@@ -1,0 +1,10 @@
+import * as effects from "std/effect"
+
+foreign "typescript" from "foreign-web-host-value" {
+  pure value selector: String = "SELECTOR"
+  pure fn label value: String -> String
+}
+
+let browserLabel = label selector
+
+pub effect fn main -> Unit = effects.succeed ()
