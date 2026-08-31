@@ -107,13 +107,23 @@ try {{
 "#,
         imports.join("\n"),
         provider_modules.join(", "),
-        match options.random_seed {
-            RandomSeed::Entropy => "delete globalThis.__SESERAGI_RANDOM_SEED__;".to_owned(),
-            RandomSeed::Fixed(seed) => format!(
-                "globalThis.__SESERAGI_RANDOM_SEED__ = {:?};",
-                seed.to_string()
-            ),
-        },
+        format!(
+            "{}\n{}",
+            match options.hash_seed {
+                RandomSeed::Entropy => "delete globalThis.__SESERAGI_HASH_SEED__;".to_owned(),
+                RandomSeed::Fixed(seed) => format!(
+                    "globalThis.__SESERAGI_HASH_SEED__ = {:?};",
+                    seed.to_string()
+                ),
+            },
+            match options.random_seed {
+                RandomSeed::Entropy => "delete globalThis.__SESERAGI_RANDOM_SEED__;".to_owned(),
+                RandomSeed::Fixed(seed) => format!(
+                    "globalThis.__SESERAGI_RANDOM_SEED__ = {:?};",
+                    seed.to_string()
+                ),
+            }
+        ),
         provider_selections,
         environment,
         failure,
@@ -155,6 +165,7 @@ mod tests {
     use super::web_entry_source;
     use crate::{
         EnvironmentBinding, FailureRenderer, HostService, MainContract, ProcessRunOptions,
+        RandomSeed,
     };
 
     #[test]
@@ -179,5 +190,25 @@ mod tests {
         assert!(source.contains("await execution.close()"));
         assert!(source.contains("await browserDom.dispose()"));
         assert!(!source.contains("apps/playground"));
+    }
+
+    #[test]
+    fn stages_browser_hash_and_random_seed_overrides() {
+        let source = web_entry_source(
+            &MainContract {
+                environment: Vec::new(),
+                failure_renderer: FailureRenderer::Never,
+            },
+            "./main.ts",
+            None,
+            ProcessRunOptions {
+                hash_seed: RandomSeed::Fixed(-11),
+                random_seed: RandomSeed::Fixed(17),
+                ..ProcessRunOptions::default()
+            },
+        );
+
+        assert!(source.contains("globalThis.__SESERAGI_HASH_SEED__ = \"-11\""));
+        assert!(source.contains("globalThis.__SESERAGI_RANDOM_SEED__ = \"17\""));
     }
 }

@@ -101,7 +101,12 @@ fn build_package(
     output_directory: &Path,
     target: Option<ProjectTarget>,
 ) -> Result<i32, String> {
-    let compiled = match compile_path(path, ProjectCommand::Build, target)? {
+    let compiled = match compile_path(
+        path,
+        ProjectCommand::Build,
+        target,
+        seseragi_runtime::DiagnosticFormat::Text,
+    )? {
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => return Ok(2),
     };

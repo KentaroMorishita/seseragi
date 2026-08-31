@@ -5,7 +5,10 @@ import {
   createForeignTaskModule,
   invokeForeignPure,
   invokeForeignTask,
+  renderCancellationDiagnostic,
   renderJsErrorDiagnostic,
+  renderRuntimeDefectDiagnostic,
+  renderTypedFailureDiagnostic,
 } from "../src/foreign"
 
 describe("foreign TypeScript boundary", () => {
@@ -384,6 +387,52 @@ describe("foreign TypeScript boundary", () => {
           ],
         },
       ],
+    })
+  })
+
+  test("renders generic failures, defects, and cancellation as runtime diagnostics", () => {
+    expect(JSON.parse(renderTypedFailureDiagnostic("Nope value"))).toEqual({
+      schema: 1,
+      kind: "TypedFailure",
+      phase: null,
+      message: "Nope value",
+      groups: [],
+    })
+    expect(
+      JSON.parse(
+        renderRuntimeDefectDiagnostic(
+          new Error("defect boom"),
+          () => undefined
+        )
+      )
+    ).toEqual({
+      schema: 1,
+      kind: "Defect",
+      phase: null,
+      message: "defect boom",
+      groups: [{ role: "Thrown", frames: [] }],
+    })
+    expect(JSON.parse(renderCancellationDiagnostic())).toEqual({
+      schema: 1,
+      kind: "Cancellation",
+      phase: null,
+      message: "execution cancelled",
+      groups: [],
+    })
+
+    const external = new Error("outside")
+    external.stack = "Error: outside\n    at explode (/private/tmp/host.mjs:1:1)"
+    expect(
+      JSON.parse(
+        renderRuntimeDefectDiagnostic(external, () =>
+          "throw new Error(\"outside\")\n"
+        )
+      ).groups[0].frames[0]
+    ).toMatchObject({
+      language: "typescript",
+      function: "explode",
+      uri: null,
+      generated: false,
     })
   })
 })

@@ -1,0 +1,2 @@
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println "process override"

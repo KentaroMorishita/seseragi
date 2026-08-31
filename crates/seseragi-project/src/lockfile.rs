@@ -22,5 +22,5 @@ pub use write::write_lockfile;
 pub(crate) const LOCKFILE_NAME: &str = "seseragi.lock";
 pub(crate) const LOCK_SCHEMA: u64 = 1;
 pub(crate) const STANDARD_LIBRARY_VERSION: &str = crate::IMPLEMENTED_LANGUAGE_VERSION;
-pub(crate) const UNICODE_VERSION: &str = "16.0.0";
+pub const UNICODE_VERSION: &str = "16.0.0";
 pub(crate) const TIMEZONE_DATABASE_VERSION: &str = "2025b";

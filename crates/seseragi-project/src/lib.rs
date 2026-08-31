@@ -55,7 +55,7 @@ pub use local_project::{
 pub use lockfile::{
     generate_lockfile, parse_lockfile, read_and_validate_development_lockfile,
     read_and_validate_lockfile, write_lockfile, LockDependency, LockError, LockForeignModule,
-    LockHostPackage, LockPackage, LockProviderSelection, LockSourceKind, Lockfile,
+    LockHostPackage, LockPackage, LockProviderSelection, LockSourceKind, Lockfile, UNICODE_VERSION,
 };
 pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,

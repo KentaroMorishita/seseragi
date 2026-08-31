@@ -15,6 +15,12 @@ pub(super) fn entry_source(
         "import { installProcessShutdown } from \"@seseragi/runtime/process\";".to_owned(),
     ];
     let mut setup = Vec::new();
+    setup.push(match options.hash_seed {
+        RandomSeed::Entropy => "delete process.env.SESERAGI_HASH_SEED;".to_owned(),
+        RandomSeed::Fixed(seed) => {
+            format!("process.env.SESERAGI_HASH_SEED = {:?};", seed.to_string())
+        }
+    });
     setup.push(match options.random_seed {
         RandomSeed::Entropy => "delete process.env.SESERAGI_RANDOM_SEED;".to_owned(),
         RandomSeed::Fixed(seed) => {
@@ -40,6 +46,15 @@ pub(super) fn entry_source(
     let mut imports_provider_websocket_server = false;
     let mut imports_provider_postgres = false;
     let mut imports_provider_sqlite = false;
+    if options.diagnostic_format == DiagnosticFormat::Json {
+        imports.push(
+            "import { renderCancellationDiagnostic, renderJsErrorDiagnostic, renderRuntimeDefectDiagnostic, renderTypedFailureDiagnostic } from \"@seseragi/runtime/foreign\";"
+                .to_owned(),
+        );
+        imports.push("import { readFileSync } from \"node:fs\";".to_owned());
+        imports.push("import { fileURLToPath } from \"node:url\";".to_owned());
+        setup.push("const readDiagnosticSource = (url) => { try { return readFileSync(url.startsWith(\"file:\") ? fileURLToPath(url) : url, \"utf8\"); } catch { return undefined; } };".to_owned());
+    }
     for (index, binding) in contract.environment.iter().enumerate() {
         let field = format!("{:?}", binding.field);
         match binding.service {
@@ -600,15 +615,6 @@ pub(super) fn entry_source(
                 "import { renderShow as failureRenderShow } from \"@seseragi/runtime/show\";"
                     .to_owned(),
             );
-            if options.diagnostic_format == DiagnosticFormat::Json {
-                imports.push(
-                    "import { renderJsErrorDiagnostic } from \"@seseragi/runtime/foreign\";"
-                        .to_owned(),
-                );
-                imports.push("import { readFileSync } from \"node:fs\";".to_owned());
-                imports.push("import { fileURLToPath } from \"node:url\";".to_owned());
-                setup.push("const readDiagnosticSource = (url) => { try { return readFileSync(url.startsWith(\"file:\") ? fileURLToPath(url) : url, \"utf8\"); } catch { return undefined; } };".to_owned());
-            }
             let mut dictionary_index = 0;
             let expression = display_dictionary_expression(
                 &DisplayDictionary {
@@ -623,7 +629,7 @@ pub(super) fn entry_source(
             setup.push(format!("const failureShow = {expression};"));
             let human = "failureRenderShow(failureShow, result.error, { layout: \"compact\" })";
             let message = if options.diagnostic_format == DiagnosticFormat::Json {
-                format!("renderJsErrorDiagnostic(result.error, readDiagnosticSource) ?? {human}")
+                format!("renderJsErrorDiagnostic(result.error, readDiagnosticSource) ?? renderTypedFailureDiagnostic({human})")
             } else {
                 human.to_owned()
             };
@@ -639,14 +645,26 @@ pub(super) fn entry_source(
         ProcessSignalMode::Cancel => "cancel",
         ProcessSignalMode::Forward => "forward",
     };
+    let defect = if options.diagnostic_format == DiagnosticFormat::Json {
+        "process.stderr.write(renderRuntimeDefectDiagnostic(runtimeDefect, readDiagnosticSource) + \"\\n\");\n  process.exitCode = 70;"
+    } else {
+        "process.stderr.write(\"seseragi: runtime defect\\n\");\n  process.exitCode = 70;"
+    };
+    let cancellation = if options.diagnostic_format == DiagnosticFormat::Json {
+        "process.stderr.write(renderCancellationDiagnostic() + \"\\n\");\n  process.exitCode = processShutdown.exitCode() ?? 130;"
+    } else {
+        "process.exitCode = processShutdown.exitCode() ?? 130;"
+    };
     format!(
-        "{}\n{}\nconst rootExecution = createEffectExecution();\nconst processShutdown = installProcessShutdown(rootExecution, {{ mode: {:?}, graceMs: {} }});\nconst environment = {{ {} }};\nlet result;\nlet hasRuntimeDefect = false;\nlet wasCancelled = false;\ntry {{\n  result = await run(main(undefined), environment, rootExecution.context);\n}} catch (runDefect) {{\n  if (isEffectCancellation(runDefect)) wasCancelled = true;\n  else hasRuntimeDefect = true;\n}}\ntry {{\n  await rootExecution.close();\n  await processShutdown.close();\n{}\n}} catch (_cleanupDefect) {{\n  hasRuntimeDefect = true;\n}}\nif (hasRuntimeDefect) {{\n  process.stderr.write(\"seseragi: runtime defect\\n\");\n  process.exitCode = 70;\n}} else if (wasCancelled) {{\n  process.exitCode = processShutdown.exitCode() ?? 130;\n}} else if (result?.kind === \"failure\") {{\n  {}\n}}\n",
+        "{}\n{}\nconst rootExecution = createEffectExecution();\nconst processShutdown = installProcessShutdown(rootExecution, {{ mode: {:?}, graceMs: {} }});\nconst environment = {{ {} }};\nlet result;\nlet hasRuntimeDefect = false;\nlet runtimeDefect;\nlet wasCancelled = false;\ntry {{\n  result = await run(main(undefined), environment, rootExecution.context);\n}} catch (runDefect) {{\n  if (isEffectCancellation(runDefect)) wasCancelled = true;\n  else {{ hasRuntimeDefect = true; runtimeDefect = runDefect; }}\n}}\ntry {{\n  await rootExecution.close();\n  await processShutdown.close();\n{}\n}} catch (cleanupDefect) {{\n  hasRuntimeDefect = true;\n  runtimeDefect ??= cleanupDefect;\n}}\nif (hasRuntimeDefect) {{\n  {}\n}} else if (wasCancelled) {{\n  {}\n}} else if (result?.kind === \"failure\") {{\n  {}\n}}\n",
         imports.join("\n"),
         setup.join("\n"),
         signal_mode,
         options.shutdown_grace_ms,
         fields.join(", "),
         cleanup_source,
+        defect,
+        cancellation,
         failure,
     )
 }
@@ -719,7 +737,8 @@ mod tests {
         assert!(source
             .contains("failureRenderShow(failureShow, result.error, { layout: \"compact\" })"));
         assert!(source.contains("stdinAdapter1.close()"));
-        assert!(source.contains("catch (_cleanupDefect)"));
+        assert!(source.contains("catch (cleanupDefect)"));
+        assert!(source.contains("runtimeDefect ??= cleanupDefect"));
         assert!(source.contains("seseragi: runtime defect\\n"));
         assert!(source.contains("process.exitCode = 70"));
         assert!(!source.contains("target mismatch"));
@@ -772,8 +791,9 @@ mod tests {
             ProcessRunOptions {
                 signal_mode: ProcessSignalMode::Forward,
                 shutdown_grace_ms: 250,
+                hash_seed: RandomSeed::Entropy,
                 random_seed: RandomSeed::Entropy,
-                diagnostic_format: DiagnosticFormat::Human,
+                diagnostic_format: DiagnosticFormat::Text,
             },
         );
 
@@ -783,6 +803,34 @@ mod tests {
             "installProcessShutdown(rootExecution, { mode: \"forward\", graceMs: 250 })"
         ));
         assert!(source.contains("process.exitCode = processShutdown.exitCode() ?? 130"));
+    }
+
+    #[test]
+    fn stages_fixed_seeds_and_machine_readable_runtime_diagnostics() {
+        let source = entry_source(
+            &MainContract {
+                environment: Vec::new(),
+                failure_renderer: FailureRenderer::Show {
+                    module: "./main.ts".to_owned(),
+                    export: "__ssrg$instance$Show$0".to_owned(),
+                    arguments: Vec::new(),
+                },
+            },
+            "./main.ts",
+            None,
+            ProcessRunOptions {
+                hash_seed: RandomSeed::Fixed(-7),
+                random_seed: RandomSeed::Fixed(42),
+                diagnostic_format: DiagnosticFormat::Json,
+                ..ProcessRunOptions::default()
+            },
+        );
+
+        assert!(source.contains("process.env.SESERAGI_HASH_SEED = \"-7\""));
+        assert!(source.contains("process.env.SESERAGI_RANDOM_SEED = \"42\""));
+        assert!(source.contains("renderTypedFailureDiagnostic"));
+        assert!(source.contains("renderRuntimeDefectDiagnostic(runtimeDefect"));
+        assert!(source.contains("renderCancellationDiagnostic()"));
     }
 
     #[test]

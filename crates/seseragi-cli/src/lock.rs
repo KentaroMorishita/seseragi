@@ -21,6 +21,7 @@ pub(crate) fn resolved_lockfile(path: &Path) -> Result<seseragi_project::Lockfil
             path,
             seseragi_project::ProjectCommand::Build,
             Some(target),
+            seseragi_runtime::DiagnosticFormat::Text,
         ) {
             Ok(crate::local_project::LocalProjectCompilation::Compiled(compiled)) => {
                 lockfile.providers.extend(

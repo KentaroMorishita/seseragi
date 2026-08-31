@@ -318,6 +318,55 @@ export function renderJsErrorDiagnostic(
   })
 }
 
+export function renderTypedFailureDiagnostic(message: string): string {
+  return JSON.stringify({
+    schema: 1,
+    kind: "TypedFailure",
+    phase: null,
+    message,
+    groups: [],
+  })
+}
+
+export function renderRuntimeDefectDiagnostic(
+  value: unknown,
+  readSource: (url: string) => string | undefined
+): string {
+  const frame =
+    value instanceof Error
+      ? stackDiagnosticFrame(value.stack, readSource)
+      : undefined
+  return JSON.stringify({
+    schema: 1,
+    kind: "Defect",
+    phase: null,
+    message: diagnosticMessage(value),
+    groups: [
+      { role: "Thrown", frames: frame === undefined ? [] : [frame] },
+    ],
+  })
+}
+
+export function renderCancellationDiagnostic(): string {
+  return JSON.stringify({
+    schema: 1,
+    kind: "Cancellation",
+    phase: null,
+    message: "execution cancelled",
+    groups: [],
+  })
+}
+
+function diagnosticMessage(value: unknown): string {
+  if (value instanceof Error && value.message.length > 0) return value.message
+  if (typeof value === "string" && value.length > 0) return value
+  try {
+    return String(value)
+  } catch {
+    return "runtime defect"
+  }
+}
+
 function isJsError(value: unknown): value is JsError {
   return (
     typeof value === "object" &&
@@ -334,7 +383,14 @@ function hostDiagnosticFrame(
   error: JsError,
   readSource: (url: string) => string | undefined
 ): RuntimeDiagnosticFrame | undefined {
-  const match = error.hostStack?.match(
+  return stackDiagnosticFrame(error.hostStack, readSource)
+}
+
+function stackDiagnosticFrame(
+  stack: string | undefined,
+  readSource: (url: string) => string | undefined
+): RuntimeDiagnosticFrame | undefined {
+  const match = stack?.match(
     /\n\s*at\s+([^\s(]+)\s+\((.+):(\d+):(\d+)\)/
   )
   if (match == null) return undefined
@@ -364,12 +420,12 @@ function hostDiagnosticFrame(
   }
 }
 
-function packageUri(url: string): string {
+function packageUri(url: string): string | null {
   const marker = "/dist/packages/"
   const pathname = url.startsWith("file:") ? new URL(url).pathname : url
   const index = pathname.indexOf(marker)
   return index === -1
-    ? url
+    ? null
     : `package://${decodeURIComponent(pathname.slice(index + marker.length))}`
 }
 

@@ -152,7 +152,12 @@ impl DevOptions {
 
 fn rebuild(project: &Path, output: &Path, version: &AtomicU64) -> Result<bool, String> {
     let started = Instant::now();
-    let compiled = match compile_path(project, ProjectCommand::Dev, None)? {
+    let compiled = match compile_path(
+        project,
+        ProjectCommand::Dev,
+        None,
+        seseragi_runtime::DiagnosticFormat::Text,
+    )? {
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => {
             eprintln!("Build failed ({})", elapsed(started));
