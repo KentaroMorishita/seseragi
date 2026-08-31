@@ -954,6 +954,66 @@ fn selects_the_prelude_effect_functor_without_source_declarations() {
     );
 }
 
+#[test]
+fn selects_operator_abi_instances_for_direct_standard_trait_methods() {
+    let source = "pub let addTwenty: Int -> Int = add 20\n\
+                  pub fn values unit: Unit -> (Bool, Int, Float, String) =\n\
+                    (eq 21 21, addTwenty 22, mul 6.0 7.0, add \"sese\" \"ragi\")\n";
+    let diagnostics =
+        crate::semantic_diagnostics("artifact/direct-trait-methods/main.ssrg", source);
+    assert!(
+        diagnostics.diagnostics.is_empty(),
+        "unexpected diagnostics: {diagnostics:#?}"
+    );
+
+    let typed = type_module("artifact/direct-trait-methods/main.ssrg", source);
+    let TypedDecl::Let { value, .. } = &typed.declarations[0] else {
+        panic!("expected partial add binding");
+    };
+    assert!(matches!(
+        value,
+        TypedExpr::Call { callee, evidence, .. }
+            if callee == "std/prelude::Add::add"
+                && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity, .. },
+                    ..
+                }] if identity == "std/int::Add")
+    ));
+}
+
+#[test]
+fn keeps_operator_abi_instances_out_of_generic_function_evidence() {
+    let diagnostics = crate::semantic_diagnostics(
+        "artifact/generic-eq-boundary/main.ssrg",
+        "pub fn same<A> left: A -> right: A -> Bool\n\
+         where Eq<A> = eq left right\n\
+         pub fn answer unit: Unit -> Bool = same 21 21\n",
+    );
+    assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0201" && diagnostic.message_key == "instance.missing"
+    }));
+}
+
+#[test]
+fn accepts_a_user_traversable_instance_with_canonical_constraints() {
+    let source = "pub type Box<A> = | Box A\n\
+                  instance Functor<Box> {\n\
+                    fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> =\n\
+                      match value { Box item -> Box (f item) }\n\
+                  }\n\
+                  instance Traversable<Box> {\n\
+                    fn traverse<G<_>, A, B>\n\
+                      f: (A -> G<B>) -> value: Box<A> -> G<Box<B>>\n\
+                    where Applicative<G> =\n\
+                      match value { Box item -> map Box (f item) }\n\
+                  }\n";
+    let diagnostics = crate::semantic_diagnostics("artifact/user-traversable/main.ssrg", source);
+    assert!(
+        diagnostics.diagnostics.is_empty(),
+        "unexpected diagnostics: {diagnostics:#?}"
+    );
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

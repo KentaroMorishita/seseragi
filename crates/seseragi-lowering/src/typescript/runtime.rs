@@ -18,6 +18,7 @@ use crate::range_ops::runtime_range_operation;
 use crate::signal_ops::runtime_signal_operation;
 use crate::stream_ops::runtime_stream_operation;
 use crate::sum_ops::runtime_sum_constructor;
+use crate::trait_method_ops::{runtime_trait_method_operation, RuntimeTraitMethodOperation};
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
     display_ops::runtime_display_dictionary_for_identity,
@@ -102,13 +103,22 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             callee,
             arguments,
             evidence,
+            trait_dispatch,
             type_ref,
             ..
         } => {
-            if runtime_collection_operation(callee, evidence).is_none() {
+            let trait_method_operation = trait_dispatch
+                .as_ref()
+                .and_then(|dispatch| runtime_trait_method_operation(&dispatch.method, evidence));
+            if runtime_collection_operation(callee, evidence).is_none()
+                && trait_method_operation.is_none()
+            {
                 collect_evidence_runtime_requirements(evidence, requirements);
             }
-            if let Some(operation) = runtime_collection_for_each_operation(callee, evidence) {
+            if let Some(RuntimeTraitMethodOperation::Int(operation)) = trait_method_operation {
+                push_unique(requirements, operation.runtime_feature);
+            } else if let Some(operation) = runtime_collection_for_each_operation(callee, evidence)
+            {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
@@ -617,12 +627,27 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             callee,
             arguments,
             evidence,
+            trait_dispatch,
             ..
         } => {
-            if runtime_collection_operation(callee, evidence).is_none() {
+            let trait_method_operation = trait_dispatch
+                .as_ref()
+                .and_then(|dispatch| runtime_trait_method_operation(&dispatch.method, evidence));
+            if runtime_collection_operation(callee, evidence).is_none()
+                && trait_method_operation.is_none()
+            {
                 collect_evidence_runtime_imports(evidence, imports);
             }
-            if let Some(operation) = runtime_collection_for_each_operation(callee, evidence) {
+            if let Some(RuntimeTraitMethodOperation::Int(operation)) = trait_method_operation {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if let Some(operation) = runtime_collection_for_each_operation(callee, evidence)
+            {
                 push_import_unique(
                     imports,
                     TypeScriptImport {

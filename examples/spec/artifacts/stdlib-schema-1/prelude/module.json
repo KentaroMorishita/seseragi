@@ -5,6 +5,114 @@
   "module": "std/prelude",
   "traits": [
     {
+      "name": "Eq",
+      "canonical": "std/prelude::Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "deriving": true,
+      "methods": [
+        {
+          "name": "eq",
+          "canonical": "std/prelude::Eq::eq",
+          "operators": [
+            "==",
+            "!="
+          ],
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ord",
+      "canonical": "std/prelude::Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "supertrait": "Eq",
+      "deriving": true,
+      "methods": [
+        {
+          "name": "compare",
+          "canonical": "std/prelude::Ord::compare",
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Ordering",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hash",
+      "canonical": "std/prelude::Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "deriving": true,
+      "methods": [
+        {
+          "name": "hash",
+          "canonical": "std/prelude::Hash::hash",
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Semigroup",
       "canonical": "std/prelude::Semigroup",
       "typeParameters": [
@@ -76,6 +184,7 @@
       "typeParameters": [
         "A"
       ],
+      "deriving": true,
       "methods": [
         {
           "name": "show",
@@ -106,6 +215,7 @@
       "typeParameters": [
         "A"
       ],
+      "deriving": true,
       "methods": [
         {
           "name": "debug",
@@ -131,6 +241,66 @@
       ]
     },
     {
+      "name": "Zero",
+      "canonical": "std/prelude::Zero",
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "zero",
+          "canonical": "std/prelude::Zero::zero",
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "One",
+      "canonical": "std/prelude::One",
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "one",
+          "canonical": "std/prelude::One::one",
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Functor",
       "canonical": "std/prelude::Functor",
       "typeParameters": [
@@ -143,6 +313,9 @@
         {
           "name": "map",
           "canonical": "std/prelude::Functor::map",
+          "operators": [
+            "<$>"
+          ],
           "signature": {
             "typeParameters": [
               {
@@ -238,6 +411,9 @@
         {
           "name": "apply",
           "canonical": "std/prelude::Applicative::apply",
+          "operators": [
+            "<*>"
+          ],
           "signature": {
             "typeParameters": [
               {
@@ -308,6 +484,9 @@
         {
           "name": "flatMap",
           "canonical": "std/prelude::Monad::flatMap",
+          "operators": [
+            ">>="
+          ],
           "signature": {
             "typeParameters": [
               {
@@ -370,6 +549,7 @@
       "typeParameters": [
         "A"
       ],
+      "deriving": true,
       "methods": [
         {
           "name": "encodeJson",
@@ -401,6 +581,7 @@
       "typeParameters": [
         "A"
       ],
+      "deriving": true,
       "methods": [
         {
           "name": "decodeJson",
@@ -433,6 +614,448 @@
                   "arguments": []
                 }
               ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Iterable",
+      "canonical": "std/prelude::Iterable",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "iterate",
+          "canonical": "std/prelude::Iterable::iterate",
+          "signature": {
+            "typeParameters": [
+              "C",
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "C",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Iterator",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reducible",
+      "canonical": "std/prelude::Reducible",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "supertrait": "Iterable",
+      "methods": [
+        {
+          "name": "reduce",
+          "canonical": "std/prelude::Reducible::reduce",
+          "signature": {
+            "typeParameters": [
+              "C",
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              },
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                }
+              },
+              {
+                "kind": "named",
+                "name": "C",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Traversable",
+      "canonical": "std/prelude::Traversable",
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "supertrait": "Functor",
+      "methods": [
+        {
+          "name": "traverse",
+          "canonical": "std/prelude::Traversable::traverse",
+          "signature": {
+            "typeParameters": [
+              {
+                "name": "F",
+                "arity": 1
+              },
+              {
+                "name": "G",
+                "arity": 1
+              },
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "G",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "G",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "constraints": [
+              {
+                "name": "Applicative",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "G",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Add",
+      "canonical": "std/prelude::Add",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "methods": [
+        {
+          "name": "add",
+          "canonical": "std/prelude::Add::add",
+          "operators": [
+            "+"
+          ],
+          "signature": {
+            "typeParameters": [
+              "L",
+              "R",
+              "O"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "L",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "O",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sub",
+      "canonical": "std/prelude::Sub",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "methods": [
+        {
+          "name": "sub",
+          "canonical": "std/prelude::Sub::sub",
+          "operators": [
+            "-"
+          ],
+          "signature": {
+            "typeParameters": [
+              "L",
+              "R",
+              "O"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "L",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "O",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mul",
+      "canonical": "std/prelude::Mul",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "methods": [
+        {
+          "name": "mul",
+          "canonical": "std/prelude::Mul::mul",
+          "operators": [
+            "*"
+          ],
+          "signature": {
+            "typeParameters": [
+              "L",
+              "R",
+              "O"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "L",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "O",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Div",
+      "canonical": "std/prelude::Div",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "methods": [
+        {
+          "name": "div",
+          "canonical": "std/prelude::Div::div",
+          "operators": [
+            "/"
+          ],
+          "signature": {
+            "typeParameters": [
+              "L",
+              "R",
+              "O"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "L",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "O",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rem",
+      "canonical": "std/prelude::Rem",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "methods": [
+        {
+          "name": "rem",
+          "canonical": "std/prelude::Rem::rem",
+          "operators": [
+            "%"
+          ],
+          "signature": {
+            "typeParameters": [
+              "L",
+              "R",
+              "O"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "L",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "O",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pow",
+      "canonical": "std/prelude::Pow",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "methods": [
+        {
+          "name": "pow",
+          "canonical": "std/prelude::Pow::pow",
+          "operators": [
+            "**"
+          ],
+          "signature": {
+            "typeParameters": [
+              "L",
+              "R",
+              "O"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "L",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "R",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "O",
+              "arguments": []
             }
           }
         }
@@ -1839,6 +2462,259 @@
       "typeConstructorCanonical": "std/signal::Signal",
       "typeConstructorArity": 1,
       "identity": "std/signal::Applicative"
+    }
+  ],
+  "builtinInstances": [
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "arguments": [
+        "Int"
+      ],
+      "identity": "std/int::Eq",
+      "dispatch": "operator-abi",
+      "strictEqualityCompatible": true
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "arguments": [
+        "Bool"
+      ],
+      "identity": "std/bool::Eq",
+      "dispatch": "operator-abi",
+      "strictEqualityCompatible": true
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "arguments": [
+        "String"
+      ],
+      "identity": "std/string::Eq",
+      "dispatch": "operator-abi",
+      "strictEqualityCompatible": true
+    },
+    {
+      "trait": "Zero",
+      "traitCanonical": "std/prelude::Zero",
+      "arguments": [
+        "Int"
+      ],
+      "identity": "std/int::Zero",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "One",
+      "traitCanonical": "std/prelude::One",
+      "arguments": [
+        "Int"
+      ],
+      "identity": "std/int::One",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Add",
+      "traitCanonical": "std/prelude::Add",
+      "arguments": [
+        "String",
+        "String",
+        "String"
+      ],
+      "identity": "std/string::Add",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Add",
+      "traitCanonical": "std/prelude::Add",
+      "arguments": [
+        "Int",
+        "Int",
+        "Int"
+      ],
+      "identity": "std/int::Add",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Sub",
+      "traitCanonical": "std/prelude::Sub",
+      "arguments": [
+        "Int",
+        "Int",
+        "Int"
+      ],
+      "identity": "std/int::Sub",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Mul",
+      "traitCanonical": "std/prelude::Mul",
+      "arguments": [
+        "Int",
+        "Int",
+        "Int"
+      ],
+      "identity": "std/int::Mul",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Div",
+      "traitCanonical": "std/prelude::Div",
+      "arguments": [
+        "Int",
+        "Int",
+        "Int"
+      ],
+      "identity": "std/int::Div",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Rem",
+      "traitCanonical": "std/prelude::Rem",
+      "arguments": [
+        "Int",
+        "Int",
+        "Int"
+      ],
+      "identity": "std/int::Rem",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Pow",
+      "traitCanonical": "std/prelude::Pow",
+      "arguments": [
+        "Int",
+        "Int",
+        "Int"
+      ],
+      "identity": "std/int::Pow",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Add",
+      "traitCanonical": "std/prelude::Add",
+      "arguments": [
+        "Float",
+        "Float",
+        "Float"
+      ],
+      "identity": "std/float::Add",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Sub",
+      "traitCanonical": "std/prelude::Sub",
+      "arguments": [
+        "Float",
+        "Float",
+        "Float"
+      ],
+      "identity": "std/float::Sub",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Mul",
+      "traitCanonical": "std/prelude::Mul",
+      "arguments": [
+        "Float",
+        "Float",
+        "Float"
+      ],
+      "identity": "std/float::Mul",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Div",
+      "traitCanonical": "std/prelude::Div",
+      "arguments": [
+        "Float",
+        "Float",
+        "Float"
+      ],
+      "identity": "std/float::Div",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Rem",
+      "traitCanonical": "std/prelude::Rem",
+      "arguments": [
+        "Float",
+        "Float",
+        "Float"
+      ],
+      "identity": "std/float::Rem",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Pow",
+      "traitCanonical": "std/prelude::Pow",
+      "arguments": [
+        "Float",
+        "Float",
+        "Float"
+      ],
+      "identity": "std/float::Pow",
+      "dispatch": "operator-abi"
+    },
+    {
+      "trait": "Iterable",
+      "traitCanonical": "std/prelude::Iterable",
+      "arguments": [
+        "Array<A>",
+        "A"
+      ],
+      "identity": "std/array::Iterable",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Iterable",
+      "traitCanonical": "std/prelude::Iterable",
+      "arguments": [
+        "List<A>",
+        "A"
+      ],
+      "identity": "std/list::Iterable",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Iterable",
+      "traitCanonical": "std/prelude::Iterable",
+      "arguments": [
+        "Range<Int>",
+        "Int"
+      ],
+      "identity": "std/range::Iterable",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Reducible",
+      "traitCanonical": "std/prelude::Reducible",
+      "arguments": [
+        "Array<A>",
+        "A"
+      ],
+      "identity": "std/array::Reducible",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Reducible",
+      "traitCanonical": "std/prelude::Reducible",
+      "arguments": [
+        "List<A>",
+        "A"
+      ],
+      "identity": "std/list::Reducible",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Reducible",
+      "traitCanonical": "std/prelude::Reducible",
+      "arguments": [
+        "Range<Int>",
+        "Int"
+      ],
+      "identity": "std/range::Reducible",
+      "dispatch": "dictionary"
     }
   ],
   "coherence": {

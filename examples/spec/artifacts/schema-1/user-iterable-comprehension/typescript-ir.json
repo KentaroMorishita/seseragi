@@ -221,6 +221,23 @@
           "kind": "number"
         }
       ],
+      "constraints": [
+        {
+          "name": "Iterable",
+          "traitIdentity": "std/prelude::Iterable",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Countdown",
+              "arguments": []
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
       "origin": {
         "source": "main.ssrg",
         "start": 344,
@@ -625,8 +642,15 @@
                 "name": "values"
               },
               {
-                "kind": "identifier",
-                "name": "__ssrg$instance$Reducible$1"
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Reducible$1",
+                "typeArguments": [],
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Iterable$0"
+                  }
+                ]
               }
             ]
           }

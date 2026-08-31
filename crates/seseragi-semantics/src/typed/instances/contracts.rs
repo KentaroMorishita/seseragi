@@ -110,6 +110,7 @@ fn validate_instance(
             &[Some(required.trait_identity)],
             resolution,
             &scoped,
+            false,
         );
         if selected.is_err() {
             issues.push(InstanceContractIssue::MissingSupertrait {

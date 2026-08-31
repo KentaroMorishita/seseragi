@@ -10243,21 +10243,6 @@
       "constraints": []
     },
     {
-      "identity": "std/prelude::Debug::debug",
-      "name": "debug",
-      "module": "std/prelude",
-      "category": "Prelude",
-      "kind": "function",
-      "signature": "debug<A> arg1: A -> String where Debug<A>",
-      "description": "Standard function provided by the compiler-owned library surface.",
-      "typeParameters": [
-        "A"
-      ],
-      "constraints": [
-        "Debug<A>"
-      ]
-    },
-    {
       "identity": "std/sse::decodeLimit",
       "name": "decodeLimit",
       "module": "std/sse",
@@ -12519,21 +12504,6 @@
       "constraints": []
     },
     {
-      "identity": "std/prelude::Show::show",
-      "name": "show",
-      "module": "std/prelude",
-      "category": "Prelude",
-      "kind": "function",
-      "signature": "show<A> arg1: A -> String where Show<A>",
-      "description": "Standard function provided by the compiler-owned library surface.",
-      "typeParameters": [
-        "A"
-      ],
-      "constraints": [
-        "Show<A>"
-      ]
-    },
-    {
       "identity": "std/random::shuffle",
       "name": "shuffle",
       "module": "std/random",
@@ -13565,6 +13535,17 @@
       "constraints": []
     },
     {
+      "identity": "std/prelude::Add",
+      "name": "Add",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Add",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::Applicative",
       "name": "Applicative",
       "module": "std/prelude",
@@ -13576,12 +13557,67 @@
       "constraints": []
     },
     {
+      "identity": "std/prelude::Debug",
+      "name": "Debug",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Debug",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Div",
+      "name": "Div",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Div",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Eq",
+      "name": "Eq",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Eq",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::Functor",
       "name": "Functor",
       "module": "std/prelude",
       "category": "Traits",
       "kind": "trait",
       "signature": "trait Functor",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Hash",
+      "name": "Hash",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Hash",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Iterable",
+      "name": "Iterable",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Iterable",
       "description": "Standard type class used for generic dispatch.",
       "typeParameters": [],
       "constraints": []
@@ -13631,6 +13667,72 @@
       "constraints": []
     },
     {
+      "identity": "std/prelude::Mul",
+      "name": "Mul",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Mul",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::One",
+      "name": "One",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait One",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Ord",
+      "name": "Ord",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Ord",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Pow",
+      "name": "Pow",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Pow",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Reducible",
+      "name": "Reducible",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Reducible",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Rem",
+      "name": "Rem",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Rem",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::Semigroup",
       "name": "Semigroup",
       "module": "std/prelude",
@@ -13640,6 +13742,67 @@
       "description": "Standard type class used for generic dispatch.",
       "typeParameters": [],
       "constraints": []
+    },
+    {
+      "identity": "std/prelude::Show",
+      "name": "Show",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Show",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Sub",
+      "name": "Sub",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Sub",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Traversable",
+      "name": "Traversable",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Traversable",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Zero",
+      "name": "Zero",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Zero",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Add::add",
+      "name": "add",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "add<L, R, O> arg1: L -> arg2: R -> O where Add<L, R, O>",
+      "description": "Applies the selected arithmetic trait instance.",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "constraints": [
+        "Add<L, R, O>"
+      ]
     },
     {
       "identity": "std/prelude::Semigroup::append",
@@ -13674,6 +13837,36 @@
       ]
     },
     {
+      "identity": "std/prelude::Ord::compare",
+      "name": "compare",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "compare<A> arg1: A -> arg2: A -> Ordering where Ord<A>",
+      "description": "Compares two values with the selected total ordering.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Ord<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Debug::debug",
+      "name": "debug",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "debug<A> arg1: A -> String where Debug<A>",
+      "description": "Standard function provided by the compiler-owned library surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Debug<A>"
+      ]
+    },
+    {
       "identity": "std/prelude::JsonDecode::decodeJson",
       "name": "decodeJson",
       "module": "std/prelude",
@@ -13686,6 +13879,23 @@
       ],
       "constraints": [
         "JsonDecode<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Div::div",
+      "name": "div",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "div<L, R, O> arg1: L -> arg2: R -> O where Div<L, R, O>",
+      "description": "Applies the selected arithmetic trait instance.",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "constraints": [
+        "Div<L, R, O>"
       ]
     },
     {
@@ -13719,6 +13929,21 @@
       ]
     },
     {
+      "identity": "std/prelude::Eq::eq",
+      "name": "eq",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "eq<A> arg1: A -> arg2: A -> Bool where Eq<A>",
+      "description": "Tests two values with the selected Eq instance.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>"
+      ]
+    },
+    {
       "identity": "std/prelude::Monad::flatMap",
       "name": "flatMap",
       "module": "std/prelude",
@@ -13733,6 +13958,37 @@
       ],
       "constraints": [
         "Monad<M<_>>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Hash::hash",
+      "name": "hash",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "hash<A> arg1: A -> Int where Hash<A>",
+      "description": "Computes the hash defined by the selected Hash instance.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Hash<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Iterable::iterate",
+      "name": "iterate",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "iterate<C, A> arg1: C -> Iterator<A> where Iterable<C, A>",
+      "description": "Creates an Iterator over a collection.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
       ]
     },
     {
@@ -13753,6 +14009,55 @@
       ]
     },
     {
+      "identity": "std/prelude::Mul::mul",
+      "name": "mul",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "mul<L, R, O> arg1: L -> arg2: R -> O where Mul<L, R, O>",
+      "description": "Applies the selected arithmetic trait instance.",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "constraints": [
+        "Mul<L, R, O>"
+      ]
+    },
+    {
+      "identity": "std/prelude::One::one",
+      "name": "one",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "one<A> arg1: Unit -> A where One<A>",
+      "description": "Returns the numeric one for the selected type.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "One<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Pow::pow",
+      "name": "pow",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "pow<L, R, O> arg1: L -> arg2: R -> O where Pow<L, R, O>",
+      "description": "Applies the selected arithmetic trait instance.",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "constraints": [
+        "Pow<L, R, O>"
+      ]
+    },
+    {
       "identity": "std/prelude::Applicative::pure",
       "name": "pure",
       "module": "std/prelude",
@@ -13766,6 +14071,106 @@
       ],
       "constraints": [
         "Applicative<F<_>>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Reducible::reduce",
+      "name": "reduce",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "reduce<C, A, B> arg1: B -> arg2: (B -> A -> B) -> arg3: C -> B where Reducible<C, A>",
+      "description": "Folds a reducible collection into one accumulated value.",
+      "typeParameters": [
+        "C",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Reducible<C, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Rem::rem",
+      "name": "rem",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "rem<L, R, O> arg1: L -> arg2: R -> O where Rem<L, R, O>",
+      "description": "Applies the selected arithmetic trait instance.",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "constraints": [
+        "Rem<L, R, O>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Show::show",
+      "name": "show",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "show<A> arg1: A -> String where Show<A>",
+      "description": "Standard function provided by the compiler-owned library surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Show<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Sub::sub",
+      "name": "sub",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "sub<L, R, O> arg1: L -> arg2: R -> O where Sub<L, R, O>",
+      "description": "Applies the selected arithmetic trait instance.",
+      "typeParameters": [
+        "L",
+        "R",
+        "O"
+      ],
+      "constraints": [
+        "Sub<L, R, O>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Traversable::traverse",
+      "name": "traverse",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "traverse<F<_>, G<_>, A, B> arg1: (A -> G<B>) -> arg2: F<A> -> G<F<B>> where Traversable<F<_>>, Applicative<G<_>>",
+      "description": "Traverses a Functor with an Applicative effect while preserving its shape.",
+      "typeParameters": [
+        "F<_>",
+        "G<_>",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Traversable<F<_>>",
+        "Applicative<G<_>>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Zero::zero",
+      "name": "zero",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "zero<A> arg1: Unit -> A where Zero<A>",
+      "description": "Returns the numeric zero for the selected type.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Zero<A>"
       ]
     }
   ]

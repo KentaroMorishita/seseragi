@@ -181,6 +181,67 @@ fn hover_uses_shared_types_for_destructured_let_and_match_bindings() {
 }
 
 #[test]
+fn prelude_registry_methods_reach_hover_and_completion_with_canonical_signatures() {
+    let uri = "file:///prelude-registry.ssrg";
+    let source = "fn same left: Int -> right: Int -> Bool = eq left right\nlet probe = tra\n";
+    let index = LineIndex::new(source);
+    let hover_offset = source.find("eq left").unwrap() + 1;
+    let completion_offset = source.find("tra").unwrap() + 3;
+    let hover = index
+        .try_locate_encoded(hover_offset, PositionEncoding::Utf16)
+        .unwrap();
+    let completion = index
+        .try_locate_encoded(completion_offset, PositionEncoding::Utf16)
+        .unwrap();
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {"textDocument": {
+                "hover": {"contentFormat": ["plaintext"]},
+                "completion": {"completionItem": {"documentationFormat": ["plaintext"]}}
+            }}}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": uri, "languageId": "seseragi", "version": 1, "text": source
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/hover",
+            "params": {"textDocument": {"uri": uri}, "position": {
+                "line": hover.line, "character": hover.character
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 3, "method": "textDocument/completion",
+            "params": {"textDocument": {"uri": uri}, "position": {
+                "line": completion.line, "character": completion.character
+            }}
+        }),
+        json!({"jsonrpc": "2.0", "id": 4, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .expect("Eq.eq hover");
+    assert!(hover.contains("eq"), "{hover}");
+    assert!(hover.contains("Eq<"), "{hover}");
+    assert!(hover.contains("Bool"), "{hover}");
+
+    let completions = response(&messages, 3)["result"].as_array().unwrap();
+    let traverse = completions
+        .iter()
+        .find(|item| item["label"] == "traverse")
+        .expect("Traversable.traverse completion");
+    let detail = traverse["detail"].as_str().expect("traverse detail");
+    assert!(detail.contains("Traversable<F"), "{detail}");
+    assert!(detail.contains("Applicative<G"), "{detail}");
+}
+
+#[test]
 fn namespace_completion_stays_scoped_inside_an_incomplete_nested_expression() {
     let uri = "file:///nested-completion.ssrg";
     let source = concat!(

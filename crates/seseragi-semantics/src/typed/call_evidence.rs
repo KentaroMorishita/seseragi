@@ -230,7 +230,9 @@ fn direct_supertrait_constraints_for_identity(
         let Some(supertrait) = crate::prelude::trait_by_name(supertrait_name) else {
             return Vec::new();
         };
-        if arguments.len() != 1 {
+        if arguments.len() != trait_spec.type_parameters.len()
+            || arguments.len() != supertrait.type_parameters.len()
+        {
             return Vec::new();
         }
         return vec![ResolvedCallConstraint {
@@ -286,6 +288,7 @@ pub(crate) fn select_function_call_evidence(
     trait_identities: &[Option<String>],
     resolution: &TypedResolution<'_>,
     scoped: &[ScopedCallEvidence],
+    allow_abi_standard: bool,
 ) -> Result<Vec<TypedCallEvidence>, TypedConstraint> {
     constraints
         .iter()
@@ -296,6 +299,13 @@ pub(crate) fn select_function_call_evidence(
             let evidence = match trait_identity {
                 Some(trait_identity) => {
                     select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
+                        .or_else(|| {
+                            (allow_abi_standard
+                                && trait_identity == format!("std/prelude::{}", constraint.name))
+                            .then(|| abi_only_standard_instance_identity(&constraint))
+                            .flatten()
+                            .map(standard_evidence)
+                        })
                 }
                 // Standard operations such as `reduce` do not resolve through
                 // a source trait method, but their constraint can still be
@@ -653,8 +663,9 @@ pub(super) fn select_standard_instance(
     // ABIs and cannot cross a generic function boundary as dictionaries.
     // Only registries with a first-class dictionary representation may be
     // selected here.
-    (matches!(constraint.name.as_str(), "Iterable" | "Reducible")
-        || crate::prelude::standard_instance_by_identity(&identity).is_some())
+    (crate::prelude::special_standard_instance(constraint).is_some_and(|instance| {
+        instance.dispatch == crate::prelude::PreludeSpecialInstanceDispatch::Dictionary
+    }) || crate::prelude::standard_instance_by_identity(&identity).is_some())
     .then(|| standard_evidence(identity))
 }
 
@@ -769,76 +780,22 @@ fn standard_type_is_shadowed(
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
-    if let [value] = constraint.arguments.as_slice() {
-        if let Some((_, _, identity)) =
-            STANDARD_VALUE_INSTANCES
-                .iter()
-                .find(|(trait_name, type_name, _)| {
-                    constraint.name == *trait_name && named_type_is(value, type_name)
-                })
-        {
-            return Some((*identity).to_owned());
-        }
-    }
     if let [type_ref] = constraint.arguments.as_slice() {
         if let Some(instance) = crate::prelude::standard_instance(&constraint.name, type_ref) {
             return Some(instance.identity.to_owned());
         }
     }
-    if let Some(identity) = arithmetic_instance_identity(constraint) {
-        return Some(identity.to_owned());
-    }
-    if let Some(identity) = equality_instance_identity(constraint) {
-        return Some(identity.to_owned());
-    }
-    let [collection, element] = constraint.arguments.as_slice() else {
-        return None;
-    };
-    let TypedType::Named { name, arguments } = collection else {
-        return None;
-    };
-    if !matches!(
-        arguments.as_slice(),
-        [collection_element] if collection_element == element
-    ) {
-        return None;
-    }
-    match (constraint.name.as_str(), name.as_str()) {
-        ("Iterable", "Array") => Some("std/array::Iterable".to_owned()),
-        ("Iterable", "List") => Some("std/list::Iterable".to_owned()),
-        ("Iterable", "Range") if named_type_is(element, "Int") => {
-            Some("std/range::Iterable".to_owned())
-        }
-        ("Reducible", "Array") => Some("std/array::Reducible".to_owned()),
-        ("Reducible", "List") => Some("std/list::Reducible".to_owned()),
-        ("Reducible", "Range") if named_type_is(element, "Int") => {
-            Some("std/range::Reducible".to_owned())
-        }
-        _ => None,
-    }
+    crate::prelude::special_standard_instance(constraint)
+        .map(|instance| instance.identity.to_owned())
 }
 
 fn abi_only_standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
-    if let [value] = constraint.arguments.as_slice() {
-        if let Some((_, _, identity)) =
-            STANDARD_VALUE_INSTANCES
-                .iter()
-                .find(|(trait_name, type_name, _)| {
-                    constraint.name == *trait_name && named_type_is(value, type_name)
-                })
-        {
-            return Some((*identity).to_owned());
-        }
-    }
-    arithmetic_instance_identity(constraint)
-        .or_else(|| equality_instance_identity(constraint))
-        .map(str::to_owned)
+    crate::prelude::special_standard_instance(constraint)
+        .filter(|instance| {
+            instance.dispatch == crate::prelude::PreludeSpecialInstanceDispatch::OperatorAbi
+        })
+        .map(|instance| instance.identity.to_owned())
 }
-
-const STANDARD_VALUE_INSTANCES: &[(&str, &str, &str)] = &[
-    ("Zero", "Int", "std/int::Zero"),
-    ("One", "Int", "std/int::One"),
-];
 
 pub(crate) fn select_iterable_evidence(
     collection: TypedType,
@@ -912,11 +869,9 @@ pub(crate) fn select_iterable_evidence(
             ));
         }
     }
-    let element = standard_iterable_element_type(&collection).ok_or_else(missing)?;
-    let constraint = TypedConstraint {
-        name: "Iterable".to_owned(),
-        arguments: vec![collection, element.clone()],
-    };
+    let constraint = crate::prelude::special_collection_constraint("Iterable", &collection)
+        .ok_or_else(missing)?;
+    let element = constraint.arguments[1].clone();
     select_call_evidence(std::slice::from_ref(&constraint))
         .map(|mut evidence| (element, evidence.remove(0)))
         .map_err(|_| constraint)
@@ -1144,25 +1099,7 @@ fn partial_binary_head_matches(
 }
 
 fn standard_binary_heads(trait_name: &str) -> Vec<[TypedType; 3]> {
-    let mut heads = Vec::new();
-    if matches!(trait_name, "Add" | "Sub" | "Mul" | "Div" | "Rem" | "Pow") {
-        let int = named_type("Int");
-        heads.push([int.clone(), int.clone(), int]);
-        let float = named_type("Float");
-        heads.push([float.clone(), float.clone(), float]);
-    }
-    if trait_name == "Add" {
-        let string = named_type("String");
-        heads.push([string.clone(), string.clone(), string]);
-    }
-    heads
-}
-
-fn named_type(name: &str) -> TypedType {
-    TypedType::Named {
-        name: name.to_owned(),
-        arguments: Vec::new(),
-    }
+    crate::prelude::special_homogeneous_instance_heads(trait_name)
 }
 
 fn contains_declared_type_parameter(
@@ -1201,82 +1138,12 @@ pub(crate) fn standard_binary_output(
     left: &TypedType,
     right: &TypedType,
 ) -> Option<TypedType> {
-    if trait_name == "Add" && named_type_is(left, "String") && named_type_is(right, "String") {
-        return Some(left.clone());
-    }
-    let supported_numeric_pair = (named_type_is(left, "Int") && named_type_is(right, "Int"))
-        || (named_type_is(left, "Float") && named_type_is(right, "Float"));
-    matches!(trait_name, "Add" | "Sub" | "Mul" | "Div" | "Rem" | "Pow")
-        .then_some(supported_numeric_pair)
-        .filter(|matches| *matches)
-        .map(|_| left.clone())
-}
-
-fn standard_iterable_element_type(collection: &TypedType) -> Option<TypedType> {
-    let TypedType::Named { name, arguments } = collection else {
-        return None;
-    };
-    match (name.as_str(), arguments.as_slice()) {
-        ("Array", [element]) => Some(element.clone()),
-        ("List", [element]) => Some(element.clone()),
-        ("Range", [element]) if named_type_is(element, "Int") => Some(element.clone()),
-        _ => None,
-    }
-}
-
-fn named_type_is(type_ref: &TypedType, expected: &str) -> bool {
-    matches!(type_ref, TypedType::Named { name, arguments } if name == expected && arguments.is_empty())
-}
-
-fn equality_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> {
-    let [value] = constraint.arguments.as_slice() else {
-        return None;
-    };
-    if constraint.name != "Eq" {
-        return None;
-    }
-    crate::prelude::standard_equality_instance(value).map(|instance| instance.identity)
-}
-
-fn arithmetic_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> {
-    let [left, right, output] = constraint.arguments.as_slice() else {
-        return None;
-    };
-    let all_string = [left, right, output].iter().all(|type_ref| {
-        matches!(type_ref, TypedType::Named { name, arguments } if name == "String" && arguments.is_empty())
-    });
-    if constraint.name == "Add" && all_string {
-        return Some("std/string::Add");
-    }
-    let all_int = [left, right, output]
-        .iter()
-        .all(|type_ref| matches!(type_ref, TypedType::Named { name, arguments } if name == "Int" && arguments.is_empty()));
-    if all_int {
-        return match constraint.name.as_str() {
-            "Add" => Some("std/int::Add"),
-            "Sub" => Some("std/int::Sub"),
-            "Mul" => Some("std/int::Mul"),
-            "Div" => Some("std/int::Div"),
-            "Rem" => Some("std/int::Rem"),
-            "Pow" => Some("std/int::Pow"),
-            _ => None,
-        };
-    }
-    let all_float = [left, right, output]
-        .iter()
-        .all(|type_ref| matches!(type_ref, TypedType::Named { name, arguments } if name == "Float" && arguments.is_empty()));
-    if all_float {
-        return match constraint.name.as_str() {
-            "Add" => Some("std/float::Add"),
-            "Sub" => Some("std/float::Sub"),
-            "Mul" => Some("std/float::Mul"),
-            "Div" => Some("std/float::Div"),
-            "Rem" => Some("std/float::Rem"),
-            "Pow" => Some("std/float::Pow"),
-            _ => None,
-        };
-    }
-    None
+    standard_binary_heads(trait_name)
+        .into_iter()
+        .find(|[candidate_left, candidate_right, _]| {
+            candidate_left == left && candidate_right == right
+        })
+        .map(|[_, _, output]| output)
 }
 
 #[cfg(test)]

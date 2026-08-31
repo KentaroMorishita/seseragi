@@ -19,6 +19,7 @@ mod signal_ops;
 mod span;
 mod stream_ops;
 mod sum_ops;
+mod trait_method_ops;
 mod typescript;
 mod web_html_ops;
 
@@ -899,6 +900,34 @@ pub fn listLength values: List<Int> -> Int = {
             bundle.typescript,
             "import { add as _ssrg_int_add } from \"@seseragi/runtime/int\"\n\nexport const add = (x: number) => (y: number) => _ssrg_int_add(x, y)\n"
         );
+    }
+
+    #[test]
+    fn lowers_direct_standard_trait_methods_through_their_operator_abi() {
+        let source = "pub let addTwenty: Int -> Int = add 20\n\
+                      pub fn values unit: Unit -> (Bool, Int, Float, String) =\n\
+                        (eq 21 21, addTwenty 22, mul 6.0 7.0, add \"sese\" \"ragi\")\n";
+        let typed = type_module("artifact/direct-trait-methods/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle
+            .typescript
+            .contains("export const addTwenty: (argument: number) => number = (_argument1) => _ssrg_int_add(20, _argument1)"));
+        assert!(bundle
+            .typescript
+            .contains("[21 === 21, addTwenty(22), 6.0 * 7.0, \"sese\" + \"ragi\"] as const"));
+        assert!(bundle
+            .metadata
+            .runtime
+            .requirements
+            .contains(&"core.int.add".to_owned()));
+        assert!(!bundle
+            .metadata
+            .runtime
+            .requirements
+            .contains(&"core.int.add-dictionary".to_owned()));
     }
 
     #[test]

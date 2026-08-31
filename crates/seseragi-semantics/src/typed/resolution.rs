@@ -1027,19 +1027,30 @@ fn standard_trait_method_callable(
     let trait_spec = crate::prelude::trait_by_name(method.trait_name)
         .expect("Prelude trait method owner must exist");
     let signature = crate::prelude::trait_method_signature(method);
+    let mut constraints = vec![crate::TypedConstraint {
+        name: trait_spec.name.to_owned(),
+        arguments: trait_spec
+            .type_parameters
+            .iter()
+            .map(|parameter| TypedType::Named {
+                name: parameter.name.to_owned(),
+                arguments: Vec::new(),
+            })
+            .collect(),
+    }];
+    constraints.extend(signature.constraints.clone());
+    let mut constraint_identities = vec![Some(trait_spec.canonical.to_owned())];
+    constraint_identities.extend(signature.constraints.iter().map(|constraint| {
+        crate::prelude::trait_by_name(&constraint.name)
+            .map(|required| required.canonical.to_owned())
+    }));
     TopLevelPureFunction {
         symbol: method.canonical.to_owned(),
         trait_identity: Some(trait_spec.canonical.to_owned()),
         trait_method: Some(method.name.to_owned()),
         type_parameters: signature.type_parameters,
-        constraints: vec![crate::TypedConstraint {
-            name: trait_spec.name.to_owned(),
-            arguments: vec![TypedType::Named {
-                name: trait_spec.type_parameter.to_owned(),
-                arguments: Vec::new(),
-            }],
-        }],
-        constraint_identities: vec![Some(trait_spec.canonical.to_owned())],
+        constraints,
+        constraint_identities,
         semantic_parameters: vec![SemanticTypeKey::Other; signature.parameters.len()],
         parameters: signature.parameters,
         result: signature.result,

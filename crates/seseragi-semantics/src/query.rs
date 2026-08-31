@@ -986,6 +986,11 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
     });
 
     for (name, callable) in standard_reference_callables() {
+        let category = if callable.trait_identity.is_some() {
+            "Traits"
+        } else {
+            standard_category(name, "std/prelude")
+        };
         let callable = finish_callable(
             callable.symbol.clone(),
             name.to_owned(),
@@ -1003,10 +1008,7 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
                 &callable.result,
             ),
         );
-        items.push(reference_from_callable(
-            callable,
-            standard_category(name, "std/prelude"),
-        ));
+        items.push(reference_from_callable(callable, category));
     }
 
     for operation in crate::effect_ops::known_effect_operations() {
@@ -1598,6 +1600,31 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         }
         "std/prelude::Semigroup::append" => "Associatively combines two values.",
         "std/prelude::Monoid::empty" => "Returns the identity value for a Monoid.",
+        "std/prelude::Eq::eq" => "Tests two values with the selected Eq instance.",
+        "std/prelude::Ord::compare" => "Compares two values with the selected total ordering.",
+        "std/prelude::Hash::hash" => "Computes the hash defined by the selected Hash instance.",
+        "std/prelude::Zero::zero" => "Returns the numeric zero for the selected type.",
+        "std/prelude::One::one" => "Returns the numeric one for the selected type.",
+        "std/prelude::Iterable::iterate" => "Creates an Iterator over a collection.",
+        "std/prelude::Reducible::reduce" => {
+            "Folds a reducible collection into one accumulated value."
+        }
+        "std/prelude::Traversable::traverse" => {
+            "Traverses a Functor with an Applicative effect while preserving its shape."
+        }
+        identity
+            if matches!(
+                identity,
+                "std/prelude::Add::add"
+                    | "std/prelude::Sub::sub"
+                    | "std/prelude::Mul::mul"
+                    | "std/prelude::Div::div"
+                    | "std/prelude::Rem::rem"
+                    | "std/prelude::Pow::pow"
+            ) =>
+        {
+            "Applies the selected arithmetic trait instance."
+        }
         "std/prelude::Maybe" => "Represents an optional value as Nothing or Just.",
         "std/prelude::Either" => "Represents either a typed failure or a success value.",
         "std/prelude::Ordering" => {
@@ -2346,5 +2373,50 @@ fn kind_name(kind: SymbolKind) -> &'static str {
         SymbolKind::Imported => "imported",
         SymbolKind::Prelude => "prelude",
         SymbolKind::Operator => "operator",
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn standard_reference_uses_canonical_prelude_trait_and_method_identities() {
+        let catalog = standard_library_catalog();
+        for identity in [
+            "std/prelude::Eq",
+            "std/prelude::Hash",
+            "std/prelude::Iterable",
+            "std/prelude::Reducible",
+            "std/prelude::Traversable",
+            "std/prelude::Add",
+        ] {
+            assert!(
+                catalog.iter().any(|item| item.identity == identity),
+                "missing {identity}"
+            );
+        }
+
+        let reduce = catalog
+            .iter()
+            .find(|item| item.identity == "std/prelude::Reducible::reduce")
+            .expect("Reducible.reduce must be in Reference");
+        assert!(reduce
+            .signature
+            .as_deref()
+            .is_some_and(|signature| signature.contains("Reducible<C, A>")));
+
+        let traverse = catalog
+            .iter()
+            .find(|item| item.identity == "std/prelude::Traversable::traverse")
+            .expect("Traversable.traverse must be in Reference");
+        assert!(
+            traverse
+                .constraints
+                .iter()
+                .any(|value| value.starts_with("Applicative<G")),
+            "{:?}",
+            traverse.constraints
+        );
     }
 }

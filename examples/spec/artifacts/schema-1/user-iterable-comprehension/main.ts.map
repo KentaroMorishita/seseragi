@@ -31,6 +31,7 @@
     "add",
     "oddSquares",
     "total",
+    "__ssrg$instance$Reducible$1",
     "renderTotals",
     "main",
     "println",
@@ -38,5 +39,5 @@
     "totals",
     "Countdown"
   ],
-  "mappings": ";;;;;;;AAAAA;;AACIC;AAQJC;AAOAC;AAbAC;AAqBAI;AAGAK;AAGAE;AAKAE;AAMAK;AAMAC"
+  "mappings": ";;;;;;;AAAAA;;AACIC;AAQJC;AAOAC;AAbAC;AAqBAI;AAGAK;AAGAE;AAKAE;AAMAM;AAMAC"
 }

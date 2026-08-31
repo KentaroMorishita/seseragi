@@ -158,6 +158,20 @@ fn dispatches_standard_reduce_through_scoped_reducible_evidence() {
 pub type Pair =
   | Pair (Int, Int)
 
+fn advance values: Pair -> Maybe<(Int, Pair)> =
+  match values {
+    Pair (first, second) ->
+      if first <= second then
+        Just (first, Pair (first + 1, second))
+      else
+        Nothing
+  }
+
+instance Iterable<Pair, Int> {
+  fn iterate values: Pair -> Iterator<Int> =
+    unfold advance values
+}
+
 instance Reducible<Pair, Int> {
   fn reduce<B>
     initial: B -> step: (B -> Int -> B) -> values: Pair -> B =
@@ -195,7 +209,7 @@ pub fn answer unit: Unit -> Int =
     assert!(
         bundle
             .typescript
-            .contains("total(Pair([20, 22] as const))(__ssrg$instance$Reducible$0)"),
+            .contains("total(Pair([20, 22] as const))(__ssrg$instance$Reducible$1(__ssrg$instance$Iterable$0))"),
         "{}",
         bundle.typescript
     );

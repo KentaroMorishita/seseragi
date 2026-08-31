@@ -2,16 +2,6 @@ use seseragi_syntax::SurfaceDecl;
 
 use super::DerivedInstanceIssue;
 
-const KNOWN_DERIVING_TRAITS: &[&str] = &[
-    "Eq",
-    "Ord",
-    "Show",
-    "Debug",
-    "Hash",
-    "JsonEncode",
-    "JsonDecode",
-];
-
 pub(super) fn unknown_trait_issues(declarations: &[SurfaceDecl]) -> Vec<DerivedInstanceIssue> {
     let mut issues = Vec::new();
     for declaration in declarations {
@@ -39,7 +29,10 @@ pub(super) fn unknown_trait_issues(declarations: &[SurfaceDecl]) -> Vec<DerivedI
         issues.extend(
             deriving
                 .iter()
-                .filter(|trait_name| !KNOWN_DERIVING_TRAITS.contains(&trait_name.as_str()))
+                .filter(|trait_name| {
+                    !crate::prelude::trait_by_name(trait_name)
+                        .is_some_and(|trait_spec| trait_spec.deriving)
+                })
                 .map(|trait_name| DerivedInstanceIssue::UnknownTrait {
                     trait_name: trait_name.clone(),
                     primary,

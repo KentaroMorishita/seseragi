@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.40.0] - 2026-09-01
+
+- Unified the standard Prelude trait, method, supertrait, deriving, operator,
+  and builtin-instance metadata into one canonical registry shared by semantic
+  analysis, typed interfaces, artifacts, references, hover, and completion.
+- Added the complete standard trait surface for equality, ordering, hashing,
+  display, algebraic identities, JSON codecs, higher-kinded abstractions,
+  collections, traversal, and arithmetic while preserving existing identities
+  and runtime semantics.
+- Lowered direct standard equality and arithmetic method calls through their
+  canonical runtime ABI metadata, including saturated and partial application,
+  without weakening the explicit generic dictionary boundary.
+- Added diagnostics for builtin-instance overlaps and regression coverage for
+  multi-parameter methods, supertraits, deriving, direct calls, generated
+  analysis artifacts, and LSP hover and completion.
+
 ## [0.39.0] - 2026-08-31
 
 - Added the embedded `.d.ts` converter and `seseragi dts convert`, including

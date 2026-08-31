@@ -6,7 +6,8 @@ use crate::TypedType;
 
 use super::{
     standard_instance_constraint_specs, trait_by_name, trait_method_signature,
-    PreludeTraitMethodSignature, STANDARD_INSTANCES, TRAITS, TRAIT_METHODS,
+    PreludeTraitMethodSignature, SPECIAL_STANDARD_INSTANCES, STANDARD_INSTANCES, TRAITS,
+    TRAIT_METHODS,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -18,6 +19,7 @@ pub struct StandardModuleSurface {
     module: &'static str,
     traits: Vec<StandardTraitSurface>,
     instances: Vec<StandardInstanceSurface>,
+    builtin_instances: Vec<StandardBuiltinInstanceSurface>,
     coherence: StandardCoherenceSurface,
 }
 
@@ -29,6 +31,8 @@ struct StandardTraitSurface {
     type_parameters: Vec<TypeParameter>,
     #[serde(skip_serializing_if = "Option::is_none")]
     supertrait: Option<&'static str>,
+    #[serde(default, skip_serializing_if = "is_false")]
+    deriving: bool,
     methods: Vec<StandardTraitMethodSurface>,
 }
 
@@ -37,6 +41,8 @@ struct StandardTraitSurface {
 struct StandardTraitMethodSurface {
     name: &'static str,
     canonical: &'static str,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    operators: Vec<&'static str>,
     signature: PreludeTraitMethodSignature,
 }
 
@@ -65,10 +71,27 @@ struct StandardInstanceConstraintSurface {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
+struct StandardBuiltinInstanceSurface {
+    #[serde(rename = "trait")]
+    trait_name: &'static str,
+    trait_canonical: &'static str,
+    arguments: Vec<&'static str>,
+    identity: &'static str,
+    dispatch: super::PreludeSpecialInstanceDispatch,
+    #[serde(default, skip_serializing_if = "is_false")]
+    strict_equality_compatible: bool,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
 struct StandardCoherenceSurface {
     standard_heads: &'static str,
     user_overlap: &'static str,
     diagnostic: &'static str,
+}
+
+fn is_false(value: &bool) -> bool {
+    !value
 }
 
 pub fn standard_prelude_surface() -> StandardModuleSurface {
@@ -82,21 +105,26 @@ pub fn standard_prelude_surface() -> StandardModuleSurface {
             .map(|trait_spec| StandardTraitSurface {
                 name: trait_spec.name,
                 canonical: trait_spec.canonical,
-                type_parameters: vec![if trait_spec.type_parameter_arity == 0 {
-                    TypeParameter::value(trait_spec.type_parameter)
-                } else {
-                    TypeParameter::constructor(
-                        trait_spec.type_parameter,
-                        trait_spec.type_parameter_arity,
-                    )
-                }],
+                type_parameters: trait_spec
+                    .type_parameters
+                    .iter()
+                    .map(|parameter| {
+                        if parameter.arity == 0 {
+                            TypeParameter::value(parameter.name)
+                        } else {
+                            TypeParameter::constructor(parameter.name, parameter.arity)
+                        }
+                    })
+                    .collect(),
                 supertrait: trait_spec.supertrait,
+                deriving: trait_spec.deriving,
                 methods: TRAIT_METHODS
                     .iter()
                     .filter(|method| method.trait_name == trait_spec.name)
                     .map(|method| StandardTraitMethodSurface {
                         name: method.name,
                         canonical: method.canonical,
+                        operators: method.operators.to_vec(),
                         signature: trait_method_signature(method),
                     })
                     .collect(),
@@ -132,6 +160,21 @@ pub fn standard_prelude_surface() -> StandardModuleSurface {
                 }
             })
             .collect(),
+        builtin_instances: SPECIAL_STANDARD_INSTANCES
+            .iter()
+            .map(|instance| {
+                let trait_spec = trait_by_name(instance.trait_name)
+                    .expect("builtin instance trait must exist in the Prelude registry");
+                StandardBuiltinInstanceSurface {
+                    trait_name: instance.trait_name,
+                    trait_canonical: trait_spec.canonical,
+                    arguments: instance.arguments.to_vec(),
+                    identity: instance.identity,
+                    dispatch: instance.dispatch,
+                    strict_equality_compatible: instance.strict_equality_compatible,
+                }
+            })
+            .collect(),
         coherence: StandardCoherenceSurface {
             standard_heads: "sealed",
             user_overlap: "compile-error",
@@ -149,16 +192,31 @@ mod tests {
         let surface = standard_prelude_surface();
 
         assert_eq!(surface.language_version, "0.1.0");
-        assert_eq!(surface.traits.len(), 9);
+        assert_eq!(surface.traits.len(), 23);
         assert_eq!(
             surface
                 .traits
                 .iter()
                 .flat_map(|trait_spec| &trait_spec.methods)
                 .count(),
-            10
+            24
         );
         assert_eq!(surface.instances.len(), 155);
+        assert_eq!(surface.builtin_instances.len(), 24);
+        for identity in [
+            "std/int::Eq",
+            "std/int::Zero",
+            "std/string::Add",
+            "std/float::Pow",
+            "std/array::Iterable",
+            "std/list::Reducible",
+            "std/range::Reducible",
+        ] {
+            assert!(surface
+                .builtin_instances
+                .iter()
+                .any(|instance| instance.identity == identity));
+        }
         for identity in [
             "Show<std/bytes::ByteError>",
             "Debug<std/bytes::BytesSliceError>",
@@ -248,5 +306,78 @@ mod tests {
         assert_eq!(array_show.constraints.len(), 1);
         assert_eq!(array_show.constraints[0].trait_name, "Show");
         assert_eq!(array_show.constraints[0].type_argument_index, 0);
+
+        for name in [
+            "Eq",
+            "Ord",
+            "Hash",
+            "Show",
+            "Debug",
+            "Zero",
+            "One",
+            "Semigroup",
+            "Monoid",
+            "JsonEncode",
+            "JsonDecode",
+            "Functor",
+            "Applicative",
+            "Monad",
+            "Iterable",
+            "Reducible",
+            "Traversable",
+            "Add",
+            "Sub",
+            "Mul",
+            "Div",
+            "Rem",
+            "Pow",
+        ] {
+            assert!(surface
+                .traits
+                .iter()
+                .any(|trait_spec| trait_spec.name == name));
+        }
+
+        let reducible = surface
+            .traits
+            .iter()
+            .find(|trait_spec| trait_spec.name == "Reducible")
+            .expect("Reducible must be part of the standard Prelude surface");
+        assert_eq!(
+            reducible.type_parameters,
+            vec![TypeParameter::value("C"), TypeParameter::value("A")]
+        );
+        assert_eq!(reducible.supertrait, Some("Iterable"));
+
+        let traversable = surface
+            .traits
+            .iter()
+            .find(|trait_spec| trait_spec.name == "Traversable")
+            .expect("Traversable must be part of the standard Prelude surface");
+        assert_eq!(traversable.supertrait, Some("Functor"));
+        assert_eq!(traversable.methods[0].signature.constraints.len(), 1);
+        assert_eq!(
+            traversable.methods[0].signature.constraints[0].name,
+            "Applicative"
+        );
+
+        let deriving = surface
+            .traits
+            .iter()
+            .filter(|trait_spec| trait_spec.deriving)
+            .map(|trait_spec| trait_spec.name)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            deriving,
+            vec![
+                "Eq",
+                "Ord",
+                "Hash",
+                "Show",
+                "Debug",
+                "JsonEncode",
+                "JsonDecode"
+            ]
+        );
     }
 }
