@@ -43,6 +43,32 @@ pub fn write_lockfile(lockfile: &Lockfile) -> String {
             output.push_str("]\n");
         }
     }
+    let mut foreign_modules = lockfile.foreign_modules.iter().collect::<Vec<_>>();
+    foreign_modules.sort_by(|left, right| {
+        (
+            left.package.as_bytes(),
+            left.declaration.as_bytes(),
+            left.specifier.as_bytes(),
+        )
+            .cmp(&(
+                right.package.as_bytes(),
+                right.declaration.as_bytes(),
+                right.specifier.as_bytes(),
+            ))
+    });
+    for foreign in foreign_modules {
+        output.push_str("\n[[foreign_modules]]\n");
+        string_line(&mut output, "package", &foreign.package);
+        string_line(&mut output, "declaration", &foreign.declaration);
+        string_line(&mut output, "specifier", &foreign.specifier);
+        string_line(&mut output, "exact_identity", &foreign.exact_identity);
+        string_line(
+            &mut output,
+            "declaration_digest",
+            &foreign.declaration_digest,
+        );
+        string_line(&mut output, "content_digest", &foreign.content_digest);
+    }
     let mut providers = lockfile.providers.iter().collect::<Vec<_>>();
     providers.sort_by(|left, right| {
         (

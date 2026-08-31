@@ -1,14 +1,15 @@
 use super::digest::{package_digests, relative_source};
 use super::{
-    parse_lockfile, LockDependency, LockError, LockPackage, LockSourceKind, Lockfile,
-    LOCKFILE_NAME, LOCK_SCHEMA, STANDARD_LIBRARY_VERSION, TIMEZONE_DATABASE_VERSION,
+    parse_lockfile, LockDependency, LockError, LockForeignModule, LockPackage, LockSourceKind,
+    Lockfile, LOCKFILE_NAME, LOCK_SCHEMA, STANDARD_LIBRARY_VERSION, TIMEZONE_DATABASE_VERSION,
     UNICODE_VERSION,
 };
 use crate::{
-    discover_local_package_graph, parse_manifest, ManifestDependency, PackageIdentity,
-    IMPLEMENTED_LANGUAGE_VERSION,
+    discover_local_package_graph, parse_manifest, resolve_foreign_typescript_module,
+    ManifestDependency, ManifestLayout, PackageIdentity, IMPLEMENTED_LANGUAGE_VERSION,
 };
 use semver::Version;
+use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::Path;
@@ -76,6 +77,27 @@ pub fn generate_lockfile(root: impl AsRef<Path>) -> Result<Lockfile, LockError> 
         });
     }
     packages.sort_by(|left, right| left.id.as_bytes().cmp(right.id.as_bytes()));
+    let mut foreign_modules = Vec::new();
+    for (identity, package) in graph.packages() {
+        foreign_modules.extend(lock_foreign_modules(
+            package.root(),
+            &package.manifest().layout,
+            package.manifest().foreign_typescript.as_ref(),
+            &identities[identity],
+        )?);
+    }
+    foreign_modules.sort_by(|left, right| {
+        (
+            left.package.as_bytes(),
+            left.declaration.as_bytes(),
+            left.specifier.as_bytes(),
+        )
+            .cmp(&(
+                right.package.as_bytes(),
+                right.declaration.as_bytes(),
+                right.specifier.as_bytes(),
+            ))
+    });
     Ok(Lockfile {
         schema: LOCK_SCHEMA,
         language: Version::parse(IMPLEMENTED_LANGUAGE_VERSION)
@@ -87,6 +109,7 @@ pub fn generate_lockfile(root: impl AsRef<Path>) -> Result<Lockfile, LockError> 
         root: identities[graph.root()].clone(),
         packages,
         providers: Vec::new(),
+        foreign_modules,
     })
 }
 
@@ -210,7 +233,93 @@ fn stale_reason(actual: &Lockfile, expected: &Lockfile, check_content: bool) -> 
             ));
         }
     }
+    if actual.foreign_modules != expected.foreign_modules {
+        return Some("foreign TypeScript exact identities or declarations changed".to_owned());
+    }
     None
+}
+
+fn lock_foreign_modules(
+    package_root: &Path,
+    layout: &ManifestLayout,
+    configuration: Option<&crate::ManifestForeignTypescript>,
+    package: &str,
+) -> Result<Vec<LockForeignModule>, LockError> {
+    let source_root = package_root.join(layout.source.as_str());
+    if !source_root.exists() {
+        return Ok(Vec::new());
+    }
+    let mut pending = vec![source_root];
+    let mut files = Vec::new();
+    while let Some(directory) = pending.pop() {
+        let entries = fs::read_dir(&directory)
+            .map_err(|error| LockError::io("read foreign source root", &directory, error))?;
+        for entry in entries {
+            let entry = entry
+                .map_err(|error| LockError::io("read foreign source entry", &directory, error))?;
+            let path = entry.path();
+            let metadata = fs::symlink_metadata(&path)
+                .map_err(|error| LockError::io("inspect foreign source entry", &path, error))?;
+            if metadata.file_type().is_symlink() {
+                return Err(LockError::PackageGraph(format!(
+                    "foreign source `{}` is a symlink",
+                    path.display()
+                )));
+            }
+            if metadata.is_dir() {
+                pending.push(path);
+            } else if metadata.is_file()
+                && path.extension().and_then(|value| value.to_str()) == Some("ssrg")
+            {
+                files.push(path);
+            }
+        }
+    }
+    files.sort();
+    let mut locked = Vec::new();
+    for path in files {
+        let source = fs::read_to_string(&path)
+            .map_err(|error| LockError::io("read foreign source", &path, error))?;
+        let surface = seseragi_syntax::parse_surface_ast(path.to_string_lossy(), &source);
+        if !surface.foreign_modules.is_empty() && configuration.is_none() {
+            return Err(LockError::PackageGraph(format!(
+                "package `{package}` uses foreign TypeScript but has no [foreign.typescript] manifest input"
+            )));
+        }
+        let relative = path.strip_prefix(package_root).map_err(|_| {
+            LockError::PackageGraph("foreign source is outside package root".to_owned())
+        })?;
+        let relative = relative
+            .components()
+            .map(|component| component.as_os_str().to_string_lossy())
+            .collect::<Vec<_>>()
+            .join("/");
+        for foreign in surface.foreign_modules {
+            let resolved = resolve_foreign_typescript_module(
+                package_root,
+                configuration,
+                &path,
+                &foreign.specifier,
+            )
+            .map_err(LockError::PackageGraph)?;
+            let declaration = format!("{relative}#{}-{}", foreign.span.start, foreign.span.end);
+            let bytes = source
+                .as_bytes()
+                .get(foreign.span.start..foreign.span.end)
+                .ok_or_else(|| {
+                    LockError::PackageGraph("foreign declaration span is invalid".to_owned())
+                })?;
+            locked.push(LockForeignModule {
+                package: package.to_owned(),
+                declaration,
+                specifier: foreign.specifier,
+                exact_identity: resolved.exact_identity().to_owned(),
+                declaration_digest: format!("sha256:{:x}", Sha256::digest(bytes)),
+                content_digest: resolved.content_digest().to_owned(),
+            });
+        }
+    }
+    Ok(locked)
 }
 
 fn lock_id(identity: &PackageIdentity, kind: LockSourceKind, source: &str) -> String {
@@ -234,6 +343,7 @@ fn validate_local_manifest_contract(
         .iter()
         .map(|package| (package.id.as_str(), package))
         .collect::<BTreeMap<_, _>>();
+    let mut expected_foreign_modules = Vec::new();
     for package in &lockfile.packages {
         if package.source_kind == LockSourceKind::Registry {
             continue;
@@ -260,6 +370,12 @@ fn validate_local_manifest_contract(
                 manifest_path.display()
             ))
         })?;
+        expected_foreign_modules.extend(lock_foreign_modules(
+            &package_root,
+            &manifest.layout,
+            manifest.foreign_typescript.as_ref(),
+            &package.id,
+        )?);
         if manifest.package.name != package.name || manifest.package.version != package.version {
             return Err(LockError::Stale(format!(
                 "manifest identity for `{}` changed",
@@ -361,6 +477,23 @@ fn validate_local_manifest_contract(
                 }
             }
         }
+    }
+    expected_foreign_modules.sort_by(|left, right| {
+        (
+            left.package.as_bytes(),
+            left.declaration.as_bytes(),
+            left.specifier.as_bytes(),
+        )
+            .cmp(&(
+                right.package.as_bytes(),
+                right.declaration.as_bytes(),
+                right.specifier.as_bytes(),
+            ))
+    });
+    if lockfile.foreign_modules != expected_foreign_modules {
+        return Err(LockError::Stale(
+            "foreign TypeScript exact identities or declarations changed".to_owned(),
+        ));
     }
     Ok(())
 }

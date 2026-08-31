@@ -6,12 +6,22 @@ use seseragi_project::{
     logical_module_id, logical_package_scope, LoadedLocalProject, LoadedLocalTests, ModuleGraph,
     ModuleIdentity, ModuleRoot,
 };
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
+use std::path::{Component, Path, PathBuf};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CompiledLocalProject {
     pub compiled: CompiledProject,
     pub entry_module: String,
+    pub foreign_host_directories: Vec<ForeignHostDirectory>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ForeignHostDirectory {
+    pub package_root: PathBuf,
+    pub source: PathBuf,
+    pub target: PathBuf,
+    pub required_files: Vec<PathBuf>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -160,6 +170,7 @@ fn compile_local_project_inner(
     project: &LoadedLocalProject,
     configuration: Option<ProjectProviderConfiguration>,
 ) -> Result<CompiledLocalProject, LocalProjectCompileError> {
+    let foreign_host_directories = collect_foreign_host_directories(project);
     let mut graph = ModuleGraph::new();
     let mut identities_by_id = BTreeMap::new();
     for (identity, _) in project.modules() {
@@ -197,7 +208,138 @@ fn compile_local_project_inner(
     Ok(CompiledLocalProject {
         entry_module: logical_module_id(project.entry()),
         compiled,
+        foreign_host_directories,
     })
+}
+
+fn collect_foreign_host_directories(project: &LoadedLocalProject) -> Vec<ForeignHostDirectory> {
+    let mut directories = BTreeMap::<(PathBuf, PathBuf, PathBuf), BTreeSet<PathBuf>>::new();
+    for (identity, module) in project.modules() {
+        let Some(package) = project.packages().package(identity.package()) else {
+            continue;
+        };
+        let surface = seseragi_syntax::parse_surface_ast(
+            module.source_path().to_string_lossy(),
+            module.source(),
+        );
+        let output = output_path(identity);
+        let Some(output_parent) = Path::new(&output).parent() else {
+            continue;
+        };
+        for foreign in surface.foreign_modules {
+            if !foreign.specifier.starts_with('.') {
+                if foreign.specifier.starts_with("node:") {
+                    continue;
+                }
+                let Some(configuration) = package.manifest().foreign_typescript.as_ref() else {
+                    continue;
+                };
+                let manifest = package.root().join(configuration.manifest.as_str());
+                let Some(host_root) = manifest.parent() else {
+                    continue;
+                };
+                let node_modules = host_root.join("node_modules");
+                directories
+                    .entry((
+                        package.root().to_owned(),
+                        node_modules,
+                        PathBuf::from("dist/packages")
+                            .join(identity.package().name().as_str())
+                            .join(identity.package().version().to_string())
+                            .join("node_modules"),
+                    ))
+                    .or_default()
+                    .extend(foreign_host_input_paths(package));
+                continue;
+            }
+            let source_file = module
+                .source_path()
+                .parent()
+                .unwrap_or_else(|| Path::new("."))
+                .join(&foreign.specifier);
+            let Some(source_directory) = source_file.parent() else {
+                continue;
+            };
+            let target_file = normalize_relative_path(&output_parent.join(&foreign.specifier));
+            let Some(target_directory) = target_file.parent() else {
+                continue;
+            };
+            let package_relative = normalize_relative_path(
+                source_file
+                    .strip_prefix(package.root())
+                    .unwrap_or(source_file.as_path()),
+            );
+            let host_root = package_relative.components().next().and_then(|component| {
+                let Component::Normal(component) = component else {
+                    return None;
+                };
+                let component = component.to_str()?;
+                (!matches!(
+                    component,
+                    "src" | "test" | "tests" | "benchmarks" | "generated"
+                ))
+                .then_some(component)
+            });
+            let (source_directory, target_directory) = if let Some(host_root) = host_root {
+                (
+                    package.root().join(host_root),
+                    PathBuf::from("dist/packages")
+                        .join(identity.package().name().as_str())
+                        .join(host_root),
+                )
+            } else {
+                (source_directory.to_owned(), target_directory.to_owned())
+            };
+            directories
+                .entry((
+                    package.root().to_owned(),
+                    source_directory,
+                    target_directory,
+                ))
+                .or_default()
+                .extend(foreign_host_input_paths(package));
+        }
+    }
+    directories
+        .into_iter()
+        .map(
+            |((package_root, source, target), required_files)| ForeignHostDirectory {
+                package_root,
+                source,
+                target,
+                required_files: required_files.into_iter().collect(),
+            },
+        )
+        .collect()
+}
+
+fn foreign_host_input_paths(package: &seseragi_project::LocalPackageManifest) -> Vec<PathBuf> {
+    let Some(configuration) = package.manifest().foreign_typescript.as_ref() else {
+        return Vec::new();
+    };
+    let mut inputs = vec![
+        package.root().join(configuration.manifest.as_str()),
+        package.root().join(configuration.lockfile.as_str()),
+    ];
+    if let Some(bindings) = &configuration.bindings {
+        inputs.push(package.root().join(bindings.as_str()));
+    }
+    inputs
+}
+
+fn normalize_relative_path(path: &Path) -> PathBuf {
+    let mut normalized = PathBuf::new();
+    for component in path.components() {
+        match component {
+            Component::Normal(value) => normalized.push(value),
+            Component::ParentDir => {
+                normalized.pop();
+            }
+            Component::CurDir => {}
+            Component::Prefix(_) | Component::RootDir => return PathBuf::new(),
+        }
+    }
+    normalized
 }
 
 fn output_path(identity: &ModuleIdentity) -> String {

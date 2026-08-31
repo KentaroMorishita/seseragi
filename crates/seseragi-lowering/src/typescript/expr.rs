@@ -237,7 +237,7 @@ pub(super) fn lower_core_expr_to_typescript(
             deferred_evidence_type_constructor_parameters,
             trait_dispatch,
             type_ref,
-            ..
+            origin,
         } => {
             let signal_operation = runtime_signal_operation(&callee);
             let signal_type_arguments = signal_operation
@@ -549,14 +549,34 @@ pub(super) fn lower_core_expr_to_typescript(
                     .get(&callee)
                     .cloned()
                     .unwrap_or_else(|| local_name(&callee));
-                lower_constrained_call(
-                    callee,
-                    arguments,
-                    evidence,
-                    deferred_evidence_parameters,
-                    deferred_evidence_type_constructor_parameters,
-                    imported_types,
-                )
+                if imported_values.contains_key(&format!("__ssrg$foreign$task:{callee}"))
+                    && evidence.is_empty()
+                    && deferred_evidence_parameters.is_empty()
+                    && deferred_evidence_type_constructor_parameters.is_empty()
+                {
+                    TypeScriptExpr::ForeignTaskCall {
+                        callee,
+                        arguments,
+                        function: imported_values
+                            .get("__ssrg$foreign$function")
+                            .cloned()
+                            .unwrap_or_else(|| "<module>".to_owned()),
+                        module: imported_values
+                            .get("__ssrg$foreign$module")
+                            .cloned()
+                            .unwrap_or_else(|| origin.source.clone()),
+                        origin,
+                    }
+                } else {
+                    lower_constrained_call(
+                        callee,
+                        arguments,
+                        evidence,
+                        deferred_evidence_parameters,
+                        deferred_evidence_type_constructor_parameters,
+                        imported_types,
+                    )
+                }
             }
         }
         CoreExpr::Lambda {
@@ -763,6 +783,7 @@ pub(super) fn lower_core_expr_to_typescript(
             callee,
             arguments,
             evidence,
+            origin,
             ..
         } => {
             let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
@@ -786,12 +807,29 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else {
-                TypeScriptExpr::Call {
-                    callee: imported_values
-                        .get(&callee)
-                        .cloned()
-                        .unwrap_or_else(|| local_name(&callee)),
-                    arguments,
+                let callee_name = imported_values
+                    .get(&callee)
+                    .cloned()
+                    .unwrap_or_else(|| local_name(&callee));
+                if imported_values.contains_key(&format!("__ssrg$foreign$task:{callee_name}")) {
+                    TypeScriptExpr::ForeignTaskCall {
+                        callee: callee_name,
+                        arguments,
+                        function: imported_values
+                            .get("__ssrg$foreign$function")
+                            .cloned()
+                            .unwrap_or_else(|| "<module>".to_owned()),
+                        module: imported_values
+                            .get("__ssrg$foreign$module")
+                            .cloned()
+                            .unwrap_or_else(|| origin.source.clone()),
+                        origin,
+                    }
+                } else {
+                    TypeScriptExpr::Call {
+                        callee: callee_name,
+                        arguments,
+                    }
                 }
             }
         }
@@ -989,6 +1027,7 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
                 })
         }
         TypeScriptExpr::Call { arguments, .. }
+        | TypeScriptExpr::ForeignTaskCall { arguments, .. }
         | TypeScriptExpr::TypeApplicationCall { arguments, .. }
         | TypeScriptExpr::RuntimeCall { arguments, .. } => {
             arguments.iter().any(typescript_expr_contains_await)

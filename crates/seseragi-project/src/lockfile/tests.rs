@@ -264,6 +264,7 @@ fn validates_a_mixed_path_and_registry_graph_with_semver_ranges() {
             },
         ],
         providers: Vec::new(),
+        foreign_modules: Vec::new(),
     };
     project.write("seseragi.lock", &write_lockfile(&lockfile));
     read_and_validate_lockfile(project.path()).unwrap();

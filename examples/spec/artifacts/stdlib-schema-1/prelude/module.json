@@ -547,6 +547,14 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Js.Error",
+      "typeConstructorCanonical": "std/prelude::Js.Error",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/prelude::Js.Error>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "StdinError",
       "typeConstructorCanonical": "std/prelude::StdinError",
       "typeConstructorArity": 0,

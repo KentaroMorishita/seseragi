@@ -189,6 +189,11 @@ fn builds_self_contained_web_outputs_for_single_files_and_projects() {
     for (index, source) in [
         root.join("crates/seseragi-cli/tests/fixtures/target-mismatch.ssrg"),
         project,
+        locked_copy(
+            &root.join("examples/spec/fixtures/projects/foreign-web-load"),
+            &directory,
+            "foreign-web-load",
+        ),
     ]
     .into_iter()
     .enumerate()
@@ -232,6 +237,10 @@ fn builds_self_contained_web_outputs_for_single_files_and_projects() {
             .join("\n");
         assert!(!output_text.contains(&root.to_string_lossy().to_string()));
         assert!(!output_text.contains("apps/playground"));
+        if index == 2 {
+            assert!(output_text.contains("browser:"));
+            assert!(output_text.contains("#app"));
+        }
 
         let second = Command::new(env!("CARGO_BIN_EXE_seseragi"))
             .arg("build")

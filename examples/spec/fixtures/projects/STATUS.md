@@ -3,7 +3,7 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (40)
+## Current product-route fixtures (46)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -22,6 +22,11 @@
 | `file-multipart-browser-e2e` | `run` | `cli-build` | `apps/playground/tests/file-multipart-browser.test.ts` |
 | `file-target-mismatch` | `diagnostic` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `filesystem-temporary-cleanup` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `foreign-failure-phases` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `foreign-pure-load` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `foreign-task-load` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `foreign-task-single-flight` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `foreign-web-load` | `run` | `cli-build` | `crates/seseragi-cli/tests/build.rs` |
 | `imported-derived-json-codecs` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `logical-short-circuit` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `module-generic-nominal-identity` | `run` | `wasm-project` | `apps/playground/tests/playground.integration.test.ts` |
@@ -39,6 +44,7 @@
 | `provider-websocket-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `random-seed` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `timezones-dst` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `source-map-rejection` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `sse-server-client-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `stdin-lines` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `stream-cold-resource` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
@@ -48,7 +54,7 @@
 | `test-discovery` | `test` | `cli-test` | `crates/seseragi-cli/src/test.rs` |
 | `typeclass-operator-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 
-## Contract-only fixtures (27)
+## Contract-only fixtures (23)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -60,9 +66,6 @@
 | `dts-generated-name` | `convert` | `planned-converter` | - |
 | `dts-namespace-runtime` | `convert` | `planned-converter` | - |
 | `dts-unsupported-any` | `diagnostic` | `planned-converter` | - |
-| `foreign-pure-load` | `run` | `planned-conformance` | - |
-| `foreign-task-load` | `run` | `planned-conformance` | - |
-| `foreign-task-single-flight` | `run` | `planned-conformance` | - |
 | `http-non-success-response` | `run` | `planned-conformance` | - |
 | `http-stream-events` | `run` | `planned-conformance` | - |
 | `imported-derived-show-debug` | `run` | `planned-conformance` | - |
@@ -75,7 +78,6 @@
 | `performance-release-shapes` | `compile` | `planned-conformance` | - |
 | `performance-stack-safety` | `run` | `planned-conformance` | - |
 | `signal-transaction-lifetime` | `run` | `planned-conformance` | - |
-| `source-map-rejection` | `run` | `planned-conformance` | - |
 | `target-capabilities` | `tooling` | `planned-tooling` | - |
 | `typescript-abi-constrained` | `diagnostic` | `planned-tooling` | - |
 | `typescript-abi-generic` | `tooling` | `planned-tooling` | - |

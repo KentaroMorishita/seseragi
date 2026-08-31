@@ -38,6 +38,7 @@ fn binding(name: &str, canonical: &str, module: &str, export: &str) -> ExternalT
 
 fn module(bindings: Vec<ExternalTypeBinding>, parameters: Vec<CoreType>) -> CoreModule {
     CoreModule {
+        foreign_modules: Vec::new(),
         schema: 1,
         stage: "core-ir".to_owned(),
         module: "fixture/main".to_owned(),

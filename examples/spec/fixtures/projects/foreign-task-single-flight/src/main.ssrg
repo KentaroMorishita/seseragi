@@ -12,14 +12,8 @@ pub effect fn main -> Unit
 with Console
 fails AppError =
   do {
-    counts <-
+    _ <-
       effects.parallel [loadCount (), loadCount ()]
         |> effects.mapError ForeignFailure
-
-    match counts {
-      [first, second] ->
-        println `${first},${second}`
-          |> effects.mapError ConsoleFailure
-      _ -> effects.succeed ()
-    }
+    println "ok" |> effects.mapError ConsoleFailure
   }

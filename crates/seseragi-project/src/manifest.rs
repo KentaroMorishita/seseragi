@@ -9,7 +9,8 @@ mod tests;
 pub use error::ManifestError;
 pub use model::{
     DependencyKey, DependencyPath, DependencyVersionRequirement, LanguageRequirement, LayoutPath,
-    Manifest, ManifestDependency, ManifestLayout, ManifestPackage, ManifestRun, ManifestTest,
-    ProviderArtifactPath, RunSeed, SignalMode, TargetId,
+    Manifest, ManifestDependency, ManifestFilePath, ManifestForeignTypescript, ManifestLayout,
+    ManifestPackage, ManifestRun, ManifestTest, ProviderArtifactPath, RunSeed, SignalMode,
+    TargetId,
 };
 pub use parse::parse_manifest;

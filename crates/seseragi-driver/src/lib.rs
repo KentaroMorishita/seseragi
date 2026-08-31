@@ -28,8 +28,8 @@ pub use input::CompileInput;
 pub use local_package::{compile_local_package, CompiledLocalPackage, LocalPackageCompileError};
 pub use local_project::{
     compile_local_project, compile_local_project_with_providers, compile_local_tests,
-    CompiledLocalProject, CompiledLocalTests, CompiledTestModule, LocalProjectCompileError,
-    LocalTestCompileError,
+    CompiledLocalProject, CompiledLocalTests, CompiledTestModule, ForeignHostDirectory,
+    LocalProjectCompileError, LocalTestCompileError,
 };
 pub use output::CompiledModule;
 pub use output_plan::{

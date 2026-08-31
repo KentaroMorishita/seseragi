@@ -1,0 +1,13 @@
+[package]
+name = "fixture/foreign-web-load"
+version = "0.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[run]
+entry = "main"
+target = "web"
+
+[foreign.typescript]
+resolver = "node"
+manifest = "host/package.json"
+lockfile = "host/bun.lock"

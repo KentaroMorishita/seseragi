@@ -11,6 +11,17 @@ pub struct Lockfile {
     pub root: String,
     pub packages: Vec<LockPackage>,
     pub providers: Vec<LockProviderSelection>,
+    pub foreign_modules: Vec<LockForeignModule>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct LockForeignModule {
+    pub package: String,
+    pub declaration: String,
+    pub specifier: String,
+    pub exact_identity: String,
+    pub declaration_digest: String,
+    pub content_digest: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

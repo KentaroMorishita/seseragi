@@ -35,10 +35,17 @@ pub enum RandomSeed {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DiagnosticFormat {
+    Human,
+    Json,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ProcessRunOptions {
     pub signal_mode: ProcessSignalMode,
     pub shutdown_grace_ms: u64,
     pub random_seed: RandomSeed,
+    pub diagnostic_format: DiagnosticFormat,
 }
 
 impl Default for ProcessRunOptions {
@@ -47,6 +54,7 @@ impl Default for ProcessRunOptions {
             signal_mode: ProcessSignalMode::Cancel,
             shutdown_grace_ms: 10_000,
             random_seed: RandomSeed::Entropy,
+            diagnostic_format: DiagnosticFormat::Human,
         }
     }
 }

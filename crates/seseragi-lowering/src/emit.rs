@@ -1,7 +1,9 @@
 use crate::typescript::types::render_typescript_type;
 use crate::{
-    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction,
-    TypeScriptModule, TypeScriptRecordValueItem, TypeScriptStatement, TypeScriptStruct,
+    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptExpr,
+    TypeScriptForeignMember, TypeScriptForeignNamespace, TypeScriptForeignOpaqueType,
+    TypeScriptFunction, TypeScriptModule, TypeScriptRecordValueItem, TypeScriptStatement,
+    TypeScriptStruct,
 };
 use serde::{Deserialize, Serialize};
 
@@ -86,7 +88,28 @@ pub fn emit_typescript_module_with_output_paths(
 
 fn render_typescript(module: &TypeScriptModule) -> String {
     let mut output = String::new();
-    let import_lines = render_import_lines(module);
+    let mut import_lines = render_import_lines(module);
+    if !module.foreign_modules.is_empty() {
+        import_lines.push(
+            concat!(
+                "import { createForeignTaskModule as _ssrg_foreign_createTaskModule, ",
+                "annotateForeignTask as _ssrg_foreign_annotateTask, ",
+                "invokeForeignPure as _ssrg_foreign_invokePure, ",
+                "invokeForeignTask as _ssrg_foreign_invokeTask, ",
+                "readForeignPureValue as _ssrg_foreign_readPureValue } ",
+                "from \"@seseragi/runtime/foreign\""
+            )
+            .to_owned(),
+        );
+        for (index, foreign) in module.foreign_modules.iter().enumerate() {
+            if foreign.pure_load {
+                import_lines.push(format!(
+                    "import * as _ssrg_foreign_module_{index} from {:?}",
+                    foreign.specifier
+                ));
+            }
+        }
+    }
     for line in &import_lines {
         output.push_str(line);
         output.push('\n');
@@ -95,11 +118,13 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         && (!module.adts.is_empty()
             || !module.structs.is_empty()
             || !module.instances.is_empty()
+            || !module.foreign_modules.is_empty()
             || !module.bindings.is_empty()
             || !module.functions.is_empty())
     {
         output.push('\n');
     }
+    render_foreign_modules(&mut output, module);
     for adt in &module.adts {
         render_adt(&mut output, adt);
     }
@@ -157,6 +182,253 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         }
     }
     output
+}
+
+fn render_foreign_modules(output: &mut String, module: &TypeScriptModule) {
+    for (module_index, foreign) in module.foreign_modules.iter().enumerate() {
+        for foreign_type in &foreign.types {
+            render_foreign_opaque_type(output, foreign_type, foreign.exported);
+        }
+        for namespace in &foreign.namespaces {
+            render_foreign_namespace_types(output, namespace, foreign.exported);
+        }
+        let loader = format!("_ssrg_foreign_loader_{module_index}");
+        if foreign.pure_load {
+            output.push_str(&format!(
+                "const {loader} = _ssrg_foreign_createTaskModule(() => Promise.resolve(_ssrg_foreign_module_{module_index}), import.meta.resolve({:?}));\n",
+                foreign.specifier,
+            ));
+        } else {
+            output.push_str(&format!(
+                "const {loader} = _ssrg_foreign_createTaskModule(() => import({:?}), import.meta.resolve({:?}));\n",
+                foreign.specifier,
+                foreign.specifier
+            ));
+        }
+        for value in &foreign.values {
+            if foreign.exported {
+                output.push_str("export ");
+            }
+            output.push_str(&format!(
+                "const {}: {} = _ssrg_foreign_readPureValue(_ssrg_foreign_module_{module_index}, {}, {}) as {};\n",
+                value.name,
+                render_typescript_type(&value.type_ref),
+                foreign_path(&[value.host_name.clone()]),
+                value.codec,
+                render_typescript_type(&value.type_ref),
+            ));
+        }
+        for member in &foreign.members {
+            render_foreign_function(
+                output,
+                member,
+                foreign.exported,
+                module_index,
+                &loader,
+                &[member.host_name.clone()],
+            );
+        }
+        for namespace in &foreign.namespaces {
+            render_foreign_namespace_bindings(output, namespace, module_index, &loader, &[]);
+            render_foreign_namespace(
+                output,
+                namespace,
+                foreign.exported,
+                module_index,
+                &loader,
+                &[],
+            );
+        }
+    }
+}
+
+fn render_foreign_opaque_type(
+    output: &mut String,
+    foreign_type: &TypeScriptForeignOpaqueType,
+    exported: bool,
+) {
+    output.push_str(&format!(
+        "declare const {}: unique symbol;\n",
+        foreign_type.brand
+    ));
+    if exported {
+        output.push_str("export ");
+    }
+    output.push_str(&format!(
+        "type {} = object & {{ readonly [{}]: true }};\n",
+        foreign_type.name, foreign_type.brand
+    ));
+}
+
+fn render_foreign_namespace_types(
+    output: &mut String,
+    namespace: &TypeScriptForeignNamespace,
+    exported: bool,
+) {
+    for foreign_type in &namespace.types {
+        render_foreign_opaque_type(output, foreign_type, exported);
+    }
+    for child in &namespace.namespaces {
+        render_foreign_namespace_types(output, child, exported);
+    }
+}
+
+fn render_foreign_namespace_bindings(
+    output: &mut String,
+    namespace: &TypeScriptForeignNamespace,
+    module_index: usize,
+    loader: &str,
+    parent_path: &[String],
+) {
+    let mut path = parent_path.to_vec();
+    path.push(namespace.host_name.clone());
+    for value in &namespace.values {
+        let mut member_path = path.clone();
+        member_path.push(value.host_name.clone());
+        output.push_str(&format!(
+            "const {}: {} = _ssrg_foreign_readPureValue(_ssrg_foreign_module_{module_index}, {}, {}) as {};\n",
+            value.name,
+            render_typescript_type(&value.type_ref),
+            foreign_path(&member_path),
+            value.codec,
+            render_typescript_type(&value.type_ref),
+        ));
+    }
+    for member in &namespace.members {
+        let mut member_path = path.clone();
+        member_path.push(member.host_name.clone());
+        render_foreign_function(output, member, false, module_index, loader, &member_path);
+    }
+    for child in &namespace.namespaces {
+        render_foreign_namespace_bindings(output, child, module_index, loader, &path);
+    }
+}
+
+fn render_foreign_function(
+    output: &mut String,
+    member: &TypeScriptForeignMember,
+    exported: bool,
+    module_index: usize,
+    loader: &str,
+    host_path: &[String],
+) {
+    let body = foreign_function_body(member, module_index, loader, host_path);
+    if exported {
+        output.push_str("export ");
+    }
+    output.push_str(&format!("const {} = {body};\n", member.name));
+}
+
+fn foreign_function_body(
+    member: &TypeScriptForeignMember,
+    module_index: usize,
+    loader: &str,
+    host_path: &[String],
+) -> String {
+    let actual = member
+        .parameters
+        .iter()
+        .zip(&member.parameter_codecs)
+        .filter(|(parameter, _)| !parameter.implicit)
+        .collect::<Vec<_>>();
+    let arguments = actual
+        .iter()
+        .map(|(parameter, _)| parameter.name.as_str())
+        .collect::<Vec<_>>()
+        .join(", ");
+    let codecs = actual
+        .iter()
+        .map(|(_, codec)| codec.as_str())
+        .collect::<Vec<_>>()
+        .join(", ");
+    let invocation = match member.mode {
+        seseragi_syntax::ForeignCallMode::Pure => format!(
+            "_ssrg_foreign_invokePure<{}>(_ssrg_foreign_module_{module_index}, {}, {:?}, [{arguments}], [{codecs}], {})",
+            render_typescript_type(&member.return_type),
+            foreign_path(host_path),
+            foreign_call_kind(member.call_kind),
+            member.return_codec,
+        ),
+        seseragi_syntax::ForeignCallMode::Task => format!(
+            "_ssrg_foreign_invokeTask<{}>({loader}, {}, {:?}, [{arguments}], [{codecs}], {})",
+            render_typescript_type(&member.return_type),
+            foreign_path(host_path),
+            foreign_call_kind(member.call_kind),
+            member.return_codec,
+        ),
+    };
+    let body = member
+        .parameters
+        .iter()
+        .rev()
+        .fold(invocation, |body, parameter| {
+            format!("({}: {}) => {body}", parameter.name, parameter.type_name)
+        });
+    body
+}
+
+fn render_foreign_namespace(
+    output: &mut String,
+    namespace: &TypeScriptForeignNamespace,
+    exported: bool,
+    module_index: usize,
+    loader: &str,
+    parent_path: &[String],
+) {
+    let mut path = parent_path.to_vec();
+    path.push(namespace.host_name.clone());
+    let expression = foreign_namespace_expression(namespace, module_index, loader, &path);
+    if exported {
+        output.push_str("export ");
+    }
+    output.push_str(&format!(
+        "const {} = Object.freeze({expression});\n",
+        namespace.name
+    ));
+}
+
+fn foreign_namespace_expression(
+    namespace: &TypeScriptForeignNamespace,
+    module_index: usize,
+    loader: &str,
+    path: &[String],
+) -> String {
+    let mut fields = Vec::new();
+    for value in &namespace.values {
+        fields.push(format!("{}: {}", value.field_name, value.name));
+    }
+    for member in &namespace.members {
+        fields.push(format!("{}: {}", member.field_name, member.name));
+    }
+    for child in &namespace.namespaces {
+        let mut child_path = path.to_vec();
+        child_path.push(child.host_name.clone());
+        fields.push(format!(
+            "{}: Object.freeze({})",
+            child.name,
+            foreign_namespace_expression(child, module_index, loader, &child_path)
+        ));
+    }
+    format!("{{ {} }}", fields.join(", "))
+}
+
+fn foreign_path(path: &[String]) -> String {
+    format!(
+        "[{}]",
+        path.iter()
+            .map(|segment| format!("{segment:?}"))
+            .collect::<Vec<_>>()
+            .join(", ")
+    )
+}
+
+fn foreign_call_kind(kind: seseragi_syntax::ForeignCallKind) -> &'static str {
+    match kind {
+        seseragi_syntax::ForeignCallKind::Function => "function",
+        seseragi_syntax::ForeignCallKind::Constructor => "constructor",
+        seseragi_syntax::ForeignCallKind::Method => "method",
+        seseragi_syntax::ForeignCallKind::Property => "property",
+    }
 }
 
 pub(super) fn evidence_parameters(
@@ -548,6 +820,27 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             arguments.iter().fold(callee.clone(), |call, argument| {
                 format!("{call}({})", render_typescript_expr(argument))
             })
+        }
+        TypeScriptExpr::ForeignTaskCall {
+            callee,
+            arguments,
+            function,
+            module,
+            origin,
+        } => {
+            let call = if arguments.is_empty() {
+                format!("{callee}()")
+            } else {
+                arguments.iter().fold(callee.clone(), |call, argument| {
+                    format!("{call}({})", render_typescript_expr(argument))
+                })
+            };
+            format!(
+                "_ssrg_foreign_annotateTask({call}, {{ language: \"seseragi\", function: {function:?}, uri: {:?}, range: {{ start: {}, end: {} }}, generated: false }})",
+                format!("seseragi://{module}"),
+                origin.start,
+                origin.end,
+            )
         }
         TypeScriptExpr::TypeApplicationCall {
             callee,

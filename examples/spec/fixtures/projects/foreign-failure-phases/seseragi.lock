@@ -1,0 +1,32 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/foreign-failure-phases@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/foreign-failure-phases@0.0.0#workspace:."
+name = "fixture/foreign-failure-phases"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:9bf08f569f44c65cb82ecdf0b83e8a374c6a964f73b36ff1a67c8e57be1c4c39"
+content_digest = "sha256:40f0957208d100e98f470c49c3e7c096d85cb4640f68bbb66f9c459822140e2b"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/foreign-failure-phases@0.0.0#workspace:."
+declaration = "src/main.ssrg#143-281"
+specifier = "../host/failures.mjs"
+exact_identity = "workspace:host/failures.mjs"
+declaration_digest = "sha256:90aefb77088c1970c20b781c160b24e7cd32569e0fcb7cc21ec6ed3697b31a9d"
+content_digest = "sha256:a39746ce3f5496b62eb42773d21c9de1587416956820ffbe397e86071f4bcc5b"
+
+[[foreign_modules]]
+package = "fixture/foreign-failure-phases@0.0.0#workspace:."
+declaration = "src/main.ssrg#39-141"
+specifier = "../host/load-failure.mjs"
+exact_identity = "workspace:host/load-failure.mjs"
+declaration_digest = "sha256:6fead53794f587ecba95a21ca8b9b1dd1d1f0889e3511649e472168a9db4c70a"
+content_digest = "sha256:8d68fa864c5f0936ae35eb7965820065a2c8e2b96e8c36d1f398c9ce285b85b3"

@@ -1,6 +1,6 @@
 use crate::{
-    DisplayDictionary, FailureRenderer, HostService, MainContract, ProcessRunOptions,
-    ProcessSignalMode, RandomSeed,
+    DiagnosticFormat, DisplayDictionary, FailureRenderer, HostService, MainContract,
+    ProcessRunOptions, ProcessSignalMode, RandomSeed,
 };
 use seseragi_driver::ProviderResolution;
 
@@ -600,6 +600,15 @@ pub(super) fn entry_source(
                 "import { renderShow as failureRenderShow } from \"@seseragi/runtime/show\";"
                     .to_owned(),
             );
+            if options.diagnostic_format == DiagnosticFormat::Json {
+                imports.push(
+                    "import { renderJsErrorDiagnostic } from \"@seseragi/runtime/foreign\";"
+                        .to_owned(),
+                );
+                imports.push("import { readFileSync } from \"node:fs\";".to_owned());
+                imports.push("import { fileURLToPath } from \"node:url\";".to_owned());
+                setup.push("const readDiagnosticSource = (url) => { try { return readFileSync(url.startsWith(\"file:\") ? fileURLToPath(url) : url, \"utf8\"); } catch { return undefined; } };".to_owned());
+            }
             let mut dictionary_index = 0;
             let expression = display_dictionary_expression(
                 &DisplayDictionary {
@@ -612,7 +621,13 @@ pub(super) fn entry_source(
                 &mut dictionary_index,
             );
             setup.push(format!("const failureShow = {expression};"));
-            "const message = failureRenderShow(failureShow, result.error, { layout: \"compact\" });\n  if (typeof message !== \"string\") throw new TypeError(\"Show dictionary returned a non-string value\");\n  process.stderr.write(message.endsWith(\"\\n\") ? message : message + \"\\n\");\n  process.exitCode = 1;".to_owned()
+            let human = "failureRenderShow(failureShow, result.error, { layout: \"compact\" })";
+            let message = if options.diagnostic_format == DiagnosticFormat::Json {
+                format!("renderJsErrorDiagnostic(result.error, readDiagnosticSource) ?? {human}")
+            } else {
+                human.to_owned()
+            };
+            format!("const message = {message};\n  if (typeof message !== \"string\") throw new TypeError(\"failure renderer returned a non-string value\");\n  process.stderr.write(message.endsWith(\"\\n\") ? message : message + \"\\n\");\n  process.exitCode = 1;")
         }
     };
     let cleanup_source = cleanup
@@ -670,8 +685,8 @@ fn display_dictionary_expression(
 mod tests {
     use super::entry_source;
     use crate::{
-        DisplayDictionary, EnvironmentBinding, FailureRenderer, HostService, MainContract,
-        ProcessRunOptions, ProcessSignalMode, RandomSeed,
+        DiagnosticFormat, DisplayDictionary, EnvironmentBinding, FailureRenderer, HostService,
+        MainContract, ProcessRunOptions, ProcessSignalMode, RandomSeed,
     };
     #[test]
     fn prepares_live_process_services_and_typed_failure_rendering() {
@@ -758,6 +773,7 @@ mod tests {
                 signal_mode: ProcessSignalMode::Forward,
                 shutdown_grace_ms: 250,
                 random_seed: RandomSeed::Entropy,
+                diagnostic_format: DiagnosticFormat::Human,
             },
         );
 

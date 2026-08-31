@@ -10,7 +10,8 @@ mod tests;
 
 pub use error::LockError;
 pub use model::{
-    LockDependency, LockHostPackage, LockPackage, LockProviderSelection, LockSourceKind, Lockfile,
+    LockDependency, LockForeignModule, LockHostPackage, LockPackage, LockProviderSelection,
+    LockSourceKind, Lockfile,
 };
 pub use parse::parse_lockfile;
 pub use validate::{

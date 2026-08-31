@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/foreign-task-single-flight@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/foreign-task-single-flight@0.0.0#workspace:."
+name = "fixture/foreign-task-single-flight"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:83582939f161398067a18fd66f4275ac04b1f351bc7317cc4fb2b855989a3922"
+content_digest = "sha256:cbebfd7dbc091bebb0f1fdc8a299bf60d8bde364ae26349a1c77f07b65442dc4"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/foreign-task-single-flight@0.0.0#workspace:."
+declaration = "src/main.ssrg#39-114"
+specifier = "../host/lazy.mjs"
+exact_identity = "workspace:host/lazy.mjs"
+declaration_digest = "sha256:f25ee7c310a9aec56669b8dd16e2d62562cc638856469b7eeb86f89850a87edf"
+content_digest = "sha256:60a578d45269dca64569a3b77ea9393aae7426564bc01b3eee6aa22741349b13"

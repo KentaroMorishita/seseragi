@@ -1055,6 +1055,60 @@ fn runs_only_entry_reachable_modules_in_a_local_project() {
 }
 
 #[test]
+fn runs_foreign_typescript_project_fixtures() {
+    for fixture in [
+        "foreign-failure-phases",
+        "foreign-pure-load",
+        "foreign-task-load",
+        "foreign-task-single-flight",
+    ] {
+        let package = LockedProject::copy(
+            &repository_root()
+                .join("examples/spec/fixtures/projects")
+                .join(fixture),
+        );
+        let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(&package)
+            .output()
+            .unwrap();
+
+        assert_eq!(
+            output.status.code(),
+            Some(0),
+            "{fixture}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout),
+            std::fs::read_to_string(package.join("expected.stdout")).unwrap(),
+            "{fixture}"
+        );
+        assert_eq!(String::from_utf8_lossy(&output.stderr), "", "{fixture}");
+    }
+}
+
+#[test]
+fn runs_source_map_rejection_as_a_typed_foreign_failure() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/source-map-rejection"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .args(["--diagnostic-format", "json"])
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(1));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    assert_eq!(
+        String::from_utf8_lossy(&output.stderr),
+        std::fs::read_to_string(package.join("expected.stderr")).unwrap()
+    );
+}
+
+#[test]
 fn runs_logical_conditions_with_branch_values_and_short_circuiting() {
     let package = LockedProject::copy(
         &repository_root().join("examples/spec/fixtures/projects/logical-short-circuit"),

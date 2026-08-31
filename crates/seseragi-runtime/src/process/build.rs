@@ -1,4 +1,6 @@
-use super::local_package::{canonical_output_path, stage_project_modules};
+use super::local_package::{
+    canonical_output_path, stage_foreign_host_directories, stage_project_modules,
+};
 use super::{
     entry_source, stage_main_module, stage_main_program, web_entry::web_entry_source,
     ProcessRunOptions,
@@ -180,6 +182,7 @@ pub fn build_local_project_with_options(
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
     publish_build(output_directory, |staging| {
         stage_project_modules(&project.compiled, staging)?;
+        stage_foreign_host_directories(&project.foreign_host_directories, staging)?;
         let mut modules = Vec::with_capacity(project.compiled.order.len());
         for module_id in &project.compiled.order {
             let module = project

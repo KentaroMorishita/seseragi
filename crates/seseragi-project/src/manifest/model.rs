@@ -12,7 +12,29 @@ pub struct Manifest {
     pub providers: BTreeMap<String, String>,
     pub run: Option<ManifestRun>,
     pub test: Option<ManifestTest>,
+    pub foreign_typescript: Option<ManifestForeignTypescript>,
     pub(crate) deferred: DeferredTables,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ManifestForeignTypescript {
+    pub resolver: TargetId,
+    pub manifest: ManifestFilePath,
+    pub lockfile: ManifestFilePath,
+    pub bindings: Option<ManifestFilePath>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ManifestFilePath(String);
+
+impl ManifestFilePath {
+    pub(crate) fn new(value: String) -> Self {
+        Self(value)
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

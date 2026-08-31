@@ -9,6 +9,7 @@ import type { DateTimeError, TimeZoneError } from "./time"
 import type { ConsoleError } from "./console-service"
 import type { DomError, DomRuntimeError } from "./dom"
 import type { ParallelismError, ScheduleError } from "./effect"
+import type { JsError } from "./foreign"
 import type {
   DirectoryEntry,
   FileMetadata,
@@ -492,6 +493,10 @@ export function recordDebug<Value extends object>(
 /** Stable, user-facing rendering for the opaque Console failure boundary. */
 export const consoleErrorShow = defineShow((error: ConsoleError) =>
   text(`ConsoleError: ${error.message}`)
+)
+
+export const jsErrorShow = defineShow((error: JsError) =>
+  text(`Js.Error(${error.phase}): ${error.message}`)
 )
 
 /**

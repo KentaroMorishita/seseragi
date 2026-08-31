@@ -1,7 +1,11 @@
 import * as effects from "std/effect"
 
-foreign "typescript" from "../host/lazy-module.mjs" {
+foreign "typescript" from "../host/nested/lazy-module.mjs" {
   task fn call label: String -> String
+
+  namespace nested = "Nested" {
+    task fn callAsync label: String -> String
+  }
 }
 
 type AppError deriving Show =
@@ -20,9 +24,9 @@ fails AppError =
         |> effects.mapError ForeignFailure
 
     second <-
-      call "b"
+      nested.callAsync "b"
         |> effects.mapError ForeignFailure
 
-    println $ `${first},${second}`
-      |> effects.mapError ConsoleFailure
+    let output = `${first},${second}`
+    println output |> effects.mapError ConsoleFailure
   }

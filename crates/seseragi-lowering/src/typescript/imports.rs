@@ -164,7 +164,8 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
                 rewrite_expr(argument, renames);
             }
         }
-        TypeScriptExpr::Call { arguments, .. } => {
+        TypeScriptExpr::Call { arguments, .. }
+        | TypeScriptExpr::ForeignTaskCall { arguments, .. } => {
             for argument in arguments {
                 rewrite_expr(argument, renames);
             }

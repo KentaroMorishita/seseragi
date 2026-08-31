@@ -468,6 +468,7 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
                 "String" => "stringShow",
                 "Unit" => "unitShow",
                 "ConsoleError" => "consoleErrorShow",
+                "Js.Error" => "jsErrorShow",
                 "StdinError" => "stdinErrorShow",
                 _ => return None,
             };
@@ -478,6 +479,7 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
             arguments,
             ..
         } if arguments.is_empty() => match canonical.as_str() {
+            "std/prelude::Js.Error" => Some(dictionary("jsErrorShow")),
             "std/stdin::StdinConfigError" => Some(dictionary("stdinConfigErrorShow")),
             "std/log::LogError" => Some(dictionary("logErrorShow")),
             "std/web/dom::DomError" => Some(dictionary("domErrorShow")),

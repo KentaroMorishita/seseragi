@@ -1,11 +1,51 @@
 foreign "typescript" from "../host/math.mjs" {
+  opaque type Counter
+
   pure fn add left: Int -> right: Int -> Int
+  pure constructor fn makeCounter value: Int -> Counter = "Counter"
+  pure method fn addToCounter self: Counter -> delta: Int -> Int = "add"
+  pure property fn counterValue self: Counter -> Int = "value"
+  pure fn mutateAndSum values: Array<Int> -> Int
+  pure fn callTwice callback: (String -> String) -> String
   pure value version: String = "VERSION"
+  pure value unknownValue: Js.Unknown = "UNKNOWN_VALUE"
+  pure value objectValue: Js.Object = "OBJECT_VALUE"
+  pure value numberValue: Js.Number = "NUMBER_VALUE"
+  pure value stringValue: Js.String = "STRING_VALUE"
+  pure value nullValue: Js.Null = "NULL_VALUE"
+  pure value undefinedValue: Js.Undefined = "UNDEFINED_VALUE"
+  pure value nullOrValue: Js.NullOr<String> = "NULL_VALUE"
+  pure value nullableValue: Js.Nullable<String> = "NULL_VALUE"
+  pure value undefinedOrValue: Js.UndefinedOr<String> = "UNDEFINED_VALUE"
+  pure value mutableValues: Js.MutableArray<Int> = "MUTABLE_VALUES"
+  pure value rawCallback: Js.Callback<String, String> = "RAW_CALLBACK"
+
+  pure fn inspectBoundaries unknown: Js.Unknown -> object: Js.Object -> number: Js.Number -> string: Js.String -> nullValue: Js.Null -> undefinedValue: Js.Undefined -> nullOrValue: Js.NullOr<String> -> nullableValue: Js.Nullable<String> -> undefinedOrValue: Js.UndefinedOr<String> -> Bool
+  pure fn mutateHostArray values: Js.MutableArray<Int> -> Int
+  pure fn invokeRawCallback callback: Js.Callback<String, String> -> String
+
+  namespace operations = "Operations" {
+    pure fn multiply left: Int -> right: Int -> Int
+
+    namespace format = "Format" {
+      pure fn label value: String -> String
+    }
+  }
 }
 
 let answer = add 20 22
+let counter = makeCounter answer
+let incremented = addToCounter counter 8
+let values = [1, 2]
+let total = mutateAndSum values
+let called = callTwice (\value -> `${value}!`)
+let product = operations.multiply 6 7
+let label = operations.format.label "ready"
+let boundariesOk =
+  inspectBoundaries unknownValue objectValue numberValue stringValue nullValue undefinedValue nullOrValue nullableValue undefinedOrValue
+let mutableLength = mutateHostArray mutableValues
+let rawCallbackResult = invokeRawCallback rawCallback
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  println $ `${version}: ${answer}`
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $
+  `${version}: ${counterValue counter}; ${incremented}; ${values}; ${total}; ${called}; ${product}; ${label}; ${boundariesOk}; ${mutableLength}; ${rawCallbackResult}`

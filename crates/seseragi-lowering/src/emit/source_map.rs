@@ -280,6 +280,9 @@ fn collect_expr_names(
             );
         }
         TypeScriptExpr::Call { callee, arguments }
+        | TypeScriptExpr::ForeignTaskCall {
+            callee, arguments, ..
+        }
         | TypeScriptExpr::TypeApplicationCall {
             callee, arguments, ..
         }
@@ -527,6 +530,7 @@ mod tests {
             end: 20,
         };
         let module = TypeScriptModule {
+            foreign_modules: Vec::new(),
             schema: 1,
             stage: "typescript-ir".to_owned(),
             module: "fixture/game::main".to_owned(),

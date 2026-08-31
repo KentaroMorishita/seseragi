@@ -32,6 +32,13 @@ pub enum ManifestError {
     DuplicateProviderArtifact(String),
     InvalidProviderService(String),
     InvalidProviderSelection(String),
+    InvalidForeignTypescript(String),
+    InvalidForeignResolver(String),
+    UnsupportedForeignResolver(String),
+    InvalidManifestFilePath {
+        field: &'static str,
+        value: String,
+    },
     InvalidLayoutPath {
         field: &'static str,
         value: String,
@@ -143,6 +150,30 @@ impl fmt::Display for ManifestError {
                 write!(
                     formatter,
                     "provider selection has invalid provider identity `{value}`"
+                )
+            }
+            Self::InvalidForeignTypescript(message) => {
+                write!(
+                    formatter,
+                    "invalid foreign.typescript configuration: {message}"
+                )
+            }
+            Self::InvalidForeignResolver(value) => {
+                write!(
+                    formatter,
+                    "invalid foreign TypeScript resolver id `{value}`"
+                )
+            }
+            Self::UnsupportedForeignResolver(value) => {
+                write!(
+                    formatter,
+                    "unsupported foreign TypeScript resolver `{value}`"
+                )
+            }
+            Self::InvalidManifestFilePath { field, value } => {
+                write!(
+                    formatter,
+                    "{field} is not a package-relative file: `{value}`"
                 )
             }
             Self::InvalidLayoutPath { field, value } => {

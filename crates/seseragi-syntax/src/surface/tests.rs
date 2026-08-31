@@ -15,6 +15,7 @@ fn constructs_let_surface_module() {
         schema: 1,
         source: "main.ssrg".to_owned(),
         imports: Vec::new(),
+        foreign_modules: Vec::new(),
         declarations: vec![SurfaceDecl::Let {
             visibility: Visibility::Public,
             pattern: binding_pattern("answer", 8, 14),
