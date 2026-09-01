@@ -50,6 +50,13 @@ export const intAdd = {
       add(left, right),
 } as const
 
+export const intSub = {
+  sub:
+    (left: number) =>
+    (right: number): number =>
+      subtract(left, right),
+} as const
+
 export function subtract(left: number, right: number): number {
   return assertInt(left - right)
 }
@@ -63,6 +70,27 @@ export const intMul = {
     (left: number) =>
     (right: number): number =>
       multiply(left, right),
+} as const
+
+export const intDiv = {
+  div:
+    (left: number) =>
+    (right: number): number =>
+      divide(left, right),
+} as const
+
+export const intRem = {
+  rem:
+    (left: number) =>
+    (right: number): number =>
+      remainder(left, right),
+} as const
+
+export const intPow = {
+  pow:
+    (base: number) =>
+    (exponent: number): number =>
+      power(base, exponent),
 } as const
 
 export function divide(left: number, right: number): number {

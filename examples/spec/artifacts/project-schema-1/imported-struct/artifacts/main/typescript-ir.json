@@ -5,10 +5,15 @@
   "runtimeRequirements": [
     "core.int",
     "core.string",
+    "core.string.add-dictionary",
     "core.unit",
     "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
+    },
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
@@ -122,16 +127,22 @@
               }
             ],
             "value": {
-              "kind": "binary",
-              "operator": "+",
-              "left": {
-                "kind": "identifier",
-                "name": "name"
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
               },
-              "right": {
-                "kind": "string",
-                "value": ": imported struct"
-              }
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "name"
+                },
+                {
+                  "kind": "string",
+                  "value": ": imported struct"
+                }
+              ]
             }
           }
         ],

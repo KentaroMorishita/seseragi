@@ -10,6 +10,7 @@
     "signal.type",
     "core.adt",
     "core.string",
+    "core.string.eq-dictionary",
     "core.bool",
     "core.array.append",
     "signal.update",
@@ -24,6 +25,10 @@
     "signal.map"
   ],
   "imports": [
+    {
+      "feature": "core.string.eq-dictionary",
+      "local": "_ssrg_string_eq_dictionary"
+    },
     {
       "feature": "core.array.append",
       "local": "_ssrg_array_append"
@@ -302,20 +307,26 @@
             "value": {
               "kind": "conditional",
               "condition": {
-                "kind": "binary",
-                "operator": "===",
-                "left": {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "state"
-                  },
-                  "field": "draft"
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_string_eq_dictionary"
                 },
-                "right": {
-                  "kind": "string",
-                  "value": ""
-                }
+                "method": "eq",
+                "arguments": [
+                  {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "state"
+                    },
+                    "field": "draft"
+                  },
+                  {
+                    "kind": "string",
+                    "value": ""
+                  }
+                ]
               },
               "thenBranch": {
                 "kind": "identifier",

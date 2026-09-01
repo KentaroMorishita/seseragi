@@ -13,6 +13,7 @@
     "addTodo",
     "_ssrg_array_append",
     "keepTodo",
+    "intEq",
     "removeTodo",
     "_ssrg_array_filter",
     "keepTodo",
@@ -41,5 +42,5 @@
     "renderTodos",
     "initialTodos"
   ],
-  "mappings": ";;;;;AAEAA;;;;;;AAWAC;AAGAE;AAGAC;AAGAG;AAGAC;AAGAE;AAGAG;AAGAI;AA1BAa"
+  "mappings": ";;;;;;AAEAA;;;;;;AAWAC;AAGAE;AAGAE;AAGAG;AAGAC;AAGAE;AAGAG;AAGAI;AA1BAa"
 }

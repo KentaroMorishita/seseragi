@@ -12,10 +12,11 @@
     "improve",
     "render",
     "name",
+    "stringAdd",
     "main",
     "println",
     "render",
     "improve"
   ],
-  "mappings": ";;;;AAEAA;AAGAC;AAKAE"
+  "mappings": ";;;;;AAEAA;AAGAC;AAKAG"
 }

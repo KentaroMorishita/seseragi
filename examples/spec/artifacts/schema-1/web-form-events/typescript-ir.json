@@ -13,7 +13,8 @@
     "web.html.label",
     "web.html.input",
     "web.html.textarea",
-    "web.html.button"
+    "web.html.button",
+    "core.string.eq-dictionary"
   ],
   "imports": [
     {
@@ -35,6 +36,10 @@
     {
       "feature": "web.html.button",
       "local": "_ssrg_html_button"
+    },
+    {
+      "feature": "core.string.eq-dictionary",
+      "local": "_ssrg_string_eq_dictionary"
     }
   ],
   "typeImports": [
@@ -384,16 +389,22 @@
                               "kind": "field",
                               "name": "disabled",
                               "value": {
-                                "kind": "binary",
-                                "operator": "===",
-                                "left": {
-                                  "kind": "identifier",
-                                  "name": "draft"
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_string_eq_dictionary"
                                 },
-                                "right": {
-                                  "kind": "string",
-                                  "value": ""
-                                }
+                                "method": "eq",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "draft"
+                                  },
+                                  {
+                                    "kind": "string",
+                                    "value": ""
+                                  }
+                                ]
                               }
                             },
                             {

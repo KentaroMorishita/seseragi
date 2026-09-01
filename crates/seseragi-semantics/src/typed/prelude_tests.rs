@@ -982,16 +982,17 @@ fn selects_operator_abi_instances_for_direct_standard_trait_methods() {
 }
 
 #[test]
-fn keeps_operator_abi_instances_out_of_generic_function_evidence() {
+fn selects_operator_abi_instances_as_generic_function_evidence() {
     let diagnostics = crate::semantic_diagnostics(
         "artifact/generic-eq-boundary/main.ssrg",
         "pub fn same<A> left: A -> right: A -> Bool\n\
          where Eq<A> = eq left right\n\
          pub fn answer unit: Unit -> Bool = same 21 21\n",
     );
-    assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
-        diagnostic.code == "SES-T0201" && diagnostic.message_key == "instance.missing"
-    }));
+    assert!(
+        diagnostics.diagnostics.is_empty(),
+        "unexpected diagnostics: {diagnostics:#?}"
+    );
 }
 
 #[test]

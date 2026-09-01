@@ -10,6 +10,7 @@
   ],
   "names": [
     "even",
+    "intEq",
     "remainder",
     "negative",
     "showMaybe",
@@ -71,5 +72,5 @@
     "_ssrg_list_drop",
     "fromArray"
   ],
-  "mappings": ";;;;;;AAGAA;AAGAE;AAGAC;AAMAG;AAGAK;AAGAK"
+  "mappings": ";;;;;;;AAGAA;AAGAG;AAGAC;AAMAG;AAGAK;AAGAK"
 }

@@ -4,8 +4,25 @@
   "module": "artifact/pure-comparison",
   "runtimeRequirements": [
     "core.int",
+    "core.int.eq-dictionary",
     "core.bool",
-    "core.string"
+    "core.bool.eq-dictionary",
+    "core.string",
+    "core.string.eq-dictionary"
+  ],
+  "imports": [
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
+    {
+      "feature": "core.bool.eq-dictionary",
+      "local": "_ssrg_bool_eq_dictionary"
+    },
+    {
+      "feature": "core.string.eq-dictionary",
+      "local": "_ssrg_string_eq_dictionary"
+    }
   ],
   "functions": [
     {
@@ -20,16 +37,22 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "===",
-        "left": {
-          "kind": "identifier",
-          "name": "value"
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_int_eq_dictionary"
         },
-        "right": {
-          "kind": "number",
-          "value": "0"
-        }
+        "method": "eq",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "number",
+            "value": "0"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -54,16 +77,22 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "===",
-        "left": {
-          "kind": "identifier",
-          "name": "left"
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_bool_eq_dictionary"
         },
-        "right": {
-          "kind": "identifier",
-          "name": "right"
-        }
+        "method": "eq",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -89,14 +118,28 @@
       ],
       "body": {
         "kind": "binary",
-        "operator": "!==",
+        "operator": "===",
         "left": {
-          "kind": "identifier",
-          "name": "left"
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_eq_dictionary"
+          },
+          "method": "eq",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "left"
+            },
+            {
+              "kind": "identifier",
+              "name": "right"
+            }
+          ]
         },
         "right": {
-          "kind": "identifier",
-          "name": "right"
+          "kind": "boolean",
+          "value": false
         }
       },
       "origin": {

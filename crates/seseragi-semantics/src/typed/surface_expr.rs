@@ -226,7 +226,6 @@ impl<'a> PureExpressionContext<'a> {
             constraint_identities,
             self.resolution,
             &self.evidence_parameters,
-            false,
         )
     }
 
@@ -240,7 +239,6 @@ impl<'a> PureExpressionContext<'a> {
             constraint_identities,
             self.resolution,
             &self.evidence_parameters,
-            true,
         )
     }
 
@@ -273,7 +271,6 @@ impl<'a> PureExpressionContext<'a> {
             &[Some(trait_identity.clone())],
             self.resolution,
             &self.evidence_parameters,
-            false,
         )?
         .into_iter()
         .next()

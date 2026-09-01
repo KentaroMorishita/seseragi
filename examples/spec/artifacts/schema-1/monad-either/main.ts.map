@@ -22,6 +22,7 @@
     "add",
     "render",
     "error",
+    "stringAdd",
     "main",
     "println",
     "render",
@@ -44,5 +45,5 @@
     "Left",
     "Right"
   ],
-  "mappings": ";;;;;AAAAA;AAUAM;AAQAK;AAOAE"
+  "mappings": ";;;;;;AAAAA;AAUAM;AAQAK;AAOAG"
 }

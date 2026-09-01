@@ -8,6 +8,7 @@
     "signal.type",
     "signal.subscription-type",
     "signal.change-type",
+    "core.int.eq-dictionary",
     "core.bool",
     "core.int",
     "core.int.remainder",
@@ -28,6 +29,10 @@
     "core.int.show"
   ],
   "imports": [
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
     {
       "feature": "core.int.remainder",
       "local": "_ssrg_int_remainder"
@@ -165,44 +170,50 @@
               }
             ],
             "body": {
-              "kind": "binary",
-              "operator": "===",
-              "left": {
-                "kind": "runtime-call",
-                "callee": "_ssrg_int_remainder",
-                "arguments": [
-                  {
-                    "kind": "field-access",
-                    "receiver": {
-                      "kind": "identifier",
-                      "name": "left"
-                    },
-                    "field": "value"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "2"
-                  }
-                ]
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_eq_dictionary"
               },
-              "right": {
-                "kind": "runtime-call",
-                "callee": "_ssrg_int_remainder",
-                "arguments": [
-                  {
-                    "kind": "field-access",
-                    "receiver": {
-                      "kind": "identifier",
-                      "name": "right"
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int_remainder",
+                  "arguments": [
+                    {
+                      "kind": "field-access",
+                      "receiver": {
+                        "kind": "identifier",
+                        "name": "left"
+                      },
+                      "field": "value"
                     },
-                    "field": "value"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "2"
-                  }
-                ]
-              }
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int_remainder",
+                  "arguments": [
+                    {
+                      "kind": "field-access",
+                      "receiver": {
+                        "kind": "identifier",
+                        "name": "right"
+                      },
+                      "field": "value"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    }
+                  ]
+                }
+              ]
             },
             "origin": {
               "source": "main.ssrg",

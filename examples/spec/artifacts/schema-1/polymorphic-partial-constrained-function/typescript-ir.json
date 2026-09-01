@@ -5,10 +5,15 @@
   "runtimeRequirements": [
     "core.adt",
     "core.string",
+    "core.string.add-dictionary",
     "core.unit",
     "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
+    },
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
@@ -115,26 +120,32 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "+",
-        "left": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "identifier",
-            "name": "__ssrg$evidence$0"
-          },
-          "method": "ready",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
-            }
-          ]
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_string_add_dictionary"
         },
-        "right": {
-          "kind": "identifier",
-          "name": "suffix"
-        }
+        "method": "add",
+        "arguments": [
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "identifier",
+              "name": "__ssrg$evidence$0"
+            },
+            "method": "ready",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              }
+            ]
+          },
+          {
+            "kind": "identifier",
+            "name": "suffix"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

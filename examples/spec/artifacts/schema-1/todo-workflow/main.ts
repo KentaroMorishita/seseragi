@@ -1,4 +1,5 @@
 import { append as _ssrg_array_append, filter as _ssrg_array_filter, arrayReducible as _ssrg_array_reducible, arrayFunctor as _ssrg_array_functor } from "@seseragi/runtime/array"
+import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { intShow as _ssrg_show_intShow, stringShow as _ssrg_show_stringShow } from "@seseragi/runtime/show"
 import { join as _ssrg_collection_join } from "@seseragi/runtime/collection"
 
@@ -10,7 +11,7 @@ type Todo = {
   readonly [__ssrg$brand$Todo]: true;
 };
 const addTodo = (todo: Todo) => (values: ReadonlyArray<Todo>) => _ssrg_array_append([todo], values)
-const keepTodo = (removedId: number) => (todo: Todo) => (todo)["id"] !== removedId
+const keepTodo = (removedId: number) => (todo: Todo) => _ssrg_int_eq_dictionary["eq"]((todo)["id"])(removedId) === false
 const removeTodo = (id: number) => (values: ReadonlyArray<Todo>) => _ssrg_array_filter(keepTodo(id), values)
 const isUrgent = (todo: Todo) => (todo)["urgent"]
 const urgentTodos = (values: ReadonlyArray<Todo>) => _ssrg_array_filter(isUrgent, values)

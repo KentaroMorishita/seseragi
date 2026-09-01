@@ -27,9 +27,9 @@ fn lowers_int_comparison_to_sync_boolean_function() {
     let typescript = lower_core_module_to_typescript_ir(core);
     assert_eq!(
         typescript.runtime_requirements,
-        vec!["core.int", "core.bool"]
+        vec!["core.int", "core.int.eq-dictionary", "core.bool"]
     );
-    assert!(typescript.imports.is_empty());
+    assert_eq!(typescript.imports.len(), 1);
     assert!(matches!(
         &typescript.functions[0],
         TypeScriptFunction::ConstFunction {
@@ -41,12 +41,12 @@ fn lowers_int_comparison_to_sync_boolean_function() {
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "export const isZero = (value: number) => value === 0\n"
+        "import { intEq as _ssrg_int_eq_dictionary } from \"@seseragi/runtime/equality\"\n\nexport const isZero = (value: number) => _ssrg_int_eq_dictionary[\"eq\"](value)(0)\n"
     );
 }
 
 #[test]
-fn lowers_boolean_and_string_equality_without_runtime_imports() {
+fn lowers_boolean_and_string_equality_through_runtime_dictionaries() {
     let source = "\
 pub fn sameBool left: Bool -> right: Bool -> Bool = left == right
 pub fn sameString left: String -> right: String -> Bool = left != right
@@ -64,12 +64,17 @@ pub fn sameString left: String -> right: String -> Bool = left != right
     let typescript = lower_core_module_to_typescript_ir(core);
     assert_eq!(
         typescript.runtime_requirements,
-        vec!["core.bool", "core.string"]
+        vec![
+            "core.bool",
+            "core.bool.eq-dictionary",
+            "core.string",
+            "core.string.eq-dictionary"
+        ]
     );
-    assert!(typescript.imports.is_empty());
+    assert_eq!(typescript.imports.len(), 2);
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "export const sameBool = (left: boolean) => (right: boolean) => left === right\nexport const sameString = (left: string) => (right: string) => left !== right\n"
+        "import { boolEq as _ssrg_bool_eq_dictionary, stringEq as _ssrg_string_eq_dictionary } from \"@seseragi/runtime/equality\"\n\nexport const sameBool = (left: boolean) => (right: boolean) => _ssrg_bool_eq_dictionary[\"eq\"](left)(right)\nexport const sameString = (left: string) => (right: string) => _ssrg_string_eq_dictionary[\"eq\"](left)(right) === false\n"
     );
 }

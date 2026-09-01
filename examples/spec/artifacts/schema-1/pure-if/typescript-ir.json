@@ -5,7 +5,14 @@
   "runtimeRequirements": [
     "core.int",
     "core.string",
+    "core.int.eq-dictionary",
     "core.bool"
+  ],
+  "imports": [
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    }
   ],
   "functions": [
     {
@@ -22,16 +29,22 @@
       "body": {
         "kind": "conditional",
         "condition": {
-          "kind": "binary",
-          "operator": "===",
-          "left": {
-            "kind": "identifier",
-            "name": "value"
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_int_eq_dictionary"
           },
-          "right": {
-            "kind": "number",
-            "value": "0"
-          }
+          "method": "eq",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            },
+            {
+              "kind": "number",
+              "value": "0"
+            }
+          ]
         },
         "thenBranch": {
           "kind": "string",

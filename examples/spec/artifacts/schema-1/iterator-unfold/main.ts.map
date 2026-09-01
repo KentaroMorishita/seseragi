@@ -20,14 +20,16 @@
     "leftRest",
     "right",
     "rightRest",
+    "intEq",
     "next",
     "next",
     "leftNext",
     "rightNext",
+    "intEq",
     "main",
     "println",
     "render",
     "unfold"
   ],
-  "mappings": ";;;;;AAAAA;AAMAI;AAiBAW"
+  "mappings": ";;;;;;AAAAA;AAMAI;AAiBAa"
 }

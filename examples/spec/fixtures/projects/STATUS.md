@@ -3,7 +3,7 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (54)
+## Current product-route fixtures (55)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -53,6 +53,7 @@
 | `random-seed` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `timezones-dst` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `source-map-rejection` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `standard-evidence-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `sse-server-client-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `stdin-lines` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `stream-cold-resource` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |

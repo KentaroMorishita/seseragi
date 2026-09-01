@@ -10,8 +10,14 @@
   ],
   "names": [
     "ratio",
+    "floatDiv",
+    "floatSub",
+    "floatAdd",
     "averageDifference",
+    "floatDiv",
+    "floatSub",
     "double",
+    "floatMul",
     "main",
     "println",
     "arrayDebug",
@@ -27,7 +33,9 @@
     "println",
     "floatDebug",
     "groupedThroughPipeline",
-    "double"
+    "double",
+    "floatDiv",
+    "floatSub"
   ],
-  "mappings": ";;;;AAAAA;AAGAC;AAGAC;AAOAC;AAJAc"
+  "mappings": ";;;;;AAAAA;AAGAI;AAGAG;AAOAE;AAJAc"
 }

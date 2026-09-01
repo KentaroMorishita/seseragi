@@ -34,8 +34,11 @@
     "stepA",
     "render",
     "report",
+    "stringEq",
     "render",
     "render",
+    "stringAdd",
+    "stringAdd",
     "main",
     "println",
     "report",
@@ -84,5 +87,5 @@
     "__ssrg$instance$Applicative$1",
     "Just"
   ],
-  "mappings": ";;;;;AAIAA;AAcAC;AAeAC;AAQAC;AACAC;AACAE;AACAE;AACAG;AACAE;AACAG;AACAG;AAEAI;AAUAC;AAGAG"
+  "mappings": ";;;;;;;AAIAA;AAcAC;AAeAC;AAQAC;AACAC;AACAE;AACAE;AACAG;AACAE;AACAG;AACAG;AAEAI;AAUAC;AAGAM"
 }

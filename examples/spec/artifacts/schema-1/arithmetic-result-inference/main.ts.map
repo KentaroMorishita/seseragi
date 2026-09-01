@@ -39,7 +39,14 @@
     "remainder",
     "power",
     "floatArithmeticMatrix",
-    "joined"
+    "floatAdd",
+    "floatSub",
+    "floatMul",
+    "floatDiv",
+    "floatRem",
+    "floatPow",
+    "joined",
+    "stringAdd"
   ],
-  "mappings": ";;;;;AAyBAA;AAGAC;AA3BAiB;AAEAE;AAEAE;AASAO;AASAC"
+  "mappings": ";;;;;;;AAyBAA;AAGAC;AA3BAiB;AAEAE;AAEAE;AASAO;AASAO"
 }

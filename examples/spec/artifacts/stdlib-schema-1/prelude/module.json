@@ -2112,6 +2112,36 @@
       ]
     },
     {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::Eq",
+      "constraints": [
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::Eq",
+      "constraints": [
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
       "typeConstructor": "Array",
@@ -2496,6 +2526,26 @@
       "strictEqualityCompatible": true
     },
     {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "arguments": [
+        "Char"
+      ],
+      "identity": "std/char::Eq",
+      "dispatch": "operator-abi",
+      "strictEqualityCompatible": true
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "arguments": [
+        "Unit"
+      ],
+      "identity": "std/unit::Eq",
+      "dispatch": "operator-abi",
+      "strictEqualityCompatible": true
+    },
+    {
       "trait": "Zero",
       "traitCanonical": "std/prelude::Zero",
       "arguments": [
@@ -2511,6 +2561,24 @@
         "Int"
       ],
       "identity": "std/int::One",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Zero",
+      "traitCanonical": "std/prelude::Zero",
+      "arguments": [
+        "Float"
+      ],
+      "identity": "std/float::Zero",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "One",
+      "traitCanonical": "std/prelude::One",
+      "arguments": [
+        "Float"
+      ],
+      "identity": "std/float::One",
       "dispatch": "dictionary"
     },
     {
@@ -2717,6 +2785,2344 @@
       "dispatch": "dictionary"
     }
   ],
+  "instanceAudit": {
+    "normativeSources": [
+      "docs/spec/04-type-classes.md",
+      "docs/spec/09-standard-library.md",
+      "docs/spec/10-library-surface.md"
+    ],
+    "matrix": [
+      {
+        "trait": "Add",
+        "head": "BigInt, BigInt -> BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.6 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Add",
+        "head": "Decimal, Decimal -> Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.8",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "Add",
+        "head": "Float, Float, Float",
+        "identity": "std/float::Add",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Add",
+        "head": "Int, Int, Int",
+        "identity": "std/int::Add",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Add",
+        "head": "String, String, String",
+        "identity": "std/string::Add",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Applicative",
+        "head": "Array",
+        "identity": "std/array::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Applicative",
+        "head": "Effect",
+        "identity": "std/effect::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Applicative",
+        "head": "Either",
+        "identity": "std/either::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Applicative",
+        "head": "EitherT<E, M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Applicative",
+        "head": "List",
+        "identity": "std/list::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Applicative",
+        "head": "Maybe",
+        "identity": "std/maybe::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Applicative",
+        "head": "MaybeT<M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Applicative",
+        "head": "NonEmptyList",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.7 / 10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Applicative",
+        "head": "ReaderT<R, M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Applicative",
+        "head": "Signal",
+        "identity": "std/signal::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Applicative",
+        "head": "StateT<S, M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Applicative",
+        "head": "Stream",
+        "identity": "std/stream::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Applicative",
+        "head": "Validation<E, _>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.7 / 10.4",
+        "trackingIssue": 304
+      },
+      {
+        "trait": "Applicative",
+        "head": "WriterT<W, M, _> where Monad<M>, Monoid<W>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Debug",
+        "head": "Array",
+        "identity": "std/array::Debug",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Debug",
+        "head": "Bool",
+        "identity": "Debug<std/prelude::Bool>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "BufferCapacityError",
+        "identity": "Debug<std/stream::BufferCapacityError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "ByteError",
+        "identity": "Debug<std/bytes::ByteError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "BytesSliceError",
+        "identity": "Debug<std/bytes::BytesSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Char",
+        "identity": "Debug<std/prelude::Char>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "ChildExitStatus",
+        "identity": "Debug<std/child-process::ChildExitStatus>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "ChildProcessConfigError",
+        "identity": "Debug<std/child-process::ChildProcessConfigError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "ChildProcessError",
+        "identity": "Debug<std/child-process::ChildProcessError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "ConsoleError",
+        "identity": "Debug<std/prelude::ConsoleError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "DateTimeError",
+        "identity": "Debug<std/time::DateTimeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.8",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "Debug",
+        "head": "DirectoryEntry",
+        "identity": "Debug<std/fs::DirectoryEntry>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "DomError",
+        "identity": "Debug<std/web/dom::DomError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "DomRuntimeError",
+        "identity": "std/web/dom::DomRuntimeError::Debug",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "DurationError",
+        "identity": "Debug<std/time::DurationError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Either",
+        "identity": "std/either::Debug",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "EntropyConfigError",
+        "identity": "Debug<std/entropy::EntropyConfigError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "EntropyError",
+        "identity": "Debug<std/entropy::EntropyError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "FileMetadata",
+        "identity": "Debug<std/fs::FileMetadata>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "FileSystemError",
+        "identity": "Debug<std/fs::FileSystemError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "FileSystemErrorKind",
+        "identity": "Debug<std/fs::FileSystemErrorKind>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "FileSystemOperation",
+        "identity": "Debug<std/fs::FileSystemOperation>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "FileTextError",
+        "identity": "Debug<std/fs::FileTextError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "FileType",
+        "identity": "Debug<std/fs::FileType>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Float",
+        "identity": "Debug<std/prelude::Float>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "HtmlBuildError",
+        "identity": "Debug<std/web/html::HtmlBuildError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "HttpBuildError",
+        "identity": "Debug<std/http::HttpBuildError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "HttpError",
+        "identity": "Debug<std/http::HttpError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Int",
+        "identity": "Debug<std/prelude::Int>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "List",
+        "identity": "std/list::Debug",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "LogError",
+        "identity": "Debug<std/log::LogError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Map<K, V>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "Debug",
+        "head": "Maybe",
+        "identity": "std/maybe::Debug",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "NavigationError",
+        "identity": "Debug<std/web/navigation::NavigationError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Never",
+        "identity": "Debug<std/prelude::Never>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "NonEmptyList<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Debug",
+        "head": "ParallelismError",
+        "identity": "Debug<std/effect::ParallelismError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "PathError",
+        "identity": "Debug<std/path::PathError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "ProcessError",
+        "identity": "Debug<std/process::ProcessError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "ProcessSignal",
+        "identity": "Debug<std/process::ProcessSignal>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "QueueClosed",
+        "identity": "Debug<std/queue::QueueClosed>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "QueueCreateError",
+        "identity": "Debug<std/queue::QueueCreateError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "RandomConfigError",
+        "identity": "Debug<std/random::RandomConfigError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "RandomRangeError",
+        "identity": "Debug<std/random::RandomRangeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Range",
+        "identity": "std/range::Debug",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "ScheduleError",
+        "identity": "Debug<std/effect::ScheduleError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "SemaphoreCreateError",
+        "identity": "Debug<std/semaphore::SemaphoreCreateError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Set<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "Debug",
+        "head": "StdinConfigError",
+        "identity": "Debug<std/stdin::StdinConfigError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "StdinError",
+        "identity": "Debug<std/prelude::StdinError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "StorageArea",
+        "identity": "Debug<std/web/storage::StorageArea>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "StorageError",
+        "identity": "Debug<std/web/storage::StorageError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "String",
+        "identity": "Debug<std/prelude::String>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "TimeZoneError",
+        "identity": "Debug<std/time::TimeZoneError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Tuple<...>",
+        "identity": "std/tuple::Debug",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Unit",
+        "identity": "Debug<std/prelude::Unit>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "UrlBuildError",
+        "identity": "Debug<std/web/navigation::UrlBuildError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Utf8DecodeError",
+        "identity": "Debug<std/text::Utf8DecodeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "Validation<E, A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.4",
+        "trackingIssue": 304
+      },
+      {
+        "trait": "Debug",
+        "head": "WriteMode",
+        "identity": "Debug<std/fs::WriteMode>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "closed record",
+        "identity": "std/record::Debug",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "open record",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Div",
+        "head": "BigInt, BigInt -> BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.6 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Div",
+        "head": "Float, Float, Float",
+        "identity": "std/float::Div",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Div",
+        "head": "Int, Int, Int",
+        "identity": "std/int::Div",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Eq",
+        "head": "Array",
+        "identity": "std/array::Eq",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Eq",
+        "head": "Bool",
+        "identity": "std/bool::Eq",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "Char",
+        "identity": "std/char::Eq",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4 / 10.8",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "Eq",
+        "head": "Float",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "Int",
+        "identity": "std/int::Eq",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "List",
+        "identity": "std/list::Eq",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "Map<K, V>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "Eq",
+        "head": "NonEmptyList<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Eq",
+        "head": "Set<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "Eq",
+        "head": "String",
+        "identity": "std/string::Eq",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "Tuple<...>",
+        "identity": "std/tuple::Eq",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "9.3"
+      },
+      {
+        "trait": "Eq",
+        "head": "Unit",
+        "identity": "std/unit::Eq",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "Validation<E, A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.4",
+        "trackingIssue": 304
+      },
+      {
+        "trait": "Eq",
+        "head": "closed record",
+        "identity": "std/record::Eq",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "9.3"
+      },
+      {
+        "trait": "Eq",
+        "head": "open record",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "9.3"
+      },
+      {
+        "trait": "Functor",
+        "head": "Array",
+        "identity": "std/array::Functor",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Functor",
+        "head": "Effect",
+        "identity": "std/effect::Functor",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Functor",
+        "head": "Either",
+        "identity": "std/either::Functor",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Functor",
+        "head": "EitherT<E, M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Functor",
+        "head": "List",
+        "identity": "std/list::Functor",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Functor",
+        "head": "Maybe",
+        "identity": "std/maybe::Functor",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Functor",
+        "head": "MaybeT<M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Functor",
+        "head": "NonEmptyList",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.7 / 10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Functor",
+        "head": "ReaderT<R, M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Functor",
+        "head": "Signal",
+        "identity": "std/signal::Functor",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Functor",
+        "head": "StateT<S, M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Functor",
+        "head": "Stream",
+        "identity": "std/stream::Functor",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Functor",
+        "head": "Validation<E, _>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.7 / 10.4",
+        "trackingIssue": 304
+      },
+      {
+        "trait": "Functor",
+        "head": "WriterT<W, M, _> where Monad<M>, Monoid<W>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Hash",
+        "head": "BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Hash",
+        "head": "Bool",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4",
+        "trackingIssue": 349
+      },
+      {
+        "trait": "Hash",
+        "head": "Char",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4",
+        "trackingIssue": 349
+      },
+      {
+        "trait": "Hash",
+        "head": "Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4 / 10.8",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "Hash",
+        "head": "Float",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "9.4"
+      },
+      {
+        "trait": "Hash",
+        "head": "Int",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4",
+        "trackingIssue": 349
+      },
+      {
+        "trait": "Hash",
+        "head": "NonEmptyList<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Hash",
+        "head": "String",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4",
+        "trackingIssue": 349
+      },
+      {
+        "trait": "Hash",
+        "head": "Unit",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4",
+        "trackingIssue": 349
+      },
+      {
+        "trait": "Iterable",
+        "head": "Array<A>, A",
+        "identity": "std/array::Iterable",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
+      },
+      {
+        "trait": "Iterable",
+        "head": "List<A>, A",
+        "identity": "std/list::Iterable",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
+      },
+      {
+        "trait": "Iterable",
+        "head": "Map<K, V>, (K, V)",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "Iterable",
+        "head": "NonEmptyList<A>, A",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Iterable",
+        "head": "Range<Int>, Int",
+        "identity": "std/range::Iterable",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
+      },
+      {
+        "trait": "Iterable",
+        "head": "Set<A>, A",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Array",
+        "identity": "std/array::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "BigInt",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Bool",
+        "identity": "std/bool::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.9",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Either",
+        "identity": "std/either::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Float",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Int",
+        "identity": "std/int::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Json",
+        "identity": "std/json::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "List",
+        "identity": "std/list::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Map<K, V>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.9",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Maybe",
+        "identity": "std/maybe::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Set<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.9",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "String",
+        "identity": "std/string::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Tuple<...>",
+        "identity": "std/tuple::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "Unit",
+        "identity": "std/unit::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonDecode",
+        "head": "closed record",
+        "identity": "std/record::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Array",
+        "identity": "std/array::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "BigInt",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Bool",
+        "identity": "std/bool::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.9",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Either",
+        "identity": "std/either::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Float",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Int",
+        "identity": "std/int::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Json",
+        "identity": "std/json::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "List",
+        "identity": "std/list::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Map<K, V>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.9",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Maybe",
+        "identity": "std/maybe::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Set<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.9",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "String",
+        "identity": "std/string::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Tuple<...>",
+        "identity": "std/tuple::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "Unit",
+        "identity": "std/unit::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
+      },
+      {
+        "trait": "JsonEncode",
+        "head": "closed record",
+        "identity": "std/record::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "10.9"
+      },
+      {
+        "trait": "Monad",
+        "head": "Array",
+        "identity": "std/array::Monad",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Monad",
+        "head": "Effect",
+        "identity": "std/effect::Monad",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Monad",
+        "head": "Either",
+        "identity": "std/either::Monad",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Monad",
+        "head": "EitherT<E, M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Monad",
+        "head": "List",
+        "identity": "std/list::Monad",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Monad",
+        "head": "Maybe",
+        "identity": "std/maybe::Monad",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Monad",
+        "head": "MaybeT<M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Monad",
+        "head": "NonEmptyList",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.7 / 10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Monad",
+        "head": "ReaderT<R, M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Monad",
+        "head": "Signal",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Monad",
+        "head": "StateT<S, M, _> where Monad<M>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Monad",
+        "head": "Stream",
+        "identity": "std/stream::Monad",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Monad",
+        "head": "Validation<E, _>",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "9.7 / 10.4"
+      },
+      {
+        "trait": "Monad",
+        "head": "WriterT<W, M, _> where Monad<M>, Monoid<W>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.9"
+      },
+      {
+        "trait": "Monoid",
+        "head": "Array",
+        "identity": "std/array::Monoid",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Monoid",
+        "head": "Float",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Monoid",
+        "head": "Int",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Monoid",
+        "head": "List",
+        "identity": "std/list::Monoid",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Monoid",
+        "head": "Maybe<A> where Semigroup<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.5",
+        "trackingIssue": 303
+      },
+      {
+        "trait": "Monoid",
+        "head": "Product<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Monoid",
+        "head": "String",
+        "identity": "std/string::Monoid",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Monoid",
+        "head": "Sum<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Mul",
+        "head": "BigInt, BigInt -> BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.6 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Mul",
+        "head": "Decimal, Decimal -> Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.8",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "Mul",
+        "head": "Float, Float, Float",
+        "identity": "std/float::Mul",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Mul",
+        "head": "Int, Int, Int",
+        "identity": "std/int::Mul",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "One",
+        "head": "BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.5 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "One",
+        "head": "Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.5 / 10.8",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "One",
+        "head": "Float",
+        "identity": "std/float::One",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "One",
+        "head": "Int",
+        "identity": "std/int::One",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Ord",
+        "head": "BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Ord",
+        "head": "Bool",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4",
+        "trackingIssue": 333
+      },
+      {
+        "trait": "Ord",
+        "head": "Char",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4",
+        "trackingIssue": 333
+      },
+      {
+        "trait": "Ord",
+        "head": "Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4 / 10.8",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "Ord",
+        "head": "Float",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "9.4"
+      },
+      {
+        "trait": "Ord",
+        "head": "Int",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4",
+        "trackingIssue": 333
+      },
+      {
+        "trait": "Ord",
+        "head": "NonEmptyList<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Ord",
+        "head": "String",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4",
+        "trackingIssue": 333
+      },
+      {
+        "trait": "Ord",
+        "head": "Unit",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.4",
+        "trackingIssue": 333
+      },
+      {
+        "trait": "Pow",
+        "head": "BigInt, Int -> BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.6 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Pow",
+        "head": "Float, Float, Float",
+        "identity": "std/float::Pow",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Pow",
+        "head": "Int, Int, Int",
+        "identity": "std/int::Pow",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Reducible",
+        "head": "Array<A>, A",
+        "identity": "std/array::Reducible",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
+      },
+      {
+        "trait": "Reducible",
+        "head": "List<A>, A",
+        "identity": "std/list::Reducible",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
+      },
+      {
+        "trait": "Reducible",
+        "head": "Map<K, V>, (K, V)",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "Reducible",
+        "head": "NonEmptyList<A>, A",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Reducible",
+        "head": "Range<Int>, Int",
+        "identity": "std/range::Reducible",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
+      },
+      {
+        "trait": "Reducible",
+        "head": "Set<A>, A",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "Rem",
+        "head": "BigInt, BigInt -> BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.6 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Rem",
+        "head": "Float, Float, Float",
+        "identity": "std/float::Rem",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Rem",
+        "head": "Int, Int, Int",
+        "identity": "std/int::Rem",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Semigroup",
+        "head": "Array",
+        "identity": "std/array::Semigroup",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Semigroup",
+        "head": "List",
+        "identity": "std/list::Semigroup",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Semigroup",
+        "head": "NonEmptyList<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Semigroup",
+        "head": "String",
+        "identity": "std/string::Semigroup",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Show",
+        "head": "Array",
+        "identity": "std/array::Show",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Show",
+        "head": "Bool",
+        "identity": "Show<std/prelude::Bool>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "BufferCapacityError",
+        "identity": "Show<std/stream::BufferCapacityError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "ByteError",
+        "identity": "Show<std/bytes::ByteError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "BytesSliceError",
+        "identity": "Show<std/bytes::BytesSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Char",
+        "identity": "Show<std/prelude::Char>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "ChildExitStatus",
+        "identity": "Show<std/child-process::ChildExitStatus>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "ChildProcessConfigError",
+        "identity": "Show<std/child-process::ChildProcessConfigError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "ChildProcessError",
+        "identity": "Show<std/child-process::ChildProcessError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "ConsoleError",
+        "identity": "Show<std/prelude::ConsoleError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "DateTimeError",
+        "identity": "Show<std/time::DateTimeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.8",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "Show",
+        "head": "DirectoryEntry",
+        "identity": "Show<std/fs::DirectoryEntry>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "DomError",
+        "identity": "Show<std/web/dom::DomError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "DomRuntimeError",
+        "identity": "std/web/dom::DomRuntimeError::Show",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "DurationError",
+        "identity": "Show<std/time::DurationError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Either",
+        "identity": "std/either::Show",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "EntropyConfigError",
+        "identity": "Show<std/entropy::EntropyConfigError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "EntropyError",
+        "identity": "Show<std/entropy::EntropyError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "FileMetadata",
+        "identity": "Show<std/fs::FileMetadata>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "FileSystemError",
+        "identity": "Show<std/fs::FileSystemError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "FileSystemErrorKind",
+        "identity": "Show<std/fs::FileSystemErrorKind>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "FileSystemOperation",
+        "identity": "Show<std/fs::FileSystemOperation>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "FileTextError",
+        "identity": "Show<std/fs::FileTextError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "FileType",
+        "identity": "Show<std/fs::FileType>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Float",
+        "identity": "Show<std/prelude::Float>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "HtmlBuildError",
+        "identity": "Show<std/web/html::HtmlBuildError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "HttpBuildError",
+        "identity": "Show<std/http::HttpBuildError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "HttpError",
+        "identity": "Show<std/http::HttpError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Int",
+        "identity": "Show<std/prelude::Int>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Js.Error",
+        "identity": "Show<std/prelude::Js.Error>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "List",
+        "identity": "std/list::Show",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "LogError",
+        "identity": "Show<std/log::LogError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Map<K, V>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "Show",
+        "head": "Maybe",
+        "identity": "std/maybe::Show",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "NavigationError",
+        "identity": "Show<std/web/navigation::NavigationError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Never",
+        "identity": "Show<std/prelude::Never>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "NonEmptyList<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 301
+      },
+      {
+        "trait": "Show",
+        "head": "ParallelismError",
+        "identity": "Show<std/effect::ParallelismError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "PathError",
+        "identity": "Show<std/path::PathError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "ProcessError",
+        "identity": "Show<std/process::ProcessError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "ProcessSignal",
+        "identity": "Show<std/process::ProcessSignal>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "QueueClosed",
+        "identity": "Show<std/queue::QueueClosed>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "QueueCreateError",
+        "identity": "Show<std/queue::QueueCreateError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "RandomConfigError",
+        "identity": "Show<std/random::RandomConfigError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "RandomRangeError",
+        "identity": "Show<std/random::RandomRangeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Range",
+        "identity": "std/range::Show",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "ScheduleError",
+        "identity": "Show<std/effect::ScheduleError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "SemaphoreCreateError",
+        "identity": "Show<std/semaphore::SemaphoreCreateError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Set<A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 302
+      },
+      {
+        "trait": "Show",
+        "head": "StdinConfigError",
+        "identity": "Show<std/stdin::StdinConfigError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "StdinError",
+        "identity": "Show<std/prelude::StdinError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "StorageArea",
+        "identity": "Show<std/web/storage::StorageArea>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "StorageError",
+        "identity": "Show<std/web/storage::StorageError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "String",
+        "identity": "Show<std/prelude::String>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "TimeZoneError",
+        "identity": "Show<std/time::TimeZoneError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Tuple<...>",
+        "identity": "std/tuple::Show",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Unit",
+        "identity": "Show<std/prelude::Unit>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "UrlBuildError",
+        "identity": "Show<std/web/navigation::UrlBuildError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Utf8DecodeError",
+        "identity": "Show<std/text::Utf8DecodeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "Validation<E, A>",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.4",
+        "trackingIssue": 304
+      },
+      {
+        "trait": "Show",
+        "head": "WriteMode",
+        "identity": "Show<std/fs::WriteMode>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "closed record",
+        "identity": "std/record::Show",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "open record",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Sub",
+        "head": "BigInt, BigInt -> BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.6 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Sub",
+        "head": "Decimal, Decimal -> Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.8",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "Sub",
+        "head": "Float, Float, Float",
+        "identity": "std/float::Sub",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Sub",
+        "head": "Int, Int, Int",
+        "identity": "std/int::Sub",
+        "status": "specified-and-implemented",
+        "classification": "operator-abi-with-dictionary",
+        "spec": "9.6"
+      },
+      {
+        "trait": "Traversable",
+        "head": "Array",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 331
+      },
+      {
+        "trait": "Traversable",
+        "head": "List",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 331
+      },
+      {
+        "trait": "Traversable",
+        "head": "NonEmptyList",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "10.5",
+        "trackingIssue": 331
+      },
+      {
+        "trait": "Zero",
+        "head": "BigInt",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.5 / 10.8",
+        "trackingIssue": 308
+      },
+      {
+        "trait": "Zero",
+        "head": "Decimal",
+        "status": "specified-but-implementation-missing",
+        "classification": "missing",
+        "spec": "9.5 / 10.8",
+        "trackingIssue": 309
+      },
+      {
+        "trait": "Zero",
+        "head": "Float",
+        "identity": "std/float::Zero",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Zero",
+        "head": "Int",
+        "identity": "std/int::Zero",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
+      }
+    ]
+  },
   "coherence": {
     "standardHeads": "sealed",
     "userOverlap": "compile-error",

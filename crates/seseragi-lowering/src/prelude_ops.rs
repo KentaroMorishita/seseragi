@@ -10,6 +10,78 @@ pub(crate) struct RuntimePreludeDictionary {
 
 const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
     RuntimePreludeDictionary {
+        semantic_identity: "std/int::Eq",
+        runtime_feature: "core.int.eq-dictionary",
+        local_name: "_ssrg_int_eq_dictionary",
+        module: "@seseragi/runtime/equality",
+        export_name: "intEq",
+        source_map_name: "intEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/bool::Eq",
+        runtime_feature: "core.bool.eq-dictionary",
+        local_name: "_ssrg_bool_eq_dictionary",
+        module: "@seseragi/runtime/equality",
+        export_name: "boolEq",
+        source_map_name: "boolEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/string::Eq",
+        runtime_feature: "core.string.eq-dictionary",
+        local_name: "_ssrg_string_eq_dictionary",
+        module: "@seseragi/runtime/equality",
+        export_name: "stringEq",
+        source_map_name: "stringEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/char::Eq",
+        runtime_feature: "core.char.eq-dictionary",
+        local_name: "_ssrg_char_eq_dictionary",
+        module: "@seseragi/runtime/equality",
+        export_name: "charEq",
+        source_map_name: "charEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/unit::Eq",
+        runtime_feature: "core.unit.eq-dictionary",
+        local_name: "_ssrg_unit_eq_dictionary",
+        module: "@seseragi/runtime/equality",
+        export_name: "unitEq",
+        source_map_name: "unitEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/array::Eq",
+        runtime_feature: "core.array.eq-dictionary",
+        local_name: "_ssrg_array_eq_dictionary",
+        module: "@seseragi/runtime/equality",
+        export_name: "arrayEq",
+        source_map_name: "arrayEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/list::Eq",
+        runtime_feature: "core.list.eq-dictionary",
+        local_name: "_ssrg_list_eq_dictionary",
+        module: "@seseragi/runtime/equality",
+        export_name: "listEq",
+        source_map_name: "listEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/tuple::Eq",
+        runtime_feature: "core.tuple.eq-dictionary",
+        local_name: "_ssrg_tuple_eq_dictionary",
+        module: "@seseragi/runtime/equality",
+        export_name: "tupleEq",
+        source_map_name: "tupleEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/record::Eq",
+        runtime_feature: "core.record.eq-dictionary",
+        local_name: "_ssrg_record_eq_dictionary",
+        module: "@seseragi/runtime/equality",
+        export_name: "recordEq",
+        source_map_name: "recordEq",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/int::Zero",
         runtime_feature: "core.int.zero-dictionary",
         local_name: "_ssrg_int_zero",
@@ -28,18 +100,122 @@ const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
     RuntimePreludeDictionary {
         semantic_identity: "std/int::Add",
         runtime_feature: "core.int.add-dictionary",
-        local_name: "_ssrg_int_add",
+        local_name: "_ssrg_int_add_dictionary",
         module: "@seseragi/runtime/int",
         export_name: "intAdd",
         source_map_name: "intAdd",
     },
     RuntimePreludeDictionary {
+        semantic_identity: "std/int::Sub",
+        runtime_feature: "core.int.sub-dictionary",
+        local_name: "_ssrg_int_sub_dictionary",
+        module: "@seseragi/runtime/int",
+        export_name: "intSub",
+        source_map_name: "intSub",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/int::Mul",
         runtime_feature: "core.int.mul-dictionary",
-        local_name: "_ssrg_int_mul",
+        local_name: "_ssrg_int_mul_dictionary",
         module: "@seseragi/runtime/int",
         export_name: "intMul",
         source_map_name: "intMul",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/int::Div",
+        runtime_feature: "core.int.div-dictionary",
+        local_name: "_ssrg_int_div_dictionary",
+        module: "@seseragi/runtime/int",
+        export_name: "intDiv",
+        source_map_name: "intDiv",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/int::Rem",
+        runtime_feature: "core.int.rem-dictionary",
+        local_name: "_ssrg_int_rem_dictionary",
+        module: "@seseragi/runtime/int",
+        export_name: "intRem",
+        source_map_name: "intRem",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/int::Pow",
+        runtime_feature: "core.int.pow-dictionary",
+        local_name: "_ssrg_int_pow_dictionary",
+        module: "@seseragi/runtime/int",
+        export_name: "intPow",
+        source_map_name: "intPow",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/float::Zero",
+        runtime_feature: "core.float.zero-dictionary",
+        local_name: "_ssrg_float_zero_dictionary",
+        module: "@seseragi/runtime/float",
+        export_name: "floatZero",
+        source_map_name: "floatZero",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/float::One",
+        runtime_feature: "core.float.one-dictionary",
+        local_name: "_ssrg_float_one_dictionary",
+        module: "@seseragi/runtime/float",
+        export_name: "floatOne",
+        source_map_name: "floatOne",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/float::Add",
+        runtime_feature: "core.float.add-dictionary",
+        local_name: "_ssrg_float_add_dictionary",
+        module: "@seseragi/runtime/float",
+        export_name: "floatAdd",
+        source_map_name: "floatAdd",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/float::Sub",
+        runtime_feature: "core.float.sub-dictionary",
+        local_name: "_ssrg_float_sub_dictionary",
+        module: "@seseragi/runtime/float",
+        export_name: "floatSub",
+        source_map_name: "floatSub",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/float::Mul",
+        runtime_feature: "core.float.mul-dictionary",
+        local_name: "_ssrg_float_mul_dictionary",
+        module: "@seseragi/runtime/float",
+        export_name: "floatMul",
+        source_map_name: "floatMul",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/float::Div",
+        runtime_feature: "core.float.div-dictionary",
+        local_name: "_ssrg_float_div_dictionary",
+        module: "@seseragi/runtime/float",
+        export_name: "floatDiv",
+        source_map_name: "floatDiv",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/float::Rem",
+        runtime_feature: "core.float.rem-dictionary",
+        local_name: "_ssrg_float_rem_dictionary",
+        module: "@seseragi/runtime/float",
+        export_name: "floatRem",
+        source_map_name: "floatRem",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/float::Pow",
+        runtime_feature: "core.float.pow-dictionary",
+        local_name: "_ssrg_float_pow_dictionary",
+        module: "@seseragi/runtime/float",
+        export_name: "floatPow",
+        source_map_name: "floatPow",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/string::Add",
+        runtime_feature: "core.string.add-dictionary",
+        local_name: "_ssrg_string_add_dictionary",
+        module: "@seseragi/runtime/string",
+        export_name: "stringAdd",
+        source_map_name: "stringAdd",
     },
     RuntimePreludeDictionary {
         semantic_identity: "std/string::Semigroup",
@@ -720,5 +896,16 @@ mod tests {
     fn rejects_unknown_prelude_dictionaries() {
         assert!(runtime_prelude_dictionary_for_feature("core.result.monad").is_none());
         assert!(runtime_prelude_dictionary_for_identity("fixture/local::Monad").is_none());
+    }
+
+    #[test]
+    fn materializes_every_registered_special_standard_instance() {
+        for instance in seseragi_semantics::special_standard_instances() {
+            assert!(
+                runtime_prelude_dictionary_for_identity(instance.identity).is_some(),
+                "{} has no canonical runtime dictionary",
+                instance.identity
+            );
+        }
     }
 }

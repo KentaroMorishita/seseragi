@@ -10,8 +10,11 @@
   ],
   "names": [
     "isZero",
+    "intEq",
     "sameBool",
-    "sameString"
+    "boolEq",
+    "sameString",
+    "stringEq"
   ],
-  "mappings": "AAAAA;AACAC;AACAC"
+  "mappings": ";;AAAAA;AACAE;AACAE"
 }

@@ -97,6 +97,7 @@ fn structural_dictionary_arguments(
     match identity {
         "std/tuple::Show"
         | "std/tuple::Debug"
+        | "std/tuple::Eq"
         | "std/tuple::JsonEncode"
         | "std/tuple::JsonDecode" => {
             let [crate::CoreType::Tuple { elements }] = type_arguments else {
@@ -106,6 +107,7 @@ fn structural_dictionary_arguments(
         }
         "std/record::Show"
         | "std/record::Debug"
+        | "std/record::Eq"
         | "std/record::JsonEncode"
         | "std/record::JsonDecode" => {
             let [crate::CoreType::Record {
@@ -384,7 +386,7 @@ mod tests {
         assert_eq!(
             expression,
             Some(TypeScriptExpr::RuntimeReference {
-                name: "_ssrg_int_add".to_owned(),
+                name: "_ssrg_int_add_dictionary".to_owned(),
             })
         );
     }

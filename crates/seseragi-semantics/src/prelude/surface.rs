@@ -20,7 +20,219 @@ pub struct StandardModuleSurface {
     traits: Vec<StandardTraitSurface>,
     instances: Vec<StandardInstanceSurface>,
     builtin_instances: Vec<StandardBuiltinInstanceSurface>,
+    instance_audit: StandardInstanceAuditSurface,
     coherence: StandardCoherenceSurface,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct StandardInstanceAuditSurface {
+    normative_sources: &'static [&'static str],
+    matrix: Vec<StandardInstanceAuditRow>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct StandardInstanceAuditRow {
+    #[serde(rename = "trait")]
+    trait_name: &'static str,
+    head: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    identity: Option<&'static str>,
+    status: StandardInstanceAuditStatus,
+    classification: StandardInstanceAuditClassification,
+    spec: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tracking_issue: Option<u32>,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Serialize)]
+#[serde(rename_all = "kebab-case")]
+enum StandardInstanceAuditStatus {
+    SpecifiedAndImplemented,
+    SpecifiedButImplementationMissing,
+    IntentionallyUnavailable,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Serialize)]
+#[serde(rename_all = "kebab-case")]
+enum StandardInstanceAuditClassification {
+    Dictionary,
+    Conditional,
+    Structural,
+    OperatorAbiWithDictionary,
+    Missing,
+    Unavailable,
+}
+
+#[derive(Clone, Copy)]
+struct StandardInstanceAuditSpec {
+    trait_name: &'static str,
+    head: &'static str,
+    spec: &'static str,
+    tracking_issue: Option<u32>,
+}
+
+const STRUCTURAL_INSTANCES: &[StandardInstanceAuditSpec] = &[
+    audit_spec("Eq", "Tuple<...>", "9.3", None),
+    audit_spec("Eq", "closed record", "9.3", None),
+    audit_spec("Show", "Tuple<...>", "9.11", None),
+    audit_spec("Show", "closed record", "9.11", None),
+    audit_spec("Debug", "Tuple<...>", "9.11", None),
+    audit_spec("Debug", "closed record", "9.11", None),
+    audit_spec("JsonEncode", "Tuple<...>", "10.9", None),
+    audit_spec("JsonEncode", "closed record", "10.9", None),
+    audit_spec("JsonDecode", "Tuple<...>", "10.9", None),
+    audit_spec("JsonDecode", "closed record", "10.9", None),
+];
+
+// This is the specification-side half of the audit. Implemented rows are
+// projected directly from the canonical registries above, while missing rows
+// stay explicit until their queue issue connects the real instance and removes
+// the corresponding entry here.
+const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
+    audit_spec("Eq", "BigInt", "9.4 / 10.8", Some(308)),
+    audit_spec("Eq", "Decimal", "9.4 / 10.8", Some(309)),
+    audit_spec("Ord", "Int", "9.4", Some(333)),
+    audit_spec("Ord", "BigInt", "9.4 / 10.8", Some(308)),
+    audit_spec("Ord", "Decimal", "9.4 / 10.8", Some(309)),
+    audit_spec("Ord", "Bool", "9.4", Some(333)),
+    audit_spec("Ord", "Char", "9.4", Some(333)),
+    audit_spec("Ord", "String", "9.4", Some(333)),
+    audit_spec("Ord", "Unit", "9.4", Some(333)),
+    audit_spec("Hash", "Int", "9.4", Some(349)),
+    audit_spec("Hash", "BigInt", "9.4 / 10.8", Some(308)),
+    audit_spec("Hash", "Decimal", "9.4 / 10.8", Some(309)),
+    audit_spec("Hash", "Bool", "9.4", Some(349)),
+    audit_spec("Hash", "Char", "9.4", Some(349)),
+    audit_spec("Hash", "String", "9.4", Some(349)),
+    audit_spec("Hash", "Unit", "9.4", Some(349)),
+    audit_spec("Zero", "BigInt", "9.5 / 10.8", Some(308)),
+    audit_spec("Zero", "Decimal", "9.5 / 10.8", Some(309)),
+    audit_spec("One", "BigInt", "9.5 / 10.8", Some(308)),
+    audit_spec("One", "Decimal", "9.5 / 10.8", Some(309)),
+    audit_spec("Add", "BigInt, BigInt -> BigInt", "9.6 / 10.8", Some(308)),
+    audit_spec("Sub", "BigInt, BigInt -> BigInt", "9.6 / 10.8", Some(308)),
+    audit_spec("Mul", "BigInt, BigInt -> BigInt", "9.6 / 10.8", Some(308)),
+    audit_spec("Div", "BigInt, BigInt -> BigInt", "9.6 / 10.8", Some(308)),
+    audit_spec("Rem", "BigInt, BigInt -> BigInt", "9.6 / 10.8", Some(308)),
+    audit_spec("Pow", "BigInt, Int -> BigInt", "9.6 / 10.8", Some(308)),
+    audit_spec("Add", "Decimal, Decimal -> Decimal", "10.8", Some(309)),
+    audit_spec("Sub", "Decimal, Decimal -> Decimal", "10.8", Some(309)),
+    audit_spec("Mul", "Decimal, Decimal -> Decimal", "10.8", Some(309)),
+    audit_spec("Show", "BigInt", "10.8", Some(308)),
+    audit_spec("Debug", "BigInt", "10.8", Some(308)),
+    audit_spec("Show", "Decimal", "10.8", Some(309)),
+    audit_spec("Debug", "Decimal", "10.8", Some(309)),
+    audit_spec("JsonEncode", "Decimal", "10.9", Some(309)),
+    audit_spec("JsonDecode", "Decimal", "10.9", Some(309)),
+    audit_spec("Monoid", "Maybe<A> where Semigroup<A>", "9.5", Some(303)),
+    audit_spec("Monoid", "Sum<A>", "9.5", None),
+    audit_spec("Monoid", "Product<A>", "9.5", None),
+    audit_spec("Eq", "NonEmptyList<A>", "10.5", Some(301)),
+    audit_spec("Ord", "NonEmptyList<A>", "10.5", Some(301)),
+    audit_spec("Hash", "NonEmptyList<A>", "10.5", Some(301)),
+    audit_spec("Show", "NonEmptyList<A>", "10.5", Some(301)),
+    audit_spec("Debug", "NonEmptyList<A>", "10.5", Some(301)),
+    audit_spec("Semigroup", "NonEmptyList<A>", "10.5", Some(301)),
+    audit_spec("Functor", "NonEmptyList", "9.7 / 10.5", Some(301)),
+    audit_spec("Applicative", "NonEmptyList", "9.7 / 10.5", Some(301)),
+    audit_spec("Monad", "NonEmptyList", "9.7 / 10.5", Some(301)),
+    audit_spec("Iterable", "NonEmptyList<A>, A", "10.5", Some(301)),
+    audit_spec("Reducible", "NonEmptyList<A>, A", "10.5", Some(301)),
+    audit_spec("Traversable", "NonEmptyList", "10.5", Some(331)),
+    audit_spec("Traversable", "Array", "10.5", Some(331)),
+    audit_spec("Traversable", "List", "10.5", Some(331)),
+    audit_spec("Eq", "Validation<E, A>", "10.4", Some(304)),
+    audit_spec("Show", "Validation<E, A>", "10.4", Some(304)),
+    audit_spec("Debug", "Validation<E, A>", "10.4", Some(304)),
+    audit_spec("Functor", "Validation<E, _>", "9.7 / 10.4", Some(304)),
+    audit_spec("Applicative", "Validation<E, _>", "9.7 / 10.4", Some(304)),
+    audit_spec("Eq", "Map<K, V>", "10.5", Some(302)),
+    audit_spec("Show", "Map<K, V>", "10.5", Some(302)),
+    audit_spec("Debug", "Map<K, V>", "10.5", Some(302)),
+    audit_spec("Iterable", "Map<K, V>, (K, V)", "10.5", Some(302)),
+    audit_spec("Reducible", "Map<K, V>, (K, V)", "10.5", Some(302)),
+    audit_spec("JsonEncode", "Map<K, V>", "10.9", Some(302)),
+    audit_spec("JsonDecode", "Map<K, V>", "10.9", Some(302)),
+    audit_spec("Eq", "Set<A>", "10.5", Some(302)),
+    audit_spec("Show", "Set<A>", "10.5", Some(302)),
+    audit_spec("Debug", "Set<A>", "10.5", Some(302)),
+    audit_spec("Iterable", "Set<A>, A", "10.5", Some(302)),
+    audit_spec("Reducible", "Set<A>, A", "10.5", Some(302)),
+    audit_spec("JsonEncode", "Set<A>", "10.9", Some(302)),
+    audit_spec("JsonDecode", "Set<A>", "10.9", Some(302)),
+    audit_spec("Functor", "MaybeT<M, _> where Monad<M>", "9.9", None),
+    audit_spec("Applicative", "MaybeT<M, _> where Monad<M>", "9.9", None),
+    audit_spec("Monad", "MaybeT<M, _> where Monad<M>", "9.9", None),
+    audit_spec("Functor", "EitherT<E, M, _> where Monad<M>", "9.9", None),
+    audit_spec(
+        "Applicative",
+        "EitherT<E, M, _> where Monad<M>",
+        "9.9",
+        None,
+    ),
+    audit_spec("Monad", "EitherT<E, M, _> where Monad<M>", "9.9", None),
+    audit_spec("Functor", "ReaderT<R, M, _> where Monad<M>", "9.9", None),
+    audit_spec(
+        "Applicative",
+        "ReaderT<R, M, _> where Monad<M>",
+        "9.9",
+        None,
+    ),
+    audit_spec("Monad", "ReaderT<R, M, _> where Monad<M>", "9.9", None),
+    audit_spec("Functor", "StateT<S, M, _> where Monad<M>", "9.9", None),
+    audit_spec("Applicative", "StateT<S, M, _> where Monad<M>", "9.9", None),
+    audit_spec("Monad", "StateT<S, M, _> where Monad<M>", "9.9", None),
+    audit_spec(
+        "Functor",
+        "WriterT<W, M, _> where Monad<M>, Monoid<W>",
+        "9.9",
+        None,
+    ),
+    audit_spec(
+        "Applicative",
+        "WriterT<W, M, _> where Monad<M>, Monoid<W>",
+        "9.9",
+        None,
+    ),
+    audit_spec(
+        "Monad",
+        "WriterT<W, M, _> where Monad<M>, Monoid<W>",
+        "9.9",
+        None,
+    ),
+];
+
+const UNAVAILABLE_INSTANCES: &[StandardInstanceAuditSpec] = &[
+    audit_spec("Eq", "Float", "9.4", None),
+    audit_spec("Ord", "Float", "9.4", None),
+    audit_spec("Hash", "Float", "9.4", None),
+    audit_spec("Monoid", "Float", "9.5", None),
+    audit_spec("Monoid", "Int", "9.5", None),
+    audit_spec("Monad", "Signal", "9.7", None),
+    audit_spec("Monad", "Validation<E, _>", "9.7 / 10.4", None),
+    audit_spec("JsonEncode", "Float", "10.9", None),
+    audit_spec("JsonDecode", "Float", "10.9", None),
+    audit_spec("JsonEncode", "BigInt", "10.9", None),
+    audit_spec("JsonDecode", "BigInt", "10.9", None),
+    audit_spec("Eq", "open record", "9.3", None),
+    audit_spec("Show", "open record", "9.11", None),
+    audit_spec("Debug", "open record", "9.11", None),
+];
+
+const fn audit_spec(
+    trait_name: &'static str,
+    head: &'static str,
+    spec: &'static str,
+    tracking_issue: Option<u32>,
+) -> StandardInstanceAuditSpec {
+    StandardInstanceAuditSpec {
+        trait_name,
+        head,
+        spec,
+        tracking_issue,
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -92,6 +304,122 @@ struct StandardCoherenceSurface {
 
 fn is_false(value: &bool) -> bool {
     !value
+}
+
+fn implemented_instance_spec(trait_name: &str) -> &'static str {
+    match trait_name {
+        "Eq" | "Ord" | "Hash" => "9.3 / 9.4",
+        "Semigroup" | "Monoid" | "Zero" | "One" => "9.5",
+        "Add" | "Sub" | "Mul" | "Div" | "Rem" | "Pow" => "9.6",
+        "Functor" | "Applicative" | "Monad" => "9.7",
+        "Show" | "Debug" => "9.11",
+        "Iterable" | "Reducible" | "Traversable" => "10.5",
+        "JsonEncode" | "JsonDecode" => "10.9",
+        _ => "9.1",
+    }
+}
+
+fn standard_instance_audit() -> StandardInstanceAuditSurface {
+    let mut matrix = Vec::new();
+    matrix.extend(STANDARD_INSTANCES.iter().map(|instance| {
+        let conditional = !standard_instance_constraint_specs(instance.identity).is_empty();
+        StandardInstanceAuditRow {
+            trait_name: instance.trait_name,
+            head: instance.type_name.to_owned(),
+            identity: Some(instance.identity),
+            status: StandardInstanceAuditStatus::SpecifiedAndImplemented,
+            classification: if conditional {
+                StandardInstanceAuditClassification::Conditional
+            } else {
+                StandardInstanceAuditClassification::Dictionary
+            },
+            spec: implemented_instance_spec(instance.trait_name),
+            tracking_issue: None,
+        }
+    }));
+    matrix.extend(
+        SPECIAL_STANDARD_INSTANCES
+            .iter()
+            .map(|instance| StandardInstanceAuditRow {
+                trait_name: instance.trait_name,
+                head: instance.arguments.join(", "),
+                identity: Some(instance.identity),
+                status: StandardInstanceAuditStatus::SpecifiedAndImplemented,
+                classification: match instance.dispatch {
+                    super::PreludeSpecialInstanceDispatch::Dictionary => {
+                        StandardInstanceAuditClassification::Dictionary
+                    }
+                    super::PreludeSpecialInstanceDispatch::OperatorAbi => {
+                        StandardInstanceAuditClassification::OperatorAbiWithDictionary
+                    }
+                },
+                spec: implemented_instance_spec(instance.trait_name),
+                tracking_issue: None,
+            }),
+    );
+    let structural_identities = [
+        "std/tuple::Eq",
+        "std/record::Eq",
+        "std/tuple::Show",
+        "std/record::Show",
+        "std/tuple::Debug",
+        "std/record::Debug",
+        "std/tuple::JsonEncode",
+        "std/record::JsonEncode",
+        "std/tuple::JsonDecode",
+        "std/record::JsonDecode",
+    ];
+    matrix.extend(STRUCTURAL_INSTANCES.iter().zip(structural_identities).map(
+        |(spec, identity)| StandardInstanceAuditRow {
+            trait_name: spec.trait_name,
+            head: spec.head.to_owned(),
+            identity: Some(identity),
+            status: StandardInstanceAuditStatus::SpecifiedAndImplemented,
+            classification: StandardInstanceAuditClassification::Structural,
+            spec: spec.spec,
+            tracking_issue: None,
+        },
+    ));
+    matrix.extend(
+        MISSING_INSTANCES
+            .iter()
+            .map(|spec| StandardInstanceAuditRow {
+                trait_name: spec.trait_name,
+                head: spec.head.to_owned(),
+                identity: None,
+                status: StandardInstanceAuditStatus::SpecifiedButImplementationMissing,
+                classification: StandardInstanceAuditClassification::Missing,
+                spec: spec.spec,
+                tracking_issue: spec.tracking_issue,
+            }),
+    );
+    matrix.extend(
+        UNAVAILABLE_INSTANCES
+            .iter()
+            .map(|spec| StandardInstanceAuditRow {
+                trait_name: spec.trait_name,
+                head: spec.head.to_owned(),
+                identity: None,
+                status: StandardInstanceAuditStatus::IntentionallyUnavailable,
+                classification: StandardInstanceAuditClassification::Unavailable,
+                spec: spec.spec,
+                tracking_issue: None,
+            }),
+    );
+    matrix.sort_by(|left, right| {
+        left.trait_name
+            .cmp(right.trait_name)
+            .then_with(|| left.head.cmp(&right.head))
+            .then_with(|| left.status.cmp(&right.status))
+    });
+    StandardInstanceAuditSurface {
+        normative_sources: &[
+            "docs/spec/04-type-classes.md",
+            "docs/spec/09-standard-library.md",
+            "docs/spec/10-library-surface.md",
+        ],
+        matrix,
+    }
 }
 
 pub fn standard_prelude_surface() -> StandardModuleSurface {
@@ -175,6 +503,7 @@ pub fn standard_prelude_surface() -> StandardModuleSurface {
                 }
             })
             .collect(),
+        instance_audit: standard_instance_audit(),
         coherence: StandardCoherenceSurface {
             standard_heads: "sealed",
             user_overlap: "compile-error",
@@ -201,8 +530,8 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 155);
-        assert_eq!(surface.builtin_instances.len(), 24);
+        assert_eq!(surface.instances.len(), 157);
+        assert_eq!(surface.builtin_instances.len(), 28);
         for identity in [
             "std/int::Eq",
             "std/int::Zero",
@@ -216,6 +545,62 @@ mod tests {
                 .builtin_instances
                 .iter()
                 .any(|instance| instance.identity == identity));
+        }
+
+        let implemented = surface
+            .instance_audit
+            .matrix
+            .iter()
+            .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
+            .collect::<Vec<_>>();
+        assert_eq!(implemented.len(), 157 + 28 + 10);
+        for instance in SPECIAL_STANDARD_INSTANCES {
+            assert!(implemented
+                .iter()
+                .any(|row| row.identity == Some(instance.identity)));
+        }
+        for (trait_name, head, status, issue) in [
+            (
+                "Eq",
+                "Int",
+                StandardInstanceAuditStatus::SpecifiedAndImplemented,
+                None,
+            ),
+            (
+                "Eq",
+                "Float",
+                StandardInstanceAuditStatus::IntentionallyUnavailable,
+                None,
+            ),
+            (
+                "Hash",
+                "Int",
+                StandardInstanceAuditStatus::SpecifiedButImplementationMissing,
+                Some(349),
+            ),
+            (
+                "Traversable",
+                "Array",
+                StandardInstanceAuditStatus::SpecifiedButImplementationMissing,
+                Some(331),
+            ),
+        ] {
+            assert!(surface.instance_audit.matrix.iter().any(|row| {
+                row.trait_name == trait_name
+                    && row.head == head
+                    && row.status == status
+                    && row.tracking_issue == issue
+            }));
+        }
+
+        let mut keys = std::collections::BTreeSet::new();
+        for row in &surface.instance_audit.matrix {
+            assert!(
+                keys.insert((row.trait_name, row.head.as_str())),
+                "duplicate canonical instance audit row: {}<{}>",
+                row.trait_name,
+                row.head
+            );
         }
         for identity in [
             "Show<std/bytes::ByteError>",

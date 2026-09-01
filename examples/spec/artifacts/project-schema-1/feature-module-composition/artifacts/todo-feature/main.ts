@@ -1,5 +1,6 @@
 import { view as todoForm } from "./form.js"
 import { view as todoList } from "./list.js"
+import { stringEq as _ssrg_string_eq_dictionary } from "@seseragi/runtime/equality"
 import { append as _ssrg_array_append, arrayReducible as _ssrg_array_reducible } from "@seseragi/runtime/array"
 import { update as _ssrg_signal_update, make as _ssrg_signal_make, map as _ssrg_signal_map, type MutableSignal as MutableSignal, type Signal as Signal } from "@seseragi/runtime/signal"
 import { join as _ssrg_collection_join } from "@seseragi/runtime/collection"
@@ -19,7 +20,7 @@ type TodoState = {
   readonly "items": ReadonlyArray<string>;
   readonly [__ssrg$brand$TodoState]: true;
 };
-const update = (action: TodoAction) => (state: TodoState) => (($ssrg_match: TodoAction): TodoState => $ssrg_match.tag === "DraftChanged" ? ((value: string): TodoState => (({ ...state, "draft": value } as const) as unknown as TodoState))($ssrg_match.value) : $ssrg_match.tag === "Submitted" ? (state)["draft"] === "" ? state : (({ "draft": "", "items": _ssrg_array_append([(state)["draft"]], (state)["items"]) } as const) as unknown as TodoState) : (({ ...state, "items": [] as ReadonlyArray<string> } as const) as unknown as TodoState))(action)
+const update = (action: TodoAction) => (state: TodoState) => (($ssrg_match: TodoAction): TodoState => $ssrg_match.tag === "DraftChanged" ? ((value: string): TodoState => (({ ...state, "draft": value } as const) as unknown as TodoState))($ssrg_match.value) : $ssrg_match.tag === "Submitted" ? _ssrg_string_eq_dictionary["eq"]((state)["draft"])("") ? state : (({ "draft": "", "items": _ssrg_array_append([(state)["draft"]], (state)["items"]) } as const) as unknown as TodoState) : (({ ...state, "items": [] as ReadonlyArray<string> } as const) as unknown as TodoState))(action)
 const dispatch = (state: MutableSignal<TodoState>) => (action: TodoAction) => _ssrg_signal_update(update(action), state)
 const draftAction = (event: InputEvent) => DraftChanged((event)["value"])
 const formView = (state: MutableSignal<TodoState>) => (current: TodoState) => todoForm((current)["draft"])((event: InputEvent) => dispatch(state)(draftAction(event)))(dispatch(state)(Submitted))

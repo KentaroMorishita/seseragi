@@ -4,10 +4,15 @@
   "module": "artifact/explicit-generic-struct",
   "runtimeRequirements": [
     "core.string",
+    "core.string.add-dictionary",
     "core.unit",
     "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
+    },
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
@@ -120,20 +125,26 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "+",
-        "left": {
-          "kind": "string",
-          "value": "Explicit generic Struct: "
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_string_add_dictionary"
         },
-        "right": {
-          "kind": "field-access",
-          "receiver": {
-            "kind": "identifier",
-            "name": "value"
+        "method": "add",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "Explicit generic Struct: "
           },
-          "field": "label"
-        }
+          {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "identifier",
+              "name": "value"
+            },
+            "field": "label"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

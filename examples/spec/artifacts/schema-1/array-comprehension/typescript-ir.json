@@ -8,6 +8,7 @@
     "core.int.add",
     "core.array.comprehend.flat",
     "core.array.comprehend",
+    "core.int.eq-dictionary",
     "core.bool"
   ],
   "imports": [
@@ -22,6 +23,10 @@
     {
       "feature": "core.array.comprehend",
       "local": "_ssrg_array_comprehend"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
     }
   ],
   "functions": [
@@ -91,16 +96,22 @@
                   "kind": "lambda",
                   "parameter": "right",
                   "body": {
-                    "kind": "binary",
-                    "operator": "===",
-                    "left": {
-                      "kind": "identifier",
-                      "name": "right"
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_eq_dictionary"
                     },
-                    "right": {
-                      "kind": "number",
-                      "value": "20"
-                    }
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "right"
+                      },
+                      {
+                        "kind": "number",
+                        "value": "20"
+                      }
+                    ]
                   }
                 },
                 {

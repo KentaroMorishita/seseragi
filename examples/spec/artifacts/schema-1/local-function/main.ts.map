@@ -13,11 +13,13 @@
     "offset",
     "identity",
     "countdown",
+    "intEq",
     "identity",
     "add",
     "countdown",
     "subtract",
+    "intEq",
     "countdown"
   ],
-  "mappings": ";;AAAAA"
+  "mappings": ";;;AAAAA"
 }

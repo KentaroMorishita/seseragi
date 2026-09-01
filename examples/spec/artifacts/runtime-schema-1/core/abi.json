@@ -126,6 +126,182 @@
       }
     },
     {
+      "id": "core.int.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Eq<number> dictionary",
+      "boundary": "standard Eq<Int> dictionary",
+      "instanceIdentity": "std/int::Eq",
+      "import": { "module": "@seseragi/runtime/equality", "export": "intEq" }
+    },
+    {
+      "id": "core.bool.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Eq<boolean> dictionary",
+      "boundary": "standard Eq<Bool> dictionary",
+      "instanceIdentity": "std/bool::Eq",
+      "import": { "module": "@seseragi/runtime/equality", "export": "boolEq" }
+    },
+    {
+      "id": "core.string.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Eq<string> dictionary",
+      "boundary": "standard Eq<String> dictionary",
+      "instanceIdentity": "std/string::Eq",
+      "import": { "module": "@seseragi/runtime/equality", "export": "stringEq" }
+    },
+    {
+      "id": "core.char.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Eq<string> dictionary",
+      "boundary": "standard Eq<Char> dictionary",
+      "instanceIdentity": "std/char::Eq",
+      "import": { "module": "@seseragi/runtime/equality", "export": "charEq" }
+    },
+    {
+      "id": "core.unit.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Eq<undefined> dictionary",
+      "boundary": "standard Eq<Unit> dictionary",
+      "instanceIdentity": "std/unit::Eq",
+      "import": { "module": "@seseragi/runtime/equality", "export": "unitEq" }
+    },
+    {
+      "id": "core.array.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "conditional Eq<ReadonlyArray<A>> dictionary factory",
+      "boundary": "standard Eq<Array<A>> where Eq<A>",
+      "instanceIdentity": "std/array::Eq",
+      "import": { "module": "@seseragi/runtime/equality", "export": "arrayEq" }
+    },
+    {
+      "id": "core.list.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "conditional Eq<List<A>> dictionary factory",
+      "boundary": "standard Eq<List<A>> where Eq<A>",
+      "instanceIdentity": "std/list::Eq",
+      "import": { "module": "@seseragi/runtime/equality", "export": "listEq" }
+    },
+    {
+      "id": "core.tuple.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "structural tuple Eq dictionary factory",
+      "boundary": "sealed structural Eq<Tuple<...>>",
+      "instanceIdentity": "std/tuple::Eq",
+      "import": { "module": "@seseragi/runtime/equality", "export": "tupleEq" }
+    },
+    {
+      "id": "core.record.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "structural closed-record Eq dictionary factory",
+      "boundary": "sealed structural Eq<closed record>",
+      "instanceIdentity": "std/record::Eq",
+      "import": { "module": "@seseragi/runtime/equality", "export": "recordEq" }
+    },
+    {
+      "id": "core.int.sub-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Sub<number, number, number> dictionary",
+      "boundary": "standard Sub<Int, Int, Int> dictionary",
+      "instanceIdentity": "std/int::Sub",
+      "import": { "module": "@seseragi/runtime/int", "export": "intSub" }
+    },
+    {
+      "id": "core.int.div-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Div<number, number, number> dictionary",
+      "boundary": "standard Div<Int, Int, Int> dictionary",
+      "instanceIdentity": "std/int::Div",
+      "import": { "module": "@seseragi/runtime/int", "export": "intDiv" }
+    },
+    {
+      "id": "core.int.rem-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Rem<number, number, number> dictionary",
+      "boundary": "standard Rem<Int, Int, Int> dictionary",
+      "instanceIdentity": "std/int::Rem",
+      "import": { "module": "@seseragi/runtime/int", "export": "intRem" }
+    },
+    {
+      "id": "core.int.pow-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Pow<number, number, number> dictionary",
+      "boundary": "standard Pow<Int, Int, Int> dictionary",
+      "instanceIdentity": "std/int::Pow",
+      "import": { "module": "@seseragi/runtime/int", "export": "intPow" }
+    },
+    {
+      "id": "core.float.zero-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Zero<number> dictionary",
+      "boundary": "standard Zero<Float> dictionary",
+      "instanceIdentity": "std/float::Zero",
+      "import": { "module": "@seseragi/runtime/float", "export": "floatZero" }
+    },
+    {
+      "id": "core.float.one-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly One<number> dictionary",
+      "boundary": "standard One<Float> dictionary",
+      "instanceIdentity": "std/float::One",
+      "import": { "module": "@seseragi/runtime/float", "export": "floatOne" }
+    },
+    {
+      "id": "core.float.add-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Add<number, number, number> dictionary",
+      "boundary": "standard Add<Float, Float, Float> dictionary",
+      "instanceIdentity": "std/float::Add",
+      "import": { "module": "@seseragi/runtime/float", "export": "floatAdd" }
+    },
+    {
+      "id": "core.float.sub-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Sub<number, number, number> dictionary",
+      "boundary": "standard Sub<Float, Float, Float> dictionary",
+      "instanceIdentity": "std/float::Sub",
+      "import": { "module": "@seseragi/runtime/float", "export": "floatSub" }
+    },
+    {
+      "id": "core.float.mul-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Mul<number, number, number> dictionary",
+      "boundary": "standard Mul<Float, Float, Float> dictionary",
+      "instanceIdentity": "std/float::Mul",
+      "import": { "module": "@seseragi/runtime/float", "export": "floatMul" }
+    },
+    {
+      "id": "core.float.div-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Div<number, number, number> dictionary",
+      "boundary": "standard Div<Float, Float, Float> dictionary",
+      "instanceIdentity": "std/float::Div",
+      "import": { "module": "@seseragi/runtime/float", "export": "floatDiv" }
+    },
+    {
+      "id": "core.float.rem-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Rem<number, number, number> dictionary",
+      "boundary": "standard Rem<Float, Float, Float> dictionary",
+      "instanceIdentity": "std/float::Rem",
+      "import": { "module": "@seseragi/runtime/float", "export": "floatRem" }
+    },
+    {
+      "id": "core.float.pow-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Pow<number, number, number> dictionary",
+      "boundary": "standard Pow<Float, Float, Float> dictionary",
+      "instanceIdentity": "std/float::Pow",
+      "import": { "module": "@seseragi/runtime/float", "export": "floatPow" }
+    },
+    {
+      "id": "core.string.add-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Add<string, string, string> dictionary",
+      "boundary": "standard Add<String, String, String> dictionary",
+      "instanceIdentity": "std/string::Add",
+      "import": { "module": "@seseragi/runtime/string", "export": "stringAdd" }
+    },
+    {
       "id": "core.int.add",
       "kind": "runtime-helper",
       "typescript": "function",

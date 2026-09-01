@@ -6,12 +6,17 @@
     "core.adt",
     "core.string",
     "core.int",
+    "core.string.eq-dictionary",
     "core.bool",
     "core.unit",
     "effect.core.flatMap",
     "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "core.string.eq-dictionary",
+      "local": "_ssrg_string_eq_dictionary"
+    },
     {
       "feature": "effect.core.flatMap",
       "local": "_ssrg_effect_flatMap"
@@ -1077,16 +1082,22 @@
       "body": {
         "kind": "conditional",
         "condition": {
-          "kind": "binary",
-          "operator": "===",
-          "left": {
-            "kind": "identifier",
-            "name": "name"
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_eq_dictionary"
           },
-          "right": {
-            "kind": "string",
-            "value": ""
-          }
+          "method": "eq",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "name"
+            },
+            {
+              "kind": "string",
+              "value": ""
+            }
+          ]
         },
         "thenBranch": {
           "kind": "call",

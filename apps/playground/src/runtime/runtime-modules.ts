@@ -13,6 +13,7 @@ import * as clock from "../../../../runtime/ts/src/clock"
 import * as collection from "../../../../runtime/ts/src/collection"
 import * as dom from "../../../../runtime/ts/src/dom"
 import * as effect from "../../../../runtime/ts/src/effect"
+import * as equality from "../../../../runtime/ts/src/equality"
 import * as float from "../../../../runtime/ts/src/float"
 import * as html from "../../../../runtime/ts/src/html"
 import * as httpClient from "../../../../runtime/ts/src/http-client"
@@ -44,6 +45,7 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/json": json,
   "@seseragi/runtime/collection": collection,
   "@seseragi/runtime/effect": effect,
+  "@seseragi/runtime/equality": equality,
   "@seseragi/runtime/float": float,
   "@seseragi/runtime/int": int,
   "@seseragi/runtime/iterator": iterator,

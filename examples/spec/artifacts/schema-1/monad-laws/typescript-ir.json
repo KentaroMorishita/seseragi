@@ -11,7 +11,9 @@
     "core.int.add",
     "core.int.multiply",
     "core.string",
+    "core.string.eq-dictionary",
     "core.bool",
+    "core.string.add-dictionary",
     "core.unit",
     "effect.core.flatMap",
     "effect.console.println"
@@ -32,6 +34,14 @@
     {
       "feature": "core.int.multiply",
       "local": "_ssrg_int_multiply"
+    },
+    {
+      "feature": "core.string.eq-dictionary",
+      "local": "_ssrg_string_eq_dictionary"
+    },
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
     },
     {
       "feature": "effect.core.flatMap",
@@ -974,52 +984,70 @@
       "body": {
         "kind": "conditional",
         "condition": {
-          "kind": "binary",
-          "operator": "===",
-          "left": {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "left"
-              }
-            ]
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_eq_dictionary"
           },
-          "right": {
-            "kind": "call",
-            "callee": "render",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "right"
-              }
-            ]
-          }
+          "method": "eq",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "render",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "render",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ]
+            }
+          ]
         },
         "thenBranch": {
-          "kind": "binary",
-          "operator": "+",
-          "left": {
-            "kind": "identifier",
-            "name": "label"
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_add_dictionary"
           },
-          "right": {
-            "kind": "string",
-            "value": ": ok"
-          }
+          "method": "add",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "label"
+            },
+            {
+              "kind": "string",
+              "value": ": ok"
+            }
+          ]
         },
         "elseBranch": {
-          "kind": "binary",
-          "operator": "+",
-          "left": {
-            "kind": "identifier",
-            "name": "label"
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_add_dictionary"
           },
-          "right": {
-            "kind": "string",
-            "value": ": failed"
-          }
+          "method": "add",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "label"
+            },
+            {
+              "kind": "string",
+              "value": ": failed"
+            }
+          ]
         }
       },
       "origin": {

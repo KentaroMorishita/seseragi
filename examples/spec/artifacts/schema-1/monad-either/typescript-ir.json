@@ -10,6 +10,7 @@
     "core.either.applicative",
     "core.int.add",
     "core.adt",
+    "core.string.add-dictionary",
     "core.unit",
     "effect.core.flatMap",
     "effect.console.println",
@@ -28,6 +29,10 @@
     {
       "feature": "core.int.add",
       "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
     },
     {
       "feature": "effect.core.flatMap",
@@ -265,16 +270,22 @@
               }
             ],
             "value": {
-              "kind": "binary",
-              "operator": "+",
-              "left": {
-                "kind": "string",
-                "value": "Left "
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
               },
-              "right": {
-                "kind": "identifier",
-                "name": "error"
-              }
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Left "
+                },
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
             }
           },
           {

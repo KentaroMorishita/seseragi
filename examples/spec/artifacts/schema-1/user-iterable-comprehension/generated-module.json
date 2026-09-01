@@ -20,6 +20,7 @@
       "core.maybe.nothing",
       "core.int.multiply",
       "core.iterator.comprehend",
+      "core.int.eq-dictionary",
       "core.int.remainder",
       "core.array.reduce",
       "core.string",

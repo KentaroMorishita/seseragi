@@ -14,11 +14,17 @@
     "name",
     "renderLabeled",
     "name",
+    "stringAdd",
     "label",
     "name",
+    "stringAdd",
+    "stringAdd",
     "renderProfile",
+    "stringAdd",
     "displayName",
     "label",
+    "stringAdd",
+    "stringAdd",
     "displayName",
     "main",
     "base",
@@ -28,5 +34,5 @@
     "println",
     "renderLabeled"
   ],
-  "mappings": ";;;;AAAAA;AAGAC;AAKAE;AAMAI;AAMAI"
+  "mappings": ";;;;;AAAAA;AAGAC;AAKAE;AAMAO;AAMAO"
 }

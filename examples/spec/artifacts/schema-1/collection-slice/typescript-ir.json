@@ -5,6 +5,7 @@
   "runtimeRequirements": [
     "core.list",
     "core.int",
+    "core.int.eq-dictionary",
     "core.bool",
     "core.int.remainder",
     "core.maybe",
@@ -26,6 +27,10 @@
     "core.list.drop"
   ],
   "imports": [
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
     {
       "feature": "core.int.remainder",
       "local": "_ssrg_int_remainder"
@@ -102,26 +107,32 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "===",
-        "left": {
-          "kind": "runtime-call",
-          "callee": "_ssrg_int_remainder",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "value"
-            },
-            {
-              "kind": "number",
-              "value": "2"
-            }
-          ]
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_int_eq_dictionary"
         },
-        "right": {
-          "kind": "number",
-          "value": "0"
-        }
+        "method": "eq",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int_remainder",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              },
+              {
+                "kind": "number",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "kind": "number",
+            "value": "0"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

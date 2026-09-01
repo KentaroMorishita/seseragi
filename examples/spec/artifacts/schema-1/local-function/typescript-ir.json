@@ -5,11 +5,16 @@
   "runtimeRequirements": [
     "core.unit",
     "core.int",
+    "core.int.eq-dictionary",
     "core.bool",
     "core.int.add",
     "core.int.subtract"
   ],
   "imports": [
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
     {
       "feature": "core.int.add",
       "local": "_ssrg_int_add"
@@ -86,16 +91,22 @@
             "body": {
               "kind": "conditional",
               "condition": {
-                "kind": "binary",
-                "operator": "===",
-                "left": {
-                  "kind": "identifier",
-                  "name": "current"
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_int_eq_dictionary"
                 },
-                "right": {
-                  "kind": "number",
-                  "value": "0"
-                }
+                "method": "eq",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "current"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "0"
+                  }
+                ]
               },
               "thenBranch": {
                 "kind": "call",
@@ -146,22 +157,28 @@
           }
         ],
         "result": {
-          "kind": "binary",
-          "operator": "===",
-          "left": {
-            "kind": "call",
-            "callee": "countdown",
-            "arguments": [
-              {
-                "kind": "number",
-                "value": "3"
-              }
-            ]
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_int_eq_dictionary"
           },
-          "right": {
-            "kind": "number",
-            "value": "42"
-          }
+          "method": "eq",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "countdown",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "3"
+                }
+              ]
+            },
+            {
+              "kind": "number",
+              "value": "42"
+            }
+          ]
         }
       },
       "origin": {

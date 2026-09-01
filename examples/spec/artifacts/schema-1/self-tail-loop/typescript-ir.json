@@ -7,7 +7,8 @@
     "core.bool",
     "core.int.subtract",
     "core.int.add",
-    "core.unit"
+    "core.unit",
+    "core.int.eq-dictionary"
   ],
   "imports": [
     {
@@ -17,6 +18,10 @@
     {
       "feature": "core.int.add",
       "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
     }
   ],
   "functions": [
@@ -107,26 +112,32 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "===",
-        "left": {
-          "kind": "call",
-          "callee": "sumTo",
-          "arguments": [
-            {
-              "kind": "number",
-              "value": "100000"
-            },
-            {
-              "kind": "number",
-              "value": "0"
-            }
-          ]
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_int_eq_dictionary"
         },
-        "right": {
-          "kind": "number",
-          "value": "5000050000"
-        }
+        "method": "eq",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "sumTo",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "100000"
+              },
+              {
+                "kind": "number",
+                "value": "0"
+              }
+            ]
+          },
+          {
+            "kind": "number",
+            "value": "5000050000"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

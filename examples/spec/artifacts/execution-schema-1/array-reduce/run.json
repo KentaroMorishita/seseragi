@@ -14,6 +14,7 @@
   "expected": {
     "runtimeRequirements": [
       "core.unit",
+      "core.int.eq-dictionary",
       "core.bool",
       "core.array.reduce",
       "core.int",

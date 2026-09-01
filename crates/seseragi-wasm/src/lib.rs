@@ -189,15 +189,21 @@ mod tests {
         assert_eq!(response["status"], "success", "{response}");
         let typescript = response["generated"]["typescript"].as_str().unwrap();
         assert!(
-            typescript.contains("(value - 1.0) / (value + 1.0)"),
+            typescript.contains(
+                "_ssrg_float_div_dictionary[\"div\"](_ssrg_float_sub_dictionary[\"sub\"](value)(1.0))(_ssrg_float_add_dictionary[\"add\"](value)(1.0))"
+            ),
             "{typescript}"
         );
         assert!(
-            typescript.contains("(positive - negative) / 2.0"),
+            typescript.contains(
+                "_ssrg_float_div_dictionary[\"div\"](_ssrg_float_sub_dictionary[\"sub\"](positive)(negative))(2.0)"
+            ),
             "{typescript}"
         );
         assert!(
-            typescript.contains("double((9.0 - 1.0) / 2.0)"),
+            typescript.contains(
+                "double(_ssrg_float_div_dictionary[\"div\"](_ssrg_float_sub_dictionary[\"sub\"](9.0)(1.0))(2.0))"
+            ),
             "{typescript}"
         );
     }

@@ -8,6 +8,7 @@
     "core.list.from-array",
     "core.int.multiply",
     "core.list.comprehend",
+    "core.int.eq-dictionary",
     "core.bool",
     "core.int.remainder",
     "core.list.reduce",
@@ -28,6 +29,10 @@
     {
       "feature": "core.list.comprehend",
       "local": "_ssrg_list_comprehend"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.int.remainder",
@@ -80,26 +85,32 @@
                 "kind": "lambda",
                 "parameter": "value",
                 "body": {
-                  "kind": "binary",
-                  "operator": "===",
-                  "left": {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_int_remainder",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "value"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "2"
-                      }
-                    ]
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_int_eq_dictionary"
                   },
-                  "right": {
-                    "kind": "number",
-                    "value": "1"
-                  }
+                  "method": "eq",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_remainder",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "2"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "number",
+                      "value": "1"
+                    }
+                  ]
                 }
               },
               {

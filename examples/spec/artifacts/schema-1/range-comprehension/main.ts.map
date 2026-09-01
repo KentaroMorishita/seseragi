@@ -12,6 +12,7 @@
     "evenSquares",
     "_ssrg_range_comprehend",
     "inclusive",
+    "intEq",
     "remainder",
     "multiply",
     "total",
@@ -24,5 +25,5 @@
     "renderTotal",
     "total"
   ],
-  "mappings": ";;;;;AAAAA;AAGAK;AAIAI;AAMAC"
+  "mappings": ";;;;;;AAAAA;AAGAM;AAIAI;AAMAC"
 }

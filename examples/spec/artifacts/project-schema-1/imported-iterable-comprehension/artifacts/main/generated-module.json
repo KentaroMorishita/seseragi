@@ -9,6 +9,7 @@
       "core.int",
       "core.int.multiply",
       "core.iterator.comprehend",
+      "core.int.eq-dictionary",
       "core.bool",
       "core.int.remainder",
       "core.int.add",

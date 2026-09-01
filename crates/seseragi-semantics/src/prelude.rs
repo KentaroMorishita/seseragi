@@ -1295,6 +1295,20 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         identity: "std/list::JsonDecode",
     },
     PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/array::Eq",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/list::Eq",
+    },
+    PreludeStandardInstance {
         trait_name: "Show",
         type_name: "Array",
         type_canonical: None,
@@ -1560,6 +1574,22 @@ pub(crate) const SPECIAL_STANDARD_INSTANCES: &[PreludeSpecialInstance] = &[
         PreludeSpecialInstanceDispatch::OperatorAbi,
     ),
     special_value(
+        "Eq",
+        &["Char"],
+        "std/char::Eq",
+        "Char",
+        true,
+        PreludeSpecialInstanceDispatch::OperatorAbi,
+    ),
+    special_value(
+        "Eq",
+        &["Unit"],
+        "std/unit::Eq",
+        "Unit",
+        true,
+        PreludeSpecialInstanceDispatch::OperatorAbi,
+    ),
+    special_value(
         "Zero",
         &["Int"],
         "std/int::Zero",
@@ -1572,6 +1602,22 @@ pub(crate) const SPECIAL_STANDARD_INSTANCES: &[PreludeSpecialInstance] = &[
         &["Int"],
         "std/int::One",
         "Int",
+        false,
+        PreludeSpecialInstanceDispatch::Dictionary,
+    ),
+    special_value(
+        "Zero",
+        &["Float"],
+        "std/float::Zero",
+        "Float",
+        false,
+        PreludeSpecialInstanceDispatch::Dictionary,
+    ),
+    special_value(
+        "One",
+        &["Float"],
+        "std/float::One",
+        "Float",
         false,
         PreludeSpecialInstanceDispatch::Dictionary,
     ),
@@ -2164,6 +2210,10 @@ pub(crate) fn standard_instance_constraints(
 pub(crate) fn standard_instance_constraint_specs(
     identity: &str,
 ) -> &'static [PreludeStandardInstanceConstraint] {
+    const EQ_ELEMENT: &[PreludeStandardInstanceConstraint] = &[PreludeStandardInstanceConstraint {
+        trait_name: "Eq",
+        type_argument_index: 0,
+    }];
     const SHOW_ELEMENT: &[PreludeStandardInstanceConstraint] =
         &[PreludeStandardInstanceConstraint {
             trait_name: "Show",
@@ -2225,6 +2275,7 @@ pub(crate) fn standard_instance_constraint_specs(
         },
     ];
     match identity {
+        "std/array::Eq" | "std/list::Eq" => EQ_ELEMENT,
         "std/array::Show" | "std/list::Show" | "std/maybe::Show" | "std/range::Show" => {
             SHOW_ELEMENT
         }
@@ -2261,6 +2312,82 @@ pub fn special_standard_instance_by_identity(
     SPECIAL_STANDARD_INSTANCES
         .iter()
         .find(|instance| instance.identity == identity)
+}
+
+/// Returns the canonical special-instance registry used by operator typing,
+/// generic evidence selection, and backend dictionary materialization.
+///
+/// Consumers must not reconstruct this list from operator spellings or
+/// runtime helpers: `dispatch` is only an implementation strategy for the
+/// same language-level standard instance.
+pub fn special_standard_instances() -> &'static [PreludeSpecialInstance] {
+    SPECIAL_STANDARD_INSTANCES
+}
+
+#[cfg(test)]
+pub(crate) fn special_standard_instance_constraints() -> Vec<TypedConstraint> {
+    SPECIAL_STANDARD_INSTANCES
+        .iter()
+        .map(|instance| {
+            let arguments = match instance.head {
+                PreludeSpecialInstanceHead::Value(type_name) => vec![named(type_name)],
+                PreludeSpecialInstanceHead::Homogeneous3(type_name) => {
+                    vec![named(type_name), named(type_name), named(type_name)]
+                }
+                PreludeSpecialInstanceHead::Collection {
+                    constructor,
+                    int_element,
+                } => {
+                    let element = if int_element {
+                        named("Int")
+                    } else {
+                        named("String")
+                    };
+                    vec![applied(constructor, element.clone()), element]
+                }
+            };
+            TypedConstraint {
+                name: instance.trait_name.to_owned(),
+                arguments,
+            }
+        })
+        .collect()
+}
+
+#[cfg(test)]
+pub(crate) fn registered_standard_instance_constraints() -> Vec<(TypedConstraint, &'static str)> {
+    STANDARD_INSTANCES
+        .iter()
+        .map(|instance| {
+            let parameter_arity = trait_by_name(instance.trait_name)
+                .and_then(|trait_spec| trait_spec.type_parameters.first())
+                .map(|parameter| parameter.arity)
+                .expect("standard instance trait must have one type parameter");
+            let supplied = instance
+                .type_arity
+                .checked_sub(parameter_arity)
+                .expect("instance head must satisfy the trait constructor arity");
+            let arguments = (0..supplied).map(|_| named("String")).collect();
+            let type_ref = match instance.type_canonical {
+                Some(canonical) => TypedType::ExternalNamed {
+                    name: instance.type_name.to_owned(),
+                    canonical: canonical.to_owned(),
+                    arguments,
+                },
+                None => TypedType::Named {
+                    name: instance.type_name.to_owned(),
+                    arguments,
+                },
+            };
+            (
+                TypedConstraint {
+                    name: instance.trait_name.to_owned(),
+                    arguments: vec![type_ref],
+                },
+                instance.identity,
+            )
+        })
+        .collect()
 }
 
 pub(crate) fn special_standard_instance(
@@ -2369,6 +2496,8 @@ pub(crate) fn structural_standard_instance_identity(
     type_ref: &TypedType,
 ) -> Option<&'static str> {
     match (trait_identity, type_ref) {
+        ("std/prelude::Eq", TypedType::Tuple { .. }) => Some("std/tuple::Eq"),
+        ("std/prelude::Eq", TypedType::Record { closed: true, .. }) => Some("std/record::Eq"),
         ("std/prelude::Show", TypedType::Tuple { .. }) => Some("std/tuple::Show"),
         ("std/prelude::Debug", TypedType::Tuple { .. }) => Some("std/tuple::Debug"),
         ("std/prelude::Show", TypedType::Record { closed: true, .. }) => Some("std/record::Show"),

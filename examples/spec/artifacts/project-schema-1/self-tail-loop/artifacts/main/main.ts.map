@@ -14,7 +14,8 @@
     "subtract",
     "add",
     "selfTailLoopWorks",
+    "intEq",
     "sumTo"
   ],
-  "mappings": ";;AAAAA;AAMAI"
+  "mappings": ";;;AAAAA;AAMAI"
 }

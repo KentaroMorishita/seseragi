@@ -68,17 +68,16 @@ fn reports_a_missing_instance_for_a_constrained_function_call() {
 }
 
 #[test]
-fn does_not_accept_an_unmaterialized_standard_function_dictionary() {
+fn accepts_a_materialized_standard_arithmetic_dictionary() {
     let diagnostics = semantic_diagnostics(
         "main.ssrg",
         "pub fn duplicate<T> value: T -> T\n\
          where Add<T, T, T> =\n\
-           value\n\
+           value + value\n\
          pub fn duplicateInt value: Int -> Int = duplicate value\n",
     );
 
-    assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
-    assert_eq!(diagnostics.diagnostics[0].message_key, "instance.missing");
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
 }
 
 #[test]

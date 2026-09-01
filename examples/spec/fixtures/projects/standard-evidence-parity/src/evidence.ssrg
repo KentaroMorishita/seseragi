@@ -1,0 +1,19 @@
+pub fn same<A> left: A -> right: A -> Bool where Eq<A> = eq left right
+
+pub fn nestedSame<A> left: A -> right: A -> Bool where Eq<A> = same left right
+
+pub fn genericAdd<A> left: A -> right: A -> A where Add<A, A, A> = add left right
+
+pub fn genericSub<A> left: A -> right: A -> A where Sub<A, A, A> = sub left right
+
+pub fn genericMul<A> left: A -> right: A -> A where Mul<A, A, A> = mul left right
+
+pub fn genericDiv<A> left: A -> right: A -> A where Div<A, A, A> = div left right
+
+pub fn genericRem<A> left: A -> right: A -> A where Rem<A, A, A> = rem left right
+
+pub fn genericPow<A> left: A -> right: A -> A where Pow<A, A, A> = pow left right
+
+pub fn genericZero<A> unit: Unit -> A where Zero<A> = zero ()
+
+pub fn genericOne<A> unit: Unit -> A where One<A> = one ()

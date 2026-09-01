@@ -520,6 +520,7 @@ fn compiles_standard_array_reduce_with_selected_instance_evidence() {
         compiled.typescript_ir.runtime_requirements,
         vec![
             "core.unit",
+            "core.int.eq-dictionary",
             "core.bool",
             "core.array.reduce",
             "core.int",
