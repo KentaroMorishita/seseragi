@@ -35,6 +35,7 @@
     "runtimeRequirements": [
       "core.string",
       "core.int",
+      "core.string.add-dictionary",
       "core.maybe",
       "core.maybe.nothing",
       "core.maybe.just",

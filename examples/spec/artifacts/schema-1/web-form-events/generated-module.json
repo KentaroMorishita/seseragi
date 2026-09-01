@@ -16,7 +16,8 @@
       "web.html.label",
       "web.html.input",
       "web.html.textarea",
-      "web.html.button"
+      "web.html.button",
+      "core.string.eq-dictionary"
     ]
   },
   "exports": [

@@ -13,6 +13,7 @@
       "core.either.applicative",
       "core.int.add",
       "core.adt",
+      "core.string.add-dictionary",
       "core.unit",
       "effect.core.flatMap",
       "effect.console.println",

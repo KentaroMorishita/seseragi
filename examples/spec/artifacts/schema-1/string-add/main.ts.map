@@ -10,9 +10,13 @@
   ],
   "names": [
     "invitation",
+    "stringAdd",
+    "stringAdd",
+    "stringAdd",
+    "stringAdd",
     "main",
     "println",
     "invitation"
   ],
-  "mappings": ";;AACAA;AAGAC"
+  "mappings": ";;;AACAA;AAGAK"
 }

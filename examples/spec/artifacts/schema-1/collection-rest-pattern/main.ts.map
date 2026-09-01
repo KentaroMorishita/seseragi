@@ -28,7 +28,9 @@
     "sumArray",
     "listTotal",
     "sumList",
-    "fromArray"
+    "fromArray",
+    "intEq",
+    "intEq"
   ],
-  "mappings": ";;;AAAAA;AAUAO;AAUAO"
+  "mappings": ";;;;AAAAA;AAUAO;AAUAO"
 }

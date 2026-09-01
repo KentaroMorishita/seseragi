@@ -272,9 +272,8 @@ pub(crate) fn select_call_evidence(
         .iter()
         .cloned()
         .map(|constraint| {
-            let evidence = select_standard_instance(None, &constraint)
-                .or_else(|| abi_only_standard_instance_identity(&constraint).map(standard_evidence))
-                .ok_or_else(|| constraint.clone())?;
+            let evidence =
+                select_standard_instance(None, &constraint).ok_or_else(|| constraint.clone())?;
             Ok(TypedCallEvidence {
                 constraint,
                 evidence,
@@ -288,7 +287,6 @@ pub(crate) fn select_function_call_evidence(
     trait_identities: &[Option<String>],
     resolution: &TypedResolution<'_>,
     scoped: &[ScopedCallEvidence],
-    allow_abi_standard: bool,
 ) -> Result<Vec<TypedCallEvidence>, TypedConstraint> {
     constraints
         .iter()
@@ -299,13 +297,6 @@ pub(crate) fn select_function_call_evidence(
             let evidence = match trait_identity {
                 Some(trait_identity) => {
                     select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
-                        .or_else(|| {
-                            (allow_abi_standard
-                                && trait_identity == format!("std/prelude::{}", constraint.name))
-                            .then(|| abi_only_standard_instance_identity(&constraint))
-                            .flatten()
-                            .map(standard_evidence)
-                        })
                 }
                 // Standard operations such as `reduce` do not resolve through
                 // a source trait method, but their constraint can still be
@@ -316,9 +307,6 @@ pub(crate) fn select_function_call_evidence(
                     let trait_identity = format!("std/prelude::{}", constraint.name);
                     select_resolved_evidence(&constraint, &trait_identity, resolution, scoped)
                         .or_else(|| select_standard_instance(None, &constraint))
-                        .or_else(|| {
-                            abi_only_standard_instance_identity(&constraint).map(standard_evidence)
-                        })
                 }
             }
             .ok_or_else(|| {
@@ -659,13 +647,13 @@ pub(super) fn select_standard_instance(
             });
         }
     }
-    // Arithmetic and equality identities lower through dedicated operator
-    // ABIs and cannot cross a generic function boundary as dictionaries.
-    // Only registries with a first-class dictionary representation may be
-    // selected here.
-    (crate::prelude::special_standard_instance(constraint).is_some_and(|instance| {
-        instance.dispatch == crate::prelude::PreludeSpecialInstanceDispatch::Dictionary
-    }) || crate::prelude::standard_instance_by_identity(&identity).is_some())
+    // A dedicated operator ABI is an optimization of the same standard
+    // instance, not a separate semantic instance. Every registered special
+    // instance can therefore cross a generic boundary as first-class
+    // evidence; lowering materializes its canonical runtime dictionary when
+    // the call actually needs one.
+    (crate::prelude::special_standard_instance(constraint).is_some()
+        || crate::prelude::standard_instance_by_identity(&identity).is_some())
     .then(|| standard_evidence(identity))
 }
 
@@ -703,7 +691,10 @@ fn structural_standard_requirements(
     trait_name: &str,
     type_ref: &TypedType,
 ) -> Option<Vec<TypedConstraint>> {
-    if !matches!(trait_name, "Show" | "Debug" | "JsonEncode" | "JsonDecode") {
+    if !matches!(
+        trait_name,
+        "Eq" | "Show" | "Debug" | "JsonEncode" | "JsonDecode"
+    ) {
         return None;
     }
     let types = match type_ref {
@@ -786,14 +777,6 @@ fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
         }
     }
     crate::prelude::special_standard_instance(constraint)
-        .map(|instance| instance.identity.to_owned())
-}
-
-fn abi_only_standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
-    crate::prelude::special_standard_instance(constraint)
-        .filter(|instance| {
-            instance.dispatch == crate::prelude::PreludeSpecialInstanceDispatch::OperatorAbi
-        })
         .map(|instance| instance.identity.to_owned())
 }
 
@@ -1181,7 +1164,7 @@ pub(crate) fn select_binary_equality_evidence(
         .and_then(|trait_identity| {
             select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
         })
-        .or_else(|| standard_instance_identity(&constraint).map(standard_evidence))
+        .or_else(|| select_standard_instance(trait_identity, &constraint))
         .ok_or_else(|| constraint.clone())?;
     Ok(TypedCallEvidence {
         constraint,
@@ -1394,6 +1377,47 @@ mod tests {
                 evidence: TypedInstanceEvidence::Standard { identity, .. },
             }] if name == "Add" && arguments.len() == 3 && identity == "std/int::Add"
         ));
+    }
+
+    #[test]
+    fn selects_every_registered_special_instance_as_generic_evidence() {
+        let constraints = crate::prelude::special_standard_instance_constraints();
+        assert_eq!(
+            constraints.len(),
+            crate::prelude::SPECIAL_STANDARD_INSTANCES.len()
+        );
+
+        for (constraint, registered) in constraints
+            .into_iter()
+            .zip(crate::prelude::SPECIAL_STANDARD_INSTANCES)
+        {
+            let evidence = select_call_evidence(std::slice::from_ref(&constraint))
+                .unwrap_or_else(|missing| panic!("missing {missing:?}"));
+            assert!(matches!(
+                evidence.as_slice(),
+                [TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity, .. },
+                    ..
+                }] if identity == registered.identity
+            ));
+        }
+    }
+
+    #[test]
+    fn selects_every_registered_dictionary_instance_as_generic_evidence() {
+        for (constraint, registered_identity) in
+            crate::prelude::registered_standard_instance_constraints()
+        {
+            let evidence = select_call_evidence(std::slice::from_ref(&constraint))
+                .unwrap_or_else(|missing| panic!("missing {missing:?}"));
+            assert!(matches!(
+                evidence.as_slice(),
+                [TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity, .. },
+                    ..
+                }] if identity == registered_identity
+            ));
+        }
     }
 
     #[test]

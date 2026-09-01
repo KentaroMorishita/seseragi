@@ -8,12 +8,17 @@
     "core.int",
     "core.string",
     "core.unit",
-    "effect.console.println"
+    "effect.console.println",
+    "core.int.eq-dictionary"
   ],
   "imports": [
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
     }
   ],
   "adts": [
@@ -633,16 +638,22 @@
                           "kind": "lambda",
                           "parameter": "_argument1",
                           "body": {
-                            "kind": "binary",
-                            "operator": "===",
-                            "left": {
-                              "kind": "identifier",
-                              "name": "_argument0"
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_int_eq_dictionary"
                             },
-                            "right": {
-                              "kind": "identifier",
-                              "name": "_argument1"
-                            }
+                            "method": "eq",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "_argument0"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "_argument1"
+                              }
+                            ]
                           }
                         }
                       },
@@ -668,14 +679,28 @@
                           "parameter": "_argument1",
                           "body": {
                             "kind": "binary",
-                            "operator": "!==",
+                            "operator": "===",
                             "left": {
-                              "kind": "identifier",
-                              "name": "_argument0"
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_int_eq_dictionary"
+                              },
+                              "method": "eq",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "_argument0"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "_argument1"
+                                }
+                              ]
                             },
                             "right": {
-                              "kind": "identifier",
-                              "name": "_argument1"
+                              "kind": "boolean",
+                              "value": false
                             }
                           }
                         }

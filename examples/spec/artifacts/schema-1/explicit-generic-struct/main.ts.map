@@ -11,10 +11,11 @@
   "names": [
     "Marker",
     "render",
+    "stringAdd",
     "main",
     "println",
     "render",
     "marker"
   ],
-  "mappings": ";;;AAAAA;;;;;AAUAC;AAGAC;AARAG"
+  "mappings": ";;;;AAAAA;;;;;AAUAC;AAGAE;AARAG"
 }

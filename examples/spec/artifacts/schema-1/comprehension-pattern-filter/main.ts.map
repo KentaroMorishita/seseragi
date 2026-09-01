@@ -16,6 +16,7 @@
     "Just",
     "Just",
     "value",
+    "intEq",
     "remainder",
     "value",
     "matchingValues",
@@ -37,5 +38,5 @@
     "presentTotal",
     "matchingTotal"
   ],
-  "mappings": ";;;;;AAAAA;AAKAS;AAIAI;AAIAI;AAIAI;AAMAC"
+  "mappings": ";;;;;;AAAAA;AAKAU;AAIAI;AAIAI;AAIAI;AAMAC"
 }

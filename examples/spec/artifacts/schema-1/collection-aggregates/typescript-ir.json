@@ -31,7 +31,7 @@
     },
     {
       "feature": "core.int.mul-dictionary",
-      "local": "_ssrg_int_mul"
+      "local": "_ssrg_int_mul_dictionary"
     },
     {
       "feature": "core.collection.product",
@@ -127,7 +127,7 @@
           },
           {
             "kind": "runtime-reference",
-            "name": "_ssrg_int_mul"
+            "name": "_ssrg_int_mul_dictionary"
           },
           {
             "kind": "identifier",

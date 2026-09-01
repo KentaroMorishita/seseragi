@@ -5,6 +5,7 @@
   "runtimeRequirements": [
     "core.string",
     "core.int",
+    "core.string.add-dictionary",
     "core.maybe",
     "core.maybe.nothing",
     "core.maybe.just",
@@ -14,6 +15,10 @@
     "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
+    },
     {
       "feature": "core.maybe.nothing",
       "local": "_ssrg_maybe_Nothing"
@@ -202,16 +207,22 @@
               }
             ],
             "value": {
-              "kind": "binary",
-              "operator": "+",
-              "left": {
-                "kind": "string",
-                "value": "Player: "
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
               },
-              "right": {
-                "kind": "identifier",
-                "name": "name"
-              }
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Player: "
+                },
+                {
+                  "kind": "identifier",
+                  "name": "name"
+                }
+              ]
             }
           },
           {
@@ -243,24 +254,36 @@
               }
             ],
             "value": {
-              "kind": "binary",
-              "operator": "+",
-              "left": {
-                "kind": "binary",
-                "operator": "+",
-                "left": {
-                  "kind": "identifier",
-                  "name": "label"
-                },
-                "right": {
-                  "kind": "string",
-                  "value": ": "
-                }
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
               },
-              "right": {
-                "kind": "identifier",
-                "name": "name"
-              }
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_string_add_dictionary"
+                  },
+                  "method": "add",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "label"
+                    },
+                    {
+                      "kind": "string",
+                      "value": ": "
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "name"
+                }
+              ]
             }
           }
         ],
@@ -313,22 +336,28 @@
               }
             ],
             "value": {
-              "kind": "binary",
-              "operator": "+",
-              "left": {
-                "kind": "string",
-                "value": "Record profile: "
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
               },
-              "right": {
-                "kind": "call",
-                "callee": "displayName",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "user"
-                  }
-                ]
-              }
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Record profile: "
+                },
+                {
+                  "kind": "call",
+                  "callee": "displayName",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "user"
+                    }
+                  ]
+                }
+              ]
             }
           },
           {
@@ -353,30 +382,42 @@
               }
             ],
             "value": {
-              "kind": "binary",
-              "operator": "+",
-              "left": {
-                "kind": "binary",
-                "operator": "+",
-                "left": {
-                  "kind": "identifier",
-                  "name": "label"
-                },
-                "right": {
-                  "kind": "string",
-                  "value": ": "
-                }
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
               },
-              "right": {
-                "kind": "call",
-                "callee": "displayName",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "user"
-                  }
-                ]
-              }
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_string_add_dictionary"
+                  },
+                  "method": "add",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "label"
+                    },
+                    {
+                      "kind": "string",
+                      "value": ": "
+                    }
+                  ]
+                },
+                {
+                  "kind": "call",
+                  "callee": "displayName",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "user"
+                    }
+                  ]
+                }
+              ]
             }
           }
         ],

@@ -10,7 +10,14 @@
     "core.int.divide",
     "core.int.remainder",
     "core.int.power",
+    "core.float.add-dictionary",
     "core.float64",
+    "core.float.sub-dictionary",
+    "core.float.mul-dictionary",
+    "core.float.div-dictionary",
+    "core.float.rem-dictionary",
+    "core.float.pow-dictionary",
+    "core.string.add-dictionary",
     "core.string",
     "core.unit",
     "effect.core.flatMap",
@@ -44,6 +51,34 @@
     {
       "feature": "core.int.power",
       "local": "_ssrg_int_power"
+    },
+    {
+      "feature": "core.float.add-dictionary",
+      "local": "_ssrg_float_add_dictionary"
+    },
+    {
+      "feature": "core.float.sub-dictionary",
+      "local": "_ssrg_float_sub_dictionary"
+    },
+    {
+      "feature": "core.float.mul-dictionary",
+      "local": "_ssrg_float_mul_dictionary"
+    },
+    {
+      "feature": "core.float.div-dictionary",
+      "local": "_ssrg_float_div_dictionary"
+    },
+    {
+      "feature": "core.float.rem-dictionary",
+      "local": "_ssrg_float_rem_dictionary"
+    },
+    {
+      "feature": "core.float.pow-dictionary",
+      "local": "_ssrg_float_pow_dictionary"
+    },
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
     },
     {
       "feature": "effect.core.flatMap",
@@ -247,76 +282,112 @@
         "kind": "array",
         "elements": [
           {
-            "kind": "binary",
-            "operator": "+",
-            "left": {
-              "kind": "number",
-              "value": "1.5"
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_float_add_dictionary"
             },
-            "right": {
-              "kind": "number",
-              "value": "2.25"
-            }
+            "method": "add",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "1.5"
+              },
+              {
+                "kind": "number",
+                "value": "2.25"
+              }
+            ]
           },
           {
-            "kind": "binary",
-            "operator": "-",
-            "left": {
-              "kind": "number",
-              "value": "4.5"
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_float_sub_dictionary"
             },
-            "right": {
-              "kind": "number",
-              "value": "1.25"
-            }
+            "method": "sub",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "4.5"
+              },
+              {
+                "kind": "number",
+                "value": "1.25"
+              }
+            ]
           },
           {
-            "kind": "binary",
-            "operator": "*",
-            "left": {
-              "kind": "number",
-              "value": "2.5"
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_float_mul_dictionary"
             },
-            "right": {
-              "kind": "number",
-              "value": "3.0"
-            }
+            "method": "mul",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "2.5"
+              },
+              {
+                "kind": "number",
+                "value": "3.0"
+              }
+            ]
           },
           {
-            "kind": "binary",
-            "operator": "/",
-            "left": {
-              "kind": "number",
-              "value": "8.0"
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_float_div_dictionary"
             },
-            "right": {
-              "kind": "number",
-              "value": "2.0"
-            }
+            "method": "div",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "8.0"
+              },
+              {
+                "kind": "number",
+                "value": "2.0"
+              }
+            ]
           },
           {
-            "kind": "binary",
-            "operator": "%",
-            "left": {
-              "kind": "number",
-              "value": "7.5"
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_float_rem_dictionary"
             },
-            "right": {
-              "kind": "number",
-              "value": "4.0"
-            }
+            "method": "rem",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "7.5"
+              },
+              {
+                "kind": "number",
+                "value": "4.0"
+              }
+            ]
           },
           {
-            "kind": "binary",
-            "operator": "**",
-            "left": {
-              "kind": "number",
-              "value": "2.0"
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_float_pow_dictionary"
             },
-            "right": {
-              "kind": "number",
-              "value": "3.0"
-            }
+            "method": "pow",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "2.0"
+              },
+              {
+                "kind": "number",
+                "value": "3.0"
+              }
+            ]
           }
         ],
         "elementType": {
@@ -337,16 +408,22 @@
         "kind": "string"
       },
       "initializer": {
-        "kind": "binary",
-        "operator": "+",
-        "left": {
-          "kind": "string",
-          "value": "Sese"
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_string_add_dictionary"
         },
-        "right": {
-          "kind": "string",
-          "value": "ragi"
-        }
+        "method": "add",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "Sese"
+          },
+          {
+            "kind": "string",
+            "value": "ragi"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

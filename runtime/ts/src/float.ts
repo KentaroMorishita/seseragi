@@ -13,6 +13,15 @@ import {
   type Maybe,
   type Ordering,
 } from "./sum"
+import type { Unit } from "./effect"
+
+export const floatZero = Object.freeze({
+  zero: (_unit: Unit): number => 0,
+})
+
+export const floatOne = Object.freeze({
+  one: (_unit: Unit): number => 1,
+})
 
 export type FloatParseError =
   | Readonly<{ readonly tag: "EmptyFloat" }>
@@ -160,6 +169,48 @@ export function sign(value: number): Maybe<number> {
 export function power(exponent: number, base: number): number {
   return base ** exponent
 }
+
+export const floatAdd = Object.freeze({
+  add:
+    (left: number) =>
+    (right: number): number =>
+      left + right,
+})
+
+export const floatSub = Object.freeze({
+  sub:
+    (left: number) =>
+    (right: number): number =>
+      left - right,
+})
+
+export const floatMul = Object.freeze({
+  mul:
+    (left: number) =>
+    (right: number): number =>
+      left * right,
+})
+
+export const floatDiv = Object.freeze({
+  div:
+    (left: number) =>
+    (right: number): number =>
+      left / right,
+})
+
+export const floatRem = Object.freeze({
+  rem:
+    (left: number) =>
+    (right: number): number =>
+      left % right,
+})
+
+export const floatPow = Object.freeze({
+  pow:
+    (base: number) =>
+    (exponent: number): number =>
+      base ** exponent,
+})
 
 export function roundIntegral(rounding: RoundingMode, value: number): number {
   if (!Number.isFinite(value) || value === 0) return value

@@ -1,0 +1,7 @@
+fn same<A> left: A -> right: A -> Bool
+where Eq<A> =
+  eq left right
+
+pub effect fn main =
+  same 1.0 1.0
+  |> println

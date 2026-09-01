@@ -43,6 +43,7 @@
       "core.string",
       "core.iterator.next",
       "core.adt",
+      "core.int.eq-dictionary",
       "core.unit",
       "effect.console.println",
       "core.iterator.unfold"

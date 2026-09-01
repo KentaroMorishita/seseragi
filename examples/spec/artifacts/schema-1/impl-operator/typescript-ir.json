@@ -5,6 +5,7 @@
   "runtimeRequirements": [
     "core.int",
     "core.int.add",
+    "core.int.eq-dictionary",
     "core.bool",
     "core.unit",
     "core.string",
@@ -15,6 +16,10 @@
     {
       "feature": "core.int.add",
       "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.int.show",
@@ -165,24 +170,30 @@
               }
             ],
             "body": {
-              "kind": "binary",
-              "operator": "===",
-              "left": {
-                "kind": "field-access",
-                "receiver": {
-                  "kind": "identifier",
-                  "name": "self"
-                },
-                "field": "value"
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_eq_dictionary"
               },
-              "right": {
-                "kind": "field-access",
-                "receiver": {
-                  "kind": "identifier",
-                  "name": "other"
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "self"
+                  },
+                  "field": "value"
                 },
-                "field": "value"
-              }
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "other"
+                  },
+                  "field": "value"
+                }
+              ]
             },
             "origin": {
               "source": "main.ssrg",

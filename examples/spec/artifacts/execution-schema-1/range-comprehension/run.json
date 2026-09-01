@@ -38,6 +38,7 @@
       "core.range.comprehend",
       "core.range",
       "core.range.inclusive",
+      "core.int.eq-dictionary",
       "core.bool",
       "core.int.remainder",
       "core.unit",

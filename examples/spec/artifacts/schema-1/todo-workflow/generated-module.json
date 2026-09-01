@@ -10,6 +10,7 @@
       "core.string",
       "core.bool",
       "core.array.append",
+      "core.int.eq-dictionary",
       "core.array.filter",
       "core.int.show",
       "core.string.show",

@@ -3,7 +3,11 @@
   "stage": "typescript-ir",
   "module": "artifact/typescript-precedence-grouping",
   "runtimeRequirements": [
+    "core.float.div-dictionary",
+    "core.float.sub-dictionary",
     "core.float64",
+    "core.float.add-dictionary",
+    "core.float.mul-dictionary",
     "core.unit",
     "effect.core.flatMap",
     "effect.console.println",
@@ -12,6 +16,22 @@
     "core.string"
   ],
   "imports": [
+    {
+      "feature": "core.float.div-dictionary",
+      "local": "_ssrg_float_div_dictionary"
+    },
+    {
+      "feature": "core.float.sub-dictionary",
+      "local": "_ssrg_float_sub_dictionary"
+    },
+    {
+      "feature": "core.float.add-dictionary",
+      "local": "_ssrg_float_add_dictionary"
+    },
+    {
+      "feature": "core.float.mul-dictionary",
+      "local": "_ssrg_float_mul_dictionary"
+    },
     {
       "feature": "effect.core.flatMap",
       "local": "_ssrg_effect_flatMap"
@@ -42,24 +62,36 @@
         "callee": "double",
         "arguments": [
           {
-            "kind": "binary",
-            "operator": "/",
-            "left": {
-              "kind": "binary",
-              "operator": "-",
-              "left": {
-                "kind": "number",
-                "value": "9.0"
-              },
-              "right": {
-                "kind": "number",
-                "value": "1.0"
-              }
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_float_div_dictionary"
             },
-            "right": {
-              "kind": "number",
-              "value": "2.0"
-            }
+            "method": "div",
+            "arguments": [
+              {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_float_sub_dictionary"
+                },
+                "method": "sub",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "9.0"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "1.0"
+                  }
+                ]
+              },
+              {
+                "kind": "number",
+                "value": "2.0"
+              }
+            ]
           }
         ]
       },
@@ -83,32 +115,50 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "/",
-        "left": {
-          "kind": "binary",
-          "operator": "-",
-          "left": {
-            "kind": "identifier",
-            "name": "value"
-          },
-          "right": {
-            "kind": "number",
-            "value": "1.0"
-          }
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_float_div_dictionary"
         },
-        "right": {
-          "kind": "binary",
-          "operator": "+",
-          "left": {
-            "kind": "identifier",
-            "name": "value"
+        "method": "div",
+        "arguments": [
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_float_sub_dictionary"
+            },
+            "method": "sub",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              },
+              {
+                "kind": "number",
+                "value": "1.0"
+              }
+            ]
           },
-          "right": {
-            "kind": "number",
-            "value": "1.0"
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_float_add_dictionary"
+            },
+            "method": "add",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              },
+              {
+                "kind": "number",
+                "value": "1.0"
+              }
+            ]
           }
-        }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -133,24 +183,36 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "/",
-        "left": {
-          "kind": "binary",
-          "operator": "-",
-          "left": {
-            "kind": "identifier",
-            "name": "positive"
-          },
-          "right": {
-            "kind": "identifier",
-            "name": "negative"
-          }
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_float_div_dictionary"
         },
-        "right": {
-          "kind": "number",
-          "value": "2.0"
-        }
+        "method": "div",
+        "arguments": [
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_float_sub_dictionary"
+            },
+            "method": "sub",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "positive"
+              },
+              {
+                "kind": "identifier",
+                "name": "negative"
+              }
+            ]
+          },
+          {
+            "kind": "number",
+            "value": "2.0"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
@@ -170,16 +232,22 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "*",
-        "left": {
-          "kind": "identifier",
-          "name": "value"
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_float_mul_dictionary"
         },
-        "right": {
-          "kind": "number",
-          "value": "2.0"
-        }
+        "method": "mul",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "number",
+            "value": "2.0"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",

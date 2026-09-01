@@ -8,6 +8,7 @@
     "requirements": [
       "core.int",
       "core.int.add",
+      "core.int.eq-dictionary",
       "core.bool",
       "core.unit",
       "core.string",

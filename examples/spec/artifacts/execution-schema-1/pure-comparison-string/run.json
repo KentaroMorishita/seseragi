@@ -15,7 +15,14 @@
     "pure": { "result": "json" }
   },
   "expected": {
-    "runtimeRequirements": ["core.int", "core.bool", "core.string"],
+    "runtimeRequirements": [
+      "core.int",
+      "core.int.eq-dictionary",
+      "core.bool",
+      "core.bool.eq-dictionary",
+      "core.string",
+      "core.string.eq-dictionary"
+    ],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt"

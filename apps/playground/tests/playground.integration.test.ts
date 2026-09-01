@@ -273,9 +273,15 @@ describe("Playground project compiler boundary", () => {
     expect(response.status).toBe("success")
     if (response.status !== "success") return
     const typescript = response.modules[0]?.generated.typescript ?? ""
-    expect(typescript).toContain("(value - 1.0) / (value + 1.0)")
-    expect(typescript).toContain("(positive - negative) / 2.0")
-    expect(typescript).toContain("double((9.0 - 1.0) / 2.0)")
+    expect(typescript).toContain(
+      '_ssrg_float_div_dictionary["div"](_ssrg_float_sub_dictionary["sub"](value)(1.0))(_ssrg_float_add_dictionary["add"](value)(1.0))'
+    )
+    expect(typescript).toContain(
+      '_ssrg_float_div_dictionary["div"](_ssrg_float_sub_dictionary["sub"](positive)(negative))(2.0)'
+    )
+    expect(typescript).toContain(
+      'double(_ssrg_float_div_dictionary["div"](_ssrg_float_sub_dictionary["sub"](9.0)(1.0))(2.0))'
+    )
   })
 
   test("keeps a renamed nested entry and its diagnostic tab on canonical paths", async () => {
@@ -890,6 +896,78 @@ describe("Playground project compiler boundary", () => {
         )
       ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
     }
+  })
+
+  test("executes imported standard evidence through WASM", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/standard-evidence-parity/",
+      import.meta.url
+    )
+    const [main, evidence, expectedOutput] = await Promise.all([
+      Bun.file(new URL("src/main.ssrg", fixture)).text(),
+      Bun.file(new URL("src/evidence.ssrg", fixture)).text(),
+      Bun.file(new URL("expected.stdout", fixture)).text(),
+    ])
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [
+        { path: "main.ssrg", source: main },
+        { path: "evidence.ssrg", source: evidence },
+      ],
+    })
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing standard evidence execution entry")
+    }
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
+  test("keeps intentionally unavailable Float Eq as SES-T0201", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../crates/seseragi-cli/tests/fixtures/standard-evidence-float-eq-negative.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    expect(response.status).toBe("failure")
+    if (response.status !== "failure") return
+    const diagnostics = response.diagnostics.flatMap(
+      ({ diagnostics }) => diagnostics.diagnostics
+    )
+    expect(diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "SES-T0201",
+          related: expect.arrayContaining([
+            expect.objectContaining({
+              message: expect.stringContaining(
+                "no Eq instance matches the inferred call arguments"
+              ),
+            }),
+          ]),
+        }),
+      ])
+    )
   })
 
   test("diagnoses browser-unsupported standard imports before execution", async () => {

@@ -807,6 +807,30 @@ fn runs_typeclass_operator_parity_project() {
 }
 
 #[test]
+fn runs_standard_evidence_parity_project() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/standard-evidence-parity"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn diagnoses_missing_signal_monad_operator_instance() {
     let source = repository_root()
         .join("crates/seseragi-cli/tests/fixtures/typeclass-signal-monad-negative.ssrg");
@@ -821,6 +845,27 @@ fn diagnoses_missing_signal_monad_operator_instance() {
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(stderr.contains("error[SES-T0201]"), "{stderr}");
     assert!(stderr.contains("no Monad instance matches"), "{stderr}");
+    assert!(!stderr.contains("runtime defect"), "{stderr}");
+}
+
+#[test]
+fn diagnoses_intentionally_unavailable_float_eq_evidence() {
+    let source = repository_root()
+        .join("crates/seseragi-cli/tests/fixtures/standard-evidence-float-eq-negative.ssrg");
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(source)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(2));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("error[SES-T0201]"), "{stderr}");
+    assert!(
+        stderr.contains("no Eq instance matches the inferred call arguments"),
+        "{stderr}"
+    );
     assert!(!stderr.contains("runtime defect"), "{stderr}");
 }
 

@@ -38,7 +38,8 @@
       "core.int",
       "core.string",
       "core.unit",
-      "effect.console.println"
+      "effect.console.println",
+      "core.int.eq-dictionary"
     ],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",

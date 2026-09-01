@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.41.0] - 2026-09-01
+
+- Unified every registered standard Prelude instance with the ordinary generic
+  evidence path, including equality, arithmetic, zero and one, conditional
+  collection instances, and structural tuple and closed-record equality.
+- Added canonical runtime dictionaries for primitive, collection, and
+  structural equality plus the previously operator-only numeric and String
+  instances, so operators, named methods, and generic constraints share one
+  observable instance semantics.
+- Added a generated standard-instance audit matrix that classifies implemented,
+  conditional, structural, missing, and intentionally unavailable specification
+  surfaces and detects future registry drift.
+- Added matching CLI, WASM, Playground, imported-boundary, nested-evidence,
+  partial-application, local-instance, and intentional `SES-T0201` regression
+  coverage with refreshed canonical conformance artifacts.
+
 ## [0.40.0] - 2026-09-01
 
 - Unified the standard Prelude trait, method, supertrait, deriving, operator,

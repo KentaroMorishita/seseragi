@@ -11,6 +11,7 @@
       "core.list.from-array",
       "core.int.multiply",
       "core.list.comprehend",
+      "core.int.eq-dictionary",
       "core.bool",
       "core.int.remainder",
       "core.list.reduce",

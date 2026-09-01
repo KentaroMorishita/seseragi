@@ -41,7 +41,9 @@
       "core.int.add",
       "core.int.multiply",
       "core.string",
+      "core.string.eq-dictionary",
       "core.bool",
+      "core.string.add-dictionary",
       "core.unit",
       "effect.core.flatMap",
       "effect.console.println"

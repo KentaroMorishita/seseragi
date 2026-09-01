@@ -13,6 +13,7 @@
     "core.string",
     "core.iterator.next",
     "core.adt",
+    "core.int.eq-dictionary",
     "core.unit",
     "effect.console.println",
     "core.iterator.unfold"
@@ -33,6 +34,10 @@
     {
       "feature": "core.iterator.next",
       "local": "_ssrg_iterator_next"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "effect.console.println",
@@ -315,16 +320,22 @@
             "value": {
               "kind": "conditional",
               "condition": {
-                "kind": "binary",
-                "operator": "===",
-                "left": {
-                  "kind": "identifier",
-                  "name": "left"
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_int_eq_dictionary"
                 },
-                "right": {
-                  "kind": "identifier",
-                  "name": "right"
-                }
+                "method": "eq",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "left"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "right"
+                  }
+                ]
               },
               "thenBranch": {
                 "kind": "decision",
@@ -465,16 +476,22 @@
                     "value": {
                       "kind": "conditional",
                       "condition": {
-                        "kind": "binary",
-                        "operator": "===",
-                        "left": {
-                          "kind": "identifier",
-                          "name": "leftNext"
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_eq_dictionary"
                         },
-                        "right": {
-                          "kind": "identifier",
-                          "name": "rightNext"
-                        }
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "leftNext"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "rightNext"
+                          }
+                        ]
                       },
                       "thenBranch": {
                         "kind": "string",

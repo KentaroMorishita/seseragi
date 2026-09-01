@@ -33,6 +33,7 @@
     "runtimeRequirements": [
       "core.int",
       "core.string",
+      "core.string.add-dictionary",
       "core.unit",
       "effect.console.println"
     ],

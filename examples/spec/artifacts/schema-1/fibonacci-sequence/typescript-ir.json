@@ -4,6 +4,7 @@
   "module": "artifact/fibonacci-sequence",
   "runtimeRequirements": [
     "core.int",
+    "core.int.eq-dictionary",
     "core.bool",
     "core.int.subtract",
     "core.int.add",
@@ -15,6 +16,10 @@
     "core.range.inclusive"
   ],
   "imports": [
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
     {
       "feature": "core.int.subtract",
       "local": "_ssrg_int_subtract"
@@ -74,16 +79,22 @@
             "body": {
               "kind": "conditional",
               "condition": {
-                "kind": "binary",
-                "operator": "===",
-                "left": {
-                  "kind": "identifier",
-                  "name": "remaining"
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_int_eq_dictionary"
                 },
-                "right": {
-                  "kind": "number",
-                  "value": "0"
-                }
+                "method": "eq",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "remaining"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "0"
+                  }
+                ]
               },
               "thenBranch": {
                 "kind": "identifier",

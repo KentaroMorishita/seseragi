@@ -13,6 +13,7 @@
     "Active",
     "__ssrg$instance$Ready$0",
     "describe",
+    "stringAdd",
     "__ssrg$evidence$0",
     "applyLabel",
     "labeler",
@@ -21,5 +22,5 @@
     "applyLabel",
     "describe"
   ],
-  "mappings": ";;AAAAA;;AACIC;AAMJC;AAIAC;AAOAE;AAKAE"
+  "mappings": ";;;AAAAA;;AACIC;AAMJC;AAIAC;AAOAG;AAKAE"
 }

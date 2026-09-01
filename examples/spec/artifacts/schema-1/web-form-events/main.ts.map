@@ -23,7 +23,8 @@
     "input",
     "textarea",
     "input",
-    "button"
+    "button",
+    "stringEq"
   ],
-  "mappings": ";;AAEAA;;;;AACIC;AACAC;AACAC;AAEJC;AAGAE;AAGAE"
+  "mappings": ";;;AAEAA;;;;AACIC;AACAC;AACAC;AAEJC;AAGAE;AAGAE"
 }

@@ -39,6 +39,7 @@
       "core.maybe",
       "core.maybe.just",
       "core.maybe.nothing",
+      "core.int.eq-dictionary",
       "core.bool",
       "core.int.remainder",
       "core.array.reduce",

@@ -11,6 +11,7 @@
   "names": [
     "fibonacci",
     "loop",
+    "intEq",
     "loop",
     "subtract",
     "add",
@@ -22,5 +23,5 @@
     "intShow",
     "fibonacci"
   ],
-  "mappings": ";;;;AAAAA;AAUAM"
+  "mappings": ";;;;;AAAAA;AAUAO"
 }

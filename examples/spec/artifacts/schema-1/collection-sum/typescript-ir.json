@@ -25,7 +25,7 @@
     },
     {
       "feature": "core.int.add-dictionary",
-      "local": "_ssrg_int_add"
+      "local": "_ssrg_int_add_dictionary"
     },
     {
       "feature": "core.collection.sum",
@@ -101,7 +101,7 @@
           },
           {
             "kind": "runtime-reference",
-            "name": "_ssrg_int_add"
+            "name": "_ssrg_int_add_dictionary"
           },
           {
             "kind": "identifier",

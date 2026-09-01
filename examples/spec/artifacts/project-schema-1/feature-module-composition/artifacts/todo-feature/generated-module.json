@@ -13,6 +13,7 @@
       "signal.type",
       "core.adt",
       "core.string",
+      "core.string.eq-dictionary",
       "core.bool",
       "core.array.append",
       "signal.update",

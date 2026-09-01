@@ -8,6 +8,7 @@
     "requirements": [
       "core.list",
       "core.int",
+      "core.int.eq-dictionary",
       "core.bool",
       "core.int.remainder",
       "core.maybe",
