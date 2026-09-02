@@ -788,7 +788,7 @@ fn path_interface() -> ModuleInterface {
 
 fn non_empty_list_interface() -> ModuleInterface {
     let module = "std/non-empty-list";
-    let list = || external_type("List", "std/list::List", "std/list", "List", vec![]);
+    let list = || named_with("List", vec![named("A")]);
     let non_empty = || named_with("NonEmptyList", vec![named("A")]);
     let maybe_non_empty = || named_with("Maybe", vec![non_empty()]);
     standard_interface(

@@ -124,17 +124,6 @@ const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
     audit_spec("Monoid", "Maybe<A> where Semigroup<A>", "9.5", Some(303)),
     audit_spec("Monoid", "Sum<A>", "9.5", None),
     audit_spec("Monoid", "Product<A>", "9.5", None),
-    audit_spec("Eq", "NonEmptyList<A>", "10.5", Some(301)),
-    audit_spec("Ord", "NonEmptyList<A>", "10.5", Some(301)),
-    audit_spec("Hash", "NonEmptyList<A>", "10.5", Some(301)),
-    audit_spec("Show", "NonEmptyList<A>", "10.5", Some(301)),
-    audit_spec("Debug", "NonEmptyList<A>", "10.5", Some(301)),
-    audit_spec("Semigroup", "NonEmptyList<A>", "10.5", Some(301)),
-    audit_spec("Functor", "NonEmptyList", "9.7 / 10.5", Some(301)),
-    audit_spec("Applicative", "NonEmptyList", "9.7 / 10.5", Some(301)),
-    audit_spec("Monad", "NonEmptyList", "9.7 / 10.5", Some(301)),
-    audit_spec("Iterable", "NonEmptyList<A>, A", "10.5", Some(301)),
-    audit_spec("Reducible", "NonEmptyList<A>, A", "10.5", Some(301)),
     audit_spec("Traversable", "NonEmptyList", "10.5", Some(331)),
     audit_spec("Traversable", "Array", "10.5", Some(331)),
     audit_spec("Traversable", "List", "10.5", Some(331)),
@@ -525,8 +514,8 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 162);
-        assert_eq!(surface.builtin_instances.len(), 28);
+        assert_eq!(surface.instances.len(), 171);
+        assert_eq!(surface.builtin_instances.len(), 30);
         for identity in [
             "std/int::Hash",
             "std/bool::Hash",
@@ -560,7 +549,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 162 + 28 + 10);
+        assert_eq!(implemented.len(), 171 + 30 + 10);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()

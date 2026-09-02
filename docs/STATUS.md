@@ -405,7 +405,9 @@ annotationだけをbackend境界で`unknown`へ消去しますが、Seseragiのk
 `pure makeUser <*> validateName name <*> validateAge age`で合成します。両側Invalidの`apply`はleftからrightの順でerrorを
 連結し、actual executionは`NameRequired, AgeMustBePositive`と成功側の`Valid user`を固定します。ValidationへMonadを
 定義せず、Applicativeの蓄積とMonadの依存・短絡を別の意味として保ちます。同じprogramはPlayground sampleにも公開済みです。
-標準`std/validation` moduleと`NonEmptyList<E>` ABIは別のstdlib gateです。
+標準`std/validation` moduleは別のstdlib gateです。`NonEmptyList<E>`は`std/non-empty-list`の公開APIと
+Eq / Ord / Hash / Show / Debug / Semigroup / Functor / Applicative / Monad / Iterable / Reducibleを接続済みで、
+`schema-1/non-empty-list-instances`のactual executionが非空性とsource順を固定します。
 `schema-1/monad-maybe`はsupertrait chainを`Monad<M> -> Applicative<M> -> Functor<M>`へ伸ばします。
 Monad factoryは具体化済みApplicative dictionaryを継承し、`where Monad<M>`だけを持つgeneric functionから
 `pure`と`flatMap`を同じparameter evidenceで呼び出せます。calleeとcallerの型構築子parameterが同じ綴りでも

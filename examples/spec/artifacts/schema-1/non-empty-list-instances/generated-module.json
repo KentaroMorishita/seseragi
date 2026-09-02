@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "module": "artifact/non-empty-list-instances",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.non-empty-list",
+      "core.list",
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.adt",
+      "core.bool",
+      "core.ordering.equal",
+      "core.ordering.less",
+      "core.ordering.greater",
+      "core.unit",
+      "core.non-empty-list.cons",
+      "core.int",
+      "core.list.from-array",
+      "core.int.add",
+      "core.int.multiply",
+      "core.non-empty-list.applicative",
+      "core.string",
+      "core.non-empty-list.ord-dictionary",
+      "core.maybe",
+      "core.non-empty-list.from-list",
+      "core.int.show",
+      "core.non-empty-list.show",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.debug",
+      "core.non-empty-list.debug",
+      "core.bool.show",
+      "core.int.eq-dictionary",
+      "core.int.hash-dictionary",
+      "core.non-empty-list.hash-dictionary",
+      "core.non-empty-list.eq-dictionary",
+      "core.list.show",
+      "core.non-empty-list.to-list",
+      "core.non-empty-list.head",
+      "core.non-empty-list.tail",
+      "core.non-empty-list.reduce1",
+      "core.non-empty-list.semigroup",
+      "core.non-empty-list.singleton",
+      "core.non-empty-list.functor",
+      "core.non-empty-list.monad",
+      "core.non-empty-list.reducible",
+      "core.non-empty-list.iterable",
+      "effect.collection.for-each"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/non-empty-list-instances::Rank>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Rank",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$0"
+    },
+    {
+      "identity": "std/prelude::Ord<artifact/non-empty-list-instances::Rank>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Rank",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Ord$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

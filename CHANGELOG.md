@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.43.0] - 2026-09-02
+
+- Completed the `std/non-empty-list` public surface with correctly generic
+  `List<A>` boundaries while retaining the immutable persistent List-backed
+  representation and non-empty invariant.
+- Added conditional `Eq`, lexicographic `Ord`, ordered `Hash`, `Show`, `Debug`,
+  `Semigroup`, `Functor`, `Applicative`, `Monad`, `Iterable`, and `Reducible`
+  standard dictionaries for `NonEmptyList`.
+- Added end-to-end compiler, runtime ABI, generated TypeScript, conformance,
+  and actual-execution coverage for source order, Cartesian application,
+  flatMap concatenation, iteration, reduction, and element evidence.
+
 ## [0.42.0] - 2026-09-02
 
 - Added canonical `Hash` instances and runtime dictionaries for `Int`, `Bool`,

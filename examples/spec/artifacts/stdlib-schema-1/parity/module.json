@@ -542,7 +542,7 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:ecb099e09d01d51a",
+      "interfaceFingerprint": "fnv1a64:0ecff126314ea616",
       "implementation": "lowering-runtime",
       "route": "process-core-project"
     },

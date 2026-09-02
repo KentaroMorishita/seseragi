@@ -1405,17 +1405,53 @@ mod tests {
 
     #[test]
     fn selects_every_registered_dictionary_instance_as_generic_evidence() {
+        let resolved = crate::resolve_module("tests/standard-instances.ssrg", "");
+        let resolution = TypedResolution::new(&resolved);
+
         for (constraint, registered_identity) in
             crate::prelude::registered_standard_instance_constraints()
         {
             let evidence = select_call_evidence(std::slice::from_ref(&constraint))
-                .unwrap_or_else(|missing| panic!("missing {missing:?}"));
+                .map(|mut evidence| evidence.remove(0).evidence)
+                .unwrap_or_else(|_| {
+                    let [type_ref] = constraint.arguments.as_slice() else {
+                        panic!("dictionary instance must have one head: {constraint:?}");
+                    };
+                    let instance =
+                        crate::prelude::standard_instance_by_identity(registered_identity)
+                            .unwrap_or_else(|| {
+                                panic!("missing registration {registered_identity}")
+                            });
+                    let requirements =
+                        crate::prelude::standard_instance_constraints(instance, type_ref)
+                            .unwrap_or_else(|| {
+                                panic!("invalid instance head for {registered_identity}")
+                            });
+                    assert!(
+                        !requirements.is_empty(),
+                        "unconditional instance {registered_identity} must be directly selectable"
+                    );
+                    let scoped = requirements
+                        .into_iter()
+                        .enumerate()
+                        .map(|(index, requirement)| ScopedCallEvidence {
+                            trait_identity: format!("std/prelude::{}", requirement.name),
+                            constraint: requirement,
+                            index,
+                        })
+                        .collect::<Vec<_>>();
+                    select_resolved_evidence(
+                        &constraint,
+                        &format!("std/prelude::{}", constraint.name),
+                        &resolution,
+                        &scoped,
+                    )
+                    .unwrap_or_else(|| panic!("missing conditional evidence for {constraint:?}"))
+                });
             assert!(matches!(
-                evidence.as_slice(),
-                [TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity, .. },
-                    ..
-                }] if identity == registered_identity
+                evidence,
+                TypedInstanceEvidence::Standard { identity, .. }
+                    if identity == registered_identity
             ));
         }
     }

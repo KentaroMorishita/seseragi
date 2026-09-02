@@ -2532,6 +2532,113 @@
       "typeConstructorCanonical": "std/signal::Signal",
       "typeConstructorArity": 1,
       "identity": "std/signal::Applicative"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "NonEmptyList",
+      "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
+      "typeConstructorArity": 1,
+      "identity": "std/non-empty-list::Eq",
+      "constraints": [
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Ord",
+      "traitCanonical": "std/prelude::Ord",
+      "typeConstructor": "NonEmptyList",
+      "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
+      "typeConstructorArity": 1,
+      "identity": "std/non-empty-list::Ord",
+      "constraints": [
+        {
+          "trait": "Ord",
+          "traitCanonical": "std/prelude::Ord",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Hash",
+      "traitCanonical": "std/prelude::Hash",
+      "typeConstructor": "NonEmptyList",
+      "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
+      "typeConstructorArity": 1,
+      "identity": "std/non-empty-list::Hash",
+      "constraints": [
+        {
+          "trait": "Hash",
+          "traitCanonical": "std/prelude::Hash",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "NonEmptyList",
+      "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
+      "typeConstructorArity": 1,
+      "identity": "std/non-empty-list::Show",
+      "constraints": [
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "NonEmptyList",
+      "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
+      "typeConstructorArity": 1,
+      "identity": "std/non-empty-list::Debug",
+      "constraints": [
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Semigroup",
+      "traitCanonical": "std/prelude::Semigroup",
+      "typeConstructor": "NonEmptyList",
+      "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
+      "typeConstructorArity": 1,
+      "identity": "std/non-empty-list::Semigroup"
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "NonEmptyList",
+      "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
+      "typeConstructorArity": 1,
+      "identity": "std/non-empty-list::Functor"
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "NonEmptyList",
+      "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
+      "typeConstructorArity": 1,
+      "identity": "std/non-empty-list::Applicative"
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "NonEmptyList",
+      "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
+      "typeConstructorArity": 1,
+      "identity": "std/non-empty-list::Monad"
     }
   ],
   "builtinInstances": [
@@ -2823,6 +2930,26 @@
       ],
       "identity": "std/range::Reducible",
       "dispatch": "dictionary"
+    },
+    {
+      "trait": "Iterable",
+      "traitCanonical": "std/prelude::Iterable",
+      "arguments": [
+        "NonEmptyList<A>",
+        "A"
+      ],
+      "identity": "std/non-empty-list::Iterable",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Reducible",
+      "traitCanonical": "std/prelude::Reducible",
+      "arguments": [
+        "NonEmptyList<A>",
+        "A"
+      ],
+      "identity": "std/non-empty-list::Reducible",
+      "dispatch": "dictionary"
     }
   ],
   "instanceAudit": {
@@ -2929,10 +3056,10 @@
       {
         "trait": "Applicative",
         "head": "NonEmptyList",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.7 / 10.5",
-        "trackingIssue": 301
+        "identity": "std/non-empty-list::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
       },
       {
         "trait": "Applicative",
@@ -3277,11 +3404,11 @@
       },
       {
         "trait": "Debug",
-        "head": "NonEmptyList<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 301
+        "head": "NonEmptyList",
+        "identity": "std/non-empty-list::Debug",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
       },
       {
         "trait": "Debug",
@@ -3587,11 +3714,11 @@
       },
       {
         "trait": "Eq",
-        "head": "NonEmptyList<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 301
+        "head": "NonEmptyList",
+        "identity": "std/non-empty-list::Eq",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Eq",
@@ -3705,10 +3832,10 @@
       {
         "trait": "Functor",
         "head": "NonEmptyList",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.7 / 10.5",
-        "trackingIssue": 301
+        "identity": "std/non-empty-list::Functor",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
       },
       {
         "trait": "Functor",
@@ -3804,11 +3931,11 @@
       },
       {
         "trait": "Hash",
-        "head": "NonEmptyList<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 301
+        "head": "NonEmptyList",
+        "identity": "std/non-empty-list::Hash",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Hash",
@@ -3853,10 +3980,10 @@
       {
         "trait": "Iterable",
         "head": "NonEmptyList<A>, A",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 301
+        "identity": "std/non-empty-list::Iterable",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
       },
       {
         "trait": "Iterable",
@@ -4183,10 +4310,10 @@
       {
         "trait": "Monad",
         "head": "NonEmptyList",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.7 / 10.5",
-        "trackingIssue": 301
+        "identity": "std/non-empty-list::Monad",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
       },
       {
         "trait": "Monad",
@@ -4404,11 +4531,11 @@
       },
       {
         "trait": "Ord",
-        "head": "NonEmptyList<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 301
+        "head": "NonEmptyList",
+        "identity": "std/non-empty-list::Ord",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Ord",
@@ -4477,10 +4604,10 @@
       {
         "trait": "Reducible",
         "head": "NonEmptyList<A>, A",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 301
+        "identity": "std/non-empty-list::Reducible",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
       },
       {
         "trait": "Reducible",
@@ -4540,11 +4667,11 @@
       },
       {
         "trait": "Semigroup",
-        "head": "NonEmptyList<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 301
+        "head": "NonEmptyList",
+        "identity": "std/non-empty-list::Semigroup",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
       },
       {
         "trait": "Semigroup",
@@ -4860,11 +4987,11 @@
       },
       {
         "trait": "Show",
-        "head": "NonEmptyList<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 301
+        "head": "NonEmptyList",
+        "identity": "std/non-empty-list::Show",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
       },
       {
         "trait": "Show",

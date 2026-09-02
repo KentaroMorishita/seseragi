@@ -1,0 +1,95 @@
+import * as nonEmpty from "std/non-empty-list"
+
+type Rank =
+  | Low
+  | High
+
+instance Eq<Rank> {
+  fn eq left: Rank -> right: Rank -> Bool =
+    match (left, right) {
+      (Low, Low) -> True
+      (High, High) -> True
+      _ -> False
+    }
+}
+
+instance Ord<Rank> {
+  fn compare left: Rank -> right: Rank -> Ordering =
+    match (left, right) {
+      (Low, Low) -> Equal
+      (High, High) -> Equal
+      (Low, High) -> Less
+      (High, Low) -> Greater
+    }
+}
+
+fn numbers unit: Unit -> nonEmpty.NonEmptyList<Int> =
+  nonEmpty.cons 1 `[2, 3]
+
+fn expand value: Int -> nonEmpty.NonEmptyList<Int> =
+  nonEmpty.cons value `[value + 10]
+
+fn functions unit: Unit -> nonEmpty.NonEmptyList<(Int -> Int)> =
+  nonEmpty.cons (\value: Int -> value + 10) `[(\value: Int -> value * 2)]
+
+fn inputs unit: Unit -> nonEmpty.NonEmptyList<Int> =
+  nonEmpty.cons 1 `[2]
+
+fn applied unit: Unit -> nonEmpty.NonEmptyList<Int> =
+  apply (functions ()) (inputs ())
+
+fn ranks head: Rank -> tail: List<Rank> -> nonEmpty.NonEmptyList<Rank> =
+  nonEmpty.cons head tail
+
+fn orderCheck unit: Unit -> String =
+  match compare
+    (ranks Low `[High])
+    (ranks High `[]) {
+    Less -> "Less"
+    _ -> "unexpected"
+  }
+
+fn fromListCheck values: List<Int> -> String =
+  match nonEmpty.fromList values {
+    Just present -> show present
+    Nothing -> "Nothing"
+  }
+
+pub effect fn main =
+  do {
+    println $ show (numbers ())
+    println $ debug (numbers ())
+    println $ show (hash (numbers ()) == hash (numbers ()))
+    println $ show (numbers () == nonEmpty.cons 1 `[2, 3])
+    println $ orderCheck ()
+    println $ fromListCheck `[4, 5]
+    println $ fromListCheck `[]
+    println $ show (nonEmpty.toList (numbers ()))
+    println $ show (nonEmpty.head (numbers ()))
+    println $ show (nonEmpty.tail (numbers ()))
+    println $ show (nonEmpty.reduce1 (\left: Int right: Int -> left + right) (numbers ()))
+
+    append (numbers ()) (nonEmpty.singleton 4)
+    |> show
+    |> println
+
+    map (\value: Int -> value * 2) (numbers ())
+    |> show
+    |> println
+
+    applied ()
+    |> show
+    |> println
+
+    flatMap expand (nonEmpty.cons 1 `[2])
+    |> show
+    |> println
+
+    reduce 0 (\total: Int value: Int -> total * 10 + value) (numbers ())
+    |> show
+    |> println
+
+    for value <- numbers () {
+      println $ `iter:${value}`
+    }
+  }

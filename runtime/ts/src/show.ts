@@ -22,7 +22,7 @@ import type {
 } from "./filesystem"
 import type { HtmlBuildError } from "./html"
 import type { HttpBuildError, HttpError } from "./http-client"
-import type { List } from "./list"
+import type { List, NonEmptyList } from "./list"
 import type { LogError } from "./logger-service"
 import type { NavigationError, UrlBuildError } from "./navigation"
 import { type PathError, render as renderPath } from "./path"
@@ -321,6 +321,33 @@ export function listDebug<Value>(
 ): Debug<List<Value>> {
   return defineDebug((values) =>
     delimited("`[", listDocuments(values, element, debugDocument), "]")
+  )
+}
+
+export function nonEmptyListShow<Value>(
+  element: ShowEvidence<Value>
+): Show<NonEmptyList<Value>> {
+  return defineShow((values) =>
+    delimited(
+      "`[",
+      [showDocument(element, values.head), ...listDocuments(values.tail, element, showDocument)],
+      "]"
+    )
+  )
+}
+
+export function nonEmptyListDebug<Value>(
+  element: DebugEvidence<Value>
+): Debug<NonEmptyList<Value>> {
+  return defineDebug((values) =>
+    delimited(
+      "`[",
+      [
+        debugDocument(element, values.head),
+        ...listDocuments(values.tail, element, debugDocument),
+      ],
+      "]"
+    )
   )
 }
 

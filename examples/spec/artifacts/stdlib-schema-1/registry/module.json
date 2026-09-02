@@ -65147,12 +65147,15 @@
                 "result": {
                   "kind": "function",
                   "parameter": {
-                    "kind": "external-named",
+                    "kind": "named",
                     "name": "List",
-                    "canonical": "std/list::List",
-                    "providerModule": "std/list",
-                    "providerExport": "List",
-                    "arguments": []
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
                   },
                   "result": {
                     "kind": "named",
@@ -65187,12 +65190,15 @@
               "type": {
                 "kind": "function",
                 "parameter": {
-                  "kind": "external-named",
+                  "kind": "named",
                   "name": "List",
-                  "canonical": "std/list::List",
-                  "providerModule": "std/list",
-                  "providerExport": "List",
-                  "arguments": []
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
                 },
                 "result": {
                   "kind": "named",
@@ -65243,12 +65249,15 @@
                   ]
                 },
                 "result": {
-                  "kind": "external-named",
+                  "kind": "named",
                   "name": "List",
-                  "canonical": "std/list::List",
-                  "providerModule": "std/list",
-                  "providerExport": "List",
-                  "arguments": []
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
                 }
               }
             }
@@ -65318,12 +65327,15 @@
                   ]
                 },
                 "result": {
-                  "kind": "external-named",
+                  "kind": "named",
                   "name": "List",
-                  "canonical": "std/list::List",
-                  "providerModule": "std/list",
-                  "providerExport": "List",
-                  "arguments": []
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
                 }
               }
             }

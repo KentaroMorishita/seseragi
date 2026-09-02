@@ -799,6 +799,22 @@ const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
         source_map_name: "listDebug",
     },
     RuntimeDisplayDictionary {
+        semantic_identity: "std/non-empty-list::Show",
+        runtime_feature: "core.non-empty-list.show",
+        local_name: "_ssrg_show_nonEmptyListShow",
+        module: "@seseragi/runtime/show",
+        export_name: "nonEmptyListShow",
+        source_map_name: "nonEmptyListShow",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/non-empty-list::Debug",
+        runtime_feature: "core.non-empty-list.debug",
+        local_name: "_ssrg_debug_nonEmptyListDebug",
+        module: "@seseragi/runtime/show",
+        export_name: "nonEmptyListDebug",
+        source_map_name: "nonEmptyListDebug",
+    },
+    RuntimeDisplayDictionary {
         semantic_identity: "std/maybe::Show",
         runtime_feature: "core.maybe.show",
         local_name: "_ssrg_show_maybeShow",

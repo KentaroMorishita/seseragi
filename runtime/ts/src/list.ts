@@ -1,6 +1,14 @@
 import type { Unit } from "./effect"
 import type { Iterator as SeseragiIterator } from "./iterator"
-import { Just, type Maybe, Nothing } from "./sum"
+import {
+  Equal,
+  Greater,
+  Just,
+  Less,
+  type Maybe,
+  Nothing,
+  type Ordering,
+} from "./sum"
 
 /** Immutable persistent linked list used by the Seseragi `List<A>` ABI. */
 export type List<A> = Empty | Cons<A>
@@ -95,12 +103,46 @@ function appendValues<A>(left: List<A>, right: List<A>): List<A> {
   return result
 }
 
+type OrdEvidence<Value> = Readonly<{
+  compare: (left: Value) => (right: Value) => Ordering
+}>
+
+/** Runtime dictionary for lexicographic `Ord<NonEmptyList<A>>`. */
+export const nonEmptyListOrd = <Value>(
+  element: OrdEvidence<Value>
+): OrdEvidence<NonEmptyList<Value>> =>
+  Object.freeze({
+    compare:
+      (left: NonEmptyList<Value>) =>
+      (right: NonEmptyList<Value>): Ordering => {
+        let leftCursor = toListNonEmpty(left)
+        let rightCursor = toListNonEmpty(right)
+        while (leftCursor.tag === "Cons" && rightCursor.tag === "Cons") {
+          const ordering = element.compare(leftCursor.head)(rightCursor.head)
+          if (ordering.tag !== "Equal") return ordering
+          leftCursor = leftCursor.tail
+          rightCursor = rightCursor.tail
+        }
+        if (leftCursor.tag === "Cons") return Greater
+        if (rightCursor.tag === "Cons") return Less
+        return Equal
+      },
+  })
+
 /** Runtime dictionary for the standard `Semigroup<List<A>>` instance. */
 export const listSemigroup = Object.freeze({
   append:
     <A>(left: List<A>) =>
     (right: List<A>): List<A> =>
       appendValues(left, right),
+})
+
+/** Runtime dictionary for source-order `Semigroup<NonEmptyList<A>>`. */
+export const nonEmptyListSemigroup = Object.freeze({
+  append:
+    <A>(left: NonEmptyList<A>) =>
+    (right: NonEmptyList<A>): NonEmptyList<A> =>
+      NonEmptyList(left.head, appendValues(left.tail, toListNonEmpty(right))),
 })
 
 /** Runtime dictionary for the standard `Monoid<List<A>>` instance. */
@@ -132,6 +174,14 @@ export const listReducible = Object.freeze({
       reduce(initial, step, values),
 })
 
+export const nonEmptyListReducible = Object.freeze({
+  reduce:
+    <B>(initial: B) =>
+    <A>(step: (accumulator: B) => (value: A) => B) =>
+    (values: NonEmptyList<A>): B =>
+      reduce(initial, step, toListNonEmpty(values)),
+})
+
 function listIterator<A>(values: List<A>): SeseragiIterator<A> {
   return {
     next: () =>
@@ -143,6 +193,11 @@ function listIterator<A>(values: List<A>): SeseragiIterator<A> {
 
 export const listIterable = Object.freeze({
   iterate: <A>(values: List<A>): SeseragiIterator<A> => listIterator(values),
+})
+
+export const nonEmptyListIterable = Object.freeze({
+  iterate: <A>(values: NonEmptyList<A>): SeseragiIterator<A> =>
+    listIterator(toListNonEmpty(values)),
 })
 
 /** Convert a persistent List to an Array without exposing its representation. */
@@ -383,5 +438,60 @@ export const listMonad = Object.freeze({
         cursor = cursor.tail
       }
       return fromArray(result)
+    },
+})
+
+function fromNonEmptyArray<A>(values: ReadonlyArray<A>): NonEmptyList<A> {
+  const head = values[0]
+  if (head === undefined && values.length === 0) {
+    throw new Error("NonEmptyList operation produced an empty result")
+  }
+  return NonEmptyList(head as A, fromArray(values.slice(1)))
+}
+
+function appendNonEmptyToArray<A>(values: NonEmptyList<A>, result: A[]): void {
+  result.push(values.head)
+  appendToArray(values.tail, result)
+}
+
+export const nonEmptyListFunctor = Object.freeze({
+  map:
+    <Value, Result>(f: (value: Value) => Result) =>
+    (values: NonEmptyList<Value>): NonEmptyList<Result> =>
+      NonEmptyList(f(values.head), listFunctor.map(f)(values.tail)),
+})
+
+export const nonEmptyListApplicative = Object.freeze({
+  ...nonEmptyListFunctor,
+  pure: <Value>(value: Value): NonEmptyList<Value> => singleton(value),
+  apply:
+    <Value, Result>(functions: NonEmptyList<(value: Value) => Result>) =>
+    (values: NonEmptyList<Value>): NonEmptyList<Result> => {
+      const result: Result[] = []
+      let functionCursor = toListNonEmpty(functions)
+      while (functionCursor.tag === "Cons") {
+        let valueCursor = toListNonEmpty(values)
+        while (valueCursor.tag === "Cons") {
+          result.push(functionCursor.head(valueCursor.head))
+          valueCursor = valueCursor.tail
+        }
+        functionCursor = functionCursor.tail
+      }
+      return fromNonEmptyArray(result)
+    },
+})
+
+export const nonEmptyListMonad = Object.freeze({
+  ...nonEmptyListApplicative,
+  flatMap:
+    <Value, Result>(f: (value: Value) => NonEmptyList<Result>) =>
+    (values: NonEmptyList<Value>): NonEmptyList<Result> => {
+      const result: Result[] = []
+      let cursor = toListNonEmpty(values)
+      while (cursor.tag === "Cons") {
+        appendNonEmptyToArray(f(cursor.head), result)
+        cursor = cursor.tail
+      }
+      return fromNonEmptyArray(result)
     },
 })

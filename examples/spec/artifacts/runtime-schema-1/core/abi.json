@@ -2341,6 +2341,127 @@
       }
     },
     {
+      "id": "core.non-empty-list.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "conditional Eq<NonEmptyList<A>> dictionary factory",
+      "boundary": "standard Eq<NonEmptyList<A>> where Eq<A>",
+      "instanceIdentity": "std/non-empty-list::Eq",
+      "import": {
+        "module": "@seseragi/runtime/equality",
+        "export": "nonEmptyListEq"
+      }
+    },
+    {
+      "id": "core.non-empty-list.ord-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "conditional Ord<NonEmptyList<A>> dictionary factory",
+      "boundary": "lexicographic Ord<NonEmptyList<A>> where Ord<A>",
+      "instanceIdentity": "std/non-empty-list::Ord",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "nonEmptyListOrd"
+      }
+    },
+    {
+      "id": "core.non-empty-list.hash-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "conditional Hash<NonEmptyList<A>> dictionary factory",
+      "boundary": "ordered structural Hash<NonEmptyList<A>> where Hash<A>",
+      "instanceIdentity": "std/non-empty-list::Hash",
+      "import": {
+        "module": "@seseragi/runtime/hash",
+        "export": "nonEmptyListHash"
+      }
+    },
+    {
+      "id": "core.non-empty-list.show",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Show<A> -> Show<NonEmptyList<A>> preserving element order",
+      "instanceIdentity": "std/non-empty-list::Show",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "nonEmptyListShow"
+      }
+    },
+    {
+      "id": "core.non-empty-list.debug",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Debug<A> -> Debug<NonEmptyList<A>> preserving element order",
+      "instanceIdentity": "std/non-empty-list::Debug",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "nonEmptyListDebug"
+      }
+    },
+    {
+      "id": "core.non-empty-list.semigroup",
+      "kind": "runtime-binding",
+      "typescript": "readonly Semigroup<NonEmptyList<A>> dictionary",
+      "boundary": "persistent source-order concatenation preserving non-emptiness",
+      "instanceIdentity": "std/non-empty-list::Semigroup",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "nonEmptyListSemigroup"
+      }
+    },
+    {
+      "id": "core.non-empty-list.functor",
+      "kind": "runtime-binding",
+      "typescript": "readonly Functor<NonEmptyList> dictionary",
+      "boundary": "source-order mapping preserving non-emptiness",
+      "instanceIdentity": "std/non-empty-list::Functor",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "nonEmptyListFunctor"
+      }
+    },
+    {
+      "id": "core.non-empty-list.applicative",
+      "kind": "runtime-binding",
+      "typescript": "readonly Applicative<NonEmptyList> dictionary",
+      "boundary": "function-major Cartesian product preserving non-emptiness",
+      "instanceIdentity": "std/non-empty-list::Applicative",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "nonEmptyListApplicative"
+      }
+    },
+    {
+      "id": "core.non-empty-list.monad",
+      "kind": "runtime-binding",
+      "typescript": "readonly Monad<NonEmptyList> dictionary",
+      "boundary": "source-order flatMap concatenation preserving non-emptiness",
+      "instanceIdentity": "std/non-empty-list::Monad",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "nonEmptyListMonad"
+      }
+    },
+    {
+      "id": "core.non-empty-list.iterable",
+      "kind": "runtime-binding",
+      "typescript": "readonly Iterable<NonEmptyList<A>, A> dictionary",
+      "boundary": "pure persistent iteration in source order",
+      "instanceIdentity": "std/non-empty-list::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "nonEmptyListIterable"
+      }
+    },
+    {
+      "id": "core.non-empty-list.reducible",
+      "kind": "runtime-binding",
+      "typescript": "readonly Reducible<NonEmptyList<A>, A> dictionary",
+      "boundary": "left reduction in source order",
+      "instanceIdentity": "std/non-empty-list::Reducible",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "nonEmptyListReducible"
+      }
+    },
+    {
       "id": "core.unit",
       "kind": "value-representation",
       "typescript": "undefined",

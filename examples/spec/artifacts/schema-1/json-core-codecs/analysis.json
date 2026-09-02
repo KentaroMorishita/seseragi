@@ -10638,7 +10638,7 @@
       "module": "std/non-empty-list",
       "category": "Prelude",
       "kind": "function",
-      "signature": "cons<A> arg1: A -> arg2: List -> NonEmptyList<A>",
+      "signature": "cons<A> arg1: A -> arg2: List<A> -> NonEmptyList<A>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [
         "A"
@@ -11379,7 +11379,7 @@
       "module": "std/non-empty-list",
       "category": "Prelude",
       "kind": "function",
-      "signature": "fromList<A> arg1: List -> Maybe<NonEmptyList<A>>",
+      "signature": "fromList<A> arg1: List<A> -> Maybe<NonEmptyList<A>>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [
         "A"
@@ -13186,7 +13186,7 @@
       "module": "std/non-empty-list",
       "category": "Prelude",
       "kind": "function",
-      "signature": "tail<A> arg1: NonEmptyList<A> -> List",
+      "signature": "tail<A> arg1: NonEmptyList<A> -> List<A>",
       "description": "Returns all elements after the first, or Nothing for an empty collection.",
       "typeParameters": [
         "A"
@@ -13293,7 +13293,7 @@
       "module": "std/non-empty-list",
       "category": "Prelude",
       "kind": "function",
-      "signature": "toList<A> arg1: NonEmptyList<A> -> List",
+      "signature": "toList<A> arg1: NonEmptyList<A> -> List<A>",
       "description": "Copies the Array elements into a persistent List in source order.",
       "typeParameters": [
         "A"

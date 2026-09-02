@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "module": "artifact/non-empty-list-instances",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/non-empty-list",
+      "module": "artifact/non-empty-list-instances/std/non-empty-list",
+      "origin": {
+        "start": 0,
+        "end": 46
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/non-empty-list-instances/std/non-empty-list::*",
+          "localName": "nonEmpty"
+        }
+      ]
+    }
+  ],
+  "exports": [],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Rank",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 78,
+        "end": 244
+      }
+    },
+    {
+      "trait": "Ord",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Rank",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 246,
+        "end": 462
+      }
+    }
+  ]
+}
