@@ -2,6 +2,9 @@ Eq primitive: True|False|False|True
 Eq conditional: True|False
 Eq structural: True|False
 Eq boundary: True|True|False
+Hash primitive: True|True|True|True
+Hash boundary: True|True|True
+Hash tuple/collection: True|True
 Int arithmetic: 42|42|42|42|1|32|0|1
 Float arithmetic: 42.0|42.0|42.0|42.0|1.0|32.0|0.0|1.0
 Operator parity: True|True|seseragi

@@ -2,6 +2,19 @@ pub fn same<A> left: A -> right: A -> Bool where Eq<A> = eq left right
 
 pub fn nestedSame<A> left: A -> right: A -> Bool where Eq<A> = same left right
 
+pub fn genericHash<A> value: A -> Int where Hash<A> = hash value
+
+pub fn nestedHash<A> value: A -> Int where Hash<A> = genericHash value
+
+pub fn delayedHash<A> value: A -> unit: Unit -> Int where Hash<A> = hash value
+
+pub fn hashPair<A, B> value: (A, B) -> Int where Hash<A>, Hash<B> = match value {
+  (left, right) -> hash left + hash right
+}
+
+pub fn hashAll<A> values: Array<A> -> Int where Hash<A> =
+  reduce 0 (\total: Int value: A -> total + hash value) values
+
 pub fn genericAdd<A> left: A -> right: A -> A where Add<A, A, A> = add left right
 
 pub fn genericSub<A> left: A -> right: A -> A where Sub<A, A, A> = sub left right

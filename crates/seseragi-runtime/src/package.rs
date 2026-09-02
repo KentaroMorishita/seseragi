@@ -70,6 +70,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/equality.ts"),
     ),
     (
+        "src/hash.ts",
+        include_str!("../../../runtime/ts/src/hash.ts"),
+    ),
+    (
         "src/number.ts",
         include_str!("../../../runtime/ts/src/number.ts"),
     ),

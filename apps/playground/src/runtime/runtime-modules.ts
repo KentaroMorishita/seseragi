@@ -1,8 +1,8 @@
+import * as browserTimeZonesProvider from "../../../../runtime/providers/browser/timezones"
 import * as array from "../../../../runtime/ts/src/array"
 import * as browserConsole from "../../../../runtime/ts/src/browser/console"
 import * as browserLogger from "../../../../runtime/ts/src/browser/logger"
 import * as browserClockProvider from "../../../../runtime/ts/src/browser/provider-clock"
-import * as browserTimeZonesProvider from "../../../../runtime/providers/browser/timezones"
 import * as browserHttpClientProvider from "../../../../runtime/ts/src/browser/provider-http-client"
 import * as browserNavigationProvider from "../../../../runtime/ts/src/browser/provider-navigation"
 import * as browserStorageProvider from "../../../../runtime/ts/src/browser/provider-storage"
@@ -15,13 +15,14 @@ import * as dom from "../../../../runtime/ts/src/dom"
 import * as effect from "../../../../runtime/ts/src/effect"
 import * as equality from "../../../../runtime/ts/src/equality"
 import * as float from "../../../../runtime/ts/src/float"
+import * as hash from "../../../../runtime/ts/src/hash"
 import * as html from "../../../../runtime/ts/src/html"
 import * as httpClient from "../../../../runtime/ts/src/http-client"
-import * as multipart from "../../../../runtime/ts/src/multipart"
 import * as int from "../../../../runtime/ts/src/int"
 import * as iterator from "../../../../runtime/ts/src/iterator"
 import * as json from "../../../../runtime/ts/src/json"
 import * as list from "../../../../runtime/ts/src/list"
+import * as multipart from "../../../../runtime/ts/src/multipart"
 import * as navigation from "../../../../runtime/ts/src/navigation"
 import * as number from "../../../../runtime/ts/src/number"
 import * as range from "../../../../runtime/ts/src/range"
@@ -29,15 +30,15 @@ import * as ref from "../../../../runtime/ts/src/ref"
 import * as service from "../../../../runtime/ts/src/service"
 import * as show from "../../../../runtime/ts/src/show"
 import * as signal from "../../../../runtime/ts/src/signal"
+import * as sse from "../../../../runtime/ts/src/sse"
 import * as storage from "../../../../runtime/ts/src/storage"
 import * as stream from "../../../../runtime/ts/src/stream"
-import * as sse from "../../../../runtime/ts/src/sse"
 import * as string from "../../../../runtime/ts/src/string"
 import * as sum from "../../../../runtime/ts/src/sum"
 import * as text from "../../../../runtime/ts/src/text"
 import * as time from "../../../../runtime/ts/src/time"
-import * as websocket from "../../../../runtime/ts/src/websocket"
 import * as webFile from "../../../../runtime/ts/src/web-file"
+import * as websocket from "../../../../runtime/ts/src/websocket"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": array,
@@ -47,6 +48,7 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/effect": effect,
   "@seseragi/runtime/equality": equality,
   "@seseragi/runtime/float": float,
+  "@seseragi/runtime/hash": hash,
   "@seseragi/runtime/int": int,
   "@seseragi/runtime/iterator": iterator,
   "@seseragi/runtime/list": list,

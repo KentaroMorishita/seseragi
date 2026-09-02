@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.42.0] - 2026-09-02
+
+- Added canonical `Hash` instances and runtime dictionaries for `Int`, `Bool`,
+  `Char`, `String`, and `Unit`, available through ordinary generic evidence,
+  imported functions, partial application, and user-defined instances.
+- Kept user-visible `Hash.hash` pure while adding a process-local, securely
+  seeded lookup adapter for the future persistent `Map` and `Set` runtime, with
+  the existing fixed-seed CLI and browser manifest contract for reproducibility.
+- Added CLI, WASM, Playground, runtime ABI, Prelude audit, Eq-consistency, and
+  intentionally unavailable `Hash<Float>` regression coverage.
+
 ## [0.41.0] - 2026-09-01
 
 - Unified every registered standard Prelude instance with the ordinary generic

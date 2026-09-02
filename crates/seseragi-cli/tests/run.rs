@@ -870,6 +870,27 @@ fn diagnoses_intentionally_unavailable_float_eq_evidence() {
 }
 
 #[test]
+fn diagnoses_intentionally_unavailable_float_hash_evidence() {
+    let source = repository_root()
+        .join("crates/seseragi-cli/tests/fixtures/standard-evidence-float-hash-negative.ssrg");
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(source)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(2));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("error[SES-T0201]"), "{stderr}");
+    assert!(
+        stderr.contains("no Hash instance matches the inferred call arguments"),
+        "{stderr}"
+    );
+    assert!(!stderr.contains("runtime defect"), "{stderr}");
+}
+
+#[test]
 fn runs_effect_stream_simultaneous_failure() {
     let package = LockedProject::copy(
         &repository_root()

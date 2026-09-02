@@ -7,6 +7,11 @@ import {
   genericRem,
   genericSub,
   genericZero,
+  delayedHash,
+  genericHash,
+  hashAll,
+  hashPair,
+  nestedHash,
   nestedSame,
   same,
 } from "./evidence"
@@ -23,7 +28,16 @@ instance Eq<Status> {
   }
 }
 
+instance Hash<Status> {
+  fn hash value: Status -> Int = match value {
+    Ready -> 17
+    Waiting -> 29
+  }
+}
+
 fn applyInt predicate: (Int -> Bool) -> Bool = predicate 42
+
+fn hashCharacter value: Char -> Int = genericHash value
 
 pub effect fn main = do {
   let unitSame = same () ()
@@ -34,6 +48,23 @@ pub effect fn main = do {
     `Eq structural: ${same (1, "a") (1, "a")}|${same { value: 42, label: "ok" } { label: "no", value: 42 }}`
   println $
     `Eq boundary: ${nestedSame [[1], [2]] [[1], [2]]}|${applyInt (same 42)}|${same Ready Waiting}`
+
+  let intHashParity = genericHash 42 == hash 42
+  let boolHashParity = genericHash False == hash False
+  let stringHashParity = genericHash "seseragi" == hash "seseragi"
+  let unitHashParity = genericHash () == hash ()
+  println $
+    `Hash primitive: ${intHashParity}|${boolHashParity}|${stringHashParity}|${unitHashParity}`
+
+  let nestedHashParity = nestedHash 42 == genericHash 42
+  let hashLater = delayedHash 42
+  let delayedHashParity = hashLater () == hash 42
+  let localHashParity = genericHash Ready == hash Ready
+  println $ `Hash boundary: ${nestedHashParity}|${delayedHashParity}|${localHashParity}`
+
+  let pairHashParity = hashPair (42, "seseragi") == hash 42 + hash "seseragi"
+  let collectionHashParity = hashAll [1, 2, 3] == 6
+  println $ `Hash tuple/collection: ${pairHashParity}|${collectionHashParity}`
 
   let intZero: Int = genericZero ()
   let intOne: Int = genericOne ()
