@@ -1,5 +1,6 @@
 import type { Unit } from "./effect"
 import { assertInt } from "./int"
+import type { NonEmptyList } from "./list"
 
 export type Hash<Value> = Readonly<{
   hash: (value: Value) => number
@@ -74,6 +75,22 @@ export const stringHash: Hash<string> = Object.freeze({
 export const unitHash: Hash<Unit> = Object.freeze({
   hash: (_value: Unit): number => 0,
 })
+
+/** Ordered structural hash for the standard `Hash<NonEmptyList<A>>` instance. */
+export const nonEmptyListHash = <Value>(
+  element: Hash<Value>
+): Hash<NonEmptyList<Value>> =>
+  Object.freeze({
+    hash: (values: NonEmptyList<Value>): number => {
+      let state = Math.imul(FNV_OFFSET ^ foldInt(element.hash(values.head)), FNV_PRIME)
+      let cursor = values.tail
+      while (cursor.tag === "Cons") {
+        state = Math.imul(state ^ foldInt(element.hash(cursor.head)), FNV_PRIME)
+        cursor = cursor.tail
+      }
+      return finishHash(state)
+    },
+  })
 
 const foldInt = (value: number): number => {
   const bits = BigInt.asUintN(64, BigInt(assertInt(value)))

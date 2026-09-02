@@ -104,6 +104,7 @@ enum PreludeSpecialInstanceHead {
     Homogeneous3(&'static str),
     Collection {
         constructor: &'static str,
+        canonical: Option<&'static str>,
         int_element: bool,
     },
 }
@@ -1581,6 +1582,69 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         type_arity: 1,
         identity: "std/signal::Applicative",
     },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "NonEmptyList",
+        type_canonical: Some("std/non-empty-list::NonEmptyList"),
+        type_arity: 1,
+        identity: "std/non-empty-list::Eq",
+    },
+    PreludeStandardInstance {
+        trait_name: "Ord",
+        type_name: "NonEmptyList",
+        type_canonical: Some("std/non-empty-list::NonEmptyList"),
+        type_arity: 1,
+        identity: "std/non-empty-list::Ord",
+    },
+    PreludeStandardInstance {
+        trait_name: "Hash",
+        type_name: "NonEmptyList",
+        type_canonical: Some("std/non-empty-list::NonEmptyList"),
+        type_arity: 1,
+        identity: "std/non-empty-list::Hash",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "NonEmptyList",
+        type_canonical: Some("std/non-empty-list::NonEmptyList"),
+        type_arity: 1,
+        identity: "std/non-empty-list::Show",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "NonEmptyList",
+        type_canonical: Some("std/non-empty-list::NonEmptyList"),
+        type_arity: 1,
+        identity: "std/non-empty-list::Debug",
+    },
+    PreludeStandardInstance {
+        trait_name: "Semigroup",
+        type_name: "NonEmptyList",
+        type_canonical: Some("std/non-empty-list::NonEmptyList"),
+        type_arity: 1,
+        identity: "std/non-empty-list::Semigroup",
+    },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "NonEmptyList",
+        type_canonical: Some("std/non-empty-list::NonEmptyList"),
+        type_arity: 1,
+        identity: "std/non-empty-list::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "NonEmptyList",
+        type_canonical: Some("std/non-empty-list::NonEmptyList"),
+        type_arity: 1,
+        identity: "std/non-empty-list::Applicative",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monad",
+        type_name: "NonEmptyList",
+        type_canonical: Some("std/non-empty-list::NonEmptyList"),
+        type_arity: 1,
+        identity: "std/non-empty-list::Monad",
+    },
 ];
 
 pub(crate) const SPECIAL_STANDARD_INSTANCES: &[PreludeSpecialInstance] = &[
@@ -1746,6 +1810,20 @@ pub(crate) const SPECIAL_STANDARD_INSTANCES: &[PreludeSpecialInstance] = &[
         "Range",
         true,
     ),
+    special_external_collection(
+        "Iterable",
+        &["NonEmptyList<A>", "A"],
+        "std/non-empty-list::Iterable",
+        "NonEmptyList",
+        "std/non-empty-list::NonEmptyList",
+    ),
+    special_external_collection(
+        "Reducible",
+        &["NonEmptyList<A>", "A"],
+        "std/non-empty-list::Reducible",
+        "NonEmptyList",
+        "std/non-empty-list::NonEmptyList",
+    ),
 ];
 
 const fn special_value(
@@ -1800,7 +1878,30 @@ const fn special_collection(
         dispatch: PreludeSpecialInstanceDispatch::Dictionary,
         head: PreludeSpecialInstanceHead::Collection {
             constructor: type_name,
+            canonical: None,
             int_element,
+        },
+    }
+}
+
+const fn special_external_collection(
+    trait_name: &'static str,
+    arguments: &'static [&'static str],
+    identity: &'static str,
+    type_name: &'static str,
+    canonical: &'static str,
+) -> PreludeSpecialInstance {
+    PreludeSpecialInstance {
+        type_name,
+        identity,
+        strict_equality_compatible: false,
+        trait_name,
+        arguments,
+        dispatch: PreludeSpecialInstanceDispatch::Dictionary,
+        head: PreludeSpecialInstanceHead::Collection {
+            constructor: type_name,
+            canonical: Some(canonical),
+            int_element: false,
         },
     }
 }
@@ -2249,6 +2350,16 @@ pub(crate) fn standard_instance_constraint_specs(
         trait_name: "Eq",
         type_argument_index: 0,
     }];
+    const ORD_ELEMENT: &[PreludeStandardInstanceConstraint] =
+        &[PreludeStandardInstanceConstraint {
+            trait_name: "Ord",
+            type_argument_index: 0,
+        }];
+    const HASH_ELEMENT: &[PreludeStandardInstanceConstraint] =
+        &[PreludeStandardInstanceConstraint {
+            trait_name: "Hash",
+            type_argument_index: 0,
+        }];
     const SHOW_ELEMENT: &[PreludeStandardInstanceConstraint] =
         &[PreludeStandardInstanceConstraint {
             trait_name: "Show",
@@ -2310,13 +2421,19 @@ pub(crate) fn standard_instance_constraint_specs(
         },
     ];
     match identity {
-        "std/array::Eq" | "std/list::Eq" => EQ_ELEMENT,
-        "std/array::Show" | "std/list::Show" | "std/maybe::Show" | "std/range::Show" => {
-            SHOW_ELEMENT
-        }
-        "std/array::Debug" | "std/list::Debug" | "std/maybe::Debug" | "std/range::Debug" => {
-            DEBUG_ELEMENT
-        }
+        "std/array::Eq" | "std/list::Eq" | "std/non-empty-list::Eq" => EQ_ELEMENT,
+        "std/non-empty-list::Ord" => ORD_ELEMENT,
+        "std/non-empty-list::Hash" => HASH_ELEMENT,
+        "std/array::Show"
+        | "std/list::Show"
+        | "std/maybe::Show"
+        | "std/range::Show"
+        | "std/non-empty-list::Show" => SHOW_ELEMENT,
+        "std/array::Debug"
+        | "std/list::Debug"
+        | "std/maybe::Debug"
+        | "std/range::Debug"
+        | "std/non-empty-list::Debug" => DEBUG_ELEMENT,
         "std/either::Show" => SHOW_EITHER,
         "std/either::Debug" => DEBUG_EITHER,
         "std/web/dom::DomRuntimeError::Show" => SHOW_ELEMENT,
@@ -2371,6 +2488,7 @@ pub(crate) fn special_standard_instance_constraints() -> Vec<TypedConstraint> {
                 }
                 PreludeSpecialInstanceHead::Collection {
                     constructor,
+                    canonical,
                     int_element,
                 } => {
                     let element = if int_element {
@@ -2378,7 +2496,15 @@ pub(crate) fn special_standard_instance_constraints() -> Vec<TypedConstraint> {
                     } else {
                         named("String")
                     };
-                    vec![applied(constructor, element.clone()), element]
+                    let collection = match canonical {
+                        Some(canonical) => TypedType::ExternalNamed {
+                            name: constructor.to_owned(),
+                            canonical: canonical.to_owned(),
+                            arguments: vec![element.clone()],
+                        },
+                        None => applied(constructor, element.clone()),
+                    };
+                    vec![collection, element]
                 }
             };
             TypedConstraint {
@@ -2444,14 +2570,16 @@ pub(crate) fn special_standard_instance(
             (
                 PreludeSpecialInstanceHead::Collection {
                     constructor,
+                    canonical,
                     int_element,
                 },
                 [collection, element],
-            ) => matches!(collection,
-                TypedType::Named { name, arguments }
-                    if name == constructor
-                        && matches!(arguments.as_slice(), [actual] if actual == element)
-                        && (!int_element || prelude_named_type_is(element, "Int"))),
+            ) => collection_type_arguments(collection, constructor, canonical).is_some_and(
+                |arguments| {
+                    matches!(arguments, [actual] if actual == element)
+                        && (!int_element || prelude_named_type_is(element, "Int"))
+                },
+            ),
             _ => false,
         }
     })
@@ -2480,6 +2608,7 @@ pub(crate) fn special_collection_constraint(
     SPECIAL_STANDARD_INSTANCES.iter().find_map(|instance| {
         let PreludeSpecialInstanceHead::Collection {
             constructor,
+            canonical,
             int_element,
         } = instance.head
         else {
@@ -2488,19 +2617,33 @@ pub(crate) fn special_collection_constraint(
         if instance.trait_name != trait_name {
             return None;
         }
-        let TypedType::Named { name, arguments } = collection else {
+        let arguments = collection_type_arguments(collection, constructor, canonical)?;
+        let [element] = arguments else {
             return None;
         };
-        let [element] = arguments.as_slice() else {
-            return None;
-        };
-        (name == constructor && (!int_element || prelude_named_type_is(element, "Int"))).then(
-            || TypedConstraint {
-                name: trait_name.to_owned(),
-                arguments: vec![collection.clone(), element.clone()],
-            },
-        )
+        (!int_element || prelude_named_type_is(element, "Int")).then(|| TypedConstraint {
+            name: trait_name.to_owned(),
+            arguments: vec![collection.clone(), element.clone()],
+        })
     })
+}
+
+fn collection_type_arguments<'a>(
+    type_ref: &'a TypedType,
+    constructor: &str,
+    canonical: Option<&str>,
+) -> Option<&'a [TypedType]> {
+    match type_ref {
+        TypedType::Named { name, arguments } if canonical.is_none() && name == constructor => {
+            Some(arguments)
+        }
+        TypedType::ExternalNamed {
+            canonical: actual,
+            arguments,
+            ..
+        } if canonical == Some(actual.as_str()) => Some(arguments),
+        _ => None,
+    }
 }
 
 fn prelude_named_type_is(type_ref: &TypedType, expected: &str) -> bool {

@@ -851,8 +851,12 @@ saturated constrained callの内側と外側へ、それぞれApplicative dictio
 user-defined `Validation<E, A>`とrecursive `Errors<E>`を定義し、`instance<E> Applicative<Validation<E, _>>`の`apply`が
 両側Invalidならordered error列を連結します。`pure makeUser <*> validateName name <*> validateAge age`は同じgeneric
 dictionary selection / partial HKT applicationだけを通り、生成TSのactual executionで二errorの順序とValid側を固定します。
-Monad instanceは意図的に存在しません。標準`Validation<E, A> = Invalid (NonEmptyList<E>) | Valid A`の公開moduleとruntime
-ABIはこの意味gateを再利用する後続stdlib sliceであり、user-defined型名をcompiler builtinへ昇格させません。
+Monad instanceは意図的に存在しません。標準`Validation<E, A> = Invalid (NonEmptyList<E>) | Valid A`の公開moduleは
+この意味gateを再利用する後続stdlib sliceであり、user-defined型名をcompiler builtinへ昇格させません。
+`NonEmptyList<A>`側は`std/non-empty-list`のstandard opaque identityと永続List共有表現を使い、Eq / Ord / Hash /
+Show / Debug / Semigroup / Functor / Applicative / Monad / Iterable / Reducibleのconditional dictionaryを接続済みです。
+`schema-1/non-empty-list-instances`は辞書順比較、決定的Hash、function-major apply、source-order flatMap / iteration /
+reductionを通常sourceから実行し、全operationが少なくとも一要素を保つことを固定します。
 
 `schema-1/monad-maybe`は同じ仕組みを`Monad<M> where Applicative<M>`へ一般化します。local Monad instanceの
 factory argumentは具体化済みApplicative dictionaryで、その内部にFunctor dictionaryも含まれるため、生成Monad

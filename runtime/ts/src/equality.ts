@@ -1,4 +1,4 @@
-import type { List } from "./list"
+import type { List, NonEmptyList } from "./list"
 
 export type Eq<Value> = Readonly<{
   eq: (left: Value) => (right: Value) => boolean
@@ -56,6 +56,17 @@ export const listEq = <Value>(element: Eq<Value>): Eq<List<Value>> =>
         }
         return leftCursor.tag === "Empty" && rightCursor.tag === "Empty"
       },
+  })
+
+export const nonEmptyListEq = <Value>(
+  element: Eq<Value>
+): Eq<NonEmptyList<Value>> =>
+  Object.freeze({
+    eq:
+      (left: NonEmptyList<Value>) =>
+      (right: NonEmptyList<Value>): boolean =>
+        element.eq(left.head)(right.head) &&
+        listEq(element).eq(left.tail)(right.tail),
   })
 
 export const tupleEq = <Value extends readonly unknown[]>(

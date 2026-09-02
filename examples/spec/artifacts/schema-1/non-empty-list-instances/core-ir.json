@@ -1,0 +1,5477 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/non-empty-list-instances",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    },
+    {
+      "spelling": "nonEmpty.NonEmptyList",
+      "canonical": "std/non-empty-list::NonEmptyList",
+      "provider": {
+        "module": "std/non-empty-list",
+        "export": "NonEmptyList"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/non-empty-list",
+      "module": "std/non-empty-list",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 46
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "NonEmptyList",
+          "local": "nonEmpty.NonEmptyList",
+          "canonical": "std/non-empty-list::NonEmptyList",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 20
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "cons",
+          "local": "nonEmpty.cons",
+          "canonical": "std/non-empty-list::cons",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 20
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "fromList",
+          "local": "nonEmpty.fromList",
+          "canonical": "std/non-empty-list::fromList",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 20
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "toList",
+          "local": "nonEmpty.toList",
+          "canonical": "std/non-empty-list::toList",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 20
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "head",
+          "local": "nonEmpty.head",
+          "canonical": "std/non-empty-list::head",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 20
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "tail",
+          "local": "nonEmpty.tail",
+          "canonical": "std/non-empty-list::tail",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 20
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "reduce1",
+          "local": "nonEmpty.reduce1",
+          "canonical": "std/non-empty-list::reduce1",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 20
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "singleton",
+          "local": "nonEmpty.singleton",
+          "canonical": "std/non-empty-list::singleton",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 20
+          }
+        }
+      ]
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "artifact/non-empty-list-instances::Rank",
+      "name": "Rank",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/non-empty-list-instances::Low",
+          "name": "Low",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 64,
+            "end": 67
+          }
+        },
+        {
+          "symbol": "artifact/non-empty-list-instances::High",
+          "name": "High",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 72,
+            "end": 76
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 48,
+        "end": 76
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/non-empty-list-instances::Rank>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Rank",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 78,
+        "end": 244
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Rank",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Rank",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Rank",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 153,
+                      "end": 157
+                    }
+                  },
+                  {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Rank",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 159,
+                      "end": 164
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Rank",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Rank",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 152,
+                  "end": 165
+                }
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Rank",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Rank",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "artifact/non-empty-list-instances::Low",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 175,
+                        "end": 178
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "artifact/non-empty-list-instances::Low",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 180,
+                        "end": 183
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true,
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 188,
+                      "end": 192
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 174,
+                    "end": 192
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "artifact/non-empty-list-instances::High",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 200,
+                        "end": 204
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "artifact/non-empty-list-instances::High",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 206,
+                        "end": 210
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true,
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 215,
+                      "end": 219
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 199,
+                    "end": 219
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "boolean",
+                    "value": false,
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 231,
+                      "end": 236
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 226,
+                    "end": 236
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 146,
+                "end": 242
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 100,
+              "end": 242
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Ord<artifact/non-empty-list-instances::Rank>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Rank",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Rank",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 246,
+        "end": 462
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "compare",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Rank",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Rank",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Rank",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 331,
+                      "end": 335
+                    }
+                  },
+                  {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Rank",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 337,
+                      "end": 342
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Rank",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Rank",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 330,
+                  "end": 343
+                }
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Rank",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Rank",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "artifact/non-empty-list-instances::Low",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 353,
+                        "end": 356
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "artifact/non-empty-list-instances::Low",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 358,
+                        "end": 361
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "std/prelude::Equal",
+                    "type": {
+                      "kind": "named",
+                      "name": "Ordering",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 366,
+                      "end": 371
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 352,
+                    "end": 371
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "artifact/non-empty-list-instances::High",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 379,
+                        "end": 383
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "artifact/non-empty-list-instances::High",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 385,
+                        "end": 389
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "std/prelude::Equal",
+                    "type": {
+                      "kind": "named",
+                      "name": "Ordering",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 394,
+                      "end": 399
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 378,
+                    "end": 399
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "artifact/non-empty-list-instances::Low",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 407,
+                        "end": 410
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "artifact/non-empty-list-instances::High",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 412,
+                        "end": 416
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "std/prelude::Less",
+                    "type": {
+                      "kind": "named",
+                      "name": "Ordering",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 421,
+                      "end": 425
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 406,
+                    "end": 425
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "variable",
+                    "name": "std/prelude::Greater",
+                    "type": {
+                      "kind": "named",
+                      "name": "Ordering",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 447,
+                      "end": 454
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 432,
+                    "end": 454
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Ordering",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 324,
+                "end": 460
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 269,
+              "end": 460
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/non-empty-list-instances::numbers",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 464,
+        "end": 543
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/non-empty-list::cons",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "1",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 534,
+              "end": 535
+            }
+          },
+          {
+            "kind": "list",
+            "elements": [
+              {
+                "kind": "integer",
+                "value": "2",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 538,
+                  "end": 539
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "3",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 541,
+                  "end": 542
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 536,
+              "end": 543
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "nonEmpty.NonEmptyList",
+          "canonical": "std/non-empty-list::NonEmptyList",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 520,
+          "end": 543
+        }
+      }
+    },
+    {
+      "symbol": "artifact/non-empty-list-instances::expand",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 545,
+        "end": 633
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/non-empty-list::cons",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 614,
+              "end": 619
+            }
+          },
+          {
+            "kind": "list",
+            "elements": [
+              {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 622,
+                    "end": 627
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "value": "10",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 630,
+                    "end": 632
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/int::Add"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 622,
+                  "end": 632
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 620,
+              "end": 633
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "nonEmpty.NonEmptyList",
+          "canonical": "std/non-empty-list::NonEmptyList",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 600,
+          "end": 633
+        }
+      }
+    },
+    {
+      "symbol": "artifact/non-empty-list-instances::functions",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 635,
+        "end": 773
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/non-empty-list::cons",
+        "arguments": [
+          {
+            "kind": "lambda",
+            "parameter": {
+              "id": "value",
+              "kind": "named",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 732,
+                  "end": 737
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "10",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 740,
+                  "end": 742
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 732,
+                "end": 742
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 717,
+              "end": 742
+            }
+          },
+          {
+            "kind": "list",
+            "elements": [
+              {
+                "kind": "lambda",
+                "parameter": {
+                  "id": "value",
+                  "kind": "named",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                },
+                "body": {
+                  "kind": "binary",
+                  "operator": "*",
+                  "left": {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 762,
+                      "end": 767
+                    }
+                  },
+                  "right": {
+                    "kind": "integer",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 770,
+                      "end": 771
+                    }
+                  },
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Mul",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/int::Mul"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 762,
+                    "end": 771
+                  }
+                },
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 747,
+                  "end": 771
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 744,
+              "end": 773
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "nonEmpty.NonEmptyList",
+          "canonical": "std/non-empty-list::NonEmptyList",
+          "arguments": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 702,
+          "end": 773
+        }
+      }
+    },
+    {
+      "symbol": "artifact/non-empty-list-instances::inputs",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 775,
+        "end": 850
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/non-empty-list::cons",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "1",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 844,
+              "end": 845
+            }
+          },
+          {
+            "kind": "list",
+            "elements": [
+              {
+                "kind": "integer",
+                "value": "2",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 848,
+                  "end": 849
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 846,
+              "end": 850
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "nonEmpty.NonEmptyList",
+          "canonical": "std/non-empty-list::NonEmptyList",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 830,
+          "end": 850
+        }
+      }
+    },
+    {
+      "symbol": "artifact/non-empty-list-instances::applied",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 852,
+        "end": 940
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Applicative::apply",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/non-empty-list-instances::functions",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 925,
+                  "end": 927
+                }
+              }
+            ],
+            "type": {
+              "kind": "external-named",
+              "name": "nonEmpty.NonEmptyList",
+              "canonical": "std/non-empty-list::NonEmptyList",
+              "arguments": [
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 915,
+              "end": 927
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/non-empty-list-instances::inputs",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 937,
+                  "end": 939
+                }
+              }
+            ],
+            "type": {
+              "kind": "external-named",
+              "name": "nonEmpty.NonEmptyList",
+              "canonical": "std/non-empty-list::NonEmptyList",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 930,
+              "end": 939
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Applicative",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "nonEmpty.NonEmptyList",
+                  "canonical": "std/non-empty-list::NonEmptyList",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/non-empty-list::Applicative"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Applicative",
+          "method": "apply"
+        },
+        "type": {
+          "kind": "external-named",
+          "name": "nonEmpty.NonEmptyList",
+          "canonical": "std/non-empty-list::NonEmptyList",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 908,
+          "end": 940
+        }
+      }
+    },
+    {
+      "symbol": "artifact/non-empty-list-instances::ranks",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 942,
+        "end": 1040
+      },
+      "parameters": [
+        {
+          "id": "head",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Rank",
+            "arguments": []
+          }
+        },
+        {
+          "id": "tail",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Rank",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/non-empty-list::cons",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "head",
+            "type": {
+              "kind": "named",
+              "name": "Rank",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1031,
+              "end": 1035
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "tail",
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Rank",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1036,
+              "end": 1040
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "nonEmpty.NonEmptyList",
+          "canonical": "std/non-empty-list::NonEmptyList",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Rank",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1017,
+          "end": 1040
+        }
+      }
+    },
+    {
+      "symbol": "artifact/non-empty-list-instances::orderCheck",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1042,
+        "end": 1186
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "std/prelude::Ord::compare",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/non-empty-list-instances::ranks",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/non-empty-list-instances::Low",
+                  "type": {
+                    "kind": "named",
+                    "name": "Rank",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1106,
+                    "end": 1109
+                  }
+                },
+                {
+                  "kind": "list",
+                  "elements": [
+                    {
+                      "kind": "variable",
+                      "name": "artifact/non-empty-list-instances::High",
+                      "type": {
+                        "kind": "named",
+                        "name": "Rank",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1112,
+                        "end": 1116
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Rank",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1110,
+                    "end": 1117
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "nonEmpty.NonEmptyList",
+                "canonical": "std/non-empty-list::NonEmptyList",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Rank",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1100,
+                "end": 1117
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "artifact/non-empty-list-instances::ranks",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/non-empty-list-instances::High",
+                  "type": {
+                    "kind": "named",
+                    "name": "Rank",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1130,
+                    "end": 1134
+                  }
+                },
+                {
+                  "kind": "list",
+                  "elements": [],
+                  "type": {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Rank",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1135,
+                    "end": 1138
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "nonEmpty.NonEmptyList",
+                "canonical": "std/non-empty-list::NonEmptyList",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Rank",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1124,
+                "end": 1138
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Ord",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "nonEmpty.NonEmptyList",
+                    "canonical": "std/non-empty-list::NonEmptyList",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Rank",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/non-empty-list::Ord",
+                "typeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Rank",
+                    "arguments": []
+                  }
+                ],
+                "evidenceArguments": [
+                  {
+                    "constraint": {
+                      "name": "Ord",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Rank",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "local",
+                      "identity": "std/prelude::Ord<artifact/non-empty-list-instances::Rank>",
+                      "evidenceArguments": [
+                        {
+                          "constraint": {
+                            "name": "Eq",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Rank",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "local",
+                            "identity": "std/prelude::Eq<artifact/non-empty-list-instances::Rank>"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "traitDispatch": {
+            "traitIdentity": "std/prelude::Ord",
+            "method": "compare"
+          },
+          "type": {
+            "kind": "named",
+            "name": "Ordering",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1087,
+            "end": 1139
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Ordering",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Less",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1146,
+                  "end": 1150
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Less",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1154,
+                "end": 1160
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1146,
+              "end": 1160
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1170,
+                "end": 1182
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1165,
+              "end": 1182
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1081,
+          "end": 1186
+        }
+      }
+    },
+    {
+      "symbol": "artifact/non-empty-list-instances::fromListCheck",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1188,
+        "end": 1331
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "std/non-empty-list::fromList",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "values",
+              "type": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1261,
+                "end": 1267
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "nonEmpty.NonEmptyList",
+                "canonical": "std/non-empty-list::NonEmptyList",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1243,
+            "end": 1267
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "nonEmpty.NonEmptyList",
+              "canonical": "std/non-empty-list::NonEmptyList",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Just",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1274,
+                  "end": 1286
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "present",
+                "type": {
+                  "kind": "external-named",
+                  "name": "nonEmpty.NonEmptyList",
+                  "canonical": "std/non-empty-list::NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1279,
+                  "end": 1286
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "present",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "nonEmpty.NonEmptyList",
+                    "canonical": "std/non-empty-list::NonEmptyList",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1295,
+                    "end": 1302
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "nonEmpty.NonEmptyList",
+                        "canonical": "std/non-empty-list::NonEmptyList",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/non-empty-list::Show",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Int>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1290,
+                "end": 1302
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1274,
+              "end": 1302
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Nothing",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1318,
+                "end": 1327
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1307,
+              "end": 1327
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1237,
+          "end": 1331
+        }
+      }
+    },
+    {
+      "symbol": "artifact/non-empty-list-instances::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1333,
+        "end": 2315
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/non-empty-list-instances::numbers",
+                      "arguments": [
+                        {
+                          "kind": "unit",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1389,
+                            "end": 1391
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "nonEmpty.NonEmptyList",
+                        "canonical": "std/non-empty-list::NonEmptyList",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1381,
+                        "end": 1391
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/non-empty-list::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Int>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1375,
+                    "end": 1392
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1365,
+                "end": 1392
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Debug::debug",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/non-empty-list-instances::numbers",
+                      "arguments": [
+                        {
+                          "kind": "unit",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1422,
+                            "end": 1424
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "nonEmpty.NonEmptyList",
+                        "canonical": "std/non-empty-list::NonEmptyList",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1414,
+                        "end": 1424
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/non-empty-list::Debug",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Debug",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Debug<std/prelude::Int>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Debug",
+                    "method": "debug"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1407,
+                    "end": 1425
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1397,
+                "end": 1425
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "binary",
+                      "operator": "==",
+                      "left": {
+                        "kind": "call",
+                        "callee": "std/prelude::Hash::hash",
+                        "arguments": [
+                          {
+                            "kind": "call",
+                            "callee": "artifact/non-empty-list-instances::numbers",
+                            "arguments": [
+                              {
+                                "kind": "unit",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1460,
+                                  "end": 1462
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "external-named",
+                              "name": "nonEmpty.NonEmptyList",
+                              "canonical": "std/non-empty-list::NonEmptyList",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1452,
+                              "end": 1462
+                            }
+                          }
+                        ],
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Hash",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "nonEmpty.NonEmptyList",
+                                  "canonical": "std/non-empty-list::NonEmptyList",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/non-empty-list::Hash",
+                              "typeArguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ],
+                              "evidenceArguments": [
+                                {
+                                  "constraint": {
+                                    "name": "Hash",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "std/int::Hash"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "traitDispatch": {
+                          "traitIdentity": "std/prelude::Hash",
+                          "method": "hash"
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1446,
+                          "end": 1463
+                        }
+                      },
+                      "right": {
+                        "kind": "call",
+                        "callee": "std/prelude::Hash::hash",
+                        "arguments": [
+                          {
+                            "kind": "call",
+                            "callee": "artifact/non-empty-list-instances::numbers",
+                            "arguments": [
+                              {
+                                "kind": "unit",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1481,
+                                  "end": 1483
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "external-named",
+                              "name": "nonEmpty.NonEmptyList",
+                              "canonical": "std/non-empty-list::NonEmptyList",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1473,
+                              "end": 1483
+                            }
+                          }
+                        ],
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Hash",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "nonEmpty.NonEmptyList",
+                                  "canonical": "std/non-empty-list::NonEmptyList",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/non-empty-list::Hash",
+                              "typeArguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ],
+                              "evidenceArguments": [
+                                {
+                                  "constraint": {
+                                    "name": "Hash",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "std/int::Hash"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "traitDispatch": {
+                          "traitIdentity": "std/prelude::Hash",
+                          "method": "hash"
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1467,
+                          "end": 1484
+                        }
+                      },
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Eq",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/int::Eq"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1446,
+                        "end": 1484
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Bool>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1440,
+                    "end": 1485
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1430,
+                "end": 1485
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "binary",
+                      "operator": "==",
+                      "left": {
+                        "kind": "call",
+                        "callee": "artifact/non-empty-list-instances::numbers",
+                        "arguments": [
+                          {
+                            "kind": "unit",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1514,
+                              "end": 1516
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "external-named",
+                          "name": "nonEmpty.NonEmptyList",
+                          "canonical": "std/non-empty-list::NonEmptyList",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1506,
+                          "end": 1516
+                        }
+                      },
+                      "right": {
+                        "kind": "call",
+                        "callee": "std/non-empty-list::cons",
+                        "arguments": [
+                          {
+                            "kind": "integer",
+                            "value": "1",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1534,
+                              "end": 1535
+                            }
+                          },
+                          {
+                            "kind": "list",
+                            "elements": [
+                              {
+                                "kind": "integer",
+                                "value": "2",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1538,
+                                  "end": 1539
+                                }
+                              },
+                              {
+                                "kind": "integer",
+                                "value": "3",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1541,
+                                  "end": 1542
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "named",
+                              "name": "List",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1536,
+                              "end": 1543
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "external-named",
+                          "name": "nonEmpty.NonEmptyList",
+                          "canonical": "std/non-empty-list::NonEmptyList",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1520,
+                          "end": 1543
+                        }
+                      },
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Eq",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "nonEmpty.NonEmptyList",
+                                "canonical": "std/non-empty-list::NonEmptyList",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/non-empty-list::Eq",
+                            "typeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ],
+                            "evidenceArguments": [
+                              {
+                                "constraint": {
+                                  "name": "Eq",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "standard",
+                                  "identity": "std/int::Eq"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1506,
+                        "end": 1543
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Bool>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1500,
+                    "end": 1544
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1490,
+                "end": 1544
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/non-empty-list-instances::orderCheck",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1570,
+                        "end": 1572
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1559,
+                    "end": 1572
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1549,
+                "end": 1572
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/non-empty-list-instances::fromListCheck",
+                  "arguments": [
+                    {
+                      "kind": "list",
+                      "elements": [
+                        {
+                          "kind": "integer",
+                          "value": "4",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1603,
+                            "end": 1604
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "value": "5",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1606,
+                            "end": 1607
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1601,
+                        "end": 1608
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1587,
+                    "end": 1608
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1577,
+                "end": 1608
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/non-empty-list-instances::fromListCheck",
+                  "arguments": [
+                    {
+                      "kind": "list",
+                      "elements": [],
+                      "type": {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1637,
+                        "end": 1640
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1623,
+                    "end": 1640
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1613,
+                "end": 1640
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/non-empty-list::toList",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/non-empty-list-instances::numbers",
+                          "arguments": [
+                            {
+                              "kind": "unit",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1686,
+                                "end": 1688
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1678,
+                            "end": 1688
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1661,
+                        "end": 1689
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "List",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/list::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Int>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1655,
+                    "end": 1690
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1645,
+                "end": 1690
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/non-empty-list::head",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/non-empty-list-instances::numbers",
+                          "arguments": [
+                            {
+                              "kind": "unit",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1734,
+                                "end": 1736
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1726,
+                            "end": 1736
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1711,
+                        "end": 1737
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1705,
+                    "end": 1738
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1695,
+                "end": 1738
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/non-empty-list::tail",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/non-empty-list-instances::numbers",
+                          "arguments": [
+                            {
+                              "kind": "unit",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1782,
+                                "end": 1784
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1774,
+                            "end": 1784
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1759,
+                        "end": 1785
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "List",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/list::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Int>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1753,
+                    "end": 1786
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1743,
+                "end": 1786
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/non-empty-list::reduce1",
+                      "arguments": [
+                        {
+                          "kind": "lambda",
+                          "parameter": {
+                            "id": "left",
+                            "kind": "named",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          },
+                          "body": {
+                            "kind": "lambda",
+                            "parameter": {
+                              "id": "right",
+                              "kind": "named",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            },
+                            "body": {
+                              "kind": "binary",
+                              "operator": "+",
+                              "left": {
+                                "kind": "variable",
+                                "name": "left",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1850,
+                                  "end": 1854
+                                }
+                              },
+                              "right": {
+                                "kind": "variable",
+                                "name": "right",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1857,
+                                  "end": 1862
+                                }
+                              },
+                              "evidence": [
+                                {
+                                  "constraint": {
+                                    "name": "Add",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "std/int::Add"
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1850,
+                                "end": 1862
+                              }
+                            },
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1836,
+                              "end": 1862
+                            }
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1825,
+                            "end": 1862
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "artifact/non-empty-list-instances::numbers",
+                          "arguments": [
+                            {
+                              "kind": "unit",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1873,
+                                "end": 1875
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1865,
+                            "end": 1875
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1807,
+                        "end": 1876
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1801,
+                    "end": 1877
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1791,
+                "end": 1877
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Semigroup::append",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/non-empty-list-instances::numbers",
+                          "arguments": [
+                            {
+                              "kind": "unit",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1899,
+                                "end": 1901
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1891,
+                            "end": 1901
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "std/non-empty-list::singleton",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "4",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1923,
+                                "end": 1924
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1904,
+                            "end": 1924
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Semigroup",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "nonEmpty.NonEmptyList",
+                                "canonical": "std/non-empty-list::NonEmptyList",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/non-empty-list::Semigroup"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Semigroup",
+                        "method": "append"
+                      },
+                      "type": {
+                        "kind": "external-named",
+                        "name": "nonEmpty.NonEmptyList",
+                        "canonical": "std/non-empty-list::NonEmptyList",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1883,
+                        "end": 1925
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/non-empty-list::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Int>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1883,
+                    "end": 1937
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1883,
+                "end": 1952
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Functor::map",
+                      "arguments": [
+                        {
+                          "kind": "lambda",
+                          "parameter": {
+                            "id": "value",
+                            "kind": "named",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          },
+                          "body": {
+                            "kind": "binary",
+                            "operator": "*",
+                            "left": {
+                              "kind": "variable",
+                              "name": "value",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1978,
+                                "end": 1983
+                              }
+                            },
+                            "right": {
+                              "kind": "integer",
+                              "value": "2",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1986,
+                                "end": 1987
+                              }
+                            },
+                            "evidence": [
+                              {
+                                "constraint": {
+                                  "name": "Mul",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "standard",
+                                  "identity": "std/int::Mul"
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1978,
+                              "end": 1987
+                            }
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1963,
+                            "end": 1987
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "artifact/non-empty-list-instances::numbers",
+                          "arguments": [
+                            {
+                              "kind": "unit",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1998,
+                                "end": 2000
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1990,
+                            "end": 2000
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Functor",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "nonEmpty.NonEmptyList",
+                                "canonical": "std/non-empty-list::NonEmptyList",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/non-empty-list::Functor"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Functor",
+                        "method": "map"
+                      },
+                      "type": {
+                        "kind": "external-named",
+                        "name": "nonEmpty.NonEmptyList",
+                        "canonical": "std/non-empty-list::NonEmptyList",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1958,
+                        "end": 2001
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/non-empty-list::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Int>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1958,
+                    "end": 2013
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1958,
+                "end": 2028
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/non-empty-list-instances::applied",
+                      "arguments": [
+                        {
+                          "kind": "unit",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2042,
+                            "end": 2044
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "nonEmpty.NonEmptyList",
+                        "canonical": "std/non-empty-list::NonEmptyList",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2034,
+                        "end": 2044
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/non-empty-list::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Int>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2034,
+                    "end": 2056
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2034,
+                "end": 2071
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Monad::flatMap",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "artifact/non-empty-list-instances::expand",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "external-named",
+                              "name": "nonEmpty.NonEmptyList",
+                              "canonical": "std/non-empty-list::NonEmptyList",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2085,
+                            "end": 2091
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "std/non-empty-list::cons",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "1",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 2107,
+                                "end": 2108
+                              }
+                            },
+                            {
+                              "kind": "list",
+                              "elements": [
+                                {
+                                  "kind": "integer",
+                                  "value": "2",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 2111,
+                                    "end": 2112
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 2109,
+                                "end": 2113
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2093,
+                            "end": 2113
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Monad",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "nonEmpty.NonEmptyList",
+                                "canonical": "std/non-empty-list::NonEmptyList",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/non-empty-list::Monad"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Monad",
+                        "method": "flatMap"
+                      },
+                      "type": {
+                        "kind": "external-named",
+                        "name": "nonEmpty.NonEmptyList",
+                        "canonical": "std/non-empty-list::NonEmptyList",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2077,
+                        "end": 2114
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/non-empty-list::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Int>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2077,
+                    "end": 2126
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2077,
+                "end": 2141
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::reduce",
+                      "arguments": [
+                        {
+                          "kind": "integer",
+                          "value": "0",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2154,
+                            "end": 2155
+                          }
+                        },
+                        {
+                          "kind": "lambda",
+                          "parameter": {
+                            "id": "total",
+                            "kind": "named",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          },
+                          "body": {
+                            "kind": "lambda",
+                            "parameter": {
+                              "id": "value",
+                              "kind": "named",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            },
+                            "body": {
+                              "kind": "binary",
+                              "operator": "+",
+                              "left": {
+                                "kind": "binary",
+                                "operator": "*",
+                                "left": {
+                                  "kind": "variable",
+                                  "name": "total",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 2183,
+                                    "end": 2188
+                                  }
+                                },
+                                "right": {
+                                  "kind": "integer",
+                                  "value": "10",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 2191,
+                                    "end": 2193
+                                  }
+                                },
+                                "evidence": [
+                                  {
+                                    "constraint": {
+                                      "name": "Mul",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/int::Mul"
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 2183,
+                                  "end": 2193
+                                }
+                              },
+                              "right": {
+                                "kind": "variable",
+                                "name": "value",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 2196,
+                                  "end": 2201
+                                }
+                              },
+                              "evidence": [
+                                {
+                                  "constraint": {
+                                    "name": "Add",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "std/int::Add"
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 2183,
+                                "end": 2201
+                              }
+                            },
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2169,
+                              "end": 2201
+                            }
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2157,
+                            "end": 2201
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "artifact/non-empty-list-instances::numbers",
+                          "arguments": [
+                            {
+                              "kind": "unit",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 2212,
+                                "end": 2214
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2204,
+                            "end": 2214
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Reducible",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "nonEmpty.NonEmptyList",
+                                "canonical": "std/non-empty-list::NonEmptyList",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/non-empty-list::Reducible"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2147,
+                        "end": 2215
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2147,
+                    "end": 2227
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2147,
+                "end": 2242
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "std/prelude::forEach",
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": {
+                "id": "$ssrg_for_value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              },
+              "body": {
+                "kind": "decision",
+                "scrutinee": {
+                  "kind": "variable",
+                  "name": "$ssrg_for_value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2252,
+                    "end": 2257
+                  }
+                },
+                "scrutineeType": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "branches": [
+                  {
+                    "tests": [],
+                    "bindings": [
+                      {
+                        "name": "value",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "path": [],
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2252,
+                          "end": 2257
+                        }
+                      }
+                    ],
+                    "value": {
+                      "kind": "effect-operation",
+                      "operation": "console.println",
+                      "requirements": {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "console",
+                            "type": {
+                              "kind": "named",
+                              "name": "Console",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      "failure": {
+                        "kind": "named",
+                        "name": "ConsoleError",
+                        "arguments": []
+                      },
+                      "success": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "arguments": [
+                        {
+                          "kind": "template",
+                          "parts": [
+                            {
+                              "kind": "text",
+                              "value": "iter:",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 2291,
+                                "end": 2296
+                              }
+                            },
+                            {
+                              "kind": "interpolation",
+                              "value": {
+                                "kind": "variable",
+                                "name": "value",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 2298,
+                                  "end": 2303
+                                }
+                              },
+                              "evidence": {
+                                "constraint": {
+                                  "name": "Show",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "standard",
+                                  "identity": "Show<std/prelude::Int>"
+                                }
+                              },
+                              "traitIdentity": "std/prelude::Show",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 2296,
+                                "end": 2304
+                              }
+                            }
+                          ],
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2290,
+                            "end": 2305
+                          }
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2280,
+                        "end": 2305
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2252,
+                      "end": 2305
+                    }
+                  }
+                ],
+                "exhaustive": true,
+                "type": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "named",
+                            "name": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2252,
+                  "end": 2305
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "named",
+                            "name": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2252,
+                "end": 2305
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "artifact/non-empty-list-instances::numbers",
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2269,
+                    "end": 2271
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "nonEmpty.NonEmptyList",
+                "canonical": "std/non-empty-list::NonEmptyList",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2261,
+                "end": 2271
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Iterable",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "nonEmpty.NonEmptyList",
+                    "canonical": "std/non-empty-list::NonEmptyList",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/non-empty-list::Iterable"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 2248,
+            "end": 2311
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1356,
+          "end": 2315
+        }
+      }
+    }
+  ]
+}
