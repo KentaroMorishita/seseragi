@@ -448,6 +448,41 @@ const fn method(
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     PreludeStandardInstance {
+        trait_name: "Hash",
+        type_name: "Int",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/int::Hash",
+    },
+    PreludeStandardInstance {
+        trait_name: "Hash",
+        type_name: "Bool",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/bool::Hash",
+    },
+    PreludeStandardInstance {
+        trait_name: "Hash",
+        type_name: "Char",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/char::Hash",
+    },
+    PreludeStandardInstance {
+        trait_name: "Hash",
+        type_name: "String",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/string::Hash",
+    },
+    PreludeStandardInstance {
+        trait_name: "Hash",
+        type_name: "Unit",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/unit::Hash",
+    },
+    PreludeStandardInstance {
         trait_name: "Semigroup",
         type_name: "String",
         type_canonical: None,

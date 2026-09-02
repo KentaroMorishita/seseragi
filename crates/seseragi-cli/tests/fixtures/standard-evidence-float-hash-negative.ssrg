@@ -1,0 +1,5 @@
+fn genericHash<A> value: A -> Int where Hash<A> = hash value
+
+pub effect fn main =
+  genericHash 1.5
+  |> println

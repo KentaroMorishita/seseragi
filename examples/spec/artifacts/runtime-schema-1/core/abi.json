@@ -166,6 +166,53 @@
       "import": { "module": "@seseragi/runtime/equality", "export": "unitEq" }
     },
     {
+      "id": "core.int.hash-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Hash<number> dictionary",
+      "boundary": "standard Hash<Int> dictionary",
+      "instanceIdentity": "std/int::Hash",
+      "import": { "module": "@seseragi/runtime/hash", "export": "intHash" }
+    },
+    {
+      "id": "core.bool.hash-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Hash<boolean> dictionary",
+      "boundary": "standard Hash<Bool> dictionary",
+      "instanceIdentity": "std/bool::Hash",
+      "import": { "module": "@seseragi/runtime/hash", "export": "boolHash" }
+    },
+    {
+      "id": "core.char.hash-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Hash<string> dictionary",
+      "boundary": "standard Hash<Char> dictionary",
+      "instanceIdentity": "std/char::Hash",
+      "import": { "module": "@seseragi/runtime/hash", "export": "charHash" }
+    },
+    {
+      "id": "core.string.hash-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Hash<string> dictionary",
+      "boundary": "standard Hash<String> dictionary",
+      "instanceIdentity": "std/string::Hash",
+      "import": { "module": "@seseragi/runtime/hash", "export": "stringHash" }
+    },
+    {
+      "id": "core.unit.hash-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Hash<undefined> dictionary",
+      "boundary": "standard Hash<Unit> dictionary",
+      "instanceIdentity": "std/unit::Hash",
+      "import": { "module": "@seseragi/runtime/hash", "export": "unitHash" }
+    },
+    {
+      "id": "core.hash.index",
+      "kind": "runtime-helper",
+      "typescript": "<A>(Hash<A>, Int?) => (A) => number",
+      "boundary": "process-local seeded Map and Set lookup adapter",
+      "import": { "module": "@seseragi/runtime/hash", "export": "hashIndex" }
+    },
+    {
       "id": "core.array.eq-dictionary",
       "kind": "runtime-binding",
       "typescript": "conditional Eq<ReadonlyArray<A>> dictionary factory",

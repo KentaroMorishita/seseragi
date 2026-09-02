@@ -1064,6 +1064,46 @@
   ],
   "instances": [
     {
+      "trait": "Hash",
+      "traitCanonical": "std/prelude::Hash",
+      "typeConstructor": "Int",
+      "typeConstructorCanonical": "std/prelude::Int",
+      "typeConstructorArity": 0,
+      "identity": "std/int::Hash"
+    },
+    {
+      "trait": "Hash",
+      "traitCanonical": "std/prelude::Hash",
+      "typeConstructor": "Bool",
+      "typeConstructorCanonical": "std/prelude::Bool",
+      "typeConstructorArity": 0,
+      "identity": "std/bool::Hash"
+    },
+    {
+      "trait": "Hash",
+      "traitCanonical": "std/prelude::Hash",
+      "typeConstructor": "Char",
+      "typeConstructorCanonical": "std/prelude::Char",
+      "typeConstructorArity": 0,
+      "identity": "std/char::Hash"
+    },
+    {
+      "trait": "Hash",
+      "traitCanonical": "std/prelude::Hash",
+      "typeConstructor": "String",
+      "typeConstructorCanonical": "std/prelude::String",
+      "typeConstructorArity": 0,
+      "identity": "std/string::Hash"
+    },
+    {
+      "trait": "Hash",
+      "traitCanonical": "std/prelude::Hash",
+      "typeConstructor": "Unit",
+      "typeConstructorCanonical": "std/prelude::Unit",
+      "typeConstructorArity": 0,
+      "identity": "std/unit::Hash"
+    },
+    {
       "trait": "Semigroup",
       "traitCanonical": "std/prelude::Semigroup",
       "typeConstructor": "String",
@@ -3726,18 +3766,18 @@
       {
         "trait": "Hash",
         "head": "Bool",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4",
-        "trackingIssue": 349
+        "identity": "std/bool::Hash",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Hash",
         "head": "Char",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4",
-        "trackingIssue": 349
+        "identity": "std/char::Hash",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Hash",
@@ -3757,10 +3797,10 @@
       {
         "trait": "Hash",
         "head": "Int",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4",
-        "trackingIssue": 349
+        "identity": "std/int::Hash",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Hash",
@@ -3773,18 +3813,18 @@
       {
         "trait": "Hash",
         "head": "String",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4",
-        "trackingIssue": 349
+        "identity": "std/string::Hash",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Hash",
         "head": "Unit",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4",
-        "trackingIssue": 349
+        "identity": "std/unit::Hash",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Iterable",

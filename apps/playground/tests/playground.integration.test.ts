@@ -970,6 +970,40 @@ describe("Playground project compiler boundary", () => {
     )
   })
 
+  test("keeps intentionally unavailable Float Hash as SES-T0201", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../crates/seseragi-cli/tests/fixtures/standard-evidence-float-hash-negative.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    expect(response.status).toBe("failure")
+    if (response.status !== "failure") return
+    const diagnostics = response.diagnostics.flatMap(
+      ({ diagnostics }) => diagnostics.diagnostics
+    )
+    expect(diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "SES-T0201",
+          related: expect.arrayContaining([
+            expect.objectContaining({
+              message: expect.stringContaining(
+                "no Hash instance matches the inferred call arguments"
+              ),
+            }),
+          ]),
+        }),
+      ])
+    )
+  })
+
   test("diagnoses browser-unsupported standard imports before execution", async () => {
     const response = await compileProject({
       schema: 1,

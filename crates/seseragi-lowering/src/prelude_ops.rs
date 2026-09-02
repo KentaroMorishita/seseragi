@@ -10,6 +10,46 @@ pub(crate) struct RuntimePreludeDictionary {
 
 const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
     RuntimePreludeDictionary {
+        semantic_identity: "std/int::Hash",
+        runtime_feature: "core.int.hash-dictionary",
+        local_name: "_ssrg_int_hash_dictionary",
+        module: "@seseragi/runtime/hash",
+        export_name: "intHash",
+        source_map_name: "intHash",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/bool::Hash",
+        runtime_feature: "core.bool.hash-dictionary",
+        local_name: "_ssrg_bool_hash_dictionary",
+        module: "@seseragi/runtime/hash",
+        export_name: "boolHash",
+        source_map_name: "boolHash",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/char::Hash",
+        runtime_feature: "core.char.hash-dictionary",
+        local_name: "_ssrg_char_hash_dictionary",
+        module: "@seseragi/runtime/hash",
+        export_name: "charHash",
+        source_map_name: "charHash",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/string::Hash",
+        runtime_feature: "core.string.hash-dictionary",
+        local_name: "_ssrg_string_hash_dictionary",
+        module: "@seseragi/runtime/hash",
+        export_name: "stringHash",
+        source_map_name: "stringHash",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/unit::Hash",
+        runtime_feature: "core.unit.hash-dictionary",
+        local_name: "_ssrg_unit_hash_dictionary",
+        module: "@seseragi/runtime/hash",
+        export_name: "unitHash",
+        source_map_name: "unitHash",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/int::Eq",
         runtime_feature: "core.int.eq-dictionary",
         local_name: "_ssrg_int_eq_dictionary",
@@ -676,6 +716,36 @@ mod tests {
     #[test]
     fn maps_the_standard_prelude_dictionary_families() {
         for (identity, feature, module, export_name) in [
+            (
+                "std/int::Hash",
+                "core.int.hash-dictionary",
+                "@seseragi/runtime/hash",
+                "intHash",
+            ),
+            (
+                "std/bool::Hash",
+                "core.bool.hash-dictionary",
+                "@seseragi/runtime/hash",
+                "boolHash",
+            ),
+            (
+                "std/char::Hash",
+                "core.char.hash-dictionary",
+                "@seseragi/runtime/hash",
+                "charHash",
+            ),
+            (
+                "std/string::Hash",
+                "core.string.hash-dictionary",
+                "@seseragi/runtime/hash",
+                "stringHash",
+            ),
+            (
+                "std/unit::Hash",
+                "core.unit.hash-dictionary",
+                "@seseragi/runtime/hash",
+                "unitHash",
+            ),
             (
                 "std/int::Zero",
                 "core.int.zero-dictionary",
