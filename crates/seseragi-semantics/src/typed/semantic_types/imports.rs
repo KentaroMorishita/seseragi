@@ -63,6 +63,9 @@ impl SemanticTypeCatalog {
                 owner,
                 SemanticAdt {
                     name: owner_import.local_name.clone(),
+                    external_canonical: (owner_import.export.declaration_kind.as_deref()
+                        == Some("opaque-type"))
+                    .then(|| owner_canonical.clone()),
                     type_parameters: type_parameters
                         .iter()
                         .map(|parameter| parameter.id)

@@ -713,6 +713,67 @@
       "constraints": []
     },
     {
+      "identity": "std/collection::Done",
+      "name": "Done",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "constructor",
+      "signature": "Done<A> arg1: A -> ReduceStep<A>",
+      "description": "Stops reduction immediately with the final result.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/collection::Next",
+      "name": "Next",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "constructor",
+      "signature": "Next<A> arg1: A -> ReduceStep<A>",
+      "description": "Continues reduction with the new accumulator.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/collection::NonPositiveSize",
+      "name": "NonPositiveSize",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "constructor",
+      "signature": "NonPositiveSize arg1: Int -> SizeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/collection::ReduceStep",
+      "name": "ReduceStep",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "opaque-type",
+      "signature": "ReduceStep<_>",
+      "description": "Pure reduction control: Next continues and Done stops.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/collection::SizeError",
+      "name": "SizeError",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "opaque-type",
+      "signature": "SizeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::all",
       "name": "all",
       "module": "std/prelude",
@@ -1381,6 +1442,23 @@
         "B"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/collection::reduceUntil",
+      "name": "reduceUntil",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "reduceUntil<C, A, B> arg1: B -> arg2: (B -> A -> ReduceStep<B>) -> arg3: C -> B where Iterable<C, A>",
+      "description": "Folds an Iterable in source order until Done; does not pull the remaining elements.",
+      "typeParameters": [
+        "C",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
     },
     {
       "identity": "std/array::reverse",
@@ -8029,17 +8107,6 @@
       "constraints": []
     },
     {
-      "identity": "std/collection::NonPositiveSize",
-      "name": "NonPositiveSize",
-      "module": "std/collection",
-      "category": "Prelude",
-      "kind": "constructor",
-      "signature": "NonPositiveSize arg1: Int -> SizeError",
-      "description": "Compiler-owned standard library symbol.",
-      "typeParameters": [],
-      "constraints": []
-    },
-    {
       "identity": "std/fs::NotADirectory",
       "name": "NotADirectory",
       "module": "std/fs",
@@ -8547,17 +8614,6 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "SignalChild arg1: ProcessSignal -> ChildInput",
-      "description": "Compiler-owned standard library symbol.",
-      "typeParameters": [],
-      "constraints": []
-    },
-    {
-      "identity": "std/collection::SizeError",
-      "name": "SizeError",
-      "module": "std/collection",
-      "category": "Prelude",
-      "kind": "opaque-type",
-      "signature": "SizeError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []

@@ -5,10 +5,15 @@ export type Iterator<A> = Readonly<{
   next: () => Maybe<readonly [A, Iterator<A>]>
 }>
 
+/** Iterators are Iterable, but not necessarily finite (and not Reducible). */
+export const iteratorIterable = Object.freeze({
+  iterate: <A>(values: Iterator<A>): Iterator<A> => values,
+})
+
 /** Build an iterator without evaluating the first step eagerly. */
 export function unfold<S, A>(
   step: (state: S) => Maybe<readonly [A, S]>,
-  initial: S,
+  initial: S
 ): Iterator<A> {
   return {
     next: () => {
@@ -24,7 +29,7 @@ export function unfold<S, A>(
 
 /** Observe one step without consuming or mutating the original iterator. */
 export function next<A>(
-  iterator: Iterator<A>,
+  iterator: Iterator<A>
 ): Maybe<readonly [A, Iterator<A>]> {
   return iterator.next()
 }
@@ -33,7 +38,7 @@ export function next<A>(
 export function collectMap<A, B>(
   iterator: Iterator<A>,
   predicate: (value: A) => boolean,
-  transform: (value: A) => B,
+  transform: (value: A) => B
 ): ReadonlyArray<B> {
   return collect(iterator, predicate, (result, value) => {
     result.push(transform(value))
@@ -44,7 +49,7 @@ export function collectMap<A, B>(
 export function collectFlatMap<A, B>(
   iterator: Iterator<A>,
   predicate: (value: A) => boolean,
-  transform: (value: A) => ReadonlyArray<B>,
+  transform: (value: A) => ReadonlyArray<B>
 ): ReadonlyArray<B> {
   return collect(iterator, predicate, (result, value) => {
     result.push(...transform(value))
@@ -54,7 +59,7 @@ export function collectFlatMap<A, B>(
 function collect<A, B>(
   initial: Iterator<A>,
   predicate: (value: A) => boolean,
-  append: (result: B[], value: A) => void,
+  append: (result: B[], value: A) => void
 ): ReadonlyArray<B> {
   const result: B[] = []
   let iterator = initial

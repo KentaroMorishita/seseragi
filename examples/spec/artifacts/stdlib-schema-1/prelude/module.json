@@ -3203,6 +3203,16 @@
       "dispatch": "dictionary"
     },
     {
+      "trait": "Iterable",
+      "traitCanonical": "std/prelude::Iterable",
+      "arguments": [
+        "Iterator<A>",
+        "A"
+      ],
+      "identity": "std/iterator::Iterable",
+      "dispatch": "dictionary"
+    },
+    {
       "trait": "Reducible",
       "traitCanonical": "std/prelude::Reducible",
       "arguments": [
@@ -4329,6 +4339,14 @@
         "trait": "Iterable",
         "head": "Array<A>, A",
         "identity": "std/array::Iterable",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
+      },
+      {
+        "trait": "Iterable",
+        "head": "Iterator<A>, A",
+        "identity": "std/iterator::Iterable",
         "status": "specified-and-implemented",
         "classification": "dictionary",
         "spec": "10.5"

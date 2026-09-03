@@ -586,6 +586,95 @@
     },
     {
       "id": 21,
+      "identity": "std/collection::ReduceStep::A",
+      "name": "A",
+      "module": "std/collection",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 22,
+      "identity": "std/collection::ReduceStep",
+      "name": "ReduceStep",
+      "module": "std/collection",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Pure reduction control: Next continues and Done stops."
+    },
+    {
+      "id": 23,
+      "identity": "std/collection::Next",
+      "name": "Next",
+      "module": "std/collection",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "A -> ReduceStep<A>",
+      "callable": {
+        "identity": "std/collection::Next",
+        "name": "Next",
+        "module": "std/collection",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "ReduceStep<A>",
+        "constraints": [],
+        "signature": "Next<A> arg1: A -> ReduceStep<A>",
+        "remainingParameters": []
+      },
+      "description": "Continues reduction with the new accumulator."
+    },
+    {
+      "id": 24,
+      "identity": "std/collection::Done",
+      "name": "Done",
+      "module": "std/collection",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "A -> ReduceStep<A>",
+      "callable": {
+        "identity": "std/collection::Done",
+        "name": "Done",
+        "module": "std/collection",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "ReduceStep<A>",
+        "constraints": [],
+        "signature": "Done<A> arg1: A -> ReduceStep<A>",
+        "remainingParameters": []
+      },
+      "description": "Stops reduction immediately with the final result."
+    },
+    {
+      "id": 25,
       "identity": "std/map::*",
       "name": "maps",
       "module": "std/map",
@@ -597,7 +686,7 @@
       }
     },
     {
-      "id": 22,
+      "id": 26,
       "identity": "std/map::Map::T0",
       "name": "T0",
       "module": "std/map",
@@ -609,7 +698,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 27,
       "identity": "std/map::Map::T1",
       "name": "T1",
       "module": "std/map",
@@ -621,7 +710,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 28,
       "identity": "std/map::Map",
       "name": "Map",
       "module": "std/map",
@@ -633,7 +722,7 @@
       }
     },
     {
-      "id": 25,
+      "id": 29,
       "identity": "std/prelude::Int",
       "name": "Int",
       "module": "std/prelude",
@@ -645,7 +734,7 @@
       }
     },
     {
-      "id": 26,
+      "id": 30,
       "identity": "std/prelude::String",
       "name": "String",
       "module": "std/prelude",
@@ -657,7 +746,7 @@
       }
     },
     {
-      "id": 27,
+      "id": 31,
       "identity": "std/prelude::Eq",
       "name": "Eq",
       "module": "std/prelude",
@@ -669,8 +758,8 @@
       }
     },
     {
-      "id": 28,
-      "identity": "artifact/array-list-apis::local(28)",
+      "id": 32,
+      "identity": "artifact/array-list-apis::local(32)",
       "name": "a",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -681,8 +770,8 @@
       }
     },
     {
-      "id": 29,
-      "identity": "artifact/array-list-apis::local(29)",
+      "id": 33,
+      "identity": "artifact/array-list-apis::local(33)",
       "name": "b",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -693,7 +782,7 @@
       }
     },
     {
-      "id": 30,
+      "id": 34,
       "identity": "std/prelude::Bool",
       "name": "Bool",
       "module": "std/prelude",
@@ -705,8 +794,8 @@
       }
     },
     {
-      "id": 31,
-      "identity": "artifact/array-list-apis::local(31)",
+      "id": 35,
+      "identity": "artifact/array-list-apis::local(35)",
       "name": "x",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -717,8 +806,8 @@
       }
     },
     {
-      "id": 32,
-      "identity": "artifact/array-list-apis::local(32)",
+      "id": 36,
+      "identity": "artifact/array-list-apis::local(36)",
       "name": "y",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -729,7 +818,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 37,
       "identity": "std/prelude::==",
       "name": "==",
       "module": "std/prelude",
@@ -741,7 +830,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 38,
       "identity": "std/prelude::Hash",
       "name": "Hash",
       "module": "std/prelude",
@@ -753,8 +842,8 @@
       }
     },
     {
-      "id": 35,
-      "identity": "artifact/array-list-apis::local(35)",
+      "id": 39,
+      "identity": "artifact/array-list-apis::local(39)",
       "name": "value",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -765,7 +854,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 40,
       "identity": "std/prelude::Ord",
       "name": "Ord",
       "module": "std/prelude",
@@ -777,8 +866,8 @@
       }
     },
     {
-      "id": 37,
-      "identity": "artifact/array-list-apis::local(37)",
+      "id": 41,
+      "identity": "artifact/array-list-apis::local(41)",
       "name": "a",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -789,8 +878,8 @@
       }
     },
     {
-      "id": 38,
-      "identity": "artifact/array-list-apis::local(38)",
+      "id": 42,
+      "identity": "artifact/array-list-apis::local(42)",
       "name": "b",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -801,7 +890,7 @@
       }
     },
     {
-      "id": 39,
+      "id": 43,
       "identity": "std/prelude::Ordering",
       "name": "Ordering",
       "module": "std/prelude",
@@ -814,7 +903,7 @@
       "description": "Represents a total comparison result as Less, Equal, or Greater."
     },
     {
-      "id": 40,
+      "id": 44,
       "identity": "std/prelude::Less",
       "name": "Less",
       "module": "std/prelude",
@@ -827,7 +916,7 @@
       "description": "Constructs the less-than Ordering result."
     },
     {
-      "id": 41,
+      "id": 45,
       "identity": "std/prelude::Equal",
       "name": "Equal",
       "module": "std/prelude",
@@ -840,7 +929,7 @@
       "description": "Constructs the equal Ordering result."
     },
     {
-      "id": 42,
+      "id": 46,
       "identity": "std/prelude::Greater",
       "name": "Greater",
       "module": "std/prelude",
@@ -853,8 +942,8 @@
       "description": "Constructs the greater-than Ordering result."
     },
     {
-      "id": 43,
-      "identity": "artifact/array-list-apis::local(43)",
+      "id": 47,
+      "identity": "artifact/array-list-apis::local(47)",
       "name": "x",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -865,8 +954,8 @@
       }
     },
     {
-      "id": 44,
-      "identity": "artifact/array-list-apis::local(44)",
+      "id": 48,
+      "identity": "artifact/array-list-apis::local(48)",
       "name": "y",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -877,7 +966,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 49,
       "identity": "std/prelude::Ord::compare",
       "name": "compare",
       "module": "std/prelude",
@@ -915,8 +1004,8 @@
       "description": "Compares two values with the selected total ordering."
     },
     {
-      "id": 46,
-      "identity": "artifact/array-list-apis::local(46)",
+      "id": 50,
+      "identity": "artifact/array-list-apis::local(50)",
       "name": "value",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -928,8 +1017,8 @@
       "typeName": "Key"
     },
     {
-      "id": 47,
-      "identity": "artifact/array-list-apis::local(47)",
+      "id": 51,
+      "identity": "artifact/array-list-apis::local(51)",
       "name": "text",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -941,8 +1030,8 @@
       "typeName": "String"
     },
     {
-      "id": 48,
-      "identity": "artifact/array-list-apis::local(48)",
+      "id": 52,
+      "identity": "artifact/array-list-apis::local(52)",
       "name": "value",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -954,7 +1043,7 @@
       "typeName": "Int"
     },
     {
-      "id": 49,
+      "id": 53,
       "identity": "std/prelude::%",
       "name": "%",
       "module": "std/prelude",
@@ -966,8 +1055,8 @@
       }
     },
     {
-      "id": 50,
-      "identity": "artifact/array-list-apis::local(50)",
+      "id": 54,
+      "identity": "artifact/array-list-apis::local(54)",
       "name": "value",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -979,8 +1068,8 @@
       "typeName": "Int"
     },
     {
-      "id": 51,
-      "identity": "artifact/array-list-apis::local(51)",
+      "id": 55,
+      "identity": "artifact/array-list-apis::local(55)",
       "name": "acc",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -992,7 +1081,7 @@
       "typeName": "String"
     },
     {
-      "id": 52,
+      "id": 56,
       "identity": "std/prelude::Show",
       "name": "Show",
       "module": "std/prelude",
@@ -1004,7 +1093,7 @@
       }
     },
     {
-      "id": 53,
+      "id": 57,
       "identity": "std/prelude::Show::show",
       "name": "show",
       "module": "std/prelude",
@@ -1037,7 +1126,7 @@
       }
     },
     {
-      "id": 54,
+      "id": 58,
       "identity": "std/prelude::+",
       "name": "+",
       "module": "std/prelude",
@@ -1049,8 +1138,8 @@
       }
     },
     {
-      "id": 55,
-      "identity": "artifact/array-list-apis::local(55)",
+      "id": 59,
+      "identity": "artifact/array-list-apis::local(59)",
       "name": "A",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1061,7 +1150,7 @@
       }
     },
     {
-      "id": 56,
+      "id": 60,
       "identity": "std/prelude::Array",
       "name": "Array",
       "module": "std/prelude",
@@ -1073,8 +1162,8 @@
       }
     },
     {
-      "id": 57,
-      "identity": "artifact/array-list-apis::local(57)",
+      "id": 61,
+      "identity": "artifact/array-list-apis::local(61)",
       "name": "values",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1086,7 +1175,7 @@
       "typeName": "Array<A>"
     },
     {
-      "id": 58,
+      "id": 62,
       "identity": "std/array::sort",
       "name": "sort",
       "module": "std/array",
@@ -1119,8 +1208,8 @@
       }
     },
     {
-      "id": 59,
-      "identity": "artifact/array-list-apis::local(59)",
+      "id": 63,
+      "identity": "artifact/array-list-apis::local(63)",
       "name": "A",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1131,7 +1220,7 @@
       }
     },
     {
-      "id": 60,
+      "id": 64,
       "identity": "std/prelude::List",
       "name": "List",
       "module": "std/prelude",
@@ -1143,8 +1232,8 @@
       }
     },
     {
-      "id": 61,
-      "identity": "artifact/array-list-apis::local(61)",
+      "id": 65,
+      "identity": "artifact/array-list-apis::local(65)",
       "name": "values",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1156,7 +1245,7 @@
       "typeName": "List<A>"
     },
     {
-      "id": 62,
+      "id": 66,
       "identity": "std/list::sort",
       "name": "sort",
       "module": "std/list",
@@ -1189,8 +1278,8 @@
       }
     },
     {
-      "id": 63,
-      "identity": "artifact/array-list-apis::local(63)",
+      "id": 67,
+      "identity": "artifact/array-list-apis::local(67)",
       "name": "A",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1201,8 +1290,8 @@
       }
     },
     {
-      "id": 64,
-      "identity": "artifact/array-list-apis::local(64)",
+      "id": 68,
+      "identity": "artifact/array-list-apis::local(68)",
       "name": "left",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1214,8 +1303,8 @@
       "typeName": "A"
     },
     {
-      "id": 65,
-      "identity": "artifact/array-list-apis::local(65)",
+      "id": 69,
+      "identity": "artifact/array-list-apis::local(69)",
       "name": "right",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1227,8 +1316,8 @@
       "typeName": "A"
     },
     {
-      "id": 66,
-      "identity": "artifact/array-list-apis::local(66)",
+      "id": 70,
+      "identity": "artifact/array-list-apis::local(70)",
       "name": "A",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1239,8 +1328,8 @@
       }
     },
     {
-      "id": 67,
-      "identity": "artifact/array-list-apis::local(67)",
+      "id": 71,
+      "identity": "artifact/array-list-apis::local(71)",
       "name": "K",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1251,8 +1340,8 @@
       }
     },
     {
-      "id": 68,
-      "identity": "artifact/array-list-apis::local(68)",
+      "id": 72,
+      "identity": "artifact/array-list-apis::local(72)",
       "name": "key",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1264,8 +1353,8 @@
       "typeName": "A -> K"
     },
     {
-      "id": 69,
-      "identity": "artifact/array-list-apis::local(69)",
+      "id": 73,
+      "identity": "artifact/array-list-apis::local(73)",
       "name": "values",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1277,7 +1366,7 @@
       "typeName": "Array<A>"
     },
     {
-      "id": 70,
+      "id": 74,
       "identity": "std/array::groupBy",
       "name": "groupBy",
       "module": "std/array",
@@ -1316,8 +1405,8 @@
       }
     },
     {
-      "id": 71,
-      "identity": "artifact/array-list-apis::local(71)",
+      "id": 75,
+      "identity": "artifact/array-list-apis::local(75)",
       "name": "A",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1328,8 +1417,8 @@
       }
     },
     {
-      "id": 72,
-      "identity": "artifact/array-list-apis::local(72)",
+      "id": 76,
+      "identity": "artifact/array-list-apis::local(76)",
       "name": "K",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1340,8 +1429,8 @@
       }
     },
     {
-      "id": 73,
-      "identity": "artifact/array-list-apis::local(73)",
+      "id": 77,
+      "identity": "artifact/array-list-apis::local(77)",
       "name": "key",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1353,8 +1442,8 @@
       "typeName": "A -> K"
     },
     {
-      "id": 74,
-      "identity": "artifact/array-list-apis::local(74)",
+      "id": 78,
+      "identity": "artifact/array-list-apis::local(78)",
       "name": "values",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1366,7 +1455,7 @@
       "typeName": "List<A>"
     },
     {
-      "id": 75,
+      "id": 79,
       "identity": "std/list::groupBy",
       "name": "groupBy",
       "module": "std/list",
@@ -1405,8 +1494,8 @@
       }
     },
     {
-      "id": 76,
-      "identity": "artifact/array-list-apis::local(76)",
+      "id": 80,
+      "identity": "artifact/array-list-apis::local(80)",
       "name": "C",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1417,8 +1506,8 @@
       }
     },
     {
-      "id": 77,
-      "identity": "artifact/array-list-apis::local(77)",
+      "id": 81,
+      "identity": "artifact/array-list-apis::local(81)",
       "name": "A",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1429,8 +1518,8 @@
       }
     },
     {
-      "id": 78,
-      "identity": "artifact/array-list-apis::local(78)",
+      "id": 82,
+      "identity": "artifact/array-list-apis::local(82)",
       "name": "values",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1442,7 +1531,7 @@
       "typeName": "C"
     },
     {
-      "id": 79,
+      "id": 83,
       "identity": "std/prelude::Iterable",
       "name": "Iterable",
       "module": "std/prelude",
@@ -1454,7 +1543,7 @@
       }
     },
     {
-      "id": 80,
+      "id": 84,
       "identity": "std/array::fromIterable",
       "name": "fromIterable",
       "module": "std/array",
@@ -1488,8 +1577,8 @@
       }
     },
     {
-      "id": 81,
-      "identity": "artifact/array-list-apis::local(81)",
+      "id": 85,
+      "identity": "artifact/array-list-apis::local(85)",
       "name": "C",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1500,8 +1589,8 @@
       }
     },
     {
-      "id": 82,
-      "identity": "artifact/array-list-apis::local(82)",
+      "id": 86,
+      "identity": "artifact/array-list-apis::local(86)",
       "name": "A",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1512,8 +1601,8 @@
       }
     },
     {
-      "id": 83,
-      "identity": "artifact/array-list-apis::local(83)",
+      "id": 87,
+      "identity": "artifact/array-list-apis::local(87)",
       "name": "values",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1525,7 +1614,7 @@
       "typeName": "C"
     },
     {
-      "id": 84,
+      "id": 88,
       "identity": "std/list::fromIterable",
       "name": "fromIterable",
       "module": "std/list",
@@ -1559,8 +1648,8 @@
       }
     },
     {
-      "id": 85,
-      "identity": "artifact/array-list-apis::local(85)",
+      "id": 89,
+      "identity": "artifact/array-list-apis::local(89)",
       "name": "A",
       "module": "artifact/array-list-apis",
       "namespace": "type",
@@ -1571,7 +1660,7 @@
       }
     },
     {
-      "id": 86,
+      "id": 90,
       "identity": "std/prelude::Either",
       "name": "Either",
       "module": "std/prelude",
@@ -1584,7 +1673,7 @@
       "description": "Represents either a typed failure or a success value."
     },
     {
-      "id": 87,
+      "id": 91,
       "identity": "std/prelude::Either::E",
       "name": "E",
       "module": "std/prelude",
@@ -1596,7 +1685,7 @@
       }
     },
     {
-      "id": 88,
+      "id": 92,
       "identity": "std/prelude::Either::A",
       "name": "A",
       "module": "std/prelude",
@@ -1608,7 +1697,7 @@
       }
     },
     {
-      "id": 89,
+      "id": 93,
       "identity": "std/prelude::Left",
       "name": "Left",
       "module": "std/prelude",
@@ -1621,7 +1710,7 @@
       "description": "Constructs the failure side of Either."
     },
     {
-      "id": 90,
+      "id": 94,
       "identity": "std/prelude::Right",
       "name": "Right",
       "module": "std/prelude",
@@ -1634,8 +1723,8 @@
       "description": "Constructs the success side of Either."
     },
     {
-      "id": 91,
-      "identity": "artifact/array-list-apis::local(91)",
+      "id": 95,
+      "identity": "artifact/array-list-apis::local(95)",
       "name": "result",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1647,8 +1736,8 @@
       "typeName": "Either<collections.SizeError, A>"
     },
     {
-      "id": 92,
-      "identity": "artifact/array-list-apis::local(92)",
+      "id": 96,
+      "identity": "artifact/array-list-apis::local(96)",
       "name": "size",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1660,7 +1749,7 @@
       "typeName": "Int"
     },
     {
-      "id": 93,
+      "id": 97,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -1672,8 +1761,8 @@
       }
     },
     {
-      "id": 94,
-      "identity": "artifact/array-list-apis::local(94)",
+      "id": 98,
+      "identity": "artifact/array-list-apis::local(98)",
       "name": "unit",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1685,7 +1774,7 @@
       "typeName": "Unit"
     },
     {
-      "id": 95,
+      "id": 99,
       "identity": "std/array::zip",
       "name": "zip",
       "module": "std/array",
@@ -1721,8 +1810,8 @@
       }
     },
     {
-      "id": 96,
-      "identity": "artifact/array-list-apis::local(96)",
+      "id": 100,
+      "identity": "artifact/array-list-apis::local(100)",
       "name": "pair",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1734,7 +1823,7 @@
       "typeName": "Array<String> -> Array<Int> -> Array<(Int, String)>"
     },
     {
-      "id": 97,
+      "id": 101,
       "identity": "std/list::zip",
       "name": "zip",
       "module": "std/list",
@@ -1770,8 +1859,8 @@
       }
     },
     {
-      "id": 98,
-      "identity": "artifact/array-list-apis::local(98)",
+      "id": 102,
+      "identity": "artifact/array-list-apis::local(102)",
       "name": "pairList",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1783,7 +1872,7 @@
       "typeName": "List<String> -> List<Int> -> List<(Int, String)>"
     },
     {
-      "id": 99,
+      "id": 103,
       "identity": "std/array::sortBy",
       "name": "sortBy",
       "module": "std/array",
@@ -1821,8 +1910,8 @@
       }
     },
     {
-      "id": 100,
-      "identity": "artifact/array-list-apis::local(100)",
+      "id": 104,
+      "identity": "artifact/array-list-apis::local(104)",
       "name": "sortKey",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1834,8 +1923,8 @@
       "typeName": "Array<Int> -> Array<Int>"
     },
     {
-      "id": 101,
-      "identity": "artifact/array-list-apis::local(101)",
+      "id": 105,
+      "identity": "artifact/array-list-apis::local(105)",
       "name": "groupKey",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1847,8 +1936,8 @@
       "typeName": "List<Int> -> maps.Map<Int, List<Int>>"
     },
     {
-      "id": 102,
-      "identity": "artifact/array-list-apis::local(102)",
+      "id": 106,
+      "identity": "artifact/array-list-apis::local(106)",
       "name": "unit",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1860,8 +1949,8 @@
       "typeName": "Unit"
     },
     {
-      "id": 103,
-      "identity": "artifact/array-list-apis::local(103)",
+      "id": 107,
+      "identity": "artifact/array-list-apis::local(107)",
       "name": "value",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1873,8 +1962,8 @@
       "typeName": "Int"
     },
     {
-      "id": 104,
-      "identity": "artifact/array-list-apis::local(104)",
+      "id": 108,
+      "identity": "artifact/array-list-apis::local(108)",
       "name": "identity",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1886,8 +1975,8 @@
       "typeName": "Int -> Int"
     },
     {
-      "id": 105,
-      "identity": "artifact/array-list-apis::local(105)",
+      "id": 109,
+      "identity": "artifact/array-list-apis::local(109)",
       "name": "value",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1899,8 +1988,8 @@
       "typeName": "Int"
     },
     {
-      "id": 106,
-      "identity": "artifact/array-list-apis::local(106)",
+      "id": 110,
+      "identity": "artifact/array-list-apis::local(110)",
       "name": "next",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1912,8 +2001,8 @@
       "typeName": "Int -> Int"
     },
     {
-      "id": 107,
-      "identity": "artifact/array-list-apis::local(107)",
+      "id": 111,
+      "identity": "artifact/array-list-apis::local(111)",
       "name": "input",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1925,8 +2014,8 @@
       "typeName": "Int"
     },
     {
-      "id": 108,
-      "identity": "artifact/array-list-apis::local(108)",
+      "id": 112,
+      "identity": "artifact/array-list-apis::local(112)",
       "name": "step",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1938,7 +2027,7 @@
       "typeName": "Int -> (Int -> Int) -> Int -> Int"
     },
     {
-      "id": 109,
+      "id": 113,
       "identity": "std/array::reduceRight",
       "name": "reduceRight",
       "module": "std/array",
@@ -1978,8 +2067,8 @@
       }
     },
     {
-      "id": 110,
-      "identity": "artifact/array-list-apis::local(110)",
+      "id": 114,
+      "identity": "artifact/array-list-apis::local(114)",
       "name": "folded",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -1991,7 +2080,7 @@
       "typeName": "Int -> Int"
     },
     {
-      "id": 111,
+      "id": 115,
       "identity": "std/list::reduceRight",
       "name": "reduceRight",
       "module": "std/list",
@@ -2031,8 +2120,8 @@
       }
     },
     {
-      "id": 112,
-      "identity": "artifact/array-list-apis::local(112)",
+      "id": 116,
+      "identity": "artifact/array-list-apis::local(116)",
       "name": "linked",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2044,8 +2133,8 @@
       "typeName": "Int -> Int"
     },
     {
-      "id": 113,
-      "identity": "artifact/array-list-apis::local(113)",
+      "id": 117,
+      "identity": "artifact/array-list-apis::local(117)",
       "name": "values",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2057,8 +2146,8 @@
       "typeName": "Array<Int>"
     },
     {
-      "id": 114,
-      "identity": "artifact/array-list-apis::local(114)",
+      "id": 118,
+      "identity": "artifact/array-list-apis::local(118)",
       "name": "linked",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2070,7 +2159,7 @@
       "typeName": "List<Int>"
     },
     {
-      "id": 115,
+      "id": 119,
       "identity": "std/array::empty",
       "name": "empty",
       "module": "std/array",
@@ -2101,8 +2190,8 @@
       }
     },
     {
-      "id": 116,
-      "identity": "artifact/array-list-apis::local(116)",
+      "id": 120,
+      "identity": "artifact/array-list-apis::local(120)",
       "name": "blank",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2114,7 +2203,7 @@
       "typeName": "Array<Int>"
     },
     {
-      "id": 117,
+      "id": 121,
       "identity": "std/list::empty",
       "name": "empty",
       "module": "std/list",
@@ -2145,8 +2234,8 @@
       }
     },
     {
-      "id": 118,
-      "identity": "artifact/array-list-apis::local(118)",
+      "id": 122,
+      "identity": "artifact/array-list-apis::local(122)",
       "name": "nil",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2158,7 +2247,7 @@
       "typeName": "List<Int>"
     },
     {
-      "id": 119,
+      "id": 123,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -2188,7 +2277,7 @@
       "description": "Writes text followed by a newline through Console."
     },
     {
-      "id": 120,
+      "id": 124,
       "identity": "std/array::singleton",
       "name": "singleton",
       "module": "std/array",
@@ -2219,7 +2308,7 @@
       }
     },
     {
-      "id": 121,
+      "id": 125,
       "identity": "std/list::singleton",
       "name": "singleton",
       "module": "std/list",
@@ -2250,7 +2339,7 @@
       }
     },
     {
-      "id": 122,
+      "id": 126,
       "identity": "std/array::findIndex",
       "name": "findIndex",
       "module": "std/array",
@@ -2285,8 +2374,8 @@
       }
     },
     {
-      "id": 123,
-      "identity": "artifact/array-list-apis::local(123)",
+      "id": 127,
+      "identity": "artifact/array-list-apis::local(127)",
       "name": "n",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2298,7 +2387,7 @@
       "typeName": "Int"
     },
     {
-      "id": 124,
+      "id": 128,
       "identity": "std/prelude::>",
       "name": ">",
       "module": "std/prelude",
@@ -2310,7 +2399,7 @@
       }
     },
     {
-      "id": 125,
+      "id": 129,
       "identity": "std/list::findIndex",
       "name": "findIndex",
       "module": "std/list",
@@ -2345,8 +2434,8 @@
       }
     },
     {
-      "id": 126,
-      "identity": "artifact/array-list-apis::local(126)",
+      "id": 130,
+      "identity": "artifact/array-list-apis::local(130)",
       "name": "n",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2358,7 +2447,7 @@
       "typeName": "Int"
     },
     {
-      "id": 127,
+      "id": 131,
       "identity": "std/array::takeWhile",
       "name": "takeWhile",
       "module": "std/array",
@@ -2393,8 +2482,8 @@
       }
     },
     {
-      "id": 128,
-      "identity": "artifact/array-list-apis::local(128)",
+      "id": 132,
+      "identity": "artifact/array-list-apis::local(132)",
       "name": "n",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2406,7 +2495,7 @@
       "typeName": "Int"
     },
     {
-      "id": 129,
+      "id": 133,
       "identity": "std/prelude::<",
       "name": "<",
       "module": "std/prelude",
@@ -2418,7 +2507,7 @@
       }
     },
     {
-      "id": 130,
+      "id": 134,
       "identity": "std/list::takeWhile",
       "name": "takeWhile",
       "module": "std/list",
@@ -2453,8 +2542,8 @@
       }
     },
     {
-      "id": 131,
-      "identity": "artifact/array-list-apis::local(131)",
+      "id": 135,
+      "identity": "artifact/array-list-apis::local(135)",
       "name": "n",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2466,7 +2555,7 @@
       "typeName": "Int"
     },
     {
-      "id": 132,
+      "id": 136,
       "identity": "std/array::dropWhile",
       "name": "dropWhile",
       "module": "std/array",
@@ -2501,8 +2590,8 @@
       }
     },
     {
-      "id": 133,
-      "identity": "artifact/array-list-apis::local(133)",
+      "id": 137,
+      "identity": "artifact/array-list-apis::local(137)",
       "name": "n",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2514,7 +2603,7 @@
       "typeName": "Int"
     },
     {
-      "id": 134,
+      "id": 138,
       "identity": "std/list::dropWhile",
       "name": "dropWhile",
       "module": "std/list",
@@ -2549,8 +2638,8 @@
       }
     },
     {
-      "id": 135,
-      "identity": "artifact/array-list-apis::local(135)",
+      "id": 139,
+      "identity": "artifact/array-list-apis::local(139)",
       "name": "n",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2562,7 +2651,7 @@
       "typeName": "Int"
     },
     {
-      "id": 136,
+      "id": 140,
       "identity": "std/array::zipWith",
       "name": "zipWith",
       "module": "std/array",
@@ -2603,8 +2692,8 @@
       }
     },
     {
-      "id": 137,
-      "identity": "artifact/array-list-apis::local(137)",
+      "id": 141,
+      "identity": "artifact/array-list-apis::local(141)",
       "name": "a",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2616,8 +2705,8 @@
       "typeName": "Int"
     },
     {
-      "id": 138,
-      "identity": "artifact/array-list-apis::local(138)",
+      "id": 142,
+      "identity": "artifact/array-list-apis::local(142)",
       "name": "b",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2629,7 +2718,7 @@
       "typeName": "Int"
     },
     {
-      "id": 139,
+      "id": 143,
       "identity": "std/prelude::-",
       "name": "-",
       "module": "std/prelude",
@@ -2641,7 +2730,7 @@
       }
     },
     {
-      "id": 140,
+      "id": 144,
       "identity": "std/list::zipWith",
       "name": "zipWith",
       "module": "std/list",
@@ -2682,8 +2771,8 @@
       }
     },
     {
-      "id": 141,
-      "identity": "artifact/array-list-apis::local(141)",
+      "id": 145,
+      "identity": "artifact/array-list-apis::local(145)",
       "name": "a",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2695,8 +2784,8 @@
       "typeName": "Int"
     },
     {
-      "id": 142,
-      "identity": "artifact/array-list-apis::local(142)",
+      "id": 146,
+      "identity": "artifact/array-list-apis::local(146)",
       "name": "b",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2708,7 +2797,7 @@
       "typeName": "Int"
     },
     {
-      "id": 143,
+      "id": 147,
       "identity": "std/array::unzip",
       "name": "unzip",
       "module": "std/array",
@@ -2740,7 +2829,7 @@
       }
     },
     {
-      "id": 144,
+      "id": 148,
       "identity": "std/list::unzip",
       "name": "unzip",
       "module": "std/list",
@@ -2772,7 +2861,7 @@
       }
     },
     {
-      "id": 145,
+      "id": 149,
       "identity": "std/list::sortBy",
       "name": "sortBy",
       "module": "std/list",
@@ -2810,8 +2899,8 @@
       }
     },
     {
-      "id": 146,
-      "identity": "artifact/array-list-apis::local(146)",
+      "id": 150,
+      "identity": "artifact/array-list-apis::local(150)",
       "name": "keys",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2823,7 +2912,7 @@
       "typeName": "Array<Key>"
     },
     {
-      "id": 147,
+      "id": 151,
       "identity": "std/prelude::Functor",
       "name": "Functor",
       "module": "std/prelude",
@@ -2835,7 +2924,7 @@
       }
     },
     {
-      "id": 148,
+      "id": 152,
       "identity": "std/prelude::Functor::map",
       "name": "map",
       "module": "std/prelude",
@@ -2875,7 +2964,7 @@
       "description": "Transforms the value inside a Functor without changing its shape."
     },
     {
-      "id": 149,
+      "id": 153,
       "identity": "std/map::keys",
       "name": "keys",
       "module": "std/map",
@@ -2907,8 +2996,8 @@
       }
     },
     {
-      "id": 150,
-      "identity": "artifact/array-list-apis::local(150)",
+      "id": 154,
+      "identity": "artifact/array-list-apis::local(154)",
       "name": "key",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -2920,7 +3009,7 @@
       "typeName": "Key"
     },
     {
-      "id": 151,
+      "id": 155,
       "identity": "std/map::values",
       "name": "values",
       "module": "std/map",
@@ -2952,7 +3041,7 @@
       }
     },
     {
-      "id": 152,
+      "id": 156,
       "identity": "std/map::mapValues",
       "name": "mapValues",
       "module": "std/map",
@@ -2989,8 +3078,8 @@
       }
     },
     {
-      "id": 153,
-      "identity": "artifact/array-list-apis::local(153)",
+      "id": 157,
+      "identity": "artifact/array-list-apis::local(157)",
       "name": "group",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -3002,8 +3091,8 @@
       "typeName": "List<Key>"
     },
     {
-      "id": 154,
-      "identity": "artifact/array-list-apis::local(154)",
+      "id": 158,
+      "identity": "artifact/array-list-apis::local(158)",
       "name": "key",
       "module": "artifact/array-list-apis",
       "namespace": "value",
@@ -3015,7 +3104,7 @@
       "typeName": "Key"
     },
     {
-      "id": 155,
+      "id": 159,
       "identity": "std/array::last",
       "name": "last",
       "module": "std/array",
@@ -3046,7 +3135,7 @@
       }
     },
     {
-      "id": 156,
+      "id": 160,
       "identity": "std/list::last",
       "name": "last",
       "module": "std/list",
@@ -3077,7 +3166,7 @@
       }
     },
     {
-      "id": 157,
+      "id": 161,
       "identity": "std/array::init",
       "name": "init",
       "module": "std/array",
@@ -3108,7 +3197,7 @@
       }
     },
     {
-      "id": 158,
+      "id": 162,
       "identity": "std/list::init",
       "name": "init",
       "module": "std/list",
@@ -3139,7 +3228,7 @@
       }
     },
     {
-      "id": 159,
+      "id": 163,
       "identity": "std/array::chunksOf",
       "name": "chunksOf",
       "module": "std/array",
@@ -3174,7 +3263,7 @@
       }
     },
     {
-      "id": 160,
+      "id": 164,
       "identity": "std/list::chunksOf",
       "name": "chunksOf",
       "module": "std/list",
@@ -3209,7 +3298,7 @@
       }
     },
     {
-      "id": 161,
+      "id": 165,
       "identity": "std/array::windows",
       "name": "windows",
       "module": "std/array",
@@ -3244,7 +3333,7 @@
       }
     },
     {
-      "id": 162,
+      "id": 166,
       "identity": "std/list::windows",
       "name": "windows",
       "module": "std/list",
@@ -3279,7 +3368,7 @@
       }
     },
     {
-      "id": 163,
+      "id": 167,
       "identity": "std/prelude::Debug",
       "name": "Debug",
       "module": "std/prelude",
@@ -3291,7 +3380,7 @@
       }
     },
     {
-      "id": 164,
+      "id": 168,
       "identity": "std/prelude::Debug::debug",
       "name": "debug",
       "module": "std/prelude",
@@ -3463,518 +3552,518 @@
         "start": 128,
         "end": 132
       },
-      "symbol": 21
+      "symbol": 25
     },
     {
       "range": {
         "start": 208,
         "end": 209
       },
-      "symbol": 28
+      "symbol": 32
     },
     {
       "range": {
         "start": 218,
         "end": 219
       },
-      "symbol": 29
+      "symbol": 33
     },
     {
       "range": {
         "start": 256,
         "end": 257
       },
-      "symbol": 31
+      "symbol": 35
     },
     {
       "range": {
         "start": 268,
         "end": 269
       },
-      "symbol": 32
+      "symbol": 36
     },
     {
       "range": {
         "start": 321,
         "end": 326
       },
-      "symbol": 35
+      "symbol": 39
     },
     {
       "range": {
         "start": 379,
         "end": 380
       },
-      "symbol": 37
+      "symbol": 41
     },
     {
       "range": {
         "start": 389,
         "end": 390
       },
-      "symbol": 38
+      "symbol": 42
     },
     {
       "range": {
         "start": 435,
         "end": 436
       },
-      "symbol": 43
+      "symbol": 47
     },
     {
       "range": {
         "start": 447,
         "end": 448
       },
-      "symbol": 44
+      "symbol": 48
     },
     {
       "range": {
         "start": 483,
         "end": 488
       },
-      "symbol": 46
+      "symbol": 50
     },
     {
       "range": {
         "start": 528,
         "end": 532
       },
-      "symbol": 47
+      "symbol": 51
     },
     {
       "range": {
         "start": 555,
         "end": 560
       },
-      "symbol": 48
+      "symbol": 52
     },
     {
       "range": {
         "start": 599,
         "end": 604
       },
-      "symbol": 50
+      "symbol": 54
     },
     {
       "range": {
         "start": 613,
         "end": 616
       },
-      "symbol": 51
+      "symbol": 55
     },
     {
       "range": {
         "start": 661,
         "end": 739
       },
-      "symbol": 55
+      "symbol": 59
     },
     {
       "range": {
         "start": 677,
         "end": 683
       },
-      "symbol": 57
+      "symbol": 61
     },
     {
       "range": {
         "start": 740,
         "end": 814
       },
-      "symbol": 59
+      "symbol": 63
     },
     {
       "range": {
         "start": 755,
         "end": 761
       },
-      "symbol": 61
+      "symbol": 65
     },
     {
       "range": {
         "start": 816,
         "end": 890
       },
-      "symbol": 63
+      "symbol": 67
     },
     {
       "range": {
         "start": 834,
         "end": 838
       },
-      "symbol": 64
+      "symbol": 68
     },
     {
       "range": {
         "start": 845,
         "end": 850
       },
-      "symbol": 65
+      "symbol": 69
     },
     {
       "range": {
         "start": 892,
         "end": 1025
       },
-      "symbol": 66
+      "symbol": 70
     },
     {
       "range": {
         "start": 892,
         "end": 1025
       },
-      "symbol": 67
+      "symbol": 71
     },
     {
       "range": {
         "start": 912,
         "end": 915
       },
-      "symbol": 68
+      "symbol": 72
     },
     {
       "range": {
         "start": 931,
         "end": 937
       },
-      "symbol": 69
+      "symbol": 73
     },
     {
       "range": {
         "start": 1027,
         "end": 1156
       },
-      "symbol": 71
+      "symbol": 75
     },
     {
       "range": {
         "start": 1027,
         "end": 1156
       },
-      "symbol": 72
+      "symbol": 76
     },
     {
       "range": {
         "start": 1046,
         "end": 1049
       },
-      "symbol": 73
+      "symbol": 77
     },
     {
       "range": {
         "start": 1065,
         "end": 1071
       },
-      "symbol": 74
+      "symbol": 78
     },
     {
       "range": {
         "start": 1158,
         "end": 1253
       },
-      "symbol": 76
+      "symbol": 80
     },
     {
       "range": {
         "start": 1158,
         "end": 1253
       },
-      "symbol": 77
+      "symbol": 81
     },
     {
       "range": {
         "start": 1180,
         "end": 1186
       },
-      "symbol": 78
-    },
-    {
-      "range": {
-        "start": 1254,
-        "end": 1346
-      },
-      "symbol": 81
-    },
-    {
-      "range": {
-        "start": 1254,
-        "end": 1346
-      },
       "symbol": 82
+    },
+    {
+      "range": {
+        "start": 1254,
+        "end": 1346
+      },
+      "symbol": 85
+    },
+    {
+      "range": {
+        "start": 1254,
+        "end": 1346
+      },
+      "symbol": 86
     },
     {
       "range": {
         "start": 1275,
         "end": 1281
       },
-      "symbol": 83
+      "symbol": 87
     },
     {
       "range": {
         "start": 1348,
         "end": 1493
       },
-      "symbol": 85
+      "symbol": 89
     },
     {
       "range": {
         "start": 1362,
         "end": 1368
       },
-      "symbol": 91
+      "symbol": 95
     },
     {
       "range": {
         "start": 1463,
         "end": 1467
       },
-      "symbol": 92
+      "symbol": 96
     },
     {
       "range": {
         "start": 1506,
         "end": 1510
       },
-      "symbol": 94
+      "symbol": 98
     },
     {
       "range": {
         "start": 1537,
         "end": 1541
       },
-      "symbol": 96
+      "symbol": 100
     },
     {
       "range": {
         "start": 1614,
         "end": 1622
       },
-      "symbol": 98
+      "symbol": 102
     },
     {
       "range": {
         "start": 1691,
         "end": 1698
       },
-      "symbol": 100
+      "symbol": 104
     },
     {
       "range": {
         "start": 1754,
         "end": 1762
       },
-      "symbol": 101
+      "symbol": 105
     },
     {
       "range": {
         "start": 1943,
         "end": 1947
       },
-      "symbol": 102
+      "symbol": 106
     },
     {
       "range": {
         "start": 1995,
         "end": 2000
       },
-      "symbol": 103
+      "symbol": 107
     },
     {
       "range": {
         "start": 1971,
         "end": 1979
       },
-      "symbol": 104
+      "symbol": 108
     },
     {
       "range": {
         "start": 2065,
         "end": 2070
       },
-      "symbol": 105
+      "symbol": 109
     },
     {
       "range": {
         "start": 2071,
         "end": 2075
       },
-      "symbol": 106
+      "symbol": 110
     },
     {
       "range": {
         "start": 2080,
         "end": 2085
       },
-      "symbol": 107
+      "symbol": 111
     },
     {
       "range": {
         "start": 2016,
         "end": 2020
       },
-      "symbol": 108
+      "symbol": 112
     },
     {
       "range": {
         "start": 2116,
         "end": 2122
       },
-      "symbol": 110
+      "symbol": 114
     },
     {
       "range": {
         "start": 2174,
         "end": 2180
       },
-      "symbol": 112
+      "symbol": 116
     },
     {
       "range": {
         "start": 2283,
         "end": 2289
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 2314,
         "end": 2320
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 2346,
         "end": 2351
       },
-      "symbol": 116
+      "symbol": 120
     },
     {
       "range": {
         "start": 2388,
         "end": 2391
       },
-      "symbol": 118
+      "symbol": 122
     },
     {
       "range": {
         "start": 2700,
         "end": 2701
       },
-      "symbol": 123
+      "symbol": 127
     },
     {
       "range": {
         "start": 2738,
         "end": 2739
       },
-      "symbol": 126
+      "symbol": 130
     },
     {
       "range": {
         "start": 2799,
         "end": 2800
       },
-      "symbol": 128
+      "symbol": 132
     },
     {
       "range": {
         "start": 2837,
         "end": 2838
       },
-      "symbol": 131
+      "symbol": 135
     },
     {
       "range": {
         "start": 2898,
         "end": 2899
       },
-      "symbol": 133
+      "symbol": 137
     },
     {
       "range": {
         "start": 2936,
         "end": 2937
       },
-      "symbol": 135
+      "symbol": 139
     },
     {
       "range": {
         "start": 3080,
         "end": 3081
       },
-      "symbol": 137
+      "symbol": 141
     },
     {
       "range": {
         "start": 3082,
         "end": 3083
       },
-      "symbol": 138
+      "symbol": 142
     },
     {
       "range": {
         "start": 3133,
         "end": 3134
       },
-      "symbol": 141
+      "symbol": 145
     },
     {
       "range": {
         "start": 3135,
         "end": 3136
       },
-      "symbol": 142
+      "symbol": 146
     },
     {
       "range": {
         "start": 3487,
         "end": 3491
       },
-      "symbol": 146
+      "symbol": 150
     },
     {
       "range": {
         "start": 3688,
         "end": 3691
       },
-      "symbol": 150
+      "symbol": 154
     },
     {
       "range": {
         "start": 3776,
         "end": 3781
       },
-      "symbol": 153
+      "symbol": 157
     },
     {
       "range": {
         "start": 3825,
         "end": 3828
       },
-      "symbol": 154
+      "symbol": 158
     },
     {
       "range": {
         "start": 167,
         "end": 170
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 172,
         "end": 178
       },
-      "symbol": 26
+      "symbol": 30
     },
     {
       "range": {
         "start": 190,
         "end": 192
       },
-      "symbol": 27
+      "symbol": 31
     },
     {
       "range": {
@@ -4002,21 +4091,21 @@
         "start": 228,
         "end": 232
       },
-      "symbol": 30
+      "symbol": 34
     },
     {
       "range": {
         "start": 242,
         "end": 243
       },
-      "symbol": 28
+      "symbol": 32
     },
     {
       "range": {
         "start": 245,
         "end": 246
       },
-      "symbol": 29
+      "symbol": 33
     },
     {
       "range": {
@@ -4037,28 +4126,28 @@
         "start": 278,
         "end": 279
       },
-      "symbol": 31
+      "symbol": 35
     },
     {
       "range": {
         "start": 280,
         "end": 282
       },
-      "symbol": 33
+      "symbol": 37
     },
     {
       "range": {
         "start": 283,
         "end": 284
       },
-      "symbol": 32
+      "symbol": 36
     },
     {
       "range": {
         "start": 299,
         "end": 303
       },
-      "symbol": 34
+      "symbol": 38
     },
     {
       "range": {
@@ -4079,14 +4168,14 @@
         "start": 335,
         "end": 338
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 355,
         "end": 358
       },
-      "symbol": 36
+      "symbol": 40
     },
     {
       "range": {
@@ -4114,21 +4203,21 @@
         "start": 399,
         "end": 407
       },
-      "symbol": 39
+      "symbol": 43
     },
     {
       "range": {
         "start": 421,
         "end": 422
       },
-      "symbol": 37
+      "symbol": 41
     },
     {
       "range": {
         "start": 424,
         "end": 425
       },
-      "symbol": 38
+      "symbol": 42
     },
     {
       "range": {
@@ -4149,21 +4238,21 @@
         "start": 457,
         "end": 464
       },
-      "symbol": 45
+      "symbol": 49
     },
     {
       "range": {
         "start": 465,
         "end": 466
       },
-      "symbol": 43
+      "symbol": 47
     },
     {
       "range": {
         "start": 467,
         "end": 468
       },
-      "symbol": 44
+      "symbol": 48
     },
     {
       "range": {
@@ -4177,14 +4266,14 @@
         "start": 497,
         "end": 503
       },
-      "symbol": 26
+      "symbol": 30
     },
     {
       "range": {
         "start": 512,
         "end": 517
       },
-      "symbol": 46
+      "symbol": 50
     },
     {
       "range": {
@@ -4198,588 +4287,588 @@
         "start": 537,
         "end": 541
       },
-      "symbol": 47
+      "symbol": 51
     },
     {
       "range": {
         "start": 562,
         "end": 565
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 569,
         "end": 572
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 575,
         "end": 580
       },
-      "symbol": 48
+      "symbol": 52
     },
     {
       "range": {
         "start": 581,
         "end": 582
       },
-      "symbol": 49
+      "symbol": 53
     },
     {
       "range": {
         "start": 606,
         "end": 609
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 618,
         "end": 624
       },
-      "symbol": 26
+      "symbol": 30
     },
     {
       "range": {
         "start": 628,
         "end": 634
       },
-      "symbol": 26
+      "symbol": 30
     },
     {
       "range": {
         "start": 637,
         "end": 641
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 642,
         "end": 647
       },
-      "symbol": 50
+      "symbol": 54
     },
     {
       "range": {
         "start": 648,
         "end": 649
       },
-      "symbol": 54
+      "symbol": 58
     },
     {
       "range": {
         "start": 654,
         "end": 655
       },
-      "symbol": 54
+      "symbol": 58
     },
     {
       "range": {
         "start": 656,
         "end": 659
       },
-      "symbol": 51
+      "symbol": 55
     },
     {
       "range": {
         "start": 685,
         "end": 693
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 691,
         "end": 692
       },
-      "symbol": 55
+      "symbol": 59
     },
     {
       "range": {
         "start": 697,
         "end": 705
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 703,
         "end": 704
       },
-      "symbol": 55
+      "symbol": 59
     },
     {
       "range": {
         "start": 712,
         "end": 715
       },
-      "symbol": 36
+      "symbol": 40
     },
     {
       "range": {
         "start": 716,
         "end": 717
       },
-      "symbol": 55
+      "symbol": 59
     },
     {
       "range": {
         "start": 721,
         "end": 732
       },
-      "symbol": 58
+      "symbol": 62
     },
     {
       "range": {
         "start": 733,
         "end": 739
       },
-      "symbol": 57
+      "symbol": 61
     },
     {
       "range": {
         "start": 763,
         "end": 770
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 768,
         "end": 769
       },
-      "symbol": 59
+      "symbol": 63
     },
     {
       "range": {
         "start": 774,
         "end": 781
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 779,
         "end": 780
       },
-      "symbol": 59
+      "symbol": 63
     },
     {
       "range": {
         "start": 788,
         "end": 791
       },
-      "symbol": 36
+      "symbol": 40
     },
     {
       "range": {
         "start": 792,
         "end": 793
       },
-      "symbol": 59
+      "symbol": 63
     },
     {
       "range": {
         "start": 797,
         "end": 807
       },
-      "symbol": 62
+      "symbol": 66
     },
     {
       "range": {
         "start": 808,
         "end": 814
       },
-      "symbol": 61
+      "symbol": 65
     },
     {
       "range": {
         "start": 840,
         "end": 841
       },
-      "symbol": 63
+      "symbol": 67
     },
     {
       "range": {
         "start": 852,
         "end": 853
       },
-      "symbol": 63
+      "symbol": 67
     },
     {
       "range": {
         "start": 857,
         "end": 861
       },
-      "symbol": 30
+      "symbol": 34
     },
     {
       "range": {
         "start": 868,
         "end": 871
       },
-      "symbol": 36
+      "symbol": 40
     },
     {
       "range": {
         "start": 872,
         "end": 873
       },
-      "symbol": 63
+      "symbol": 67
     },
     {
       "range": {
         "start": 877,
         "end": 881
       },
-      "symbol": 64
+      "symbol": 68
     },
     {
       "range": {
         "start": 882,
         "end": 884
       },
-      "symbol": 33
+      "symbol": 37
     },
     {
       "range": {
         "start": 885,
         "end": 890
       },
-      "symbol": 65
+      "symbol": 69
     },
     {
       "range": {
         "start": 918,
         "end": 919
       },
-      "symbol": 66
+      "symbol": 70
     },
     {
       "range": {
         "start": 923,
         "end": 924
       },
-      "symbol": 67
+      "symbol": 71
     },
     {
       "range": {
         "start": 939,
         "end": 947
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 945,
         "end": 946
       },
-      "symbol": 66
+      "symbol": 70
     },
     {
       "range": {
         "start": 953,
         "end": 974
       },
-      "symbol": 24
+      "symbol": 28
     },
     {
       "range": {
         "start": 962,
         "end": 963
       },
-      "symbol": 67
+      "symbol": 71
     },
     {
       "range": {
         "start": 965,
         "end": 973
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 971,
         "end": 972
       },
-      "symbol": 66
+      "symbol": 70
     },
     {
       "range": {
         "start": 981,
         "end": 983
       },
-      "symbol": 27
+      "symbol": 31
     },
     {
       "range": {
         "start": 984,
         "end": 985
       },
-      "symbol": 67
+      "symbol": 71
     },
     {
       "range": {
         "start": 988,
         "end": 992
       },
-      "symbol": 34
+      "symbol": 38
     },
     {
       "range": {
         "start": 993,
         "end": 994
       },
-      "symbol": 67
+      "symbol": 71
     },
     {
       "range": {
         "start": 1000,
         "end": 1014
       },
-      "symbol": 70
+      "symbol": 74
     },
     {
       "range": {
         "start": 1015,
         "end": 1018
       },
-      "symbol": 68
+      "symbol": 72
     },
     {
       "range": {
         "start": 1019,
         "end": 1025
       },
-      "symbol": 69
+      "symbol": 73
     },
     {
       "range": {
         "start": 1052,
         "end": 1053
       },
-      "symbol": 71
+      "symbol": 75
     },
     {
       "range": {
         "start": 1057,
         "end": 1058
       },
-      "symbol": 72
+      "symbol": 76
     },
     {
       "range": {
         "start": 1073,
         "end": 1080
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 1078,
         "end": 1079
       },
-      "symbol": 71
+      "symbol": 75
     },
     {
       "range": {
         "start": 1086,
         "end": 1106
       },
-      "symbol": 24
+      "symbol": 28
     },
     {
       "range": {
         "start": 1095,
         "end": 1096
       },
-      "symbol": 72
+      "symbol": 76
     },
     {
       "range": {
         "start": 1098,
         "end": 1105
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 1103,
         "end": 1104
       },
-      "symbol": 71
+      "symbol": 75
     },
     {
       "range": {
         "start": 1113,
         "end": 1115
       },
-      "symbol": 27
+      "symbol": 31
     },
     {
       "range": {
         "start": 1116,
         "end": 1117
       },
-      "symbol": 72
+      "symbol": 76
     },
     {
       "range": {
         "start": 1120,
         "end": 1124
       },
-      "symbol": 34
+      "symbol": 38
     },
     {
       "range": {
         "start": 1125,
         "end": 1126
       },
-      "symbol": 72
+      "symbol": 76
     },
     {
       "range": {
         "start": 1132,
         "end": 1145
       },
-      "symbol": 75
+      "symbol": 79
     },
     {
       "range": {
         "start": 1146,
         "end": 1149
       },
-      "symbol": 73
+      "symbol": 77
     },
     {
       "range": {
         "start": 1150,
         "end": 1156
       },
-      "symbol": 74
+      "symbol": 78
     },
     {
       "range": {
         "start": 1188,
         "end": 1189
       },
-      "symbol": 76
+      "symbol": 80
     },
     {
       "range": {
         "start": 1193,
         "end": 1201
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 1199,
         "end": 1200
       },
-      "symbol": 77
+      "symbol": 81
     },
     {
       "range": {
         "start": 1208,
         "end": 1216
       },
-      "symbol": 79
+      "symbol": 83
     },
     {
       "range": {
         "start": 1217,
         "end": 1218
       },
-      "symbol": 76
+      "symbol": 80
     },
     {
       "range": {
         "start": 1220,
         "end": 1221
       },
-      "symbol": 77
+      "symbol": 81
     },
     {
       "range": {
         "start": 1227,
         "end": 1246
       },
-      "symbol": 80
+      "symbol": 84
     },
     {
       "range": {
         "start": 1247,
         "end": 1253
       },
-      "symbol": 78
+      "symbol": 82
     },
     {
       "range": {
         "start": 1283,
         "end": 1284
       },
-      "symbol": 81
+      "symbol": 85
     },
     {
       "range": {
         "start": 1288,
         "end": 1295
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 1293,
         "end": 1294
       },
-      "symbol": 82
+      "symbol": 86
     },
     {
       "range": {
         "start": 1302,
         "end": 1310
       },
-      "symbol": 79
+      "symbol": 83
     },
     {
       "range": {
         "start": 1311,
         "end": 1312
       },
-      "symbol": 81
+      "symbol": 85
     },
     {
       "range": {
         "start": 1314,
         "end": 1315
       },
-      "symbol": 82
+      "symbol": 86
     },
     {
       "range": {
         "start": 1321,
         "end": 1339
       },
-      "symbol": 84
+      "symbol": 88
     },
     {
       "range": {
         "start": 1340,
         "end": 1346
       },
-      "symbol": 83
+      "symbol": 87
     },
     {
       "range": {
         "start": 1370,
         "end": 1402
       },
-      "symbol": 86
+      "symbol": 90
     },
     {
       "range": {
@@ -4793,28 +4882,28 @@
         "start": 1400,
         "end": 1401
       },
-      "symbol": 85
+      "symbol": 89
     },
     {
       "range": {
         "start": 1406,
         "end": 1409
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1418,
         "end": 1424
       },
-      "symbol": 91
+      "symbol": 95
     },
     {
       "range": {
         "start": 1429,
         "end": 1433
       },
-      "symbol": 89
+      "symbol": 93
     },
     {
       "range": {
@@ -4828,175 +4917,175 @@
         "start": 1472,
         "end": 1476
       },
-      "symbol": 92
+      "symbol": 96
     },
     {
       "range": {
         "start": 1479,
         "end": 1484
       },
-      "symbol": 90
+      "symbol": 94
     },
     {
       "range": {
         "start": 1512,
         "end": 1516
       },
-      "symbol": 93
+      "symbol": 97
     },
     {
       "range": {
         "start": 1520,
         "end": 1526
       },
-      "symbol": 26
+      "symbol": 30
     },
     {
       "range": {
         "start": 1543,
         "end": 1556
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 1549,
         "end": 1555
       },
-      "symbol": 26
+      "symbol": 30
     },
     {
       "range": {
         "start": 1560,
         "end": 1570
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 1566,
         "end": 1569
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1574,
         "end": 1594
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 1581,
         "end": 1584
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1586,
         "end": 1592
       },
-      "symbol": 26
+      "symbol": 30
     },
     {
       "range": {
         "start": 1597,
         "end": 1607
       },
-      "symbol": 95
+      "symbol": 99
     },
     {
       "range": {
         "start": 1624,
         "end": 1636
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 1629,
         "end": 1635
       },
-      "symbol": 26
+      "symbol": 30
     },
     {
       "range": {
         "start": 1640,
         "end": 1649
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 1645,
         "end": 1648
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1653,
         "end": 1672
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 1659,
         "end": 1662
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1664,
         "end": 1670
       },
-      "symbol": 26
+      "symbol": 30
     },
     {
       "range": {
         "start": 1675,
         "end": 1684
       },
-      "symbol": 97
+      "symbol": 101
     },
     {
       "range": {
         "start": 1700,
         "end": 1710
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 1706,
         "end": 1709
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1714,
         "end": 1724
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 1720,
         "end": 1723
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1727,
         "end": 1740
       },
-      "symbol": 99
+      "symbol": 103
     },
     {
       "range": {
@@ -5010,49 +5099,49 @@
         "start": 1764,
         "end": 1773
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 1769,
         "end": 1772
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1777,
         "end": 1801
       },
-      "symbol": 24
+      "symbol": 28
     },
     {
       "range": {
         "start": 1786,
         "end": 1789
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1791,
         "end": 1800
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 1796,
         "end": 1799
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1804,
         "end": 1817
       },
-      "symbol": 75
+      "symbol": 79
     },
     {
       "range": {
@@ -5066,294 +5155,294 @@
         "start": 1827,
         "end": 1831
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 1833,
         "end": 1837
       },
-      "symbol": 96
+      "symbol": 100
     },
     {
       "range": {
         "start": 1852,
         "end": 1860
       },
-      "symbol": 98
+      "symbol": 102
     },
     {
       "range": {
         "start": 1877,
         "end": 1884
       },
-      "symbol": 100
+      "symbol": 104
     },
     {
       "range": {
         "start": 1896,
         "end": 1904
       },
-      "symbol": 101
+      "symbol": 105
     },
     {
       "range": {
         "start": 1949,
         "end": 1953
       },
-      "symbol": 93
+      "symbol": 97
     },
     {
       "range": {
         "start": 1957,
         "end": 1960
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1981,
         "end": 1984
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 1988,
         "end": 1991
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 2004,
         "end": 2009
       },
-      "symbol": 103
+      "symbol": 107
     },
     {
       "range": {
         "start": 2022,
         "end": 2025
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 2030,
         "end": 2033
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 2037,
         "end": 2040
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 2046,
         "end": 2049
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 2053,
         "end": 2056
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 2089,
         "end": 2093
       },
-      "symbol": 106
+      "symbol": 110
     },
     {
       "range": {
         "start": 2095,
         "end": 2100
       },
-      "symbol": 107
+      "symbol": 111
     },
     {
       "range": {
         "start": 2101,
         "end": 2102
       },
-      "symbol": 54
+      "symbol": 58
     },
     {
       "range": {
         "start": 2103,
         "end": 2108
       },
-      "symbol": 105
+      "symbol": 109
     },
     {
       "range": {
         "start": 2125,
         "end": 2143
       },
-      "symbol": 109
+      "symbol": 113
     },
     {
       "range": {
         "start": 2144,
         "end": 2152
       },
-      "symbol": 104
+      "symbol": 108
     },
     {
       "range": {
         "start": 2153,
         "end": 2157
       },
-      "symbol": 108
+      "symbol": 112
     },
     {
       "range": {
         "start": 2183,
         "end": 2200
       },
-      "symbol": 111
+      "symbol": 115
     },
     {
       "range": {
         "start": 2201,
         "end": 2209
       },
-      "symbol": 104
+      "symbol": 108
     },
     {
       "range": {
         "start": 2210,
         "end": 2214
       },
-      "symbol": 108
+      "symbol": 112
     },
     {
       "range": {
         "start": 2228,
         "end": 2234
       },
-      "symbol": 110
+      "symbol": 114
     },
     {
       "range": {
         "start": 2237,
         "end": 2238
       },
-      "symbol": 54
+      "symbol": 58
     },
     {
       "range": {
         "start": 2239,
         "end": 2245
       },
-      "symbol": 112
+      "symbol": 116
     },
     {
       "range": {
         "start": 2353,
         "end": 2363
       },
-      "symbol": 56
+      "symbol": 60
     },
     {
       "range": {
         "start": 2359,
         "end": 2362
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 2366,
         "end": 2378
       },
-      "symbol": 115
+      "symbol": 119
     },
     {
       "range": {
         "start": 2393,
         "end": 2402
       },
-      "symbol": 60
+      "symbol": 64
     },
     {
       "range": {
         "start": 2398,
         "end": 2401
       },
-      "symbol": 25
+      "symbol": 29
     },
     {
       "range": {
         "start": 2405,
         "end": 2416
       },
-      "symbol": 117
+      "symbol": 121
     },
     {
       "range": {
         "start": 2422,
         "end": 2429
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 2432,
         "end": 2436
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 2438,
         "end": 2443
       },
-      "symbol": 116
+      "symbol": 120
     },
     {
       "range": {
         "start": 2445,
         "end": 2448
       },
-      "symbol": 118
+      "symbol": 122
     },
     {
       "range": {
         "start": 2450,
         "end": 2466
       },
-      "symbol": 120
+      "symbol": 124
     },
     {
       "range": {
         "start": 2472,
         "end": 2487
       },
-      "symbol": 121
+      "symbol": 125
     },
     {
       "range": {
         "start": 2495,
         "end": 2502
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 2505,
         "end": 2509
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
@@ -5367,7 +5456,7 @@
         "start": 2524,
         "end": 2530
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
@@ -5381,21 +5470,21 @@
         "start": 2544,
         "end": 2550
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 2554,
         "end": 2561
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 2564,
         "end": 2582
       },
-      "symbol": 109
+      "symbol": 113
     },
     {
       "range": {
@@ -5409,21 +5498,21 @@
         "start": 2599,
         "end": 2605
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 2608,
         "end": 2615
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 2618,
         "end": 2635
       },
-      "symbol": 111
+      "symbol": 115
     },
     {
       "range": {
@@ -5437,385 +5526,385 @@
         "start": 2652,
         "end": 2658
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 2661,
         "end": 2668
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 2675,
         "end": 2679
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 2681,
         "end": 2697
       },
-      "symbol": 122
+      "symbol": 126
     },
     {
       "range": {
         "start": 2705,
         "end": 2706
       },
-      "symbol": 123
+      "symbol": 127
     },
     {
       "range": {
         "start": 2707,
         "end": 2708
       },
-      "symbol": 124
+      "symbol": 128
     },
     {
       "range": {
         "start": 2712,
         "end": 2718
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 2720,
         "end": 2735
       },
-      "symbol": 125
+      "symbol": 129
     },
     {
       "range": {
         "start": 2743,
         "end": 2744
       },
-      "symbol": 126
+      "symbol": 130
     },
     {
       "range": {
         "start": 2745,
         "end": 2746
       },
-      "symbol": 124
+      "symbol": 128
     },
     {
       "range": {
         "start": 2750,
         "end": 2756
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 2760,
         "end": 2767
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 2774,
         "end": 2778
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 2780,
         "end": 2796
       },
-      "symbol": 127
+      "symbol": 131
     },
     {
       "range": {
         "start": 2804,
         "end": 2805
       },
-      "symbol": 128
+      "symbol": 132
     },
     {
       "range": {
         "start": 2806,
         "end": 2807
       },
-      "symbol": 129
+      "symbol": 133
     },
     {
       "range": {
         "start": 2811,
         "end": 2817
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 2819,
         "end": 2834
       },
-      "symbol": 130
+      "symbol": 134
     },
     {
       "range": {
         "start": 2842,
         "end": 2843
       },
-      "symbol": 131
+      "symbol": 135
     },
     {
       "range": {
         "start": 2844,
         "end": 2845
       },
-      "symbol": 129
+      "symbol": 133
     },
     {
       "range": {
         "start": 2849,
         "end": 2855
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 2859,
         "end": 2866
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 2873,
         "end": 2877
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 2879,
         "end": 2895
       },
-      "symbol": 132
+      "symbol": 136
     },
     {
       "range": {
         "start": 2903,
         "end": 2904
       },
-      "symbol": 133
+      "symbol": 137
     },
     {
       "range": {
         "start": 2905,
         "end": 2906
       },
-      "symbol": 129
+      "symbol": 133
     },
     {
       "range": {
         "start": 2910,
         "end": 2916
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 2918,
         "end": 2933
       },
-      "symbol": 134
+      "symbol": 138
     },
     {
       "range": {
         "start": 2941,
         "end": 2942
       },
-      "symbol": 135
+      "symbol": 139
     },
     {
       "range": {
         "start": 2943,
         "end": 2944
       },
-      "symbol": 129
+      "symbol": 133
     },
     {
       "range": {
         "start": 2948,
         "end": 2954
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 2958,
         "end": 2965
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 2968,
         "end": 2972
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 2974,
         "end": 2984
       },
-      "symbol": 95
+      "symbol": 99
     },
     {
       "range": {
         "start": 2996,
         "end": 3002
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 3004,
         "end": 3013
       },
-      "symbol": 97
+      "symbol": 101
     },
     {
       "range": {
         "start": 3026,
         "end": 3032
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 3036,
         "end": 3043
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 3050,
         "end": 3054
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 3063,
         "end": 3077
       },
-      "symbol": 136
+      "symbol": 140
     },
     {
       "range": {
         "start": 3087,
         "end": 3088
       },
-      "symbol": 137
+      "symbol": 141
     },
     {
       "range": {
         "start": 3089,
         "end": 3090
       },
-      "symbol": 139
+      "symbol": 143
     },
     {
       "range": {
         "start": 3091,
         "end": 3092
       },
-      "symbol": 138
+      "symbol": 142
     },
     {
       "range": {
         "start": 3103,
         "end": 3109
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 3117,
         "end": 3130
       },
-      "symbol": 140
+      "symbol": 144
     },
     {
       "range": {
         "start": 3140,
         "end": 3141
       },
-      "symbol": 141
+      "symbol": 145
     },
     {
       "range": {
         "start": 3142,
         "end": 3143
       },
-      "symbol": 139
+      "symbol": 143
     },
     {
       "range": {
         "start": 3144,
         "end": 3145
       },
-      "symbol": 142
+      "symbol": 146
     },
     {
       "range": {
         "start": 3157,
         "end": 3163
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 3172,
         "end": 3179
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 3182,
         "end": 3186
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 3188,
         "end": 3200
       },
-      "symbol": 143
+      "symbol": 147
     },
     {
       "range": {
         "start": 3223,
         "end": 3234
       },
-      "symbol": 144
+      "symbol": 148
     },
     {
       "range": {
         "start": 3260,
         "end": 3267
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 3270,
         "end": 3274
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
@@ -5836,21 +5925,21 @@
         "start": 3326,
         "end": 3333
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 3336,
         "end": 3340
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 3342,
         "end": 3355
       },
-      "symbol": 99
+      "symbol": 103
     },
     {
       "range": {
@@ -5864,7 +5953,7 @@
         "start": 3377,
         "end": 3389
       },
-      "symbol": 145
+      "symbol": 149
     },
     {
       "range": {
@@ -5878,14 +5967,14 @@
         "start": 3414,
         "end": 3421
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 3424,
         "end": 3428
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
@@ -5906,7 +5995,7 @@
         "start": 3448,
         "end": 3454
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
@@ -5927,7 +6016,7 @@
         "start": 3473,
         "end": 3479
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
@@ -5955,21 +6044,21 @@
         "start": 3539,
         "end": 3546
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 3553,
         "end": 3557
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 3559,
         "end": 3562
       },
-      "symbol": 148
+      "symbol": 152
     },
     {
       "range": {
@@ -5990,14 +6079,14 @@
         "start": 3580,
         "end": 3584
       },
-      "symbol": 146
+      "symbol": 150
     },
     {
       "range": {
         "start": 3587,
         "end": 3590
       },
-      "symbol": 148
+      "symbol": 152
     },
     {
       "range": {
@@ -6018,35 +6107,35 @@
         "start": 3608,
         "end": 3626
       },
-      "symbol": 84
+      "symbol": 88
     },
     {
       "range": {
         "start": 3627,
         "end": 3631
       },
-      "symbol": 146
+      "symbol": 150
     },
     {
       "range": {
         "start": 3637,
         "end": 3644
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 3647,
         "end": 3651
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 3653,
         "end": 3656
       },
-      "symbol": 148
+      "symbol": 152
     },
     {
       "range": {
@@ -6060,7 +6149,7 @@
         "start": 3664,
         "end": 3673
       },
-      "symbol": 149
+      "symbol": 153
     },
     {
       "range": {
@@ -6074,49 +6163,49 @@
         "start": 3695,
         "end": 3698
       },
-      "symbol": 150
+      "symbol": 154
     },
     {
       "range": {
         "start": 3700,
         "end": 3704
       },
-      "symbol": 146
+      "symbol": 150
     },
     {
       "range": {
         "start": 3710,
         "end": 3717
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 3724,
         "end": 3728
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 3737,
         "end": 3748
       },
-      "symbol": 151
+      "symbol": 155
     },
     {
       "range": {
         "start": 3759,
         "end": 3773
       },
-      "symbol": 152
+      "symbol": 156
     },
     {
       "range": {
         "start": 3785,
         "end": 3788
       },
-      "symbol": 148
+      "symbol": 152
     },
     {
       "range": {
@@ -6130,7 +6219,7 @@
         "start": 3795,
         "end": 3800
       },
-      "symbol": 153
+      "symbol": 157
     },
     {
       "range": {
@@ -6144,371 +6233,371 @@
         "start": 3832,
         "end": 3835
       },
-      "symbol": 154
+      "symbol": 158
     },
     {
       "range": {
         "start": 3838,
         "end": 3856
       },
-      "symbol": 84
+      "symbol": 88
     },
     {
       "range": {
         "start": 3857,
         "end": 3861
       },
-      "symbol": 146
+      "symbol": 150
     },
     {
       "range": {
         "start": 3880,
         "end": 3887
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 3894,
         "end": 3898
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 3900,
         "end": 3911
       },
-      "symbol": 155
+      "symbol": 159
     },
     {
       "range": {
         "start": 3912,
         "end": 3917
       },
-      "symbol": 116
+      "symbol": 120
     },
     {
       "range": {
         "start": 3919,
         "end": 3929
       },
-      "symbol": 156
+      "symbol": 160
     },
     {
       "range": {
         "start": 3930,
         "end": 3933
       },
-      "symbol": 118
+      "symbol": 122
     },
     {
       "range": {
         "start": 3935,
         "end": 3946
       },
-      "symbol": 155
+      "symbol": 159
     },
     {
       "range": {
         "start": 3947,
         "end": 3953
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 3955,
         "end": 3965
       },
-      "symbol": 156
+      "symbol": 160
     },
     {
       "range": {
         "start": 3966,
         "end": 3972
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 3976,
         "end": 3983
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 3986,
         "end": 3990
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 3992,
         "end": 4003
       },
-      "symbol": 157
+      "symbol": 161
     },
     {
       "range": {
         "start": 4004,
         "end": 4009
       },
-      "symbol": 116
+      "symbol": 120
     },
     {
       "range": {
         "start": 4011,
         "end": 4021
       },
-      "symbol": 158
+      "symbol": 162
     },
     {
       "range": {
         "start": 4022,
         "end": 4025
       },
-      "symbol": 118
+      "symbol": 122
     },
     {
       "range": {
         "start": 4027,
         "end": 4038
       },
-      "symbol": 157
+      "symbol": 161
     },
     {
       "range": {
         "start": 4044,
         "end": 4054
       },
-      "symbol": 158
+      "symbol": 162
     },
     {
       "range": {
         "start": 4063,
         "end": 4070
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4073,
         "end": 4077
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 4079,
         "end": 4090
       },
-      "symbol": 157
+      "symbol": 161
     },
     {
       "range": {
         "start": 4091,
         "end": 4097
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 4099,
         "end": 4109
       },
-      "symbol": 158
+      "symbol": 162
     },
     {
       "range": {
         "start": 4110,
         "end": 4116
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 4120,
         "end": 4127
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4130,
         "end": 4134
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 4136,
         "end": 4151
       },
-      "symbol": 159
+      "symbol": 163
     },
     {
       "range": {
         "start": 4154,
         "end": 4160
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 4162,
         "end": 4176
       },
-      "symbol": 160
+      "symbol": 164
     },
     {
       "range": {
         "start": 4179,
         "end": 4185
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 4189,
         "end": 4196
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4199,
         "end": 4203
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 4205,
         "end": 4219
       },
-      "symbol": 161
+      "symbol": 165
     },
     {
       "range": {
         "start": 4222,
         "end": 4228
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 4230,
         "end": 4243
       },
-      "symbol": 162
+      "symbol": 166
     },
     {
       "range": {
         "start": 4246,
         "end": 4252
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 4256,
         "end": 4263
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4266,
         "end": 4270
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 4272,
         "end": 4286
       },
-      "symbol": 161
+      "symbol": 165
     },
     {
       "range": {
         "start": 4289,
         "end": 4295
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 4297,
         "end": 4310
       },
-      "symbol": 162
+      "symbol": 166
     },
     {
       "range": {
         "start": 4313,
         "end": 4319
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 4323,
         "end": 4330
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4333,
         "end": 4337
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 4339,
         "end": 4354
       },
-      "symbol": 159
+      "symbol": 163
     },
     {
       "range": {
         "start": 4357,
         "end": 4362
       },
-      "symbol": 116
+      "symbol": 120
     },
     {
       "range": {
         "start": 4364,
         "end": 4377
       },
-      "symbol": 162
+      "symbol": 166
     },
     {
       "range": {
         "start": 4380,
         "end": 4383
       },
-      "symbol": 118
+      "symbol": 122
     },
     {
       "range": {
         "start": 4387,
         "end": 4394
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4401,
         "end": 4405
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
@@ -6522,14 +6611,14 @@
         "start": 4416,
         "end": 4431
       },
-      "symbol": 159
+      "symbol": 163
     },
     {
       "range": {
         "start": 4434,
         "end": 4440
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
@@ -6543,84 +6632,84 @@
         "start": 4452,
         "end": 4465
       },
-      "symbol": 162
+      "symbol": 166
     },
     {
       "range": {
         "start": 4469,
         "end": 4470
       },
-      "symbol": 139
+      "symbol": 143
     },
     {
       "range": {
         "start": 4474,
         "end": 4480
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 4485,
         "end": 4492
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4495,
         "end": 4499
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 4501,
         "end": 4515
       },
-      "symbol": 161
+      "symbol": 165
     },
     {
       "range": {
         "start": 4518,
         "end": 4524
       },
-      "symbol": 113
+      "symbol": 117
     },
     {
       "range": {
         "start": 4526,
         "end": 4540
       },
-      "symbol": 160
+      "symbol": 164
     },
     {
       "range": {
         "start": 4544,
         "end": 4545
       },
-      "symbol": 139
+      "symbol": 143
     },
     {
       "range": {
         "start": 4549,
         "end": 4555
       },
-      "symbol": 114
+      "symbol": 118
     },
     {
       "range": {
         "start": 4559,
         "end": 4566
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4569,
         "end": 4573
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
@@ -6634,7 +6723,7 @@
         "start": 4605,
         "end": 4607
       },
-      "symbol": 33
+      "symbol": 37
     },
     {
       "range": {
@@ -6648,14 +6737,14 @@
         "start": 4641,
         "end": 4648
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4651,
         "end": 4656
       },
-      "symbol": 164
+      "symbol": 168
     },
     {
       "range": {
@@ -6669,14 +6758,14 @@
         "start": 4689,
         "end": 4690
       },
-      "symbol": 139
+      "symbol": 143
     },
     {
       "range": {
         "start": 4697,
         "end": 4704
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
@@ -6690,14 +6779,14 @@
         "start": 4720,
         "end": 4727
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4730,
         "end": 4734
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
@@ -6711,63 +6800,63 @@
         "start": 4762,
         "end": 4769
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4772,
         "end": 4776
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 4778,
         "end": 4789
       },
-      "symbol": 58
+      "symbol": 62
     },
     {
       "range": {
         "start": 4811,
         "end": 4821
       },
-      "symbol": 62
+      "symbol": 66
     },
     {
       "range": {
         "start": 4835,
         "end": 4842
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4845,
         "end": 4849
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
         "start": 4851,
         "end": 4862
       },
-      "symbol": 58
+      "symbol": 62
     },
     {
       "range": {
         "start": 4887,
         "end": 4894
       },
-      "symbol": 119
+      "symbol": 123
     },
     {
       "range": {
         "start": 4897,
         "end": 4901
       },
-      "symbol": 53
+      "symbol": 57
     },
     {
       "range": {
@@ -20782,6 +20871,67 @@
       "constraints": []
     },
     {
+      "identity": "std/collection::Done",
+      "name": "Done",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "constructor",
+      "signature": "Done<A> arg1: A -> ReduceStep<A>",
+      "description": "Stops reduction immediately with the final result.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/collection::Next",
+      "name": "Next",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "constructor",
+      "signature": "Next<A> arg1: A -> ReduceStep<A>",
+      "description": "Continues reduction with the new accumulator.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/collection::NonPositiveSize",
+      "name": "NonPositiveSize",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "constructor",
+      "signature": "NonPositiveSize arg1: Int -> SizeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/collection::ReduceStep",
+      "name": "ReduceStep",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "opaque-type",
+      "signature": "ReduceStep<_>",
+      "description": "Pure reduction control: Next continues and Done stops.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/collection::SizeError",
+      "name": "SizeError",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "opaque-type",
+      "signature": "SizeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::all",
       "name": "all",
       "module": "std/prelude",
@@ -21450,6 +21600,23 @@
         "B"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/collection::reduceUntil",
+      "name": "reduceUntil",
+      "module": "std/collection",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "reduceUntil<C, A, B> arg1: B -> arg2: (B -> A -> ReduceStep<B>) -> arg3: C -> B where Iterable<C, A>",
+      "description": "Folds an Iterable in source order until Done; does not pull the remaining elements.",
+      "typeParameters": [
+        "C",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
     },
     {
       "identity": "std/array::reverse",
@@ -28098,17 +28265,6 @@
       "constraints": []
     },
     {
-      "identity": "std/collection::NonPositiveSize",
-      "name": "NonPositiveSize",
-      "module": "std/collection",
-      "category": "Prelude",
-      "kind": "constructor",
-      "signature": "NonPositiveSize arg1: Int -> SizeError",
-      "description": "Compiler-owned standard library symbol.",
-      "typeParameters": [],
-      "constraints": []
-    },
-    {
       "identity": "std/fs::NotADirectory",
       "name": "NotADirectory",
       "module": "std/fs",
@@ -28616,17 +28772,6 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "SignalChild arg1: ProcessSignal -> ChildInput",
-      "description": "Compiler-owned standard library symbol.",
-      "typeParameters": [],
-      "constraints": []
-    },
-    {
-      "identity": "std/collection::SizeError",
-      "name": "SizeError",
-      "module": "std/collection",
-      "category": "Prelude",
-      "kind": "opaque-type",
-      "signature": "SizeError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []

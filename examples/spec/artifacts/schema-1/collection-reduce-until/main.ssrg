@@ -1,0 +1,99 @@
+import * as collections from "std/collection"
+import * as arrays from "std/array"
+
+type Countdown = | Countdown Int
+
+instance Iterable<Countdown, Int> {
+  fn iterate values: Countdown -> Iterator<Int> = match values {
+    Countdown limit -> unfold (\current -> if current <= limit then
+      Just (
+        current,
+        current + 1
+      )
+    else
+      Nothing) 1
+  }
+}
+
+instance Reducible<Countdown, Int> {
+  fn reduce<B> initial: B -> step: (B -> Int -> B) -> values: Countdown -> B =
+    match values { Countdown limit -> reduce initial step (1 ..= limit) }
+}
+
+type Forever = | Forever
+
+instance Iterable<Forever, Int> {
+  fn iterate values: Forever -> Iterator<Int> = unfold (\n -> Just (n, n + 1)) 1
+}
+
+fn beforeNegative<C> values: C -> Int where Iterable<C, Int> =
+  collections.reduceUntil 0 (
+    \total value -> if value < 0 then
+      collections.Done total
+    else
+      collections.Next (total + value)
+  ) values
+
+fn firstThree<C> values: C -> Int where Iterable<C, Int> = collections.reduceUntil 0 (
+  \total value -> if value == 3 then
+    collections.Done (total + value)
+  else
+    collections.Next (total + value)
+) values
+
+fn reducible<C> values: C -> Int where Reducible<C, Int> = firstThree values
+
+fn generic<C, A, B> initial: B
+  -> step: (B -> A -> collections.ReduceStep<B>)
+  -> values: C
+  -> B
+where Iterable<C, A> =
+  collections.reduceUntil initial step values
+
+fn unwrap<A> value: collections.ReduceStep<A> -> A = match value {
+  collections.Next result -> result
+  collections.Done result -> result
+}
+
+fn partial unit: Unit -> Int = {
+  let run: Int -> (Int -> Int -> collections.ReduceStep<Int>) -> Array<Int> -> Int =
+    collections.reduceUntil
+  let start: (Int -> Int -> collections.ReduceStep<Int>) -> Array<Int> -> Int = run 10
+  let finish: Array<Int> -> Int =
+    start (\total value -> collections.Done (total + value))
+  finish [2, 100]
+}
+
+fn callable unit: Unit -> Int = {
+  let identity: Int -> Int = \value -> value
+  let step: (Int -> Int) -> Int -> collections.ReduceStep<Int -> Int> = \acc value ->
+    if value == 3 then
+      collections.Done acc
+    else
+      collections.Next (\n -> acc (n + value))
+  let result = collections.reduceUntil identity step [1, 2, 3, 100]
+  result 10
+}
+
+pub effect fn main = do {
+  println $ show (beforeNegative [1, 2, -1, 100], beforeNegative `[1, 2, -1, 100])
+  println $
+    show (firstThree (1 ..= 100), firstThree (Countdown 100), reducible (Countdown 100))
+  let endless: Iterator<Int> = unfold (\n -> Just (n, n + 1)) 1
+  let customResult: Int = firstThree Forever
+  let iteratorResult: Int = firstThree endless
+  println $ show (customResult, iteratorResult)
+  let empty: Array<Int> = arrays.empty ()
+  println $
+    show (collections.reduceUntil 42 (\acc value -> collections.Done value) empty)
+  println $ generic "" (\acc value -> collections.Next (acc + value)) ["a", "b", "c"]
+  println $ show (generic (0, "") (\acc value -> match acc {
+          (count, text) ->
+            if count == 2 then
+              collections.Done acc
+            else
+              collections.Next (count + 1, text + value)
+    }) ["a", "b", "c", "d"])
+  println $ show (unwrap (collections.Next 7), unwrap (collections.Done "done"))
+  println $ show (partial (), callable ())
+}

@@ -1374,8 +1374,9 @@
                     "kind": "variable",
                     "name": "std/number::HalfEven",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "RoundingMode",
+                      "canonical": "std/number::RoundingMode",
                       "arguments": []
                     },
                     "origin": {

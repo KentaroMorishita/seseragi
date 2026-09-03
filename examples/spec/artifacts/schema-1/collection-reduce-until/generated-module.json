@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-reduce-until",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.collection.reduce-step",
+      "core.iterator",
+      "core.adt",
+      "core.int",
+      "core.iterator.unfold",
+      "core.maybe",
+      "core.bool",
+      "core.maybe.just",
+      "core.int.add",
+      "core.maybe.nothing",
+      "core.range.reduce",
+      "core.range",
+      "core.range.inclusive",
+      "core.collection.reduce-until",
+      "core.collection.reduce-step.done",
+      "core.collection.reduce-step.next",
+      "core.int.eq-dictionary",
+      "core.unit",
+      "core.array.iterable",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.show",
+      "core.tuple.show",
+      "core.string",
+      "core.int.subtract",
+      "core.list.iterable",
+      "core.list",
+      "core.list.from-array",
+      "core.range.iterable",
+      "core.iterator.iterable",
+      "core.array.empty",
+      "core.string.add-dictionary",
+      "core.string.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Iterable<artifact/collection-reduce-until::Countdown,std/prelude::Int>",
+      "trait": "Iterable",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "number"
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Iterable$0"
+    },
+    {
+      "identity": "std/prelude::Reducible<artifact/collection-reduce-until::Countdown,std/prelude::Int>",
+      "trait": "Reducible",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "number"
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Reducible$1"
+    },
+    {
+      "identity": "std/prelude::Iterable<artifact/collection-reduce-until::Forever,std/prelude::Int>",
+      "trait": "Iterable",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Forever",
+          "arguments": []
+        },
+        {
+          "kind": "number"
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Iterable$2"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

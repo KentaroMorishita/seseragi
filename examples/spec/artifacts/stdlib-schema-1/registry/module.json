@@ -58513,6 +58513,198 @@
                 }
               }
             }
+          },
+          {
+            "symbol": "std/collection::ReduceStep",
+            "namespace": "type",
+            "name": "ReduceStep",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ReduceStep",
+                "arity": 1
+              }
+            }
+          },
+          {
+            "symbol": "std/collection::Next",
+            "namespace": "value",
+            "name": "Next",
+            "constructorOf": "std/collection::ReduceStep",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ReduceStep",
+                  "canonical": "std/collection::ReduceStep",
+                  "providerModule": "std/collection",
+                  "providerExport": "ReduceStep",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/collection::Done",
+            "namespace": "value",
+            "name": "Done",
+            "constructorOf": "std/collection::ReduceStep",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ReduceStep",
+                  "canonical": "std/collection::ReduceStep",
+                  "providerModule": "std/collection",
+                  "providerExport": "ReduceStep",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/collection::reduceUntil",
+            "namespace": "value",
+            "name": "reduceUntil",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "C",
+                "A",
+                "B"
+              ],
+              "constraints": [
+                {
+                  "name": "Iterable",
+                  "traitIdentity": "std/prelude::Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "C",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "external-named",
+                        "name": "ReduceStep",
+                        "canonical": "std/collection::ReduceStep",
+                        "providerModule": "std/collection",
+                        "providerExport": "ReduceStep",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "C",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "operators": [],

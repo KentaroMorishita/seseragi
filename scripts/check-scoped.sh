@@ -195,6 +195,8 @@ run_conformance_checks() {
   bun test runtime/ts/tests/persistent-index.test.ts runtime/ts/tests/map.test.ts runtime/ts/tests/set.test.ts runtime/ts/tests/map-set-codecs.test.ts
   echo "Testing concrete Array / List sequence operations..."
   bun test runtime/ts/tests/sequence.test.ts
+  echo "Testing generic collection short-circuit traversal..."
+  bun test runtime/ts/tests/collection.test.ts
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     cargo run -p seseragi-conformance -- .

@@ -105,7 +105,7 @@ pub effect fn main =
     assert!(matches!(
         &typescript.functions[0],
         TypeScriptFunction::ConstFunction {
-            body: TypeScriptExpr::Call { callee, arguments },
+            body: TypeScriptExpr::Call { callee, arguments, .. },
             ..
         } if callee == "announce" && arguments.len() == 2
     ));

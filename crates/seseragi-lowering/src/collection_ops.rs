@@ -157,6 +157,9 @@ const LIST_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperat
 };
 
 const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
+    sequence_operation!("collection", "Next", "reduce-step.next", 1),
+    sequence_operation!("collection", "Done", "reduce-step.done", 1),
+    sequence_operation!("collection", "reduceUntil", "reduce-until", 3),
     sequence_operation!(
         "collection",
         "NonPositiveSize",

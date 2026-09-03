@@ -459,6 +459,7 @@ fn structural_effect_arguments_are_compatible(
 #[derive(Clone, Debug)]
 pub(crate) struct SemanticAdt {
     pub(crate) name: String,
+    pub(crate) external_canonical: Option<String>,
     pub(crate) type_parameters: Vec<SymbolId>,
     pub(crate) type_parameter_names: Vec<String>,
     pub(crate) variants: Vec<SemanticVariant>,
@@ -618,6 +619,7 @@ impl SemanticTypeCatalog {
                 *owner,
                 SemanticAdt {
                     name: name.clone(),
+                    external_canonical: None,
                     type_parameters: parameters.clone(),
                     type_parameter_names: parameter_names
                         .iter()

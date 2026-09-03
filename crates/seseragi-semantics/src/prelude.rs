@@ -1945,6 +1945,13 @@ pub(crate) const SPECIAL_STANDARD_INSTANCES: &[PreludeSpecialInstance] = &[
         true,
     ),
     special_collection(
+        "Iterable",
+        &["Iterator<A>", "A"],
+        "std/iterator::Iterable",
+        "Iterator",
+        false,
+    ),
+    special_collection(
         "Reducible",
         &["Array<A>", "A"],
         "std/array::Reducible",

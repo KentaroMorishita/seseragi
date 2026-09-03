@@ -1376,6 +1376,29 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
   })
 
+  test("executes generic short-circuit traversal through WASM and the runtime registry", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/collection-reduce-until/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("collection-reduce-until.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing short-circuit entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({
+      stdout:
+        "(3, 3)\n(6, 6, 6)\n(6, 6)\n42\nabc\n(2, ab)\n(7, done)\n(12, 13)",
+      debug: "()",
+    })
+  })
+
   test("executes all Array / List APIs, SizeError and Ord evidence through WASM", async () => {
     const source = await Bun.file(
       new URL(
