@@ -23,6 +23,8 @@ import type {
 import type { HtmlBuildError } from "./html"
 import type { HttpBuildError, HttpError } from "./http-client"
 import type { List, NonEmptyList } from "./list"
+import { entries as mapEntries, type Map as PersistentMap } from "./map"
+import { toArray as setValues, type Set as PersistentSet } from "./set"
 import type { LogError } from "./logger-service"
 import type { NavigationError, UrlBuildError } from "./navigation"
 import { type PathError, render as renderPath } from "./path"
@@ -330,7 +332,10 @@ export function nonEmptyListShow<Value>(
   return defineShow((values) =>
     delimited(
       "`[",
-      [showDocument(element, values.head), ...listDocuments(values.tail, element, showDocument)],
+      [
+        showDocument(element, values.head),
+        ...listDocuments(values.tail, element, showDocument),
+      ],
       "]"
     )
   )
@@ -347,6 +352,70 @@ export function nonEmptyListDebug<Value>(
         ...listDocuments(values.tail, element, debugDocument),
       ],
       "]"
+    )
+  )
+}
+
+export function mapShow<K, V>(
+  key: ShowEvidence<K>,
+  value: ShowEvidence<V>
+): Show<PersistentMap<K, V>> {
+  return defineShow((values) =>
+    constructorDocument(
+      "Map",
+      delimited(
+        "[",
+        mapEntries(values).map(([k, v]) =>
+          delimited("(", [showDocument(key, k), showDocument(value, v)], ")")
+        ),
+        "]"
+      )
+    )
+  )
+}
+
+export function mapDebug<K, V>(
+  key: DebugEvidence<K>,
+  value: DebugEvidence<V>
+): Debug<PersistentMap<K, V>> {
+  return defineDebug((values) =>
+    constructorDocument(
+      "Map",
+      delimited(
+        "[",
+        mapEntries(values).map(([k, v]) =>
+          delimited("(", [debugDocument(key, k), debugDocument(value, v)], ")")
+        ),
+        "]"
+      )
+    )
+  )
+}
+
+export function setShow<A>(element: ShowEvidence<A>): Show<PersistentSet<A>> {
+  return defineShow((values) =>
+    constructorDocument(
+      "Set",
+      delimited(
+        "[",
+        setValues(values).map((value) => showDocument(element, value)),
+        "]"
+      )
+    )
+  )
+}
+
+export function setDebug<A>(
+  element: DebugEvidence<A>
+): Debug<PersistentSet<A>> {
+  return defineDebug((values) =>
+    constructorDocument(
+      "Set",
+      delimited(
+        "[",
+        setValues(values).map((value) => debugDocument(element, value)),
+        "]"
+      )
     )
   )
 }

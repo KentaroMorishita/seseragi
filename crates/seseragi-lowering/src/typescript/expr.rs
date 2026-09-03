@@ -403,10 +403,51 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_standard_collection_operation(&callee) {
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
+                // Rank-polymorphic Iterable dictionaries do not let TypeScript
+                // recover the element type from C. Preserve the types already
+                // selected by Seseragi instead of accepting host `unknown`.
+                let type_arguments = match (callee.as_str(), evidence.first()) {
+                    ("std/map::fromEntries", Some(selected)) => {
+                        let [collection, CoreType::Tuple { elements }] =
+                            selected.constraint.arguments.as_slice()
+                        else {
+                            unreachable!("Map constructor requires pair Iterable evidence")
+                        };
+                        std::iter::once(collection)
+                            .chain(elements.iter())
+                            .map(|value| type_ref_from_core_type(value, imported_types))
+                            .collect()
+                    }
+                    ("std/set::fromIterable", Some(selected)) => selected
+                        .constraint
+                        .arguments
+                        .iter()
+                        .map(|value| type_ref_from_core_type(value, imported_types))
+                        .collect(),
+                    _ => Vec::new(),
+                };
+                // Standard collection functions receive their canonical where
+                // dictionaries before user arguments, in interface order.
+                let dictionaries = evidence
+                    .iter()
+                    .map(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
+                        .expect("standard collection call requires materialized evidence")
+                    })
+                    .collect::<Vec<_>>();
+                arguments.splice(0..0, dictionaries);
+                lower_uncurried_runtime_call(
+                    operation.local_name.to_owned(),
                     arguments,
-                }
+                    &type_ref,
+                    imported_types,
+                    "collection",
+                    type_arguments,
+                )
             } else if let Some(operation) = runtime_stream_operation(&callee) {
                 if callee == "std/stream::fromIterable" {
                     arguments.extend(evidence.iter().map(|selected| {
@@ -456,11 +497,13 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_numeric_operation(&callee) {
-                lower_runtime_numeric_call(
+                lower_uncurried_runtime_call(
                     operation.local_name.to_owned(),
                     arguments,
                     &type_ref,
                     imported_types,
+                    "numeric",
+                    Vec::new(),
                 )
             } else if let Some(constructor) = runtime_sum_constructor(&callee) {
                 TypeScriptExpr::RuntimeCall {
@@ -574,14 +617,31 @@ pub(super) fn lower_core_expr_to_typescript(
                         origin,
                     }
                 } else {
-                    lower_constrained_call(
+                    let has_evidence = !evidence.is_empty();
+                    let checked_result = type_ref_from_core_type_with_erasure(
+                        &type_ref,
+                        imported_types,
+                        &deferred_evidence_type_constructor_parameters,
+                    );
+                    let call = lower_constrained_call(
                         callee,
                         arguments,
                         evidence,
                         deferred_evidence_parameters,
                         deferred_evidence_type_constructor_parameters,
                         imported_types,
-                    )
+                    );
+                    if has_evidence {
+                        // Host inference commits generics at the first curried
+                        // argument, before erased dictionary parameters arrive.
+                        // The source checker has already proved this result.
+                        TypeScriptExpr::CheckedResult {
+                            value: Box::new(call),
+                            type_ref: checked_result,
+                        }
+                    } else {
+                        call
+                    }
                 }
             }
         }
@@ -999,34 +1059,46 @@ fn core_function_arity(type_ref: &CoreType) -> usize {
     }
 }
 
-fn lower_runtime_numeric_call(
+fn lower_uncurried_runtime_call(
     callee: String,
     mut arguments: Vec<TypeScriptExpr>,
     result_type: &CoreType,
     imported_types: &BTreeMap<String, String>,
+    parameter_scope: &str,
+    type_arguments: Vec<super::TypeScriptType>,
 ) -> TypeScriptExpr {
     let mut parameters = Vec::new();
     let mut remaining = result_type;
     while let CoreType::Function { parameter, result } = remaining {
         let index = parameters.len();
-        let name = format!("__ssrg$numeric$partial${index}");
+        let name = format!("__ssrg${parameter_scope}$partial${index}");
         let type_name = render_typescript_type(&type_ref_from_core_type(parameter, imported_types));
         arguments.push(TypeScriptExpr::Identifier { name: name.clone() });
         parameters.push((name, type_name));
         remaining = result;
     }
-    parameters.into_iter().rev().fold(
-        TypeScriptExpr::RuntimeCall { callee, arguments },
-        |body, (name, type_name)| TypeScriptExpr::Lambda {
+    let call = if type_arguments.is_empty() {
+        TypeScriptExpr::RuntimeCall { callee, arguments }
+    } else {
+        TypeScriptExpr::TypeApplicationCall {
+            callee,
+            type_arguments,
+            arguments,
+        }
+    };
+    parameters
+        .into_iter()
+        .rev()
+        .fold(call, |body, (name, type_name)| TypeScriptExpr::Lambda {
             parameter: format!("{name}: {type_name}"),
             body: Box::new(body),
-        },
-    )
+        })
 }
 
 pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
     match expr {
         TypeScriptExpr::Await { .. } => true,
+        TypeScriptExpr::CheckedResult { value, .. } => typescript_expr_contains_await(value),
         TypeScriptExpr::Tuple { elements } | TypeScriptExpr::Array { elements, .. } => {
             elements.iter().any(typescript_expr_contains_await)
         }

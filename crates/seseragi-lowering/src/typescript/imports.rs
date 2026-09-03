@@ -154,6 +154,7 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
                 rewrite_expr(argument, renames);
             }
         }
+        TypeScriptExpr::CheckedResult { value, .. } => rewrite_expr(value, renames),
         TypeScriptExpr::TypeApplicationCall {
             callee, arguments, ..
         } => {

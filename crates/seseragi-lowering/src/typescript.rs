@@ -498,6 +498,11 @@ pub enum TypeScriptExpr {
         type_arguments: Vec<TypeScriptType>,
         arguments: Vec<TypeScriptExpr>,
     },
+    CheckedResult {
+        value: Box<TypeScriptExpr>,
+        #[serde(rename = "type")]
+        type_ref: TypeScriptType,
+    },
     DictionaryCall {
         dictionary: Box<TypeScriptExpr>,
         method: String,

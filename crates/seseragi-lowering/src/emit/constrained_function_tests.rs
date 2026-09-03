@@ -85,7 +85,7 @@ pub fn label value: Badge -> String = applyLabel (describe value)
 
     assert!(
         bundle.typescript.contains(
-            "applyLabel((__ssrg$partial$0: string) => describe(value)(__ssrg$partial$0)(__ssrg$instance$Ready$0))"
+            "applyLabel((((__ssrg$partial$0: string) => describe(value)(__ssrg$partial$0)(__ssrg$instance$Ready$0)) as (argument: string) => string))"
         ),
         "{}",
         bundle.typescript
@@ -114,7 +114,7 @@ where Ready<T> =
 
     assert!(
         bundle.typescript.contains(
-            "applyLabel((__ssrg$partial$0: string) => describe(value)(__ssrg$partial$0)(__ssrg$evidence$0))"
+            "applyLabel((((__ssrg$partial$0: string) => describe(value)(__ssrg$partial$0)(__ssrg$evidence$0)) as (argument: string) => string))"
         ),
         "{}",
         bundle.typescript
@@ -145,7 +145,7 @@ where Functor<F> =
 
     assert!(
         bundle.typescript.contains(
-            "applyMapper((__ssrg$partial$0: unknown) => transform(f)(__ssrg$partial$0)(__ssrg$evidence$0))(value)"
+            "applyMapper((((__ssrg$partial$0: unknown) => transform(f)(__ssrg$partial$0)(__ssrg$evidence$0)) as (argument: unknown) => unknown))(value)"
         ),
         "{}",
         bundle.typescript

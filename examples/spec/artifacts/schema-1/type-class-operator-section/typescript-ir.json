@@ -523,28 +523,37 @@
                     ]
                   },
                   {
-                    "kind": "call",
-                    "callee": "bindGeneric",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_maybe_Just",
-                        "arguments": [
-                          {
-                            "kind": "number",
-                            "value": "40"
-                          }
-                        ]
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "incrementMaybe"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_maybe_monad"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "bindGeneric",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybe_Just",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "40"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "incrementMaybe"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_maybe_monad"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "maybe",
+                      "element": {
+                        "kind": "number"
                       }
-                    ]
+                    }
                   },
                   {
                     "kind": "call",

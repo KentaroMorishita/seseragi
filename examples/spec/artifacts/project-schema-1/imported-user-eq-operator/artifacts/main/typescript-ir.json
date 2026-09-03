@@ -294,40 +294,52 @@
                 "kind": "tuple",
                 "elements": [
                   {
-                    "kind": "call",
-                    "callee": "same",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "Ready"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "Ready"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Eq$0"
-                      }
-                    ]
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "same",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "Ready"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "Ready"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$instance$Eq$0"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "boolean"
+                    }
                   },
                   {
-                    "kind": "call",
-                    "callee": "different",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "Ready"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "Waiting"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Eq$0"
-                      }
-                    ]
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "different",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "Ready"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "Waiting"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$instance$Eq$0"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "boolean"
+                    }
                   }
                 ]
               }

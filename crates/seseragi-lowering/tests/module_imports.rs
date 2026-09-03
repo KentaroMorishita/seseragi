@@ -304,7 +304,7 @@ pub fn status value: Badge -> String = describe value
         .typescript
         .contains("import { describe } from \"./domain.js\""));
     assert!(generated.typescript.contains(
-        "export const status = (value: Badge) => describe(value)(__ssrg$instance$Ready$0)"
+        "export const status = (value: Badge) => ((describe(value)(__ssrg$instance$Ready$0)) as string)"
     ));
     assert!(!generated.typescript.contains("@seseragi/runtime"));
 }
@@ -340,7 +340,7 @@ pub fn status value: Unit -> String = describe Active
         .typescript
         .contains("import { Active, describe, __ssrg$instance$Ready$0 } from \"./domain.js\""));
     assert!(generated.typescript.contains(
-        "export const status = (value: undefined) => describe(Active)(__ssrg$instance$Ready$0)"
+        "export const status = (value: undefined) => ((describe(Active)(__ssrg$instance$Ready$0)) as string)"
     ));
     assert!(!generated.typescript.contains("@seseragi/runtime"));
 }
@@ -388,7 +388,7 @@ pub fn status value: Unit -> String = describe Active
         .typescript
         .contains("import { __ssrg$instance$Ready$0 } from \"./domain.js\""));
     assert!(generated.typescript.contains(
-        "export const status = (value: undefined) => describe(Active)(__ssrg$instance$Ready$0)"
+        "export const status = (value: undefined) => ((describe(Active)(__ssrg$instance$Ready$0)) as string)"
     ));
 
     let missing =

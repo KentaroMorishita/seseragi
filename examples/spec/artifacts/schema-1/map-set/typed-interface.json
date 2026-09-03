@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/map-set",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/map",
+      "module": "std/map",
+      "origin": {
+        "start": 0,
+        "end": 31
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/map::*",
+          "localName": "maps"
+        }
+      ]
+    },
+    {
+      "specifier": "std/set",
+      "module": "std/set",
+      "origin": {
+        "start": 32,
+        "end": 63
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/set::*",
+          "localName": "sets"
+        }
+      ]
+    },
+    {
+      "specifier": "std/json",
+      "module": "std/json",
+      "origin": {
+        "start": 64,
+        "end": 96
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/json::*",
+          "localName": "json"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/map-set::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 2544,
+        "end": 5160
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/map-set::Key>",
+      "providerModule": "artifact/map-set",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "artifact/map-set::Key"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Key",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 132,
+        "end": 257
+      }
+    },
+    {
+      "identity": "std/prelude::Hash<artifact/map-set::Key>",
+      "providerModule": "artifact/map-set",
+      "traitIdentity": "std/prelude::Hash",
+      "argumentIdentities": [
+        "artifact/map-set::Key"
+      ],
+      "trait": "Hash",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Hash",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Key",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 259,
+        "end": 311
+      }
+    }
+  ]
+}

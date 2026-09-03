@@ -192,44 +192,50 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "renderImported",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          },
-          {
-            "kind": "type-application-call",
-            "callee": "__ssrg$instance$Render$2",
-            "typeArguments": [
-              {
-                "kind": "reference",
-                "name": "Badge",
-                "arguments": []
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "type-application-call",
-                "callee": "_ssrg_show_arrayShow",
-                "typeArguments": [
-                  {
-                    "kind": "reference",
-                    "name": "Badge",
-                    "arguments": []
-                  }
-                ],
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Show$0"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "renderImported",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            },
+            {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Render$2",
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_show_arrayShow",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Badge",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Show$0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",

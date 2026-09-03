@@ -98,35 +98,41 @@
         "callee": "_ssrg_console_println",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "report",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_maybe_Just",
-                "arguments": [
-                  {
-                    "kind": "number",
-                    "value": "42"
-                  }
-                ]
-              },
-              {
-                "kind": "type-application-call",
-                "callee": "__ssrg$instance$Inspect$1",
-                "typeArguments": [
-                  {
-                    "kind": "number"
-                  }
-                ],
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Ready$0"
-                  }
-                ]
-              }
-            ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "report",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_maybe_Just",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "42"
+                    }
+                  ]
+                },
+                {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Inspect$1",
+                  "typeArguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Ready$0"
+                    }
+                  ]
+                }
+              ]
+            },
+            "type": {
+              "kind": "string"
+            }
           }
         ]
       },

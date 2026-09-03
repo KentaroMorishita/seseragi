@@ -5,6 +5,8 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/array",
     "std/list",
     "std/non-empty-list",
+    "std/map",
+    "std/set",
     "std/bytes",
     "std/json",
     "std/console",

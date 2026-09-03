@@ -376,34 +376,40 @@
         "callee": "number",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "productValues",
-            "arguments": [
-              {
-                "kind": "array",
-                "elements": [
-                  {
-                    "kind": "number",
-                    "value": "2"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "3"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "4"
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "productValues",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "3"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "4"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "number"
                   }
-                ],
-                "elementType": {
-                  "kind": "number"
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_reducible"
                 }
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_array_reducible"
-              }
-            ]
+              ]
+            },
+            "type": {
+              "kind": "number"
+            }
           }
         ]
       },
@@ -429,40 +435,46 @@
         "callee": "number",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "productValues",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_list_from_array",
-                "arguments": [
-                  {
-                    "kind": "array",
-                    "elements": [
-                      {
-                        "kind": "number",
-                        "value": "2"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "3"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "4"
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "productValues",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_list_from_array",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "number",
+                          "value": "2"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "3"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "4"
+                        }
+                      ],
+                      "elementType": {
+                        "kind": "number"
                       }
-                    ],
-                    "elementType": {
-                      "kind": "number"
                     }
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_list_reducible"
-              }
-            ]
+                  ]
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_list_reducible"
+                }
+              ]
+            },
+            "type": {
+              "kind": "number"
+            }
           }
         ]
       },
@@ -488,28 +500,34 @@
         "callee": "number",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "productValues",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_range_inclusive",
-                "arguments": [
-                  {
-                    "kind": "number",
-                    "value": "1"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "4"
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_range_reducible"
-              }
-            ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "productValues",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_range_inclusive",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "1"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "4"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_range_reducible"
+                }
+              ]
+            },
+            "type": {
+              "kind": "number"
+            }
           }
         ]
       },
@@ -535,23 +553,29 @@
         "callee": "number",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "productValues",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "emptyValues",
-                "arguments": [
-                  {
-                    "kind": "undefined"
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_array_reducible"
-              }
-            ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "productValues",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "emptyValues",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_reducible"
+                }
+              ]
+            },
+            "type": {
+              "kind": "number"
+            }
           }
         ]
       },
@@ -577,34 +601,40 @@
         "callee": "yesNo",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "anyPositive",
-            "arguments": [
-              {
-                "kind": "array",
-                "elements": [
-                  {
-                    "kind": "number",
-                    "value": "0"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "0"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "2"
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "anyPositive",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "number",
+                      "value": "0"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "0"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "number"
                   }
-                ],
-                "elementType": {
-                  "kind": "number"
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_iterable"
                 }
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_array_iterable"
-              }
-            ]
+              ]
+            },
+            "type": {
+              "kind": "boolean"
+            }
           }
         ]
       },
@@ -630,40 +660,46 @@
         "callee": "yesNo",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "anyPositive",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_list_from_array",
-                "arguments": [
-                  {
-                    "kind": "array",
-                    "elements": [
-                      {
-                        "kind": "number",
-                        "value": "0"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "0"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "0"
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "anyPositive",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_list_from_array",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "number",
+                          "value": "0"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "0"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "0"
+                        }
+                      ],
+                      "elementType": {
+                        "kind": "number"
                       }
-                    ],
-                    "elementType": {
-                      "kind": "number"
                     }
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_list_iterable"
-              }
-            ]
+                  ]
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_list_iterable"
+                }
+              ]
+            },
+            "type": {
+              "kind": "boolean"
+            }
           }
         ]
       },
@@ -689,28 +725,34 @@
         "callee": "yesNo",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "anyPositive",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_range_inclusive",
-                "arguments": [
-                  {
-                    "kind": "number",
-                    "value": "0"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "2"
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_range_iterable"
-              }
-            ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "anyPositive",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_range_inclusive",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "0"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_range_iterable"
+                }
+              ]
+            },
+            "type": {
+              "kind": "boolean"
+            }
           }
         ]
       },
@@ -736,23 +778,29 @@
         "callee": "yesNo",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "anyPositive",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "emptyValues",
-                "arguments": [
-                  {
-                    "kind": "undefined"
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_array_iterable"
-              }
-            ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "anyPositive",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "emptyValues",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_iterable"
+                }
+              ]
+            },
+            "type": {
+              "kind": "boolean"
+            }
           }
         ]
       },
@@ -778,34 +826,40 @@
         "callee": "yesNo",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "allPositive",
-            "arguments": [
-              {
-                "kind": "array",
-                "elements": [
-                  {
-                    "kind": "number",
-                    "value": "1"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "2"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "3"
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "allPositive",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "number",
+                      "value": "1"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "3"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "number"
                   }
-                ],
-                "elementType": {
-                  "kind": "number"
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_iterable"
                 }
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_array_iterable"
-              }
-            ]
+              ]
+            },
+            "type": {
+              "kind": "boolean"
+            }
           }
         ]
       },
@@ -831,40 +885,46 @@
         "callee": "yesNo",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "allPositive",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_list_from_array",
-                "arguments": [
-                  {
-                    "kind": "array",
-                    "elements": [
-                      {
-                        "kind": "number",
-                        "value": "1"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "2"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "3"
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "allPositive",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_list_from_array",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "number",
+                          "value": "1"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "2"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "3"
+                        }
+                      ],
+                      "elementType": {
+                        "kind": "number"
                       }
-                    ],
-                    "elementType": {
-                      "kind": "number"
                     }
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_list_iterable"
-              }
-            ]
+                  ]
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_list_iterable"
+                }
+              ]
+            },
+            "type": {
+              "kind": "boolean"
+            }
           }
         ]
       },
@@ -890,28 +950,34 @@
         "callee": "yesNo",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "allPositive",
-            "arguments": [
-              {
-                "kind": "runtime-call",
-                "callee": "_ssrg_range_inclusive",
-                "arguments": [
-                  {
-                    "kind": "number",
-                    "value": "1"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "3"
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_range_iterable"
-              }
-            ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "allPositive",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_range_inclusive",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "1"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "3"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_range_iterable"
+                }
+              ]
+            },
+            "type": {
+              "kind": "boolean"
+            }
           }
         ]
       },
@@ -937,23 +1003,29 @@
         "callee": "yesNo",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "allPositive",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "emptyValues",
-                "arguments": [
-                  {
-                    "kind": "undefined"
-                  }
-                ]
-              },
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_array_iterable"
-              }
-            ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "allPositive",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "emptyValues",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_iterable"
+                }
+              ]
+            },
+            "type": {
+              "kind": "boolean"
+            }
           }
         ]
       },

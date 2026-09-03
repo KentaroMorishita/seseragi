@@ -8997,6 +8997,20 @@
       "constraints": []
     },
     {
+      "identity": "std/map::Map",
+      "name": "Map",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Map<_, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0",
+        "T1"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::Method",
       "name": "Method",
       "module": "std/http",
@@ -9674,6 +9688,19 @@
       "signature": "StorageArea",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/set::Set",
+      "name": "Set",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Set<_>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0"
+      ],
       "constraints": []
     },
     {
@@ -10873,6 +10900,39 @@
       "constraints": []
     },
     {
+      "identity": "std/set::contains",
+      "name": "contains",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "contains<A> arg1: A -> arg2: Set<A> -> Bool where Eq<A>, Hash<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>",
+        "Hash<A>"
+      ]
+    },
+    {
+      "identity": "std/map::containsKey",
+      "name": "containsKey",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "containsKey<K, V> arg1: K -> arg2: Map<K, V> -> Bool where Eq<K>, Hash<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": [
+        "Eq<K>",
+        "Hash<K>"
+      ]
+    },
+    {
       "identity": "std/http/multipart::contentType",
       "name": "contentType",
       "module": "std/http/multipart",
@@ -11041,6 +11101,22 @@
       "constraints": []
     },
     {
+      "identity": "std/set::difference",
+      "name": "difference",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "difference<A> arg1: Set<A> -> arg2: Set<A> -> Set<A> where Eq<A>, Hash<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>",
+        "Hash<A>"
+      ]
+    },
+    {
       "identity": "std/stream::drop",
       "name": "drop",
       "module": "std/stream",
@@ -11066,6 +11142,33 @@
       "typeParameters": [
         "R",
         "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/map::empty",
+      "name": "empty",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "empty<K, V> arg1: Unit -> Map<K, V>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/set::empty",
+      "name": "empty",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "empty<A> arg1: Unit -> Set<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
       ],
       "constraints": []
     },
@@ -11140,6 +11243,20 @@
       "signature": "encode arg1: Event -> Bytes",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/map::entries",
+      "name": "entries",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "entries<K, V> arg1: Map<K, V> -> Array<(K, V)>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
       "constraints": []
     },
     {
@@ -11416,6 +11533,33 @@
       "constraints": []
     },
     {
+      "identity": "std/map::filter",
+      "name": "filter",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "filter<K, V> arg1: (K -> V -> Bool) -> arg2: Map<K, V> -> Map<K, V>",
+      "description": "Keeps collection elements whose predicate returns True.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/set::filter",
+      "name": "filter",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "filter<A> arg1: (A -> Bool) -> arg2: Set<A> -> Set<A>",
+      "description": "Keeps collection elements whose predicate returns True.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/stream::filter",
       "name": "filter",
       "module": "std/stream",
@@ -11583,6 +11727,43 @@
       "constraints": []
     },
     {
+      "identity": "std/map::fromEntries",
+      "name": "fromEntries",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromEntries<C, K, V> arg1: C -> Map<K, V> where Iterable<C, (K, V)>, Eq<K>, Hash<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "C",
+        "K",
+        "V"
+      ],
+      "constraints": [
+        "Iterable<C, (K, V)>",
+        "Eq<K>",
+        "Hash<K>"
+      ]
+    },
+    {
+      "identity": "std/set::fromIterable",
+      "name": "fromIterable",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromIterable<C, A> arg1: C -> Set<A> where Iterable<C, A>, Eq<A>, Hash<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>",
+        "Eq<A>",
+        "Hash<A>"
+      ]
+    },
+    {
       "identity": "std/stream::fromIterable",
       "name": "fromIterable",
       "module": "std/stream",
@@ -11623,6 +11804,23 @@
       "description": "The standard GET Method value.",
       "typeParameters": [],
       "constraints": []
+    },
+    {
+      "identity": "std/map::get",
+      "name": "get",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "get<K, V> arg1: K -> arg2: Map<K, V> -> Maybe<V> where Eq<K>, Hash<K>",
+      "description": "Returns the indexed element, or Nothing when the index is invalid.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": [
+        "Eq<K>",
+        "Hash<K>"
+      ]
     },
     {
       "identity": "std/ref::get",
@@ -11728,6 +11926,39 @@
       "constraints": []
     },
     {
+      "identity": "std/map::insert",
+      "name": "insert",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "insert<K, V> arg1: K -> arg2: V -> arg3: Map<K, V> -> Map<K, V> where Eq<K>, Hash<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": [
+        "Eq<K>",
+        "Hash<K>"
+      ]
+    },
+    {
+      "identity": "std/set::insert",
+      "name": "insert",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "insert<A> arg1: A -> arg2: Set<A> -> Set<A> where Eq<A>, Hash<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>",
+        "Hash<A>"
+      ]
+    },
+    {
       "identity": "std/random::intBetween",
       "name": "intBetween",
       "module": "std/random",
@@ -11737,6 +11968,22 @@
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
+    },
+    {
+      "identity": "std/set::intersection",
+      "name": "intersection",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "intersection<A> arg1: Set<A> -> arg2: Set<A> -> Set<A> where Eq<A>, Hash<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>",
+        "Hash<A>"
+      ]
     },
     {
       "identity": "std/path::isAbsolute",
@@ -11758,6 +12005,33 @@
       "signature": "isClientError arg1: Status -> Bool",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/map::isEmpty",
+      "name": "isEmpty",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isEmpty<K, V> arg1: Map<K, V> -> Bool",
+      "description": "Returns whether the collection contains no elements.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/set::isEmpty",
+      "name": "isEmpty",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isEmpty<A> arg1: Set<A> -> Bool",
+      "description": "Returns whether the collection contains no elements.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -11803,6 +12077,22 @@
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
       "constraints": []
+    },
+    {
+      "identity": "std/set::isSubsetOf",
+      "name": "isSubsetOf",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isSubsetOf<A> arg1: Set<A> -> arg2: Set<A> -> Bool where Eq<A>, Hash<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>",
+        "Hash<A>"
+      ]
     },
     {
       "identity": "std/http::isSuccess",
@@ -11857,6 +12147,20 @@
       "signature": "keepAlive arg1: String -> Either<SseBuildError, Bytes>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/map::keys",
+      "name": "keys",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "keys<K, V> arg1: Map<K, V> -> Array<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
       "constraints": []
     },
     {
@@ -12056,6 +12360,23 @@
       "constraints": []
     },
     {
+      "identity": "std/set::map",
+      "name": "map",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "map<A, B> arg1: (A -> B) -> arg2: Set<A> -> Set<B> where Eq<B>, Hash<B>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Eq<B>",
+        "Hash<B>"
+      ]
+    },
+    {
       "identity": "std/stream::map",
       "name": "map",
       "module": "std/stream",
@@ -12088,6 +12409,39 @@
       "constraints": []
     },
     {
+      "identity": "std/map::mapKeysWith",
+      "name": "mapKeysWith",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "mapKeysWith<K1, K2, V> arg1: (V -> V -> V) -> arg2: (K1 -> K2) -> arg3: Map<K1, V> -> Map<K2, V> where Eq<K2>, Hash<K2>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K1",
+        "K2",
+        "V"
+      ],
+      "constraints": [
+        "Eq<K2>",
+        "Hash<K2>"
+      ]
+    },
+    {
+      "identity": "std/map::mapValues",
+      "name": "mapValues",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "mapValues<K, A, B> arg1: (A -> B) -> arg2: Map<K, A> -> Map<K, B>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/stream::merge",
       "name": "merge",
       "module": "std/stream",
@@ -12101,6 +12455,23 @@
         "A"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/map::mergeWith",
+      "name": "mergeWith",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "mergeWith<K, V> arg1: (V -> V -> V) -> arg2: Map<K, V> -> arg3: Map<K, V> -> Map<K, V> where Eq<K>, Hash<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": [
+        "Eq<K>",
+        "Hash<K>"
+      ]
     },
     {
       "identity": "std/websocket::messages",
@@ -12730,6 +13101,39 @@
       "constraints": []
     },
     {
+      "identity": "std/map::remove",
+      "name": "remove",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "remove<K, V> arg1: K -> arg2: Map<K, V> -> Map<K, V> where Eq<K>, Hash<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": [
+        "Eq<K>",
+        "Hash<K>"
+      ]
+    },
+    {
+      "identity": "std/set::remove",
+      "name": "remove",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "remove<A> arg1: A -> arg2: Set<A> -> Set<A> where Eq<A>, Hash<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>",
+        "Hash<A>"
+      ]
+    },
+    {
       "identity": "std/web/storage::remove",
       "name": "remove",
       "module": "std/web/storage",
@@ -13249,6 +13653,23 @@
       "constraints": []
     },
     {
+      "identity": "std/map::singleton",
+      "name": "singleton",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "singleton<K, V> arg1: K -> arg2: V -> Map<K, V> where Eq<K>, Hash<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": [
+        "Eq<K>",
+        "Hash<K>"
+      ]
+    },
+    {
       "identity": "std/non-empty-list::singleton",
       "name": "singleton",
       "module": "std/non-empty-list",
@@ -13260,6 +13681,22 @@
         "A"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/set::singleton",
+      "name": "singleton",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "singleton<A> arg1: A -> Set<A> where Eq<A>, Hash<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>",
+        "Hash<A>"
+      ]
     },
     {
       "identity": "std/stream::singleton",
@@ -13277,12 +13714,39 @@
       "constraints": []
     },
     {
+      "identity": "std/map::size",
+      "name": "size",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "size<K, V> arg1: Map<K, V> -> Int",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/queue::size",
       "name": "size",
       "module": "std/queue",
       "category": "Prelude",
       "kind": "effect-function",
       "signature": "size<A> arg1: Queue<A> -> Effect<{}, Never, Int>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/set::size",
+      "name": "size",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "size<A> arg1: Set<A> -> Int",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [
         "A"
@@ -13515,12 +13979,38 @@
       "constraints": []
     },
     {
+      "identity": "std/set::toArray",
+      "name": "toArray",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "toArray<A> arg1: Set<A> -> Array<A>",
+      "description": "Copies the List elements into an Array in source order.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/non-empty-list::toList",
       "name": "toList",
       "module": "std/non-empty-list",
       "category": "Prelude",
       "kind": "function",
       "signature": "toList<A> arg1: NonEmptyList<A> -> List<A>",
+      "description": "Copies the Array elements into a persistent List in source order.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/set::toList",
+      "name": "toList",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "toList<A> arg1: Set<A> -> List<A>",
       "description": "Copies the Array elements into a persistent List in source order.",
       "typeParameters": [
         "A"
@@ -13616,6 +14106,22 @@
       "constraints": []
     },
     {
+      "identity": "std/set::union",
+      "name": "union",
+      "module": "std/set",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "union<A> arg1: Set<A> -> arg2: Set<A> -> Set<A> where Eq<A>, Hash<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>",
+        "Hash<A>"
+      ]
+    },
+    {
       "identity": "std/random::unitFloat",
       "name": "unitFloat",
       "module": "std/random",
@@ -13649,6 +14155,23 @@
         "A"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/map::upsert",
+      "name": "upsert",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "upsert<K, V> arg1: K -> arg2: (Maybe<V> -> V) -> arg3: Map<K, V> -> Map<K, V> where Eq<K>, Hash<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
+      "constraints": [
+        "Eq<K>",
+        "Hash<K>"
+      ]
     },
     {
       "identity": "std/web/navigation::urlFragment",
@@ -13692,6 +14215,20 @@
       "signature": "utcOffset arg1: Int -> Either<DateTimeError, UtcOffset>",
       "description": "Constructs or computes with standard time values.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/map::values",
+      "name": "values",
+      "module": "std/map",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "values<K, V> arg1: Map<K, V> -> Array<V>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "K",
+        "V"
+      ],
       "constraints": []
     },
     {

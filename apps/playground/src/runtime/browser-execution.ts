@@ -15,6 +15,7 @@ import {
 } from "../../../../runtime/ts/src/browser/provider-storage"
 import { startBrowserProviders } from "../../../../runtime/ts/src/browser/providers"
 import * as effectRuntime from "../../../../runtime/ts/src/effect"
+import { processHashSeed } from "../../../../runtime/ts/src/hash"
 import {
   renderDebug,
   renderShow,
@@ -88,6 +89,7 @@ export async function startGeneratedModule(
   input = "",
   options: BrowserExecutionOptions = {}
 ): Promise<BrowserExecution> {
+  processHashSeed()
   const generated = await evaluate(typescript)
   return startEvaluatedModule(generated, entry, input, options, (specifier) =>
     specifier === "./main.ts"
@@ -120,6 +122,7 @@ export async function startGeneratedProject(
   input = "",
   options: BrowserExecutionOptions = {}
 ): Promise<BrowserExecution> {
+  processHashSeed()
   const entryModulePath = generatedModulePath(entryPath)
   const evaluated = await evaluateProject(modules, entryPath)
   const generated = evaluated.modules.get(entryModulePath)

@@ -14,8 +14,11 @@ pub(super) fn web_entry_source(
         "import { createBrowserEnvironment } from \"@seseragi/runtime/browser/host\";".to_owned(),
         "import { startBrowserProviders } from \"@seseragi/runtime/browser/providers\";".to_owned(),
         "import { createEffectExecution, isEffectCancellation, run } from \"@seseragi/runtime/effect\";".to_owned(),
-        format!("import {{ main }} from \"{entry_module}\";"),
+        "import { processHashSeed } from \"@seseragi/runtime/hash\";".to_owned(),
     ];
+    let mut application_imports = vec![format!(
+        "const {{ main }} = await import(\"{entry_module}\");"
+    )];
     let selections = crate::browser_provider_selections(providers);
     let provider_selections = serde_json::to_string(&selections)
         .expect("validated browser provider selections must serialize");
@@ -52,7 +55,7 @@ pub(super) fn web_entry_source(
                     arguments: arguments.clone(),
                 },
                 entry_module,
-                &mut imports,
+                &mut application_imports,
                 &mut dictionary_index,
             );
             format!(
@@ -63,12 +66,14 @@ pub(super) fn web_entry_source(
     format!(
         r#"{}
 
+{}
+processHashSeed();
+{}
 const execution = createEffectExecution();
 const browserDom = createBrowserDom(document, () => {{
   document.documentElement.dataset.seseragiStatus = "mounted";
 }});
 const browserProviderModules = new Map([{}]);
-{}
 const browserProviders = await startBrowserProviders({}, async (specifier) => {{
   const module = browserProviderModules.get(specifier);
   if (module === undefined) throw new Error(`unsupported browser provider module: ${{specifier}}`);
@@ -106,15 +111,11 @@ try {{
 }}
 "#,
         imports.join("\n"),
-        provider_modules.join(", "),
         format!(
             "{}\n{}",
             match options.hash_seed {
                 RandomSeed::Entropy => "delete globalThis.__SESERAGI_HASH_SEED__;".to_owned(),
-                RandomSeed::Fixed(seed) => format!(
-                    "globalThis.__SESERAGI_HASH_SEED__ = {:?};",
-                    seed.to_string()
-                ),
+                RandomSeed::Fixed(seed) => format!("globalThis.__SESERAGI_HASH_SEED__ = {seed}n;"),
             },
             match options.random_seed {
                 RandomSeed::Entropy => "delete globalThis.__SESERAGI_RANDOM_SEED__;".to_owned(),
@@ -124,6 +125,8 @@ try {{
                 ),
             }
         ),
+        application_imports.join("\n"),
+        provider_modules.join(", "),
         provider_selections,
         environment,
         failure,
@@ -145,7 +148,7 @@ fn display_dictionary_expression(
         &dictionary.module
     };
     imports.push(format!(
-        "import {{ {} as {local} }} from \"{module}\";",
+        "const {{ {}: {local} }} = await import(\"{module}\");",
         dictionary.export
     ));
     if dictionary.arguments.is_empty() {
@@ -208,7 +211,11 @@ mod tests {
             },
         );
 
-        assert!(source.contains("globalThis.__SESERAGI_HASH_SEED__ = \"-11\""));
+        assert!(source.contains("globalThis.__SESERAGI_HASH_SEED__ = -11n"));
         assert!(source.contains("globalThis.__SESERAGI_RANDOM_SEED__ = \"17\""));
+        assert!(
+            source.find("processHashSeed();").unwrap()
+                < source.find("await import(\"./main.ts\")").unwrap()
+        );
     }
 }

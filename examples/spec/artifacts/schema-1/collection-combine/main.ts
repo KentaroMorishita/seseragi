@@ -4,15 +4,15 @@ import { stringMonoid as _ssrg_string_monoid, stringSemigroup as _ssrg_string_se
 import { listMonoid as _ssrg_list_monoid, fromArray as _ssrg_list_from_array, listReducible as _ssrg_list_reducible, listSemigroup as _ssrg_list_semigroup, type List as List } from "@seseragi/runtime/list"
 
 const combineValues = <C, A,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => (__ssrg$evidence$1: Readonly<Record<string, (...args: any[]) => any>>) => _ssrg_collection_combine(__ssrg$evidence$0, __ssrg$evidence$1, values)
-const combinedString = (unit: undefined) => combineValues(["Sese", "ragi"])(_ssrg_array_reducible)(_ssrg_string_monoid)
-const combinedArrayValues = (unit: undefined) => combineValues([["a", "b"], ["c"]])(_ssrg_array_reducible)(_ssrg_array_monoid)
+const combinedString = (unit: undefined) => ((combineValues(["Sese", "ragi"])(_ssrg_array_reducible)(_ssrg_string_monoid)) as string)
+const combinedArrayValues = (unit: undefined) => ((combineValues([["a", "b"], ["c"]])(_ssrg_array_reducible)(_ssrg_array_monoid)) as ReadonlyArray<string>)
 const combinedArray = (unit: undefined) => _ssrg_collection_join(_ssrg_array_reducible, "|", combinedArrayValues(undefined))
-const combinedListValues = (unit: undefined) => combineValues([_ssrg_list_from_array(["l1", "l2"]), _ssrg_list_from_array(["l3"])])(_ssrg_array_reducible)(_ssrg_list_monoid)
+const combinedListValues = (unit: undefined) => ((combineValues([_ssrg_list_from_array(["l1", "l2"]), _ssrg_list_from_array(["l3"])])(_ssrg_array_reducible)(_ssrg_list_monoid)) as List<string>)
 const combinedList = (unit: undefined) => _ssrg_collection_join(_ssrg_list_reducible, "|", combinedListValues(undefined))
 const emptyStrings = (unit: undefined) => [] as ReadonlyArray<string>
-const combinedEmpty = (unit: undefined) => combineValues(emptyStrings(undefined))(_ssrg_array_reducible)(_ssrg_string_monoid)
+const combinedEmpty = (unit: undefined) => ((combineValues(emptyStrings(undefined))(_ssrg_array_reducible)(_ssrg_string_monoid)) as string)
 const appendWithMonoid = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0["append"](left)(right)
-const combinedViaSupertrait = (unit: undefined) => appendWithMonoid("super")("trait")(_ssrg_string_monoid)
+const combinedViaSupertrait = (unit: undefined) => ((appendWithMonoid("super")("trait")(_ssrg_string_monoid)) as string)
 const appendedString = (unit: undefined) => _ssrg_string_semigroup["append"]("semi")("group")
 const appendedArrayValues = (unit: undefined) => _ssrg_array_semigroup["append"](["array"])(["append"])
 const appendedArray = (unit: undefined) => _ssrg_collection_join(_ssrg_array_reducible, "|", appendedArrayValues(undefined))

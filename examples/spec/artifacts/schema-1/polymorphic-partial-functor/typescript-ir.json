@@ -301,25 +301,37 @@
         "callee": "applyMapper",
         "arguments": [
           {
-            "kind": "lambda",
-            "parameter": "__ssrg$partial$0: unknown",
-            "body": {
-              "kind": "call",
-              "callee": "transform",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "f"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "__ssrg$partial$0"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "__ssrg$evidence$0"
-                }
-              ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "lambda",
+              "parameter": "__ssrg$partial$0: unknown",
+              "body": {
+                "kind": "call",
+                "callee": "transform",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "f"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$partial$0"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$evidence$0"
+                  }
+                ]
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "unknown"
+              },
+              "result": {
+                "kind": "unknown"
+              }
             }
           },
           {
@@ -462,28 +474,37 @@
             "callee": "render",
             "arguments": [
               {
-                "kind": "call",
-                "callee": "transformWith",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "increment"
-                  },
-                  {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_maybe_Just",
-                    "arguments": [
-                      {
-                        "kind": "number",
-                        "value": "41"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Functor$0"
+                "kind": "checked-result",
+                "value": {
+                  "kind": "call",
+                  "callee": "transformWith",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "increment"
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_maybe_Just",
+                      "arguments": [
+                        {
+                          "kind": "number",
+                          "value": "41"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Functor$0"
+                    }
+                  ]
+                },
+                "type": {
+                  "kind": "maybe",
+                  "element": {
+                    "kind": "number"
                   }
-                ]
+                }
               }
             ]
           }

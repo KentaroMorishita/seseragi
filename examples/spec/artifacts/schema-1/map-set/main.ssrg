@@ -1,0 +1,146 @@
+import * as maps from "std/map"
+import * as sets from "std/set"
+import * as json from "std/json"
+
+type Key =
+  | Key (Int, String)
+
+instance Eq<Key> {
+  fn eq left: Key -> right: Key -> Bool =
+    match (left, right) { (Key (a, _), Key (b, _)) -> a == b }
+}
+
+instance Hash<Key> {
+  fn hash key: Key -> Int = 0
+}
+
+fn label key: Key -> String = match key { Key (_, text) -> text }
+
+fn collisionCheck unit: Unit -> String = {
+  let first = maps.singleton (Key (1, "original")) "old"
+  let second = maps.insert (Key (2, "second")) "other" first
+  let changed = maps.insert (Key (1, "replacement")) "new" second
+  show (
+    map label (maps.keys changed),
+    maps.values changed,
+    maps.get (Key (
+      2,
+      "lookup"
+    )) changed
+  )
+}
+
+fn decodedSet text: String -> Either<json.JsonReadError, sets.Set<Int>> =
+  json.decodeString text
+
+fn normalizedSet text: String -> String =
+  match decodedSet text { Left _ -> "decode failed";
+  Right value -> json.encodeString value }
+
+fn values unit: Unit -> maps.Map<String, Int> = maps.fromEntries [
+  ("b", 2),
+  ("a", 1),
+  ("b", 3)
+]
+
+fn decoded text: String -> Either<json.JsonReadError, maps.Map<String, Int>> =
+  decodeMap text
+
+fn decodeMap<K, V> text: String
+  -> Either<json.JsonReadError, maps.Map<K, V>>
+where Eq<K>, Hash<K>, JsonDecode<K>, JsonDecode<V> =
+  json.decodeString text
+
+fn encodeMap<K, V> values: maps.Map<K, V> -> String where JsonEncode<K>, JsonEncode<V> =
+  json.encodeString values
+
+fn lookup<K, V> key: K -> values: maps.Map<K, V> -> Maybe<V> where Eq<K>, Hash<K> =
+  maps.get key values
+
+fn normalized text: String -> String = match decoded text {
+  Left _ -> "decode failed"
+  Right value -> encodeMap value
+}
+
+fn objectKeys text: String -> String = match json.parse text {
+  Right (json.JsonObject fields) -> show (maps.keys fields)
+  _ -> "object failed"
+}
+
+fn collect<C, A> values: C -> sets.Set<A> where Iterable<C, A>, Eq<A>, Hash<A> =
+  sets.fromIterable values
+
+fn increment current: Maybe<Int> -> Int = match current {
+  Nothing -> 10
+  Just value -> value + 1
+}
+
+fn add left: Int -> right: Int -> Int = left + right
+
+fn entryTotal values: maps.Map<String, Int> -> Int = reduce 0 (\total: Int pair: (
+  String,
+  Int
+) -> match pair { (_, value) -> total + value }) values
+
+fn selected values: maps.Map<String, Int> -> Maybe<Int> = {
+  let getB: maps.Map<String, Int> -> Maybe<Int> = maps.get "b"
+  getB values
+}
+
+fn constructed unit: Unit -> maps.Map<String, Int> = {
+  let make: String -> Int -> maps.Map<String, Int> = maps.singleton
+  make "first" 7
+}
+
+pub effect fn main = do {
+  println $ show (values ())
+  println $ debug (values ())
+  println $ show (lookup "b" (values ()))
+  println $ show (maps.insert "b" 4 (maps.remove "b" (values ())))
+  println $ show (values () == maps.fromEntries [("a", 1), ("b", 3)])
+  println $ show (map (\value: Int -> value + 10) (values ()))
+  for pair <- values () {
+    println $ show pair
+  }
+  println $ show (sets.fromIterable [3, 1, 3, 2])
+  println $ show (sum (sets.fromIterable [3, 1, 3, 2]))
+  println $ show (sets.map (\value: Int -> value % 2) (sets.fromIterable [3, 1, 4, 2]))
+  println $ json.encodeString (values ())
+  println $ normalized "[[\"b\",2],[\"a\",1],[\"b\",5]]"
+  println $ objectKeys "{\"z\":1,\"a\":2}"
+  println $ show (maps.insert "empty" 1 (maps.empty ()))
+  println $
+    show (maps.containsKey "b" (values ()), maps.containsKey "missing" (values ()))
+  println $ show (maps.upsert "b" increment (maps.upsert "c" increment (values ())))
+  println $ show (maps.filter (\key: String value: Int -> value > 1) (values ()))
+  println $ show (maps.mapValues (\value: Int -> value * 2) (values ()))
+  println $ show (maps.mapKeysWith add (\key: String -> "same") (values ()))
+  println $
+    show (maps.mergeWith add (maps.fromEntries [("a", 4), ("z", 9)]) (values ()))
+  println $
+    show (maps.keys (values ()), maps.values (values ()), maps.entries (values ()))
+  println $ show (maps.size (values ()), maps.isEmpty (values ()))
+  println $ show (entryTotal (values ()), selected (values ()), constructed ())
+  println $ show (sets.insert 9 (sets.empty ()))
+  println $
+    show (sets.contains 1 (collect `[3, 1, 3]), sets.contains 2 (collect `[
+      3,
+      1,
+      3
+    ]))
+  println $ show (sets.insert 3 (sets.remove 3 (collect `[3, 1, 2])))
+  println $ show (sets.filter (\value: Int -> value > 1) (collect `[3, 1, 2]))
+  println $ show (sets.union (collect [1, 4]) (collect [3, 1, 2]))
+  println $ show (sets.intersection (collect [1, 3]) (collect [3, 1, 2]))
+  println $ show (sets.difference (sets.singleton 1) (collect [3, 1, 2]))
+  println $ show (sets.isSubsetOf (collect [3, 1, 2]) (collect [1, 3]))
+  println $ show (sets.toArray (collect `[3, 1, 3]), sets.toList (collect [3, 1, 3]))
+  println $ show (sets.size (collect [3, 1, 3]), sets.isEmpty (collect [3, 1, 3]))
+  println $ debug (collect [3, 1, 3])
+  println $ show (collect [3, 1, 2] == collect [2, 1, 3])
+  println $ show (collect (collect [3, 1, 3, 2]))
+  println $ show (maps.fromEntries (values ()))
+  println $ json.encodeString (collect [3, 1, 3, 2])
+  println $ normalizedSet "[3,1,3,2]"
+  println $ collisionCheck ()
+}

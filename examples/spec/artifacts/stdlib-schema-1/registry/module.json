@@ -65035,11 +65035,1306 @@
     {
       "specifier": "std/map",
       "identity": "std/map",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/map",
+        "source": "std/map.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/map::Map",
+            "namespace": "type",
+            "name": "Map",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "T0",
+                "T1"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Map",
+                "arity": 2
+              }
+            }
+          },
+          {
+            "symbol": "std/map::empty",
+            "namespace": "value",
+            "name": "empty",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Map",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::singleton",
+            "namespace": "value",
+            "name": "singleton",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "K",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "V",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "K",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "V",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::fromEntries",
+            "namespace": "value",
+            "name": "fromEntries",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "C",
+                "K",
+                "V"
+              ],
+              "constraints": [
+                {
+                  "name": "Iterable",
+                  "traitIdentity": "std/prelude::Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "C",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "K",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Map",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::get",
+            "namespace": "value",
+            "name": "get",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "K",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "K",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "V",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "V",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::containsKey",
+            "namespace": "value",
+            "name": "containsKey",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "K",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "K",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "V",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::insert",
+            "namespace": "value",
+            "name": "insert",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "K",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "V",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Map",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "K",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Map",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "K",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::upsert",
+            "namespace": "value",
+            "name": "upsert",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "K",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Map",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "K",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Map",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "K",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::remove",
+            "namespace": "value",
+            "name": "remove",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "K",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "K",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "V",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "K",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "V",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::filter",
+            "namespace": "value",
+            "name": "filter",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "K",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "K",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "V",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "K",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "V",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::mapValues",
+            "namespace": "value",
+            "name": "mapValues",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "A",
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "K",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "K",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::mapKeysWith",
+            "namespace": "value",
+            "name": "mapKeysWith",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K1",
+                "K2",
+                "V"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K2",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K2",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "V",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "K1",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "K2",
+                      "arguments": []
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Map",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "K1",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Map",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "K2",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::mergeWith",
+            "namespace": "value",
+            "name": "mergeWith",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "V",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "K",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "V",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Map",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "K",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Map",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "K",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::keys",
+            "namespace": "value",
+            "name": "keys",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Map",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::values",
+            "namespace": "value",
+            "name": "values",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Map",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::entries",
+            "namespace": "value",
+            "name": "entries",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Map",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "K",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "V",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::size",
+            "namespace": "value",
+            "name": "size",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Map",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/map::isEmpty",
+            "namespace": "value",
+            "name": "isEmpty",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "K",
+                "V"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Map",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "K",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "V",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/maybe",
@@ -68788,11 +70083,1033 @@
     {
       "specifier": "std/set",
       "identity": "std/set",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/set",
+        "source": "std/set.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/set::Set",
+            "namespace": "type",
+            "name": "Set",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "T0"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Set",
+                "arity": 1
+              }
+            }
+          },
+          {
+            "symbol": "std/set::empty",
+            "namespace": "value",
+            "name": "empty",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::singleton",
+            "namespace": "value",
+            "name": "singleton",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::fromIterable",
+            "namespace": "value",
+            "name": "fromIterable",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "C",
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Iterable",
+                  "traitIdentity": "std/prelude::Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "C",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::contains",
+            "namespace": "value",
+            "name": "contains",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::filter",
+            "namespace": "value",
+            "name": "filter",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::map",
+            "namespace": "value",
+            "name": "map",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A",
+                "B"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::isSubsetOf",
+            "namespace": "value",
+            "name": "isSubsetOf",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::insert",
+            "namespace": "value",
+            "name": "insert",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::remove",
+            "namespace": "value",
+            "name": "remove",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::union",
+            "namespace": "value",
+            "name": "union",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::intersection",
+            "namespace": "value",
+            "name": "intersection",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::difference",
+            "namespace": "value",
+            "name": "difference",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Hash",
+                  "traitIdentity": "std/prelude::Hash",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Set",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::toArray",
+            "namespace": "value",
+            "name": "toArray",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::toList",
+            "namespace": "value",
+            "name": "toList",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::size",
+            "namespace": "value",
+            "name": "size",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/set::isEmpty",
+            "namespace": "value",
+            "name": "isEmpty",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Set",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/stdin",

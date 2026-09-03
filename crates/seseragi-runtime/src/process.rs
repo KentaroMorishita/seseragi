@@ -9,6 +9,8 @@ use crate::{main_contract, validate_target, ExecutionTarget, MainContract, Targe
 
 mod entry;
 mod local_package;
+#[cfg(test)]
+mod startup_tests;
 mod web_entry;
 
 pub use build::{

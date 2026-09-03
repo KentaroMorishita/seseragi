@@ -1064,6 +1064,219 @@
   ],
   "instances": [
     {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "Map",
+      "typeConstructorCanonical": "std/map::Map",
+      "typeConstructorArity": 2,
+      "identity": "std/map::JsonEncode",
+      "constraints": [
+        {
+          "trait": "JsonEncode",
+          "traitCanonical": "std/prelude::JsonEncode",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "JsonEncode",
+          "traitCanonical": "std/prelude::JsonEncode",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "Map",
+      "typeConstructorCanonical": "std/map::Map",
+      "typeConstructorArity": 2,
+      "identity": "std/map::JsonDecode",
+      "constraints": [
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Hash",
+          "traitCanonical": "std/prelude::Hash",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "JsonDecode",
+          "traitCanonical": "std/prelude::JsonDecode",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "JsonDecode",
+          "traitCanonical": "std/prelude::JsonDecode",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "Set",
+      "typeConstructorCanonical": "std/set::Set",
+      "typeConstructorArity": 1,
+      "identity": "std/set::JsonEncode",
+      "constraints": [
+        {
+          "trait": "JsonEncode",
+          "traitCanonical": "std/prelude::JsonEncode",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "Set",
+      "typeConstructorCanonical": "std/set::Set",
+      "typeConstructorArity": 1,
+      "identity": "std/set::JsonDecode",
+      "constraints": [
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Hash",
+          "traitCanonical": "std/prelude::Hash",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "JsonDecode",
+          "traitCanonical": "std/prelude::JsonDecode",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "Map",
+      "typeConstructorCanonical": "std/map::Map",
+      "typeConstructorArity": 2,
+      "identity": "std/map::Eq",
+      "constraints": [
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Hash",
+          "traitCanonical": "std/prelude::Hash",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Map",
+      "typeConstructorCanonical": "std/map::Map",
+      "typeConstructorArity": 2,
+      "identity": "std/map::Show",
+      "constraints": [
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Map",
+      "typeConstructorCanonical": "std/map::Map",
+      "typeConstructorArity": 2,
+      "identity": "std/map::Debug",
+      "constraints": [
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "Map",
+      "typeConstructorCanonical": "std/map::Map",
+      "typeConstructorArity": 2,
+      "identity": "std/map::Functor"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "Set",
+      "typeConstructorCanonical": "std/set::Set",
+      "typeConstructorArity": 1,
+      "identity": "std/set::Eq",
+      "constraints": [
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Hash",
+          "traitCanonical": "std/prelude::Hash",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Set",
+      "typeConstructorCanonical": "std/set::Set",
+      "typeConstructorArity": 1,
+      "identity": "std/set::Show",
+      "constraints": [
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Set",
+      "typeConstructorCanonical": "std/set::Set",
+      "typeConstructorArity": 1,
+      "identity": "std/set::Debug",
+      "constraints": [
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
       "trait": "Hash",
       "traitCanonical": "std/prelude::Hash",
       "typeConstructor": "Int",
@@ -2974,6 +3187,46 @@
       ],
       "identity": "std/non-empty-list::Reducible",
       "dispatch": "dictionary"
+    },
+    {
+      "trait": "Iterable",
+      "traitCanonical": "std/prelude::Iterable",
+      "arguments": [
+        "Map<K, V>",
+        "(K, V)"
+      ],
+      "identity": "std/map::Iterable",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Reducible",
+      "traitCanonical": "std/prelude::Reducible",
+      "arguments": [
+        "Map<K, V>",
+        "(K, V)"
+      ],
+      "identity": "std/map::Reducible",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Iterable",
+      "traitCanonical": "std/prelude::Iterable",
+      "arguments": [
+        "Set<A>",
+        "A"
+      ],
+      "identity": "std/set::Iterable",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Reducible",
+      "traitCanonical": "std/prelude::Reducible",
+      "arguments": [
+        "Set<A>",
+        "A"
+      ],
+      "identity": "std/set::Reducible",
+      "dispatch": "dictionary"
     }
   ],
   "instanceAudit": {
@@ -3396,11 +3649,11 @@
       },
       {
         "trait": "Debug",
-        "head": "Map<K, V>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 302
+        "head": "Map",
+        "identity": "std/map::Debug",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
       },
       {
         "trait": "Debug",
@@ -3524,11 +3777,11 @@
       },
       {
         "trait": "Debug",
-        "head": "Set<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 302
+        "head": "Set",
+        "identity": "std/set::Debug",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
       },
       {
         "trait": "Debug",
@@ -3730,11 +3983,11 @@
       },
       {
         "trait": "Eq",
-        "head": "Map<K, V>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 302
+        "head": "Map",
+        "identity": "std/map::Eq",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Eq",
@@ -3746,11 +3999,11 @@
       },
       {
         "trait": "Eq",
-        "head": "Set<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 302
+        "head": "Set",
+        "identity": "std/set::Eq",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Eq",
@@ -3840,6 +4093,14 @@
       },
       {
         "trait": "Functor",
+        "head": "Map",
+        "identity": "std/map::Functor",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
+      },
+      {
+        "trait": "Functor",
         "head": "Maybe",
         "identity": "std/maybe::Functor",
         "status": "specified-and-implemented",
@@ -3867,6 +4128,13 @@
         "status": "specified-but-implementation-missing",
         "classification": "missing",
         "spec": "9.9"
+      },
+      {
+        "trait": "Functor",
+        "head": "Set",
+        "status": "intentionally-unavailable",
+        "classification": "unavailable",
+        "spec": "10.5"
       },
       {
         "trait": "Functor",
@@ -3996,10 +4264,10 @@
       {
         "trait": "Iterable",
         "head": "Map<K, V>, (K, V)",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 302
+        "identity": "std/map::Iterable",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
       },
       {
         "trait": "Iterable",
@@ -4020,10 +4288,10 @@
       {
         "trait": "Iterable",
         "head": "Set<A>, A",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 302
+        "identity": "std/set::Iterable",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
       },
       {
         "trait": "JsonDecode",
@@ -4097,11 +4365,11 @@
       },
       {
         "trait": "JsonDecode",
-        "head": "Map<K, V>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.9",
-        "trackingIssue": 302
+        "head": "Map",
+        "identity": "std/map::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
       },
       {
         "trait": "JsonDecode",
@@ -4113,11 +4381,11 @@
       },
       {
         "trait": "JsonDecode",
-        "head": "Set<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.9",
-        "trackingIssue": 302
+        "head": "Set",
+        "identity": "std/set::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
       },
       {
         "trait": "JsonDecode",
@@ -4223,11 +4491,11 @@
       },
       {
         "trait": "JsonEncode",
-        "head": "Map<K, V>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.9",
-        "trackingIssue": 302
+        "head": "Map",
+        "identity": "std/map::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
       },
       {
         "trait": "JsonEncode",
@@ -4239,11 +4507,11 @@
       },
       {
         "trait": "JsonEncode",
-        "head": "Set<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.9",
-        "trackingIssue": 302
+        "head": "Set",
+        "identity": "std/set::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "10.9"
       },
       {
         "trait": "JsonEncode",
@@ -4620,10 +4888,10 @@
       {
         "trait": "Reducible",
         "head": "Map<K, V>, (K, V)",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 302
+        "identity": "std/map::Reducible",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
       },
       {
         "trait": "Reducible",
@@ -4644,10 +4912,10 @@
       {
         "trait": "Reducible",
         "head": "Set<A>, A",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 302
+        "identity": "std/set::Reducible",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
       },
       {
         "trait": "Rem",
@@ -4979,11 +5247,11 @@
       },
       {
         "trait": "Show",
-        "head": "Map<K, V>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 302
+        "head": "Map",
+        "identity": "std/map::Show",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
       },
       {
         "trait": "Show",
@@ -5107,11 +5375,11 @@
       },
       {
         "trait": "Show",
-        "head": "Set<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 302
+        "head": "Set",
+        "identity": "std/set::Show",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
       },
       {
         "trait": "Show",

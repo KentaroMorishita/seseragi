@@ -1,6 +1,12 @@
+import { arrayIterable } from "./array"
+import type { RuntimeDictionary } from "./collection"
 import type { Unit } from "./effect"
+import { type Eq, stringEq } from "./equality"
+import { type Hash, stringHash } from "./hash"
 import type { List } from "./list"
 import { toArray as listToArray } from "./list"
+import * as maps from "./map"
+import * as sets from "./set"
 import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 
 declare const decimalBrand: unique symbol
@@ -13,9 +19,7 @@ export type Decimal = Readonly<{
   readonly [decimalBrand]: true
 }>
 
-export type JsonMap<Key = string, Value = Json> = ReadonlyArray<
-  readonly [Key, Value]
->
+export type JsonMap<Key = string, Value = Json> = maps.Map<Key, Value>
 
 export type Json =
   | Readonly<{ readonly tag: "JsonNull" }>
@@ -91,6 +95,13 @@ export const JsonObject = (value: JsonMap<string, Json>): Json => ({
   tag: "JsonObject",
   value,
 })
+
+/** Public JsonObject uses the canonical Map; parser/encoder internals build it
+ * from ordered fields without exposing a second collection representation. */
+const jsonObjectFromEntries = (
+  entries: ReadonlyArray<readonly [string, Json]>
+): Json =>
+  JsonObject(maps.fromEntries(arrayIterable, stringEq, stringHash, entries))
 
 export const JsonField = (value: string): JsonPathSegment => ({
   tag: "JsonField",
@@ -412,7 +423,7 @@ class Parser {
     const names = new Set<string>()
     if (this.source[this.index] === "}") {
       this.index += 1
-      return JsonObject(entries)
+      return jsonObjectFromEntries(entries)
     }
     while (true) {
       if (this.source[this.index] !== '"') this.fail("expected object field")
@@ -429,7 +440,7 @@ class Parser {
       this.skipWhitespace()
       if (this.source[this.index] === "}") {
         this.index += 1
-        return JsonObject(entries)
+        return jsonObjectFromEntries(entries)
       }
       if (this.source[this.index] !== ",") this.fail("expected ',' or '}'")
       this.index += 1
@@ -498,7 +509,8 @@ export function stringify(value: Json): string {
     case "JsonArray":
       return `[${value.value.map(stringify).join(",")}]`
     case "JsonObject":
-      return `{${value.value
+      return `{${maps
+        .entries(value.value)
         .map(
           ([name, fieldValue]) =>
             `${escapeString(name)}:${stringify(fieldValue)}`
@@ -509,9 +521,9 @@ export function stringify(value: Json): string {
 
 function objectEntries(
   value: Json
-): Either<DecodeError, JsonMap<string, Json>> {
+): Either<DecodeError, ReadonlyArray<readonly [string, Json]>> {
   return value.tag === "JsonObject"
-    ? Right(value.value)
+    ? Right(maps.entries(value.value))
     : decodeError(ExpectedJsonType("object"))
 }
 
@@ -579,7 +591,9 @@ export function record<A>(
     if (value.tag !== "JsonObject")
       return decodeError(ExpectedJsonType("object"))
     const expected = new Set(fields.map(([name]) => name))
-    const unknown = value.value.find(([name]) => !expected.has(name))
+    const unknown = maps
+      .entries(value.value)
+      .find(([name]) => !expected.has(name))
     if (unknown !== undefined) return decodeError(UnknownJsonField(unknown[0]))
     const result: Array<readonly [string, A]> = []
     for (const [name, decoder] of fields) {
@@ -739,7 +753,7 @@ export const eitherJsonEncode = <E, A>(
 ): JsonEncode<Either<E, A>> =>
   Object.freeze({
     encodeJson: (value) =>
-      JsonObject([
+      jsonObjectFromEntries([
         ["tag", JsonString(value.tag)],
         [
           "value",
@@ -814,6 +828,67 @@ export const listJsonDecode = <A>(
     },
   })
 
+export const mapJsonEncode = <K, V>(
+  key: JsonEncode<K> | RuntimeDictionary,
+  value: JsonEncode<V> | RuntimeDictionary
+): JsonEncode<maps.Map<K, V>> =>
+  Object.freeze({
+    encodeJson: (source) =>
+      JsonArray(
+        maps
+          .entries(source)
+          .map(([k, v]) =>
+            JsonArray([
+              (key as JsonEncode<K>).encodeJson(k),
+              (value as JsonEncode<V>).encodeJson(v),
+            ])
+          )
+      ),
+  })
+
+export const mapJsonDecode = <K, V>(
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
+  key: JsonDecode<K> | RuntimeDictionary,
+  value: JsonDecode<V> | RuntimeDictionary
+): JsonDecode<maps.Map<K, V>> =>
+  Object.freeze({
+    decodeJson: (source) => {
+      const pair = tupleJsonDecode<readonly [K, V]>(
+        key as JsonDecode<K>,
+        value as JsonDecode<V>
+      )
+      const decoded = array(pair.decodeJson)(source)
+      return decoded.tag === "Left"
+        ? decoded
+        : Right(maps.fromEntries(arrayIterable, eq, hash, decoded.value))
+    },
+  })
+
+export const setJsonEncode = <A>(
+  element: JsonEncode<A> | RuntimeDictionary
+): JsonEncode<sets.Set<A>> =>
+  Object.freeze({
+    encodeJson: (source) =>
+      JsonArray(
+        sets.toArray(source).map((element as JsonEncode<A>).encodeJson)
+      ),
+  })
+
+export const setJsonDecode = <A>(
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary,
+  element: JsonDecode<A> | RuntimeDictionary
+): JsonDecode<sets.Set<A>> =>
+  Object.freeze({
+    decodeJson: (source) => {
+      const decoded = array((element as JsonDecode<A>).decodeJson)(source)
+      return decoded.tag === "Left"
+        ? decoded
+        : Right(sets.fromIterable(arrayIterable, eq, hash, decoded.value))
+    },
+  })
+
 export const tupleJsonEncode = <T extends ReadonlyArray<unknown>>(
   ...dictionaries: ReadonlyArray<JsonEncode<never>>
 ): JsonEncode<T> =>
@@ -871,7 +946,7 @@ export const recordJsonEncode = <R extends Readonly<Record<string, unknown>>>(
           )(value[name]),
         ])
       }
-      return JsonObject(entries)
+      return jsonObjectFromEntries(entries)
     },
   })
 
@@ -882,7 +957,7 @@ function strictObjectFields(
   if (value.tag !== "JsonObject") return decodeError(ExpectedJsonType("object"))
   const expected = new Set(names)
   const entries = new Map<string, Json>()
-  for (const [name, fieldValue] of value.value) {
+  for (const [name, fieldValue] of maps.entries(value.value)) {
     if (!expected.has(name)) return decodeError(UnknownJsonField(name))
     if (!entries.has(name)) entries.set(name, fieldValue)
   }
@@ -936,7 +1011,7 @@ export const derivedStructJsonEncode = <A>(
   Object.freeze({
     encodeJson: (value) => {
       const record = value as Readonly<Record<string, unknown>>
-      return JsonObject(
+      return jsonObjectFromEntries(
         names.map((name, position) => [
           name,
           jsonEncodeEvidence(
@@ -985,7 +1060,7 @@ export const derivedAdtJsonEncode = <A>(
       if (selected === undefined)
         throw new Error(`unknown derived JSON constructor: ${tagged.tag}`)
       const payload = selected[1]
-      return JsonObject(
+      return jsonObjectFromEntries(
         payload === undefined
           ? [["tag", JsonString(tagged.tag)]]
           : [
@@ -1004,7 +1079,9 @@ export const derivedAdtJsonDecode = <A>(
     decodeJson: (value) => {
       if (value.tag !== "JsonObject")
         return decodeError(ExpectedJsonType("object"))
-      const tagEntry = value.value.find(([name]) => name === "tag")
+      const tagEntry = maps
+        .entries(value.value)
+        .find(([name]) => name === "tag")
       if (tagEntry === undefined) return decodeError(MissingJsonField("tag"))
       const decodedTag = stringJsonDecode.decodeJson(tagEntry[1])
       if (decodedTag.tag === "Left")
@@ -1018,11 +1095,15 @@ export const derivedAdtJsonDecode = <A>(
       const payload = selected[1]
       const expected =
         payload === undefined ? new Set(["tag"]) : new Set(["tag", "value"])
-      const unknown = value.value.find(([name]) => !expected.has(name))
+      const unknown = maps
+        .entries(value.value)
+        .find(([name]) => !expected.has(name))
       if (unknown !== undefined)
         return decodeError(UnknownJsonField(unknown[0]))
       if (payload === undefined) return Right({ tag: decodedTag.value } as A)
-      const payloadEntry = value.value.find(([name]) => name === "value")
+      const payloadEntry = maps
+        .entries(value.value)
+        .find(([name]) => name === "value")
       if (payloadEntry === undefined)
         return decodeError(MissingJsonField("value"))
       const decoded = jsonDecodeEvidence(payload).decodeJson(payloadEntry[1])

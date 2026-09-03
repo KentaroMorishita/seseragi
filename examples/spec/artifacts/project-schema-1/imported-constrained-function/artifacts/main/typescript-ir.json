@@ -123,18 +123,24 @@
         "callee": "_ssrg_console_println",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "describe",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "Active"
-              },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$instance$Ready$0"
-              }
-            ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "describe",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Active"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Ready$0"
+                }
+              ]
+            },
+            "type": {
+              "kind": "string"
+            }
           }
         ]
       },

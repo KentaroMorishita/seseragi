@@ -11,14 +11,17 @@ const FNV_PRIME = 0x01000193
 const MAX_SEED_HIGH = 0x1fffff
 const TWO_TO_32 = 0x1_0000_0000
 
+/** Internal seed, distinct from the safe-integer user-level Hash result. */
+export type HashSeed = number | bigint
+
 type HashSeedGlobal = typeof globalThis & {
-  __SESERAGI_HASH_SEED__?: number
+  __SESERAGI_HASH_SEED__?: HashSeed
   process?: Readonly<{
     env?: Readonly<Record<string, string | undefined>>
   }>
 }
 
-let cachedProcessSeed: number | undefined
+let cachedProcessSeed: HashSeed | undefined
 
 const finishHash = (value: number): number => value | 0
 
@@ -82,7 +85,10 @@ export const nonEmptyListHash = <Value>(
 ): Hash<NonEmptyList<Value>> =>
   Object.freeze({
     hash: (values: NonEmptyList<Value>): number => {
-      let state = Math.imul(FNV_OFFSET ^ foldInt(element.hash(values.head)), FNV_PRIME)
+      let state = Math.imul(
+        FNV_OFFSET ^ foldInt(element.hash(values.head)),
+        FNV_PRIME
+      )
       let cursor = values.tail
       while (cursor.tag === "Cons") {
         state = Math.imul(state ^ foldInt(element.hash(cursor.head)), FNV_PRIME)
@@ -102,24 +108,38 @@ const foldInt = (value: number): number => {
  * The result is backend-internal and must never be serialized or observed as
  * the value returned by `Hash.hash`.
  */
-export function mixHash(hash: number, seed: number): number {
-  let state = Math.imul(FNV_OFFSET ^ foldInt(seed), FNV_PRIME)
+export function mixHash(hash: number, seed: HashSeed): number {
+  const seedBits = BigInt.asUintN(64, BigInt(validateSeed(seed)))
+  const foldedSeed = Number(BigInt.asUintN(32, seedBits ^ (seedBits >> 32n)))
+  let state = Math.imul(FNV_OFFSET ^ foldedSeed, FNV_PRIME)
   state = Math.imul(state ^ foldInt(hash), FNV_PRIME)
   state ^= state >>> 16
   return state >>> 0
 }
 
-const fixedSeed = (): number | undefined => {
+function validateSeed(seed: HashSeed): HashSeed {
+  if (typeof seed === "number") return assertInt(seed)
+  if (seed < -(1n << 63n) || seed >= 1n << 63n) {
+    throw new RangeError("hash seed must be a signed 64-bit integer")
+  }
+  return seed
+}
+
+const fixedSeed = (): HashSeed | undefined => {
   const host = globalThis as HashSeedGlobal
   if (host.__SESERAGI_HASH_SEED__ !== undefined) {
-    return assertInt(host.__SESERAGI_HASH_SEED__)
+    return validateSeed(host.__SESERAGI_HASH_SEED__)
   }
   const configured = host.process?.env?.SESERAGI_HASH_SEED
   if (configured === undefined) return undefined
   if (!/^[+-]?\d+$/.test(configured)) {
-    throw new RangeError("SESERAGI_HASH_SEED must be a Seseragi Int")
+    throw new RangeError("SESERAGI_HASH_SEED must be a signed 64-bit integer")
   }
-  return assertInt(Number(configured))
+  const seed = validateSeed(BigInt(configured)) as bigint
+  return seed >= BigInt(Number.MIN_SAFE_INTEGER) &&
+    seed <= BigInt(Number.MAX_SAFE_INTEGER)
+    ? Number(seed)
+    : seed
 }
 
 const entropySeed = (): number => {
@@ -132,13 +152,12 @@ const entropySeed = (): number => {
   const words = new Uint32Array(2)
   crypto.getRandomValues(words)
   return (
-    ((words[1] as number) & MAX_SEED_HIGH) * TWO_TO_32 +
-    (words[0] as number)
+    ((words[1] as number) & MAX_SEED_HIGH) * TWO_TO_32 + (words[0] as number)
   )
 }
 
 /** Resolves and caches the one process-local seed used by Map and Set indexes. */
-export function processHashSeed(): number {
+export function processHashSeed(): HashSeed {
   if (cachedProcessSeed === undefined) {
     cachedProcessSeed = fixedSeed() ?? entropySeed()
   }

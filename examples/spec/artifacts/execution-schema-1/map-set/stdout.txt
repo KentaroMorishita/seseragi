@@ -1,0 +1,41 @@
+Map [(b, 3), (a, 1)]
+Map [("b", 3), ("a", 1)]
+Just 3
+Map [(a, 1), (b, 4)]
+True
+Map [(b, 13), (a, 11)]
+(b, 3)
+(a, 1)
+Set [3, 1, 2]
+6
+Set [1, 0]
+[["b",3],["a",1]]
+[["b",5],["a",1]]
+[z, a]
+Map [(empty, 1)]
+(True, False)
+Map [(b, 4), (a, 1), (c, 10)]
+Map [(b, 3)]
+Map [(b, 6), (a, 2)]
+Map [(same, 4)]
+Map [(b, 3), (a, 5), (z, 9)]
+([b, a], [3, 1], [(b, 3), (a, 1)])
+(2, False)
+(4, Just 3, Map [(first, 7)])
+Set [9]
+(True, False)
+Set [1, 2, 3]
+Set [3, 2]
+Set [3, 1, 2, 4]
+Set [3, 1]
+Set [3, 2]
+True
+([3, 1], `[3, 1])
+(2, False)
+Set [3, 1]
+True
+Set [3, 1, 2]
+Map [(b, 3), (a, 1)]
+[3,1,2]
+[3,1,2]
+([original, second], [new, other], Just other)

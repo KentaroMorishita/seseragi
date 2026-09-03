@@ -65,6 +65,12 @@ const FILES: &[(&str, &str)] = &[
     ("src/sse.ts", include_str!("../../../runtime/ts/src/sse.ts")),
     ("src/ref.ts", include_str!("../../../runtime/ts/src/ref.ts")),
     ("src/int.ts", include_str!("../../../runtime/ts/src/int.ts")),
+    ("src/map.ts", include_str!("../../../runtime/ts/src/map.ts")),
+    ("src/set.ts", include_str!("../../../runtime/ts/src/set.ts")),
+    (
+        "src/persistent-index.ts",
+        include_str!("../../../runtime/ts/src/persistent-index.ts"),
+    ),
     (
         "src/equality.ts",
         include_str!("../../../runtime/ts/src/equality.ts"),

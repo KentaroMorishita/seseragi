@@ -1520,42 +1520,54 @@
                   "callee": "render",
                   "arguments": [
                     {
-                      "kind": "call",
-                      "callee": "bind",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "incrementBox"
-                        },
-                        {
-                          "kind": "call",
-                          "callee": "Boxed",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "41"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "type-application-call",
-                          "callee": "__ssrg$instance$Monad$2",
-                          "typeArguments": [],
-                          "arguments": [
-                            {
-                              "kind": "type-application-call",
-                              "callee": "__ssrg$instance$Applicative$1",
-                              "typeArguments": [],
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "__ssrg$instance$Functor$0"
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "call",
+                        "callee": "bind",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "incrementBox"
+                          },
+                          {
+                            "kind": "call",
+                            "callee": "Boxed",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "41"
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "type-application-call",
+                            "callee": "__ssrg$instance$Monad$2",
+                            "typeArguments": [],
+                            "arguments": [
+                              {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Applicative$1",
+                                "typeArguments": [],
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$instance$Functor$0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "reference",
+                        "name": "Box",
+                        "arguments": [
+                          {
+                            "kind": "number"
+                          }
+                        ]
+                      }
                     }
                   ]
                 }

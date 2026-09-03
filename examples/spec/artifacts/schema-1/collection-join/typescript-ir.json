@@ -107,22 +107,28 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "joinValues",
-        "arguments": [
-          {
-            "kind": "string",
-            "value": " / "
-          },
-          {
-            "kind": "identifier",
-            "name": "values"
-          },
-          {
-            "kind": "runtime-reference",
-            "name": "_ssrg_array_reducible"
-          }
-        ]
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "joinValues",
+          "arguments": [
+            {
+              "kind": "string",
+              "value": " / "
+            },
+            {
+              "kind": "identifier",
+              "name": "values"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_array_reducible"
+            }
+          ]
+        },
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -142,22 +148,28 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "joinValues",
-        "arguments": [
-          {
-            "kind": "string",
-            "value": " + "
-          },
-          {
-            "kind": "identifier",
-            "name": "values"
-          },
-          {
-            "kind": "runtime-reference",
-            "name": "_ssrg_list_reducible"
-          }
-        ]
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "joinValues",
+          "arguments": [
+            {
+              "kind": "string",
+              "value": " + "
+            },
+            {
+              "kind": "identifier",
+              "name": "values"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_list_reducible"
+            }
+          ]
+        },
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -177,22 +189,28 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "joinValues",
-        "arguments": [
-          {
-            "kind": "string",
-            "value": ", "
-          },
-          {
-            "kind": "identifier",
-            "name": "values"
-          },
-          {
-            "kind": "runtime-reference",
-            "name": "_ssrg_array_reducible"
-          }
-        ]
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "joinValues",
+          "arguments": [
+            {
+              "kind": "string",
+              "value": ", "
+            },
+            {
+              "kind": "identifier",
+              "name": "values"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_array_reducible"
+            }
+          ]
+        },
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",

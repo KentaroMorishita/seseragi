@@ -129,20 +129,6 @@ const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
     audit_spec("Debug", "Validation<E, A>", "10.4", Some(304)),
     audit_spec("Functor", "Validation<E, _>", "9.7 / 10.4", Some(304)),
     audit_spec("Applicative", "Validation<E, _>", "9.7 / 10.4", Some(304)),
-    audit_spec("Eq", "Map<K, V>", "10.5", Some(302)),
-    audit_spec("Show", "Map<K, V>", "10.5", Some(302)),
-    audit_spec("Debug", "Map<K, V>", "10.5", Some(302)),
-    audit_spec("Iterable", "Map<K, V>, (K, V)", "10.5", Some(302)),
-    audit_spec("Reducible", "Map<K, V>, (K, V)", "10.5", Some(302)),
-    audit_spec("JsonEncode", "Map<K, V>", "10.9", Some(302)),
-    audit_spec("JsonDecode", "Map<K, V>", "10.9", Some(302)),
-    audit_spec("Eq", "Set<A>", "10.5", Some(302)),
-    audit_spec("Show", "Set<A>", "10.5", Some(302)),
-    audit_spec("Debug", "Set<A>", "10.5", Some(302)),
-    audit_spec("Iterable", "Set<A>, A", "10.5", Some(302)),
-    audit_spec("Reducible", "Set<A>, A", "10.5", Some(302)),
-    audit_spec("JsonEncode", "Set<A>", "10.9", Some(302)),
-    audit_spec("JsonDecode", "Set<A>", "10.9", Some(302)),
     audit_spec("Functor", "MaybeT<M, _> where Monad<M>", "9.9", None),
     audit_spec("Applicative", "MaybeT<M, _> where Monad<M>", "9.9", None),
     audit_spec("Monad", "MaybeT<M, _> where Monad<M>", "9.9", None),
@@ -186,6 +172,7 @@ const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
 ];
 
 const UNAVAILABLE_INSTANCES: &[StandardInstanceAuditSpec] = &[
+    audit_spec("Functor", "Set", "10.5", None),
     audit_spec("Eq", "Float", "9.4", None),
     audit_spec("Ord", "Float", "9.4", None),
     audit_spec("Hash", "Float", "9.4", None),
@@ -511,8 +498,8 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 174);
-        assert_eq!(surface.builtin_instances.len(), 30);
+        assert_eq!(surface.instances.len(), 185);
+        assert_eq!(surface.builtin_instances.len(), 34);
         for identity in [
             "std/int::Hash",
             "std/bool::Hash",
@@ -549,7 +536,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 174 + 30 + 10);
+        assert_eq!(implemented.len(), 185 + 34 + 10);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()

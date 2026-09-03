@@ -4,12 +4,14 @@ use std::collections::BTreeMap;
 
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
 use crate::typed::functions::{
-    instantiated_application, instantiated_application_indexed,
-    instantiated_application_result_type, TopLevelPureFunction,
+    infer_type_parameters, instantiated_application, instantiated_application_indexed,
+    instantiated_application_result_type, substitute_type_parameters, InstantiatedApplication,
+    TopLevelPureFunction,
 };
 use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{
-    semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
+    semantic_values_are_compatible, substitute_remaining_scheme_parameters, SemanticTypeKey,
+    SemanticValueType,
 };
 use crate::typed::type_ref::{application_argument_type_from_expr, typed_type_contains_hole};
 
@@ -34,6 +36,7 @@ pub(super) fn type_callable_value(
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
     let mut application = instantiated_application(signature, context.expected(), 0, &[]);
+    refine_collection_parameters(&mut application, signature, context);
     for parameter in &mut application.parameters {
         *parameter = context.hydrate_semantic_value(parameter.clone());
     }
@@ -241,6 +244,7 @@ pub(crate) fn type_known_application_with_explicit(
             argument_nodes.len(),
             &indexed_arguments,
         );
+        refine_collection_parameters(&mut partial_application, &signature, context);
         for parameter in &mut partial_application.parameters {
             *parameter = context.hydrate_semantic_value(parameter.clone());
         }
@@ -282,6 +286,7 @@ pub(crate) fn type_known_application_with_explicit(
         argument_nodes.len(),
         &indexed_arguments,
     );
+    refine_collection_parameters(&mut application, &signature, context);
     for parameter in &mut application.parameters {
         *parameter = context.hydrate_semantic_value(parameter.clone());
     }
@@ -436,6 +441,66 @@ pub(crate) fn explicit_type_arguments(expression: &SurfaceExpr) -> Option<&[Type
         }
         _ => None,
     }
+}
+
+/// Iterable and Reducible determine their element from the collection. Reuse
+/// the same scoped/imported evidence selection as `for`, so
+/// constructors infer element/key/value types without a collection-specific
+/// array shortcut or a Map/Set-only inference rule.
+fn refine_collection_parameters(
+    application: &mut InstantiatedApplication,
+    signature: &TopLevelPureFunction,
+    context: &PureExpressionContext<'_>,
+) {
+    let mut substitutions = BTreeMap::new();
+    for (constraint, identity) in application
+        .constraints
+        .iter()
+        .zip(&application.constraint_identities)
+    {
+        // An absent identity denotes the standard-operation fallback, exactly
+        // as in select_function_call_evidence; named user traits stay distinct.
+        if !matches!(constraint.name.as_str(), "Iterable" | "Reducible")
+            || identity
+                .as_deref()
+                .is_some_and(|identity| identity != format!("std/prelude::{}", constraint.name))
+        {
+            continue;
+        }
+        let [collection, element] = constraint.arguments.as_slice() else {
+            continue;
+        };
+        let Some(actual) =
+            context.infer_standard_collection_element(&constraint.name, collection.clone())
+        else {
+            continue;
+        };
+        infer_type_parameters(
+            element,
+            &actual,
+            &signature.type_parameters,
+            &mut substitutions,
+        );
+    }
+    if substitutions.is_empty() {
+        return;
+    }
+    for parameter in &mut application.parameters {
+        *parameter = substitute_remaining_scheme_parameters(parameter, &substitutions);
+        parameter.type_ref = substitute_type_parameters(&parameter.type_ref, &substitutions);
+    }
+    application.result =
+        substitute_remaining_scheme_parameters(&application.result, &substitutions);
+    application.result.type_ref =
+        substitute_type_parameters(&application.result.type_ref, &substitutions);
+    for constraint in &mut application.constraints {
+        for argument in &mut constraint.arguments {
+            *argument = substitute_type_parameters(argument, &substitutions);
+        }
+    }
+    application
+        .resolved_type_parameters
+        .extend(substitutions.into_keys());
 }
 
 fn instantiate_explicit_signature(

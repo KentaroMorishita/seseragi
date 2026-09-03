@@ -851,6 +851,11 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 origin.end,
             )
         }
+        TypeScriptExpr::CheckedResult { value, type_ref } => format!(
+            "(({}) as {})",
+            render_typescript_expr(value),
+            render_typescript_type(type_ref)
+        ),
         TypeScriptExpr::TypeApplicationCall {
             callee,
             type_arguments,
