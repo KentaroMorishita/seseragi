@@ -1,0 +1,27 @@
+import * as ops from "./operations"
+import * as validation from "std/validation"
+import * as nonEmpty from "std/non-empty-list"
+
+type Problem deriving Show, Debug = | Problem String
+
+instance Eq<Problem> {
+  fn eq left: Problem -> right: Problem -> Bool = match (left, right) {
+    (Problem a, Problem b) -> a == b
+  }
+}
+
+pub effect fn main = do {
+  let left: validation.Validation<Problem, Int> = validation.invalid (Problem "first")
+  let right: validation.Validation<Problem, Int> = validation.invalid (Problem "second")
+  let result: validation.Validation<Problem, Int> =
+    ops.combine ((\a: Int -> \b: Int -> a + b), left, right)
+  println $ ops.display result
+  println $ ops.inspect result
+  let same: Bool = ops.same result result
+  println $ show same
+  println $ show (ops.errors result)
+  let convert: validation.Validation<Problem, Int> -> Either<nonEmpty.NonEmptyList<Problem>, Int> =
+    ops.convert
+  let converted: Either<nonEmpty.NonEmptyList<Problem>, Int> = convert result
+  println $ show converted
+}

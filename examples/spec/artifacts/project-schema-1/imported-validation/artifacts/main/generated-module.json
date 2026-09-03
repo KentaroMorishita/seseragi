@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-validation::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.validation",
+      "core.list",
+      "core.non-empty-list",
+      "core.adt",
+      "core.string",
+      "core.show.dictionary",
+      "core.show.bounded",
+      "core.debug.dictionary",
+      "core.debug.bounded",
+      "core.string.show",
+      "core.string.debug",
+      "core.bool",
+      "core.string.eq-dictionary",
+      "core.unit",
+      "effect.core.flatMap",
+      "core.validation.invalid",
+      "core.int",
+      "core.int.add",
+      "effect.console.println",
+      "core.int.show",
+      "core.int.debug",
+      "core.int.eq-dictionary",
+      "core.bool.show",
+      "core.list.show",
+      "core.either",
+      "core.non-empty-list.show",
+      "core.either.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-validation::main::Problem>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Problem",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-validation::main::Problem",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    },
+    {
+      "identity": "Debug<fixture/imported-validation::main::Problem>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Problem",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-validation::main::Problem",
+      "dictionaryExport": "__ssrg$instance$Debug$1"
+    },
+    {
+      "identity": "std/prelude::Eq<fixture/imported-validation::main::Problem>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Problem",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$2"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-validation/main.ts",
+    "sourceMap": "dist/imported-validation/main.ts.map"
+  }
+}

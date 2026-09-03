@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "target": "node-process",
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "kind": "effect-project-execution",
+  "entry": {
+    "module": "fixture/imported-validation::main",
+    "export": "main"
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.validation",
+      "core.list",
+      "core.non-empty-list",
+      "core.validation.applicative",
+      "core.validation.eq",
+      "core.bool",
+      "core.validation.show",
+      "core.string",
+      "core.validation.debug",
+      "core.adt",
+      "core.list.from-array",
+      "core.non-empty-list.to-list",
+      "core.validation.to-either",
+      "core.either",
+      "core.show.dictionary",
+      "core.show.bounded",
+      "core.debug.dictionary",
+      "core.debug.bounded",
+      "core.string.show",
+      "core.string.debug",
+      "core.string.eq-dictionary",
+      "core.unit",
+      "effect.core.flatMap",
+      "core.validation.invalid",
+      "core.int",
+      "core.int.add",
+      "effect.console.println",
+      "core.int.show",
+      "core.int.debug",
+      "core.int.eq-dictionary",
+      "core.bool.show",
+      "core.list.show",
+      "core.non-empty-list.show",
+      "core.either.show"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Invalid `[Problem first, Problem second]"
+        ],
+        "stdout": "Invalid `[Problem first, Problem second]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Invalid `[Problem \"first\", Problem \"second\"]"
+        ],
+        "stdout": "Invalid `[Problem \"first\", Problem \"second\"]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "True"
+        ],
+        "stdout": "True\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "`[Problem first, Problem second]"
+        ],
+        "stdout": "`[Problem first, Problem second]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Left `[Problem first, Problem second]"
+        ],
+        "stdout": "Left `[Problem first, Problem second]\n"
+      }
+    ]
+  }
+}

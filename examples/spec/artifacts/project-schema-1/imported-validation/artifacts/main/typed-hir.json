@@ -1,0 +1,2092 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-validation::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "validation.Validation",
+      "canonical": "std/validation::Validation",
+      "provider": {
+        "module": "std/validation",
+        "export": "Validation"
+      }
+    },
+    {
+      "spelling": "nonEmpty.NonEmptyList",
+      "canonical": "std/non-empty-list::NonEmptyList",
+      "provider": {
+        "module": "std/non-empty-list",
+        "export": "NonEmptyList"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./operations",
+      "module": "fixture/imported-validation::operations",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "combine",
+          "local": "ops.combine",
+          "canonical": "fixture/imported-validation::operations::combine",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "display",
+          "local": "ops.display",
+          "canonical": "fixture/imported-validation::operations::display",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "inspect",
+          "local": "ops.inspect",
+          "canonical": "fixture/imported-validation::operations::inspect",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "same",
+          "local": "ops.same",
+          "canonical": "fixture/imported-validation::operations::same",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "errors",
+          "local": "ops.errors",
+          "canonical": "fixture/imported-validation::operations::errors",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "convert",
+          "local": "ops.convert",
+          "canonical": "fixture/imported-validation::operations::convert",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/validation",
+      "module": "std/validation",
+      "origin": {
+        "start": 36,
+        "end": 80
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Validation",
+          "local": "validation.Validation",
+          "canonical": "std/validation::Validation",
+          "origin": {
+            "start": 48,
+            "end": 58
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "invalid",
+          "local": "validation.invalid",
+          "canonical": "std/validation::invalid",
+          "origin": {
+            "start": 48,
+            "end": 58
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/non-empty-list",
+      "module": "std/non-empty-list",
+      "origin": {
+        "start": 81,
+        "end": 127
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "NonEmptyList",
+          "local": "nonEmpty.NonEmptyList",
+          "canonical": "std/non-empty-list::NonEmptyList",
+          "origin": {
+            "start": 93,
+            "end": 101
+          }
+        }
+      ]
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-validation::main::Problem>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Problem",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-validation::main::Problem"
+      ],
+      "typeIdentity": "fixture/imported-validation::main::Problem",
+      "constraints": [],
+      "origin": {
+        "start": 129,
+        "end": 181
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/imported-validation::main::Problem",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/imported-validation::main::Problem",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::String>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<fixture/imported-validation::main::Problem>",
+      "traitIdentity": "Debug",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Problem",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-validation::main::Problem"
+      ],
+      "typeIdentity": "fixture/imported-validation::main::Problem",
+      "constraints": [],
+      "origin": {
+        "start": 129,
+        "end": 181
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/imported-validation::main::Problem",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/imported-validation::main::Problem",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Debug<std/prelude::String>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Eq<fixture/imported-validation::main::Problem>",
+      "traitIdentity": "std/prelude::Eq",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Problem",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-validation::main::Problem"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 183,
+        "end": 320
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "Problem",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 214,
+                  "end": 218
+                }
+              },
+              {
+                "kind": "named",
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "Problem",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 231,
+                  "end": 236
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Problem",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 263,
+                      "end": 267
+                    }
+                  },
+                  {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Problem",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 269,
+                      "end": 274
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Problem",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Problem",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 262,
+                  "end": 275
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "constructor",
+                        "symbol": "fixture/imported-validation::main::Problem",
+                        "argument": {
+                          "kind": "binding",
+                          "symbol": 18,
+                          "name": "a",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 291,
+                            "end": 292
+                          }
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Problem",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 283,
+                          "end": 292
+                        }
+                      },
+                      {
+                        "kind": "constructor",
+                        "symbol": "fixture/imported-validation::main::Problem",
+                        "argument": {
+                          "kind": "binding",
+                          "symbol": 19,
+                          "name": "b",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 302,
+                            "end": 303
+                          }
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Problem",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 294,
+                          "end": 303
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Problem",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Problem",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 282,
+                      "end": 304
+                    }
+                  },
+                  "body": {
+                    "kind": "binary",
+                    "operator": "==",
+                    "left": {
+                      "kind": "variable",
+                      "name": "a",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 308,
+                        "end": 309
+                      }
+                    },
+                    "right": {
+                      "kind": "variable",
+                      "name": "b",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 313,
+                        "end": 314
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/string::Eq"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 308,
+                      "end": 314
+                    }
+                  },
+                  "origin": {
+                    "start": 282,
+                    "end": 314
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 256,
+                "end": 318
+              }
+            },
+            "origin": {
+              "start": 208,
+              "end": 318
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-validation::main::Problem",
+      "name": "Problem",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-validation::main::Problem",
+          "name": "Problem",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Problem",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 167,
+            "end": 174
+          }
+        }
+      ],
+      "origin": {
+        "start": 129,
+        "end": 181
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-validation::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 322,
+        "end": 1022
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 23,
+              "name": "left",
+              "type": {
+                "kind": "external-named",
+                "name": "validation.Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 354,
+                "end": 358
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/validation::invalid",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-validation::main::Problem",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "first",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 426,
+                        "end": 433
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 418,
+                    "end": 433
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "validation.Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 398,
+                "end": 434
+              }
+            },
+            "origin": {
+              "start": 350,
+              "end": 434
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 24,
+              "name": "right",
+              "type": {
+                "kind": "external-named",
+                "name": "validation.Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 441,
+                "end": 446
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/validation::invalid",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-validation::main::Problem",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "second",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 514,
+                        "end": 522
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 506,
+                    "end": 522
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "validation.Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 486,
+                "end": 523
+              }
+            },
+            "origin": {
+              "start": 437,
+              "end": 523
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 29,
+              "name": "result",
+              "type": {
+                "kind": "external-named",
+                "name": "validation.Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 530,
+                "end": 536
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "fixture/imported-validation::operations::combine",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "lambda",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "a",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 595,
+                          "end": 596
+                        }
+                      },
+                      "body": {
+                        "kind": "lambda",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "b",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 606,
+                            "end": 607
+                          }
+                        },
+                        "body": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "left": {
+                            "kind": "variable",
+                            "name": "a",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 616,
+                              "end": 617
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "b",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 620,
+                              "end": 621
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Add",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/int::Add"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 616,
+                            "end": 621
+                          }
+                        },
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        },
+                        "origin": {
+                          "start": 605,
+                          "end": 621
+                        }
+                      },
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        }
+                      },
+                      "origin": {
+                        "start": 594,
+                        "end": 621
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "left",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "validation.Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 624,
+                        "end": 628
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "right",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "validation.Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 630,
+                        "end": 635
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        }
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "validation.Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "validation.Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 592,
+                    "end": 636
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "validation.Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 580,
+                "end": 636
+              }
+            },
+            "origin": {
+              "start": 526,
+              "end": 636
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-validation::operations::display",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "result",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "validation.Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 661,
+                        "end": 667
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "Show<fixture/imported-validation::main::Problem>"
+                      }
+                    },
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 649,
+                    "end": 667
+                  }
+                }
+              ],
+              "origin": {
+                "start": 639,
+                "end": 667
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-validation::operations::inspect",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "result",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "validation.Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 692,
+                        "end": 698
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "Debug<fixture/imported-validation::main::Problem>"
+                      }
+                    },
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Debug<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 680,
+                    "end": 698
+                  }
+                }
+              ],
+              "origin": {
+                "start": 670,
+                "end": 698
+              }
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 34,
+              "name": "same",
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 705,
+                "end": 709
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "fixture/imported-validation::operations::same",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "result",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "validation.Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Problem",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 727,
+                    "end": 733
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "result",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "validation.Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Problem",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 734,
+                    "end": 740
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Problem",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "std/prelude::Eq<fixture/imported-validation::main::Problem>"
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Eq"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 718,
+                "end": 740
+              }
+            },
+            "origin": {
+              "start": 701,
+              "end": 740
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "same",
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 758,
+                        "end": 762
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Bool>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 753,
+                    "end": 762
+                  }
+                }
+              ],
+              "origin": {
+                "start": 743,
+                "end": 762
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-validation::operations::errors",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "result",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "validation.Validation",
+                            "canonical": "std/validation::Validation",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Problem",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 792,
+                            "end": 798
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 781,
+                        "end": 798
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "List",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Problem",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/list::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Problem",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "local",
+                              "identity": "Show<fixture/imported-validation::main::Problem>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 775,
+                    "end": 799
+                  }
+                }
+              ],
+              "origin": {
+                "start": 765,
+                "end": 799
+              }
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 44,
+              "name": "convert",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "validation.Validation",
+                  "canonical": "std/validation::Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Problem",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "nonEmpty.NonEmptyList",
+                      "canonical": "std/non-empty-list::NonEmptyList",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Problem",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "start": 806,
+                "end": 813
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "fixture/imported-validation::operations::convert",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "validation.Validation",
+                  "canonical": "std/validation::Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Problem",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "nonEmpty.NonEmptyList",
+                      "canonical": "std/non-empty-list::NonEmptyList",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Problem",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "start": 904,
+                "end": 915
+              }
+            },
+            "origin": {
+              "start": 802,
+              "end": 915
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 45,
+              "name": "converted",
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "nonEmpty.NonEmptyList",
+                    "canonical": "std/non-empty-list::NonEmptyList",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Problem",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 922,
+                "end": 931
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "convert",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "result",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "validation.Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Problem",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 987,
+                    "end": 993
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "nonEmpty.NonEmptyList",
+                    "canonical": "std/non-empty-list::NonEmptyList",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Problem",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 979,
+                "end": 993
+              }
+            },
+            "origin": {
+              "start": 918,
+              "end": 993
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "converted",
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "nonEmpty.NonEmptyList",
+                        "canonical": "std/non-empty-list::NonEmptyList",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1011,
+                    "end": 1020
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Problem",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/either::Show",
+                    "typeArguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "nonEmpty.NonEmptyList",
+                        "canonical": "std/non-empty-list::NonEmptyList",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Problem",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "nonEmpty.NonEmptyList",
+                              "canonical": "std/non-empty-list::NonEmptyList",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Problem",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/non-empty-list::Show",
+                          "typeArguments": [
+                            {
+                              "kind": "named",
+                              "name": "Problem",
+                              "arguments": []
+                            }
+                          ],
+                          "evidenceArguments": [
+                            {
+                              "constraint": {
+                                "name": "Show",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Problem",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "Show<fixture/imported-validation::main::Problem>"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Int>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1006,
+                "end": 1020
+              }
+            }
+          ],
+          "origin": {
+            "start": 996,
+            "end": 1020
+          }
+        },
+        "origin": {
+          "start": 343,
+          "end": 1022
+        }
+      }
+    }
+  ]
+}

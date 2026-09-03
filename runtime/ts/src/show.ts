@@ -38,6 +38,7 @@ import type { StdinConfigError, StdinError } from "./stdin-service"
 import type { StorageArea, StorageError } from "./storage"
 import type { BufferCapacityError } from "./stream"
 import type { Either, Maybe } from "./sum"
+import type { Validation } from "./validation"
 import type { Utf8DecodeError } from "./text"
 
 export type RenderLayout = "compact" | "multiline" | "auto"
@@ -438,6 +439,30 @@ export function maybeDebug<Value>(
     value.tag === "Nothing"
       ? text("Nothing")
       : constructorDocument("Just", debugDocument(element, value.value))
+  )
+}
+
+export function validationShow<E, A>(
+  error: ShowEvidence<E>,
+  value: ShowEvidence<A>
+): Show<Validation<E, A>> {
+  const errors = nonEmptyListShow(error)
+  return defineShow((validation) =>
+    validation.tag === "Invalid"
+      ? constructorDocument("Invalid", showDocument(errors, validation.value))
+      : constructorDocument("Valid", showDocument(value, validation.value))
+  )
+}
+
+export function validationDebug<E, A>(
+  error: DebugEvidence<E>,
+  value: DebugEvidence<A>
+): Debug<Validation<E, A>> {
+  const errors = nonEmptyListDebug(error)
+  return defineDebug((validation) =>
+    validation.tag === "Invalid"
+      ? constructorDocument("Invalid", debugDocument(errors, validation.value))
+      : constructorDocument("Valid", debugDocument(value, validation.value))
   )
 }
 

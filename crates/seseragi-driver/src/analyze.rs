@@ -435,6 +435,34 @@ let result = configure { host: "localhost" } { secure: true }
     }
 
     #[test]
+    fn exposes_validation_in_the_reference_catalog() {
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/validation-reference",
+            "pub let value = 1\n",
+        ));
+        let catalog = analysis.standard_library_catalog();
+        for name in [
+            "Validation",
+            "Valid",
+            "Invalid",
+            "valid",
+            "invalid",
+            "invalidMany",
+            "fromEither",
+            "toEither",
+        ] {
+            let item = catalog
+                .iter()
+                .find(|item| item.identity == format!("std/validation::{name}"))
+                .unwrap();
+            assert_eq!(item.category, "Validation");
+            assert!(item.signature.is_some());
+            assert!(!item.description.is_empty());
+        }
+    }
+
+    #[test]
     fn exposes_process_and_non_empty_list_in_the_reference_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",

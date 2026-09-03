@@ -10,6 +10,30 @@ pub(crate) struct RuntimePreludeDictionary {
 
 const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
     RuntimePreludeDictionary {
+        semantic_identity: "std/validation::Eq",
+        runtime_feature: "core.validation.eq",
+        local_name: "_ssrg_validation_eq",
+        module: "@seseragi/runtime/validation",
+        export_name: "validationEq",
+        source_map_name: "validationEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/validation::Functor",
+        runtime_feature: "core.validation.functor",
+        local_name: "_ssrg_validation_functor",
+        module: "@seseragi/runtime/validation",
+        export_name: "validationFunctor",
+        source_map_name: "validationFunctor",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/validation::Applicative",
+        runtime_feature: "core.validation.applicative",
+        local_name: "_ssrg_validation_applicative",
+        module: "@seseragi/runtime/validation",
+        export_name: "validationApplicative",
+        source_map_name: "validationApplicative",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/int::Ord",
         runtime_feature: "core.int.ord-dictionary",
         local_name: "_ssrg_int_ord_dictionary",

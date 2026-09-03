@@ -1,0 +1,5 @@
+import * as validation from "std/validation"
+
+pub fn rejected value: validation.Validation<String, Int>
+  -> validation.Validation<String, Int> =
+  flatMap (\n: Int -> validation.valid (n + 1)) value

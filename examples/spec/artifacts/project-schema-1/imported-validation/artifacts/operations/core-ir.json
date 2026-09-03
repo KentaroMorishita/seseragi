@@ -1,0 +1,2552 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-validation::operations",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    },
+    {
+      "spelling": "Validation",
+      "canonical": "std/validation::Validation",
+      "provider": {
+        "module": "std/validation",
+        "export": "Validation"
+      }
+    },
+    {
+      "spelling": "nonEmpty.NonEmptyList",
+      "canonical": "std/non-empty-list::NonEmptyList",
+      "provider": {
+        "module": "std/non-empty-list",
+        "export": "NonEmptyList"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/validation",
+      "module": "std/validation",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 0,
+        "end": 59
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Validation",
+          "local": "Validation",
+          "canonical": "std/validation::Validation",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 9,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Valid",
+          "local": "Valid",
+          "canonical": "std/validation::Valid",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 21,
+            "end": 26
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Invalid",
+          "local": "Invalid",
+          "canonical": "std/validation::Invalid",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 28,
+            "end": 35
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "toEither",
+          "local": "validation.toEither",
+          "canonical": "std/validation::toEither",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 72,
+            "end": 82
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/validation",
+      "module": "std/validation",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 60,
+        "end": 104
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Validation",
+          "local": "Validation",
+          "canonical": "std/validation::Validation",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 9,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Valid",
+          "local": "Valid",
+          "canonical": "std/validation::Valid",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 21,
+            "end": 26
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Invalid",
+          "local": "Invalid",
+          "canonical": "std/validation::Invalid",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 28,
+            "end": 35
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "toEither",
+          "local": "validation.toEither",
+          "canonical": "std/validation::toEither",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 72,
+            "end": 82
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/non-empty-list",
+      "module": "std/non-empty-list",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 105,
+        "end": 151
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "NonEmptyList",
+          "local": "nonEmpty.NonEmptyList",
+          "canonical": "std/non-empty-list::NonEmptyList",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 117,
+            "end": 125
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "toList",
+          "local": "nonEmpty.toList",
+          "canonical": "std/non-empty-list::toList",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 117,
+            "end": 125
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-validation::operations::combine",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 153,
+        "end": 333
+      },
+      "typeParameters": [
+        "E",
+        "A",
+        "B",
+        "C"
+      ],
+      "parameters": [
+        {
+          "id": "inputs",
+          "kind": "named",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "C",
+                    "arguments": []
+                  }
+                }
+              },
+              {
+                "kind": "external-named",
+                "name": "Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              {
+                "kind": "external-named",
+                "name": "Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$265",
+            "type": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "C",
+                      "arguments": []
+                    }
+                  }
+                },
+                {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "value": {
+              "kind": "variable",
+              "name": "inputs",
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "C",
+                        "arguments": []
+                      }
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "source": "operations.ssrg",
+                "start": 293,
+                "end": 299
+              }
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 265,
+              "end": 299
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "f",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                }
+              }
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$265",
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "C",
+                          "arguments": []
+                        }
+                      }
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Validation",
+                      "canonical": "std/validation::Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Validation",
+                      "canonical": "std/validation::Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "operations.ssrg",
+                  "start": 274,
+                  "end": 290
+                }
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "C",
+                        "arguments": []
+                      }
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "f",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "C",
+                            "arguments": []
+                          }
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "operations.ssrg",
+                        "start": 275,
+                        "end": 276
+                      }
+                    },
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "operations.ssrg",
+                        "start": 278,
+                        "end": 282
+                      }
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 2
+                        }
+                      ],
+                      "origin": {
+                        "source": "operations.ssrg",
+                        "start": 284,
+                        "end": 289
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "f",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "C",
+                          "arguments": []
+                        }
+                      }
+                    },
+                    "origin": {
+                      "source": "operations.ssrg",
+                      "start": 275,
+                      "end": 276
+                    }
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 274,
+                    "end": 290
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "C",
+                    "arguments": []
+                  }
+                }
+              },
+              "origin": {
+                "source": "operations.ssrg",
+                "start": 274,
+                "end": 290
+              }
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 275,
+              "end": 276
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "left",
+            "type": {
+              "kind": "external-named",
+              "name": "Validation",
+              "canonical": "std/validation::Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$265",
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "C",
+                          "arguments": []
+                        }
+                      }
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Validation",
+                      "canonical": "std/validation::Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Validation",
+                      "canonical": "std/validation::Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "operations.ssrg",
+                  "start": 274,
+                  "end": 290
+                }
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "C",
+                        "arguments": []
+                      }
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "f",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "C",
+                            "arguments": []
+                          }
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "operations.ssrg",
+                        "start": 275,
+                        "end": 276
+                      }
+                    },
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "operations.ssrg",
+                        "start": 278,
+                        "end": 282
+                      }
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 2
+                        }
+                      ],
+                      "origin": {
+                        "source": "operations.ssrg",
+                        "start": 284,
+                        "end": 289
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "Validation",
+                      "canonical": "std/validation::Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "operations.ssrg",
+                      "start": 278,
+                      "end": 282
+                    }
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 274,
+                    "end": 290
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "external-named",
+                "name": "Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "operations.ssrg",
+                "start": 274,
+                "end": 290
+              }
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 278,
+              "end": 282
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "right",
+            "type": {
+              "kind": "external-named",
+              "name": "Validation",
+              "canonical": "std/validation::Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$265",
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "C",
+                          "arguments": []
+                        }
+                      }
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Validation",
+                      "canonical": "std/validation::Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Validation",
+                      "canonical": "std/validation::Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "operations.ssrg",
+                  "start": 274,
+                  "end": 290
+                }
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "C",
+                        "arguments": []
+                      }
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "f",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "C",
+                            "arguments": []
+                          }
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "operations.ssrg",
+                        "start": 275,
+                        "end": 276
+                      }
+                    },
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "operations.ssrg",
+                        "start": 278,
+                        "end": 282
+                      }
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 2
+                        }
+                      ],
+                      "origin": {
+                        "source": "operations.ssrg",
+                        "start": 284,
+                        "end": 289
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "Validation",
+                      "canonical": "std/validation::Validation",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "operations.ssrg",
+                      "start": 284,
+                      "end": 289
+                    }
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 274,
+                    "end": 290
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "external-named",
+                "name": "Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "operations.ssrg",
+                "start": 274,
+                "end": 290
+              }
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 284,
+              "end": 289
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "std/prelude::Applicative::apply",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Applicative::apply",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Applicative::pure",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "f",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "C",
+                            "arguments": []
+                          }
+                        }
+                      },
+                      "origin": {
+                        "source": "operations.ssrg",
+                        "start": 309,
+                        "end": 310
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Applicative",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "Validation",
+                            "canonical": "std/validation::Validation",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "E",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/validation::Applicative"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Applicative",
+                    "method": "pure"
+                  },
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "C",
+                            "arguments": []
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 304,
+                    "end": 310
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "left",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 315,
+                    "end": 319
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Applicative",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "Validation",
+                        "canonical": "std/validation::Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/validation::Applicative"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Applicative",
+                "method": "apply"
+              },
+              "type": {
+                "kind": "external-named",
+                "name": "Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "C",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "source": "operations.ssrg",
+                "start": 304,
+                "end": 319
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "right",
+              "type": {
+                "kind": "external-named",
+                "name": "Validation",
+                "canonical": "std/validation::Validation",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "operations.ssrg",
+                "start": 324,
+                "end": 329
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Applicative",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "Validation",
+                    "canonical": "std/validation::Validation",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/validation::Applicative"
+              }
+            }
+          ],
+          "traitDispatch": {
+            "traitIdentity": "std/prelude::Applicative",
+            "method": "apply"
+          },
+          "type": {
+            "kind": "external-named",
+            "name": "Validation",
+            "canonical": "std/validation::Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "C",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 304,
+            "end": 329
+          }
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 264,
+          "end": 333
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-validation::operations::same",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 335,
+        "end": 451
+      },
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            }
+          ]
+        },
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "Validation",
+            "canonical": "std/validation::Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "Validation",
+            "canonical": "std/validation::Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "external-named",
+            "name": "Validation",
+            "canonical": "std/validation::Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 438,
+            "end": 442
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "external-named",
+            "name": "Validation",
+            "canonical": "std/validation::Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 446,
+            "end": 451
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/validation::Eq",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 1
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 438,
+          "end": 451
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-validation::operations::display",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 453,
+        "end": 545
+      },
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            }
+          ]
+        },
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "Validation",
+            "canonical": "std/validation::Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Show::show",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "Validation",
+              "canonical": "std/validation::Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 540,
+              "end": 545
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Show",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/validation::Show",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 1
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Show",
+          "method": "show"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 535,
+          "end": 545
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-validation::operations::inspect",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 547,
+        "end": 642
+      },
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            }
+          ]
+        },
+        {
+          "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "Validation",
+            "canonical": "std/validation::Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Debug::debug",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "Validation",
+              "canonical": "std/validation::Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 637,
+              "end": 642
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Debug",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/validation::Debug",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 1
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Debug",
+          "method": "debug"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 631,
+          "end": 642
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-validation::operations::errors",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 644,
+        "end": 774
+      },
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "Validation",
+            "canonical": "std/validation::Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "external-named",
+            "name": "Validation",
+            "canonical": "std/validation::Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 707,
+            "end": 712
+          }
+        },
+        "scrutineeType": {
+          "kind": "external-named",
+          "name": "Validation",
+          "canonical": "std/validation::Validation",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/validation::Valid",
+                "origin": {
+                  "source": "operations.ssrg",
+                  "start": 717,
+                  "end": 724
+                }
+              }
+            ],
+            "value": {
+              "kind": "list",
+              "elements": [],
+              "type": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "operations.ssrg",
+                "start": 728,
+                "end": 731
+              }
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 717,
+              "end": 731
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/validation::Invalid",
+                "origin": {
+                  "source": "operations.ssrg",
+                  "start": 734,
+                  "end": 747
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "items",
+                "type": {
+                  "kind": "external-named",
+                  "name": "NonEmptyList",
+                  "canonical": "std/non-empty-list::NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "operations.ssrg",
+                  "start": 742,
+                  "end": 747
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/non-empty-list::toList",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "items",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "NonEmptyList",
+                    "canonical": "std/non-empty-list::NonEmptyList",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "operations.ssrg",
+                    "start": 767,
+                    "end": 772
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "operations.ssrg",
+                "start": 751,
+                "end": 772
+              }
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 734,
+              "end": 772
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 701,
+          "end": 774
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-validation::operations::convert",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 776,
+        "end": 889
+      },
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "Validation",
+            "canonical": "std/validation::Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/validation::toEither",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "Validation",
+              "canonical": "std/validation::Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 884,
+              "end": 889
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "nonEmpty.NonEmptyList",
+              "canonical": "std/non-empty-list::NonEmptyList",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 864,
+          "end": 889
+        }
+      }
+    }
+  ]
+}

@@ -6,6 +6,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/collection",
     "std/maybe",
     "std/either",
+    "std/validation",
     "std/list",
     "std/non-empty-list",
     "std/map",

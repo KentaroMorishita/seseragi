@@ -71,6 +71,7 @@ const ROUTES: &[RouteDefinition] = &[
             "std/collection",
             "std/maybe",
             "std/either",
+            "std/validation",
             "std/list",
             "std/map",
             "std/set",
@@ -306,7 +307,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 44);
+        assert_eq!(surface.modules.len(), 45);
         assert!(surface
             .modules
             .iter()

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-validation::operations",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.validation",
+      "core.list",
+      "core.non-empty-list",
+      "core.validation.applicative",
+      "core.validation.eq",
+      "core.bool",
+      "core.validation.show",
+      "core.string",
+      "core.validation.debug",
+      "core.adt",
+      "core.list.from-array",
+      "core.non-empty-list.to-list",
+      "core.validation.to-either",
+      "core.either"
+    ]
+  },
+  "exports": [
+    "combine",
+    "same",
+    "display",
+    "inspect",
+    "errors",
+    "convert"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-validation/operations.ts",
+    "sourceMap": "dist/imported-validation/operations.ts.map"
+  }
+}

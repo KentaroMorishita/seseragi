@@ -143,7 +143,7 @@ preludeの目的は「最小programが書けること」であり、「標準ラ
 - `mapLeft`, `bimap`, `fold`, `swap`
 - `sequence`, `traverse`
 
-固有operationのsignatureは次のとおりです。型とconstructorはpreludeが所有し、moduleは再定義しません。
+Maybe/Either固有operationのsignatureは次のとおりです。両型とconstructorはpreludeが所有し、moduleは再定義しません。
 
 ```seseragi
 // std/maybe
@@ -205,6 +205,22 @@ Invalid left  <*> Invalid right     = Invalid (left <> right)
 両側Invalidではleftのerror列を先、rightを後にしてNonEmptyListを連結します。したがってcurried関数へ
 左から `<*>` で入力を与えると、入力順に全errorを蓄積します。後続処理が前のsuccess値へ依存する場合は
 Eitherやdomain固有ADTへ切り替え、Validationへfail-fastなflatMapを追加しません。
+
+`Validation`、`Valid`、`Invalid`は`std/validation`が所有し、明示importして使います。
+`valid`は`Valid`、`invalidMany`は`Invalid`と同じ意味です。`invalid`と`fromEither`のLeft側は
+一件のNonEmptyListを作ります。`toEither`は全errorをそのまま保持し、最初のerrorだけへ縮約しません。
+暗黙変換や空error列を持つInvalidはありません。
+
+標準instanceはFunctor / Applicativeに加え、次の条件付きinstanceを提供します。
+
+- `Eq<Validation<E, A>> where Eq<E>, Eq<A>`
+- `Show<Validation<E, A>> where Show<E>, Show<A>`
+- `Debug<Validation<E, A>> where Debug<E>, Debug<A>`
+
+Eqはconstructorが同じ場合だけpayloadを比較し、Invalidのerror順序も比較します。Show / Debugは
+`Valid value`または`Invalid errors`の形で、payloadの既存display dictionaryとNonEmptyListの
+render documentを合成します。Debugの引用・escape、compact / multiline / autoの規則も共通です。
+Functor / Applicative自体にはerror要素のEqやSemigroup等を要求しません。
 
 ## 10.5 `std/collection`
 

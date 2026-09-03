@@ -12,5 +12,5 @@ version = "0.0.0"
 source_kind = "workspace"
 source = "."
 manifest_digest = "sha256:a9f95603493e6a24eb11a87b08e15808e5b477b92f751dd9c1321206af5e9568"
-content_digest = "sha256:a14f053501104ffc5e5701ebf38f3ee225c496b3c33de5884dbeac60899ead4e"
+content_digest = "sha256:261ce4416c34b9eccea51dd1780885b08d04d83e3b7fcefdde4cad5c63f10057"
 dependencies = []

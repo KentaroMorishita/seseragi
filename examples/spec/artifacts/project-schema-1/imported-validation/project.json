@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": ["fixture/imported-validation::operations", "fixture/imported-validation::main"],
+  "modules": [
+    {"id":"fixture/imported-validation::operations","source":"src/operations.ssrg","output":"dist/imported-validation/operations.js","artifacts":"artifacts/operations","imports":[]},
+    {"id":"fixture/imported-validation::main","source":"src/main.ssrg","output":"dist/imported-validation/main.js","artifacts":"artifacts/main","imports":[{"specifier":"./operations","module":"fixture/imported-validation::operations"}]}
+  ]
+}

@@ -8,6 +8,12 @@ pub(crate) struct RuntimeTypeImport {
 
 const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
     RuntimeTypeImport {
+        canonical: "std/validation::Validation",
+        runtime_feature: "core.validation",
+        module: "@seseragi/runtime/validation",
+        export_name: "Validation",
+    },
+    RuntimeTypeImport {
         canonical: "std/collection::ReduceStep",
         runtime_feature: "core.collection.reduce-step",
         module: "@seseragi/runtime/collection",

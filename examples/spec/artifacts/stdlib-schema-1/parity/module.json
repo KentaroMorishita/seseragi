@@ -21,6 +21,7 @@
         "std/collection",
         "std/maybe",
         "std/either",
+        "std/validation",
         "std/list",
         "std/map",
         "std/set",
@@ -707,6 +708,16 @@
         "browser"
       ],
       "interfaceFingerprint": "fnv1a64:f9db02476e731dfd",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/validation",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:6e5378aaa8f031c3",
       "implementation": "lowering-runtime",
       "route": "portable-project"
     }

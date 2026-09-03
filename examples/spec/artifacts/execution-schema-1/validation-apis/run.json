@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "target": "node-process",
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "case": "validation-apis",
+  "entry": {
+    "module": "artifact/validation-apis",
+    "export": "main",
+    "compiledModule": "../../schema-1/validation-apis/generated-module.json",
+    "typedInterface": "../../schema-1/validation-apis/typed-interface.json"
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.validation",
+      "core.list",
+      "core.non-empty-list",
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.adt",
+      "core.show.dictionary",
+      "core.show.bounded",
+      "core.debug.dictionary",
+      "core.debug.bounded",
+      "core.string.show",
+      "core.int.show",
+      "core.string.debug",
+      "core.int.debug",
+      "core.bool",
+      "core.string.eq-dictionary",
+      "core.string",
+      "core.int.eq-dictionary",
+      "core.int",
+      "core.list.from-array",
+      "core.list.functor",
+      "core.non-empty-list.to-list",
+      "core.validation.invalid",
+      "core.validation.valid",
+      "core.validation.applicative",
+      "core.validation.eq",
+      "core.validation.show",
+      "core.validation.debug",
+      "core.either",
+      "core.validation.from-either",
+      "core.validation.to-either",
+      "core.unit",
+      "core.int.add",
+      "effect.core.flatMap",
+      "core.list.iterable",
+      "effect.collection.for-each",
+      "effect.console.println",
+      "core.bool.show",
+      "core.validation.valid-constructor",
+      "core.validation.invalid-constructor",
+      "core.non-empty-list.cons",
+      "core.validation.invalid-many",
+      "core.validation.functor",
+      "core.either.left",
+      "core.either.right",
+      "core.non-empty-list.show",
+      "core.either.show",
+      "core.tuple.show"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "NameRequired"
+        ],
+        "stdout": "NameRequired\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "AgeMustBePositive"
+        ],
+        "stdout": "AgeMustBePositive\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Valid User { name: Ada, age: 37 }"
+        ],
+        "stdout": "Valid User { name: Ada, age: 37 }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Invalid `[NameRequired, AgeMustBePositive]"
+        ],
+        "stdout": "Invalid `[NameRequired, AgeMustBePositive]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "True"
+        ],
+        "stdout": "True\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Valid 3"
+        ],
+        "stdout": "Valid 3\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Invalid `[first, second]"
+        ],
+        "stdout": "Invalid `[first, second]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Invalid `[first, second, third, fourth]"
+        ],
+        "stdout": "Invalid `[first, second, third, fourth]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Invalid `[first, second]"
+        ],
+        "stdout": "Invalid `[first, second]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Invalid `[first, second]"
+        ],
+        "stdout": "Invalid `[first, second]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Valid 4"
+        ],
+        "stdout": "Valid 4\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "(Left `[single], Right 9)"
+        ],
+        "stdout": "(Left `[single], Right 9)\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Left `[first, second]"
+        ],
+        "stdout": "Left `[first, second]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "42"
+        ],
+        "stdout": "42\n"
+      }
+    ]
+  }
+}

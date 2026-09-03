@@ -1,0 +1,283 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/validation-apis",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/validation",
+      "module": "std/validation",
+      "origin": {
+        "start": 0,
+        "end": 59
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "Invalid",
+          "symbol": "std/validation::Invalid"
+        },
+        {
+          "namespace": "value",
+          "name": "Valid",
+          "symbol": "std/validation::Valid"
+        },
+        {
+          "namespace": "type",
+          "name": "Validation",
+          "symbol": "std/validation::Validation"
+        }
+      ]
+    },
+    {
+      "specifier": "std/validation",
+      "module": "std/validation",
+      "origin": {
+        "start": 60,
+        "end": 104
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/validation::*",
+          "localName": "validation"
+        }
+      ]
+    },
+    {
+      "specifier": "std/non-empty-list",
+      "module": "std/non-empty-list",
+      "origin": {
+        "start": 105,
+        "end": 151
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/non-empty-list::*",
+          "localName": "nonEmpty"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/validation-apis::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 2097,
+        "end": 3673
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<artifact/validation-apis::FormError>",
+      "providerModule": "artifact/validation-apis",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "artifact/validation-apis::FormError"
+      ],
+      "typeIdentity": "artifact/validation-apis::FormError",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "FormError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 153,
+        "end": 229
+      }
+    },
+    {
+      "identity": "Debug<artifact/validation-apis::FormError>",
+      "providerModule": "artifact/validation-apis",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "artifact/validation-apis::FormError"
+      ],
+      "typeIdentity": "artifact/validation-apis::FormError",
+      "trait": "Debug",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "FormError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 153,
+        "end": 229
+      }
+    },
+    {
+      "identity": "Show<artifact/validation-apis::User>",
+      "providerModule": "artifact/validation-apis",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "artifact/validation-apis::User"
+      ],
+      "typeIdentity": "artifact/validation-apis::User",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "User",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 446,
+        "end": 506
+      }
+    },
+    {
+      "identity": "Debug<artifact/validation-apis::User>",
+      "providerModule": "artifact/validation-apis",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "artifact/validation-apis::User"
+      ],
+      "typeIdentity": "artifact/validation-apis::User",
+      "trait": "Debug",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "User",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 446,
+        "end": 506
+      }
+    },
+    {
+      "identity": "std/prelude::Eq<artifact/validation-apis::FormError>",
+      "providerModule": "artifact/validation-apis",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "artifact/validation-apis::FormError"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "FormError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 231,
+        "end": 444
+      }
+    },
+    {
+      "identity": "std/prelude::Eq<artifact/validation-apis::User>",
+      "providerModule": "artifact/validation-apis",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "artifact/validation-apis::User"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "User",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 508,
+        "end": 630
+      }
+    }
+  ]
+}

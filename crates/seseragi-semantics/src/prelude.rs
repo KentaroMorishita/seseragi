@@ -450,6 +450,41 @@ const fn method(
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "Validation",
+        type_canonical: Some("std/validation::Validation"),
+        type_arity: 2,
+        identity: "std/validation::Eq",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Validation",
+        type_canonical: Some("std/validation::Validation"),
+        type_arity: 2,
+        identity: "std/validation::Show",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Validation",
+        type_canonical: Some("std/validation::Validation"),
+        type_arity: 2,
+        identity: "std/validation::Debug",
+    },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "Validation",
+        type_canonical: Some("std/validation::Validation"),
+        type_arity: 2,
+        identity: "std/validation::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "Validation",
+        type_canonical: Some("std/validation::Validation"),
+        type_arity: 2,
+        identity: "std/validation::Applicative",
+    },
+    PreludeStandardInstance {
         trait_name: "Ord",
         type_name: "Int",
         type_canonical: None,
@@ -2695,6 +2730,18 @@ pub(crate) fn standard_instance_constraint_specs(
             type_argument_index: 0,
         }];
     match identity {
+        "std/validation::Eq" => &[
+            PreludeStandardInstanceConstraint {
+                trait_name: "Eq",
+                type_argument_index: 0,
+            },
+            PreludeStandardInstanceConstraint {
+                trait_name: "Eq",
+                type_argument_index: 1,
+            },
+        ],
+        "std/validation::Show" => SHOW_EITHER,
+        "std/validation::Debug" => DEBUG_EITHER,
         "std/maybe::Semigroup" | "std/maybe::Monoid" => SEMIGROUP_ELEMENT,
         "std/map::JsonEncode" => JSON_ENCODE_EITHER,
         "std/map::JsonDecode" => MAP_DECODE,

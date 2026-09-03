@@ -17528,6 +17528,118 @@
       "constraints": [
         "Zero<A>"
       ]
+    },
+    {
+      "identity": "std/validation::Invalid",
+      "name": "Invalid",
+      "module": "std/validation",
+      "category": "Validation",
+      "kind": "constructor",
+      "signature": "Invalid<E, A> arg1: NonEmptyList<E> -> Validation<E, A>",
+      "description": "Constructs an invalid result from a NonEmptyList, preserving error order.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/validation::Valid",
+      "name": "Valid",
+      "module": "std/validation",
+      "category": "Validation",
+      "kind": "constructor",
+      "signature": "Valid<E, A> arg1: A -> Validation<E, A>",
+      "description": "Constructs a successful Validation value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/validation::Validation",
+      "name": "Validation",
+      "module": "std/validation",
+      "category": "Validation",
+      "kind": "opaque-type",
+      "signature": "Validation<_, _>",
+      "description": "Independent validation with a Valid value or a non-empty, source-ordered collection of errors.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/validation::fromEither",
+      "name": "fromEither",
+      "module": "std/validation",
+      "category": "Validation",
+      "kind": "function",
+      "signature": "fromEither<E, A> arg1: Either<E, A> -> Validation<E, A>",
+      "description": "Explicitly converts Left to one error and Right to Valid.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/validation::invalid",
+      "name": "invalid",
+      "module": "std/validation",
+      "category": "Validation",
+      "kind": "function",
+      "signature": "invalid<E, A> arg1: E -> Validation<E, A>",
+      "description": "Constructs an invalid result containing one error.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/validation::invalidMany",
+      "name": "invalidMany",
+      "module": "std/validation",
+      "category": "Validation",
+      "kind": "function",
+      "signature": "invalidMany<E, A> arg1: NonEmptyList<E> -> Validation<E, A>",
+      "description": "Constructs an invalid result from a NonEmptyList, preserving error order.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/validation::toEither",
+      "name": "toEither",
+      "module": "std/validation",
+      "category": "Validation",
+      "kind": "function",
+      "signature": "toEither<E, A> arg1: Validation<E, A> -> Either<NonEmptyList<E>, A>",
+      "description": "Explicitly converts Invalid to Left containing all errors, or Valid to Right.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/validation::valid",
+      "name": "valid",
+      "module": "std/validation",
+      "category": "Validation",
+      "kind": "function",
+      "signature": "valid<E, A> arg1: A -> Validation<E, A>",
+      "description": "Constructs a successful Validation value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
     }
   ]
 }

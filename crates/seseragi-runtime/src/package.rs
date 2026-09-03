@@ -310,6 +310,10 @@ const FILES: &[(&str, &str)] = &[
     ),
     ("src/sum.ts", include_str!("../../../runtime/ts/src/sum.ts")),
     (
+        "src/validation.ts",
+        include_str!("../../../runtime/ts/src/validation.ts"),
+    ),
+    (
         "src/browser/console.ts",
         include_str!("../../../runtime/ts/src/browser/console.ts"),
     ),
