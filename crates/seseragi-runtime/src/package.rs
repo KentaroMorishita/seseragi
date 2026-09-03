@@ -376,7 +376,7 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
     ),
     (
         "runtime-browser/websocket-client.ts",
-        include_str!("../../../runtime/ts/src/browser/provider-websocket.ts"),
+        include_str!("../../../runtime/providers/browser/websocket-client.ts"),
     ),
     (
         "runtime-browser/navigation.ts",
@@ -538,6 +538,48 @@ fn stage_files(package: &Path, files: &[(&str, &str)], kind: &str) -> Result<(),
 mod tests {
     use super::stage_typescript_package;
     use std::fs;
+
+    #[test]
+    fn browser_exports_share_sources_with_the_playground_registry() {
+        let repository = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        for (directory, files) in [
+            ("runtime/ts", super::FILES),
+            ("runtime/providers", super::PROVIDER_FILES),
+        ] {
+            let manifest: serde_json::Value = serde_json::from_str(
+                files
+                    .iter()
+                    .find(|(name, _)| *name == "package.json")
+                    .unwrap()
+                    .1,
+            )
+            .unwrap();
+            for (name, target) in manifest["exports"].as_object().unwrap() {
+                let (staged, source) = if directory == "runtime/ts" {
+                    let selected = target.get("browser").unwrap_or(&target["default"]);
+                    let Some(path) = selected.as_str() else {
+                        continue;
+                    };
+                    (path.trim_start_matches("./").to_owned(), path.to_owned())
+                } else {
+                    let Some(name) = name.strip_prefix("./runtime-browser/") else {
+                        continue;
+                    };
+                    let staged = target["default"].as_str().unwrap().trim_start_matches("./");
+                    assert_eq!(staged, format!("runtime-browser/{name}.ts"));
+                    (staged.to_owned(), format!("browser/{name}.ts"))
+                };
+                let embedded = files
+                    .iter()
+                    .find(|(path, _)| *path == staged)
+                    .unwrap_or_else(|| panic!("unstaged browser export {directory}/{staged}"));
+                assert_eq!(
+                    embedded.1,
+                    fs::read_to_string(repository.join(directory).join(source)).unwrap()
+                );
+            }
+        }
+    }
 
     #[test]
     fn stages_the_provider_package_exports_and_sources() {

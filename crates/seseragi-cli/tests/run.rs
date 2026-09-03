@@ -442,29 +442,34 @@ fn runs_effect_temporal_control() {
 
 #[test]
 fn runs_reproducible_random_seed() {
-    let package =
-        LockedProject::copy(&repository_root().join("examples/spec/fixtures/projects/random-seed"));
-    let first = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .arg("run")
-        .arg(&package)
-        .output()
-        .unwrap();
-    let second = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .arg("run")
-        .arg(&package)
-        .output()
-        .unwrap();
-
-    let expected = std::fs::read_to_string(package.join("expected.stdout")).unwrap();
-    for output in [first, second] {
-        assert_eq!(
-            output.status.code(),
-            Some(0),
-            "{}",
-            String::from_utf8_lossy(&output.stderr)
+    for fixture in ["random-seed", "random-shuffle"] {
+        let package = LockedProject::copy(
+            &repository_root()
+                .join("examples/spec/fixtures/projects")
+                .join(fixture),
         );
-        assert_eq!(String::from_utf8_lossy(&output.stdout), expected);
-        assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+        let first = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(&package)
+            .output()
+            .unwrap();
+        let second = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(&package)
+            .output()
+            .unwrap();
+
+        let expected = std::fs::read_to_string(package.join("expected.stdout")).unwrap();
+        for output in [first, second] {
+            assert_eq!(
+                output.status.code(),
+                Some(0),
+                "{}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            assert_eq!(String::from_utf8_lossy(&output.stdout), expected);
+            assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+        }
     }
 }
 

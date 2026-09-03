@@ -28,6 +28,15 @@ typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ま
 project compileし、全sourceがformatterのcanonical outputと一致することを確認します。
 manifest/hashだけが更新され、壊れたinteractive sourceが通過する状態にはしません。
 
+Playgroundのruntime resolverは`runtime/ts/package.json`のexportsと
+`runtime/providers/package.json`の`runtime-browser/*` exportsから生成します。
+`bun run --cwd apps/playground runtime:generate`で更新し、`runtime:check`と
+Playground testsが生成物・compiler Runtime ABIのmodule/export・browser provider
+manifestとのparityを検証します。host adapterはruntime packageの`browser` condition、
+native専用moduleは`browser: null`で宣言し、Playgroundへ別のmodule一覧を足しません。
+providerの`browser/` sourceから`runtime-browser/` packageへのprojectionはRustの
+package staging testでも同一内容を検証します。
+
 ## Dependency installation
 
 通常のscoped checkは依存installを行わず、lockfileで管理されたlocal binaryだけを使います。

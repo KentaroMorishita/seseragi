@@ -936,6 +936,48 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
   })
 
+  test("executes canonical Random shuffle through WASM and browser providers", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/random-shuffle/",
+      import.meta.url
+    )
+    const source = await Bun.file(new URL("src/main.ssrg", fixture)).text()
+    const expected = await Bun.file(new URL("expected.stdout", fixture)).text()
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing Random shuffle execution entry")
+    }
+    expect(response.modules[0]?.generated.typescript).toContain(
+      "@seseragi/runtime/random"
+    )
+    const previousSeed = globalThis.__SESERAGI_RANDOM_SEED__
+    globalThis.__SESERAGI_RANDOM_SEED__ = "42"
+    try {
+      const result = await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+      expect(result).toEqual({ stdout: expected.trimEnd(), debug: "()" })
+      expect(JSON.parse(result.stdout).sort()).toEqual([
+        1, 2, 3, 4, 5, 6, 7, 8, 9,
+      ])
+    } finally {
+      globalThis.__SESERAGI_RANDOM_SEED__ = previousSeed
+    }
+  })
+
   test("keeps intentionally unavailable Float Eq as SES-T0201", async () => {
     const source = await Bun.file(
       new URL(

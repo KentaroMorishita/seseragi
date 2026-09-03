@@ -23,8 +23,14 @@ fn staged_browser_websocket_provider_resolves_through_runtime_package() {
         fs::read_to_string(root.join("node_modules/seseragi/runtime-browser/websocket-client.ts"))
             .unwrap();
 
-    assert!(provider.contains("@seseragi/runtime/websocket-host-provider"));
+    assert!(provider.contains("@seseragi/runtime/browser/provider-websocket"));
     assert!(!provider.contains("../websocket-host-provider"));
+    let implementation = fs::read_to_string(
+        root.join("node_modules/@seseragi/runtime/src/browser/provider-websocket.ts"),
+    )
+    .unwrap();
+    assert!(implementation.contains("@seseragi/runtime/websocket-host-provider"));
+    assert!(!implementation.contains("../websocket-host-provider"));
     assert!(root
         .join("node_modules/@seseragi/runtime/src/websocket-host-provider.ts")
         .is_file());
