@@ -4,6 +4,7 @@ import { tmpdir } from "node:os"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { type Browser, chromium } from "playwright"
+import { ensureSeseragiCli, runCommand } from "./cli-test-support"
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 let browser: Browser | undefined
@@ -93,7 +94,7 @@ test("owns mount, hydration, coarse updates, cancellation, and cleanup in a brow
 test("runs promoted DOM lifecycle fixtures through the CLI web product route", async () => {
   if (browser === undefined) throw new Error("browser harness did not start")
   const directory = await mkdtemp(resolve(tmpdir(), "seseragi-dom-fixtures-"))
-  const cli = resolve(root, "target/debug/seseragi")
+  const cli = await ensureSeseragiCli()
   const fixtureRoots = {
     hydration: resolve(
       root,
@@ -115,7 +116,6 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
   }
   let fixtureServer: ReturnType<typeof Bun.serve> | undefined
   try {
-    await runCommand(["cargo", "build", "-p", "seseragi-cli"])
     await runCommand([
       cli,
       "build",
@@ -317,22 +317,4 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     fixtureServer?.stop(true)
     await rm(directory, { recursive: true, force: true })
   }
-}, 30_000)
-
-async function runCommand(command: string[]): Promise<void> {
-  const child = Bun.spawn(command, {
-    cwd: root,
-    stdout: "pipe",
-    stderr: "pipe",
-  })
-  const [exitCode, stdout, stderr] = await Promise.all([
-    child.exited,
-    new Response(child.stdout).text(),
-    new Response(child.stderr).text(),
-  ])
-  if (exitCode !== 0) {
-    throw new Error(
-      `${command.join(" ")} failed (${exitCode})\n${stdout}${stderr}`
-    )
-  }
-}
+}, 120_000)

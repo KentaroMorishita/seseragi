@@ -9,6 +9,7 @@ import { tmpdir } from "node:os"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { type Browser, chromium } from "playwright"
+import { ensureSeseragiCli, runCommand } from "./cli-test-support"
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 const fixture = resolve(
@@ -50,9 +51,9 @@ beforeAll(async () => {
     "-addext",
     "subjectAltName=IP:127.0.0.1",
   ])
-  await runCommand(["cargo", "build", "-p", "seseragi-cli"])
+  const cli = await ensureSeseragiCli()
   await runCommand([
-    resolve(root, "target/debug/seseragi"),
+    cli,
     "build",
     fixture,
     "--out-dir",
@@ -110,7 +111,7 @@ beforeAll(async () => {
     server?.listen(41289, "127.0.0.1", resolveListen)
   })
   browser = await chromium.launch()
-}, 30_000)
+}, 120_000)
 
 afterAll(async () => {
   await browser?.close()
@@ -172,21 +173,6 @@ test("selects a browser File and streams a normal-source multipart POST", async 
   expect(errors).toEqual([])
   await page.close()
 }, 30_000)
-
-async function runCommand(command: string[]): Promise<void> {
-  const process = Bun.spawn(command, {
-    cwd: root,
-    stderr: "pipe",
-    stdout: "pipe",
-  })
-  const [exitCode, stderr] = await Promise.all([
-    process.exited,
-    new Response(process.stderr).text(),
-  ])
-  if (exitCode !== 0) {
-    throw new Error(`${command.join(" ")} failed: ${stderr}`)
-  }
-}
 
 async function withTimeout<Value>(
   value: Promise<Value>,
