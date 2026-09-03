@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.48.0",
+  "version": "0.49.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -148,6 +148,10 @@
     "./sum": {
       "types": "./src/sum.ts",
       "default": "./src/sum.ts"
+    },
+    "./validation": {
+      "types": "./src/validation.ts",
+      "default": "./src/validation.ts"
     },
     "./service": {
       "types": "./src/service.ts",

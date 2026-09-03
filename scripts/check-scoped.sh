@@ -199,6 +199,8 @@ run_conformance_checks() {
   bun test runtime/ts/tests/collection.test.ts
   echo "Testing Maybe / Either operations and conditional Monoid..."
   bun test runtime/ts/tests/sum.test.ts
+  echo "Testing Validation accumulation and conditional dictionaries..."
+  bun test runtime/ts/tests/validation.test.ts
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     cargo run -p seseragi-conformance -- .

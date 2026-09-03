@@ -252,6 +252,33 @@ fn prelude_registry_methods_reach_hover_and_completion_with_canonical_signatures
         assert!(detail.contains(result), "{detail}");
         assert!(!detail.contains("Applicative<G"), "{detail}");
     }
+    for name in [
+        "Validation",
+        "Valid",
+        "Invalid",
+        "valid",
+        "invalid",
+        "invalidMany",
+        "fromEither",
+        "toEither",
+    ] {
+        let item = completions
+            .iter()
+            .find(|item| item["data"]["identity"] == format!("std/validation::{name}"))
+            .expect("Validation completion");
+        let detail = item["detail"].as_str().expect("Validation detail");
+        assert!(
+            detail.contains(if name == "Validation" {
+                "Validation<_, _>"
+            } else {
+                "Validation<E, A>"
+            }),
+            "{name}: {detail}"
+        );
+        if ["Invalid", "invalidMany", "toEither"].contains(&name) {
+            assert!(detail.contains("NonEmptyList<E>"), "{name}: {detail}");
+        }
+    }
 }
 
 #[test]

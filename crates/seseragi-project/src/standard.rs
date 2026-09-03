@@ -387,7 +387,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/transformer/reader", PORTABLE_TARGETS),
     contract_module!("std/transformer/state", PORTABLE_TARGETS),
     contract_module!("std/transformer/writer", PORTABLE_TARGETS),
-    contract_module!("std/validation", PORTABLE_TARGETS),
+    available_module!("std/validation", validation_interface, PORTABLE_TARGETS),
 ];
 
 fn console_interface() -> ModuleInterface {
@@ -6053,6 +6053,60 @@ fn sum_traversal_export(module: &str, sequence: bool, either: bool) -> Interface
     export
 }
 
+fn validation_interface() -> ModuleInterface {
+    let module = "std/validation";
+    let validation = external_type(
+        "Validation",
+        "std/validation::Validation",
+        module,
+        "Validation",
+        vec![named("E"), named("A")],
+    );
+    let errors = external_type(
+        "NonEmptyList",
+        "std/non-empty-list::NonEmptyList",
+        "std/non-empty-list",
+        "NonEmptyList",
+        vec![named("E")],
+    );
+    let mut exports = vec![
+        opaque_adt_type_export(module, "Validation", ["E", "A"]),
+        constructor_export(module, "Validation", "Valid", ["E", "A"], Some(named("A"))),
+        constructor_export(
+            module,
+            "Validation",
+            "Invalid",
+            ["E", "A"],
+            Some(errors.clone()),
+        ),
+    ];
+    for (name, argument, result) in [
+        ("valid", named("A"), validation.clone()),
+        ("invalid", named("E"), validation.clone()),
+        ("invalidMany", errors.clone(), validation.clone()),
+        (
+            "fromEither",
+            named_with("Either", vec![named("E"), named("A")]),
+            validation.clone(),
+        ),
+        (
+            "toEither",
+            validation,
+            named_with("Either", vec![errors, named("A")]),
+        ),
+    ] {
+        exports.push(function_export(
+            module,
+            name,
+            ["E", "A"],
+            vec![],
+            vec![argument],
+            result,
+        ));
+    }
+    standard_interface(module, exports)
+}
+
 fn maybe_interface() -> ModuleInterface {
     let module = "std/maybe";
     let maybe = named_with("Maybe", vec![named("A")]);
@@ -8460,6 +8514,50 @@ fn optional(name: &str, type_ref: InterfaceType) -> InterfaceRecordField {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn validation_interface_owns_its_type_constructors_and_specific_operations() {
+        let target = standard_module_target("std/validation").unwrap();
+        let exports = &target.interface().exports;
+        assert_eq!(exports.len(), 8);
+        for name in [
+            "Validation",
+            "Valid",
+            "Invalid",
+            "valid",
+            "invalid",
+            "invalidMany",
+            "fromEither",
+            "toEither",
+        ] {
+            assert!(exports
+                .iter()
+                .any(|export| export.name == name
+                    && export.symbol == format!("std/validation::{name}")));
+        }
+        for name in ["Valid", "Invalid"] {
+            let constructor = exports.iter().find(|export| export.name == name).unwrap();
+            assert_eq!(
+                constructor.constructor_of.as_deref(),
+                Some("std/validation::Validation")
+            );
+            assert_eq!(
+                constructor.scheme.type_parameters,
+                [TypeParameter::value("E"), TypeParameter::value("A")]
+            );
+        }
+        let invalid = exports
+            .iter()
+            .find(|export| export.name == "Invalid")
+            .unwrap();
+        assert!(
+            matches!(&invalid.scheme.type_ref, InterfaceType::Function { parameter, .. }
+            if matches!(parameter.as_ref(), InterfaceType::ExternalNamed { canonical, .. } if canonical == "std/non-empty-list::NonEmptyList"))
+        );
+        for name in ["map", "apply", "pure", "flatMap"] {
+            assert!(!exports.iter().any(|export| export.name == name));
+        }
+    }
 
     #[test]
     fn maybe_either_interfaces_own_only_their_specific_operations() {

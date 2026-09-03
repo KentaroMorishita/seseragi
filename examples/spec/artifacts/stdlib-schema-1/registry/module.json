@@ -77891,11 +77891,410 @@
     {
       "specifier": "std/validation",
       "identity": "std/validation",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/validation",
+        "source": "std/validation.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/validation::Validation",
+            "namespace": "type",
+            "name": "Validation",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Validation",
+                "arity": 2
+              }
+            }
+          },
+          {
+            "symbol": "std/validation::Valid",
+            "namespace": "value",
+            "name": "Valid",
+            "constructorOf": "std/validation::Validation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "providerModule": "std/validation",
+                  "providerExport": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/validation::Invalid",
+            "namespace": "value",
+            "name": "Invalid",
+            "constructorOf": "std/validation::Validation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "NonEmptyList",
+                  "canonical": "std/non-empty-list::NonEmptyList",
+                  "providerModule": "std/non-empty-list",
+                  "providerExport": "NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "providerModule": "std/validation",
+                  "providerExport": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/validation::valid",
+            "namespace": "value",
+            "name": "valid",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "providerModule": "std/validation",
+                  "providerExport": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/validation::invalid",
+            "namespace": "value",
+            "name": "invalid",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "providerModule": "std/validation",
+                  "providerExport": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/validation::invalidMany",
+            "namespace": "value",
+            "name": "invalidMany",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "NonEmptyList",
+                  "canonical": "std/non-empty-list::NonEmptyList",
+                  "providerModule": "std/non-empty-list",
+                  "providerExport": "NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "providerModule": "std/validation",
+                  "providerExport": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/validation::fromEither",
+            "namespace": "value",
+            "name": "fromEither",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "providerModule": "std/validation",
+                  "providerExport": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/validation::toEither",
+            "namespace": "value",
+            "name": "toEither",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Validation",
+                  "canonical": "std/validation::Validation",
+                  "providerModule": "std/validation",
+                  "providerExport": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "NonEmptyList",
+                      "canonical": "std/non-empty-list::NonEmptyList",
+                      "providerModule": "std/non-empty-list",
+                      "providerExport": "NonEmptyList",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     }
   ]
 }

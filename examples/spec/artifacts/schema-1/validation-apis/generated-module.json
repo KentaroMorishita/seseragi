@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "module": "artifact/validation-apis",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.validation",
+      "core.list",
+      "core.non-empty-list",
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.adt",
+      "core.show.dictionary",
+      "core.show.bounded",
+      "core.debug.dictionary",
+      "core.debug.bounded",
+      "core.string.show",
+      "core.int.show",
+      "core.string.debug",
+      "core.int.debug",
+      "core.bool",
+      "core.string.eq-dictionary",
+      "core.string",
+      "core.int.eq-dictionary",
+      "core.int",
+      "core.list.from-array",
+      "core.list.functor",
+      "core.non-empty-list.to-list",
+      "core.validation.invalid",
+      "core.validation.valid",
+      "core.validation.applicative",
+      "core.validation.eq",
+      "core.validation.show",
+      "core.validation.debug",
+      "core.either",
+      "core.validation.from-either",
+      "core.validation.to-either",
+      "core.unit",
+      "core.int.add",
+      "effect.core.flatMap",
+      "core.list.iterable",
+      "effect.collection.for-each",
+      "effect.console.println",
+      "core.bool.show",
+      "core.validation.valid-constructor",
+      "core.validation.invalid-constructor",
+      "core.non-empty-list.cons",
+      "core.validation.invalid-many",
+      "core.validation.functor",
+      "core.either.left",
+      "core.either.right",
+      "core.non-empty-list.show",
+      "core.either.show",
+      "core.tuple.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "Show<artifact/validation-apis::FormError>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "FormError",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/validation-apis::FormError",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    },
+    {
+      "identity": "Debug<artifact/validation-apis::FormError>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "FormError",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/validation-apis::FormError",
+      "dictionaryExport": "__ssrg$instance$Debug$1"
+    },
+    {
+      "identity": "Show<artifact/validation-apis::User>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "User",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/validation-apis::User",
+      "dictionaryExport": "__ssrg$instance$Show$2"
+    },
+    {
+      "identity": "Debug<artifact/validation-apis::User>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "User",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/validation-apis::User",
+      "dictionaryExport": "__ssrg$instance$Debug$3"
+    },
+    {
+      "identity": "std/prelude::Eq<artifact/validation-apis::FormError>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "FormError",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$4"
+    },
+    {
+      "identity": "std/prelude::Eq<artifact/validation-apis::User>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "User",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$5"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

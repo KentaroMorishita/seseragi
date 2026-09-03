@@ -11,6 +11,7 @@ import * as maps from "std/map"
 import * as sets from "std/set"
 import * as maybe from "std/maybe"
 import * as either from "std/either"
+import * as validation from "std/validation"
 
 fn even value: Int -> Bool = value % 2 == 0
 
@@ -38,6 +39,10 @@ let optional: Array<Maybe<Int>> = [Just 1, Just 2]
 let maybeResult = maybe.sequence optional
 let successful: Either<String, Int> = Right 2
 let eitherResult = either.mapRight (\value -> value + 1) successful
+let firstInvalid: validation.Validation<String, Int> = validation.invalid "first"
+let secondInvalid: validation.Validation<String, Int> = validation.invalid "second"
+let validationResult: validation.Validation<String, Int> =
+  pure (\a: Int -> \b: Int -> a + b) <*> firstInvalid <*> secondInvalid
 
 pub effect fn main =
-  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique} / grouped: ${maps.values grouped} / sorted: ${sorted} / size: ${invalidSize} / maybe: ${maybeResult} / either: ${eitherResult}`
+  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique} / grouped: ${maps.values grouped} / sorted: ${sorted} / size: ${invalidSize} / maybe: ${maybeResult} / either: ${eitherResult} / validation: ${validationResult}`

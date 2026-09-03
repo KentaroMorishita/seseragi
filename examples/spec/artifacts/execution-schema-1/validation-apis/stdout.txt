@@ -1,0 +1,14 @@
+NameRequired
+AgeMustBePositive
+Valid User { name: Ada, age: 37 }
+Invalid `[NameRequired, AgeMustBePositive]
+True
+Valid 3
+Invalid `[first, second]
+Invalid `[first, second, third, fourth]
+Invalid `[first, second]
+Invalid `[first, second]
+Valid 4
+(Left `[single], Right 9)
+Left `[first, second]
+42

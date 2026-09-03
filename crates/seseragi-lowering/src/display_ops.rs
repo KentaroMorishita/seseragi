@@ -22,6 +22,22 @@ macro_rules! display_dictionary {
 }
 
 const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/validation::Show",
+        runtime_feature: "core.validation.show",
+        local_name: "_ssrg_show_validationShow",
+        module: "@seseragi/runtime/show",
+        export_name: "validationShow",
+        source_map_name: "validationShow",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/validation::Debug",
+        runtime_feature: "core.validation.debug",
+        local_name: "_ssrg_debug_validationDebug",
+        module: "@seseragi/runtime/show",
+        export_name: "validationDebug",
+        source_map_name: "validationDebug",
+    },
     display_dictionary!(
         "Show<std/collection::SizeError>",
         "core.collection.size-error.show",

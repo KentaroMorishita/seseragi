@@ -1,0 +1,111 @@
+import { Invalid, Valid, Validation } from "std/validation"
+import * as validation from "std/validation"
+import * as nonEmpty from "std/non-empty-list"
+
+type FormError deriving Show, Debug =
+  | NameRequired
+  | AgeMustBePositive
+
+instance Eq<FormError> {
+  fn eq left: FormError -> right: FormError -> Bool = match (left, right) {
+    (NameRequired, NameRequired) -> True
+    (AgeMustBePositive, AgeMustBePositive) -> True
+    _ -> False
+  }
+}
+
+struct User deriving Show, Debug { name: String, age: Int, }
+
+instance Eq<User> {
+  fn eq left: User -> right: User -> Bool =
+    left.name == right.name
+    && left.age == right.age
+}
+
+fn describeResult value: Validation<FormError, User> -> List<String> = match value {
+  Valid user -> `[show user]
+  Invalid errors -> map (\error: FormError -> show error) (nonEmpty.toList errors)
+}
+
+fn makeUser name: String -> age: Int -> User = User { name, age }
+
+fn validateName name: String -> Validation<FormError, String> =
+  if name == "" then validation.invalid NameRequired else validation.valid name
+
+fn validateAge age: Int -> Validation<FormError, Int> =
+  if age > 0 then validation.valid age else validation.invalid AgeMustBePositive
+
+fn validateUser name: String -> age: Int -> Validation<FormError, User> =
+  pure makeUser
+  <*> validateName name
+  <*> validateAge age
+
+fn equal<E, A> left: Validation<E, A>
+  -> right: Validation<E, A>
+  -> Bool
+where Eq<E>, Eq<A> =
+  left == right
+
+fn display<E, A> value: Validation<E, A> -> String where Show<E>, Show<A> = show value
+
+fn inspect<E, A> value: Validation<E, A> -> String where Debug<E>, Debug<A> =
+  debug value
+
+fn genericFrom<E, A> value: Either<E, A> -> Validation<E, A> =
+  validation.fromEither value
+
+fn convert value: Either<String, Int> -> Either<nonEmpty.NonEmptyList<String>, Int> =
+  validation.toEither (validation.fromEither value)
+
+fn callable unit: Unit -> Int = {
+  let construct: (Int -> Int) -> Validation<String, Int -> Int> = validation.valid
+  let value: Validation<String, Int -> Int> = construct (\n -> n + 2)
+  match value {
+    Valid f -> f 40
+    Invalid _ -> 0
+  }
+}
+
+pub effect fn main = do {
+  let failed: Validation<FormError, User> = validateUser "" 0
+  for message <- describeResult failed { println message }
+  println $ display (validateUser "Ada" 37)
+  println $ inspect (validateUser "" 0)
+  let same: Bool = equal failed failed
+  println $ show same
+  let good: Validation<String, Int> = Valid 2
+  let bad: Validation<String, Int> = Invalid (nonEmpty.cons "first" `["second"])
+  let many: Validation<String, Int> =
+    validation.invalidMany (nonEmpty.cons "third" `["fourth"])
+  let mappedGood: Validation<String, Int> = map (\n -> n + 1) good
+  let mappedBad: Validation<String, Int> = map (\n -> n + 1) bad
+  let bothBad: Validation<String, Int> =
+    pure (\a: Int -> \b: Int -> a + b)
+    <*> bad
+    <*> many
+  let rightBad: Validation<String, Int> =
+    pure (\a: Int -> \b: Int -> a + b)
+    <*> good
+    <*> bad
+  let leftBad: Validation<String, Int> =
+    pure (\a: Int -> \b: Int -> a + b)
+    <*> bad
+    <*> good
+  let bothGood: Validation<String, Int> =
+    pure (\a: Int -> \b: Int -> a + b)
+    <*> good
+    <*> good
+  println $ display mappedGood
+  println $ display mappedBad
+  println $ display bothBad
+  println $ display rightBad
+  println $ display leftBad
+  println $ display bothGood
+  let left: Either<String, Int> = Left "single"
+  let right: Either<String, Int> = Right 9
+  let convertString: Either<String, Int> -> Either<nonEmpty.NonEmptyList<String>, Int> =
+    convert
+  println $ show (convertString left, convertString right)
+  println $ show (validation.toEither bad)
+  println $ show (callable ())
+}

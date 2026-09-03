@@ -420,6 +420,15 @@ first Leftとstrictなsource順callback評価を区別します。callable値・
 検証します。generic inferenceの既存漏れは#503へ具体例を追記し、本sliceで修正済みとは扱いません。
 詳細は`docs/reviews/issue-303/README.md`です。
 
+### 2026-09-03: #304 Validation error accumulation
+
+`std/validation` の型・constructor・5 helper と Functor / Applicative / Eq / Show / Debug を
+canonical module interface と runtime へ接続しました。Invalid の payload は NonEmptyList であり、
+複数エラーを左から右へ保持し、Monad は追加しません。native / imported generic project / WASM の
+実行 fixture と Monad 不在の negative Analysis を追加しています。Lesson 09 相当の pure validation
+合成を検証し、元 lesson の text 操作は #306、Eq deriving は #332、既存 Effect match payload の
+不具合は #510 の後続候補として分離します。詳細は `docs/reviews/issue-304/README.md` です。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。

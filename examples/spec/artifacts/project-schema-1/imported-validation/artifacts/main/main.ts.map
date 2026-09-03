@@ -1,0 +1,50 @@
+{
+  "version": 3,
+  "file": "dist/imported-validation/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-validation::main"
+  ],
+  "sourcesContent": [
+    "import * as ops from \"./operations\"\nimport * as validation from \"std/validation\"\nimport * as nonEmpty from \"std/non-empty-list\"\n\ntype Problem deriving Show, Debug = | Problem String\n\ninstance Eq<Problem> {\n  fn eq left: Problem -> right: Problem -> Bool = match (left, right) {\n    (Problem a, Problem b) -> a == b\n  }\n}\n\npub effect fn main = do {\n  let left: validation.Validation<Problem, Int> = validation.invalid (Problem \"first\")\n  let right: validation.Validation<Problem, Int> = validation.invalid (Problem \"second\")\n  let result: validation.Validation<Problem, Int> =\n    ops.combine ((\\a: Int -> \\b: Int -> a + b), left, right)\n  println $ ops.display result\n  println $ ops.inspect result\n  let same: Bool = ops.same result result\n  println $ show same\n  println $ show (ops.errors result)\n  let convert: validation.Validation<Problem, Int> -> Either<nonEmpty.NonEmptyList<Problem>, Int> =\n    ops.convert\n  let converted: Either<nonEmpty.NonEmptyList<Problem>, Int> = convert result\n  println $ show converted\n}\n"
+  ],
+  "names": [
+    "Problem",
+    "Problem",
+    "__ssrg$instance$Show$0",
+    "__ssrg$instance$Debug$1",
+    "__ssrg$instance$Eq$2",
+    "main",
+    "left",
+    "_ssrg_validation_invalid",
+    "Problem",
+    "right",
+    "_ssrg_validation_invalid",
+    "Problem",
+    "result",
+    "ops.combine",
+    "add",
+    "println",
+    "ops.display",
+    "intShow",
+    "println",
+    "ops.inspect",
+    "intDebug",
+    "same",
+    "ops.same",
+    "intEq",
+    "println",
+    "boolShow",
+    "println",
+    "listShow",
+    "ops.errors",
+    "convert",
+    "converted",
+    "convert",
+    "println",
+    "eitherShow",
+    "nonEmptyListShow",
+    "intShow"
+  ],
+  "mappings": ";;;;;;;;;AAIAA;;AAAsCC;AAAtCC;AAAAC;AAEAC;AAMAC"
+}

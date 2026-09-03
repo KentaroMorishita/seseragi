@@ -1064,6 +1064,82 @@
   ],
   "instances": [
     {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "Validation",
+      "typeConstructorCanonical": "std/validation::Validation",
+      "typeConstructorArity": 2,
+      "identity": "std/validation::Eq",
+      "constraints": [
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Validation",
+      "typeConstructorCanonical": "std/validation::Validation",
+      "typeConstructorArity": 2,
+      "identity": "std/validation::Show",
+      "constraints": [
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Validation",
+      "typeConstructorCanonical": "std/validation::Validation",
+      "typeConstructorArity": 2,
+      "identity": "std/validation::Debug",
+      "constraints": [
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "Validation",
+      "typeConstructorCanonical": "std/validation::Validation",
+      "typeConstructorArity": 2,
+      "identity": "std/validation::Functor"
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "Validation",
+      "typeConstructorCanonical": "std/validation::Validation",
+      "typeConstructorArity": 2,
+      "identity": "std/validation::Applicative"
+    },
+    {
       "trait": "Ord",
       "traitCanonical": "std/prelude::Ord",
       "typeConstructor": "Int",
@@ -3474,11 +3550,11 @@
       },
       {
         "trait": "Applicative",
-        "head": "Validation<E, _>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.7 / 10.4",
-        "trackingIssue": 304
+        "head": "Validation",
+        "identity": "std/validation::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
       },
       {
         "trait": "Applicative",
@@ -3977,11 +4053,11 @@
       },
       {
         "trait": "Debug",
-        "head": "Validation<E, A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.4",
-        "trackingIssue": 304
+        "head": "Validation",
+        "identity": "std/validation::Debug",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
       },
       {
         "trait": "Debug",
@@ -4151,11 +4227,11 @@
       },
       {
         "trait": "Eq",
-        "head": "Validation<E, A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.4",
-        "trackingIssue": 304
+        "head": "Validation",
+        "identity": "std/validation::Eq",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Eq",
@@ -4281,11 +4357,11 @@
       },
       {
         "trait": "Functor",
-        "head": "Validation<E, _>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.7 / 10.4",
-        "trackingIssue": 304
+        "head": "Validation",
+        "identity": "std/validation::Functor",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.7"
       },
       {
         "trait": "Functor",
@@ -5607,11 +5683,11 @@
       },
       {
         "trait": "Show",
-        "head": "Validation<E, A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.4",
-        "trackingIssue": 304
+        "head": "Validation",
+        "identity": "std/validation::Show",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.11"
       },
       {
         "trait": "Show",

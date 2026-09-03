@@ -1,0 +1,43 @@
+{
+  "version": 3,
+  "file": "dist/imported-validation/operations.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-validation::operations"
+  ],
+  "sourcesContent": [
+    "import { Validation, Valid, Invalid } from \"std/validation\"\nimport * as validation from \"std/validation\"\nimport * as nonEmpty from \"std/non-empty-list\"\n\npub fn combine<E, A, B, C> inputs: ((A -> B -> C), Validation<E, A>, Validation<E, B>)\n  -> Validation<E, C> = {\n    let (f, left, right) = inputs\n    pure f <*> left <*> right\n  }\n\npub fn same<E, A> left: Validation<E, A>\n  -> right: Validation<E, A>\n  -> Bool\nwhere Eq<E>, Eq<A> =\n  left == right\n\npub fn display<E, A> value: Validation<E, A> -> String where Show<E>, Show<A> =\n  show value\n\npub fn inspect<E, A> value: Validation<E, A> -> String where Debug<E>, Debug<A> =\n  debug value\n\npub fn errors<E, A> value: Validation<E, A> -> List<E> = match value {\n  Valid _ -> `[]\n  Invalid items -> nonEmpty.toList items\n}\n\npub fn convert<E, A> value: Validation<E, A> -> Either<nonEmpty.NonEmptyList<E>, A> =\n  validation.toEither value\n"
+  ],
+  "names": [
+    "combine",
+    "__ssrg$pattern$265",
+    "f",
+    "f",
+    "left",
+    "right",
+    "left",
+    "f",
+    "left",
+    "right",
+    "right",
+    "f",
+    "left",
+    "right",
+    "validationApplicative",
+    "validationApplicative",
+    "validationApplicative",
+    "same",
+    "validationEq",
+    "display",
+    "validationShow",
+    "inspect",
+    "validationDebug",
+    "errors",
+    "fromArray",
+    "items",
+    "toListNonEmpty",
+    "convert",
+    "_ssrg_validation_toEither"
+  ],
+  "mappings": ";;;;AAIAA;AAMAiB;AAMAE;AAGAE;AAGAE;AAKAI"
+}

@@ -83,9 +83,10 @@ import * as module78 from "../../../../runtime/ts/src/test.ts"
 import * as module79 from "../../../../runtime/ts/src/text.ts"
 import * as module80 from "../../../../runtime/ts/src/time.ts"
 import * as module81 from "../../../../runtime/ts/src/timezone-rules.js"
-import * as module82 from "../../../../runtime/ts/src/web-file.ts"
-import * as module83 from "../../../../runtime/ts/src/websocket.ts"
-import * as module84 from "../../../../runtime/ts/src/websocket-host-provider.ts"
+import * as module82 from "../../../../runtime/ts/src/validation.ts"
+import * as module83 from "../../../../runtime/ts/src/web-file.ts"
+import * as module84 from "../../../../runtime/ts/src/websocket.ts"
+import * as module85 from "../../../../runtime/ts/src/websocket-host-provider.ts"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": module8,
@@ -165,9 +166,10 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/text": module79,
   "@seseragi/runtime/time": module80,
   "@seseragi/runtime/timezone-rules": module81,
-  "@seseragi/runtime/web-file": module82,
-  "@seseragi/runtime/websocket": module83,
-  "@seseragi/runtime/websocket-host-provider": module84,
+  "@seseragi/runtime/validation": module82,
+  "@seseragi/runtime/web-file": module83,
+  "@seseragi/runtime/websocket": module84,
+  "@seseragi/runtime/websocket-host-provider": module85,
   "seseragi/runtime-browser/clock": module0,
   "seseragi/runtime-browser/entropy": module1,
   "seseragi/runtime-browser/http-client": module2,

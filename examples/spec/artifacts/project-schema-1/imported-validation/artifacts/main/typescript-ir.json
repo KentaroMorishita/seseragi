@@ -1,0 +1,945 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-validation::main",
+  "runtimeRequirements": [
+    "core.validation",
+    "core.list",
+    "core.non-empty-list",
+    "core.adt",
+    "core.string",
+    "core.show.dictionary",
+    "core.show.bounded",
+    "core.debug.dictionary",
+    "core.debug.bounded",
+    "core.string.show",
+    "core.string.debug",
+    "core.bool",
+    "core.string.eq-dictionary",
+    "core.unit",
+    "effect.core.flatMap",
+    "core.validation.invalid",
+    "core.int",
+    "core.int.add",
+    "effect.console.println",
+    "core.int.show",
+    "core.int.debug",
+    "core.int.eq-dictionary",
+    "core.bool.show",
+    "core.list.show",
+    "core.either",
+    "core.non-empty-list.show",
+    "core.either.show"
+  ],
+  "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
+    {
+      "feature": "core.debug.bounded",
+      "local": "_ssrg_debug_boundedDebug"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.string.debug",
+      "local": "_ssrg_debug_stringDebug"
+    },
+    {
+      "feature": "core.string.eq-dictionary",
+      "local": "_ssrg_string_eq_dictionary"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "core.validation.invalid",
+      "local": "_ssrg_validation_invalid"
+    },
+    {
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.int.debug",
+      "local": "_ssrg_debug_intDebug"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
+    },
+    {
+      "feature": "core.list.show",
+      "local": "_ssrg_show_listShow"
+    },
+    {
+      "feature": "core.non-empty-list.show",
+      "local": "_ssrg_show_nonEmptyListShow"
+    },
+    {
+      "feature": "core.either.show",
+      "local": "_ssrg_show_eitherShow"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.validation",
+      "local": "Validation"
+    },
+    {
+      "feature": "core.list",
+      "local": "List"
+    },
+    {
+      "feature": "core.non-empty-list",
+      "local": "NonEmptyList"
+    },
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
+    },
+    {
+      "feature": "core.debug.dictionary",
+      "local": "_ssrg_debug_Debug"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-validation::operations",
+      "specifier": "./operations.js",
+      "bindings": [
+        {
+          "imported": "combine",
+          "local": "ops_combine",
+          "sourceLocal": "ops.combine",
+          "canonical": "fixture/imported-validation::operations::combine",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "imported": "display",
+          "local": "ops_display",
+          "sourceLocal": "ops.display",
+          "canonical": "fixture/imported-validation::operations::display",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "imported": "inspect",
+          "local": "ops_inspect",
+          "sourceLocal": "ops.inspect",
+          "canonical": "fixture/imported-validation::operations::inspect",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "imported": "same",
+          "local": "ops_same",
+          "sourceLocal": "ops.same",
+          "canonical": "fixture/imported-validation::operations::same",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "imported": "errors",
+          "local": "ops_errors",
+          "sourceLocal": "ops.errors",
+          "canonical": "fixture/imported-validation::operations::errors",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "imported": "convert",
+          "local": "ops_convert",
+          "sourceLocal": "ops.convert",
+          "canonical": "fixture/imported-validation::operations::convert",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 35
+      }
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Problem",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Problem",
+          "tag": "Problem",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 167,
+            "end": 174
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 129,
+        "end": 181
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-validation::main::Problem>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Problem",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-validation::main::Problem",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 129,
+        "end": 181
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "Problem",
+        "variants": [
+          {
+            "name": "Problem",
+            "tag": "Problem",
+            "payload": {
+              "type": {
+                "kind": "string"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Show<std/prelude::String>",
+                "feature": "core.string.show",
+                "local": "_ssrg_show_stringShow"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<fixture/imported-validation::main::Problem>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Problem",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-validation::main::Problem",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 129,
+        "end": 181
+      },
+      "dictionaryExport": "__ssrg$instance$Debug$1",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "Problem",
+        "variants": [
+          {
+            "name": "Problem",
+            "tag": "Problem",
+            "payload": {
+              "type": {
+                "kind": "string"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Debug<std/prelude::String>",
+                "feature": "core.string.debug",
+                "local": "_ssrg_debug_stringDebug"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Eq<fixture/imported-validation::main::Problem>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Problem",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 183,
+        "end": 320
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$2",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "Problem",
+                "implicit": false
+              },
+              {
+                "name": "right",
+                "type": "Problem",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "identifier",
+                    "name": "left"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "right"
+                  }
+                ]
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "reference",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Problem",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Problem"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Problem"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "a",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "b",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_eq_dictionary"
+                    },
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "a"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "b"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "boolean"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 208,
+              "end": 318
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "left",
+            "type": {
+              "kind": "reference",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Problem",
+                  "arguments": []
+                },
+                {
+                  "kind": "number"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_validation_invalid",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "Problem",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "first"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 350,
+              "end": 434
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "right",
+            "type": {
+              "kind": "reference",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Problem",
+                  "arguments": []
+                },
+                {
+                  "kind": "number"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_validation_invalid",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "Problem",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "second"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 437,
+              "end": 523
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "result",
+            "type": {
+              "kind": "reference",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Problem",
+                  "arguments": []
+                },
+                {
+                  "kind": "number"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "ops_combine",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "lambda",
+                      "parameter": "a: number",
+                      "body": {
+                        "kind": "lambda",
+                        "parameter": "b: number",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int_add",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "a"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "b"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "left"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "right"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 526,
+              "end": 636
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "call",
+                    "callee": "ops_display",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "result"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Show$0"
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "call",
+                    "callee": "ops_inspect",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "result"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Debug$1"
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "same",
+            "type": {
+              "kind": "boolean"
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "ops_same",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "result"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "result"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Eq$2"
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_int_eq_dictionary"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "boolean"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 701,
+              "end": 740
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_boolShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "same"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_show_listShow",
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Problem",
+                        "arguments": []
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Show$0"
+                      }
+                    ]
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "ops_errors",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "result"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "convert",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "reference",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Problem",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "result": {
+                "kind": "either",
+                "error": {
+                  "kind": "reference",
+                  "name": "NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Problem",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "value": {
+                  "kind": "number"
+                }
+              }
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "ops_convert"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 802,
+              "end": 915
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "converted",
+            "type": {
+              "kind": "either",
+              "error": {
+                "kind": "reference",
+                "name": "NonEmptyList",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Problem",
+                    "arguments": []
+                  }
+                ]
+              },
+              "value": {
+                "kind": "number"
+              }
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "convert",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "result"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 918,
+              "end": 993
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "_ssrg_show_eitherShow",
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "NonEmptyList",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Problem",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_show_nonEmptyListShow",
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Problem",
+                        "arguments": []
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Show$0"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  }
+                ]
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "converted"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 322,
+        "end": 1022
+      }
+    }
+  ]
+}

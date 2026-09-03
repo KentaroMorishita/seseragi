@@ -1,0 +1,194 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-validation::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./operations",
+      "module": "fixture/imported-validation::operations",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "fixture/imported-validation::operations::*",
+          "localName": "ops"
+        }
+      ]
+    },
+    {
+      "specifier": "std/validation",
+      "module": "std/validation",
+      "origin": {
+        "start": 36,
+        "end": 80
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/validation::*",
+          "localName": "validation"
+        }
+      ]
+    },
+    {
+      "specifier": "std/non-empty-list",
+      "module": "std/non-empty-list",
+      "origin": {
+        "start": 81,
+        "end": 127
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/non-empty-list::*",
+          "localName": "nonEmpty"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-validation::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 322,
+        "end": 1022
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-validation::main::Problem>",
+      "providerModule": "fixture/imported-validation::main",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "fixture/imported-validation::main::Problem"
+      ],
+      "typeIdentity": "fixture/imported-validation::main::Problem",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Problem",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 129,
+        "end": 181
+      }
+    },
+    {
+      "identity": "Debug<fixture/imported-validation::main::Problem>",
+      "providerModule": "fixture/imported-validation::main",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "fixture/imported-validation::main::Problem"
+      ],
+      "typeIdentity": "fixture/imported-validation::main::Problem",
+      "trait": "Debug",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Problem",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 129,
+        "end": 181
+      }
+    },
+    {
+      "identity": "std/prelude::Eq<fixture/imported-validation::main::Problem>",
+      "providerModule": "fixture/imported-validation::main",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "fixture/imported-validation::main::Problem"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Problem",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 183,
+        "end": 320
+      }
+    }
+  ]
+}

@@ -1856,6 +1856,61 @@ pub fn listRest -> Maybe<List<Int>> = lists.tail `[10, 20]
     }
 
     #[test]
+    fn compiles_validation_with_standard_and_conditional_evidence() {
+        let source =
+            include_str!("../../../examples/spec/artifacts/schema-1/validation-apis/main.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/validation-apis",
+            source,
+        ))
+        .expect("canonical Validation constructors, operations and evidence must compile");
+        let output = &compiled.generated.typescript;
+        for helper in [
+            "validationEq",
+            "validationShow",
+            "validationDebug",
+            "validationFunctor",
+            "validationApplicative",
+            "_ssrg_validation_fromEither",
+            "_ssrg_validation_toEither",
+        ] {
+            assert!(output.contains(helper), "missing {helper}");
+        }
+        assert!(!output.contains("validationMonad"));
+        assert!(!output.contains("from \"std/"));
+    }
+
+    #[test]
+    fn rejects_validation_monad_and_invalid_constructor_payloads() {
+        let source =
+            include_str!("../../../examples/spec/artifacts/schema-1/validation-no-monad/main.ssrg");
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/validation-no-monad",
+            source,
+        ))
+        .unwrap_err();
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic.code == "SES-T0201"
+                    && diagnostic.message_key == "instance.missing"),
+            "{diagnostics:#?}"
+        );
+        for source in [
+            "import * as v from \"std/validation\"\npub fn bad -> v.Validation<String, Int> = v.Invalid `[\"bad\"]\n",
+            "import * as v from \"std/validation\"\npub fn bad -> v.Validation<String, Int> = v.Valid \"wrong\"\n",
+            "import * as v from \"std/validation\"\ntype Error = | Error\npub fn bad value: v.Validation<Error, Int> -> String = show value\n",
+            "import * as v from \"std/validation\"\ntype Validation<E, A> = | Local A\npub fn bad value: Validation<String, Int> -> Validation<String, Int> = map (\\n: Int -> n + 1) value\n",
+            "import { Validation, Valid, Invalid } from \"std/validation\"\npub fn bad value: Validation<String, Int> -> Int = match value { Valid n -> n }\n",
+        ] {
+            assert!(compile_module(CompileInput::new("main.ssrg", "artifact/invalid-validation", source)).is_err(), "{source}");
+        }
+    }
+
+    #[test]
     fn compiles_maybe_either_apis_with_traversable_and_conditional_monoid_evidence() {
         let source =
             include_str!("../../../examples/spec/artifacts/schema-1/maybe-either-apis/main.ssrg");

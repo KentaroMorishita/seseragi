@@ -1,0 +1,29 @@
+import { Validation, Valid, Invalid } from "std/validation"
+import * as validation from "std/validation"
+import * as nonEmpty from "std/non-empty-list"
+
+pub fn combine<E, A, B, C> inputs: ((A -> B -> C), Validation<E, A>, Validation<E, B>)
+  -> Validation<E, C> = {
+    let (f, left, right) = inputs
+    pure f <*> left <*> right
+  }
+
+pub fn same<E, A> left: Validation<E, A>
+  -> right: Validation<E, A>
+  -> Bool
+where Eq<E>, Eq<A> =
+  left == right
+
+pub fn display<E, A> value: Validation<E, A> -> String where Show<E>, Show<A> =
+  show value
+
+pub fn inspect<E, A> value: Validation<E, A> -> String where Debug<E>, Debug<A> =
+  debug value
+
+pub fn errors<E, A> value: Validation<E, A> -> List<E> = match value {
+  Valid _ -> `[]
+  Invalid items -> nonEmpty.toList items
+}
+
+pub fn convert<E, A> value: Validation<E, A> -> Either<nonEmpty.NonEmptyList<E>, A> =
+  validation.toEither value

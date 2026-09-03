@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.49.0] - 2026-09-03
+
+### Added
+
+- Connect `std/validation` with `Validation<E, A>`, `Valid`, `Invalid`, five explicit construction/conversion helpers, and canonical Functor / Applicative / Eq / Show / Debug instances. Independent errors accumulate as a non-empty list in input order; no Monad instance or implicit Either conversion is added.
+- Cover Validation through native and imported-project execution, strict generated TypeScript, Analysis / Reference / LSP, and WASM / Playground parity.
+
 ## [0.48.0] - 2026-09-03
 
 - Publish the specified `std/maybe` and `std/either` operations through the

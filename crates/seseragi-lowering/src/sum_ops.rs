@@ -2,12 +2,22 @@ use crate::collection_ops::RuntimeCollectionOperation;
 
 macro_rules! sum_operation {
     ($module:literal, $name:literal, $feature:literal, $export:literal, $arity:literal) => {
+        sum_operation!(
+            $module,
+            $name,
+            $feature,
+            $export,
+            $arity,
+            "@seseragi/runtime/sum"
+        )
+    };
+    ($module:literal, $name:literal, $feature:literal, $export:literal, $arity:literal, $runtime:literal) => {
         (
             concat!("std/", $module, "::", $name),
             RuntimeCollectionOperation {
                 runtime_feature: concat!("core.", $module, ".", $feature),
                 local_name: concat!("_ssrg_", $module, "_", $name),
-                module: "@seseragi/runtime/sum",
+                module: $runtime,
                 export_name: $export,
                 source_arity: $arity,
             },
@@ -16,6 +26,62 @@ macro_rules! sum_operation {
 }
 
 const SUM_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
+    sum_operation!(
+        "validation",
+        "Valid",
+        "valid-constructor",
+        "Valid",
+        1,
+        "@seseragi/runtime/validation"
+    ),
+    sum_operation!(
+        "validation",
+        "Invalid",
+        "invalid-constructor",
+        "Invalid",
+        1,
+        "@seseragi/runtime/validation"
+    ),
+    sum_operation!(
+        "validation",
+        "valid",
+        "valid",
+        "valid",
+        1,
+        "@seseragi/runtime/validation"
+    ),
+    sum_operation!(
+        "validation",
+        "invalid",
+        "invalid",
+        "invalid",
+        1,
+        "@seseragi/runtime/validation"
+    ),
+    sum_operation!(
+        "validation",
+        "invalidMany",
+        "invalid-many",
+        "invalidMany",
+        1,
+        "@seseragi/runtime/validation"
+    ),
+    sum_operation!(
+        "validation",
+        "fromEither",
+        "from-either",
+        "fromEither",
+        1,
+        "@seseragi/runtime/validation"
+    ),
+    sum_operation!(
+        "validation",
+        "toEither",
+        "to-either",
+        "toEither",
+        1,
+        "@seseragi/runtime/validation"
+    ),
     sum_operation!("maybe", "withDefault", "with-default", "withDefault", 2),
     sum_operation!("maybe", "orElse", "or-else", "orElse", 2),
     sum_operation!("maybe", "sequence", "sequence", "maybeSequence", 1),

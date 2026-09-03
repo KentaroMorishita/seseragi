@@ -394,6 +394,7 @@ describe("Playground project compiler boundary", () => {
             "std/map",
             "std/maybe",
             "std/either",
+            "std/validation",
             "std/set",
             "std/number",
             "std/text",
@@ -412,6 +413,7 @@ describe("Playground project compiler boundary", () => {
         "std/map::fromEntries",
         "std/maybe::sequence",
         "std/either::mapRight",
+        "std/validation::invalid",
         "std/set::fromIterable",
         "std/number::HalfEven",
         "std/text::decodeUtf8",
@@ -435,6 +437,7 @@ describe("Playground project compiler boundary", () => {
       "arrayTraversable as _ssrg_array_traversable",
       "maybeSequence as _ssrg_maybe_sequence",
       "mapRight as _ssrg_either_mapRight",
+      "invalid as _ssrg_validation_invalid",
     ]) {
       expect(response.modules[0]?.generated.typescript).toContain(binding)
     }
@@ -460,8 +463,9 @@ describe("Playground project compiler boundary", () => {
         response.entry.contract
       )
     ).toEqual({
-      stdout:
-        'array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4] / map: [["b",3],["a",1]] / set: 6 / grouped: [[3, 1], [2, 4]] / sorted: `[1, 2, 3] / size: 0 / maybe: Just [1, 2] / either: Right 3',
+      stdout: (
+        await Bun.file(new URL("expected.stdout", fixture)).text()
+      ).trimEnd(),
       debug: "()",
     })
   })
@@ -1413,6 +1417,43 @@ describe("Playground project compiler boundary", () => {
         response.entry
       )
     ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
+  })
+
+  test("executes canonical Validation accumulation and conditional dictionaries through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/validation-apis/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expected = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/validation-apis/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("validation-apis.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing Validation entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
+  })
+
+  test("rejects Monad for Validation through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/validation-no-monad/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("validation-no-monad.ssrg", source)
+    expect(response.status).not.toBe("success")
+    expect(JSON.stringify(response)).toContain("SES-T0201")
   })
 
   test("executes generic short-circuit traversal through WASM and the runtime registry", async () => {
