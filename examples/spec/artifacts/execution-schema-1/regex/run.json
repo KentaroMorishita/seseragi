@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "target": "node-process",
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "case": "regex",
+  "entry": {
+    "module": "artifact/regex",
+    "export": "main",
+    "compiledModule": "../../schema-1/regex/generated-module.json",
+    "typedInterface": "../../schema-1/regex/typed-interface.json"
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.regex.compile-error-type",
+      "core.regex.type",
+      "core.regex.match-type",
+      "core.regex.options-type",
+      "core.regex.span-type",
+      "core.regex.compile-error-kind-type",
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.bool",
+      "core.adt",
+      "core.string",
+      "core.either",
+      "core.regex.compile-error.debug",
+      "core.unit",
+      "core.regex.match.show",
+      "core.maybe.show",
+      "core.regex.find",
+      "core.maybe",
+      "core.regex.compile",
+      "core.bool.show",
+      "core.regex.is-match",
+      "core.array.show",
+      "core.regex.find-all",
+      "core.string.show",
+      "core.regex.split",
+      "core.regex.replace-all",
+      "core.regex.replace-all-with",
+      "core.string.add-dictionary",
+      "core.regex.escape",
+      "core.regex.compile-with",
+      "core.int",
+      "core.regex.options.show",
+      "core.regex.default-options",
+      "core.regex.compile-error-kind.eq",
+      "core.regex.invalid-range",
+      "core.regex.compile-error-kind.debug",
+      "core.regex.invalid-quantifier",
+      "core.regex.span.ord",
+      "core.array.iterable",
+      "effect.collection.for-each",
+      "effect.console.println"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["defaults: RegexOptions { caseInsensitive: False, multiline: False, dotMatchesNewline: False }"],
+        "stdout": "defaults: RegexOptions { caseInsensitive: False, multiline: False, dotMatchesNewline: False }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["captures: Just RegexMatch { span: RegexSpan { start: 5, end: 12 }, text: é́-aa, captures: [Just RegexCapture { span: RegexSpan { start: 5, end: 9 }, text: é́ }, Just RegexCapture { span: RegexSpan { start: 10, end: 12 }, text: aa }], named: Map [(word, Just RegexCapture { span: RegexSpan { start: 5, end: 9 }, text: é́ })] }"],
+        "stdout": "captures: Just RegexMatch { span: RegexSpan { start: 5, end: 12 }, text: é́-aa, captures: [Just RegexCapture { span: RegexSpan { start: 5, end: 9 }, text: é́ }, Just RegexCapture { span: RegexSpan { start: 10, end: 12 }, text: aa }], named: Map [(word, Just RegexCapture { span: RegexSpan { start: 5, end: 9 }, text: é́ })] }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["alternatives: Just RegexMatch { span: RegexSpan { start: 1, end: 2 }, text: a, captures: [], named: Map [] }"],
+        "stdout": "alternatives: Just RegexMatch { span: RegexSpan { start: 1, end: 2 }, text: a, captures: [], named: Map [] }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["counted: Just RegexMatch { span: RegexSpan { start: 1, end: 5 }, text: aaaa, captures: [], named: Map [] }"],
+        "stdout": "counted: Just RegexMatch { span: RegexSpan { start: 1, end: 5 }, text: aaaa, captures: [], named: Map [] }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["unicode: True / False / True"],
+        "stdout": "unicode: True / False / True\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["whitespace: True / False"],
+        "stdout": "whitespace: True / False\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["fold: True"],
+        "stdout": "fold: True\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["anchors: True / True"],
+        "stdout": "anchors: True / True\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["all-empty: [RegexMatch { span: RegexSpan { start: 0, end: 0 }, text: , captures: [], named: Map [] }, RegexMatch { span: RegexSpan { start: 1, end: 1 }, text: , captures: [], named: Map [] }, RegexMatch { span: RegexSpan { start: 5, end: 5 }, text: , captures: [], named: Map [] }]"],
+        "stdout": "all-empty: [RegexMatch { span: RegexSpan { start: 0, end: 0 }, text: , captures: [], named: Map [] }, RegexMatch { span: RegexSpan { start: 1, end: 1 }, text: , captures: [], named: Map [] }, RegexMatch { span: RegexSpan { start: 5, end: 5 }, text: , captures: [], named: Map [] }]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["split-empty: [, a, 👍, ]"],
+        "stdout": "split-empty: [, a, 👍, ]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["replace-literal: a$1b$1"],
+        "stdout": "replace-literal: a$1b$1\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["replace-with: a<12>b<3>"],
+        "stdout": "replace-with: a<12>b<3>\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["escaped: True"],
+        "stdout": "escaped: True\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["error: RegexCompileError { kind: UnsupportedRegexFeature \"backreference\", offset: 3 }"],
+        "stdout": "error: RegexCompileError { kind: UnsupportedRegexFeature \"backreference\", offset: 3 }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["kind: True / InvalidRegexQuantifier"],
+        "stdout": "kind: True / InvalidRegexQuantifier\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["span: True"],
+        "stdout": "span: True\n"
+      }
+    ]
+  }
+}

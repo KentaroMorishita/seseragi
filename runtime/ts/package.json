@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.50.0",
+  "version": "0.51.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -128,6 +128,10 @@
     "./unicode": {
       "types": "./src/unicode.ts",
       "default": "./src/unicode.ts"
+    },
+    "./regex": {
+      "types": "./src/regex.ts",
+      "default": "./src/regex.ts"
     },
     "./unicode-version": {
       "types": "./src/unicode-version.ts",

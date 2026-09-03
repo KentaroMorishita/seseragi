@@ -3432,13 +3432,12 @@
       "reason": "Maybe transformerは現行runtimeの公開教材surfaceとして完了していない。"
     },
     {
-      "surface": "bytes-decimal-regex-time-filesystem-json",
-      "designLessons": [21, 22, 23, 24, 25, 26, 28],
+      "surface": "bytes-decimal-time-filesystem-json",
+      "designLessons": [21, 22, 24, 25, 26, 28],
       "forbiddenTopics": [
         "bytes",
         "unicode-text",
         "decimal",
-        "regex",
         "timezone",
         "filesystem",
         "json-codec"
@@ -3447,7 +3446,6 @@
         "std/bytes",
         "std/text",
         "std/decimal",
-        "std/regex",
         "std/time",
         "std/fs",
         "std/path",

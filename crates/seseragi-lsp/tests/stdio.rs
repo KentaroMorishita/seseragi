@@ -290,6 +290,14 @@ fn prelude_registry_methods_reach_hover_and_completion_with_canonical_signatures
             "std/text/grapheme::slice",
             "Either<GraphemeSliceError, String>",
         ),
+        (
+            "std/regex::compile",
+            "String -> Either<RegexCompileError, Regex>",
+        ),
+        (
+            "std/regex::find",
+            "Regex -> arg2: String -> Maybe<RegexMatch>",
+        ),
     ] {
         let item = completions
             .iter()

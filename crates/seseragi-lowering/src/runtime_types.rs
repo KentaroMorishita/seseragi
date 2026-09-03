@@ -32,6 +32,48 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "UnicodeGeneralCategory",
     },
     RuntimeTypeImport {
+        canonical: "std/regex::Regex",
+        runtime_feature: "core.regex.type",
+        module: "@seseragi/runtime/regex",
+        export_name: "Regex",
+    },
+    RuntimeTypeImport {
+        canonical: "std/regex::RegexCompileErrorKind",
+        runtime_feature: "core.regex.compile-error-kind-type",
+        module: "@seseragi/runtime/regex",
+        export_name: "RegexCompileErrorKind",
+    },
+    RuntimeTypeImport {
+        canonical: "std/regex::RegexCompileError",
+        runtime_feature: "core.regex.compile-error-type",
+        module: "@seseragi/runtime/regex",
+        export_name: "RegexCompileError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/regex::RegexOptions",
+        runtime_feature: "core.regex.options-type",
+        module: "@seseragi/runtime/regex",
+        export_name: "RegexOptions",
+    },
+    RuntimeTypeImport {
+        canonical: "std/regex::RegexSpan",
+        runtime_feature: "core.regex.span-type",
+        module: "@seseragi/runtime/regex",
+        export_name: "RegexSpan",
+    },
+    RuntimeTypeImport {
+        canonical: "std/regex::RegexCapture",
+        runtime_feature: "core.regex.capture-type",
+        module: "@seseragi/runtime/regex",
+        export_name: "RegexCapture",
+    },
+    RuntimeTypeImport {
+        canonical: "std/regex::RegexMatch",
+        runtime_feature: "core.regex.match-type",
+        module: "@seseragi/runtime/regex",
+        export_name: "RegexMatch",
+    },
+    RuntimeTypeImport {
         canonical: "std/validation::Validation",
         runtime_feature: "core.validation",
         module: "@seseragi/runtime/validation",

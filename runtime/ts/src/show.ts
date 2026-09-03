@@ -32,6 +32,14 @@ import { type PathError, render as renderPath } from "./path"
 import type { ProcessError, ProcessSignal } from "./process"
 import type { QueueClosed, QueueCreateError } from "./queue"
 import type { RandomConfigError, RandomRangeError } from "./random"
+import type {
+  RegexCapture,
+  RegexCompileError,
+  RegexCompileErrorKind,
+  RegexMatch,
+  RegexOptions,
+  RegexSpan,
+} from "./regex"
 import type { SemaphoreCreateError } from "./semaphore"
 import { type Set as PersistentSet, toArray as setValues } from "./set"
 import type { StdinConfigError, StdinError } from "./stdin-service"
@@ -1224,6 +1232,163 @@ export const unicodeGeneralCategoryShow = defineShow(
 )
 export const unicodeGeneralCategoryDebug = defineDebug(
   (value: UnicodeGeneralCategory) => text(value.tag)
+)
+
+function recordFieldsDocument(
+  name: string,
+  fields: ReadonlyArray<readonly [string, RenderDocument]>
+): RenderDocument {
+  return delimited(
+    `${name} {`,
+    fields.map(([field, value]) => concat([text(`${field}: `), value])),
+    "}",
+    ",",
+    true
+  )
+}
+
+function regexCompileErrorKindDocument(
+  value: RegexCompileErrorKind,
+  debug: boolean
+): RenderDocument {
+  switch (value.tag) {
+    case "UnexpectedRegexEnd":
+    case "InvalidRegexEscape":
+    case "InvalidRegexRange":
+    case "InvalidRegexQuantifier":
+      return text(value.tag)
+    case "UnexpectedRegexToken":
+      return constructorDocument(
+        value.tag,
+        debug
+          ? debugDocument(charDebug, value.value)
+          : showDocument(charShow, value.value)
+      )
+    case "DuplicateCaptureName":
+    case "UnsupportedRegexFeature":
+      return constructorDocument(
+        value.tag,
+        debug
+          ? debugDocument(stringDebug, value.value)
+          : showDocument(stringShow, value.value)
+      )
+  }
+}
+
+export const regexCompileErrorKindShow = defineShow(
+  (value: RegexCompileErrorKind) => regexCompileErrorKindDocument(value, false)
+)
+export const regexCompileErrorKindDebug = defineDebug(
+  (value: RegexCompileErrorKind) => regexCompileErrorKindDocument(value, true)
+)
+
+function regexCompileErrorDocument(
+  value: RegexCompileError,
+  debug: boolean
+): RenderDocument {
+  return recordFieldsDocument("RegexCompileError", [
+    ["kind", regexCompileErrorKindDocument(value.kind, debug)],
+    ["offset", text(String(value.offset))],
+  ])
+}
+
+export const regexCompileErrorShow = defineShow((value: RegexCompileError) =>
+  regexCompileErrorDocument(value, false)
+)
+export const regexCompileErrorDebug = defineDebug((value: RegexCompileError) =>
+  regexCompileErrorDocument(value, true)
+)
+
+function regexOptionsDocument(value: RegexOptions): RenderDocument {
+  return recordFieldsDocument("RegexOptions", [
+    ["caseInsensitive", text(value.caseInsensitive ? "True" : "False")],
+    ["multiline", text(value.multiline ? "True" : "False")],
+    ["dotMatchesNewline", text(value.dotMatchesNewline ? "True" : "False")],
+  ])
+}
+
+export const regexOptionsShow = defineShow(regexOptionsDocument)
+export const regexOptionsDebug = defineDebug(regexOptionsDocument)
+
+function regexSpanDocument(value: RegexSpan): RenderDocument {
+  return recordFieldsDocument("RegexSpan", [
+    ["start", text(String(value.start))],
+    ["end", text(String(value.end))],
+  ])
+}
+
+export const regexSpanShow = defineShow(regexSpanDocument)
+export const regexSpanDebug = defineDebug(regexSpanDocument)
+
+function regexCaptureDocument(
+  value: RegexCapture,
+  debug: boolean
+): RenderDocument {
+  return recordFieldsDocument("RegexCapture", [
+    ["span", regexSpanDocument(value.span)],
+    [
+      "text",
+      debug
+        ? debugDocument(stringDebug, value.text)
+        : showDocument(stringShow, value.text),
+    ],
+  ])
+}
+
+export const regexCaptureShow = defineShow((value: RegexCapture) =>
+  regexCaptureDocument(value, false)
+)
+export const regexCaptureDebug = defineDebug((value: RegexCapture) =>
+  regexCaptureDocument(value, true)
+)
+
+function regexMatchDocument(value: RegexMatch, debug: boolean): RenderDocument {
+  const capture = debug ? regexCaptureDebug : regexCaptureShow
+  const maybeCapture = debug ? maybeDebug(capture) : maybeShow(capture)
+  const captures = debug ? arrayDebug(maybeCapture) : arrayShow(maybeCapture)
+  const named = debug
+    ? mapDebug(stringDebug, maybeCapture)
+    : mapShow(stringShow, maybeCapture)
+  return recordFieldsDocument("RegexMatch", [
+    ["span", regexSpanDocument(value.span)],
+    [
+      "text",
+      debug
+        ? debugDocument(stringDebug, value.text)
+        : showDocument(stringShow, value.text),
+    ],
+    [
+      "captures",
+      debug
+        ? debugDocument(
+            captures as Debug<ReadonlyArray<Maybe<RegexCapture>>>,
+            value.captures
+          )
+        : showDocument(
+            captures as Show<ReadonlyArray<Maybe<RegexCapture>>>,
+            value.captures
+          ),
+    ],
+    [
+      "named",
+      debug
+        ? debugDocument(
+            named as Debug<PersistentMap<string, Maybe<RegexCapture>>>,
+            value.named
+          )
+        : showDocument(
+            named as Show<PersistentMap<string, Maybe<RegexCapture>>>,
+            value.named
+          ),
+    ],
+  ])
+}
+
+export const regexMatchShow = defineShow((value: RegexMatch) =>
+  regexMatchDocument(value, false)
+)
+export const regexMatchDebug = defineDebug((value: RegexMatch) =>
+  regexMatchDocument(value, true)
 )
 
 function utf8DecodeErrorDocument(error: Utf8DecodeError): RenderDocument {

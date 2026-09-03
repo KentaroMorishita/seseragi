@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/regex",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/regex",
+      "module": "std/regex",
+      "origin": {
+        "start": 0,
+        "end": 51
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "RegexOptions",
+          "symbol": "std/regex::RegexOptions"
+        },
+        {
+          "namespace": "type",
+          "name": "RegexSpan",
+          "symbol": "std/regex::RegexSpan"
+        }
+      ]
+    },
+    {
+      "specifier": "std/regex",
+      "module": "std/regex",
+      "origin": {
+        "start": 52,
+        "end": 86
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/regex::*",
+          "localName": "regex"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/regex::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 4005,
+        "end": 4108
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

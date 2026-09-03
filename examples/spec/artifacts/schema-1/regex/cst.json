@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 1237,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 15,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 15,
+        "endToken": 28,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 28,
+        "endToken": 67,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 28,
+            "endToken": 67,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 67,
+        "endToken": 126,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 67,
+            "endToken": 126,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 126,
+        "endToken": 156,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 126,
+            "endToken": 156,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 156,
+        "endToken": 212,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 156,
+            "endToken": 212,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 212,
+        "endToken": 287,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 212,
+            "endToken": 287,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 287,
+        "endToken": 1195,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 287,
+            "endToken": 1195,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 1195,
+        "endToken": 1237,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 1195,
+            "endToken": 1196,
+            "children": []
+          },
+          {
+            "kind": "effect-fn-decl",
+            "startToken": 1197,
+            "endToken": 1237,
+            "children": [
+              {
+                "kind": "effect-signature",
+                "startToken": 1197,
+                "endToken": 1207,
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

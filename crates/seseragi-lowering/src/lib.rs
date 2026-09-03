@@ -13,6 +13,7 @@ mod numeric_ops;
 mod prelude_ops;
 mod provider_service_ops;
 mod range_ops;
+mod regex_ops;
 mod runtime_modules;
 mod runtime_types;
 mod signal_ops;

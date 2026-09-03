@@ -1,0 +1,5055 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/regex",
+      "items": [
+        {
+          "namespace": "value",
+          "name": "RegexOptions",
+          "nameSpan": {
+            "start": 9,
+            "end": 21
+          }
+        },
+        {
+          "namespace": "value",
+          "name": "RegexSpan",
+          "nameSpan": {
+            "start": 23,
+            "end": 32
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 51
+      }
+    },
+    {
+      "specifier": "std/regex",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 59,
+            "end": 60
+          },
+          "alias": "regex",
+          "aliasSpan": {
+            "start": 64,
+            "end": 69
+          }
+        }
+      ],
+      "span": {
+        "start": 52,
+        "end": 86
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "same",
+      "nameSpan": {
+        "start": 91,
+        "end": 95
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 99,
+            "end": 103
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 105,
+              "end": 106
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 110,
+            "end": 115
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 117,
+              "end": 118
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 122,
+          "end": 126
+        }
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "nameSpan": {
+            "start": 133,
+            "end": 135
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 136,
+                "end": 137
+              }
+            }
+          ],
+          "span": {
+            "start": 133,
+            "end": 138
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "operatorSpan": {
+          "start": 146,
+          "end": 148
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 141,
+            "end": 145
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 149,
+            "end": 154
+          }
+        },
+        "span": {
+          "start": 141,
+          "end": 154
+        }
+      },
+      "span": {
+        "start": 88,
+        "end": 154
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "earlier",
+      "nameSpan": {
+        "start": 159,
+        "end": 166
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 170,
+            "end": 174
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 176,
+              "end": 177
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 181,
+            "end": 186
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 188,
+              "end": 189
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 193,
+          "end": 197
+        }
+      },
+      "constraints": [
+        {
+          "name": "Ord",
+          "nameSpan": {
+            "start": 204,
+            "end": 207
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 208,
+                "end": 209
+              }
+            }
+          ],
+          "span": {
+            "start": 204,
+            "end": 210
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "compare",
+              "span": {
+                "start": 219,
+                "end": 226
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "left",
+              "span": {
+                "start": 227,
+                "end": 231
+              }
+            },
+            "span": {
+              "start": 219,
+              "end": 231
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "right",
+            "span": {
+              "start": 232,
+              "end": 237
+            }
+          },
+          "span": {
+            "start": 219,
+            "end": 237
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Less",
+              "nameSpan": {
+                "start": 242,
+                "end": 246
+              },
+              "span": {
+                "start": 242,
+                "end": 246
+              }
+            },
+            "body": {
+              "kind": "boolean",
+              "value": true,
+              "span": {
+                "start": 250,
+                "end": 254
+              }
+            },
+            "span": {
+              "start": 242,
+              "end": 254
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 257,
+                "end": 258
+              }
+            },
+            "body": {
+              "kind": "boolean",
+              "value": false,
+              "span": {
+                "start": 262,
+                "end": 267
+              }
+            },
+            "span": {
+              "start": 257,
+              "end": 267
+            }
+          }
+        ],
+        "span": {
+          "start": 213,
+          "end": 269
+        }
+      },
+      "span": {
+        "start": 156,
+        "end": 269
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "inspect",
+      "nameSpan": {
+        "start": 274,
+        "end": 281
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 285,
+            "end": 290
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 292,
+              "end": 293
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 297,
+          "end": 303
+        }
+      },
+      "constraints": [
+        {
+          "name": "Debug",
+          "nameSpan": {
+            "start": 310,
+            "end": 315
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 316,
+                "end": 317
+              }
+            }
+          ],
+          "span": {
+            "start": 310,
+            "end": 318
+          }
+        }
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 321,
+            "end": 326
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 327,
+            "end": 332
+          }
+        },
+        "span": {
+          "start": 321,
+          "end": 332
+        }
+      },
+      "span": {
+        "start": 271,
+        "end": 332
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "describeCompile",
+      "nameSpan": {
+        "start": 337,
+        "end": 352
+      },
+      "parameters": [
+        {
+          "name": "result",
+          "nameSpan": {
+            "start": 353,
+            "end": 359
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "regex.RegexCompileError",
+                "span": {
+                  "start": 368,
+                  "end": 391
+                }
+              },
+              {
+                "kind": "named",
+                "name": "regex.Regex",
+                "span": {
+                  "start": 393,
+                  "end": 404
+                }
+              }
+            ],
+            "span": {
+              "start": 361,
+              "end": 405
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 409,
+          "end": 415
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "result",
+          "span": {
+            "start": 426,
+            "end": 432
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 439,
+                "end": 443
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "nameSpan": {
+                  "start": 444,
+                  "end": 449
+                },
+                "span": {
+                  "start": 444,
+                  "end": 449
+                }
+              },
+              "span": {
+                "start": 439,
+                "end": 449
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "inspect",
+                "span": {
+                  "start": 453,
+                  "end": 460
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "span": {
+                  "start": 461,
+                  "end": 466
+                }
+              },
+              "span": {
+                "start": 453,
+                "end": 466
+              }
+            },
+            "span": {
+              "start": 439,
+              "end": 466
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 471,
+                "end": 476
+              },
+              "argument": {
+                "kind": "name",
+                "name": "_pattern",
+                "nameSpan": {
+                  "start": 477,
+                  "end": 485
+                },
+                "span": {
+                  "start": 477,
+                  "end": 485
+                }
+              },
+              "span": {
+                "start": 471,
+                "end": 485
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"unexpected success\"",
+              "span": {
+                "start": 489,
+                "end": 509
+              }
+            },
+            "span": {
+              "start": 471,
+              "end": 509
+            }
+          }
+        ],
+        "span": {
+          "start": 420,
+          "end": 513
+        }
+      },
+      "span": {
+        "start": 334,
+        "end": 513
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "useRegex",
+      "nameSpan": {
+        "start": 518,
+        "end": 526
+      },
+      "parameters": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 527,
+            "end": 533
+          },
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "regex.Regex",
+              "span": {
+                "start": 536,
+                "end": 547
+              }
+            },
+            "result": {
+              "kind": "named",
+              "name": "String",
+              "span": {
+                "start": 551,
+                "end": 557
+              }
+            },
+            "span": {
+              "start": 536,
+              "end": 557
+            }
+          }
+        },
+        {
+          "name": "result",
+          "nameSpan": {
+            "start": 564,
+            "end": 570
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "regex.RegexCompileError",
+                "span": {
+                  "start": 579,
+                  "end": 602
+                }
+              },
+              {
+                "kind": "named",
+                "name": "regex.Regex",
+                "span": {
+                  "start": 604,
+                  "end": 615
+                }
+              }
+            ],
+            "span": {
+              "start": 572,
+              "end": 616
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 622,
+          "end": 628
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "result",
+          "span": {
+            "start": 639,
+            "end": 645
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 652,
+                "end": 656
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "nameSpan": {
+                  "start": 657,
+                  "end": 662
+                },
+                "span": {
+                  "start": 657,
+                  "end": 662
+                }
+              },
+              "span": {
+                "start": 652,
+                "end": 662
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "inspect",
+                "span": {
+                  "start": 666,
+                  "end": 673
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "span": {
+                  "start": 674,
+                  "end": 679
+                }
+              },
+              "span": {
+                "start": 666,
+                "end": 679
+              }
+            },
+            "span": {
+              "start": 652,
+              "end": 679
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 684,
+                "end": 689
+              },
+              "argument": {
+                "kind": "name",
+                "name": "pattern",
+                "nameSpan": {
+                  "start": 690,
+                  "end": 697
+                },
+                "span": {
+                  "start": 690,
+                  "end": 697
+                }
+              },
+              "span": {
+                "start": 684,
+                "end": 697
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "render",
+                "span": {
+                  "start": 701,
+                  "end": 707
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "pattern",
+                "span": {
+                  "start": 708,
+                  "end": 715
+                }
+              },
+              "span": {
+                "start": 701,
+                "end": 715
+              }
+            },
+            "span": {
+              "start": 684,
+              "end": 715
+            }
+          }
+        ],
+        "span": {
+          "start": 633,
+          "end": 719
+        }
+      },
+      "span": {
+        "start": 515,
+        "end": 719
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "exercise",
+      "nameSpan": {
+        "start": 724,
+        "end": 732
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 742,
+              "end": 748
+            }
+          }
+        ],
+        "span": {
+          "start": 736,
+          "end": 749
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "captures",
+              "nameSpan": {
+                "start": 760,
+                "end": 768
+              },
+              "span": {
+                "start": 760,
+                "end": 768
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 822,
+                    "end": 830
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 833,
+                        "end": 840
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 842,
+                          "end": 853
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 857,
+                          "end": 861
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 863,
+                                  "end": 868
+                                }
+                              },
+                              "field": "find",
+                              "fieldSpan": {
+                                "start": 869,
+                                "end": 873
+                              },
+                              "span": {
+                                "start": 863,
+                                "end": 873
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 874,
+                                "end": 881
+                              }
+                            },
+                            "span": {
+                              "start": 863,
+                              "end": 881
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"👍 é́-aa\"",
+                            "span": {
+                              "start": 882,
+                              "end": 896
+                            }
+                          },
+                          "span": {
+                            "start": 863,
+                            "end": 896
+                          }
+                        },
+                        "span": {
+                          "start": 862,
+                          "end": 897
+                        }
+                      },
+                      "span": {
+                        "start": 857,
+                        "end": 897
+                      }
+                    },
+                    "span": {
+                      "start": 832,
+                      "end": 897
+                    }
+                  },
+                  "span": {
+                    "start": 831,
+                    "end": 898
+                  }
+                },
+                "span": {
+                  "start": 822,
+                  "end": 898
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 775,
+                      "end": 780
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 781,
+                    "end": 788
+                  },
+                  "span": {
+                    "start": 775,
+                    "end": 788
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"(?<word>\\\\w+)(?:-(a+))?\"",
+                  "span": {
+                    "start": 789,
+                    "end": 814
+                  }
+                },
+                "span": {
+                  "start": 775,
+                  "end": 814
+                }
+              },
+              "span": {
+                "start": 775,
+                "end": 898
+              }
+            },
+            "span": {
+              "start": 753,
+              "end": 898
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "alternatives",
+              "nameSpan": {
+                "start": 905,
+                "end": 917
+              },
+              "span": {
+                "start": 905,
+                "end": 917
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 952,
+                    "end": 960
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 963,
+                        "end": 970
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 972,
+                          "end": 983
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 987,
+                          "end": 991
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 993,
+                                  "end": 998
+                                }
+                              },
+                              "field": "find",
+                              "fieldSpan": {
+                                "start": 999,
+                                "end": 1003
+                              },
+                              "span": {
+                                "start": 993,
+                                "end": 1003
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 1004,
+                                "end": 1011
+                              }
+                            },
+                            "span": {
+                              "start": 993,
+                              "end": 1011
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"xaa\"",
+                            "span": {
+                              "start": 1012,
+                              "end": 1017
+                            }
+                          },
+                          "span": {
+                            "start": 993,
+                            "end": 1017
+                          }
+                        },
+                        "span": {
+                          "start": 992,
+                          "end": 1018
+                        }
+                      },
+                      "span": {
+                        "start": 987,
+                        "end": 1018
+                      }
+                    },
+                    "span": {
+                      "start": 962,
+                      "end": 1018
+                    }
+                  },
+                  "span": {
+                    "start": 961,
+                    "end": 1019
+                  }
+                },
+                "span": {
+                  "start": 952,
+                  "end": 1019
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 924,
+                      "end": 929
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 930,
+                    "end": 937
+                  },
+                  "span": {
+                    "start": 924,
+                    "end": 937
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"a|aa\"",
+                  "span": {
+                    "start": 938,
+                    "end": 944
+                  }
+                },
+                "span": {
+                  "start": 924,
+                  "end": 944
+                }
+              },
+              "span": {
+                "start": 924,
+                "end": 1019
+              }
+            },
+            "span": {
+              "start": 899,
+              "end": 1019
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "counted",
+              "nameSpan": {
+                "start": 1026,
+                "end": 1033
+              },
+              "span": {
+                "start": 1026,
+                "end": 1033
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 1070,
+                    "end": 1078
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 1081,
+                        "end": 1088
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 1090,
+                          "end": 1101
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 1105,
+                          "end": 1109
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 1111,
+                                  "end": 1116
+                                }
+                              },
+                              "field": "find",
+                              "fieldSpan": {
+                                "start": 1117,
+                                "end": 1121
+                              },
+                              "span": {
+                                "start": 1111,
+                                "end": 1121
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 1122,
+                                "end": 1129
+                              }
+                            },
+                            "span": {
+                              "start": 1111,
+                              "end": 1129
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"xaaaaa\"",
+                            "span": {
+                              "start": 1130,
+                              "end": 1138
+                            }
+                          },
+                          "span": {
+                            "start": 1111,
+                            "end": 1138
+                          }
+                        },
+                        "span": {
+                          "start": 1110,
+                          "end": 1139
+                        }
+                      },
+                      "span": {
+                        "start": 1105,
+                        "end": 1139
+                      }
+                    },
+                    "span": {
+                      "start": 1080,
+                      "end": 1139
+                    }
+                  },
+                  "span": {
+                    "start": 1079,
+                    "end": 1140
+                  }
+                },
+                "span": {
+                  "start": 1070,
+                  "end": 1140
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 1040,
+                      "end": 1045
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 1046,
+                    "end": 1053
+                  },
+                  "span": {
+                    "start": 1040,
+                    "end": 1053
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"a{2,4}\"",
+                  "span": {
+                    "start": 1054,
+                    "end": 1062
+                  }
+                },
+                "span": {
+                  "start": 1040,
+                  "end": 1062
+                }
+              },
+              "span": {
+                "start": 1040,
+                "end": 1140
+              }
+            },
+            "span": {
+              "start": 1020,
+              "end": 1140
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "unicodeWord",
+              "nameSpan": {
+                "start": 1147,
+                "end": 1158
+              },
+              "span": {
+                "start": 1147,
+                "end": 1158
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 1195,
+                    "end": 1203
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 1206,
+                        "end": 1213
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 1215,
+                          "end": 1226
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 1230,
+                          "end": 1234
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 1236,
+                                  "end": 1241
+                                }
+                              },
+                              "field": "isMatch",
+                              "fieldSpan": {
+                                "start": 1242,
+                                "end": 1249
+                              },
+                              "span": {
+                                "start": 1236,
+                                "end": 1249
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 1250,
+                                "end": 1257
+                              }
+                            },
+                            "span": {
+                              "start": 1236,
+                              "end": 1257
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"漢́٣_\"",
+                            "span": {
+                              "start": 1258,
+                              "end": 1268
+                            }
+                          },
+                          "span": {
+                            "start": 1236,
+                            "end": 1268
+                          }
+                        },
+                        "span": {
+                          "start": 1235,
+                          "end": 1269
+                        }
+                      },
+                      "span": {
+                        "start": 1230,
+                        "end": 1269
+                      }
+                    },
+                    "span": {
+                      "start": 1205,
+                      "end": 1269
+                    }
+                  },
+                  "span": {
+                    "start": 1204,
+                    "end": 1270
+                  }
+                },
+                "span": {
+                  "start": 1195,
+                  "end": 1270
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 1165,
+                      "end": 1170
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 1171,
+                    "end": 1178
+                  },
+                  "span": {
+                    "start": 1165,
+                    "end": 1178
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"^\\\\w+$\"",
+                  "span": {
+                    "start": 1179,
+                    "end": 1187
+                  }
+                },
+                "span": {
+                  "start": 1165,
+                  "end": 1187
+                }
+              },
+              "span": {
+                "start": 1165,
+                "end": 1270
+              }
+            },
+            "span": {
+              "start": 1141,
+              "end": 1270
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "asciiDigit",
+              "nameSpan": {
+                "start": 1277,
+                "end": 1287
+              },
+              "span": {
+                "start": 1277,
+                "end": 1287
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 1324,
+                    "end": 1332
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 1335,
+                        "end": 1342
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 1344,
+                          "end": 1355
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 1359,
+                          "end": 1363
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 1365,
+                                  "end": 1370
+                                }
+                              },
+                              "field": "isMatch",
+                              "fieldSpan": {
+                                "start": 1371,
+                                "end": 1378
+                              },
+                              "span": {
+                                "start": 1365,
+                                "end": 1378
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 1379,
+                                "end": 1386
+                              }
+                            },
+                            "span": {
+                              "start": 1365,
+                              "end": 1386
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"٣\"",
+                            "span": {
+                              "start": 1387,
+                              "end": 1391
+                            }
+                          },
+                          "span": {
+                            "start": 1365,
+                            "end": 1391
+                          }
+                        },
+                        "span": {
+                          "start": 1364,
+                          "end": 1392
+                        }
+                      },
+                      "span": {
+                        "start": 1359,
+                        "end": 1392
+                      }
+                    },
+                    "span": {
+                      "start": 1334,
+                      "end": 1392
+                    }
+                  },
+                  "span": {
+                    "start": 1333,
+                    "end": 1393
+                  }
+                },
+                "span": {
+                  "start": 1324,
+                  "end": 1393
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 1294,
+                      "end": 1299
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 1300,
+                    "end": 1307
+                  },
+                  "span": {
+                    "start": 1294,
+                    "end": 1307
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"^\\\\d+$\"",
+                  "span": {
+                    "start": 1308,
+                    "end": 1316
+                  }
+                },
+                "span": {
+                  "start": 1294,
+                  "end": 1316
+                }
+              },
+              "span": {
+                "start": 1294,
+                "end": 1393
+              }
+            },
+            "span": {
+              "start": 1271,
+              "end": 1393
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "unicodeDigit",
+              "nameSpan": {
+                "start": 1400,
+                "end": 1412
+              },
+              "span": {
+                "start": 1400,
+                "end": 1412
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 1465,
+                    "end": 1473
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 1476,
+                        "end": 1483
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 1485,
+                          "end": 1496
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 1500,
+                          "end": 1504
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 1506,
+                                  "end": 1511
+                                }
+                              },
+                              "field": "isMatch",
+                              "fieldSpan": {
+                                "start": 1512,
+                                "end": 1519
+                              },
+                              "span": {
+                                "start": 1506,
+                                "end": 1519
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 1520,
+                                "end": 1527
+                              }
+                            },
+                            "span": {
+                              "start": 1506,
+                              "end": 1527
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"٣\"",
+                            "span": {
+                              "start": 1528,
+                              "end": 1532
+                            }
+                          },
+                          "span": {
+                            "start": 1506,
+                            "end": 1532
+                          }
+                        },
+                        "span": {
+                          "start": 1505,
+                          "end": 1533
+                        }
+                      },
+                      "span": {
+                        "start": 1500,
+                        "end": 1533
+                      }
+                    },
+                    "span": {
+                      "start": 1475,
+                      "end": 1533
+                    }
+                  },
+                  "span": {
+                    "start": 1474,
+                    "end": 1534
+                  }
+                },
+                "span": {
+                  "start": 1465,
+                  "end": 1534
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 1419,
+                      "end": 1424
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 1425,
+                    "end": 1432
+                  },
+                  "span": {
+                    "start": 1419,
+                    "end": 1432
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"^\\\\p{Decimal_Number}+$\"",
+                  "span": {
+                    "start": 1433,
+                    "end": 1457
+                  }
+                },
+                "span": {
+                  "start": 1419,
+                  "end": 1457
+                }
+              },
+              "span": {
+                "start": 1419,
+                "end": 1534
+              }
+            },
+            "span": {
+              "start": 1394,
+              "end": 1534
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "whitespace",
+              "nameSpan": {
+                "start": 1541,
+                "end": 1551
+              },
+              "span": {
+                "start": 1541,
+                "end": 1551
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 1587,
+                    "end": 1595
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 1598,
+                        "end": 1605
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 1607,
+                          "end": 1618
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "template",
+                      "parts": [
+                        {
+                          "kind": "interpolation",
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "application",
+                              "function": {
+                                "kind": "member",
+                                "receiver": {
+                                  "kind": "name",
+                                  "name": "regex",
+                                  "span": {
+                                    "start": 1625,
+                                    "end": 1630
+                                  }
+                                },
+                                "field": "isMatch",
+                                "fieldSpan": {
+                                  "start": 1631,
+                                  "end": 1638
+                                },
+                                "span": {
+                                  "start": 1625,
+                                  "end": 1638
+                                }
+                              },
+                              "argument": {
+                                "kind": "name",
+                                "name": "pattern",
+                                "span": {
+                                  "start": 1639,
+                                  "end": 1646
+                                }
+                              },
+                              "span": {
+                                "start": 1625,
+                                "end": 1646
+                              }
+                            },
+                            "argument": {
+                              "kind": "string",
+                              "raw": "\"\\u{0085}\"",
+                              "span": {
+                                "start": 1647,
+                                "end": 1657
+                              }
+                            },
+                            "span": {
+                              "start": 1625,
+                              "end": 1657
+                            }
+                          },
+                          "span": {
+                            "start": 1623,
+                            "end": 1658
+                          }
+                        },
+                        {
+                          "kind": "text",
+                          "value": " / ",
+                          "span": {
+                            "start": 1658,
+                            "end": 1661
+                          }
+                        },
+                        {
+                          "kind": "interpolation",
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "application",
+                              "function": {
+                                "kind": "member",
+                                "receiver": {
+                                  "kind": "name",
+                                  "name": "regex",
+                                  "span": {
+                                    "start": 1663,
+                                    "end": 1668
+                                  }
+                                },
+                                "field": "isMatch",
+                                "fieldSpan": {
+                                  "start": 1669,
+                                  "end": 1676
+                                },
+                                "span": {
+                                  "start": 1663,
+                                  "end": 1676
+                                }
+                              },
+                              "argument": {
+                                "kind": "name",
+                                "name": "pattern",
+                                "span": {
+                                  "start": 1677,
+                                  "end": 1684
+                                }
+                              },
+                              "span": {
+                                "start": 1663,
+                                "end": 1684
+                              }
+                            },
+                            "argument": {
+                              "kind": "string",
+                              "raw": "\"\\u{feff}\"",
+                              "span": {
+                                "start": 1685,
+                                "end": 1695
+                              }
+                            },
+                            "span": {
+                              "start": 1663,
+                              "end": 1695
+                            }
+                          },
+                          "span": {
+                            "start": 1661,
+                            "end": 1696
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 1622,
+                        "end": 1697
+                      }
+                    },
+                    "span": {
+                      "start": 1597,
+                      "end": 1697
+                    }
+                  },
+                  "span": {
+                    "start": 1596,
+                    "end": 1698
+                  }
+                },
+                "span": {
+                  "start": 1587,
+                  "end": 1698
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 1558,
+                      "end": 1563
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 1564,
+                    "end": 1571
+                  },
+                  "span": {
+                    "start": 1558,
+                    "end": 1571
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"^\\\\s$\"",
+                  "span": {
+                    "start": 1572,
+                    "end": 1579
+                  }
+                },
+                "span": {
+                  "start": 1558,
+                  "end": 1579
+                }
+              },
+              "span": {
+                "start": 1558,
+                "end": 1698
+              }
+            },
+            "span": {
+              "start": 1535,
+              "end": 1698
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "emptyMatches",
+              "nameSpan": {
+                "start": 1705,
+                "end": 1717
+              },
+              "span": {
+                "start": 1705,
+                "end": 1717
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 1748,
+                    "end": 1756
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 1759,
+                        "end": 1766
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 1768,
+                          "end": 1779
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 1783,
+                          "end": 1787
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 1789,
+                                  "end": 1794
+                                }
+                              },
+                              "field": "findAll",
+                              "fieldSpan": {
+                                "start": 1795,
+                                "end": 1802
+                              },
+                              "span": {
+                                "start": 1789,
+                                "end": 1802
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 1803,
+                                "end": 1810
+                              }
+                            },
+                            "span": {
+                              "start": 1789,
+                              "end": 1810
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"a👍\"",
+                            "span": {
+                              "start": 1811,
+                              "end": 1818
+                            }
+                          },
+                          "span": {
+                            "start": 1789,
+                            "end": 1818
+                          }
+                        },
+                        "span": {
+                          "start": 1788,
+                          "end": 1819
+                        }
+                      },
+                      "span": {
+                        "start": 1783,
+                        "end": 1819
+                      }
+                    },
+                    "span": {
+                      "start": 1758,
+                      "end": 1819
+                    }
+                  },
+                  "span": {
+                    "start": 1757,
+                    "end": 1820
+                  }
+                },
+                "span": {
+                  "start": 1748,
+                  "end": 1820
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 1724,
+                      "end": 1729
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 1730,
+                    "end": 1737
+                  },
+                  "span": {
+                    "start": 1724,
+                    "end": 1737
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"\"",
+                  "span": {
+                    "start": 1738,
+                    "end": 1740
+                  }
+                },
+                "span": {
+                  "start": 1724,
+                  "end": 1740
+                }
+              },
+              "span": {
+                "start": 1724,
+                "end": 1820
+              }
+            },
+            "span": {
+              "start": 1699,
+              "end": 1820
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "emptySplit",
+              "nameSpan": {
+                "start": 1827,
+                "end": 1837
+              },
+              "span": {
+                "start": 1827,
+                "end": 1837
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 1868,
+                    "end": 1876
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 1879,
+                        "end": 1886
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 1888,
+                          "end": 1899
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 1903,
+                          "end": 1907
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 1909,
+                                  "end": 1914
+                                }
+                              },
+                              "field": "split",
+                              "fieldSpan": {
+                                "start": 1915,
+                                "end": 1920
+                              },
+                              "span": {
+                                "start": 1909,
+                                "end": 1920
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 1921,
+                                "end": 1928
+                              }
+                            },
+                            "span": {
+                              "start": 1909,
+                              "end": 1928
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"a👍\"",
+                            "span": {
+                              "start": 1929,
+                              "end": 1936
+                            }
+                          },
+                          "span": {
+                            "start": 1909,
+                            "end": 1936
+                          }
+                        },
+                        "span": {
+                          "start": 1908,
+                          "end": 1937
+                        }
+                      },
+                      "span": {
+                        "start": 1903,
+                        "end": 1937
+                      }
+                    },
+                    "span": {
+                      "start": 1878,
+                      "end": 1937
+                    }
+                  },
+                  "span": {
+                    "start": 1877,
+                    "end": 1938
+                  }
+                },
+                "span": {
+                  "start": 1868,
+                  "end": 1938
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 1844,
+                      "end": 1849
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 1850,
+                    "end": 1857
+                  },
+                  "span": {
+                    "start": 1844,
+                    "end": 1857
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"\"",
+                  "span": {
+                    "start": 1858,
+                    "end": 1860
+                  }
+                },
+                "span": {
+                  "start": 1844,
+                  "end": 1860
+                }
+              },
+              "span": {
+                "start": 1844,
+                "end": 1938
+              }
+            },
+            "span": {
+              "start": 1821,
+              "end": 1938
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "replaced",
+              "nameSpan": {
+                "start": 1945,
+                "end": 1953
+              },
+              "span": {
+                "start": 1945,
+                "end": 1953
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 2001,
+                    "end": 2009
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 2012,
+                        "end": 2019
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 2021,
+                          "end": 2032
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "member",
+                            "receiver": {
+                              "kind": "name",
+                              "name": "regex",
+                              "span": {
+                                "start": 2036,
+                                "end": 2041
+                              }
+                            },
+                            "field": "replaceAll",
+                            "fieldSpan": {
+                              "start": 2042,
+                              "end": 2052
+                            },
+                            "span": {
+                              "start": 2036,
+                              "end": 2052
+                            }
+                          },
+                          "argument": {
+                            "kind": "name",
+                            "name": "pattern",
+                            "span": {
+                              "start": 2053,
+                              "end": 2060
+                            }
+                          },
+                          "span": {
+                            "start": 2036,
+                            "end": 2060
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"$1\"",
+                          "span": {
+                            "start": 2061,
+                            "end": 2065
+                          }
+                        },
+                        "span": {
+                          "start": 2036,
+                          "end": 2065
+                        }
+                      },
+                      "argument": {
+                        "kind": "string",
+                        "raw": "\"a12b3\"",
+                        "span": {
+                          "start": 2066,
+                          "end": 2073
+                        }
+                      },
+                      "span": {
+                        "start": 2036,
+                        "end": 2073
+                      }
+                    },
+                    "span": {
+                      "start": 2011,
+                      "end": 2073
+                    }
+                  },
+                  "span": {
+                    "start": 2010,
+                    "end": 2074
+                  }
+                },
+                "span": {
+                  "start": 2001,
+                  "end": 2074
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 1960,
+                      "end": 1965
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 1966,
+                    "end": 1973
+                  },
+                  "span": {
+                    "start": 1960,
+                    "end": 1973
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"(?<digits>[0-9]+)\"",
+                  "span": {
+                    "start": 1974,
+                    "end": 1993
+                  }
+                },
+                "span": {
+                  "start": 1960,
+                  "end": 1993
+                }
+              },
+              "span": {
+                "start": 1960,
+                "end": 2074
+              }
+            },
+            "span": {
+              "start": 1939,
+              "end": 2074
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "replacedWith",
+              "nameSpan": {
+                "start": 2081,
+                "end": 2093
+              },
+              "span": {
+                "start": 2081,
+                "end": 2093
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 2137,
+                    "end": 2145
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 2155,
+                        "end": 2162
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 2164,
+                          "end": 2175
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "member",
+                            "receiver": {
+                              "kind": "name",
+                              "name": "regex",
+                              "span": {
+                                "start": 2179,
+                                "end": 2184
+                              }
+                            },
+                            "field": "replaceAllWith",
+                            "fieldSpan": {
+                              "start": 2185,
+                              "end": 2199
+                            },
+                            "span": {
+                              "start": 2179,
+                              "end": 2199
+                            }
+                          },
+                          "argument": {
+                            "kind": "name",
+                            "name": "pattern",
+                            "span": {
+                              "start": 2200,
+                              "end": 2207
+                            }
+                          },
+                          "span": {
+                            "start": 2179,
+                            "end": 2207
+                          }
+                        },
+                        "argument": {
+                          "kind": "grouped",
+                          "value": {
+                            "kind": "lambda",
+                            "parameter": {
+                              "name": "matched",
+                              "nameSpan": {
+                                "start": 2218,
+                                "end": 2225
+                              },
+                              "type": {
+                                "kind": "named",
+                                "name": "regex.RegexMatch",
+                                "span": {
+                                  "start": 2227,
+                                  "end": 2243
+                                }
+                              }
+                            },
+                            "body": {
+                              "kind": "template",
+                              "parts": [
+                                {
+                                  "kind": "text",
+                                  "value": "<",
+                                  "span": {
+                                    "start": 2248,
+                                    "end": 2249
+                                  }
+                                },
+                                {
+                                  "kind": "interpolation",
+                                  "value": {
+                                    "kind": "member",
+                                    "receiver": {
+                                      "kind": "name",
+                                      "name": "matched",
+                                      "span": {
+                                        "start": 2251,
+                                        "end": 2258
+                                      }
+                                    },
+                                    "field": "text",
+                                    "fieldSpan": {
+                                      "start": 2259,
+                                      "end": 2263
+                                    },
+                                    "span": {
+                                      "start": 2251,
+                                      "end": 2263
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 2249,
+                                    "end": 2264
+                                  }
+                                },
+                                {
+                                  "kind": "text",
+                                  "value": ">",
+                                  "span": {
+                                    "start": 2264,
+                                    "end": 2265
+                                  }
+                                }
+                              ],
+                              "span": {
+                                "start": 2247,
+                                "end": 2266
+                              }
+                            },
+                            "span": {
+                              "start": 2217,
+                              "end": 2266
+                            }
+                          },
+                          "span": {
+                            "start": 2216,
+                            "end": 2267
+                          }
+                        },
+                        "span": {
+                          "start": 2179,
+                          "end": 2267
+                        }
+                      },
+                      "argument": {
+                        "kind": "string",
+                        "raw": "\"a12b3\"",
+                        "span": {
+                          "start": 2268,
+                          "end": 2275
+                        }
+                      },
+                      "span": {
+                        "start": 2179,
+                        "end": 2275
+                      }
+                    },
+                    "span": {
+                      "start": 2154,
+                      "end": 2275
+                    }
+                  },
+                  "span": {
+                    "start": 2146,
+                    "end": 2281
+                  }
+                },
+                "span": {
+                  "start": 2137,
+                  "end": 2281
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 2096,
+                      "end": 2101
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 2102,
+                    "end": 2109
+                  },
+                  "span": {
+                    "start": 2096,
+                    "end": 2109
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"(?<digits>[0-9]+)\"",
+                  "span": {
+                    "start": 2110,
+                    "end": 2129
+                  }
+                },
+                "span": {
+                  "start": 2096,
+                  "end": 2129
+                }
+              },
+              "span": {
+                "start": 2096,
+                "end": 2281
+              }
+            },
+            "span": {
+              "start": 2075,
+              "end": 2281
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "escaped",
+              "nameSpan": {
+                "start": 2288,
+                "end": 2295
+              },
+              "span": {
+                "start": 2288,
+                "end": 2295
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 2359,
+                    "end": 2367
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 2370,
+                        "end": 2377
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 2379,
+                          "end": 2390
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 2394,
+                          "end": 2398
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 2400,
+                                  "end": 2405
+                                }
+                              },
+                              "field": "isMatch",
+                              "fieldSpan": {
+                                "start": 2406,
+                                "end": 2413
+                              },
+                              "span": {
+                                "start": 2400,
+                                "end": 2413
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 2414,
+                                "end": 2421
+                              }
+                            },
+                            "span": {
+                              "start": 2400,
+                              "end": 2421
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"a.b[c]\"",
+                            "span": {
+                              "start": 2422,
+                              "end": 2430
+                            }
+                          },
+                          "span": {
+                            "start": 2400,
+                            "end": 2430
+                          }
+                        },
+                        "span": {
+                          "start": 2399,
+                          "end": 2431
+                        }
+                      },
+                      "span": {
+                        "start": 2394,
+                        "end": 2431
+                      }
+                    },
+                    "span": {
+                      "start": 2369,
+                      "end": 2431
+                    }
+                  },
+                  "span": {
+                    "start": 2368,
+                    "end": 2432
+                  }
+                },
+                "span": {
+                  "start": 2359,
+                  "end": 2432
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "regex",
+                    "span": {
+                      "start": 2302,
+                      "end": 2307
+                    }
+                  },
+                  "field": "compile",
+                  "fieldSpan": {
+                    "start": 2308,
+                    "end": 2315
+                  },
+                  "span": {
+                    "start": 2302,
+                    "end": 2315
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "operatorSpan": {
+                      "start": 2345,
+                      "end": 2346
+                    },
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "operatorSpan": {
+                        "start": 2321,
+                        "end": 2322
+                      },
+                      "left": {
+                        "kind": "string",
+                        "raw": "\"^\"",
+                        "span": {
+                          "start": 2317,
+                          "end": 2320
+                        }
+                      },
+                      "right": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "regex",
+                            "span": {
+                              "start": 2323,
+                              "end": 2328
+                            }
+                          },
+                          "field": "escape",
+                          "fieldSpan": {
+                            "start": 2329,
+                            "end": 2335
+                          },
+                          "span": {
+                            "start": 2323,
+                            "end": 2335
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"a.b[c]\"",
+                          "span": {
+                            "start": 2336,
+                            "end": 2344
+                          }
+                        },
+                        "span": {
+                          "start": 2323,
+                          "end": 2344
+                        }
+                      },
+                      "span": {
+                        "start": 2317,
+                        "end": 2344
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "raw": "\"$\"",
+                      "span": {
+                        "start": 2347,
+                        "end": 2350
+                      }
+                    },
+                    "span": {
+                      "start": 2317,
+                      "end": 2350
+                    }
+                  },
+                  "span": {
+                    "start": 2316,
+                    "end": 2351
+                  }
+                },
+                "span": {
+                  "start": 2302,
+                  "end": 2351
+                }
+              },
+              "span": {
+                "start": 2302,
+                "end": 2432
+              }
+            },
+            "span": {
+              "start": 2282,
+              "end": 2432
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "foldOptions",
+              "nameSpan": {
+                "start": 2439,
+                "end": 2450
+              },
+              "span": {
+                "start": 2439,
+                "end": 2450
+              }
+            },
+            "value": {
+              "kind": "struct",
+              "name": "RegexOptions",
+              "nameSpan": {
+                "start": 2453,
+                "end": 2465
+              },
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "caseInsensitive",
+                  "nameSpan": {
+                    "start": 2472,
+                    "end": 2487
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": true,
+                    "span": {
+                      "start": 2489,
+                      "end": 2493
+                    }
+                  },
+                  "span": {
+                    "start": 2472,
+                    "end": 2493
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "multiline",
+                  "nameSpan": {
+                    "start": 2499,
+                    "end": 2508
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": false,
+                    "span": {
+                      "start": 2510,
+                      "end": 2515
+                    }
+                  },
+                  "span": {
+                    "start": 2499,
+                    "end": 2515
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "dotMatchesNewline",
+                  "nameSpan": {
+                    "start": 2521,
+                    "end": 2538
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": false,
+                    "span": {
+                      "start": 2540,
+                      "end": 2545
+                    }
+                  },
+                  "span": {
+                    "start": 2521,
+                    "end": 2545
+                  }
+                }
+              ],
+              "span": {
+                "start": 2453,
+                "end": 2550
+              }
+            },
+            "span": {
+              "start": 2433,
+              "end": 2550
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "folded",
+              "nameSpan": {
+                "start": 2557,
+                "end": 2563
+              },
+              "span": {
+                "start": 2557,
+                "end": 2563
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 2620,
+                    "end": 2628
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 2631,
+                        "end": 2638
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 2640,
+                          "end": 2651
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 2655,
+                          "end": 2659
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 2661,
+                                  "end": 2666
+                                }
+                              },
+                              "field": "isMatch",
+                              "fieldSpan": {
+                                "start": 2667,
+                                "end": 2674
+                              },
+                              "span": {
+                                "start": 2661,
+                                "end": 2674
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 2675,
+                                "end": 2682
+                              }
+                            },
+                            "span": {
+                              "start": 2661,
+                              "end": 2682
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"aςσ\"",
+                            "span": {
+                              "start": 2683,
+                              "end": 2690
+                            }
+                          },
+                          "span": {
+                            "start": 2661,
+                            "end": 2690
+                          }
+                        },
+                        "span": {
+                          "start": 2660,
+                          "end": 2691
+                        }
+                      },
+                      "span": {
+                        "start": 2655,
+                        "end": 2691
+                      }
+                    },
+                    "span": {
+                      "start": 2630,
+                      "end": 2691
+                    }
+                  },
+                  "span": {
+                    "start": 2629,
+                    "end": 2692
+                  }
+                },
+                "span": {
+                  "start": 2620,
+                  "end": 2692
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "regex",
+                      "span": {
+                        "start": 2570,
+                        "end": 2575
+                      }
+                    },
+                    "field": "compileWith",
+                    "fieldSpan": {
+                      "start": 2576,
+                      "end": 2587
+                    },
+                    "span": {
+                      "start": 2570,
+                      "end": 2587
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "foldOptions",
+                    "span": {
+                      "start": 2588,
+                      "end": 2599
+                    }
+                  },
+                  "span": {
+                    "start": 2570,
+                    "end": 2599
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"^[A-ZΣ]+$\"",
+                  "span": {
+                    "start": 2600,
+                    "end": 2612
+                  }
+                },
+                "span": {
+                  "start": 2570,
+                  "end": 2612
+                }
+              },
+              "span": {
+                "start": 2570,
+                "end": 2692
+              }
+            },
+            "span": {
+              "start": 2551,
+              "end": 2692
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "multilineOptions",
+              "nameSpan": {
+                "start": 2699,
+                "end": 2715
+              },
+              "span": {
+                "start": 2699,
+                "end": 2715
+              }
+            },
+            "value": {
+              "kind": "struct",
+              "name": "RegexOptions",
+              "nameSpan": {
+                "start": 2718,
+                "end": 2730
+              },
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "caseInsensitive",
+                  "nameSpan": {
+                    "start": 2737,
+                    "end": 2752
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": false,
+                    "span": {
+                      "start": 2754,
+                      "end": 2759
+                    }
+                  },
+                  "span": {
+                    "start": 2737,
+                    "end": 2759
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "multiline",
+                  "nameSpan": {
+                    "start": 2765,
+                    "end": 2774
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": true,
+                    "span": {
+                      "start": 2776,
+                      "end": 2780
+                    }
+                  },
+                  "span": {
+                    "start": 2765,
+                    "end": 2780
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "dotMatchesNewline",
+                  "nameSpan": {
+                    "start": 2786,
+                    "end": 2803
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": false,
+                    "span": {
+                      "start": 2805,
+                      "end": 2810
+                    }
+                  },
+                  "span": {
+                    "start": 2786,
+                    "end": 2810
+                  }
+                }
+              ],
+              "span": {
+                "start": 2718,
+                "end": 2815
+              }
+            },
+            "span": {
+              "start": 2693,
+              "end": 2815
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "multiline",
+              "nameSpan": {
+                "start": 2822,
+                "end": 2831
+              },
+              "span": {
+                "start": 2822,
+                "end": 2831
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 2886,
+                    "end": 2894
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 2897,
+                        "end": 2904
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 2906,
+                          "end": 2917
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 2921,
+                          "end": 2925
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 2927,
+                                  "end": 2932
+                                }
+                              },
+                              "field": "isMatch",
+                              "fieldSpan": {
+                                "start": 2933,
+                                "end": 2940
+                              },
+                              "span": {
+                                "start": 2927,
+                                "end": 2940
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 2941,
+                                "end": 2948
+                              }
+                            },
+                            "span": {
+                              "start": 2927,
+                              "end": 2948
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"a\\r\\nb\\n\"",
+                            "span": {
+                              "start": 2949,
+                              "end": 2959
+                            }
+                          },
+                          "span": {
+                            "start": 2927,
+                            "end": 2959
+                          }
+                        },
+                        "span": {
+                          "start": 2926,
+                          "end": 2960
+                        }
+                      },
+                      "span": {
+                        "start": 2921,
+                        "end": 2960
+                      }
+                    },
+                    "span": {
+                      "start": 2896,
+                      "end": 2960
+                    }
+                  },
+                  "span": {
+                    "start": 2895,
+                    "end": 2961
+                  }
+                },
+                "span": {
+                  "start": 2886,
+                  "end": 2961
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "regex",
+                      "span": {
+                        "start": 2838,
+                        "end": 2843
+                      }
+                    },
+                    "field": "compileWith",
+                    "fieldSpan": {
+                      "start": 2844,
+                      "end": 2855
+                    },
+                    "span": {
+                      "start": 2838,
+                      "end": 2855
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "multilineOptions",
+                    "span": {
+                      "start": 2856,
+                      "end": 2872
+                    }
+                  },
+                  "span": {
+                    "start": 2838,
+                    "end": 2872
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"^b$\"",
+                  "span": {
+                    "start": 2873,
+                    "end": 2878
+                  }
+                },
+                "span": {
+                  "start": 2838,
+                  "end": 2878
+                }
+              },
+              "span": {
+                "start": 2838,
+                "end": 2961
+              }
+            },
+            "span": {
+              "start": 2816,
+              "end": 2961
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "dotAllOptions",
+              "nameSpan": {
+                "start": 2968,
+                "end": 2981
+              },
+              "span": {
+                "start": 2968,
+                "end": 2981
+              }
+            },
+            "value": {
+              "kind": "struct",
+              "name": "RegexOptions",
+              "nameSpan": {
+                "start": 2984,
+                "end": 2996
+              },
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "caseInsensitive",
+                  "nameSpan": {
+                    "start": 3003,
+                    "end": 3018
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": false,
+                    "span": {
+                      "start": 3020,
+                      "end": 3025
+                    }
+                  },
+                  "span": {
+                    "start": 3003,
+                    "end": 3025
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "multiline",
+                  "nameSpan": {
+                    "start": 3031,
+                    "end": 3040
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": false,
+                    "span": {
+                      "start": 3042,
+                      "end": 3047
+                    }
+                  },
+                  "span": {
+                    "start": 3031,
+                    "end": 3047
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "dotMatchesNewline",
+                  "nameSpan": {
+                    "start": 3053,
+                    "end": 3070
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": true,
+                    "span": {
+                      "start": 3072,
+                      "end": 3076
+                    }
+                  },
+                  "span": {
+                    "start": 3053,
+                    "end": 3076
+                  }
+                }
+              ],
+              "span": {
+                "start": 2984,
+                "end": 3081
+              }
+            },
+            "span": {
+              "start": 2962,
+              "end": 3081
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "dotAll",
+              "nameSpan": {
+                "start": 3088,
+                "end": 3094
+              },
+              "span": {
+                "start": 3088,
+                "end": 3094
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "useRegex",
+                  "span": {
+                    "start": 3144,
+                    "end": 3152
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "pattern",
+                      "nameSpan": {
+                        "start": 3155,
+                        "end": 3162
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "regex.Regex",
+                        "span": {
+                          "start": 3164,
+                          "end": 3175
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "show",
+                        "span": {
+                          "start": 3179,
+                          "end": 3183
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "regex",
+                                "span": {
+                                  "start": 3185,
+                                  "end": 3190
+                                }
+                              },
+                              "field": "isMatch",
+                              "fieldSpan": {
+                                "start": 3191,
+                                "end": 3198
+                              },
+                              "span": {
+                                "start": 3185,
+                                "end": 3198
+                              }
+                            },
+                            "argument": {
+                              "kind": "name",
+                              "name": "pattern",
+                              "span": {
+                                "start": 3199,
+                                "end": 3206
+                              }
+                            },
+                            "span": {
+                              "start": 3185,
+                              "end": 3206
+                            }
+                          },
+                          "argument": {
+                            "kind": "string",
+                            "raw": "\"\\n\"",
+                            "span": {
+                              "start": 3207,
+                              "end": 3211
+                            }
+                          },
+                          "span": {
+                            "start": 3185,
+                            "end": 3211
+                          }
+                        },
+                        "span": {
+                          "start": 3184,
+                          "end": 3212
+                        }
+                      },
+                      "span": {
+                        "start": 3179,
+                        "end": 3212
+                      }
+                    },
+                    "span": {
+                      "start": 3154,
+                      "end": 3212
+                    }
+                  },
+                  "span": {
+                    "start": 3153,
+                    "end": 3213
+                  }
+                },
+                "span": {
+                  "start": 3144,
+                  "end": 3213
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "regex",
+                      "span": {
+                        "start": 3101,
+                        "end": 3106
+                      }
+                    },
+                    "field": "compileWith",
+                    "fieldSpan": {
+                      "start": 3107,
+                      "end": 3118
+                    },
+                    "span": {
+                      "start": 3101,
+                      "end": 3118
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "dotAllOptions",
+                    "span": {
+                      "start": 3119,
+                      "end": 3132
+                    }
+                  },
+                  "span": {
+                    "start": 3101,
+                    "end": 3132
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\".\"",
+                  "span": {
+                    "start": 3133,
+                    "end": 3136
+                  }
+                },
+                "span": {
+                  "start": 3101,
+                  "end": 3136
+                }
+              },
+              "span": {
+                "start": 3101,
+                "end": 3213
+              }
+            },
+            "span": {
+              "start": 3082,
+              "end": 3213
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "firstSpan",
+              "nameSpan": {
+                "start": 3220,
+                "end": 3229
+              },
+              "span": {
+                "start": 3220,
+                "end": 3229
+              }
+            },
+            "value": {
+              "kind": "struct",
+              "name": "RegexSpan",
+              "nameSpan": {
+                "start": 3232,
+                "end": 3241
+              },
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "start",
+                  "nameSpan": {
+                    "start": 3244,
+                    "end": 3249
+                  },
+                  "value": {
+                    "kind": "integer",
+                    "raw": "1",
+                    "span": {
+                      "start": 3251,
+                      "end": 3252
+                    }
+                  },
+                  "span": {
+                    "start": 3244,
+                    "end": 3252
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "end",
+                  "nameSpan": {
+                    "start": 3254,
+                    "end": 3257
+                  },
+                  "value": {
+                    "kind": "integer",
+                    "raw": "2",
+                    "span": {
+                      "start": 3259,
+                      "end": 3260
+                    }
+                  },
+                  "span": {
+                    "start": 3254,
+                    "end": 3260
+                  }
+                }
+              ],
+              "span": {
+                "start": 3232,
+                "end": 3262
+              }
+            },
+            "span": {
+              "start": 3214,
+              "end": 3262
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "secondSpan",
+              "nameSpan": {
+                "start": 3269,
+                "end": 3279
+              },
+              "span": {
+                "start": 3269,
+                "end": 3279
+              }
+            },
+            "value": {
+              "kind": "struct",
+              "name": "RegexSpan",
+              "nameSpan": {
+                "start": 3282,
+                "end": 3291
+              },
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "start",
+                  "nameSpan": {
+                    "start": 3294,
+                    "end": 3299
+                  },
+                  "value": {
+                    "kind": "integer",
+                    "raw": "2",
+                    "span": {
+                      "start": 3301,
+                      "end": 3302
+                    }
+                  },
+                  "span": {
+                    "start": 3294,
+                    "end": 3302
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "end",
+                  "nameSpan": {
+                    "start": 3304,
+                    "end": 3307
+                  },
+                  "value": {
+                    "kind": "integer",
+                    "raw": "2",
+                    "span": {
+                      "start": 3309,
+                      "end": 3310
+                    }
+                  },
+                  "span": {
+                    "start": 3304,
+                    "end": 3310
+                  }
+                }
+              ],
+              "span": {
+                "start": 3282,
+                "end": 3312
+              }
+            },
+            "span": {
+              "start": 3263,
+              "end": 3312
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "defaults: ",
+                  "span": {
+                    "start": 3322,
+                    "end": 3332
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "regex",
+                        "span": {
+                          "start": 3334,
+                          "end": 3339
+                        }
+                      },
+                      "field": "defaultOptions",
+                      "fieldSpan": {
+                        "start": 3340,
+                        "end": 3354
+                      },
+                      "span": {
+                        "start": 3334,
+                        "end": 3354
+                      }
+                    },
+                    "argument": {
+                      "kind": "unit",
+                      "span": {
+                        "start": 3355,
+                        "end": 3357
+                      }
+                    },
+                    "span": {
+                      "start": 3334,
+                      "end": 3357
+                    }
+                  },
+                  "span": {
+                    "start": 3332,
+                    "end": 3358
+                  }
+                }
+              ],
+              "span": {
+                "start": 3321,
+                "end": 3359
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "captures: ",
+                  "span": {
+                    "start": 3366,
+                    "end": 3376
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "captures",
+                    "span": {
+                      "start": 3378,
+                      "end": 3386
+                    }
+                  },
+                  "span": {
+                    "start": 3376,
+                    "end": 3387
+                  }
+                }
+              ],
+              "span": {
+                "start": 3365,
+                "end": 3388
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "alternatives: ",
+                  "span": {
+                    "start": 3395,
+                    "end": 3409
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "alternatives",
+                    "span": {
+                      "start": 3411,
+                      "end": 3423
+                    }
+                  },
+                  "span": {
+                    "start": 3409,
+                    "end": 3424
+                  }
+                }
+              ],
+              "span": {
+                "start": 3394,
+                "end": 3425
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "counted: ",
+                  "span": {
+                    "start": 3432,
+                    "end": 3441
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "counted",
+                    "span": {
+                      "start": 3443,
+                      "end": 3450
+                    }
+                  },
+                  "span": {
+                    "start": 3441,
+                    "end": 3451
+                  }
+                }
+              ],
+              "span": {
+                "start": 3431,
+                "end": 3452
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "unicode: ",
+                  "span": {
+                    "start": 3459,
+                    "end": 3468
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "unicodeWord",
+                    "span": {
+                      "start": 3470,
+                      "end": 3481
+                    }
+                  },
+                  "span": {
+                    "start": 3468,
+                    "end": 3482
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 3482,
+                    "end": 3485
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "asciiDigit",
+                    "span": {
+                      "start": 3487,
+                      "end": 3497
+                    }
+                  },
+                  "span": {
+                    "start": 3485,
+                    "end": 3498
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 3498,
+                    "end": 3501
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "unicodeDigit",
+                    "span": {
+                      "start": 3503,
+                      "end": 3515
+                    }
+                  },
+                  "span": {
+                    "start": 3501,
+                    "end": 3516
+                  }
+                }
+              ],
+              "span": {
+                "start": 3458,
+                "end": 3517
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "whitespace: ",
+                  "span": {
+                    "start": 3524,
+                    "end": 3536
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "whitespace",
+                    "span": {
+                      "start": 3538,
+                      "end": 3548
+                    }
+                  },
+                  "span": {
+                    "start": 3536,
+                    "end": 3549
+                  }
+                }
+              ],
+              "span": {
+                "start": 3523,
+                "end": 3550
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "fold: ",
+                  "span": {
+                    "start": 3557,
+                    "end": 3563
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "folded",
+                    "span": {
+                      "start": 3565,
+                      "end": 3571
+                    }
+                  },
+                  "span": {
+                    "start": 3563,
+                    "end": 3572
+                  }
+                }
+              ],
+              "span": {
+                "start": 3556,
+                "end": 3573
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "anchors: ",
+                  "span": {
+                    "start": 3580,
+                    "end": 3589
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "multiline",
+                    "span": {
+                      "start": 3591,
+                      "end": 3600
+                    }
+                  },
+                  "span": {
+                    "start": 3589,
+                    "end": 3601
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 3601,
+                    "end": 3604
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "dotAll",
+                    "span": {
+                      "start": 3606,
+                      "end": 3612
+                    }
+                  },
+                  "span": {
+                    "start": 3604,
+                    "end": 3613
+                  }
+                }
+              ],
+              "span": {
+                "start": 3579,
+                "end": 3614
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "all-empty: ",
+                  "span": {
+                    "start": 3621,
+                    "end": 3632
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "emptyMatches",
+                    "span": {
+                      "start": 3634,
+                      "end": 3646
+                    }
+                  },
+                  "span": {
+                    "start": 3632,
+                    "end": 3647
+                  }
+                }
+              ],
+              "span": {
+                "start": 3620,
+                "end": 3648
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "split-empty: ",
+                  "span": {
+                    "start": 3655,
+                    "end": 3668
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "emptySplit",
+                    "span": {
+                      "start": 3670,
+                      "end": 3680
+                    }
+                  },
+                  "span": {
+                    "start": 3668,
+                    "end": 3681
+                  }
+                }
+              ],
+              "span": {
+                "start": 3654,
+                "end": 3682
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "replace-literal: ",
+                  "span": {
+                    "start": 3689,
+                    "end": 3706
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "replaced",
+                    "span": {
+                      "start": 3708,
+                      "end": 3716
+                    }
+                  },
+                  "span": {
+                    "start": 3706,
+                    "end": 3717
+                  }
+                }
+              ],
+              "span": {
+                "start": 3688,
+                "end": 3718
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "replace-with: ",
+                  "span": {
+                    "start": 3725,
+                    "end": 3739
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "replacedWith",
+                    "span": {
+                      "start": 3741,
+                      "end": 3753
+                    }
+                  },
+                  "span": {
+                    "start": 3739,
+                    "end": 3754
+                  }
+                }
+              ],
+              "span": {
+                "start": 3724,
+                "end": 3755
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "escaped: ",
+                  "span": {
+                    "start": 3762,
+                    "end": 3771
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "escaped",
+                    "span": {
+                      "start": 3773,
+                      "end": 3780
+                    }
+                  },
+                  "span": {
+                    "start": 3771,
+                    "end": 3781
+                  }
+                }
+              ],
+              "span": {
+                "start": 3761,
+                "end": 3782
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "error: ",
+                  "span": {
+                    "start": 3789,
+                    "end": 3796
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "describeCompile",
+                      "span": {
+                        "start": 3798,
+                        "end": 3813
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "regex",
+                            "span": {
+                              "start": 3815,
+                              "end": 3820
+                            }
+                          },
+                          "field": "compile",
+                          "fieldSpan": {
+                            "start": 3821,
+                            "end": 3828
+                          },
+                          "span": {
+                            "start": 3815,
+                            "end": 3828
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"(a)\\\\1\"",
+                          "span": {
+                            "start": 3829,
+                            "end": 3837
+                          }
+                        },
+                        "span": {
+                          "start": 3815,
+                          "end": 3837
+                        }
+                      },
+                      "span": {
+                        "start": 3814,
+                        "end": 3838
+                      }
+                    },
+                    "span": {
+                      "start": 3798,
+                      "end": 3838
+                    }
+                  },
+                  "span": {
+                    "start": 3796,
+                    "end": 3839
+                  }
+                }
+              ],
+              "span": {
+                "start": 3788,
+                "end": 3840
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "kind: ",
+                  "span": {
+                    "start": 3847,
+                    "end": 3853
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "same",
+                        "span": {
+                          "start": 3855,
+                          "end": 3859
+                        }
+                      },
+                      "argument": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "regex",
+                          "span": {
+                            "start": 3860,
+                            "end": 3865
+                          }
+                        },
+                        "field": "InvalidRegexRange",
+                        "fieldSpan": {
+                          "start": 3866,
+                          "end": 3883
+                        },
+                        "span": {
+                          "start": 3860,
+                          "end": 3883
+                        }
+                      },
+                      "span": {
+                        "start": 3855,
+                        "end": 3883
+                      }
+                    },
+                    "argument": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "regex",
+                        "span": {
+                          "start": 3884,
+                          "end": 3889
+                        }
+                      },
+                      "field": "InvalidRegexRange",
+                      "fieldSpan": {
+                        "start": 3890,
+                        "end": 3907
+                      },
+                      "span": {
+                        "start": 3884,
+                        "end": 3907
+                      }
+                    },
+                    "span": {
+                      "start": 3855,
+                      "end": 3907
+                    }
+                  },
+                  "span": {
+                    "start": 3853,
+                    "end": 3908
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 3908,
+                    "end": 3911
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "inspect",
+                      "span": {
+                        "start": 3913,
+                        "end": 3920
+                      }
+                    },
+                    "argument": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "regex",
+                        "span": {
+                          "start": 3921,
+                          "end": 3926
+                        }
+                      },
+                      "field": "InvalidRegexQuantifier",
+                      "fieldSpan": {
+                        "start": 3927,
+                        "end": 3949
+                      },
+                      "span": {
+                        "start": 3921,
+                        "end": 3949
+                      }
+                    },
+                    "span": {
+                      "start": 3913,
+                      "end": 3949
+                    }
+                  },
+                  "span": {
+                    "start": 3911,
+                    "end": 3950
+                  }
+                }
+              ],
+              "span": {
+                "start": 3846,
+                "end": 3951
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "span: ",
+                  "span": {
+                    "start": 3958,
+                    "end": 3964
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "earlier",
+                        "span": {
+                          "start": 3966,
+                          "end": 3973
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "firstSpan",
+                        "span": {
+                          "start": 3974,
+                          "end": 3983
+                        }
+                      },
+                      "span": {
+                        "start": 3966,
+                        "end": 3983
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "secondSpan",
+                      "span": {
+                        "start": 3984,
+                        "end": 3994
+                      }
+                    },
+                    "span": {
+                      "start": 3966,
+                      "end": 3994
+                    }
+                  },
+                  "span": {
+                    "start": 3964,
+                    "end": 3995
+                  }
+                }
+              ],
+              "span": {
+                "start": 3957,
+                "end": 3996
+              }
+            }
+          ],
+          "span": {
+            "start": 3315,
+            "end": 4001
+          }
+        },
+        "span": {
+          "start": 752,
+          "end": 4003
+        }
+      },
+      "span": {
+        "start": 721,
+        "end": 4003
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 4019,
+        "end": 4023
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 4027,
+          "end": 4031
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 4037,
+            "end": 4044
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 4051,
+          "end": 4063
+        }
+      },
+      "body": {
+        "kind": "effectfulFor",
+        "pattern": {
+          "kind": "name",
+          "name": "line",
+          "nameSpan": {
+            "start": 4072,
+            "end": 4076
+          },
+          "span": {
+            "start": 4072,
+            "end": 4076
+          }
+        },
+        "source": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "exercise",
+            "span": {
+              "start": 4080,
+              "end": 4088
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 4089,
+              "end": 4091
+            }
+          },
+          "span": {
+            "start": 4080,
+            "end": 4091
+          }
+        },
+        "body": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 4094,
+              "end": 4101
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "line",
+            "span": {
+              "start": 4102,
+              "end": 4106
+            }
+          },
+          "span": {
+            "start": 4094,
+            "end": 4106
+          }
+        },
+        "span": {
+          "start": 4068,
+          "end": 4108
+        }
+      },
+      "span": {
+        "start": 4005,
+        "end": 4108
+      }
+    }
+  ]
+}

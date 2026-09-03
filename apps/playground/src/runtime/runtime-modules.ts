@@ -70,27 +70,28 @@ import * as module65 from "../../../../runtime/ts/src/queue.ts"
 import * as module66 from "../../../../runtime/ts/src/random.ts"
 import * as module67 from "../../../../runtime/ts/src/range.ts"
 import * as module68 from "../../../../runtime/ts/src/ref.ts"
-import * as module69 from "../../../../runtime/ts/src/semaphore.ts"
-import * as module70 from "../../../../runtime/ts/src/service.ts"
-import * as module71 from "../../../../runtime/ts/src/set.ts"
-import * as module72 from "../../../../runtime/ts/src/show.ts"
-import * as module73 from "../../../../runtime/ts/src/signal.ts"
-import * as module74 from "../../../../runtime/ts/src/sqlite.ts"
-import * as module75 from "../../../../runtime/ts/src/sse.ts"
-import * as module76 from "../../../../runtime/ts/src/storage.ts"
-import * as module77 from "../../../../runtime/ts/src/stream.ts"
-import * as module78 from "../../../../runtime/ts/src/string.ts"
-import * as module79 from "../../../../runtime/ts/src/sum.ts"
-import * as module80 from "../../../../runtime/ts/src/test.ts"
-import * as module81 from "../../../../runtime/ts/src/text.ts"
-import * as module82 from "../../../../runtime/ts/src/time.ts"
-import * as module83 from "../../../../runtime/ts/src/timezone-rules.js"
-import * as module84 from "../../../../runtime/ts/src/unicode.ts"
-import * as module85 from "../../../../runtime/ts/src/unicode-version.ts"
-import * as module86 from "../../../../runtime/ts/src/validation.ts"
-import * as module87 from "../../../../runtime/ts/src/web-file.ts"
-import * as module88 from "../../../../runtime/ts/src/websocket.ts"
-import * as module89 from "../../../../runtime/ts/src/websocket-host-provider.ts"
+import * as module69 from "../../../../runtime/ts/src/regex.ts"
+import * as module70 from "../../../../runtime/ts/src/semaphore.ts"
+import * as module71 from "../../../../runtime/ts/src/service.ts"
+import * as module72 from "../../../../runtime/ts/src/set.ts"
+import * as module73 from "../../../../runtime/ts/src/show.ts"
+import * as module74 from "../../../../runtime/ts/src/signal.ts"
+import * as module75 from "../../../../runtime/ts/src/sqlite.ts"
+import * as module76 from "../../../../runtime/ts/src/sse.ts"
+import * as module77 from "../../../../runtime/ts/src/storage.ts"
+import * as module78 from "../../../../runtime/ts/src/stream.ts"
+import * as module79 from "../../../../runtime/ts/src/string.ts"
+import * as module80 from "../../../../runtime/ts/src/sum.ts"
+import * as module81 from "../../../../runtime/ts/src/test.ts"
+import * as module82 from "../../../../runtime/ts/src/text.ts"
+import * as module83 from "../../../../runtime/ts/src/time.ts"
+import * as module84 from "../../../../runtime/ts/src/timezone-rules.js"
+import * as module85 from "../../../../runtime/ts/src/unicode.ts"
+import * as module86 from "../../../../runtime/ts/src/unicode-version.ts"
+import * as module87 from "../../../../runtime/ts/src/validation.ts"
+import * as module88 from "../../../../runtime/ts/src/web-file.ts"
+import * as module89 from "../../../../runtime/ts/src/websocket.ts"
+import * as module90 from "../../../../runtime/ts/src/websocket-host-provider.ts"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": module8,
@@ -156,28 +157,29 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/random": module66,
   "@seseragi/runtime/range": module67,
   "@seseragi/runtime/ref": module68,
-  "@seseragi/runtime/semaphore": module69,
-  "@seseragi/runtime/service": module70,
-  "@seseragi/runtime/set": module71,
-  "@seseragi/runtime/show": module72,
-  "@seseragi/runtime/signal": module73,
-  "@seseragi/runtime/sqlite": module74,
-  "@seseragi/runtime/sse": module75,
+  "@seseragi/runtime/regex": module69,
+  "@seseragi/runtime/semaphore": module70,
+  "@seseragi/runtime/service": module71,
+  "@seseragi/runtime/set": module72,
+  "@seseragi/runtime/show": module73,
+  "@seseragi/runtime/signal": module74,
+  "@seseragi/runtime/sqlite": module75,
+  "@seseragi/runtime/sse": module76,
   "@seseragi/runtime/stdin": module19,
-  "@seseragi/runtime/storage": module76,
-  "@seseragi/runtime/stream": module77,
-  "@seseragi/runtime/string": module78,
-  "@seseragi/runtime/sum": module79,
-  "@seseragi/runtime/test": module80,
-  "@seseragi/runtime/text": module81,
-  "@seseragi/runtime/time": module82,
-  "@seseragi/runtime/timezone-rules": module83,
-  "@seseragi/runtime/unicode": module84,
-  "@seseragi/runtime/unicode-version": module85,
-  "@seseragi/runtime/validation": module86,
-  "@seseragi/runtime/web-file": module87,
-  "@seseragi/runtime/websocket": module88,
-  "@seseragi/runtime/websocket-host-provider": module89,
+  "@seseragi/runtime/storage": module77,
+  "@seseragi/runtime/stream": module78,
+  "@seseragi/runtime/string": module79,
+  "@seseragi/runtime/sum": module80,
+  "@seseragi/runtime/test": module81,
+  "@seseragi/runtime/text": module82,
+  "@seseragi/runtime/time": module83,
+  "@seseragi/runtime/timezone-rules": module84,
+  "@seseragi/runtime/unicode": module85,
+  "@seseragi/runtime/unicode-version": module86,
+  "@seseragi/runtime/validation": module87,
+  "@seseragi/runtime/web-file": module88,
+  "@seseragi/runtime/websocket": module89,
+  "@seseragi/runtime/websocket-host-provider": module90,
   "seseragi/runtime-browser/clock": module0,
   "seseragi/runtime-browser/entropy": module1,
   "seseragi/runtime-browser/http-client": module2,

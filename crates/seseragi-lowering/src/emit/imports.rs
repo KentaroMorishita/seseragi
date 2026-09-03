@@ -8,7 +8,8 @@ use crate::{
     numeric_ops::runtime_numeric_operation_for_feature,
     prelude_ops::runtime_prelude_dictionary_for_feature,
     provider_service_ops::runtime_provider_service_operation_for_feature,
-    range_ops::runtime_range_operation_for_feature, runtime_types::runtime_type_import_for_feature,
+    range_ops::runtime_range_operation_for_feature, regex_ops::runtime_regex_operation_for_feature,
+    runtime_types::runtime_type_import_for_feature,
     signal_ops::runtime_signal_operation_for_feature,
     standard_ops::runtime_standard_operation_for_feature,
     stream_ops::runtime_stream_operation_for_feature, sum_ops::runtime_sum_constructor_for_feature,
@@ -62,6 +63,7 @@ fn render_runtime_imports(module: &TypeScriptModule) -> Vec<String> {
                 runtime_bytes_operation_for_feature(&import.feature)
                     .or_else(|| {
                         crate::text_ops::runtime_text_operation_for_feature(&import.feature)
+                            .or_else(|| runtime_regex_operation_for_feature(&import.feature))
                     })
                     .map(|operation| (operation.module, operation.export_name))
                     .or_else(|| {
