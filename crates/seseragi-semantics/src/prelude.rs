@@ -450,6 +450,62 @@ const fn method(
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     PreludeStandardInstance {
+        trait_name: "Ord",
+        type_name: "Int",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/int::Ord",
+    },
+    PreludeStandardInstance {
+        trait_name: "Ord",
+        type_name: "Bool",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/bool::Ord",
+    },
+    PreludeStandardInstance {
+        trait_name: "Ord",
+        type_name: "Char",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/char::Ord",
+    },
+    PreludeStandardInstance {
+        trait_name: "Ord",
+        type_name: "String",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/string::Ord",
+    },
+    PreludeStandardInstance {
+        trait_name: "Ord",
+        type_name: "Unit",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/unit::Ord",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "SizeError",
+        type_canonical: Some("std/collection::SizeError"),
+        type_arity: 0,
+        identity: "std/collection::EqSizeError",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "SizeError",
+        type_canonical: Some("std/collection::SizeError"),
+        type_arity: 0,
+        identity: "Show<std/collection::SizeError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "SizeError",
+        type_canonical: Some("std/collection::SizeError"),
+        type_arity: 0,
+        identity: "Debug<std/collection::SizeError>",
+    },
+    PreludeStandardInstance {
         trait_name: "JsonEncode",
         type_name: "Map",
         type_canonical: Some("std/map::Map"),

@@ -1,13 +1,21 @@
+import { type Iterable, NonPositiveSize, type SizeError } from "./collection"
 import type { Unit } from "./effect"
+import type { Eq } from "./equality"
+import type { Hash } from "./hash"
 import type { Iterator as SeseragiIterator } from "./iterator"
+import * as maps from "./map"
+import { type Ord, stableSort, stableSortBy } from "./sequence"
 import {
+  type Either,
   Equal,
   Greater,
   Just,
+  Left,
   Less,
   type Maybe,
   Nothing,
   type Ordering,
+  Right,
 } from "./sum"
 import { type RuntimeDictionary, traverseValues } from "./traversable"
 
@@ -32,6 +40,208 @@ export type NonEmptyList<A> = Readonly<{
 }>
 
 export const Empty: Empty = Object.freeze({ tag: "Empty" })
+
+export const empty = <A>(_unit?: Unit): List<A> => Empty
+
+/** List singleton; the existing singleton runtime export belongs to NonEmptyList. */
+export const singletonList = <A>(value: A): List<A> => Cons(value, Empty)
+
+export function fromIterable<C, A>(
+  dictionary: Iterable<C, A> | RuntimeDictionary,
+  values: C
+): List<A> {
+  let iterator = (dictionary as Iterable<C, A>).iterate(values)
+  let reversed: List<A> = Empty
+  while (true) {
+    const step = iterator.next()
+    if (step.tag === "Nothing") return reverse(reversed)
+    reversed = Cons(step.value[0], reversed)
+    iterator = step.value[1]
+  }
+}
+
+export function reduceRight<A, B>(
+  initial: B,
+  step: (value: A) => (accumulator: B) => B,
+  values: List<A>
+): B {
+  let result = initial
+  let cursor = reverse(values)
+  while (cursor.tag === "Cons") {
+    result = step(cursor.head)(result)
+    cursor = cursor.tail
+  }
+  return result
+}
+
+export function findIndex<A>(
+  predicate: (value: A) => boolean,
+  values: List<A>
+): Maybe<number> {
+  let cursor = values
+  let index = 0
+  while (cursor.tag === "Cons") {
+    if (predicate(cursor.head)) return Just(index)
+    cursor = cursor.tail
+    index += 1
+  }
+  return Nothing
+}
+
+export function takeWhile<A>(
+  predicate: (value: A) => boolean,
+  values: List<A>
+): List<A> {
+  let reversed: List<A> = Empty
+  let cursor = values
+  while (cursor.tag === "Cons" && predicate(cursor.head)) {
+    reversed = Cons(cursor.head, reversed)
+    cursor = cursor.tail
+  }
+  return reverse(reversed)
+}
+
+export function dropWhile<A>(
+  predicate: (value: A) => boolean,
+  values: List<A>
+): List<A> {
+  let cursor = values
+  while (cursor.tag === "Cons" && predicate(cursor.head)) cursor = cursor.tail
+  return cursor
+}
+
+export function zipWith<A, B, C>(
+  f: (left: A) => (right: B) => C,
+  right: List<B>,
+  left: List<A>
+): List<C> {
+  let a = left
+  let b = right
+  let reversed: List<C> = Empty
+  while (a.tag === "Cons" && b.tag === "Cons") {
+    reversed = Cons(f(a.head)(b.head), reversed)
+    a = a.tail
+    b = b.tail
+  }
+  return reverse(reversed)
+}
+
+export function zip<A, B>(
+  right: List<B>,
+  left: List<A>
+): List<readonly [A, B]> {
+  return zipWith<A, B, readonly [A, B]>((a) => (b) => [a, b], right, left)
+}
+
+export function unzip<A, B>(
+  values: List<readonly [A, B]>
+): readonly [List<A>, List<B>] {
+  let left: List<A> = Empty
+  let right: List<B> = Empty
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    left = Cons(cursor.head[0], left)
+    right = Cons(cursor.head[1], right)
+    cursor = cursor.tail
+  }
+  return [reverse(left), reverse(right)]
+}
+
+export function sort<A>(
+  ord: Ord<A> | RuntimeDictionary,
+  values: List<A>
+): List<A> {
+  return fromArray(stableSort(ord, toArray(values)))
+}
+
+export function sortBy<A, K>(
+  ord: Ord<K> | RuntimeDictionary,
+  key: (value: A) => K,
+  values: List<A>
+): List<A> {
+  return fromArray(stableSortBy(ord, key, toArray(values)))
+}
+
+export function groupBy<A, K>(
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
+  key: (value: A) => K,
+  values: List<A>
+): maps.Map<K, List<A>> {
+  let groups = maps.empty<K, List<A>>()
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    const value = cursor.head
+    groups = maps.upsert(
+      eq,
+      hash,
+      key(value),
+      (group) => Cons(value, group.tag === "Just" ? group.value : Empty),
+      groups
+    )
+    cursor = cursor.tail
+  }
+  return maps.mapValues(reverse<A>, groups)
+}
+
+export function last<A>(values: List<A>): Maybe<A> {
+  if (values.tag === "Empty") return Nothing
+  let cursor = values
+  while (cursor.tail.tag === "Cons") cursor = cursor.tail
+  return Just(cursor.head)
+}
+
+export function init<A>(values: List<A>): Maybe<List<A>> {
+  if (values.tag === "Empty") return Nothing
+  let reversed: List<A> = Empty
+  let cursor = values
+  while (cursor.tail.tag === "Cons") {
+    reversed = Cons(cursor.head, reversed)
+    cursor = cursor.tail
+  }
+  return Just(reverse(reversed))
+}
+
+export function chunksOf<A>(
+  size: number,
+  values: List<A>
+): Either<SizeError, List<List<A>>> {
+  if (size <= 0) return Left(NonPositiveSize(size))
+  let chunks: List<List<A>> = Empty
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    let chunk: List<A> = Empty
+    for (let count = 0; count < size && cursor.tag === "Cons"; count += 1) {
+      chunk = Cons(cursor.head, chunk)
+      cursor = cursor.tail
+    }
+    chunks = Cons(reverse(chunk), chunks)
+  }
+  return Right(reverse(chunks))
+}
+
+export function windows<A>(
+  size: number,
+  values: List<A>
+): Either<SizeError, List<List<A>>> {
+  if (size <= 0) return Left(NonPositiveSize(size))
+  // Advance the lookahead once, then each start/end cursor once per output.
+  // Each window owns only its elements, never an excluded suffix.
+  let end = values
+  for (let count = 0; count < size; count += 1) {
+    if (end.tag === "Empty") return Right(Empty)
+    end = end.tail
+  }
+  let start = values
+  let result: List<List<A>> = Empty
+  while (start.tag === "Cons") {
+    result = Cons(take(size, start), result)
+    if (end.tag === "Empty") break
+    start = start.tail
+    end = end.tail
+  }
+  return Right(reverse(result))
+}
 
 export function Cons<A>(head: A, tail: List<A>): List<A> {
   return Object.freeze({ tag: "Cons", head, tail })

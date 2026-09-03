@@ -18,6 +18,7 @@
         "std/int",
         "std/float",
         "std/array",
+        "std/collection",
         "std/list",
         "std/map",
         "std/set",
@@ -261,7 +262,7 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:ac92b6b903b7a136",
+      "interfaceFingerprint": "fnv1a64:caa3ecf8cd3afac3",
       "implementation": "lowering-runtime",
       "route": "portable-project"
     },
@@ -271,7 +272,7 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:c2eeee4c1f4bb44b",
+      "interfaceFingerprint": "fnv1a64:41563e87b8f47b24",
       "implementation": "lowering-runtime",
       "route": "portable-project"
     },
@@ -457,6 +458,16 @@
       "interfaceFingerprint": "fnv1a64:023dcf509ab78816",
       "implementation": "lowering-runtime",
       "route": "child-process-provider-project"
+    },
+    {
+      "specifier": "std/collection",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:88d13c560b59e653",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
     },
     {
       "specifier": "std/console",

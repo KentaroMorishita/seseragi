@@ -3,6 +3,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/int",
     "std/float",
     "std/array",
+    "std/collection",
     "std/list",
     "std/non-empty-list",
     "std/map",

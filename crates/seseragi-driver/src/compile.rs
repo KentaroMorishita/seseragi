@@ -1813,6 +1813,40 @@ pub fn listRest -> Maybe<List<Int>> = lists.tail `[10, 20]
     }
 
     #[test]
+    fn compiles_sequence_apis_with_scoped_evidence_first_class_functions_and_callable_accumulators()
+    {
+        let source =
+            include_str!("../../../examples/spec/artifacts/schema-1/array-list-apis/main.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/array-list-apis",
+            source,
+        ))
+        .expect("all concrete sequence APIs must compile through the public registry");
+        let output = &compiled.generated.typescript;
+        assert!(!output.contains("= zip;"));
+        assert!(output
+            .contains("_ssrg_array_zip(__ssrg$collection$partial$0, __ssrg$collection$partial$1)"));
+        assert!(output
+            .contains("_ssrg_list_zip(__ssrg$collection$partial$0, __ssrg$collection$partial$1)"));
+        assert!(output.contains("const folded: (argument: number) => number = _ssrg_array_reduceRight(identity, step, [1, 2, 3])"));
+        assert!(output.contains("_ssrg_sizeErrorEq"));
+        assert!(output.contains("_ssrg_int_ord_dictionary"));
+        assert!(!output.contains("from \"std/"));
+    }
+
+    #[test]
+    fn rejects_sequence_calls_without_required_evidence_or_matching_element_types() {
+        for source in [
+            "import * as arrays from \"std/array\"\npub fn bad -> Array<Float> = arrays.sort [1.0, 2.0]\n",
+            "import * as arrays from \"std/array\"\nimport * as maps from \"std/map\"\ntype Key deriving Eq = Key Int\npub fn bad -> maps.Map<Key, Array<Int>> = arrays.groupBy Key [1, 2]\n",
+            "import * as arrays from \"std/array\"\npub fn bad -> Array<(Int, Int)> = arrays.zip [\"x\"] [1]\n",
+        ] {
+            assert!(compile_module(CompileInput::new("main.ssrg", "artifact/invalid-sequence", source)).is_err(), "{source}");
+        }
+    }
+
+    #[test]
     fn compiles_the_current_process_directory_as_a_portable_path() {
         const SOURCE: &str =
             include_str!("../../../examples/spec/fixtures/compile/process-current-directory.ssrg");

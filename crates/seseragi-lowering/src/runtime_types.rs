@@ -8,6 +8,12 @@ pub(crate) struct RuntimeTypeImport {
 
 const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
     RuntimeTypeImport {
+        canonical: "std/collection::SizeError",
+        runtime_feature: "core.collection.size-error",
+        module: "@seseragi/runtime/collection",
+        export_name: "SizeError",
+    },
+    RuntimeTypeImport {
         canonical: "std/test::Test",
         runtime_feature: "test.tree.type",
         module: "@seseragi/runtime/test",

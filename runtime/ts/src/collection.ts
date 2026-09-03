@@ -1,6 +1,20 @@
 import { createEffectExecution, type Effect, type Unit } from "./effect"
 import type { Iterator } from "./iterator"
 
+/** Public std/collection size failure shared by concrete sequence operations. */
+export type SizeError = Readonly<{ tag: "NonPositiveSize"; value: number }>
+
+export function NonPositiveSize(value: number): SizeError {
+  return Object.freeze({ tag: "NonPositiveSize", value })
+}
+
+export const sizeErrorEq = Object.freeze({
+  eq:
+    (left: SizeError) =>
+    (right: SizeError): boolean =>
+      left.value === right.value,
+})
+
 export type Reducible<Collection, Element> = Readonly<{
   reduce: <Accumulator>(
     initial: Accumulator

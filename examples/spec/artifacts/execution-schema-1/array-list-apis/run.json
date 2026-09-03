@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "case": "array-list-apis",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/array-list-apis",
+    "export": "main",
+    "compiledModule": "../../schema-1/array-list-apis/generated-module.json",
+    "typedInterface": "../../schema-1/array-list-apis/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.list",
+      "core.map",
+      "core.collection.size-error",
+      "core.adt",
+      "core.int",
+      "core.string",
+      "core.bool",
+      "core.int.eq-dictionary",
+      "core.int.ord-dictionary",
+      "core.int.remainder",
+      "core.string.add-dictionary",
+      "core.int.show",
+      "core.array.sort",
+      "core.list.sort",
+      "core.array.group-by",
+      "core.list.group-by",
+      "core.array.from-iterable",
+      "core.list.from-iterable",
+      "core.either",
+      "core.unit",
+      "core.array.zip",
+      "core.list.zip",
+      "core.array.sort-by",
+      "core.int.hash-dictionary",
+      "core.string.show",
+      "core.tuple.show",
+      "core.array.show",
+      "core.list.show",
+      "core.map.show",
+      "core.list.from-array",
+      "core.int.add",
+      "core.array.reduce-right",
+      "core.list.reduce-right",
+      "effect.core.flatMap",
+      "core.array.empty",
+      "core.list.empty",
+      "effect.console.println",
+      "core.array.singleton",
+      "core.list.singleton",
+      "core.list.iterable",
+      "core.array.iterable",
+      "core.maybe.show",
+      "core.maybe",
+      "core.array.find-index",
+      "core.list.find-index",
+      "core.array.take-while",
+      "core.list.take-while",
+      "core.array.drop-while",
+      "core.list.drop-while",
+      "core.array.zip-with",
+      "core.int.subtract",
+      "core.list.zip-with",
+      "core.array.unzip",
+      "core.list.unzip",
+      "core.list.sort-by",
+      "core.array.functor",
+      "core.list.functor",
+      "core.map.keys",
+      "core.map.values",
+      "core.map.map-values",
+      "core.array.last",
+      "core.list.last",
+      "core.array.init",
+      "core.list.init",
+      "core.collection.size-error.show",
+      "core.either.show",
+      "core.array.chunks-of",
+      "core.list.chunks-of",
+      "core.array.windows",
+      "core.list.windows",
+      "core.bool.show",
+      "core.collection.size-error.eq",
+      "core.collection.size-error.non-positive",
+      "core.collection.size-error.debug",
+      "core.unit.show",
+      "core.bool.ord-dictionary",
+      "core.unit.ord-dictionary",
+      "core.string.ord-dictionary"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

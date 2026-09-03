@@ -1,0 +1,125 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+import * as collections from "std/collection"
+import * as maps from "std/map"
+
+type Key = | Key (Int, String)
+
+instance Eq<Key> {
+  fn eq a: Key -> b: Key -> Bool = match (a, b) { (Key (x, _), Key (y, _)) -> x == y }
+}
+
+instance Hash<Key> {
+  fn hash value: Key -> Int = 0
+}
+
+instance Ord<Key> {
+  fn compare a: Key -> b: Key -> Ordering =
+    match (a, b) { (Key (x, _), Key (y, _)) -> compare x y }
+}
+
+fn label value: Key -> String = match value { Key (_, text) -> text }
+
+fn parity value: Int -> Int = value % 2
+
+fn rightStep value: Int -> acc: String -> String = show value + ":" + acc
+
+fn arraySort<A> values: Array<A> -> Array<A> where Ord<A> = arrays.sort values
+fn listSort<A> values: List<A> -> List<A> where Ord<A> = lists.sort values
+
+fn orderedSame<A> left: A -> right: A -> Bool where Ord<A> = left == right
+
+fn groupArray<A, K> key: (A -> K)
+  -> values: Array<A>
+  -> maps.Map<K, Array<A>>
+where Eq<K>, Hash<K> =
+  arrays.groupBy key values
+
+fn groupList<A, K> key: (A -> K)
+  -> values: List<A>
+  -> maps.Map<K, List<A>>
+where Eq<K>, Hash<K> =
+  lists.groupBy key values
+
+fn collectArray<C, A> values: C -> Array<A> where Iterable<C, A> =
+  arrays.fromIterable values
+fn collectList<C, A> values: C -> List<A> where Iterable<C, A> =
+  lists.fromIterable values
+
+fn failure<A> result: Either<collections.SizeError, A> -> Int = match result {
+  Left (collections.NonPositiveSize size) -> size
+  Right _ -> 1
+}
+
+fn partial unit: Unit -> String = {
+  let pair: Array<String> -> Array<Int> -> Array<(Int, String)> = arrays.zip
+  let pairList: List<String> -> List<Int> -> List<(Int, String)> = lists.zip
+  let sortKey: Array<Int> -> Array<Int> = arrays.sortBy parity
+  let groupKey: List<Int> -> maps.Map<Int, List<Int>> = lists.groupBy parity
+  show (pair ["a"] [1, 2], pairList `["a"] `[1, 2], sortKey [3, 2, 1], groupKey `[3, 2, 1])
+}
+
+fn functionAccumulator unit: Unit -> Int = {
+  let identity: Int -> Int = \value -> value
+  let step: Int -> (Int -> Int) -> (Int -> Int) =
+    \value next -> \input -> next (input + value)
+  let folded = arrays.reduceRight identity step [1, 2, 3]
+  let linked = lists.reduceRight identity step `[1, 2, 3]
+  folded 0 + linked 0
+}
+
+pub effect fn main = do {
+  let values = [1, 2, 3, 4, 5]
+  let linked = `[1, 2, 3, 4, 5]
+  let blank: Array<Int> = arrays.empty ()
+  let nil: List<Int> = lists.empty ()
+  println $ show (blank, nil, arrays.singleton "a", lists.singleton "b")
+  println $ show (collectArray linked, collectList values)
+  println $ arrays.reduceRight "end" rightStep values
+  println $ lists.reduceRight "end" rightStep linked
+  println $
+    show (arrays.findIndex (\n -> n > 3) values, lists.findIndex (\n -> n > 8) linked)
+  println $
+    show (arrays.takeWhile (\n -> n < 3) values, lists.takeWhile (\n -> n < 3) linked)
+  println $
+    show (arrays.dropWhile (\n -> n < 3) values, lists.dropWhile (\n -> n < 3) linked)
+  println $ show (arrays.zip ["a", "b"] values, lists.zip `["a", "b"] linked)
+  println $
+    show (
+      arrays.zipWith (\a b -> a - b) [10, 20] values,
+      lists.zipWith (\a b -> a - b) `[10, 20] linked
+    )
+  println $ show (arrays.unzip [(1, "a"), (2, "b")], lists.unzip `[(1, "a"), (2, "b")])
+  println $ show (arraySort [3, 1, 2, 1], listSort `[3, 1, 2, 1])
+  println $ show (arrays.sortBy parity [3, 2, 1, 4], lists.sortBy parity `[3, 2, 1, 4])
+  println $ show (groupArray parity values, groupList parity linked)
+  let keys = [Key (2, "a"), Key (1, "b"), Key (2, "c")]
+  println $
+    show (map label (arraySort keys), map label (listSort (lists.fromIterable keys)))
+  println $ show (map label (maps.keys (groupArray (\key -> key) keys)))
+  println $
+    show (
+      maps.values (
+        maps.mapValues (\group -> map label group)
+          (groupList (\key -> key) (lists.fromIterable keys))
+      )
+    )
+  println $
+    show (arrays.last blank, lists.last nil, arrays.last values, lists.last linked)
+  println $ show (arrays.init blank, lists.init nil, arrays.init [1], lists.init `[1])
+  println $ show (arrays.init values, lists.init linked)
+  println $ show (arrays.chunksOf 2 values, lists.chunksOf 2 linked)
+  println $ show (arrays.windows 3 values, lists.windows 3 linked)
+  println $ show (arrays.windows 6 values, lists.windows 6 linked)
+  println $ show (arrays.chunksOf 1 blank, lists.windows 1 nil)
+  println $
+    show (failure (arrays.chunksOf 0 values), failure (lists.windows (0 - 2) linked))
+  println $ show (arrays.windows 0 values, lists.chunksOf (0 - 1) linked)
+  println $ show (collections.NonPositiveSize 0 == collections.NonPositiveSize 0)
+  println $ debug (collections.NonPositiveSize (0 - 2))
+  println $ partial ()
+  println $ show (functionAccumulator ())
+  println $ show (arrays.sort [True, False, True], lists.sort `[(), ()])
+  println $ show (arrays.sort ["😀", "", "a"])
+  println $ show (orderedSame 3 3, orderedSame "a" "b", orderedSame () ())
+}

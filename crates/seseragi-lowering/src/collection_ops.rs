@@ -6,6 +6,26 @@ pub(crate) struct RuntimeCollectionOperation {
     pub(crate) local_name: &'static str,
     pub(crate) module: &'static str,
     pub(crate) export_name: &'static str,
+    /// Source parameters, excluding evidence dictionaries and callable results.
+    pub(crate) source_arity: usize,
+}
+
+macro_rules! sequence_operation {
+    ($module:literal, $name:literal, $feature:literal, $arity:literal) => {
+        sequence_operation!($module, $name, $feature, $arity, $name)
+    };
+    ($module:literal, $name:literal, $feature:literal, $arity:literal, $export:literal) => {
+        (
+            concat!("std/", $module, "::", $name),
+            RuntimeCollectionOperation {
+                runtime_feature: concat!("core.", $module, ".", $feature),
+                local_name: concat!("_ssrg_", $module, "_", $name),
+                module: concat!("@seseragi/runtime/", $module),
+                export_name: $export,
+                source_arity: $arity,
+            },
+        )
+    };
 }
 
 const ARRAY_REDUCE: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -13,6 +33,7 @@ const ARRAY_REDUCE: RuntimeCollectionOperation = RuntimeCollectionOperation {
     local_name: "_ssrg_array_reduce",
     module: "@seseragi/runtime/array",
     export_name: "reduce",
+    source_arity: 3,
 };
 
 const RANGE_REDUCE: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -20,6 +41,7 @@ const RANGE_REDUCE: RuntimeCollectionOperation = RuntimeCollectionOperation {
     local_name: "_ssrg_range_reduce",
     module: "@seseragi/runtime/range",
     export_name: "reduce",
+    source_arity: 3,
 };
 
 const LIST_REDUCE: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -27,6 +49,7 @@ const LIST_REDUCE: RuntimeCollectionOperation = RuntimeCollectionOperation {
     local_name: "_ssrg_list_reduce",
     module: "@seseragi/runtime/list",
     export_name: "reduce",
+    source_arity: 3,
 };
 
 const COLLECTION_JOIN: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -34,6 +57,7 @@ const COLLECTION_JOIN: RuntimeCollectionOperation = RuntimeCollectionOperation {
     local_name: "_ssrg_collection_join",
     module: "@seseragi/runtime/collection",
     export_name: "join",
+    source_arity: 2,
 };
 
 const COLLECTION_SUM: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -41,6 +65,7 @@ const COLLECTION_SUM: RuntimeCollectionOperation = RuntimeCollectionOperation {
     local_name: "_ssrg_collection_sum",
     module: "@seseragi/runtime/collection",
     export_name: "sum",
+    source_arity: 1,
 };
 
 const COLLECTION_PRODUCT: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -48,6 +73,7 @@ const COLLECTION_PRODUCT: RuntimeCollectionOperation = RuntimeCollectionOperatio
     local_name: "_ssrg_collection_product",
     module: "@seseragi/runtime/collection",
     export_name: "product",
+    source_arity: 1,
 };
 
 const COLLECTION_COMBINE: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -55,6 +81,7 @@ const COLLECTION_COMBINE: RuntimeCollectionOperation = RuntimeCollectionOperatio
     local_name: "_ssrg_collection_combine",
     module: "@seseragi/runtime/collection",
     export_name: "combine",
+    source_arity: 1,
 };
 
 const COLLECTION_ANY: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -62,6 +89,7 @@ const COLLECTION_ANY: RuntimeCollectionOperation = RuntimeCollectionOperation {
     local_name: "_ssrg_collection_any",
     module: "@seseragi/runtime/collection",
     export_name: "any",
+    source_arity: 2,
 };
 
 const COLLECTION_ALL: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -69,6 +97,7 @@ const COLLECTION_ALL: RuntimeCollectionOperation = RuntimeCollectionOperation {
     local_name: "_ssrg_collection_all",
     module: "@seseragi/runtime/collection",
     export_name: "all",
+    source_arity: 2,
 };
 
 const COLLECTION_FOR_EACH: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -76,6 +105,7 @@ const COLLECTION_FOR_EACH: RuntimeCollectionOperation = RuntimeCollectionOperati
     local_name: "_ssrg_collection_for_each",
     module: "@seseragi/runtime/collection",
     export_name: "forEach",
+    source_arity: 2,
 };
 
 const ARRAY_COMPREHEND: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -83,6 +113,7 @@ const ARRAY_COMPREHEND: RuntimeCollectionOperation = RuntimeCollectionOperation 
     local_name: "_ssrg_array_comprehend",
     module: "@seseragi/runtime/array",
     export_name: "collectMap",
+    source_arity: 3,
 };
 
 const ARRAY_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -90,6 +121,7 @@ const ARRAY_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOpera
     local_name: "_ssrg_array_comprehend_flat",
     module: "@seseragi/runtime/array",
     export_name: "collectFlatMap",
+    source_arity: 3,
 };
 
 const RANGE_COMPREHEND: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -97,6 +129,7 @@ const RANGE_COMPREHEND: RuntimeCollectionOperation = RuntimeCollectionOperation 
     local_name: "_ssrg_range_comprehend",
     module: "@seseragi/runtime/range",
     export_name: "collectMap",
+    source_arity: 3,
 };
 
 const RANGE_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -104,6 +137,7 @@ const RANGE_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOpera
     local_name: "_ssrg_range_comprehend_flat",
     module: "@seseragi/runtime/range",
     export_name: "collectFlatMap",
+    source_arity: 3,
 };
 
 const LIST_COMPREHEND: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -111,6 +145,7 @@ const LIST_COMPREHEND: RuntimeCollectionOperation = RuntimeCollectionOperation {
     local_name: "_ssrg_list_comprehend",
     module: "@seseragi/runtime/list",
     export_name: "collectMap",
+    source_arity: 3,
 };
 
 const LIST_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -118,9 +153,50 @@ const LIST_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperat
     local_name: "_ssrg_list_comprehend_flat",
     module: "@seseragi/runtime/list",
     export_name: "collectFlatMap",
+    source_arity: 3,
 };
 
 const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
+    sequence_operation!(
+        "collection",
+        "NonPositiveSize",
+        "size-error.non-positive",
+        1
+    ),
+    sequence_operation!("array", "empty", "empty", 1),
+    sequence_operation!("array", "singleton", "singleton", 1),
+    sequence_operation!("array", "fromIterable", "from-iterable", 1),
+    sequence_operation!("array", "reduceRight", "reduce-right", 3),
+    sequence_operation!("array", "findIndex", "find-index", 2),
+    sequence_operation!("array", "takeWhile", "take-while", 2),
+    sequence_operation!("array", "dropWhile", "drop-while", 2),
+    sequence_operation!("array", "zip", "zip", 2),
+    sequence_operation!("array", "zipWith", "zip-with", 3),
+    sequence_operation!("array", "unzip", "unzip", 1),
+    sequence_operation!("array", "sort", "sort", 1),
+    sequence_operation!("array", "sortBy", "sort-by", 2),
+    sequence_operation!("array", "groupBy", "group-by", 2),
+    sequence_operation!("array", "last", "last", 1),
+    sequence_operation!("array", "init", "init", 1),
+    sequence_operation!("array", "chunksOf", "chunks-of", 2),
+    sequence_operation!("array", "windows", "windows", 2),
+    sequence_operation!("list", "empty", "empty", 1),
+    sequence_operation!("list", "singleton", "singleton", 1, "singletonList"),
+    sequence_operation!("list", "fromIterable", "from-iterable", 1),
+    sequence_operation!("list", "reduceRight", "reduce-right", 3),
+    sequence_operation!("list", "findIndex", "find-index", 2),
+    sequence_operation!("list", "takeWhile", "take-while", 2),
+    sequence_operation!("list", "dropWhile", "drop-while", 2),
+    sequence_operation!("list", "zip", "zip", 2),
+    sequence_operation!("list", "zipWith", "zip-with", 3),
+    sequence_operation!("list", "unzip", "unzip", 1),
+    sequence_operation!("list", "sort", "sort", 1),
+    sequence_operation!("list", "sortBy", "sort-by", 2),
+    sequence_operation!("list", "groupBy", "group-by", 2),
+    sequence_operation!("list", "last", "last", 1),
+    sequence_operation!("list", "init", "init", 1),
+    sequence_operation!("list", "chunksOf", "chunks-of", 2),
+    sequence_operation!("list", "windows", "windows", 2),
     (
         "std/map::empty",
         RuntimeCollectionOperation {
@@ -128,6 +204,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_empty",
             module: "@seseragi/runtime/map",
             export_name: "empty",
+            source_arity: 1,
         },
     ),
     (
@@ -137,6 +214,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_singleton",
             module: "@seseragi/runtime/map",
             export_name: "singleton",
+            source_arity: 2,
         },
     ),
     (
@@ -146,6 +224,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_fromEntries",
             module: "@seseragi/runtime/map",
             export_name: "fromEntries",
+            source_arity: 1,
         },
     ),
     (
@@ -155,6 +234,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_get",
             module: "@seseragi/runtime/map",
             export_name: "get",
+            source_arity: 2,
         },
     ),
     (
@@ -164,6 +244,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_containsKey",
             module: "@seseragi/runtime/map",
             export_name: "containsKey",
+            source_arity: 2,
         },
     ),
     (
@@ -173,6 +254,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_insert",
             module: "@seseragi/runtime/map",
             export_name: "insert",
+            source_arity: 3,
         },
     ),
     (
@@ -182,6 +264,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_upsert",
             module: "@seseragi/runtime/map",
             export_name: "upsert",
+            source_arity: 3,
         },
     ),
     (
@@ -191,6 +274,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_remove",
             module: "@seseragi/runtime/map",
             export_name: "remove",
+            source_arity: 2,
         },
     ),
     (
@@ -200,6 +284,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_filter",
             module: "@seseragi/runtime/map",
             export_name: "filter",
+            source_arity: 2,
         },
     ),
     (
@@ -209,6 +294,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_mapValues",
             module: "@seseragi/runtime/map",
             export_name: "mapValues",
+            source_arity: 2,
         },
     ),
     (
@@ -218,6 +304,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_mapKeysWith",
             module: "@seseragi/runtime/map",
             export_name: "mapKeysWith",
+            source_arity: 3,
         },
     ),
     (
@@ -227,6 +314,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_mergeWith",
             module: "@seseragi/runtime/map",
             export_name: "mergeWith",
+            source_arity: 3,
         },
     ),
     (
@@ -236,6 +324,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_keys",
             module: "@seseragi/runtime/map",
             export_name: "keys",
+            source_arity: 1,
         },
     ),
     (
@@ -245,6 +334,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_values",
             module: "@seseragi/runtime/map",
             export_name: "values",
+            source_arity: 1,
         },
     ),
     (
@@ -254,6 +344,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_entries",
             module: "@seseragi/runtime/map",
             export_name: "entries",
+            source_arity: 1,
         },
     ),
     (
@@ -263,6 +354,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_size",
             module: "@seseragi/runtime/map",
             export_name: "size",
+            source_arity: 1,
         },
     ),
     (
@@ -272,6 +364,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_map_isEmpty",
             module: "@seseragi/runtime/map",
             export_name: "isEmpty",
+            source_arity: 1,
         },
     ),
     (
@@ -281,6 +374,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_empty",
             module: "@seseragi/runtime/set",
             export_name: "empty",
+            source_arity: 1,
         },
     ),
     (
@@ -290,6 +384,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_singleton",
             module: "@seseragi/runtime/set",
             export_name: "singleton",
+            source_arity: 1,
         },
     ),
     (
@@ -299,6 +394,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_fromIterable",
             module: "@seseragi/runtime/set",
             export_name: "fromIterable",
+            source_arity: 1,
         },
     ),
     (
@@ -308,6 +404,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_contains",
             module: "@seseragi/runtime/set",
             export_name: "contains",
+            source_arity: 2,
         },
     ),
     (
@@ -317,6 +414,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_insert",
             module: "@seseragi/runtime/set",
             export_name: "insert",
+            source_arity: 2,
         },
     ),
     (
@@ -326,6 +424,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_remove",
             module: "@seseragi/runtime/set",
             export_name: "remove",
+            source_arity: 2,
         },
     ),
     (
@@ -335,6 +434,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_filter",
             module: "@seseragi/runtime/set",
             export_name: "filter",
+            source_arity: 2,
         },
     ),
     (
@@ -344,6 +444,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_map",
             module: "@seseragi/runtime/set",
             export_name: "map",
+            source_arity: 2,
         },
     ),
     (
@@ -353,6 +454,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_union",
             module: "@seseragi/runtime/set",
             export_name: "union",
+            source_arity: 2,
         },
     ),
     (
@@ -362,6 +464,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_intersection",
             module: "@seseragi/runtime/set",
             export_name: "intersection",
+            source_arity: 2,
         },
     ),
     (
@@ -371,6 +474,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_difference",
             module: "@seseragi/runtime/set",
             export_name: "difference",
+            source_arity: 2,
         },
     ),
     (
@@ -380,6 +484,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_isSubsetOf",
             module: "@seseragi/runtime/set",
             export_name: "isSubsetOf",
+            source_arity: 2,
         },
     ),
     (
@@ -389,6 +494,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_toArray",
             module: "@seseragi/runtime/set",
             export_name: "toArray",
+            source_arity: 1,
         },
     ),
     (
@@ -398,6 +504,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_toList",
             module: "@seseragi/runtime/set",
             export_name: "toList",
+            source_arity: 1,
         },
     ),
     (
@@ -407,6 +514,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_size",
             module: "@seseragi/runtime/set",
             export_name: "size",
+            source_arity: 1,
         },
     ),
     (
@@ -416,6 +524,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_set_isEmpty",
             module: "@seseragi/runtime/set",
             export_name: "isEmpty",
+            source_arity: 1,
         },
     ),
     (
@@ -425,6 +534,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_toList",
             module: "@seseragi/runtime/array",
             export_name: "toList",
+            source_arity: 1,
         },
     ),
     (
@@ -434,6 +544,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_filter",
             module: "@seseragi/runtime/array",
             export_name: "filter",
+            source_arity: 2,
         },
     ),
     (
@@ -443,6 +554,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_filterMap",
             module: "@seseragi/runtime/array",
             export_name: "filterMap",
+            source_arity: 2,
         },
     ),
     (
@@ -452,6 +564,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_flatMap",
             module: "@seseragi/runtime/array",
             export_name: "flatMap",
+            source_arity: 2,
         },
     ),
     (
@@ -461,6 +574,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_find",
             module: "@seseragi/runtime/array",
             export_name: "find",
+            source_arity: 2,
         },
     ),
     (
@@ -470,6 +584,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_take",
             module: "@seseragi/runtime/array",
             export_name: "take",
+            source_arity: 2,
         },
     ),
     (
@@ -479,6 +594,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_drop",
             module: "@seseragi/runtime/array",
             export_name: "drop",
+            source_arity: 2,
         },
     ),
     (
@@ -488,6 +604,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_append",
             module: "@seseragi/runtime/array",
             export_name: "append",
+            source_arity: 2,
         },
     ),
     (
@@ -497,6 +614,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_concat",
             module: "@seseragi/runtime/array",
             export_name: "concat",
+            source_arity: 1,
         },
     ),
     (
@@ -506,6 +624,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_reverse",
             module: "@seseragi/runtime/array",
             export_name: "reverse",
+            source_arity: 1,
         },
     ),
     (
@@ -515,6 +634,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_length",
             module: "@seseragi/runtime/array",
             export_name: "length",
+            source_arity: 1,
         },
     ),
     (
@@ -524,6 +644,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_isEmpty",
             module: "@seseragi/runtime/array",
             export_name: "isEmpty",
+            source_arity: 1,
         },
     ),
     (
@@ -533,6 +654,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_get",
             module: "@seseragi/runtime/array",
             export_name: "get",
+            source_arity: 2,
         },
     ),
     (
@@ -542,6 +664,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_head",
             module: "@seseragi/runtime/array",
             export_name: "head",
+            source_arity: 1,
         },
     ),
     (
@@ -551,6 +674,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_tail",
             module: "@seseragi/runtime/array",
             export_name: "tail",
+            source_arity: 1,
         },
     ),
     (
@@ -560,6 +684,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_toArray",
             module: "@seseragi/runtime/list",
             export_name: "toArray",
+            source_arity: 1,
         },
     ),
     (
@@ -569,6 +694,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_filter",
             module: "@seseragi/runtime/list",
             export_name: "filter",
+            source_arity: 2,
         },
     ),
     (
@@ -578,6 +704,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_filterMap",
             module: "@seseragi/runtime/list",
             export_name: "filterMap",
+            source_arity: 2,
         },
     ),
     (
@@ -587,6 +714,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_flatMap",
             module: "@seseragi/runtime/list",
             export_name: "flatMap",
+            source_arity: 2,
         },
     ),
     (
@@ -596,6 +724,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_find",
             module: "@seseragi/runtime/list",
             export_name: "find",
+            source_arity: 2,
         },
     ),
     (
@@ -605,6 +734,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_take",
             module: "@seseragi/runtime/list",
             export_name: "take",
+            source_arity: 2,
         },
     ),
     (
@@ -614,6 +744,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_drop",
             module: "@seseragi/runtime/list",
             export_name: "drop",
+            source_arity: 2,
         },
     ),
     (
@@ -623,6 +754,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_append",
             module: "@seseragi/runtime/list",
             export_name: "append",
+            source_arity: 2,
         },
     ),
     (
@@ -632,6 +764,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_concat",
             module: "@seseragi/runtime/list",
             export_name: "concat",
+            source_arity: 1,
         },
     ),
     (
@@ -641,6 +774,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_reverse",
             module: "@seseragi/runtime/list",
             export_name: "reverse",
+            source_arity: 1,
         },
     ),
     (
@@ -650,6 +784,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_length",
             module: "@seseragi/runtime/list",
             export_name: "length",
+            source_arity: 1,
         },
     ),
     (
@@ -659,6 +794,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_isEmpty",
             module: "@seseragi/runtime/list",
             export_name: "isEmpty",
+            source_arity: 1,
         },
     ),
     (
@@ -668,6 +804,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_get",
             module: "@seseragi/runtime/list",
             export_name: "get",
+            source_arity: 2,
         },
     ),
     (
@@ -677,6 +814,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_head",
             module: "@seseragi/runtime/list",
             export_name: "head",
+            source_arity: 1,
         },
     ),
     (
@@ -686,6 +824,7 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_tail",
             module: "@seseragi/runtime/list",
             export_name: "tail",
+            source_arity: 1,
         },
     ),
 ];

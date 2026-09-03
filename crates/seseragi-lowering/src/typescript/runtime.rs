@@ -73,6 +73,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if let Some(operation) = runtime_numeric_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
+            if let Some(operation) = runtime_standard_collection_operation(name) {
+                push_unique(requirements, operation.runtime_feature);
+            }
             if let Some(operation) = runtime_bytes_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
@@ -537,6 +540,15 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 .flatten();
             if int_operation.is_none() {
                 collect_evidence_runtime_imports(evidence, imports);
+            }
+            if let Some(operation) = runtime_standard_collection_operation(name) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
             }
             if let Some(operation) = int_operation {
                 push_import_unique(

@@ -59,9 +59,28 @@ pub(super) fn lower_core_expr_to_typescript(
             name,
             evidence,
             type_ref,
-            ..
+            origin,
         } => {
             if matches!(type_ref, CoreType::Function { .. }) {
+                if runtime_standard_collection_operation(&name).is_some() {
+                    // A bare function reference is a partial application with
+                    // no source arguments. Keep evidence and currying identical
+                    // to ordinary calls instead of emitting an unbound name.
+                    return lower_core_expr_to_typescript(
+                        CoreExpr::Call {
+                            callee: name,
+                            arguments: Vec::new(),
+                            evidence,
+                            deferred_evidence_parameters: Vec::new(),
+                            deferred_evidence_type_constructor_parameters: Vec::new(),
+                            trait_dispatch: None,
+                            type_ref,
+                            origin,
+                        },
+                        imported_values,
+                        imported_types,
+                    );
+                }
                 if let Some(operation) = runtime_signal_distinct_operation(&name, &evidence) {
                     let source = "_source".to_owned();
                     let equals = equality_reference_from_evidence(
@@ -418,7 +437,12 @@ pub(super) fn lower_core_expr_to_typescript(
                             .map(|value| type_ref_from_core_type(value, imported_types))
                             .collect()
                     }
-                    ("std/set::fromIterable", Some(selected)) => selected
+                    (
+                        "std/set::fromIterable"
+                        | "std/array::fromIterable"
+                        | "std/list::fromIterable",
+                        Some(selected),
+                    ) => selected
                         .constraint
                         .arguments
                         .iter()
@@ -439,6 +463,7 @@ pub(super) fn lower_core_expr_to_typescript(
                         .expect("standard collection call requires materialized evidence")
                     })
                     .collect::<Vec<_>>();
+                let remaining_parameters = operation.source_arity.saturating_sub(arguments.len());
                 arguments.splice(0..0, dictionaries);
                 lower_uncurried_runtime_call(
                     operation.local_name.to_owned(),
@@ -447,6 +472,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     imported_types,
                     "collection",
                     type_arguments,
+                    Some(remaining_parameters),
                 )
             } else if let Some(operation) = runtime_stream_operation(&callee) {
                 if callee == "std/stream::fromIterable" {
@@ -504,6 +530,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     imported_types,
                     "numeric",
                     Vec::new(),
+                    None,
                 )
             } else if let Some(constructor) = runtime_sum_constructor(&callee) {
                 TypeScriptExpr::RuntimeCall {
@@ -1066,10 +1093,14 @@ fn lower_uncurried_runtime_call(
     imported_types: &BTreeMap<String, String>,
     parameter_scope: &str,
     type_arguments: Vec<super::TypeScriptType>,
+    remaining_parameters: Option<usize>,
 ) -> TypeScriptExpr {
     let mut parameters = Vec::new();
     let mut remaining = result_type;
     while let CoreType::Function { parameter, result } = remaining {
+        if remaining_parameters.is_some_and(|count| parameters.len() == count) {
+            break;
+        }
         let index = parameters.len();
         let name = format!("__ssrg${parameter_scope}$partial${index}");
         let type_name = render_typescript_type(&type_ref_from_core_type(parameter, imported_types));
