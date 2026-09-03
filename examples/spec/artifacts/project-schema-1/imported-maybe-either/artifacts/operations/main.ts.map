@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "dist/imported-maybe-either/operations.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-maybe-either::operations"
+  ],
+  "sourcesContent": [
+    "import * as maybe from \"std/maybe\"\nimport * as either from \"std/either\"\n\npub fn gather<F<_>, A> values: F<Maybe<A>> -> Maybe<F<A>> where Traversable<F> =\n  maybe.sequence values\n\npub fn gatherEither<F<_>, E, A> values: F<Either<E, A>>\n  -> Either<E, F<A>>\nwhere Traversable<F> =\n  either.sequence values\n\npub fn accumulated<A> values: Array<Maybe<A>> -> Maybe<A> where Semigroup<A> =\n  combine values\n"
+  ],
+  "names": [
+    "gather",
+    "_ssrg_maybe_sequence",
+    "gatherEither",
+    "_ssrg_either_sequence",
+    "accumulated",
+    "_ssrg_collection_combine",
+    "arrayReducible",
+    "maybeMonoid"
+  ],
+  "mappings": ";;;;AAGAA;AAGAE;AAKAE"
+}

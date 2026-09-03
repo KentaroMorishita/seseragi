@@ -62341,11 +62341,555 @@
     {
       "specifier": "std/either",
       "identity": "std/either",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/either",
+        "source": "std/either.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/either::mapLeft",
+            "namespace": "value",
+            "name": "mapLeft",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "F",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "F",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "F",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/either::mapRight",
+            "namespace": "value",
+            "name": "mapRight",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A",
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/either::bimap",
+            "namespace": "value",
+            "name": "bimap",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "F",
+                "A",
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "F",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "F",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/either::fold",
+            "namespace": "value",
+            "name": "fold",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A",
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/either::swap",
+            "namespace": "value",
+            "name": "swap",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/either::sequence",
+            "namespace": "value",
+            "name": "sequence",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                {
+                  "name": "F",
+                  "arity": 1
+                },
+                "E",
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Traversable",
+                  "traitIdentity": "std/prelude::Traversable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/either::traverse",
+            "namespace": "value",
+            "name": "traverse",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                {
+                  "name": "F",
+                  "arity": 1
+                },
+                "E",
+                "A",
+                "B"
+              ],
+              "constraints": [
+                {
+                  "name": "Traversable",
+                  "traitIdentity": "std/prelude::Traversable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "F",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "F",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/entropy",
@@ -68669,11 +69213,278 @@
     {
       "specifier": "std/maybe",
       "identity": "std/maybe",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/maybe",
+        "source": "std/maybe.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/maybe::withDefault",
+            "namespace": "value",
+            "name": "withDefault",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/maybe::orElse",
+            "namespace": "value",
+            "name": "orElse",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/maybe::sequence",
+            "namespace": "value",
+            "name": "sequence",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                {
+                  "name": "F",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Traversable",
+                  "traitIdentity": "std/prelude::Traversable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/maybe::traverse",
+            "namespace": "value",
+            "name": "traverse",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                {
+                  "name": "F",
+                  "arity": 1
+                },
+                "A",
+                "B"
+              ],
+              "constraints": [
+                {
+                  "name": "Traversable",
+                  "traitIdentity": "std/prelude::Traversable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "B",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "F",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "F",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "B",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/non-empty-list",

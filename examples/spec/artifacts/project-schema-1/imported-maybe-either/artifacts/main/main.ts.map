@@ -1,0 +1,45 @@
+{
+  "version": 3,
+  "file": "dist/imported-maybe-either/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-maybe-either::main"
+  ],
+  "sourcesContent": [
+    "import { gather, gatherEither, accumulated } from \"./operations\"\n\npub effect fn main = do {\n  let values: List<Maybe<Int>> = `[Just 1, Just 2]\n  let errors: Array<Either<String, Int>> = [Right 1, Left \"first\", Left \"second\"]\n  let strings: Array<Maybe<String>> = [Just \"a\", Nothing, Just \"b\"]\n  println $ show (gather values)\n  println $ show (gatherEither errors)\n  println $ show (accumulated strings)\n}\n"
+  ],
+  "names": [
+    "main",
+    "values",
+    "fromArray",
+    "Just",
+    "Just",
+    "errors",
+    "Right",
+    "Left",
+    "Left",
+    "strings",
+    "Just",
+    "Nothing",
+    "Just",
+    "println",
+    "maybeShow",
+    "listShow",
+    "intShow",
+    "gather",
+    "listTraversable",
+    "println",
+    "eitherShow",
+    "stringShow",
+    "arrayShow",
+    "intShow",
+    "gatherEither",
+    "arrayTraversable",
+    "println",
+    "maybeShow",
+    "stringShow",
+    "accumulated",
+    "stringSemigroup"
+  ],
+  "mappings": ";;;;;;;;;AAEAA"
+}

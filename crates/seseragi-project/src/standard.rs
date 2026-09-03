@@ -320,7 +320,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/decimal", PORTABLE_TARGETS),
     available_module!("std/deferred", deferred_interface, PORTABLE_TARGETS),
     available_module!("std/effect", effect_interface, PORTABLE_TARGETS),
-    contract_module!("std/either", PORTABLE_TARGETS),
+    available_module!("std/either", either_interface, PORTABLE_TARGETS),
     available_module!(
         "std/entropy",
         entropy_interface,
@@ -347,7 +347,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         &["std/log::Logger"]
     ),
     available_module!("std/map", map_interface, PORTABLE_TARGETS),
-    contract_module!("std/maybe", PORTABLE_TARGETS),
+    available_module!("std/maybe", maybe_interface, PORTABLE_TARGETS),
     available_module!(
         "std/non-empty-list",
         non_empty_list_interface,
@@ -6000,6 +6000,140 @@ fn array_interface() -> ModuleInterface {
     collection_interface("std/array", "Array", "toList", "List")
 }
 
+fn sum_traversal_export(module: &str, sequence: bool, either: bool) -> InterfaceExport {
+    let wrap = |value: InterfaceType| {
+        if either {
+            named_with("Either", vec![named("E"), value])
+        } else {
+            named_with("Maybe", vec![value])
+        }
+    };
+    let container = |value| named_with("F", vec![value]);
+    let (name, arguments, result) = if sequence {
+        (
+            "sequence",
+            vec![container(wrap(named("A")))],
+            wrap(container(named("A"))),
+        )
+    } else {
+        (
+            "traverse",
+            vec![
+                function_type(vec![named("A")], wrap(named("B"))),
+                container(named("A")),
+            ],
+            wrap(container(named("B"))),
+        )
+    };
+    let mut export = function_export(
+        module,
+        name,
+        [],
+        vec![collection_constraint("Traversable", vec![named("F")])],
+        arguments,
+        result,
+    );
+    export.scheme.type_parameters = vec![TypeParameter::constructor("F", 1)];
+    if either {
+        export
+            .scheme
+            .type_parameters
+            .push(TypeParameter::value("E"));
+    }
+    export
+        .scheme
+        .type_parameters
+        .push(TypeParameter::value("A"));
+    if !sequence {
+        export
+            .scheme
+            .type_parameters
+            .push(TypeParameter::value("B"));
+    }
+    export
+}
+
+fn maybe_interface() -> ModuleInterface {
+    let module = "std/maybe";
+    let maybe = named_with("Maybe", vec![named("A")]);
+    standard_interface(
+        module,
+        vec![
+            function_export(
+                module,
+                "withDefault",
+                ["A"],
+                vec![],
+                vec![named("A"), maybe.clone()],
+                named("A"),
+            ),
+            function_export(
+                module,
+                "orElse",
+                ["A"],
+                vec![],
+                vec![maybe.clone(), maybe.clone()],
+                maybe,
+            ),
+            sum_traversal_export(module, true, false),
+            sum_traversal_export(module, false, false),
+        ],
+    )
+}
+
+fn either_interface() -> ModuleInterface {
+    let module = "std/either";
+    let either = |error, value| named_with("Either", vec![named(error), named(value)]);
+    let callback = |from, to| function_type(vec![named(from)], named(to));
+    standard_interface(
+        module,
+        vec![
+            function_export(
+                module,
+                "mapLeft",
+                ["E", "F", "A"],
+                vec![],
+                vec![callback("E", "F"), either("E", "A")],
+                either("F", "A"),
+            ),
+            function_export(
+                module,
+                "mapRight",
+                ["E", "A", "B"],
+                vec![],
+                vec![callback("A", "B"), either("E", "A")],
+                either("E", "B"),
+            ),
+            function_export(
+                module,
+                "bimap",
+                ["E", "F", "A", "B"],
+                vec![],
+                vec![callback("E", "F"), callback("A", "B"), either("E", "A")],
+                either("F", "B"),
+            ),
+            function_export(
+                module,
+                "fold",
+                ["E", "A", "B"],
+                vec![],
+                vec![callback("E", "B"), callback("A", "B"), either("E", "A")],
+                named("B"),
+            ),
+            function_export(
+                module,
+                "swap",
+                ["E", "A"],
+                vec![],
+                vec![either("E", "A")],
+                either("A", "E"),
+            ),
+            sum_traversal_export(module, true, true),
+            sum_traversal_export(module, false, true),
+        ],
+    )
+}
+
 fn collection_core_interface() -> ModuleInterface {
     let module = "std/collection";
     standard_interface(
@@ -8326,6 +8460,32 @@ fn optional(name: &str, type_ref: InterfaceType) -> InterfaceRecordField {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn maybe_either_interfaces_own_only_their_specific_operations() {
+        for (module, count) in [("std/maybe", 4), ("std/either", 7)] {
+            let target = standard_module_target(module).unwrap();
+            let exports = &target.interface().exports;
+            assert_eq!(exports.len(), count);
+            for name in [
+                "Maybe", "Either", "Just", "Nothing", "Left", "Right", "map", "apply", "pure",
+                "flatMap",
+            ] {
+                assert!(!exports.iter().any(|export| export.name == name));
+            }
+            for name in ["sequence", "traverse"] {
+                let operation = exports.iter().find(|export| export.name == name).unwrap();
+                assert_eq!(
+                    operation.scheme.type_parameters[0],
+                    TypeParameter::constructor("F", 1)
+                );
+                assert_eq!(
+                    operation.scheme.constraints,
+                    vec![collection_constraint("Traversable", vec![named("F")])]
+                );
+            }
+        }
+    }
 
     #[test]
     fn registry_separates_contract_identity_from_product_availability() {

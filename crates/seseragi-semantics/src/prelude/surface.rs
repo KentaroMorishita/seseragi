@@ -116,7 +116,6 @@ const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
     audit_spec("Debug", "Decimal", "10.8", Some(309)),
     audit_spec("JsonEncode", "Decimal", "10.9", Some(309)),
     audit_spec("JsonDecode", "Decimal", "10.9", Some(309)),
-    audit_spec("Monoid", "Maybe<A> where Semigroup<A>", "9.5", Some(303)),
     audit_spec("Monoid", "Sum<A>", "9.5", None),
     audit_spec("Monoid", "Product<A>", "9.5", None),
     audit_spec("Eq", "Validation<E, A>", "10.4", Some(304)),
@@ -493,7 +492,7 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 193);
+        assert_eq!(surface.instances.len(), 195);
         assert_eq!(surface.builtin_instances.len(), 35);
         for identity in [
             "std/int::Hash",
@@ -532,7 +531,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 193 + 35 + 10);
+        assert_eq!(implemented.len(), 195 + 35 + 10);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()

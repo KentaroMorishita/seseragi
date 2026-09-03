@@ -1,0 +1,10 @@
+import { gather, gatherEither, accumulated } from "./operations"
+
+pub effect fn main = do {
+  let values: List<Maybe<Int>> = `[Just 1, Just 2]
+  let errors: Array<Either<String, Int>> = [Right 1, Left "first", Left "second"]
+  let strings: Array<Maybe<String>> = [Just "a", Nothing, Just "b"]
+  println $ show (gather values)
+  println $ show (gatherEither errors)
+  println $ show (accumulated strings)
+}

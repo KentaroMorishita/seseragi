@@ -1,0 +1,501 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-maybe-either::operations",
+  "moduleDependencies": [
+    {
+      "specifier": "std/maybe",
+      "module": "std/maybe",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "sequence",
+          "local": "maybe.sequence",
+          "canonical": "std/maybe::sequence",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 12,
+            "end": 17
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/either",
+      "module": "std/either",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 35,
+        "end": 71
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "sequence",
+          "local": "either.sequence",
+          "canonical": "std/either::sequence",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 47,
+            "end": 53
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-maybe-either::operations::gather",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 73,
+        "end": 177
+      },
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        },
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Traversable",
+          "traitIdentity": "std/prelude::Traversable",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "F",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/maybe::sequence",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 171,
+              "end": 177
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Traversable",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 156,
+          "end": 177
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-maybe-either::operations::gatherEither",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 179,
+        "end": 303
+      },
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        },
+        "E",
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Traversable",
+          "traitIdentity": "std/prelude::Traversable",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "F",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/either::sequence",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 297,
+              "end": 303
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Traversable",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 281,
+          "end": 303
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-maybe-either::operations::accumulated",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 305,
+        "end": 400
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Semigroup",
+          "traitIdentity": "std/prelude::Semigroup",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::combine",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 394,
+              "end": 400
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          },
+          {
+            "constraint": {
+              "name": "Monoid",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/maybe::Monoid",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Semigroup",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 386,
+          "end": 400
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-maybe-either::operations",
+  "runtimeRequirements": [
+    "core.maybe",
+    "core.maybe.sequence",
+    "core.either",
+    "core.either.sequence",
+    "core.array.reducible",
+    "core.maybe.monoid",
+    "core.collection.combine"
+  ],
+  "imports": [
+    {
+      "feature": "core.maybe.sequence",
+      "local": "_ssrg_maybe_sequence"
+    },
+    {
+      "feature": "core.either.sequence",
+      "local": "_ssrg_either_sequence"
+    },
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.maybe.monoid",
+      "local": "_ssrg_maybe_monoid"
+    },
+    {
+      "feature": "core.collection.combine",
+      "local": "_ssrg_collection_combine"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "gather",
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        },
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Traversable",
+          "traitIdentity": "std/prelude::Traversable",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "F",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "unknown",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_maybe_sequence",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 73,
+        "end": 177
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "gatherEither",
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        },
+        "E",
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Traversable",
+          "traitIdentity": "std/prelude::Traversable",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "F",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "unknown",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_either_sequence",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 179,
+        "end": 303
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "accumulated",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Semigroup",
+          "traitIdentity": "std/prelude::Semigroup",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: A }>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_combine",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "type-application-call",
+            "callee": "_ssrg_maybe_monoid",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              }
+            ]
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 305,
+        "end": 400
+      }
+    }
+  ]
+}

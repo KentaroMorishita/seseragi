@@ -498,6 +498,22 @@ const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
         source_map_name: "rangeReducible",
     },
     RuntimePreludeDictionary {
+        semantic_identity: "std/maybe::Semigroup",
+        runtime_feature: "core.maybe.semigroup",
+        local_name: "_ssrg_maybe_semigroup",
+        module: "@seseragi/runtime/sum",
+        export_name: "maybeSemigroup",
+        source_map_name: "maybeSemigroup",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/maybe::Monoid",
+        runtime_feature: "core.maybe.monoid",
+        local_name: "_ssrg_maybe_monoid",
+        module: "@seseragi/runtime/sum",
+        export_name: "maybeMonoid",
+        source_map_name: "maybeMonoid",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/maybe::Functor",
         runtime_feature: "core.maybe.functor",
         local_name: "_ssrg_maybe_functor",

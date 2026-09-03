@@ -1,1 +1,1 @@
-array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4] / map: [["b",3],["a",1]] / set: 6 / grouped: [[3, 1], [2, 4]] / sorted: `[1, 2, 3] / size: 0
+array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4] / map: [["b",3],["a",1]] / set: 6 / grouped: [[3, 1], [2, 4]] / sorted: `[1, 2, 3] / size: 0 / maybe: Just [1, 2] / either: Right 3

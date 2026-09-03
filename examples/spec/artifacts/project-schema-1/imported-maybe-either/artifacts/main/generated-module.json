@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-maybe-either::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "core.unit",
+      "effect.core.flatMap",
+      "core.maybe",
+      "core.int",
+      "core.list.from-array",
+      "core.maybe.just",
+      "core.either",
+      "core.string",
+      "core.either.right",
+      "core.either.left",
+      "core.maybe.nothing",
+      "effect.console.println",
+      "core.int.show",
+      "core.list.show",
+      "core.maybe.show",
+      "core.list.traversable",
+      "core.string.show",
+      "core.array.show",
+      "core.either.show",
+      "core.array.traversable",
+      "core.string.semigroup"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-maybe-either/main.ts",
+    "sourceMap": "dist/imported-maybe-either/main.ts.map"
+  }
+}

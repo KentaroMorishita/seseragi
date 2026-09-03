@@ -392,6 +392,8 @@ describe("Playground project compiler boundary", () => {
             "std/int",
             "std/list",
             "std/map",
+            "std/maybe",
+            "std/either",
             "std/set",
             "std/number",
             "std/text",
@@ -408,6 +410,8 @@ describe("Playground project compiler boundary", () => {
         "std/int::saturatingAdd",
         "std/list::length",
         "std/map::fromEntries",
+        "std/maybe::sequence",
+        "std/either::mapRight",
         "std/set::fromIterable",
         "std/number::HalfEven",
         "std/text::decodeUtf8",
@@ -421,9 +425,19 @@ describe("Playground project compiler boundary", () => {
     ) {
       throw new Error("missing std parity execution entry")
     }
-    expect(response.modules[0]?.generated.typescript).toContain(
-      'filter as _ssrg_array_filter, toList as _ssrg_array_toList, arrayIterable as _ssrg_array_iterable, groupBy as _ssrg_array_groupBy, windows as _ssrg_array_windows, length as _ssrg_array_length } from "@seseragi/runtime/array"'
-    )
+    for (const binding of [
+      "filter as _ssrg_array_filter",
+      "toList as _ssrg_array_toList",
+      "arrayIterable as _ssrg_array_iterable",
+      "groupBy as _ssrg_array_groupBy",
+      "windows as _ssrg_array_windows",
+      "length as _ssrg_array_length",
+      "arrayTraversable as _ssrg_array_traversable",
+      "maybeSequence as _ssrg_maybe_sequence",
+      "mapRight as _ssrg_either_mapRight",
+    ]) {
+      expect(response.modules[0]?.generated.typescript).toContain(binding)
+    }
     expect(response.modules[0]?.generated.typescript).toContain(
       'length as _ssrg_list_length, type List as List } from "@seseragi/runtime/list"'
     )
@@ -447,7 +461,7 @@ describe("Playground project compiler boundary", () => {
       )
     ).toEqual({
       stdout:
-        'array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4] / map: [["b",3],["a",1]] / set: 6 / grouped: [[3, 1], [2, 4]] / sorted: `[1, 2, 3] / size: 0',
+        'array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4] / map: [["b",3],["a",1]] / set: 6 / grouped: [[3, 1], [2, 4]] / sorted: `[1, 2, 3] / size: 0 / maybe: Just [1, 2] / either: Right 3',
       debug: "()",
     })
   })
@@ -1368,6 +1382,31 @@ describe("Playground project compiler boundary", () => {
     expect(response.status).toBe("success")
     if (response.status !== "success" || !response.entry)
       throw new Error("missing Map / Set execution entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
+  })
+
+  test("executes Maybe/Either APIs and conditional Monoid through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/maybe-either-apis/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expected = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/maybe-either-apis/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("maybe-either-apis.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing Maybe/Either entry")
     expect(
       await executeGeneratedModule(
         response.generated.typescript,

@@ -1,0 +1,1214 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-maybe-either::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./operations",
+      "module": "fixture/imported-maybe-either::operations",
+      "origin": {
+        "start": 0,
+        "end": 64
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "gather",
+          "local": "gather",
+          "canonical": "fixture/imported-maybe-either::operations::gather",
+          "origin": {
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "gatherEither",
+          "local": "gatherEither",
+          "canonical": "fixture/imported-maybe-either::operations::gatherEither",
+          "origin": {
+            "start": 17,
+            "end": 29
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "accumulated",
+          "local": "accumulated",
+          "canonical": "fixture/imported-maybe-either::operations::accumulated",
+          "origin": {
+            "start": 31,
+            "end": 42
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-maybe-either::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 66,
+        "end": 405
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 10,
+              "name": "values",
+              "type": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 98,
+                "end": 104
+              }
+            },
+            "value": {
+              "kind": "list",
+              "elements": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Just",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "1",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 132,
+                        "end": 133
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 127,
+                    "end": 133
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Just",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "2",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 140,
+                        "end": 141
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 135,
+                    "end": 141
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 125,
+                "end": 142
+              }
+            },
+            "origin": {
+              "start": 94,
+              "end": 142
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 18,
+              "name": "errors",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 149,
+                "end": 155
+              }
+            },
+            "value": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Right",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "1",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 193,
+                        "end": 194
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 187,
+                    "end": 194
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Left",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "first",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 201,
+                        "end": 208
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 196,
+                    "end": 208
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Left",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "second",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 215,
+                        "end": 223
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 210,
+                    "end": 223
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 186,
+                "end": 224
+              }
+            },
+            "origin": {
+              "start": 145,
+              "end": 224
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 19,
+              "name": "strings",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 231,
+                "end": 238
+              }
+            },
+            "value": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Just",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "a",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 269,
+                        "end": 272
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 264,
+                    "end": 272
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "std/prelude::Nothing",
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 274,
+                    "end": 281
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Just",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "b",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 288,
+                        "end": 291
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 283,
+                    "end": 291
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 263,
+                "end": 292
+              }
+            },
+            "origin": {
+              "start": 227,
+              "end": 292
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-maybe-either::operations::gather",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "values",
+                          "type": {
+                            "kind": "named",
+                            "name": "List",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 318,
+                            "end": 324
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Traversable",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/list::Traversable"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "List",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 311,
+                        "end": 324
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/maybe::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "List",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "List",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/list::Show",
+                              "typeArguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ],
+                              "evidenceArguments": [
+                                {
+                                  "constraint": {
+                                    "name": "Show",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "Show<std/prelude::Int>"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 305,
+                    "end": 325
+                  }
+                }
+              ],
+              "origin": {
+                "start": 295,
+                "end": 325
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-maybe-either::operations::gatherEither",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "errors",
+                          "type": {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 357,
+                            "end": 363
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Traversable",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/array::Traversable"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 344,
+                        "end": 363
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Either",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/either::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::String>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Array",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/array::Show",
+                              "typeArguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ],
+                              "evidenceArguments": [
+                                {
+                                  "constraint": {
+                                    "name": "Show",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "Show<std/prelude::Int>"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 338,
+                    "end": 364
+                  }
+                }
+              ],
+              "origin": {
+                "start": 328,
+                "end": 364
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-maybe-either::operations::accumulated",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "strings",
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 395,
+                        "end": 402
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Semigroup",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/string::Semigroup"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 383,
+                    "end": 402
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/maybe::Show",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::String>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 377,
+                "end": 403
+              }
+            }
+          ],
+          "origin": {
+            "start": 367,
+            "end": 403
+          }
+        },
+        "origin": {
+          "start": 87,
+          "end": 405
+        }
+      }
+    }
+  ]
+}

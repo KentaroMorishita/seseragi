@@ -4687,6 +4687,116 @@
       "constraints": []
     },
     {
+      "identity": "std/either::bimap",
+      "name": "bimap",
+      "module": "std/either",
+      "category": "Either",
+      "kind": "function",
+      "signature": "bimap<E, F, A, B> arg1: (E -> F) -> arg2: (A -> B) -> arg3: Either<E, A> -> Either<F, B>",
+      "description": "Transforms the selected Left or Right branch once.",
+      "typeParameters": [
+        "E",
+        "F",
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/either::fold",
+      "name": "fold",
+      "module": "std/either",
+      "category": "Either",
+      "kind": "function",
+      "signature": "fold<E, A, B> arg1: (E -> B) -> arg2: (A -> B) -> arg3: Either<E, A> -> B",
+      "description": "Eliminates Either by calling only the selected branch function.",
+      "typeParameters": [
+        "E",
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/either::mapLeft",
+      "name": "mapLeft",
+      "module": "std/either",
+      "category": "Either",
+      "kind": "function",
+      "signature": "mapLeft<E, F, A> arg1: (E -> F) -> arg2: Either<E, A> -> Either<F, A>",
+      "description": "Transforms only the Left payload.",
+      "typeParameters": [
+        "E",
+        "F",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/either::mapRight",
+      "name": "mapRight",
+      "module": "std/either",
+      "category": "Either",
+      "kind": "function",
+      "signature": "mapRight<E, A, B> arg1: (A -> B) -> arg2: Either<E, A> -> Either<E, B>",
+      "description": "Transforms only the Right payload using the standard Functor instance.",
+      "typeParameters": [
+        "E",
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/either::sequence",
+      "name": "sequence",
+      "module": "std/either",
+      "category": "Either",
+      "kind": "function",
+      "signature": "sequence<F<_>, E, A> arg1: F<Either<E, A>> -> Either<E, F<A>> where Traversable<F<_>>",
+      "description": "Traverses wrapped values with identity, preserving source shape and order.",
+      "typeParameters": [
+        "F",
+        "E",
+        "A"
+      ],
+      "constraints": [
+        "Traversable<F<_>>"
+      ]
+    },
+    {
+      "identity": "std/either::swap",
+      "name": "swap",
+      "module": "std/either",
+      "category": "Either",
+      "kind": "function",
+      "signature": "swap<E, A> arg1: Either<E, A> -> Either<A, E>",
+      "description": "Exchanges Left and Right without changing the payload.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/either::traverse",
+      "name": "traverse",
+      "module": "std/either",
+      "category": "Either",
+      "kind": "function",
+      "signature": "traverse<F<_>, E, A, B> arg1: (A -> Either<E, B>) -> arg2: F<A> -> Either<E, F<B>> where Traversable<F<_>>",
+      "description": "Uses the source Traversable and the module's Applicative without a separate traversal implementation.",
+      "typeParameters": [
+        "F",
+        "E",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Traversable<F<_>>"
+      ]
+    },
+    {
       "identity": "std/web/html::AnchorProps",
       "name": "AnchorProps",
       "module": "std/web/html",
@@ -6563,6 +6673,65 @@
       "signature": "stringify arg1: Json -> String",
       "description": "Writes compact deterministic JSON with minimal escaping.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/maybe::orElse",
+      "name": "orElse",
+      "module": "std/maybe",
+      "category": "Maybe",
+      "kind": "function",
+      "signature": "orElse<A> arg1: Maybe<A> -> arg2: Maybe<A> -> Maybe<A>",
+      "description": "Selects the fallback Maybe for Nothing, preserving an existing Just.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/maybe::sequence",
+      "name": "sequence",
+      "module": "std/maybe",
+      "category": "Maybe",
+      "kind": "function",
+      "signature": "sequence<F<_>, A> arg1: F<Maybe<A>> -> Maybe<F<A>> where Traversable<F<_>>",
+      "description": "Traverses wrapped values with identity, preserving source shape and order.",
+      "typeParameters": [
+        "F",
+        "A"
+      ],
+      "constraints": [
+        "Traversable<F<_>>"
+      ]
+    },
+    {
+      "identity": "std/maybe::traverse",
+      "name": "traverse",
+      "module": "std/maybe",
+      "category": "Maybe",
+      "kind": "function",
+      "signature": "traverse<F<_>, A, B> arg1: (A -> Maybe<B>) -> arg2: F<A> -> Maybe<F<B>> where Traversable<F<_>>",
+      "description": "Uses the source Traversable and the module's Applicative without a separate traversal implementation.",
+      "typeParameters": [
+        "F",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Traversable<F<_>>"
+      ]
+    },
+    {
+      "identity": "std/maybe::withDefault",
+      "name": "withDefault",
+      "module": "std/maybe",
+      "category": "Maybe",
+      "kind": "function",
+      "signature": "withDefault<A> arg1: A -> arg2: Maybe<A> -> A",
+      "description": "Selects the fallback for Nothing, or the Just payload. Arguments are strict.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {

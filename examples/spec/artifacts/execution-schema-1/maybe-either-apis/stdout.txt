@@ -1,0 +1,18 @@
+(9, 3)
+(Just 9, Just 3)
+(Left bad!, Right 8)
+(Left bad!, Right 7)
+error:bad
+(Right bad, Left 7)
+(Just [1, 2], Nothing, Just [])
+Just `[2, 3]
+Right `[2, 3, 4]
+Left first
+Left -2
+Just 4
+Just ab
+Nothing
+Just ab
+Just leftright
+(12, 13)
+Just [5, 6]

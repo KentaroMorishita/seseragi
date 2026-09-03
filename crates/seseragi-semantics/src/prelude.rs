@@ -1409,6 +1409,20 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         identity: "std/json::JsonDecode",
     },
     PreludeStandardInstance {
+        trait_name: "Semigroup",
+        type_name: "Maybe",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/maybe::Semigroup",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monoid",
+        type_name: "Maybe",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/maybe::Monoid",
+    },
+    PreludeStandardInstance {
         trait_name: "JsonEncode",
         type_name: "Maybe",
         type_canonical: None,
@@ -2675,7 +2689,13 @@ pub(crate) fn standard_instance_constraint_specs(
             type_argument_index: 0,
         },
     ];
+    const SEMIGROUP_ELEMENT: &[PreludeStandardInstanceConstraint] =
+        &[PreludeStandardInstanceConstraint {
+            trait_name: "Semigroup",
+            type_argument_index: 0,
+        }];
     match identity {
+        "std/maybe::Semigroup" | "std/maybe::Monoid" => SEMIGROUP_ELEMENT,
         "std/map::JsonEncode" => JSON_ENCODE_EITHER,
         "std/map::JsonDecode" => MAP_DECODE,
         "std/set::JsonEncode" => JSON_ENCODE_ELEMENT,
