@@ -125,6 +125,10 @@ const FILES: &[(&str, &str)] = &[
     ("src/sse.ts", include_str!("../../../runtime/ts/src/sse.ts")),
     ("src/ref.ts", include_str!("../../../runtime/ts/src/ref.ts")),
     ("src/int.ts", include_str!("../../../runtime/ts/src/int.ts")),
+    (
+        "src/big-int.ts",
+        include_str!("../../../runtime/ts/src/big-int.ts"),
+    ),
     ("src/map.ts", include_str!("../../../runtime/ts/src/map.ts")),
     ("src/set.ts", include_str!("../../../runtime/ts/src/set.ts")),
     (
@@ -699,6 +703,7 @@ mod tests {
         assert!(package.join("src/stream.ts").is_file());
         assert!(package.join("src/sse.ts").is_file());
         assert!(package.join("src/regex.ts").is_file());
+        assert!(package.join("src/big-int.ts").is_file());
         assert!(package.join("src/bytes-base64.ts").is_file());
         assert!(package.join("src/bytes-hex.ts").is_file());
         assert!(package.join("src/multipart.ts").is_file());

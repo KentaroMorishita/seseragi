@@ -1066,6 +1066,158 @@
     {
       "trait": "Eq",
       "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "BigInt",
+      "typeConstructorCanonical": "std/big-int::BigInt",
+      "typeConstructorArity": 0,
+      "identity": "std/big-int::Eq"
+    },
+    {
+      "trait": "Ord",
+      "traitCanonical": "std/prelude::Ord",
+      "typeConstructor": "BigInt",
+      "typeConstructorCanonical": "std/big-int::BigInt",
+      "typeConstructorArity": 0,
+      "identity": "std/big-int::Ord"
+    },
+    {
+      "trait": "Hash",
+      "traitCanonical": "std/prelude::Hash",
+      "typeConstructor": "BigInt",
+      "typeConstructorCanonical": "std/big-int::BigInt",
+      "typeConstructorArity": 0,
+      "identity": "std/big-int::Hash"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "BigInt",
+      "typeConstructorCanonical": "std/big-int::BigInt",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/big-int::BigInt>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "BigInt",
+      "typeConstructorCanonical": "std/big-int::BigInt",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/big-int::BigInt>"
+    },
+    {
+      "trait": "Zero",
+      "traitCanonical": "std/prelude::Zero",
+      "typeConstructor": "BigInt",
+      "typeConstructorCanonical": "std/big-int::BigInt",
+      "typeConstructorArity": 0,
+      "identity": "std/big-int::Zero"
+    },
+    {
+      "trait": "One",
+      "traitCanonical": "std/prelude::One",
+      "typeConstructor": "BigInt",
+      "typeConstructorCanonical": "std/big-int::BigInt",
+      "typeConstructorArity": 0,
+      "identity": "std/big-int::One"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "BigIntParseError",
+      "typeConstructorCanonical": "std/big-int::BigIntParseError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/big-int::BigIntParseError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "BigIntParseError",
+      "typeConstructorCanonical": "std/big-int::BigIntParseError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/big-int::BigIntParseError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "BigIntParseError",
+      "typeConstructorCanonical": "std/big-int::BigIntParseError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/big-int::BigIntParseError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "BigIntDivisionError",
+      "typeConstructorCanonical": "std/big-int::BigIntDivisionError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/big-int::BigIntDivisionError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "BigIntDivisionError",
+      "typeConstructorCanonical": "std/big-int::BigIntDivisionError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/big-int::BigIntDivisionError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "BigIntDivisionError",
+      "typeConstructorCanonical": "std/big-int::BigIntDivisionError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/big-int::BigIntDivisionError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "BigIntPowerError",
+      "typeConstructorCanonical": "std/big-int::BigIntPowerError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/big-int::BigIntPowerError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "BigIntPowerError",
+      "typeConstructorCanonical": "std/big-int::BigIntPowerError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/big-int::BigIntPowerError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "BigIntPowerError",
+      "typeConstructorCanonical": "std/big-int::BigIntPowerError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/big-int::BigIntPowerError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "BigIntConversionError",
+      "typeConstructorCanonical": "std/big-int::BigIntConversionError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/big-int::BigIntConversionError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "BigIntConversionError",
+      "typeConstructorCanonical": "std/big-int::BigIntConversionError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/big-int::BigIntConversionError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "BigIntConversionError",
+      "typeConstructorCanonical": "std/big-int::BigIntConversionError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/big-int::BigIntConversionError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
       "typeConstructor": "TextSliceError",
       "typeConstructorCanonical": "std/text::TextSliceError",
       "typeConstructorArity": 0,
@@ -3583,6 +3735,72 @@
       "dispatch": "operator-abi"
     },
     {
+      "trait": "Add",
+      "traitCanonical": "std/prelude::Add",
+      "arguments": [
+        "BigInt",
+        "BigInt",
+        "BigInt"
+      ],
+      "identity": "std/big-int::Add",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Sub",
+      "traitCanonical": "std/prelude::Sub",
+      "arguments": [
+        "BigInt",
+        "BigInt",
+        "BigInt"
+      ],
+      "identity": "std/big-int::Sub",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Mul",
+      "traitCanonical": "std/prelude::Mul",
+      "arguments": [
+        "BigInt",
+        "BigInt",
+        "BigInt"
+      ],
+      "identity": "std/big-int::Mul",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Div",
+      "traitCanonical": "std/prelude::Div",
+      "arguments": [
+        "BigInt",
+        "BigInt",
+        "BigInt"
+      ],
+      "identity": "std/big-int::Div",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Rem",
+      "traitCanonical": "std/prelude::Rem",
+      "arguments": [
+        "BigInt",
+        "BigInt",
+        "BigInt"
+      ],
+      "identity": "std/big-int::Rem",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Pow",
+      "traitCanonical": "std/prelude::Pow",
+      "arguments": [
+        "BigInt",
+        "Int",
+        "BigInt"
+      ],
+      "identity": "std/big-int::Pow",
+      "dispatch": "dictionary"
+    },
+    {
       "trait": "Iterable",
       "traitCanonical": "std/prelude::Iterable",
       "arguments": [
@@ -3722,11 +3940,11 @@
     "matrix": [
       {
         "trait": "Add",
-        "head": "BigInt, BigInt -> BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.6 / 10.8",
-        "trackingIssue": 308
+        "head": "BigInt, BigInt, BigInt",
+        "identity": "std/big-int::Add",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.6"
       },
       {
         "trait": "Add",
@@ -3886,10 +4104,42 @@
       {
         "trait": "Debug",
         "head": "BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.8",
-        "trackingIssue": 308
+        "identity": "Debug<std/big-int::BigInt>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "BigIntConversionError",
+        "identity": "Debug<std/big-int::BigIntConversionError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "BigIntDivisionError",
+        "identity": "Debug<std/big-int::BigIntDivisionError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "BigIntParseError",
+        "identity": "Debug<std/big-int::BigIntParseError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "BigIntPowerError",
+        "identity": "Debug<std/big-int::BigIntPowerError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
       },
       {
         "trait": "Debug",
@@ -4484,11 +4734,11 @@
       },
       {
         "trait": "Div",
-        "head": "BigInt, BigInt -> BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.6 / 10.8",
-        "trackingIssue": 308
+        "head": "BigInt, BigInt, BigInt",
+        "identity": "std/big-int::Div",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.6"
       },
       {
         "trait": "Div",
@@ -4525,10 +4775,42 @@
       {
         "trait": "Eq",
         "head": "BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4 / 10.8",
-        "trackingIssue": 308
+        "identity": "std/big-int::Eq",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "BigIntConversionError",
+        "identity": "Eq<std/big-int::BigIntConversionError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "BigIntDivisionError",
+        "identity": "Eq<std/big-int::BigIntDivisionError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "BigIntParseError",
+        "identity": "Eq<std/big-int::BigIntParseError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "BigIntPowerError",
+        "identity": "Eq<std/big-int::BigIntPowerError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Eq",
@@ -4869,10 +5151,10 @@
       {
         "trait": "Hash",
         "head": "BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4 / 10.8",
-        "trackingIssue": 308
+        "identity": "std/big-int::Hash",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Hash",
@@ -5412,11 +5694,11 @@
       },
       {
         "trait": "Mul",
-        "head": "BigInt, BigInt -> BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.6 / 10.8",
-        "trackingIssue": 308
+        "head": "BigInt, BigInt, BigInt",
+        "identity": "std/big-int::Mul",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.6"
       },
       {
         "trait": "Mul",
@@ -5445,10 +5727,10 @@
       {
         "trait": "One",
         "head": "BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.5 / 10.8",
-        "trackingIssue": 308
+        "identity": "std/big-int::One",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
       },
       {
         "trait": "One",
@@ -5477,10 +5759,10 @@
       {
         "trait": "Ord",
         "head": "BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4 / 10.8",
-        "trackingIssue": 308
+        "identity": "std/big-int::Ord",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Ord",
@@ -5563,11 +5845,11 @@
       },
       {
         "trait": "Pow",
-        "head": "BigInt, Int -> BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.6 / 10.8",
-        "trackingIssue": 308
+        "head": "BigInt, Int, BigInt",
+        "identity": "std/big-int::Pow",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.6"
       },
       {
         "trait": "Pow",
@@ -5635,11 +5917,11 @@
       },
       {
         "trait": "Rem",
-        "head": "BigInt, BigInt -> BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.6 / 10.8",
-        "trackingIssue": 308
+        "head": "BigInt, BigInt, BigInt",
+        "identity": "std/big-int::Rem",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.6"
       },
       {
         "trait": "Rem",
@@ -5716,10 +5998,42 @@
       {
         "trait": "Show",
         "head": "BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.8",
-        "trackingIssue": 308
+        "identity": "Show<std/big-int::BigInt>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "BigIntConversionError",
+        "identity": "Show<std/big-int::BigIntConversionError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "BigIntDivisionError",
+        "identity": "Show<std/big-int::BigIntDivisionError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "BigIntParseError",
+        "identity": "Show<std/big-int::BigIntParseError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "BigIntPowerError",
+        "identity": "Show<std/big-int::BigIntPowerError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
       },
       {
         "trait": "Show",
@@ -6322,11 +6636,11 @@
       },
       {
         "trait": "Sub",
-        "head": "BigInt, BigInt -> BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.6 / 10.8",
-        "trackingIssue": 308
+        "head": "BigInt, BigInt, BigInt",
+        "identity": "std/big-int::Sub",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.6"
       },
       {
         "trait": "Sub",
@@ -6379,10 +6693,10 @@
       {
         "trait": "Zero",
         "head": "BigInt",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.5 / 10.8",
-        "trackingIssue": 308
+        "identity": "std/big-int::Zero",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
       },
       {
         "trait": "Zero",

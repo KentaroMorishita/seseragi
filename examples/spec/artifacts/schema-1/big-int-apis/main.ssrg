@@ -1,0 +1,64 @@
+import { BigInt } from "std/big-int"
+import * as bigints from "std/big-int"
+
+fn requireBigInt result: Either<bigints.BigIntParseError, BigInt> -> BigInt =
+  match result {
+    Left _error -> bigints.fromInt 0
+    Right value -> value
+  }
+
+fn renderResult result: Either<bigints.BigIntParseError, String> -> String =
+  match result {
+    Left error -> show error
+    Right value -> value
+  }
+
+fn renderDivision result: Either<bigints.BigIntDivisionError, BigInt> -> String =
+  match result {
+    Left error -> show error
+    Right value -> bigints.format value
+  }
+
+fn renderPower result: Either<bigints.BigIntPowerError, BigInt> -> String =
+  match result {
+    Left error -> show error
+    Right value -> bigints.format value
+  }
+
+fn renderConversion result: Either<bigints.BigIntConversionError, Int> -> String =
+  match result {
+    Left error -> show error
+    Right value -> show value
+  }
+
+fn ordering left: BigInt -> right: BigInt -> String = match compare left right {
+  Less -> "Less"
+  Equal -> "Equal"
+  Greater -> "Greater"
+}
+
+pub fn exercise -> Array<String> = {
+  let huge = requireBigInt (bigints.parse "999999999999999999999999999999999999")
+  let same =
+    requireBigInt (bigints.parseRadix 10 "0999999999999999999999999999999999999")
+  let two = bigints.fromInt 2
+  let five = bigints.fromInt 5
+  let negative = bigints.fromInt (-17)
+  let exact = huge * bigints.fromInt 3 + bigints.fromInt 1
+  [
+    `exact: ${bigints.format exact}`,
+    `subtract: ${bigints.format (exact - huge)}`,
+    `radix: ${renderResult (bigints.formatRadix 16 huge)}`,
+    `division: ${bigints.format (negative / five)} / ${bigints.format (negative % five)} / ${renderDivision (bigints.checkedDivide five negative)} / ${renderDivision (bigints.checkedRemainder five negative)} / ${renderDivision (bigints.checkedDivide (bigints.fromInt 0) negative)}`,
+    `power: ${bigints.format (two ** 100)} / ${renderPower (bigints.checkedPower (-1) two)}`,
+    `conversion: ${renderConversion (bigints.toInt (bigints.fromInt 42))} / ${renderConversion (bigints.toInt huge)}`,
+    `parse-errors: ${show (bigints.parse "")} / ${show (bigints.parse "01")} / ${show (bigints.parse "12é")}`,
+    `magnitude: ${bigints.format (bigints.abs negative)} / ${bigints.sign negative}`,
+    `display: ${show huge} / ${debug huge}`,
+    `instances: ${huge == same} / ${ordering huge exact} / ${hash huge == hash same} / ${bigints.format (zero ())} / ${bigints.format (one ())}`,
+    `typed-errors: ${bigints.BigIntDivisionByZero == bigints.BigIntDivisionByZero} / ${bigints.NegativeBigIntExponent (-1) == bigints.NegativeBigIntExponent (-1)}`,
+  ]
+}
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  for line <- exercise () { println line }

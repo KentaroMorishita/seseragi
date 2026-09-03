@@ -1408,7 +1408,7 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
 
 fn standard_category(name: &str, module: &str) -> &'static str {
     match module {
-        "std/number" | "std/int" | "std/float" => "Number",
+        "std/number" | "std/int" | "std/big-int" | "std/float" => "Number",
         "std/array" | "std/list" | "std/collection" => "Collection",
         "std/maybe" => "Maybe",
         "std/either" => "Either",
@@ -1459,6 +1459,46 @@ fn standard_category(name: &str, module: &str) -> &'static str {
 
 fn standard_description(identity: &str) -> Option<&'static str> {
     Some(match identity {
+        "std/big-int::BigInt" => "Opaque arbitrary-precision signed integer value.",
+        "std/big-int::BigIntParseError" => {
+            "Describes an invalid BigInt text or radix without a magnitude limit."
+        }
+        "std/big-int::EmptyBigInt" => "Reports an empty BigInt input.",
+        "std/big-int::InvalidBigIntRadix" => {
+            "Reports a BigInt radix outside the inclusive range 2 through 36."
+        }
+        "std/big-int::InvalidBigIntDigit" => {
+            "Reports the first invalid BigInt digit at a UTF-8 byte offset."
+        }
+        "std/big-int::BigIntDivisionError" => {
+            "Describes checked BigInt division or remainder by zero."
+        }
+        "std/big-int::BigIntDivisionByZero" => "Reports a zero BigInt divisor.",
+        "std/big-int::BigIntPowerError" => "Describes a checked negative BigInt exponent.",
+        "std/big-int::NegativeBigIntExponent" => "Reports a negative Int exponent.",
+        "std/big-int::BigIntConversionError" => {
+            "Describes a BigInt that cannot be narrowed to Int exactly."
+        }
+        "std/big-int::BigIntOutsideIntRange" => {
+            "Reports a BigInt outside the safe Int range."
+        }
+        "std/big-int::parse" => "Parses canonical decimal text into an exact BigInt.",
+        "std/big-int::parseRadix" => "Parses signed BigInt text in radix 2 through 36.",
+        "std/big-int::format" => "Formats a BigInt as canonical decimal text.",
+        "std/big-int::formatRadix" => "Formats a BigInt in radix 2 through 36.",
+        "std/big-int::fromInt" => "Converts Int to BigInt exactly.",
+        "std/big-int::toInt" => "Narrows BigInt to Int with a typed range failure.",
+        "std/big-int::checkedDivide" => {
+            "Divides exactly represented BigInts or returns a typed zero-divisor failure."
+        }
+        "std/big-int::checkedRemainder" => {
+            "Computes truncating BigInt remainder or returns a typed zero-divisor failure."
+        }
+        "std/big-int::checkedPower" => {
+            "Raises a BigInt by a non-negative Int using exact exponentiation."
+        }
+        "std/big-int::abs" => "Returns the exact non-negative magnitude of a BigInt.",
+        "std/big-int::sign" => "Returns minus one, zero, or one for a BigInt.",
         "std/bytes::Byte" => "Opaque unsigned 8-bit value in the inclusive range 0 through 255.",
         "std/bytes::Bytes" => "Immutable sequence of bytes with explicit copy boundaries.",
         "std/bytes::ByteError" => "Describes an Int that cannot be represented as a Byte.",

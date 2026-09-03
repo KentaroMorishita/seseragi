@@ -337,6 +337,370 @@
       }
     },
     {
+      "id": "core.big-int",
+      "kind": "value-representation",
+      "typescript": "type BigInt = bigint",
+      "boundary": "opaque arbitrary-precision signed integer; never represented as number",
+      "typeIdentity": "std/big-int::BigInt",
+      "typeImport": { "module": "@seseragi/runtime/big-int", "export": "BigInt" },
+      "import": null
+    },
+    {
+      "id": "core.big-int.parse-error",
+      "kind": "value-representation",
+      "typescript": "type BigIntParseError",
+      "boundary": "typed empty, radix, or first invalid UTF-8 byte-offset failure",
+      "typeIdentity": "std/big-int::BigIntParseError",
+      "typeImport": { "module": "@seseragi/runtime/big-int", "export": "BigIntParseError" },
+      "import": null
+    },
+    {
+      "id": "core.big-int.division-error",
+      "kind": "value-representation",
+      "typescript": "type BigIntDivisionError",
+      "boundary": "typed zero-divisor failure",
+      "typeIdentity": "std/big-int::BigIntDivisionError",
+      "typeImport": { "module": "@seseragi/runtime/big-int", "export": "BigIntDivisionError" },
+      "import": null
+    },
+    {
+      "id": "core.big-int.power-error",
+      "kind": "value-representation",
+      "typescript": "type BigIntPowerError",
+      "boundary": "typed negative Int exponent failure",
+      "typeIdentity": "std/big-int::BigIntPowerError",
+      "typeImport": { "module": "@seseragi/runtime/big-int", "export": "BigIntPowerError" },
+      "import": null
+    },
+    {
+      "id": "core.big-int.conversion-error",
+      "kind": "value-representation",
+      "typescript": "type BigIntConversionError",
+      "boundary": "typed safe-Int narrowing failure",
+      "typeIdentity": "std/big-int::BigIntConversionError",
+      "typeImport": { "module": "@seseragi/runtime/big-int", "export": "BigIntConversionError" },
+      "import": null
+    },
+    {
+      "id": "core.big-int.parse-error.empty",
+      "kind": "runtime-binding",
+      "typescript": "BigIntParseError",
+      "boundary": "std/big-int::EmptyBigInt",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "EmptyBigInt" }
+    },
+    {
+      "id": "core.big-int.parse-error.invalid-radix",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> BigIntParseError",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "InvalidBigIntRadix" }
+    },
+    {
+      "id": "core.big-int.parse-error.invalid-digit",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "{ offset: Int, radix: Int } -> BigIntParseError",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "InvalidBigIntDigit" }
+    },
+    {
+      "id": "core.big-int.division-error.division-by-zero",
+      "kind": "runtime-binding",
+      "typescript": "BigIntDivisionError",
+      "boundary": "std/big-int::BigIntDivisionByZero",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "BigIntDivisionByZero" }
+    },
+    {
+      "id": "core.big-int.power-error.negative-exponent",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> BigIntPowerError",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "NegativeBigIntExponent" }
+    },
+    {
+      "id": "core.big-int.conversion-error.outside-int-range",
+      "kind": "runtime-binding",
+      "typescript": "BigIntConversionError",
+      "boundary": "std/big-int::BigIntOutsideIntRange",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "BigIntOutsideIntRange" }
+    },
+    {
+      "id": "core.big-int.api.parse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical decimal String -> Either<BigIntParseError, BigInt>",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "parse" }
+    },
+    {
+      "id": "core.big-int.api.parse-radix",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "radix Int -> String -> Either<BigIntParseError, BigInt>",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "parseRadix" }
+    },
+    {
+      "id": "core.big-int.api.format",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "BigInt -> canonical decimal String",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "format" }
+    },
+    {
+      "id": "core.big-int.api.format-radix",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "radix Int -> BigInt -> Either<BigIntParseError, String>",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "formatRadix" }
+    },
+    {
+      "id": "core.big-int.api.from-int",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> exact BigInt",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "fromInt" }
+    },
+    {
+      "id": "core.big-int.api.to-int",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "BigInt -> Either<BigIntConversionError, Int>",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "toInt" }
+    },
+    {
+      "id": "core.big-int.api.checked-divide",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "divisor BigInt -> dividend BigInt -> Either<BigIntDivisionError, BigInt>",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "checkedDivide" }
+    },
+    {
+      "id": "core.big-int.api.checked-remainder",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "divisor BigInt -> dividend BigInt -> Either<BigIntDivisionError, BigInt>",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "checkedRemainder" }
+    },
+    {
+      "id": "core.big-int.api.checked-power",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "exponent Int -> base BigInt -> Either<BigIntPowerError, BigInt>; exponentiation by squaring",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "checkedPower" }
+    },
+    {
+      "id": "core.big-int.api.abs",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "BigInt -> exact non-negative BigInt",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "abs" }
+    },
+    {
+      "id": "core.big-int.api.sign",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "BigInt -> Int in -1, 0, 1",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "sign" }
+    },
+    {
+      "id": "core.big-int.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Eq<BigInt> dictionary",
+      "boundary": "standard exact value Eq<BigInt>",
+      "instanceIdentity": "std/big-int::Eq",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntEq" }
+    },
+    {
+      "id": "core.big-int.ord-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Ord<BigInt> dictionary",
+      "boundary": "standard signed total order Ord<BigInt>",
+      "instanceIdentity": "std/big-int::Ord",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntOrd" }
+    },
+    {
+      "id": "core.big-int.hash-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Hash<BigInt> dictionary",
+      "boundary": "standard deterministic O(bit length) Hash<BigInt>",
+      "instanceIdentity": "std/big-int::Hash",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntHash" }
+    },
+    {
+      "id": "core.big-int.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<BigInt> dictionary",
+      "boundary": "canonical signed decimal Show<BigInt>",
+      "instanceIdentity": "Show<std/big-int::BigInt>",
+      "import": { "module": "@seseragi/runtime/show", "export": "bigIntShow" }
+    },
+    {
+      "id": "core.big-int.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<BigInt> dictionary",
+      "boundary": "canonical signed decimal Debug<BigInt>",
+      "instanceIdentity": "Debug<std/big-int::BigInt>",
+      "import": { "module": "@seseragi/runtime/show", "export": "bigIntDebug" }
+    },
+    {
+      "id": "core.big-int.zero-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Zero<BigInt> dictionary",
+      "boundary": "standard Zero<BigInt>",
+      "instanceIdentity": "std/big-int::Zero",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntZero" }
+    },
+    {
+      "id": "core.big-int.one-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly One<BigInt> dictionary",
+      "boundary": "standard One<BigInt>",
+      "instanceIdentity": "std/big-int::One",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntOne" }
+    },
+    {
+      "id": "core.big-int.add-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Add<BigInt, BigInt, BigInt> dictionary",
+      "boundary": "exact standard Add<BigInt, BigInt, BigInt>",
+      "instanceIdentity": "std/big-int::Add",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntAdd" }
+    },
+    {
+      "id": "core.big-int.sub-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Sub<BigInt, BigInt, BigInt> dictionary",
+      "boundary": "exact standard Sub<BigInt, BigInt, BigInt>",
+      "instanceIdentity": "std/big-int::Sub",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntSub" }
+    },
+    {
+      "id": "core.big-int.mul-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Mul<BigInt, BigInt, BigInt> dictionary",
+      "boundary": "exact standard Mul<BigInt, BigInt, BigInt>",
+      "instanceIdentity": "std/big-int::Mul",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntMul" }
+    },
+    {
+      "id": "core.big-int.div-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Div<BigInt, BigInt, BigInt> dictionary",
+      "boundary": "truncating division or zero-divisor defect",
+      "instanceIdentity": "std/big-int::Div",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntDiv" }
+    },
+    {
+      "id": "core.big-int.rem-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Rem<BigInt, BigInt, BigInt> dictionary",
+      "boundary": "dividend-signed remainder or zero-divisor defect",
+      "instanceIdentity": "std/big-int::Rem",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntRem" }
+    },
+    {
+      "id": "core.big-int.pow-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Pow<BigInt, Int, BigInt> dictionary",
+      "boundary": "exact exponentiation by squaring or negative-exponent defect",
+      "instanceIdentity": "std/big-int::Pow",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntPow" }
+    },
+    {
+      "id": "core.big-int.parse-error.eq",
+      "kind": "runtime-binding",
+      "typescript": "Eq<BigIntParseError> dictionary",
+      "boundary": "derived structural Eq<BigIntParseError>",
+      "instanceIdentity": "Eq<std/big-int::BigIntParseError>",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntParseErrorEq" }
+    },
+    {
+      "id": "core.big-int.parse-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<BigIntParseError> dictionary",
+      "boundary": "derived constructor Show<BigIntParseError>",
+      "instanceIdentity": "Show<std/big-int::BigIntParseError>",
+      "import": { "module": "@seseragi/runtime/show", "export": "bigIntParseErrorShow" }
+    },
+    {
+      "id": "core.big-int.parse-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<BigIntParseError> dictionary",
+      "boundary": "derived constructor Debug<BigIntParseError>",
+      "instanceIdentity": "Debug<std/big-int::BigIntParseError>",
+      "import": { "module": "@seseragi/runtime/show", "export": "bigIntParseErrorDebug" }
+    },
+    {
+      "id": "core.big-int.division-error.eq",
+      "kind": "runtime-binding",
+      "typescript": "Eq<BigIntDivisionError> dictionary",
+      "boundary": "derived Eq<BigIntDivisionError>",
+      "instanceIdentity": "Eq<std/big-int::BigIntDivisionError>",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntDivisionErrorEq" }
+    },
+    {
+      "id": "core.big-int.division-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<BigIntDivisionError> dictionary",
+      "boundary": "derived Show<BigIntDivisionError>",
+      "instanceIdentity": "Show<std/big-int::BigIntDivisionError>",
+      "import": { "module": "@seseragi/runtime/show", "export": "bigIntDivisionErrorShow" }
+    },
+    {
+      "id": "core.big-int.division-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<BigIntDivisionError> dictionary",
+      "boundary": "derived Debug<BigIntDivisionError>",
+      "instanceIdentity": "Debug<std/big-int::BigIntDivisionError>",
+      "import": { "module": "@seseragi/runtime/show", "export": "bigIntDivisionErrorDebug" }
+    },
+    {
+      "id": "core.big-int.power-error.eq",
+      "kind": "runtime-binding",
+      "typescript": "Eq<BigIntPowerError> dictionary",
+      "boundary": "derived Eq<BigIntPowerError>",
+      "instanceIdentity": "Eq<std/big-int::BigIntPowerError>",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntPowerErrorEq" }
+    },
+    {
+      "id": "core.big-int.power-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<BigIntPowerError> dictionary",
+      "boundary": "derived Show<BigIntPowerError>",
+      "instanceIdentity": "Show<std/big-int::BigIntPowerError>",
+      "import": { "module": "@seseragi/runtime/show", "export": "bigIntPowerErrorShow" }
+    },
+    {
+      "id": "core.big-int.power-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<BigIntPowerError> dictionary",
+      "boundary": "derived Debug<BigIntPowerError>",
+      "instanceIdentity": "Debug<std/big-int::BigIntPowerError>",
+      "import": { "module": "@seseragi/runtime/show", "export": "bigIntPowerErrorDebug" }
+    },
+    {
+      "id": "core.big-int.conversion-error.eq",
+      "kind": "runtime-binding",
+      "typescript": "Eq<BigIntConversionError> dictionary",
+      "boundary": "derived Eq<BigIntConversionError>",
+      "instanceIdentity": "Eq<std/big-int::BigIntConversionError>",
+      "import": { "module": "@seseragi/runtime/big-int", "export": "bigIntConversionErrorEq" }
+    },
+    {
+      "id": "core.big-int.conversion-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<BigIntConversionError> dictionary",
+      "boundary": "derived Show<BigIntConversionError>",
+      "instanceIdentity": "Show<std/big-int::BigIntConversionError>",
+      "import": { "module": "@seseragi/runtime/show", "export": "bigIntConversionErrorShow" }
+    },
+    {
+      "id": "core.big-int.conversion-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<BigIntConversionError> dictionary",
+      "boundary": "derived Debug<BigIntConversionError>",
+      "instanceIdentity": "Debug<std/big-int::BigIntConversionError>",
+      "import": { "module": "@seseragi/runtime/show", "export": "bigIntConversionErrorDebug" }
+    },
+    {
       "id": "core.int.eq-dictionary",
       "kind": "runtime-binding",
       "typescript": "readonly Eq<number> dictionary",

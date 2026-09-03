@@ -306,6 +306,14 @@ fn prelude_registry_methods_reach_hover_and_completion_with_canonical_signatures
             "std/bytes/base64::decodeUrl",
             "String -> Either<Base64DecodeError, Bytes>",
         ),
+        (
+            "std/big-int::parse",
+            "String -> Either<BigIntParseError, BigInt>",
+        ),
+        (
+            "std/big-int::checkedPower",
+            "Int -> arg2: BigInt -> Either<BigIntPowerError, BigInt>",
+        ),
     ] {
         let item = completions
             .iter()

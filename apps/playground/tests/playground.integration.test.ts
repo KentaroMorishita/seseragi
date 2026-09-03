@@ -2843,6 +2843,46 @@ describe("Playground sample catalog", () => {
     ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
   })
 
+  test("preserves arbitrary-precision BigInt through WASM execution", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/big-int-apis/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+
+    const response = await compile("big-int-apis.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing BigInt execution entry")
+    }
+    expect(response.generated.typescript).toContain(
+      'from "@seseragi/runtime/big-int"'
+    )
+    expect(response.generated.typescript).not.toContain("Number(")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({
+      stdout: [
+        "exact: 2999999999999999999999999999999999998",
+        "subtract: 1999999999999999999999999999999999999",
+        "radix: c097ce7bc90715b34b9f0fffffffff",
+        "division: -3 / -2 / -3 / -2 / BigIntDivisionByZero",
+        "power: 1267650600228229401496703205376 / NegativeBigIntExponent -1",
+        "conversion: 42 / BigIntOutsideIntRange",
+        "parse-errors: Left EmptyBigInt / Left InvalidBigIntDigit { offset: 1, radix: 10 } / Left InvalidBigIntDigit { offset: 2, radix: 10 }",
+        "magnitude: 17 / -1",
+        "display: 999999999999999999999999999999999999 / 999999999999999999999999999999999999",
+        "instances: True / Less / True / 0 / 1",
+        "typed-errors: True / True",
+      ].join("\n"),
+      debug: "()",
+    })
+  })
+
   test("renders generic standard failures from nested Show evidence", async () => {
     const entry: EntryContract = {
       environment: [],

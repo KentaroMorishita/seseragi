@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "module": "artifact/big-int-apis",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/big-int",
+      "module": "artifact/big-int-apis/std/big-int",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "BigInt",
+          "symbol": "artifact/big-int-apis/std/big-int::BigInt"
+        }
+      ]
+    },
+    {
+      "specifier": "std/big-int",
+      "module": "artifact/big-int-apis/std/big-int",
+      "origin": {
+        "start": 37,
+        "end": 75
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/big-int-apis/std/big-int::*",
+          "localName": "bigints"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/big-int-apis::exercise",
+      "namespace": "value",
+      "name": "exercise",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 1039,
+        "end": 2619
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/big-int-apis::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 2621,
+        "end": 2724
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

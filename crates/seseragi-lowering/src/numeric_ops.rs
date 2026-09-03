@@ -34,6 +34,19 @@ macro_rules! float_operation {
     };
 }
 
+macro_rules! big_int_operation {
+    ($name:literal, $feature:literal) => {
+        RuntimeNumericOperation {
+            canonical: concat!("std/big-int::", $name),
+            runtime_feature: $feature,
+            local_name: concat!("_ssrg_bigInt_", $name),
+            module: "@seseragi/runtime/big-int",
+            export_name: $name,
+            source_map_name: $name,
+        }
+    };
+}
+
 macro_rules! number_operation {
     ($name:literal, $feature:literal) => {
         RuntimeNumericOperation {
@@ -88,6 +101,38 @@ const OPERATIONS: &[RuntimeNumericOperation] = &[
     int_operation!("maximum", "core.int.api.maximum"),
     int_operation!("clamp", "core.int.api.clamp"),
     int_operation!("sign", "core.int.api.sign"),
+    big_int_operation!("EmptyBigInt", "core.big-int.parse-error.empty"),
+    big_int_operation!(
+        "InvalidBigIntRadix",
+        "core.big-int.parse-error.invalid-radix"
+    ),
+    big_int_operation!(
+        "InvalidBigIntDigit",
+        "core.big-int.parse-error.invalid-digit"
+    ),
+    big_int_operation!(
+        "BigIntDivisionByZero",
+        "core.big-int.division-error.division-by-zero"
+    ),
+    big_int_operation!(
+        "NegativeBigIntExponent",
+        "core.big-int.power-error.negative-exponent"
+    ),
+    big_int_operation!(
+        "BigIntOutsideIntRange",
+        "core.big-int.conversion-error.outside-int-range"
+    ),
+    big_int_operation!("parse", "core.big-int.api.parse"),
+    big_int_operation!("parseRadix", "core.big-int.api.parse-radix"),
+    big_int_operation!("format", "core.big-int.api.format"),
+    big_int_operation!("formatRadix", "core.big-int.api.format-radix"),
+    big_int_operation!("fromInt", "core.big-int.api.from-int"),
+    big_int_operation!("toInt", "core.big-int.api.to-int"),
+    big_int_operation!("checkedDivide", "core.big-int.api.checked-divide"),
+    big_int_operation!("checkedRemainder", "core.big-int.api.checked-remainder"),
+    big_int_operation!("checkedPower", "core.big-int.api.checked-power"),
+    big_int_operation!("abs", "core.big-int.api.abs"),
+    big_int_operation!("sign", "core.big-int.api.sign"),
     float_operation!("EmptyFloat", "core.float64.parse-error.empty"),
     float_operation!("InvalidFloat", "core.float64.parse-error.invalid"),
     float_operation!("FloatParseOverflow", "core.float64.parse-error.overflow"),
@@ -139,10 +184,15 @@ mod tests {
     use super::*;
 
     #[test]
-    fn maps_safe_integer_float_and_rounding_operations() {
+    fn maps_safe_integer_big_int_float_and_rounding_operations() {
         for (canonical, feature) in [
             ("std/int::checkedAdd", "core.int.api.checked-add"),
             ("std/int::abs", "core.int.api.abs"),
+            ("std/big-int::parse", "core.big-int.api.parse"),
+            (
+                "std/big-int::checkedPower",
+                "core.big-int.api.checked-power",
+            ),
             ("std/float::fromInt", "core.float64.api.from-int"),
             (
                 "std/float::roundIntegral",

@@ -7622,6 +7622,83 @@
       "constraints": []
     },
     {
+      "identity": "std/big-int::BigInt",
+      "name": "BigInt",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "BigInt",
+      "description": "Opaque arbitrary-precision signed integer value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::BigIntConversionError",
+      "name": "BigIntConversionError",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "BigIntConversionError",
+      "description": "Describes a BigInt that cannot be narrowed to Int exactly.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::BigIntDivisionByZero",
+      "name": "BigIntDivisionByZero",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "BigIntDivisionError",
+      "description": "Reports a zero BigInt divisor.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::BigIntDivisionError",
+      "name": "BigIntDivisionError",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "BigIntDivisionError",
+      "description": "Describes checked BigInt division or remainder by zero.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::BigIntOutsideIntRange",
+      "name": "BigIntOutsideIntRange",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "BigIntConversionError",
+      "description": "Reports a BigInt outside the safe Int range.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::BigIntParseError",
+      "name": "BigIntParseError",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "BigIntParseError",
+      "description": "Describes an invalid BigInt text or radix without a magnitude limit.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::BigIntPowerError",
+      "name": "BigIntPowerError",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "BigIntPowerError",
+      "description": "Describes a checked negative BigInt exponent.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/number::Ceiling",
       "name": "Ceiling",
       "module": "std/number",
@@ -7629,6 +7706,17 @@
       "kind": "constructor",
       "signature": "RoundingMode",
       "description": "Selects an explicit numeric rounding mode.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::EmptyBigInt",
+      "name": "EmptyBigInt",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "BigIntParseError",
+      "description": "Reports an empty BigInt input.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7831,6 +7919,28 @@
       "constraints": []
     },
     {
+      "identity": "std/big-int::InvalidBigIntDigit",
+      "name": "InvalidBigIntDigit",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "InvalidBigIntDigit arg1: { offset: Int, radix: Int } -> BigIntParseError",
+      "description": "Reports the first invalid BigInt digit at a UTF-8 byte offset.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::InvalidBigIntRadix",
+      "name": "InvalidBigIntRadix",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "InvalidBigIntRadix arg1: Int -> BigIntParseError",
+      "description": "Reports a BigInt radix outside the inclusive range 2 through 36.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::InvalidFloat",
       "name": "InvalidFloat",
       "module": "std/float",
@@ -7871,6 +7981,17 @@
       "kind": "constructor",
       "signature": "Ordering",
       "description": "Constructs the less-than Ordering result.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::NegativeBigIntExponent",
+      "name": "NegativeBigIntExponent",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "NegativeBigIntExponent arg1: Int -> BigIntPowerError",
+      "description": "Reports a negative Int exponent.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7919,6 +8040,17 @@
       "constraints": []
     },
     {
+      "identity": "std/big-int::abs",
+      "name": "abs",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "abs arg1: BigInt -> BigInt",
+      "description": "Returns the exact non-negative magnitude of a BigInt.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::abs",
       "name": "abs",
       "module": "std/float",
@@ -7952,6 +8084,17 @@
       "constraints": []
     },
     {
+      "identity": "std/big-int::checkedDivide",
+      "name": "checkedDivide",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "checkedDivide arg1: BigInt -> arg2: BigInt -> Either<BigIntDivisionError, BigInt>",
+      "description": "Divides exactly represented BigInts or returns a typed zero-divisor failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/int::checkedDivide",
       "name": "checkedDivide",
       "module": "std/int",
@@ -7974,6 +8117,17 @@
       "constraints": []
     },
     {
+      "identity": "std/big-int::checkedPower",
+      "name": "checkedPower",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "checkedPower arg1: Int -> arg2: BigInt -> Either<BigIntPowerError, BigInt>",
+      "description": "Raises a BigInt by a non-negative Int using exact exponentiation.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/int::checkedPower",
       "name": "checkedPower",
       "module": "std/int",
@@ -7981,6 +8135,17 @@
       "kind": "function",
       "signature": "checkedPower arg1: Int -> arg2: Int -> Either<IntPowerError, Int>",
       "description": "Parses, formats, or computes with Int under the safe integer contract.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::checkedRemainder",
+      "name": "checkedRemainder",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "checkedRemainder arg1: BigInt -> arg2: BigInt -> Either<BigIntDivisionError, BigInt>",
+      "description": "Computes truncating BigInt remainder or returns a typed zero-divisor failure.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8029,6 +8194,17 @@
       "constraints": []
     },
     {
+      "identity": "std/big-int::format",
+      "name": "format",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "format arg1: BigInt -> String",
+      "description": "Formats a BigInt as canonical decimal text.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::format",
       "name": "format",
       "module": "std/float",
@@ -8051,6 +8227,17 @@
       "constraints": []
     },
     {
+      "identity": "std/big-int::formatRadix",
+      "name": "formatRadix",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "formatRadix arg1: Int -> arg2: BigInt -> Either<BigIntParseError, String>",
+      "description": "Formats a BigInt in radix 2 through 36.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/int::formatRadix",
       "name": "formatRadix",
       "module": "std/int",
@@ -8058,6 +8245,17 @@
       "kind": "function",
       "signature": "formatRadix arg1: Int -> arg2: Int -> Either<IntParseError, String>",
       "description": "Parses, formats, or computes with Int under the safe integer contract.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::fromInt",
+      "name": "fromInt",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "fromInt arg1: Int -> BigInt",
+      "description": "Converts Int to BigInt exactly.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8216,6 +8414,17 @@
       "constraints": []
     },
     {
+      "identity": "std/big-int::parse",
+      "name": "parse",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "parse arg1: String -> Either<BigIntParseError, BigInt>",
+      "description": "Parses canonical decimal text into an exact BigInt.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::parse",
       "name": "parse",
       "module": "std/float",
@@ -8234,6 +8443,17 @@
       "kind": "function",
       "signature": "parse arg1: String -> Either<IntParseError, Int>",
       "description": "Parses, formats, or computes with Int under the safe integer contract.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::parseRadix",
+      "name": "parseRadix",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "parseRadix arg1: Int -> arg2: String -> Either<BigIntParseError, BigInt>",
+      "description": "Parses signed BigInt text in radix 2 through 36.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8326,6 +8546,17 @@
       "constraints": []
     },
     {
+      "identity": "std/big-int::sign",
+      "name": "sign",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "sign arg1: BigInt -> Int",
+      "description": "Returns minus one, zero, or one for a BigInt.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::sign",
       "name": "sign",
       "module": "std/float",
@@ -8344,6 +8575,17 @@
       "kind": "function",
       "signature": "sign arg1: Int -> Int",
       "description": "Parses, formats, or computes with Int under the safe integer contract.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/big-int::toInt",
+      "name": "toInt",
+      "module": "std/big-int",
+      "category": "Number",
+      "kind": "function",
+      "signature": "toInt arg1: BigInt -> Either<BigIntConversionError, Int>",
+      "description": "Narrows BigInt to Int with a typed range failure.",
       "typeParameters": [],
       "constraints": []
     },

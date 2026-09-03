@@ -26,6 +26,14 @@ export {
   take as takeArray,
   toList,
 } from "./array"
+export type {
+  BigInt,
+  BigIntConversionError,
+  BigIntDivisionError,
+  BigIntParseError,
+  BigIntPowerError,
+} from "./big-int"
+export * as bigInt from "./big-int"
 export type { Byte, ByteError, Bytes, BytesSliceError } from "./bytes"
 export {
   append as appendBytes,
@@ -810,6 +818,16 @@ export type {
 export {
   arrayDebug,
   arrayShow,
+  bigIntConversionErrorDebug,
+  bigIntConversionErrorShow,
+  bigIntDebug,
+  bigIntDivisionErrorDebug,
+  bigIntDivisionErrorShow,
+  bigIntParseErrorDebug,
+  bigIntParseErrorShow,
+  bigIntPowerErrorDebug,
+  bigIntPowerErrorShow,
+  bigIntShow,
   boolDebug,
   boolShow,
   base64DecodeErrorDebug,

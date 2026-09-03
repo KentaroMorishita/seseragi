@@ -55726,11 +55726,803 @@
     {
       "specifier": "std/big-int",
       "identity": "std/big-int",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/big-int",
+        "source": "std/big-int.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/big-int::BigInt",
+            "namespace": "type",
+            "name": "BigInt",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "BigInt",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::BigIntParseError",
+            "namespace": "type",
+            "name": "BigIntParseError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "BigIntParseError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::EmptyBigInt",
+            "namespace": "value",
+            "name": "EmptyBigInt",
+            "constructorOf": "std/big-int::BigIntParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "BigIntParseError",
+                "canonical": "std/big-int::BigIntParseError",
+                "providerModule": "std/big-int",
+                "providerExport": "BigIntParseError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::InvalidBigIntRadix",
+            "namespace": "value",
+            "name": "InvalidBigIntRadix",
+            "constructorOf": "std/big-int::BigIntParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "BigIntParseError",
+                  "canonical": "std/big-int::BigIntParseError",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigIntParseError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::InvalidBigIntDigit",
+            "namespace": "value",
+            "name": "InvalidBigIntDigit",
+            "constructorOf": "std/big-int::BigIntParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "radix",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "BigIntParseError",
+                  "canonical": "std/big-int::BigIntParseError",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigIntParseError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::BigIntDivisionError",
+            "namespace": "type",
+            "name": "BigIntDivisionError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "BigIntDivisionError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::BigIntDivisionByZero",
+            "namespace": "value",
+            "name": "BigIntDivisionByZero",
+            "constructorOf": "std/big-int::BigIntDivisionError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "BigIntDivisionError",
+                "canonical": "std/big-int::BigIntDivisionError",
+                "providerModule": "std/big-int",
+                "providerExport": "BigIntDivisionError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::BigIntPowerError",
+            "namespace": "type",
+            "name": "BigIntPowerError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "BigIntPowerError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::NegativeBigIntExponent",
+            "namespace": "value",
+            "name": "NegativeBigIntExponent",
+            "constructorOf": "std/big-int::BigIntPowerError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "BigIntPowerError",
+                  "canonical": "std/big-int::BigIntPowerError",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigIntPowerError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::BigIntConversionError",
+            "namespace": "type",
+            "name": "BigIntConversionError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "BigIntConversionError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::BigIntOutsideIntRange",
+            "namespace": "value",
+            "name": "BigIntOutsideIntRange",
+            "constructorOf": "std/big-int::BigIntConversionError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "BigIntConversionError",
+                "canonical": "std/big-int::BigIntConversionError",
+                "providerModule": "std/big-int",
+                "providerExport": "BigIntConversionError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::parse",
+            "namespace": "value",
+            "name": "parse",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "BigIntParseError",
+                      "canonical": "std/big-int::BigIntParseError",
+                      "providerModule": "std/big-int",
+                      "providerExport": "BigIntParseError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "BigInt",
+                      "canonical": "std/big-int::BigInt",
+                      "providerModule": "std/big-int",
+                      "providerExport": "BigInt",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::parseRadix",
+            "namespace": "value",
+            "name": "parseRadix",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "BigIntParseError",
+                        "canonical": "std/big-int::BigIntParseError",
+                        "providerModule": "std/big-int",
+                        "providerExport": "BigIntParseError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "providerModule": "std/big-int",
+                        "providerExport": "BigInt",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::format",
+            "namespace": "value",
+            "name": "format",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigInt",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::formatRadix",
+            "namespace": "value",
+            "name": "formatRadix",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "BigInt",
+                    "canonical": "std/big-int::BigInt",
+                    "providerModule": "std/big-int",
+                    "providerExport": "BigInt",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "BigIntParseError",
+                        "canonical": "std/big-int::BigIntParseError",
+                        "providerModule": "std/big-int",
+                        "providerExport": "BigIntParseError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::fromInt",
+            "namespace": "value",
+            "name": "fromInt",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigInt",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::toInt",
+            "namespace": "value",
+            "name": "toInt",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigInt",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "BigIntConversionError",
+                      "canonical": "std/big-int::BigIntConversionError",
+                      "providerModule": "std/big-int",
+                      "providerExport": "BigIntConversionError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::checkedDivide",
+            "namespace": "value",
+            "name": "checkedDivide",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigInt",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "BigInt",
+                    "canonical": "std/big-int::BigInt",
+                    "providerModule": "std/big-int",
+                    "providerExport": "BigInt",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "BigIntDivisionError",
+                        "canonical": "std/big-int::BigIntDivisionError",
+                        "providerModule": "std/big-int",
+                        "providerExport": "BigIntDivisionError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "providerModule": "std/big-int",
+                        "providerExport": "BigInt",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::checkedRemainder",
+            "namespace": "value",
+            "name": "checkedRemainder",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigInt",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "BigInt",
+                    "canonical": "std/big-int::BigInt",
+                    "providerModule": "std/big-int",
+                    "providerExport": "BigInt",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "BigIntDivisionError",
+                        "canonical": "std/big-int::BigIntDivisionError",
+                        "providerModule": "std/big-int",
+                        "providerExport": "BigIntDivisionError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "providerModule": "std/big-int",
+                        "providerExport": "BigInt",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::checkedPower",
+            "namespace": "value",
+            "name": "checkedPower",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "BigInt",
+                    "canonical": "std/big-int::BigInt",
+                    "providerModule": "std/big-int",
+                    "providerExport": "BigInt",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "BigIntPowerError",
+                        "canonical": "std/big-int::BigIntPowerError",
+                        "providerModule": "std/big-int",
+                        "providerExport": "BigIntPowerError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "providerModule": "std/big-int",
+                        "providerExport": "BigInt",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::abs",
+            "namespace": "value",
+            "name": "abs",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigInt",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigInt",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/big-int::sign",
+            "namespace": "value",
+            "name": "sign",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "providerModule": "std/big-int",
+                  "providerExport": "BigInt",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/bytes",

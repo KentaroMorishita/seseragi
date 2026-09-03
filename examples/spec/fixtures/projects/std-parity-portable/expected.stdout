@@ -2,3 +2,4 @@ array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4] / map: [["b"
 unicode: 17.0.0 / 3 / 4 / 11 / Just 128077
 regex: order <number>
 codecs: 6f6b / b2s= / b2s / [111, 107] / [111, 107] / [111, 107] / InvalidHexDigit { offset: 2 } / NonCanonicalBase64Bits { offset: 1 }
+big-int: 18014398509481987

@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.52.0",
+  "version": "0.53.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -72,6 +72,10 @@
     "./int": {
       "types": "./src/int.ts",
       "default": "./src/int.ts"
+    },
+    "./big-int": {
+      "types": "./src/big-int.ts",
+      "default": "./src/big-int.ts"
     },
     "./equality": {
       "types": "./src/equality.ts",

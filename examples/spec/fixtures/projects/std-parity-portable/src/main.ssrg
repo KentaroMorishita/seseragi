@@ -2,6 +2,7 @@ import * as arrays from "std/array"
 import * as collections from "std/collection"
 import * as bytes from "std/bytes"
 import * as base64 from "std/bytes/base64"
+import * as bigints from "std/big-int"
 import * as hex from "std/bytes/hex"
 import * as floats from "std/float"
 import * as ints from "std/int"
@@ -78,10 +79,15 @@ let invalidBase64 = match base64.decode "AB==" {
   Left error -> show error
   Right _ -> "unexpected success"
 }
+let bigIntSummary = match bigints.parse "9007199254740993" {
+  Left error -> show error
+  Right value -> bigints.format (value * bigints.fromInt 2 + bigints.fromInt 1)
+}
 
 pub effect fn main = do {
   println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique} / grouped: ${maps.values grouped} / sorted: ${sorted} / size: ${invalidSize} / maybe: ${maybeResult} / either: ${eitherResult} / validation: ${validationResult}`
   println `unicode: ${unicodeSummary}`
   println `regex: ${regexSummary}`
   println `codecs: ${hex.encode encoded} / ${base64.encode encoded} / ${base64.encodeUrl encoded} / ${decodedHex} / ${decodedBase64} / ${decodedBase64Url} / ${invalidHex} / ${invalidBase64}`
+  println `big-int: ${bigIntSummary}`
 }
