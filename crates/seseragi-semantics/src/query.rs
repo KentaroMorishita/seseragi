@@ -1409,7 +1409,7 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
 fn standard_category(name: &str, module: &str) -> &'static str {
     match module {
         "std/number" | "std/int" | "std/float" => "Number",
-        "std/array" | "std/list" => "Collection",
+        "std/array" | "std/list" | "std/collection" => "Collection",
         "std/bytes" => "Bytes",
         "std/json" => "JSON",
         "std/text" => "Text",
@@ -1585,6 +1585,12 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/prelude::any" => "Returns true at the first element accepted by the predicate.",
         "std/prelude::all" => "Returns false at the first element rejected by the predicate.",
         "std/prelude::reduce" => "Folds a reducible collection into one accumulated value.",
+        "std/collection::reduceUntil" => {
+            "Folds an Iterable in source order until Done; does not pull the remaining elements."
+        }
+        "std/collection::ReduceStep" => "Pure reduction control: Next continues and Done stops.",
+        "std/collection::Next" => "Continues reduction with the new accumulator.",
+        "std/collection::Done" => "Stops reduction immediately with the final result.",
         "std/prelude::forEach" => {
             "Runs one Effect for every value exposed by an Iterable instance."
         }

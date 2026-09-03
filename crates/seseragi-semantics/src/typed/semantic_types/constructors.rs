@@ -97,14 +97,25 @@ impl SemanticTypeCatalog {
                 key: SemanticTypeKey::TypeParameter(*parameter),
             })
             .collect::<Vec<_>>();
-        Some(SemanticValueType {
-            type_ref: TypedType::Named {
+        let type_arguments = arguments
+            .iter()
+            .map(|argument| argument.type_ref.clone())
+            .collect();
+        // Imported opaque ADT annotations retain canonical identity. Constructors
+        // must retain it too, including inside a curried callback's result type.
+        let type_ref = match &adt.external_canonical {
+            Some(canonical) => TypedType::ExternalNamed {
                 name: adt.name.clone(),
-                arguments: arguments
-                    .iter()
-                    .map(|argument| argument.type_ref.clone())
-                    .collect(),
+                canonical: canonical.clone(),
+                arguments: type_arguments,
             },
+            None => TypedType::Named {
+                name: adt.name.clone(),
+                arguments: type_arguments,
+            },
+        };
+        Some(SemanticValueType {
+            type_ref,
             key: SemanticTypeKey::Adt { owner, arguments },
         })
     }

@@ -163,6 +163,13 @@ invalid numericのnegative fixture三件を追加しました。formatterは有�
 Array / Listの`find`、`findIndex`、`takeWhile`、`dropWhile`は既に目的別に短絡します。genericな
 `reduceUntil`はIterableだけを要求するため、有限性を仮定せずDoneへ到達した時点で終了します。
 
+2026-09-03 (#348): pure側の規範型名 `ReduceStep<A>`、`Next` / `Done` と
+`std/collection.reduceUntil` をcanonical standard interface / runtime / CLI / WASMへ接続。
+prelude所有のmap/reduce/aggregate/traverseは複製しません。既存 `SizeError` は維持します。
+`Done`後はcallbackだけでなくiteratorの次のpullも行わず、配列へのmaterializeも行いません。
+`Iterable<Iterator<A>, A>` は有限性を仮定しないため、`Reducible` は提供しません。
+Effect側 `forEachUntil` / `LoopControl` は #502、`std/iterator` module公開は #330 に残ります。
+
 ### 2026-07-06: local named functionと再帰
 
 block itemへ`fn`、`effect fn`、local `rec` groupを追加しました。local function名は自身のbodyと宣言後、

@@ -485,6 +485,9 @@ pub enum TypeScriptExpr {
     Call {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
+        /// Source-checked instantiation when host currying would infer too early.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        checked_callee_type: Option<TypeScriptType>,
     },
     ForeignTaskCall {
         callee: String,

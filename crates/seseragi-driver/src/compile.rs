@@ -1836,6 +1836,39 @@ pub fn listRest -> Maybe<List<Int>> = lists.tail `[10, 20]
     }
 
     #[test]
+    fn compiles_collection_reduce_until_with_generic_evidence_and_callable_accumulators() {
+        let source = include_str!(
+            "../../../examples/spec/artifacts/schema-1/collection-reduce-until/main.ssrg"
+        );
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/collection-reduce-until",
+            source,
+        ))
+        .expect("public generic short-circuit traversal must compile");
+        let output = &compiled.generated.typescript;
+        assert!(output.contains("_ssrg_collection_reduceUntil"));
+        assert!(output.contains("type ReduceStep"));
+        assert!(output.contains("generic as unknown as (argument: string) =>"));
+        assert!(output.contains("generic as unknown as (argument: readonly [number, string]) =>"));
+        assert!(!output.contains("from \"std/"));
+        assert!(!output.contains("_ssrg_array_fromIterable"));
+    }
+
+    #[test]
+    fn rejects_invalid_reduce_until_step_accumulator_and_missing_iterable() {
+        for source in [
+            "import * as c from \"std/collection\"\npub fn bad -> Int = c.reduceUntil 0 (\\acc value -> acc + value) [1]\n",
+            "import * as c from \"std/collection\"\npub fn bad -> Int = c.reduceUntil 0 (\\acc value -> c.Done \"wrong\") [1]\n",
+            "import * as c from \"std/collection\"\npub fn bad -> Int = c.reduceUntil 0 (\\acc value: Int -> c.Next acc) True\n",
+            "import * as c from \"std/collection\"\ntype ReduceStep<A> = | Next A\npub fn bad -> Int = c.reduceUntil 0 (\\acc value -> Next acc) [1]\n",
+            "pub fn bad values: Iterator<Int> -> Int = reduce 0 (+) values\n",
+        ] {
+            assert!(compile_module(CompileInput::new("main.ssrg", "artifact/invalid-reduce-until", source)).is_err(), "{source}");
+        }
+    }
+
+    #[test]
     fn rejects_sequence_calls_without_required_evidence_or_matching_element_types() {
         for source in [
             "import * as arrays from \"std/array\"\npub fn bad -> Array<Float> = arrays.sort [1.0, 2.0]\n",

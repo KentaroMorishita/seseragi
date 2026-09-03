@@ -60,6 +60,7 @@ impl SemanticTypeCatalog {
                 owner.id,
                 SemanticAdt {
                     name: contract.name.to_owned(),
+                    external_canonical: None,
                     type_parameters: parameters.iter().map(|parameter| parameter.id).collect(),
                     type_parameter_names: contract
                         .type_parameters

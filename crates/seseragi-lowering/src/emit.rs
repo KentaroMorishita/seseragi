@@ -601,9 +601,9 @@ fn render_function_body(
 
 fn contains_direct_self_tail_call(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> bool {
     match expr {
-        TypeScriptExpr::Call { callee, arguments } => {
-            callee == self_name && arguments.len() == arity
-        }
+        TypeScriptExpr::Call {
+            callee, arguments, ..
+        } => callee == self_name && arguments.len() == arity,
         TypeScriptExpr::Conditional {
             then_branch,
             else_branch,
@@ -646,9 +646,9 @@ fn render_tail_recursive_body(
 
 fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> String {
     match expr {
-        TypeScriptExpr::Call { callee, arguments }
-            if callee == self_name && arguments.len() == arity =>
-        {
+        TypeScriptExpr::Call {
+            callee, arguments, ..
+        } if callee == self_name && arguments.len() == arity => {
             format!(
                 "({{ [$ssrg$tail]: [{}] }} as never)",
                 arguments
@@ -822,11 +822,24 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             branches,
             type_ref,
         } => decision::render_decision(scrutinee, scrutinee_type, branches, type_ref),
-        TypeScriptExpr::Call { callee, arguments } => {
+        TypeScriptExpr::Call {
+            callee,
+            arguments,
+            checked_callee_type,
+        } => {
+            let callee = checked_callee_type.as_ref().map_or_else(
+                || callee.clone(),
+                |type_ref| {
+                    format!(
+                        "({callee} as unknown as {})",
+                        render_typescript_type(type_ref)
+                    )
+                },
+            );
             if arguments.is_empty() {
                 return format!("{callee}()");
             }
-            arguments.iter().fold(callee.clone(), |call, argument| {
+            arguments.iter().fold(callee, |call, argument| {
                 format!("{call}({})", render_typescript_expr(argument))
             })
         }

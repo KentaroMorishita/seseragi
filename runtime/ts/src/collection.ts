@@ -27,6 +27,42 @@ export type Iterable<Collection, Element> = Readonly<{
   iterate: (values: Collection) => Iterator<Element>
 }>
 
+/** Pure, explicit control of an Iterable reduction (spec 10.6). */
+export type ReduceStep<A> =
+  | Readonly<{ tag: "Next"; value: A }>
+  | Readonly<{ tag: "Done"; value: A }>
+
+export function Next<A>(value: A): ReduceStep<A> {
+  return Object.freeze({ tag: "Next", value })
+}
+
+export function Done<A>(value: A): ReduceStep<A> {
+  return Object.freeze({ tag: "Done", value })
+}
+
+/** Pull only as far as Done, without assuming finiteness or materializing C. */
+export function reduceUntil<Collection, Element, Accumulator>(
+  dictionary: RuntimeDictionary,
+  initial: Accumulator,
+  step: (
+    accumulator: Accumulator
+  ) => (value: Element) => ReduceStep<Accumulator>,
+  values: Collection
+): Accumulator {
+  const iterable = dictionary as Iterable<Collection, Element>
+  let iterator = iterable.iterate(values)
+  let accumulator = initial
+  while (true) {
+    const pulled = iterator.next()
+    if (pulled.tag === "Nothing") return accumulator
+    const [value, rest] = pulled.value
+    const result = step(accumulator)(value)
+    if (result.tag === "Done") return result.value
+    accumulator = result.value
+    iterator = rest
+  }
+}
+
 /** Erased dictionary parameters emitted after Seseragi evidence checking. */
 export type RuntimeDictionary = Readonly<
   Record<string, (...arguments_: any[]) => any>

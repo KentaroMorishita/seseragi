@@ -377,8 +377,9 @@
           }
         ],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
           "arguments": [
             {
               "kind": "named",
@@ -513,8 +514,9 @@
           }
         ],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
           "arguments": [
             {
               "kind": "named",
@@ -589,8 +591,9 @@
         "kind": "variable",
         "name": "std/web/html::IgnoreEvent",
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
           "arguments": [
             {
               "kind": "named",

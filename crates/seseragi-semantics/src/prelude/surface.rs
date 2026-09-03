@@ -494,7 +494,7 @@ mod tests {
             24
         );
         assert_eq!(surface.instances.len(), 193);
-        assert_eq!(surface.builtin_instances.len(), 34);
+        assert_eq!(surface.builtin_instances.len(), 35);
         for identity in [
             "std/int::Hash",
             "std/bool::Hash",
@@ -516,6 +516,7 @@ mod tests {
             "std/string::Add",
             "std/float::Pow",
             "std/array::Iterable",
+            "std/iterator::Iterable",
             "std/list::Reducible",
             "std/range::Reducible",
         ] {
@@ -531,7 +532,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 193 + 34 + 10);
+        assert_eq!(implemented.len(), 193 + 35 + 10);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()

@@ -466,6 +466,14 @@ const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
         source_map_name: "rangeIterable",
     },
     RuntimePreludeDictionary {
+        semantic_identity: "std/iterator::Iterable",
+        runtime_feature: "core.iterator.iterable",
+        local_name: "_ssrg_iterator_iterable",
+        module: "@seseragi/runtime/iterator",
+        export_name: "iteratorIterable",
+        source_map_name: "iteratorIterable",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/array::Reducible",
         runtime_feature: "core.array.reducible",
         local_name: "_ssrg_array_reducible",

@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.47.0] - 2026-09-03
+
+- Expose `std/collection.ReduceStep`, `Next`, `Done`, and generic `reduceUntil`
+  through the canonical standard interface, CLI, LSP, Reference, and Playground.
+- Stop traversal immediately at `Done`, including infinite Iterators and custom
+  Iterable/Reducible evidence, without materializing collections.
+- Preserve imported opaque ADT constructor identity in curried callbacks and
+  support partial application and function-valued reduction accumulators.
+
 ## [0.46.0] - 2026-09-03
 
 - Complete the specified Array/List sequence APIs, including constructors,

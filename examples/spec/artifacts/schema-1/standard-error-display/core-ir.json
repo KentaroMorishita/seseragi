@@ -704,8 +704,9 @@
                         }
                       ],
                       "type": {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "html.HtmlBuildError",
+                        "canonical": "std/web/html::HtmlBuildError",
                         "arguments": []
                       },
                       "origin": {
@@ -721,8 +722,9 @@
                         "name": "Show",
                         "arguments": [
                           {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "html.HtmlBuildError",
+                            "canonical": "std/web/html::HtmlBuildError",
                             "arguments": []
                           }
                         ]
@@ -804,8 +806,9 @@
                     }
                   ],
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
                     "arguments": []
                   },
                   "origin": {
@@ -821,8 +824,9 @@
                     "name": "Debug",
                     "arguments": [
                       {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "html.HtmlBuildError",
+                        "canonical": "std/web/html::HtmlBuildError",
                         "arguments": []
                       }
                     ]

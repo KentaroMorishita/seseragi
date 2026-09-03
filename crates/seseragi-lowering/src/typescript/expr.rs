@@ -260,6 +260,10 @@ pub(super) fn lower_core_expr_to_typescript(
             origin,
         } => {
             let signal_operation = runtime_signal_operation(&callee);
+            let checked_argument_types = arguments
+                .iter()
+                .map(|argument| type_ref_from_core_expr(argument, imported_types))
+                .collect::<Vec<_>>();
             let signal_type_arguments = signal_operation
                 .iter()
                 .flat_map(|operation| operation.type_argument_sources)
@@ -650,7 +654,17 @@ pub(super) fn lower_core_expr_to_typescript(
                         imported_types,
                         &deferred_evidence_type_constructor_parameters,
                     );
-                    let call = lower_constrained_call(
+                    let check_late_callback = has_evidence
+                        && deferred_evidence_parameters.is_empty()
+                        && !matches!(
+                            checked_argument_types.first(),
+                            Some(super::TypeScriptType::Function { .. })
+                        )
+                        && checked_argument_types.iter().skip(1).any(|argument| {
+                            matches!(argument, super::TypeScriptType::Function { .. })
+                        });
+                    let evidence_count = evidence.len();
+                    let mut call = lower_constrained_call(
                         callee,
                         arguments,
                         evidence,
@@ -658,6 +672,33 @@ pub(super) fn lower_core_expr_to_typescript(
                         deferred_evidence_type_constructor_parameters,
                         imported_types,
                     );
+                    if check_late_callback {
+                        // TypeScript fixes generic parameters at the first
+                        // curried argument. The source checker used every
+                        // argument and evidence; retain that instantiated
+                        // callable type before applying a later callback.
+                        let parameters = checked_argument_types
+                            .into_iter()
+                            .chain(std::iter::repeat_n(
+                                super::TypeScriptType::Unknown,
+                                evidence_count,
+                            ))
+                            .collect::<Vec<_>>();
+                        let instantiated = parameters.into_iter().rev().fold(
+                            checked_result.clone(),
+                            |result, parameter| super::TypeScriptType::Function {
+                                parameter: Box::new(parameter),
+                                result: Box::new(result),
+                            },
+                        );
+                        if let TypeScriptExpr::Call {
+                            checked_callee_type,
+                            ..
+                        } = &mut call
+                        {
+                            *checked_callee_type = Some(instantiated);
+                        }
+                    }
                     if has_evidence {
                         // Host inference commits generics at the first curried
                         // argument, before erased dictionary parameters arrive.
@@ -922,6 +963,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     TypeScriptExpr::Call {
                         callee: callee_name,
                         arguments,
+                        checked_callee_type: None,
                     }
                 }
             }
@@ -1051,7 +1093,11 @@ fn lower_constrained_call(
 ) -> TypeScriptExpr {
     if deferred_parameters.is_empty() {
         arguments.extend(evidence);
-        return TypeScriptExpr::Call { callee, arguments };
+        return TypeScriptExpr::Call {
+            callee,
+            arguments,
+            checked_callee_type: None,
+        };
     }
 
     let parameters = deferred_parameters
@@ -1071,7 +1117,11 @@ fn lower_constrained_call(
     arguments.extend(evidence);
 
     parameters.into_iter().rev().fold(
-        TypeScriptExpr::Call { callee, arguments },
+        TypeScriptExpr::Call {
+            callee,
+            arguments,
+            checked_callee_type: None,
+        },
         |body, (name, type_name)| TypeScriptExpr::Lambda {
             parameter: format!("{name}: {type_name}"),
             body: Box::new(body),

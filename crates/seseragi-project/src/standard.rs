@@ -6013,6 +6013,33 @@ fn collection_core_interface() -> ModuleInterface {
                 [],
                 Some(named("Int")),
             ),
+            opaque_adt_type_export(module, "ReduceStep", ["A"]),
+            constructor_export(module, "ReduceStep", "Next", ["A"], Some(named("A"))),
+            constructor_export(module, "ReduceStep", "Done", ["A"], Some(named("A"))),
+            function_export(
+                module,
+                "reduceUntil",
+                ["C", "A", "B"],
+                vec![collection_constraint(
+                    "Iterable",
+                    vec![named("C"), named("A")],
+                )],
+                vec![
+                    named("B"),
+                    function_type(
+                        vec![named("B"), named("A")],
+                        external_type(
+                            "ReduceStep",
+                            "std/collection::ReduceStep",
+                            module,
+                            "ReduceStep",
+                            vec![named("B")],
+                        ),
+                    ),
+                    named("C"),
+                ],
+                named("B"),
+            ),
         ],
     )
 }
@@ -9165,7 +9192,33 @@ mod tests {
             );
         }
         let collection = standard_module_target("std/collection").unwrap();
-        assert_eq!(collection.interface().exports.len(), 2);
+        assert_eq!(collection.interface().exports.len(), 6);
+        let reduce_until = collection
+            .interface()
+            .exports
+            .iter()
+            .find(|e| e.name == "reduceUntil")
+            .unwrap();
+        assert_eq!(
+            reduce_until.scheme.constraints,
+            vec![collection_constraint(
+                "Iterable",
+                vec![named("C"), named("A")]
+            )]
+        );
+        for name in ["Next", "Done"] {
+            assert!(collection.interface().exports.iter().any(|e| e.name == name
+                && e.constructor_of.as_deref() == Some("std/collection::ReduceStep")));
+        }
+        for prelude_owned in [
+            "map", "reduce", "sum", "product", "combine", "any", "all", "traverse",
+        ] {
+            assert!(!collection
+                .interface()
+                .exports
+                .iter()
+                .any(|e| e.name == prelude_owned));
+        }
         assert!(collection
             .interface()
             .exports

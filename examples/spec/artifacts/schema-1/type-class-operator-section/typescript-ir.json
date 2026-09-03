@@ -546,7 +546,43 @@
                           "kind": "runtime-reference",
                           "name": "_ssrg_maybe_monad"
                         }
-                      ]
+                      ],
+                      "checkedCalleeType": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
+                          }
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "number"
+                            },
+                            "result": {
+                              "kind": "maybe",
+                              "element": {
+                                "kind": "number"
+                              }
+                            }
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "unknown"
+                            },
+                            "result": {
+                              "kind": "maybe",
+                              "element": {
+                                "kind": "number"
+                              }
+                            }
+                          }
+                        }
+                      }
                     },
                     "type": {
                       "kind": "maybe",

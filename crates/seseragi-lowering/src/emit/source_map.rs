@@ -282,7 +282,9 @@ fn collect_expr_names(
                     .unwrap_or_else(|| name.clone()),
             );
         }
-        TypeScriptExpr::Call { callee, arguments }
+        TypeScriptExpr::Call {
+            callee, arguments, ..
+        }
         | TypeScriptExpr::ForeignTaskCall {
             callee, arguments, ..
         }
