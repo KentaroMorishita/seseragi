@@ -1,0 +1,4 @@
+Just [2, 3, 4]
+Right `[11, 12]
+Left stopped
+Just `[2, 3, 4]

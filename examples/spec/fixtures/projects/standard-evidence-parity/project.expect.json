@@ -2,7 +2,7 @@
   "schema": 1,
   "kind": "project",
   "phase": "run",
-  "spec": ["4.4", "4.7", "9.3", "9.4", "9.5", "9.6"],
+  "spec": ["4.4", "4.7", "9.3", "9.4", "9.5", "9.6", "9.7", "10.5"],
   "lock": "generate",
   "stdout": "expected.stdout",
   "differentialProfiles": ["development", "release"]

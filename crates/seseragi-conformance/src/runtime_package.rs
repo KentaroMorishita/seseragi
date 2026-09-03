@@ -25,6 +25,7 @@ mod services;
 mod sqlite;
 mod stream;
 mod sum;
+mod traversable;
 
 pub(crate) fn check_typescript_runtime_package(
     root: &Path,
@@ -138,6 +139,9 @@ pub(crate) fn check_typescript_runtime_package(
     }
     if runtime_helper_is_declared(abi, "core.range.comprehend") {
         comprehension::check_typescript_runtime_comprehension(root)?;
+    }
+    if runtime_feature_is_declared(abi, "core.array.traversable") {
+        traversable::check_typescript_runtime_traversable(root)?;
     }
     Ok(())
 }

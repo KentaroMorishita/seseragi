@@ -2,6 +2,7 @@ import type { Iterator as SeseragiIterator } from "./iterator"
 import type { Unit } from "./effect"
 import { fromArray, type List } from "./list"
 import { Just, Nothing, type Maybe } from "./sum"
+import { type RuntimeDictionary, traverseValues } from "./traversable"
 
 /** Runtime dictionary for the standard `Semigroup<Array<A>>` instance. */
 export const arraySemigroup = Object.freeze({
@@ -219,4 +220,18 @@ export const arrayMonad = Object.freeze({
       }
       return result
     },
+})
+
+export const arrayTraversable = Object.freeze({
+  ...arrayFunctor,
+  traverse:
+    <Value, Result>(f: (value: Value) => unknown) =>
+    (values: ReadonlyArray<Value>) =>
+    (applicativeEvidence: RuntimeDictionary) =>
+      traverseValues<Value, Result, ReadonlyArray<Result>>(
+        values,
+        f,
+        applicativeEvidence,
+        (results) => results
+      ),
 })

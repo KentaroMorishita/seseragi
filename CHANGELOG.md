@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.44.0] - 2026-09-03
+
+- Implemented canonical `Traversable` dictionaries for Array, List, and
+  NonEmptyList, with source-order traversal and shape preservation through the
+  selected Applicative evidence.
+- Preserved target failure semantics, including Either short-circuiting,
+  user-defined error accumulation, and cold sequential Effect execution.
+- Added native CLI, WASM/Playground, generated TypeScript, Prelude registry,
+  and conformance coverage for standard and user-defined Traversable and
+  Applicative instances across generic module boundaries.
+
 ## [0.43.0] - 2026-09-02
 
 - Completed the `std/non-empty-list` public surface with correctly generic

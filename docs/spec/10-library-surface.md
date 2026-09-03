@@ -587,6 +587,10 @@ reduceUntil: forall C A B. Iterable<C, A>
 
 Iterableは順序付き反復、Reducibleは有限collectionの集約、TraversableはApplicative effectを
 保った走査を意味します。`reduce`は先頭から末尾へ処理し、initialを必須とします。
+`traverse f values` はcollectionの規定順序で `f` を適用し、結果の形と要素順を保ちます。
+failureや蓄積の規則は選択された `Applicative<G>` の `pure` / `map` / `apply` に従い、
+Traversable instanceがMaybeやEitherなどのtarget型を判定して分岐してはなりません。
+標準Array / List / NonEmptyList instanceは逐次的に合成し、並列実行を暗黙に導入しません。
 `reduceUntil`は`std/collection`のgeneric関数で、trait methodではありません。stepが`Next next`を
 返す間は次へ進み、`Done result`で後続要素を評価せずresultを返します。空ならinitialを返します。
 Iterableだけを要求するため有限性を仮定せず、無限IteratorでもDoneへ到達すれば終了できます。

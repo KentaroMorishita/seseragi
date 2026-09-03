@@ -124,9 +124,6 @@ const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
     audit_spec("Monoid", "Maybe<A> where Semigroup<A>", "9.5", Some(303)),
     audit_spec("Monoid", "Sum<A>", "9.5", None),
     audit_spec("Monoid", "Product<A>", "9.5", None),
-    audit_spec("Traversable", "NonEmptyList", "10.5", Some(331)),
-    audit_spec("Traversable", "Array", "10.5", Some(331)),
-    audit_spec("Traversable", "List", "10.5", Some(331)),
     audit_spec("Eq", "Validation<E, A>", "10.4", Some(304)),
     audit_spec("Show", "Validation<E, A>", "10.4", Some(304)),
     audit_spec("Debug", "Validation<E, A>", "10.4", Some(304)),
@@ -514,7 +511,7 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 171);
+        assert_eq!(surface.instances.len(), 174);
         assert_eq!(surface.builtin_instances.len(), 30);
         for identity in [
             "std/int::Hash",
@@ -522,6 +519,9 @@ mod tests {
             "std/char::Hash",
             "std/string::Hash",
             "std/unit::Hash",
+            "std/array::Traversable",
+            "std/list::Traversable",
+            "std/non-empty-list::Traversable",
         ] {
             assert!(surface
                 .instances
@@ -549,7 +549,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 171 + 30 + 10);
+        assert_eq!(implemented.len(), 174 + 30 + 10);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()
@@ -577,8 +577,8 @@ mod tests {
             (
                 "Traversable",
                 "Array",
-                StandardInstanceAuditStatus::SpecifiedButImplementationMissing,
-                Some(331),
+                StandardInstanceAuditStatus::SpecifiedAndImplemented,
+                None,
             ),
         ] {
             assert!(surface.instance_audit.matrix.iter().any(|row| {

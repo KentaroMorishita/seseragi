@@ -426,6 +426,14 @@ const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
         source_map_name: "arrayMonad",
     },
     RuntimePreludeDictionary {
+        semantic_identity: "std/array::Traversable",
+        runtime_feature: "core.array.traversable",
+        local_name: "_ssrg_array_traversable",
+        module: "@seseragi/runtime/array",
+        export_name: "arrayTraversable",
+        source_map_name: "arrayTraversable",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/list::Functor",
         runtime_feature: "core.list.functor",
         local_name: "_ssrg_list_functor",
@@ -448,6 +456,14 @@ const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
         module: "@seseragi/runtime/list",
         export_name: "listMonad",
         source_map_name: "listMonad",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/list::Traversable",
+        runtime_feature: "core.list.traversable",
+        local_name: "_ssrg_list_traversable",
+        module: "@seseragi/runtime/list",
+        export_name: "listTraversable",
+        source_map_name: "listTraversable",
     },
     RuntimePreludeDictionary {
         semantic_identity: "std/non-empty-list::Eq",
@@ -520,6 +536,14 @@ const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
         module: "@seseragi/runtime/list",
         export_name: "nonEmptyListMonad",
         source_map_name: "nonEmptyListMonad",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/non-empty-list::Traversable",
+        runtime_feature: "core.non-empty-list.traversable",
+        local_name: "_ssrg_non_empty_list_traversable",
+        module: "@seseragi/runtime/list",
+        export_name: "nonEmptyListTraversable",
+        source_map_name: "nonEmptyListTraversable",
     },
     RuntimePreludeDictionary {
         semantic_identity: "std/effect::Functor",
@@ -957,6 +981,12 @@ mod tests {
                 "arrayMonad",
             ),
             (
+                "std/array::Traversable",
+                "core.array.traversable",
+                "@seseragi/runtime/array",
+                "arrayTraversable",
+            ),
+            (
                 "std/list::Functor",
                 "core.list.functor",
                 "@seseragi/runtime/list",
@@ -973,6 +1003,18 @@ mod tests {
                 "core.list.monad",
                 "@seseragi/runtime/list",
                 "listMonad",
+            ),
+            (
+                "std/list::Traversable",
+                "core.list.traversable",
+                "@seseragi/runtime/list",
+                "listTraversable",
+            ),
+            (
+                "std/non-empty-list::Traversable",
+                "core.non-empty-list.traversable",
+                "@seseragi/runtime/list",
+                "nonEmptyListTraversable",
             ),
             (
                 "std/effect::Functor",

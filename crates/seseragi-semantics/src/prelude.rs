@@ -1506,6 +1506,13 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         identity: "std/array::Monad",
     },
     PreludeStandardInstance {
+        trait_name: "Traversable",
+        type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/array::Traversable",
+    },
+    PreludeStandardInstance {
         trait_name: "Functor",
         type_name: "List",
         type_canonical: None,
@@ -1525,6 +1532,13 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         type_canonical: None,
         type_arity: 1,
         identity: "std/list::Monad",
+    },
+    PreludeStandardInstance {
+        trait_name: "Traversable",
+        type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/list::Traversable",
     },
     PreludeStandardInstance {
         trait_name: "Functor",
@@ -1644,6 +1658,13 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         type_canonical: Some("std/non-empty-list::NonEmptyList"),
         type_arity: 1,
         identity: "std/non-empty-list::Monad",
+    },
+    PreludeStandardInstance {
+        trait_name: "Traversable",
+        type_name: "NonEmptyList",
+        type_canonical: Some("std/non-empty-list::NonEmptyList"),
+        type_arity: 1,
+        identity: "std/non-empty-list::Traversable",
     },
 ];
 
