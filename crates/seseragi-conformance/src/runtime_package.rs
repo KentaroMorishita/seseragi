@@ -2,6 +2,7 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
+mod big_int;
 mod bytes;
 mod child_process;
 mod clock_provider;
@@ -99,6 +100,9 @@ pub(crate) fn check_typescript_runtime_package(
     }
     if runtime_helper_is_declared(abi, "core.int.add") {
         check_typescript_runtime_int(root)?;
+    }
+    if runtime_helper_is_declared(abi, "core.big-int.api.parse") {
+        big_int::check_typescript_runtime_big_int(root)?;
     }
     if runtime_helper_is_declared(abi, "core.int.api.parse")
         || runtime_helper_is_declared(abi, "core.float64.api.to-int")

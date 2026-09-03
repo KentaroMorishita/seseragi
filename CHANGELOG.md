@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.53.0] - 2026-09-04
+
+### Added
+
+- Connect the opaque arbitrary-precision `BigInt` and complete `std/big-int`
+  surface through the compiler, TypeScript runtime, Reference, LSP, WASM, and
+  Playground without adding literals or implicit numeric conversions.
+- Preserve exact arithmetic and radix conversion beyond the safe `Int` range,
+  with truncating division, exponentiation by squaring, and canonical Eq, Ord,
+  Hash, Show, Debug, identity, and arithmetic dictionaries.
+- Report typed parse, checked division, checked power, and narrowing failures,
+  including UTF-8 byte offsets and an explicit precision-preserving foreign ABI.
+
 ## [0.52.0] - 2026-09-04
 
 ### Added

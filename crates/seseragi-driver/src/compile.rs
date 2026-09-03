@@ -1827,6 +1827,64 @@ pub fn debugAttribute value: html.Attribute -> String = debug value
     }
 
     #[test]
+    fn compiles_big_int_apis_and_operators_through_exact_runtime_dictionaries() {
+        let source = include_str!("../../../examples/spec/fixtures/compile/big-int-apis.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/big-int-apis",
+            source,
+        ))
+        .expect("BigInt APIs and exact arithmetic operators must compile");
+
+        for requirement in [
+            "core.big-int",
+            "core.big-int.parse-error",
+            "core.big-int.division-error",
+            "core.big-int.power-error",
+            "core.big-int.api.parse",
+            "core.big-int.api.checked-power",
+            "core.big-int.api.checked-divide",
+            "core.big-int.api.format",
+            "core.big-int.api.from-int",
+            "core.big-int.mul-dictionary",
+            "core.big-int.add-dictionary",
+        ] {
+            assert!(
+                compiled
+                    .generated
+                    .metadata
+                    .runtime
+                    .requirements
+                    .contains(&requirement.to_owned()),
+                "missing runtime requirement {requirement}: {:#?}",
+                compiled.generated.metadata.runtime.requirements
+            );
+        }
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("@seseragi/runtime/big-int"));
+        assert!(compiled.generated.typescript.contains("type BigInt"));
+        assert!(
+            compiled
+                .generated
+                .typescript
+                .contains("_ssrg_bigIntMul[\"mul\"]"),
+            "{}",
+            compiled.generated.typescript
+        );
+        assert!(
+            compiled
+                .generated
+                .typescript
+                .contains("_ssrg_bigIntAdd[\"add\"]"),
+            "{}",
+            compiled.generated.typescript
+        );
+        assert!(!compiled.generated.typescript.contains("Number("));
+    }
+
+    #[test]
     fn exposes_public_int_values_as_typescript_numbers_with_portable_metadata() {
         let source = "pub let answer: Int = 42\n\npub fn increment value: Int -> Int = value + 1\n";
         let compiled = compile_module(CompileInput::new(

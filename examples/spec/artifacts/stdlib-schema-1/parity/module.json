@@ -16,6 +16,7 @@
       "modules": [
         "std/number",
         "std/int",
+        "std/big-int",
         "std/float",
         "std/array",
         "std/collection",
@@ -445,6 +446,16 @@
       "interfaceFingerprint": "fnv1a64:7857d91272a6f840",
       "implementation": "lowering-runtime",
       "route": "websocket-provider-project"
+    },
+    {
+      "specifier": "std/big-int",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:f6a415a18c8fde08",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
     },
     {
       "specifier": "std/bytes",

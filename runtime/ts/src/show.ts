@@ -1,3 +1,10 @@
+import type {
+  BigIntConversionError,
+  BigIntDivisionError,
+  BigIntParseError,
+  BigIntPowerError,
+  BigInt as SeseragiBigInt,
+} from "./big-int"
 import type { ByteError, BytesSliceError } from "./bytes"
 import type { Base64DecodeError } from "./bytes-base64"
 import type { HexDecodeError } from "./bytes-hex"
@@ -250,6 +257,53 @@ export const intShow = defineShow((value: number) => text(value.toString(10)))
 
 /** Int Debug uses the same canonical spelling as Show. */
 export const intDebug = defineDebug((value: number) => text(value.toString(10)))
+
+/** BigInt Show uses the canonical signed base-10 spelling. */
+export const bigIntShow = defineShow((value: SeseragiBigInt) =>
+  text(value.toString(10))
+)
+
+/** BigInt Debug deliberately matches its canonical Show spelling. */
+export const bigIntDebug = defineDebug((value: SeseragiBigInt) =>
+  text(value.toString(10))
+)
+
+function bigIntParseErrorDocument(error: BigIntParseError): RenderDocument {
+  switch (error.tag) {
+    case "EmptyBigInt":
+      return text(error.tag)
+    case "InvalidBigIntRadix":
+      return constructorDocument(error.tag, showDocument(intShow, error.value))
+    case "InvalidBigIntDigit":
+      return recordConstructorDocument(error.tag, [
+        ["offset", String(error.value.offset)],
+        ["radix", String(error.value.radix)],
+      ])
+  }
+}
+
+export const bigIntParseErrorShow = defineShow(bigIntParseErrorDocument)
+export const bigIntParseErrorDebug = defineDebug(bigIntParseErrorDocument)
+
+export const bigIntDivisionErrorShow = defineShow(
+  (error: BigIntDivisionError) => text(error.tag)
+)
+export const bigIntDivisionErrorDebug = defineDebug(
+  (error: BigIntDivisionError) => text(error.tag)
+)
+
+const bigIntPowerErrorDocument = (error: BigIntPowerError): RenderDocument =>
+  constructorDocument(error.tag, showDocument(intShow, error.value))
+
+export const bigIntPowerErrorShow = defineShow(bigIntPowerErrorDocument)
+export const bigIntPowerErrorDebug = defineDebug(bigIntPowerErrorDocument)
+
+export const bigIntConversionErrorShow = defineShow(
+  (error: BigIntConversionError) => text(error.tag)
+)
+export const bigIntConversionErrorDebug = defineDebug(
+  (error: BigIntConversionError) => text(error.tag)
+)
 
 /**
  * Float display is the shortest decimal spelling that round-trips to the same

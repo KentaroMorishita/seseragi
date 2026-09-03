@@ -272,6 +272,36 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "RoundingMode",
     },
     RuntimeTypeImport {
+        canonical: "std/big-int::BigInt",
+        runtime_feature: "core.big-int",
+        module: "@seseragi/runtime/big-int",
+        export_name: "BigInt",
+    },
+    RuntimeTypeImport {
+        canonical: "std/big-int::BigIntParseError",
+        runtime_feature: "core.big-int.parse-error",
+        module: "@seseragi/runtime/big-int",
+        export_name: "BigIntParseError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/big-int::BigIntDivisionError",
+        runtime_feature: "core.big-int.division-error",
+        module: "@seseragi/runtime/big-int",
+        export_name: "BigIntDivisionError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/big-int::BigIntPowerError",
+        runtime_feature: "core.big-int.power-error",
+        module: "@seseragi/runtime/big-int",
+        export_name: "BigIntPowerError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/big-int::BigIntConversionError",
+        runtime_feature: "core.big-int.conversion-error",
+        module: "@seseragi/runtime/big-int",
+        export_name: "BigIntConversionError",
+    },
+    RuntimeTypeImport {
         canonical: "std/int::IntParseError",
         runtime_feature: "core.int.parse-error",
         module: "@seseragi/runtime/int",

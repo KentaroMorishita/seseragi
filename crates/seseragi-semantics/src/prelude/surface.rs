@@ -91,27 +91,14 @@ const STRUCTURAL_INSTANCES: &[StandardInstanceAuditSpec] = &[
 // stay explicit until their queue issue connects the real instance and removes
 // the corresponding entry here.
 const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
-    audit_spec("Eq", "BigInt", "9.4 / 10.8", Some(308)),
     audit_spec("Eq", "Decimal", "9.4 / 10.8", Some(309)),
-    audit_spec("Ord", "BigInt", "9.4 / 10.8", Some(308)),
     audit_spec("Ord", "Decimal", "9.4 / 10.8", Some(309)),
-    audit_spec("Hash", "BigInt", "9.4 / 10.8", Some(308)),
     audit_spec("Hash", "Decimal", "9.4 / 10.8", Some(309)),
-    audit_spec("Zero", "BigInt", "9.5 / 10.8", Some(308)),
     audit_spec("Zero", "Decimal", "9.5 / 10.8", Some(309)),
-    audit_spec("One", "BigInt", "9.5 / 10.8", Some(308)),
     audit_spec("One", "Decimal", "9.5 / 10.8", Some(309)),
-    audit_spec("Add", "BigInt, BigInt -> BigInt", "9.6 / 10.8", Some(308)),
-    audit_spec("Sub", "BigInt, BigInt -> BigInt", "9.6 / 10.8", Some(308)),
-    audit_spec("Mul", "BigInt, BigInt -> BigInt", "9.6 / 10.8", Some(308)),
-    audit_spec("Div", "BigInt, BigInt -> BigInt", "9.6 / 10.8", Some(308)),
-    audit_spec("Rem", "BigInt, BigInt -> BigInt", "9.6 / 10.8", Some(308)),
-    audit_spec("Pow", "BigInt, Int -> BigInt", "9.6 / 10.8", Some(308)),
     audit_spec("Add", "Decimal, Decimal -> Decimal", "10.8", Some(309)),
     audit_spec("Sub", "Decimal, Decimal -> Decimal", "10.8", Some(309)),
     audit_spec("Mul", "Decimal, Decimal -> Decimal", "10.8", Some(309)),
-    audit_spec("Show", "BigInt", "10.8", Some(308)),
-    audit_spec("Debug", "BigInt", "10.8", Some(308)),
     audit_spec("Show", "Decimal", "10.8", Some(309)),
     audit_spec("Debug", "Decimal", "10.8", Some(309)),
     audit_spec("JsonEncode", "Decimal", "10.9", Some(309)),
@@ -487,8 +474,8 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 238);
-        assert_eq!(surface.builtin_instances.len(), 35);
+        assert_eq!(surface.instances.len(), 257);
+        assert_eq!(surface.builtin_instances.len(), 41);
         for identity in [
             "std/int::Hash",
             "std/bool::Hash",
@@ -526,7 +513,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 238 + 35 + 10);
+        assert_eq!(implemented.len(), 257 + 41 + 10);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()
@@ -576,6 +563,10 @@ mod tests {
             );
         }
         for identity in [
+            "std/big-int::Eq",
+            "std/big-int::Ord",
+            "Show<std/big-int::BigInt>",
+            "Eq<std/big-int::BigIntParseError>",
             "Eq<std/bytes/hex::HexDecodeError>",
             "Show<std/bytes/hex::HexDecodeError>",
             "Debug<std/bytes/base64::Base64DecodeError>",

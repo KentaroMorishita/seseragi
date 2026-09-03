@@ -23,6 +23,66 @@ macro_rules! display_dictionary {
 
 const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
     display_dictionary!(
+        "Show<std/big-int::BigInt>",
+        "core.big-int.show",
+        "_ssrg_bigIntShow",
+        "bigIntShow"
+    ),
+    display_dictionary!(
+        "Debug<std/big-int::BigInt>",
+        "core.big-int.debug",
+        "_ssrg_bigIntDebug",
+        "bigIntDebug"
+    ),
+    display_dictionary!(
+        "Show<std/big-int::BigIntParseError>",
+        "core.big-int.parse-error.show",
+        "_ssrg_bigIntParseErrorShow",
+        "bigIntParseErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/big-int::BigIntParseError>",
+        "core.big-int.parse-error.debug",
+        "_ssrg_bigIntParseErrorDebug",
+        "bigIntParseErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/big-int::BigIntDivisionError>",
+        "core.big-int.division-error.show",
+        "_ssrg_bigIntDivisionErrorShow",
+        "bigIntDivisionErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/big-int::BigIntDivisionError>",
+        "core.big-int.division-error.debug",
+        "_ssrg_bigIntDivisionErrorDebug",
+        "bigIntDivisionErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/big-int::BigIntPowerError>",
+        "core.big-int.power-error.show",
+        "_ssrg_bigIntPowerErrorShow",
+        "bigIntPowerErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/big-int::BigIntPowerError>",
+        "core.big-int.power-error.debug",
+        "_ssrg_bigIntPowerErrorDebug",
+        "bigIntPowerErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/big-int::BigIntConversionError>",
+        "core.big-int.conversion-error.show",
+        "_ssrg_bigIntConversionErrorShow",
+        "bigIntConversionErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/big-int::BigIntConversionError>",
+        "core.big-int.conversion-error.debug",
+        "_ssrg_bigIntConversionErrorDebug",
+        "bigIntConversionErrorDebug"
+    ),
+    display_dictionary!(
         "Show<std/bytes/hex::HexDecodeError>",
         "core.bytes.hex.decode-error.show",
         "_ssrg_hexDecodeErrorShow",

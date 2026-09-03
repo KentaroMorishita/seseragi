@@ -1,0 +1,2380 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/big-int-apis",
+  "runtimeRequirements": [
+    "core.big-int.parse-error",
+    "core.big-int",
+    "core.big-int.division-error",
+    "core.big-int.power-error",
+    "core.big-int.conversion-error",
+    "effect.core.type",
+    "effect.console.service",
+    "effect.console.error",
+    "core.either",
+    "core.adt",
+    "core.big-int.api.from-int",
+    "core.int",
+    "core.string",
+    "core.big-int.parse-error.show",
+    "core.big-int.division-error.show",
+    "core.big-int.api.format",
+    "core.big-int.power-error.show",
+    "core.big-int.conversion-error.show",
+    "core.int.show",
+    "core.big-int.ord-dictionary",
+    "core.unit",
+    "core.big-int.api.parse",
+    "core.big-int.api.parse-radix",
+    "core.int.subtract",
+    "core.big-int.add-dictionary",
+    "core.big-int.mul-dictionary",
+    "core.string.show",
+    "core.big-int.sub-dictionary",
+    "core.big-int.api.format-radix",
+    "core.big-int.div-dictionary",
+    "core.big-int.rem-dictionary",
+    "core.big-int.api.checked-divide",
+    "core.big-int.api.checked-remainder",
+    "core.big-int.pow-dictionary",
+    "core.big-int.api.checked-power",
+    "core.big-int.api.to-int",
+    "core.big-int.show",
+    "core.either.show",
+    "core.big-int.api.abs",
+    "core.big-int.api.sign",
+    "core.big-int.debug",
+    "core.bool.show",
+    "core.big-int.eq-dictionary",
+    "core.bool",
+    "core.int.eq-dictionary",
+    "core.big-int.hash-dictionary",
+    "core.big-int.zero-dictionary",
+    "core.big-int.one-dictionary",
+    "core.big-int.division-error.eq",
+    "core.big-int.division-error.division-by-zero",
+    "core.big-int.power-error.eq",
+    "core.big-int.power-error.negative-exponent",
+    "core.array.iterable",
+    "effect.collection.for-each",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.big-int.api.from-int",
+      "local": "_ssrg_bigInt_fromInt"
+    },
+    {
+      "feature": "core.big-int.parse-error.show",
+      "local": "_ssrg_bigIntParseErrorShow"
+    },
+    {
+      "feature": "core.big-int.division-error.show",
+      "local": "_ssrg_bigIntDivisionErrorShow"
+    },
+    {
+      "feature": "core.big-int.api.format",
+      "local": "_ssrg_bigInt_format"
+    },
+    {
+      "feature": "core.big-int.power-error.show",
+      "local": "_ssrg_bigIntPowerErrorShow"
+    },
+    {
+      "feature": "core.big-int.conversion-error.show",
+      "local": "_ssrg_bigIntConversionErrorShow"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.big-int.ord-dictionary",
+      "local": "_ssrg_bigIntOrd"
+    },
+    {
+      "feature": "core.big-int.api.parse",
+      "local": "_ssrg_bigInt_parse"
+    },
+    {
+      "feature": "core.big-int.api.parse-radix",
+      "local": "_ssrg_bigInt_parseRadix"
+    },
+    {
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
+    },
+    {
+      "feature": "core.big-int.add-dictionary",
+      "local": "_ssrg_bigIntAdd"
+    },
+    {
+      "feature": "core.big-int.mul-dictionary",
+      "local": "_ssrg_bigIntMul"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.big-int.sub-dictionary",
+      "local": "_ssrg_bigIntSub"
+    },
+    {
+      "feature": "core.big-int.api.format-radix",
+      "local": "_ssrg_bigInt_formatRadix"
+    },
+    {
+      "feature": "core.big-int.div-dictionary",
+      "local": "_ssrg_bigIntDiv"
+    },
+    {
+      "feature": "core.big-int.rem-dictionary",
+      "local": "_ssrg_bigIntRem"
+    },
+    {
+      "feature": "core.big-int.api.checked-divide",
+      "local": "_ssrg_bigInt_checkedDivide"
+    },
+    {
+      "feature": "core.big-int.api.checked-remainder",
+      "local": "_ssrg_bigInt_checkedRemainder"
+    },
+    {
+      "feature": "core.big-int.pow-dictionary",
+      "local": "_ssrg_bigIntPow"
+    },
+    {
+      "feature": "core.big-int.api.checked-power",
+      "local": "_ssrg_bigInt_checkedPower"
+    },
+    {
+      "feature": "core.big-int.api.to-int",
+      "local": "_ssrg_bigInt_toInt"
+    },
+    {
+      "feature": "core.big-int.show",
+      "local": "_ssrg_bigIntShow"
+    },
+    {
+      "feature": "core.either.show",
+      "local": "_ssrg_show_eitherShow"
+    },
+    {
+      "feature": "core.big-int.api.abs",
+      "local": "_ssrg_bigInt_abs"
+    },
+    {
+      "feature": "core.big-int.api.sign",
+      "local": "_ssrg_bigInt_sign"
+    },
+    {
+      "feature": "core.big-int.debug",
+      "local": "_ssrg_bigIntDebug"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
+    },
+    {
+      "feature": "core.big-int.eq-dictionary",
+      "local": "_ssrg_bigIntEq"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
+    {
+      "feature": "core.big-int.hash-dictionary",
+      "local": "_ssrg_bigIntHash"
+    },
+    {
+      "feature": "core.big-int.zero-dictionary",
+      "local": "_ssrg_bigIntZero"
+    },
+    {
+      "feature": "core.big-int.one-dictionary",
+      "local": "_ssrg_bigIntOne"
+    },
+    {
+      "feature": "core.big-int.division-error.eq",
+      "local": "_ssrg_bigIntDivisionErrorEq"
+    },
+    {
+      "feature": "core.big-int.division-error.division-by-zero",
+      "local": "_ssrg_bigInt_BigIntDivisionByZero"
+    },
+    {
+      "feature": "core.big-int.power-error.eq",
+      "local": "_ssrg_bigIntPowerErrorEq"
+    },
+    {
+      "feature": "core.big-int.power-error.negative-exponent",
+      "local": "_ssrg_bigInt_NegativeBigIntExponent"
+    },
+    {
+      "feature": "core.array.iterable",
+      "local": "_ssrg_array_iterable"
+    },
+    {
+      "feature": "effect.collection.for-each",
+      "local": "_ssrg_collection_for_each"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.big-int.parse-error",
+      "local": "BigIntParseError"
+    },
+    {
+      "feature": "core.big-int",
+      "local": "BigInt"
+    },
+    {
+      "feature": "core.big-int.division-error",
+      "local": "BigIntDivisionError"
+    },
+    {
+      "feature": "core.big-int.power-error",
+      "local": "BigIntPowerError"
+    },
+    {
+      "feature": "core.big-int.conversion-error",
+      "local": "BigIntConversionError"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "effect.console.service",
+      "local": "Console"
+    },
+    {
+      "feature": "effect.console.error",
+      "local": "ConsoleError"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "requireBigInt",
+      "parameters": [
+        {
+          "name": "result",
+          "type": "{ readonly tag: \"Left\"; readonly value: BigIntParseError } | { readonly tag: \"Right\"; readonly value: BigInt }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "BigIntParseError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "BigInt",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_error",
+                "type": {
+                  "kind": "reference",
+                  "name": "BigIntParseError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_bigInt_fromInt",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "reference",
+                  "name": "BigInt",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "BigInt",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 77,
+        "end": 237
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderResult",
+      "parameters": [
+        {
+          "name": "result",
+          "type": "{ readonly tag: \"Left\"; readonly value: BigIntParseError } | { readonly tag: \"Right\"; readonly value: string }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "BigIntParseError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "string"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "BigIntParseError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_bigIntParseErrorShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 239,
+        "end": 390
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderDivision",
+      "parameters": [
+        {
+          "name": "result",
+          "type": "{ readonly tag: \"Left\"; readonly value: BigIntDivisionError } | { readonly tag: \"Right\"; readonly value: BigInt }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "BigIntDivisionError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "BigInt",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "BigIntDivisionError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_bigIntDivisionErrorShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "reference",
+                  "name": "BigInt",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_bigInt_format",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 392,
+        "end": 563
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderPower",
+      "parameters": [
+        {
+          "name": "result",
+          "type": "{ readonly tag: \"Left\"; readonly value: BigIntPowerError } | { readonly tag: \"Right\"; readonly value: BigInt }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "BigIntPowerError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "BigInt",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "BigIntPowerError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_bigIntPowerErrorShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "reference",
+                  "name": "BigInt",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_bigInt_format",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 565,
+        "end": 730
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderConversion",
+      "parameters": [
+        {
+          "name": "result",
+          "type": "{ readonly tag: \"Left\"; readonly value: BigIntConversionError } | { readonly tag: \"Right\"; readonly value: number }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "BigIntConversionError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "number"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "BigIntConversionError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_bigIntConversionErrorShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 732,
+        "end": 894
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "ordering",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "BigInt",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "BigInt",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_bigIntOrd"
+          },
+          "method": "compare",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "left"
+            },
+            {
+              "kind": "identifier",
+              "name": "right"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "ordering"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Less"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Less"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Equal"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Equal"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Greater"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 896,
+        "end": 1037
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "exercise",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "huge",
+            "type": {
+              "kind": "reference",
+              "name": "BigInt",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "requireBigInt",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_bigInt_parse",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "999999999999999999999999999999999999"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1075,
+              "end": 1157
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "same",
+            "type": {
+              "kind": "reference",
+              "name": "BigInt",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "requireBigInt",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_bigInt_parseRadix",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "10"
+                    },
+                    {
+                      "kind": "string",
+                      "value": "0999999999999999999999999999999999999"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1158,
+              "end": 1252
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "two",
+            "type": {
+              "kind": "reference",
+              "name": "BigInt",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_bigInt_fromInt",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "2"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1253,
+              "end": 1282
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "five",
+            "type": {
+              "kind": "reference",
+              "name": "BigInt",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_bigInt_fromInt",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "5"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1283,
+              "end": 1313
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "negative",
+            "type": {
+              "kind": "reference",
+              "name": "BigInt",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_bigInt_fromInt",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int_subtract",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "0"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "17"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1314,
+              "end": 1352
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "exact",
+            "type": {
+              "kind": "reference",
+              "name": "BigInt",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_bigIntAdd"
+              },
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_bigIntMul"
+                  },
+                  "method": "mul",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "huge"
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_bigInt_fromInt",
+                      "arguments": [
+                        {
+                          "kind": "number",
+                          "value": "3"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_bigInt_fromInt",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "1"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1353,
+              "end": 1411
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "exact: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bigInt_format",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "exact"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "subtract: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bigInt_format",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_bigIntSub"
+                        },
+                        "method": "sub",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "exact"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "huge"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "radix: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "renderResult",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_bigInt_formatRadix",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "16"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "huge"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "left": {
+                            "kind": "binary",
+                            "operator": "+",
+                            "left": {
+                              "kind": "binary",
+                              "operator": "+",
+                              "left": {
+                                "kind": "string",
+                                "value": "division: "
+                              },
+                              "right": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_stringShow"
+                                },
+                                "method": "show",
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_bigInt_format",
+                                    "arguments": [
+                                      {
+                                        "kind": "dictionary-call",
+                                        "dictionary": {
+                                          "kind": "runtime-reference",
+                                          "name": "_ssrg_bigIntDiv"
+                                        },
+                                        "method": "div",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "negative"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "five"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "right": {
+                              "kind": "string",
+                              "value": " / "
+                            }
+                          },
+                          "right": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_stringShow"
+                            },
+                            "method": "show",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_bigInt_format",
+                                "arguments": [
+                                  {
+                                    "kind": "dictionary-call",
+                                    "dictionary": {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_bigIntRem"
+                                    },
+                                    "method": "rem",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "negative"
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "five"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "right": {
+                          "kind": "string",
+                          "value": " / "
+                        }
+                      },
+                      "right": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "call",
+                            "callee": "renderDivision",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_bigInt_checkedDivide",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "five"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "negative"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": " / "
+                    }
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "renderDivision",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_bigInt_checkedRemainder",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "five"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "negative"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "renderDivision",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_bigInt_checkedDivide",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_bigInt_fromInt",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "0"
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "negative"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "power: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_bigInt_format",
+                        "arguments": [
+                          {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_bigIntPow"
+                            },
+                            "method": "pow",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "two"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "100"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "renderPower",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_bigInt_checkedPower",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_int_subtract",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "0"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "1"
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "two"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "conversion: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "renderConversion",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_bigInt_toInt",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_bigInt_fromInt",
+                                "arguments": [
+                                  {
+                                    "kind": "number",
+                                    "value": "42"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "renderConversion",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_bigInt_toInt",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "huge"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "string",
+                        "value": "parse-errors: "
+                      },
+                      "right": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "_ssrg_show_eitherShow",
+                              "typeArguments": [
+                                {
+                                  "kind": "reference",
+                                  "name": "BigIntParseError",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "reference",
+                                  "name": "BigInt",
+                                  "arguments": []
+                                }
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_bigIntParseErrorShow"
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_bigIntShow"
+                                }
+                              ]
+                            },
+                            "method": "show",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_bigInt_parse",
+                                "arguments": [
+                                  {
+                                    "kind": "string",
+                                    "value": ""
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": " / "
+                    }
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_eitherShow",
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "BigIntParseError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "reference",
+                              "name": "BigInt",
+                              "arguments": []
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_bigIntParseErrorShow"
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_bigIntShow"
+                            }
+                          ]
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_bigInt_parse",
+                            "arguments": [
+                              {
+                                "kind": "string",
+                                "value": "01"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_eitherShow",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "BigIntParseError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "BigInt",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_bigIntParseErrorShow"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_bigIntShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_bigInt_parse",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "12é"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "magnitude: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_bigInt_format",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_bigInt_abs",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "negative"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bigInt_sign",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "negative"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "display: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_bigIntShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "huge"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_bigIntDebug"
+                    },
+                    "method": "debug",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "huge"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "left": {
+                            "kind": "binary",
+                            "operator": "+",
+                            "left": {
+                              "kind": "binary",
+                              "operator": "+",
+                              "left": {
+                                "kind": "string",
+                                "value": "instances: "
+                              },
+                              "right": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_boolShow"
+                                },
+                                "method": "show",
+                                "arguments": [
+                                  {
+                                    "kind": "dictionary-call",
+                                    "dictionary": {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_bigIntEq"
+                                    },
+                                    "method": "eq",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "huge"
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "same"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "right": {
+                              "kind": "string",
+                              "value": " / "
+                            }
+                          },
+                          "right": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_stringShow"
+                            },
+                            "method": "show",
+                            "arguments": [
+                              {
+                                "kind": "call",
+                                "callee": "ordering",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "huge"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "exact"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "right": {
+                          "kind": "string",
+                          "value": " / "
+                        }
+                      },
+                      "right": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_boolShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_int_eq_dictionary"
+                            },
+                            "method": "eq",
+                            "arguments": [
+                              {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_bigIntHash"
+                                },
+                                "method": "hash",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "huge"
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_bigIntHash"
+                                },
+                                "method": "hash",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "same"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": " / "
+                    }
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_bigInt_format",
+                        "arguments": [
+                          {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_bigIntZero"
+                            },
+                            "method": "zero",
+                            "arguments": [
+                              {
+                                "kind": "undefined"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_bigInt_format",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_bigIntOne"
+                        },
+                        "method": "one",
+                        "arguments": [
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "typed-errors: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_bigIntDivisionErrorEq"
+                        },
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_bigInt_BigIntDivisionByZero"
+                          },
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_bigInt_BigIntDivisionByZero"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_boolShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_bigIntPowerErrorEq"
+                    },
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_bigInt_NegativeBigIntExponent",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_int_subtract",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "0"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "1"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_bigInt_NegativeBigIntExponent",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_int_subtract",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "0"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "1"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "elementType": {
+            "kind": "string"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1039,
+        "end": 2619
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_for_each",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_iterable"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_for_value: string",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "$ssrg_for_value"
+              },
+              "scrutineeType": {
+                "kind": "string"
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "line",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": []
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "line"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "reference",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "fields": [
+                      {
+                        "name": "console",
+                        "optional": false,
+                        "type": {
+                          "kind": "reference",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "exercise",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2621,
+        "end": 2724
+      }
+    }
+  ]
+}

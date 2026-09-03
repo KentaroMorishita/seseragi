@@ -214,6 +214,7 @@ describe("foreign TypeScript boundary", () => {
   test("validates explicit JS boundary types without weakening unsupported values", () => {
     const object = { value: 1 }
     const mutable = [1, 2]
+    const huge = 9007199254740993123456789n
     expect(
       invokeForeignPure(
         { same: (value: unknown) => value },
@@ -244,6 +245,26 @@ describe("foreign TypeScript boundary", () => {
         { nullable: "string" }
       )
     ).toBeNull()
+    expect(
+      invokeForeignPure(
+        { same: (value: unknown) => value },
+        "same",
+        "function",
+        [huge],
+        ["bigint"],
+        "bigint"
+      )
+    ).toBe(huge)
+    expect(() =>
+      invokeForeignPure(
+        { same: (value: unknown) => value },
+        "same",
+        "function",
+        [Number(huge)],
+        ["bigint"],
+        "bigint"
+      )
+    ).toThrow("bigint")
     expect(() =>
       invokeForeignPure(
         { same: (value: unknown) => value },
@@ -300,7 +321,9 @@ describe("foreign TypeScript boundary", () => {
   })
 
   test("preserves optional record presence and rejects lone surrogate chars", () => {
-    const codec = { record: { name: "string", note: { optional: "string" } } } as const
+    const codec = {
+      record: { name: "string", note: { optional: "string" } },
+    } as const
     const missing = invokeForeignPure(
       { same: (value: unknown) => value },
       "same",
@@ -400,10 +423,7 @@ describe("foreign TypeScript boundary", () => {
     })
     expect(
       JSON.parse(
-        renderRuntimeDefectDiagnostic(
-          new Error("defect boom"),
-          () => undefined
-        )
+        renderRuntimeDefectDiagnostic(new Error("defect boom"), () => undefined)
       )
     ).toEqual({
       schema: 1,
@@ -421,11 +441,13 @@ describe("foreign TypeScript boundary", () => {
     })
 
     const external = new Error("outside")
-    external.stack = "Error: outside\n    at explode (/private/tmp/host.mjs:1:1)"
+    external.stack =
+      "Error: outside\n    at explode (/private/tmp/host.mjs:1:1)"
     expect(
       JSON.parse(
-        renderRuntimeDefectDiagnostic(external, () =>
-          "throw new Error(\"outside\")\n"
+        renderRuntimeDefectDiagnostic(
+          external,
+          () => 'throw new Error("outside")\n'
         )
       ).groups[0].frames[0]
     ).toMatchObject({

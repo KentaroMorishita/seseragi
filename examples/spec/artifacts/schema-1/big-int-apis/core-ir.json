@@ -1,0 +1,5793 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/big-int-apis",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    },
+    {
+      "spelling": "bigints.BigIntDivisionError",
+      "canonical": "std/big-int::BigIntDivisionError",
+      "provider": {
+        "module": "std/big-int",
+        "export": "BigIntDivisionError"
+      }
+    },
+    {
+      "spelling": "bigints.BigIntPowerError",
+      "canonical": "std/big-int::BigIntPowerError",
+      "provider": {
+        "module": "std/big-int",
+        "export": "BigIntPowerError"
+      }
+    },
+    {
+      "spelling": "BigInt",
+      "canonical": "std/big-int::BigInt",
+      "provider": {
+        "module": "std/big-int",
+        "export": "BigInt"
+      }
+    },
+    {
+      "spelling": "bigints.BigIntParseError",
+      "canonical": "std/big-int::BigIntParseError",
+      "provider": {
+        "module": "std/big-int",
+        "export": "BigIntParseError"
+      }
+    },
+    {
+      "spelling": "bigints.BigIntConversionError",
+      "canonical": "std/big-int::BigIntConversionError",
+      "provider": {
+        "module": "std/big-int",
+        "export": "BigIntConversionError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/big-int",
+      "module": "std/big-int",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "BigInt",
+          "local": "BigInt",
+          "canonical": "std/big-int::BigInt",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "BigIntParseError",
+          "local": "bigints.BigIntParseError",
+          "canonical": "std/big-int::BigIntParseError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "BigIntDivisionError",
+          "local": "bigints.BigIntDivisionError",
+          "canonical": "std/big-int::BigIntDivisionError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "BigIntDivisionByZero",
+          "local": "bigints.BigIntDivisionByZero",
+          "canonical": "std/big-int::BigIntDivisionByZero",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "BigIntPowerError",
+          "local": "bigints.BigIntPowerError",
+          "canonical": "std/big-int::BigIntPowerError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "NegativeBigIntExponent",
+          "local": "bigints.NegativeBigIntExponent",
+          "canonical": "std/big-int::NegativeBigIntExponent",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "BigIntConversionError",
+          "local": "bigints.BigIntConversionError",
+          "canonical": "std/big-int::BigIntConversionError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "fromInt",
+          "local": "bigints.fromInt",
+          "canonical": "std/big-int::fromInt",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "format",
+          "local": "bigints.format",
+          "canonical": "std/big-int::format",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "parse",
+          "local": "bigints.parse",
+          "canonical": "std/big-int::parse",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "parseRadix",
+          "local": "bigints.parseRadix",
+          "canonical": "std/big-int::parseRadix",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "formatRadix",
+          "local": "bigints.formatRadix",
+          "canonical": "std/big-int::formatRadix",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "checkedDivide",
+          "local": "bigints.checkedDivide",
+          "canonical": "std/big-int::checkedDivide",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "checkedRemainder",
+          "local": "bigints.checkedRemainder",
+          "canonical": "std/big-int::checkedRemainder",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "checkedPower",
+          "local": "bigints.checkedPower",
+          "canonical": "std/big-int::checkedPower",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "toInt",
+          "local": "bigints.toInt",
+          "canonical": "std/big-int::toInt",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "abs",
+          "local": "bigints.abs",
+          "canonical": "std/big-int::abs",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "sign",
+          "local": "bigints.sign",
+          "canonical": "std/big-int::sign",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/big-int",
+      "module": "std/big-int",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 37,
+        "end": 75
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "BigInt",
+          "local": "BigInt",
+          "canonical": "std/big-int::BigInt",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "BigIntParseError",
+          "local": "bigints.BigIntParseError",
+          "canonical": "std/big-int::BigIntParseError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "BigIntDivisionError",
+          "local": "bigints.BigIntDivisionError",
+          "canonical": "std/big-int::BigIntDivisionError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "BigIntDivisionByZero",
+          "local": "bigints.BigIntDivisionByZero",
+          "canonical": "std/big-int::BigIntDivisionByZero",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "BigIntPowerError",
+          "local": "bigints.BigIntPowerError",
+          "canonical": "std/big-int::BigIntPowerError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "NegativeBigIntExponent",
+          "local": "bigints.NegativeBigIntExponent",
+          "canonical": "std/big-int::NegativeBigIntExponent",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "BigIntConversionError",
+          "local": "bigints.BigIntConversionError",
+          "canonical": "std/big-int::BigIntConversionError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "fromInt",
+          "local": "bigints.fromInt",
+          "canonical": "std/big-int::fromInt",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "format",
+          "local": "bigints.format",
+          "canonical": "std/big-int::format",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "parse",
+          "local": "bigints.parse",
+          "canonical": "std/big-int::parse",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "parseRadix",
+          "local": "bigints.parseRadix",
+          "canonical": "std/big-int::parseRadix",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "formatRadix",
+          "local": "bigints.formatRadix",
+          "canonical": "std/big-int::formatRadix",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "checkedDivide",
+          "local": "bigints.checkedDivide",
+          "canonical": "std/big-int::checkedDivide",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "checkedRemainder",
+          "local": "bigints.checkedRemainder",
+          "canonical": "std/big-int::checkedRemainder",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "checkedPower",
+          "local": "bigints.checkedPower",
+          "canonical": "std/big-int::checkedPower",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "toInt",
+          "local": "bigints.toInt",
+          "canonical": "std/big-int::toInt",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "abs",
+          "local": "bigints.abs",
+          "canonical": "std/big-int::abs",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "sign",
+          "local": "bigints.sign",
+          "canonical": "std/big-int::sign",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 49,
+            "end": 56
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/big-int-apis::requireBigInt",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 77,
+        "end": 237
+      },
+      "parameters": [
+        {
+          "id": "result",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bigints.BigIntParseError",
+                "canonical": "std/big-int::BigIntParseError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bigints.BigIntParseError",
+                "canonical": "std/big-int::BigIntParseError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 163,
+            "end": 169
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bigints.BigIntParseError",
+              "canonical": "std/big-int::BigIntParseError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 176,
+                  "end": 187
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bigints.BigIntParseError",
+                  "canonical": "std/big-int::BigIntParseError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 181,
+                  "end": 187
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/big-int::fromInt",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "0",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 207,
+                    "end": 208
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 191,
+                "end": 208
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 176,
+              "end": 208
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 213,
+                  "end": 224
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 219,
+                  "end": 224
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 228,
+                "end": 233
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 213,
+              "end": 233
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "external-named",
+          "name": "BigInt",
+          "canonical": "std/big-int::BigInt",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 157,
+          "end": 237
+        }
+      }
+    },
+    {
+      "symbol": "artifact/big-int-apis::renderResult",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 239,
+        "end": 390
+      },
+      "parameters": [
+        {
+          "id": "result",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bigints.BigIntParseError",
+                "canonical": "std/big-int::BigIntParseError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bigints.BigIntParseError",
+                "canonical": "std/big-int::BigIntParseError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 324,
+            "end": 330
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bigints.BigIntParseError",
+              "canonical": "std/big-int::BigIntParseError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 337,
+                  "end": 347
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bigints.BigIntParseError",
+                  "canonical": "std/big-int::BigIntParseError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 342,
+                  "end": 347
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "bigints.BigIntParseError",
+                    "canonical": "std/big-int::BigIntParseError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 356,
+                    "end": 361
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "bigints.BigIntParseError",
+                        "canonical": "std/big-int::BigIntParseError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/big-int::BigIntParseError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 351,
+                "end": 361
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 337,
+              "end": 361
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 366,
+                  "end": 377
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 372,
+                  "end": 377
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 381,
+                "end": 386
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 366,
+              "end": 386
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 318,
+          "end": 390
+        }
+      }
+    },
+    {
+      "symbol": "artifact/big-int-apis::renderDivision",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 392,
+        "end": 563
+      },
+      "parameters": [
+        {
+          "id": "result",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bigints.BigIntDivisionError",
+                "canonical": "std/big-int::BigIntDivisionError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bigints.BigIntDivisionError",
+                "canonical": "std/big-int::BigIntDivisionError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 482,
+            "end": 488
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bigints.BigIntDivisionError",
+              "canonical": "std/big-int::BigIntDivisionError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 495,
+                  "end": 505
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bigints.BigIntDivisionError",
+                  "canonical": "std/big-int::BigIntDivisionError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 500,
+                  "end": 505
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "bigints.BigIntDivisionError",
+                    "canonical": "std/big-int::BigIntDivisionError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 514,
+                    "end": 519
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "bigints.BigIntDivisionError",
+                        "canonical": "std/big-int::BigIntDivisionError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/big-int::BigIntDivisionError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 509,
+                "end": 519
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 495,
+              "end": 519
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 524,
+                  "end": 535
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 530,
+                  "end": 535
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/big-int::format",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "BigInt",
+                    "canonical": "std/big-int::BigInt",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 554,
+                    "end": 559
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 539,
+                "end": 559
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 524,
+              "end": 559
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 476,
+          "end": 563
+        }
+      }
+    },
+    {
+      "symbol": "artifact/big-int-apis::renderPower",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 565,
+        "end": 730
+      },
+      "parameters": [
+        {
+          "id": "result",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bigints.BigIntPowerError",
+                "canonical": "std/big-int::BigIntPowerError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bigints.BigIntPowerError",
+                "canonical": "std/big-int::BigIntPowerError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 649,
+            "end": 655
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bigints.BigIntPowerError",
+              "canonical": "std/big-int::BigIntPowerError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 662,
+                  "end": 672
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bigints.BigIntPowerError",
+                  "canonical": "std/big-int::BigIntPowerError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 667,
+                  "end": 672
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "bigints.BigIntPowerError",
+                    "canonical": "std/big-int::BigIntPowerError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 681,
+                    "end": 686
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "bigints.BigIntPowerError",
+                        "canonical": "std/big-int::BigIntPowerError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/big-int::BigIntPowerError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 676,
+                "end": 686
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 662,
+              "end": 686
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 691,
+                  "end": 702
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 697,
+                  "end": 702
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/big-int::format",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "BigInt",
+                    "canonical": "std/big-int::BigInt",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 721,
+                    "end": 726
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 706,
+                "end": 726
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 691,
+              "end": 726
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 643,
+          "end": 730
+        }
+      }
+    },
+    {
+      "symbol": "artifact/big-int-apis::renderConversion",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 732,
+        "end": 894
+      },
+      "parameters": [
+        {
+          "id": "result",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bigints.BigIntConversionError",
+                "canonical": "std/big-int::BigIntConversionError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bigints.BigIntConversionError",
+                "canonical": "std/big-int::BigIntConversionError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 823,
+            "end": 829
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bigints.BigIntConversionError",
+              "canonical": "std/big-int::BigIntConversionError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 836,
+                  "end": 846
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bigints.BigIntConversionError",
+                  "canonical": "std/big-int::BigIntConversionError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 841,
+                  "end": 846
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "bigints.BigIntConversionError",
+                    "canonical": "std/big-int::BigIntConversionError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 855,
+                    "end": 860
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "bigints.BigIntConversionError",
+                        "canonical": "std/big-int::BigIntConversionError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/big-int::BigIntConversionError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 850,
+                "end": 860
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 836,
+              "end": 860
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 865,
+                  "end": 876
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 871,
+                  "end": 876
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 885,
+                    "end": 890
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 880,
+                "end": 890
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 865,
+              "end": 890
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 817,
+          "end": 894
+        }
+      }
+    },
+    {
+      "symbol": "artifact/big-int-apis::ordering",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 896,
+        "end": 1037
+      },
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "BigInt",
+            "canonical": "std/big-int::BigInt",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "BigInt",
+            "canonical": "std/big-int::BigInt",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "std/prelude::Ord::compare",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "left",
+              "type": {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 964,
+                "end": 968
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "right",
+              "type": {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 969,
+                "end": 974
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Ord",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "BigInt",
+                    "canonical": "std/big-int::BigInt",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/big-int::Ord"
+              }
+            }
+          ],
+          "traitDispatch": {
+            "traitIdentity": "std/prelude::Ord",
+            "method": "compare"
+          },
+          "type": {
+            "kind": "named",
+            "name": "Ordering",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 956,
+            "end": 974
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Ordering",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Less",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 979,
+                  "end": 983
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Less",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 987,
+                "end": 993
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 979,
+              "end": 993
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Equal",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 996,
+                  "end": 1001
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Equal",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1005,
+                "end": 1012
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 996,
+              "end": 1012
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Greater",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1026,
+                "end": 1035
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1015,
+              "end": 1035
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 950,
+          "end": 1037
+        }
+      }
+    },
+    {
+      "symbol": "artifact/big-int-apis::exercise",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1039,
+        "end": 2619
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "huge",
+            "type": {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/big-int-apis::requireBigInt",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/big-int::parse",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "999999999999999999999999999999999999",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1118,
+                        "end": 1156
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "bigints.BigIntParseError",
+                        "canonical": "std/big-int::BigIntParseError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1104,
+                    "end": 1156
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1089,
+                "end": 1157
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1075,
+              "end": 1157
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "same",
+            "type": {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/big-int-apis::requireBigInt",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/big-int::parseRadix",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "10",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1209,
+                        "end": 1211
+                      }
+                    },
+                    {
+                      "kind": "string",
+                      "value": "0999999999999999999999999999999999999",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1212,
+                        "end": 1251
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "bigints.BigIntParseError",
+                        "canonical": "std/big-int::BigIntParseError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1190,
+                    "end": 1251
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1175,
+                "end": 1252
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1158,
+              "end": 1252
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "two",
+            "type": {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/big-int::fromInt",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "2",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1281,
+                    "end": 1282
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1265,
+                "end": 1282
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1253,
+              "end": 1282
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "five",
+            "type": {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/big-int::fromInt",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "5",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1312,
+                    "end": 1313
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1296,
+                "end": 1313
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1283,
+              "end": 1313
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "negative",
+            "type": {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/big-int::fromInt",
+              "arguments": [
+                {
+                  "kind": "unary",
+                  "operator": "-",
+                  "operand": {
+                    "kind": "integer",
+                    "value": "17",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1349,
+                      "end": 1351
+                    }
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1348,
+                    "end": 1351
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1331,
+                "end": 1352
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1314,
+              "end": 1352
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "exact",
+            "type": {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            },
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "*",
+                "left": {
+                  "kind": "variable",
+                  "name": "huge",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "BigInt",
+                    "canonical": "std/big-int::BigInt",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1367,
+                    "end": 1371
+                  }
+                },
+                "right": {
+                  "kind": "call",
+                  "callee": "std/big-int::fromInt",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "3",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1390,
+                        "end": 1391
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "BigInt",
+                    "canonical": "std/big-int::BigInt",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1374,
+                    "end": 1391
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Mul",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/big-int::Mul"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1367,
+                  "end": 1391
+                }
+              },
+              "right": {
+                "kind": "call",
+                "callee": "std/big-int::fromInt",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "1",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1410,
+                      "end": 1411
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "external-named",
+                  "name": "BigInt",
+                  "canonical": "std/big-int::BigInt",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1394,
+                  "end": 1411
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/big-int::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "BigInt",
+                "canonical": "std/big-int::BigInt",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1367,
+                "end": 1411
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1353,
+              "end": 1411
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "exact: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1421,
+                    "end": 1428
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/big-int::format",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "exact",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1445,
+                          "end": 1450
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1430,
+                      "end": 1450
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1428,
+                    "end": 1451
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1420,
+                "end": 1452
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "subtract: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1459,
+                    "end": 1469
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/big-int::format",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "-",
+                        "left": {
+                          "kind": "variable",
+                          "name": "exact",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "BigInt",
+                            "canonical": "std/big-int::BigInt",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1487,
+                            "end": 1492
+                          }
+                        },
+                        "right": {
+                          "kind": "variable",
+                          "name": "huge",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "BigInt",
+                            "canonical": "std/big-int::BigInt",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1495,
+                            "end": 1499
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Sub",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/big-int::Sub"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1487,
+                          "end": 1499
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1471,
+                      "end": 1500
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1469,
+                    "end": 1501
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1458,
+                "end": 1502
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "radix: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1509,
+                    "end": 1516
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/big-int-apis::renderResult",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::formatRadix",
+                        "arguments": [
+                          {
+                            "kind": "integer",
+                            "value": "16",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1552,
+                              "end": 1554
+                            }
+                          },
+                          {
+                            "kind": "variable",
+                            "name": "huge",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1555,
+                              "end": 1559
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntParseError",
+                              "canonical": "std/big-int::BigIntParseError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1532,
+                          "end": 1559
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1518,
+                      "end": 1560
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1516,
+                    "end": 1561
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1508,
+                "end": 1562
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "division: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1569,
+                    "end": 1579
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/big-int::format",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "/",
+                        "left": {
+                          "kind": "variable",
+                          "name": "negative",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "BigInt",
+                            "canonical": "std/big-int::BigInt",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1597,
+                            "end": 1605
+                          }
+                        },
+                        "right": {
+                          "kind": "variable",
+                          "name": "five",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "BigInt",
+                            "canonical": "std/big-int::BigInt",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1608,
+                            "end": 1612
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Div",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/big-int::Div"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1597,
+                          "end": 1612
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1581,
+                      "end": 1613
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1579,
+                    "end": 1614
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1614,
+                    "end": 1617
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/big-int::format",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "%",
+                        "left": {
+                          "kind": "variable",
+                          "name": "negative",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "BigInt",
+                            "canonical": "std/big-int::BigInt",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1635,
+                            "end": 1643
+                          }
+                        },
+                        "right": {
+                          "kind": "variable",
+                          "name": "five",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "BigInt",
+                            "canonical": "std/big-int::BigInt",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1646,
+                            "end": 1650
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Rem",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/big-int::Rem"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1635,
+                          "end": 1650
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1619,
+                      "end": 1651
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1617,
+                    "end": 1652
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1652,
+                    "end": 1655
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/big-int-apis::renderDivision",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::checkedDivide",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "five",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1695,
+                              "end": 1699
+                            }
+                          },
+                          {
+                            "kind": "variable",
+                            "name": "negative",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1700,
+                              "end": 1708
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntDivisionError",
+                              "canonical": "std/big-int::BigIntDivisionError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1673,
+                          "end": 1708
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1657,
+                      "end": 1709
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1655,
+                    "end": 1710
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1710,
+                    "end": 1713
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/big-int-apis::renderDivision",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::checkedRemainder",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "five",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1756,
+                              "end": 1760
+                            }
+                          },
+                          {
+                            "kind": "variable",
+                            "name": "negative",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1761,
+                              "end": 1769
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntDivisionError",
+                              "canonical": "std/big-int::BigIntDivisionError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1731,
+                          "end": 1769
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1715,
+                      "end": 1770
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1713,
+                    "end": 1771
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1771,
+                    "end": 1774
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/big-int-apis::renderDivision",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::checkedDivide",
+                        "arguments": [
+                          {
+                            "kind": "call",
+                            "callee": "std/big-int::fromInt",
+                            "arguments": [
+                              {
+                                "kind": "integer",
+                                "value": "0",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1831,
+                                  "end": 1832
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1815,
+                              "end": 1832
+                            }
+                          },
+                          {
+                            "kind": "variable",
+                            "name": "negative",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1834,
+                              "end": 1842
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntDivisionError",
+                              "canonical": "std/big-int::BigIntDivisionError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1792,
+                          "end": 1842
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1776,
+                      "end": 1843
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1774,
+                    "end": 1844
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1568,
+                "end": 1845
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "power: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1852,
+                    "end": 1859
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/big-int::format",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "**",
+                        "left": {
+                          "kind": "variable",
+                          "name": "two",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "BigInt",
+                            "canonical": "std/big-int::BigInt",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1877,
+                            "end": 1880
+                          }
+                        },
+                        "right": {
+                          "kind": "integer",
+                          "value": "100",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1884,
+                            "end": 1887
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Pow",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/big-int::Pow"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1877,
+                          "end": 1887
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1861,
+                      "end": 1888
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1859,
+                    "end": 1889
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1889,
+                    "end": 1892
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/big-int-apis::renderPower",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::checkedPower",
+                        "arguments": [
+                          {
+                            "kind": "unary",
+                            "operator": "-",
+                            "operand": {
+                              "kind": "integer",
+                              "value": "1",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1930,
+                                "end": 1931
+                              }
+                            },
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1929,
+                              "end": 1931
+                            }
+                          },
+                          {
+                            "kind": "variable",
+                            "name": "two",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1933,
+                              "end": 1936
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntPowerError",
+                              "canonical": "std/big-int::BigIntPowerError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1907,
+                          "end": 1936
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1894,
+                      "end": 1937
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1892,
+                    "end": 1938
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1851,
+                "end": 1939
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "conversion: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1946,
+                    "end": 1958
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/big-int-apis::renderConversion",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::toInt",
+                        "arguments": [
+                          {
+                            "kind": "call",
+                            "callee": "std/big-int::fromInt",
+                            "arguments": [
+                              {
+                                "kind": "integer",
+                                "value": "42",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 2009,
+                                  "end": 2011
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1993,
+                              "end": 2011
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntConversionError",
+                              "canonical": "std/big-int::BigIntConversionError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1978,
+                          "end": 2012
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1960,
+                      "end": 2013
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1958,
+                    "end": 2014
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2014,
+                    "end": 2017
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/big-int-apis::renderConversion",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::toInt",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "huge",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2051,
+                              "end": 2055
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntConversionError",
+                              "canonical": "std/big-int::BigIntConversionError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2037,
+                          "end": 2055
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2019,
+                      "end": 2056
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2017,
+                    "end": 2057
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1945,
+                "end": 2058
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "parse-errors: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2065,
+                    "end": 2079
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/prelude::Show::show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::parse",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2101,
+                              "end": 2103
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntParseError",
+                              "canonical": "std/big-int::BigIntParseError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2087,
+                          "end": 2103
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Either",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "bigints.BigIntParseError",
+                                  "canonical": "std/big-int::BigIntParseError",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/either::Show",
+                          "typeArguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntParseError",
+                              "canonical": "std/big-int::BigIntParseError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ],
+                          "evidenceArguments": [
+                            {
+                              "constraint": {
+                                "name": "Show",
+                                "arguments": [
+                                  {
+                                    "kind": "external-named",
+                                    "name": "bigints.BigIntParseError",
+                                    "canonical": "std/big-int::BigIntParseError",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "Show<std/big-int::BigIntParseError>"
+                              }
+                            },
+                            {
+                              "constraint": {
+                                "name": "Show",
+                                "arguments": [
+                                  {
+                                    "kind": "external-named",
+                                    "name": "BigInt",
+                                    "canonical": "std/big-int::BigInt",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "Show<std/big-int::BigInt>"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "std/prelude::Show",
+                      "method": "show"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2081,
+                      "end": 2104
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2079,
+                    "end": 2105
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2105,
+                    "end": 2108
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/prelude::Show::show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::parse",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "01",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2130,
+                              "end": 2134
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntParseError",
+                              "canonical": "std/big-int::BigIntParseError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2116,
+                          "end": 2134
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Either",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "bigints.BigIntParseError",
+                                  "canonical": "std/big-int::BigIntParseError",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/either::Show",
+                          "typeArguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntParseError",
+                              "canonical": "std/big-int::BigIntParseError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ],
+                          "evidenceArguments": [
+                            {
+                              "constraint": {
+                                "name": "Show",
+                                "arguments": [
+                                  {
+                                    "kind": "external-named",
+                                    "name": "bigints.BigIntParseError",
+                                    "canonical": "std/big-int::BigIntParseError",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "Show<std/big-int::BigIntParseError>"
+                              }
+                            },
+                            {
+                              "constraint": {
+                                "name": "Show",
+                                "arguments": [
+                                  {
+                                    "kind": "external-named",
+                                    "name": "BigInt",
+                                    "canonical": "std/big-int::BigInt",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "Show<std/big-int::BigInt>"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "std/prelude::Show",
+                      "method": "show"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2110,
+                      "end": 2135
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2108,
+                    "end": 2136
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2136,
+                    "end": 2139
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/prelude::Show::show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::parse",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "12é",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2161,
+                              "end": 2167
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntParseError",
+                              "canonical": "std/big-int::BigIntParseError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2147,
+                          "end": 2167
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Either",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "bigints.BigIntParseError",
+                                  "canonical": "std/big-int::BigIntParseError",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/either::Show",
+                          "typeArguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntParseError",
+                              "canonical": "std/big-int::BigIntParseError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ],
+                          "evidenceArguments": [
+                            {
+                              "constraint": {
+                                "name": "Show",
+                                "arguments": [
+                                  {
+                                    "kind": "external-named",
+                                    "name": "bigints.BigIntParseError",
+                                    "canonical": "std/big-int::BigIntParseError",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "Show<std/big-int::BigIntParseError>"
+                              }
+                            },
+                            {
+                              "constraint": {
+                                "name": "Show",
+                                "arguments": [
+                                  {
+                                    "kind": "external-named",
+                                    "name": "BigInt",
+                                    "canonical": "std/big-int::BigInt",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "Show<std/big-int::BigInt>"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "std/prelude::Show",
+                      "method": "show"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2141,
+                      "end": 2168
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2139,
+                    "end": 2169
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2064,
+                "end": 2170
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "magnitude: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2177,
+                    "end": 2188
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/big-int::format",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/big-int::abs",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "negative",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2218,
+                              "end": 2226
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2206,
+                          "end": 2226
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2190,
+                      "end": 2227
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2188,
+                    "end": 2228
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2228,
+                    "end": 2231
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/big-int::sign",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "negative",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2246,
+                          "end": 2254
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2233,
+                      "end": 2254
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2231,
+                    "end": 2255
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2176,
+                "end": 2256
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "display: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2263,
+                    "end": 2272
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/prelude::Show::show",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "huge",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2279,
+                          "end": 2283
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/big-int::BigInt>"
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "std/prelude::Show",
+                      "method": "show"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2274,
+                      "end": 2283
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2272,
+                    "end": 2284
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2284,
+                    "end": 2287
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/prelude::Debug::debug",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "huge",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2295,
+                          "end": 2299
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Debug",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Debug<std/big-int::BigInt>"
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "std/prelude::Debug",
+                      "method": "debug"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2289,
+                      "end": 2299
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2287,
+                    "end": 2300
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2262,
+                "end": 2301
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "instances: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2308,
+                    "end": 2319
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "==",
+                    "left": {
+                      "kind": "variable",
+                      "name": "huge",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2321,
+                        "end": 2325
+                      }
+                    },
+                    "right": {
+                      "kind": "variable",
+                      "name": "same",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "BigInt",
+                        "canonical": "std/big-int::BigInt",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2329,
+                        "end": 2333
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "BigInt",
+                              "canonical": "std/big-int::BigInt",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/big-int::Eq"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2321,
+                      "end": 2333
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Bool>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2319,
+                    "end": 2334
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2334,
+                    "end": 2337
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/big-int-apis::ordering",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "huge",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2348,
+                          "end": 2352
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "exact",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2353,
+                          "end": 2358
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2339,
+                      "end": 2358
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2337,
+                    "end": 2359
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2359,
+                    "end": 2362
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "==",
+                    "left": {
+                      "kind": "call",
+                      "callee": "std/prelude::Hash::hash",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "huge",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "BigInt",
+                            "canonical": "std/big-int::BigInt",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2369,
+                            "end": 2373
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Hash",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "BigInt",
+                                "canonical": "std/big-int::BigInt",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/big-int::Hash"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Hash",
+                        "method": "hash"
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2364,
+                        "end": 2373
+                      }
+                    },
+                    "right": {
+                      "kind": "call",
+                      "callee": "std/prelude::Hash::hash",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "same",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "BigInt",
+                            "canonical": "std/big-int::BigInt",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2382,
+                            "end": 2386
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Hash",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "BigInt",
+                                "canonical": "std/big-int::BigInt",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/big-int::Hash"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Hash",
+                        "method": "hash"
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2377,
+                        "end": 2386
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Eq"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2364,
+                      "end": 2386
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Bool>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2362,
+                    "end": 2387
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2387,
+                    "end": 2390
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/big-int::format",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/prelude::Zero::zero",
+                        "arguments": [
+                          {
+                            "kind": "unit",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2413,
+                              "end": 2415
+                            }
+                          }
+                        ],
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Zero",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/big-int::Zero"
+                            }
+                          }
+                        ],
+                        "traitDispatch": {
+                          "traitIdentity": "std/prelude::Zero",
+                          "method": "zero"
+                        },
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2408,
+                          "end": 2415
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2392,
+                      "end": 2416
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2390,
+                    "end": 2417
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2417,
+                    "end": 2420
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/big-int::format",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/prelude::One::one",
+                        "arguments": [
+                          {
+                            "kind": "unit",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2442,
+                              "end": 2444
+                            }
+                          }
+                        ],
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "One",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "BigInt",
+                                  "canonical": "std/big-int::BigInt",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/big-int::One"
+                            }
+                          }
+                        ],
+                        "traitDispatch": {
+                          "traitIdentity": "std/prelude::One",
+                          "method": "one"
+                        },
+                        "type": {
+                          "kind": "external-named",
+                          "name": "BigInt",
+                          "canonical": "std/big-int::BigInt",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2438,
+                          "end": 2444
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2422,
+                      "end": 2445
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2420,
+                    "end": 2446
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2307,
+                "end": 2447
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "typed-errors: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2454,
+                    "end": 2468
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "==",
+                    "left": {
+                      "kind": "variable",
+                      "name": "std/big-int::BigIntDivisionByZero",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "bigints.BigIntDivisionError",
+                        "canonical": "std/big-int::BigIntDivisionError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2470,
+                        "end": 2498
+                      }
+                    },
+                    "right": {
+                      "kind": "variable",
+                      "name": "std/big-int::BigIntDivisionByZero",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "bigints.BigIntDivisionError",
+                        "canonical": "std/big-int::BigIntDivisionError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2502,
+                        "end": 2530
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntDivisionError",
+                              "canonical": "std/big-int::BigIntDivisionError",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Eq<std/big-int::BigIntDivisionError>"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2470,
+                      "end": 2530
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Bool>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2468,
+                    "end": 2531
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2531,
+                    "end": 2534
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "==",
+                    "left": {
+                      "kind": "call",
+                      "callee": "std/big-int::NegativeBigIntExponent",
+                      "arguments": [
+                        {
+                          "kind": "unary",
+                          "operator": "-",
+                          "operand": {
+                            "kind": "integer",
+                            "value": "1",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2569,
+                              "end": 2570
+                            }
+                          },
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2568,
+                            "end": 2570
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "bigints.BigIntPowerError",
+                        "canonical": "std/big-int::BigIntPowerError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2536,
+                        "end": 2571
+                      }
+                    },
+                    "right": {
+                      "kind": "call",
+                      "callee": "std/big-int::NegativeBigIntExponent",
+                      "arguments": [
+                        {
+                          "kind": "unary",
+                          "operator": "-",
+                          "operand": {
+                            "kind": "integer",
+                            "value": "1",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2608,
+                              "end": 2609
+                            }
+                          },
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2607,
+                            "end": 2609
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "bigints.BigIntPowerError",
+                        "canonical": "std/big-int::BigIntPowerError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2575,
+                        "end": 2610
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "bigints.BigIntPowerError",
+                              "canonical": "std/big-int::BigIntPowerError",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Eq<std/big-int::BigIntPowerError>"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2536,
+                      "end": 2610
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Bool>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2534,
+                    "end": 2611
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2453,
+                "end": 2612
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1414,
+            "end": 2617
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1074,
+          "end": 2619
+        }
+      }
+    },
+    {
+      "symbol": "artifact/big-int-apis::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2621,
+        "end": 2724
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::forEach",
+        "arguments": [
+          {
+            "kind": "lambda",
+            "parameter": {
+              "id": "$ssrg_for_value",
+              "kind": "named",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "$ssrg_for_value",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2688,
+                  "end": 2692
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "line",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2688,
+                        "end": 2692
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "effect-operation",
+                    "operation": "console.println",
+                    "requirements": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "named",
+                            "name": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "failure": {
+                      "kind": "named",
+                      "name": "ConsoleError",
+                      "arguments": []
+                    },
+                    "success": {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    },
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "line",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2718,
+                          "end": 2722
+                        }
+                      }
+                    ],
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2710,
+                      "end": 2722
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2688,
+                    "end": 2722
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2688,
+                "end": 2722
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2688,
+              "end": 2722
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/big-int-apis::exercise",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2705,
+                  "end": 2707
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2696,
+              "end": 2707
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Iterable",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Iterable"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 2684,
+          "end": 2724
+        }
+      }
+    }
+  ]
+}

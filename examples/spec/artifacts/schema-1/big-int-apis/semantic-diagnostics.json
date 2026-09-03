@@ -1,0 +1,1927 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 351,
+        "end": 355
+      },
+      "related": [
+        {
+          "message": "no Show<bigints.BigIntParseError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 239,
+            "end": 390
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Show<bigints.BigIntParseError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 239,
+            "end": 390
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 509,
+        "end": 513
+      },
+      "related": [
+        {
+          "message": "no Show<bigints.BigIntDivisionError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 392,
+            "end": 563
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Show<bigints.BigIntDivisionError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 392,
+            "end": 563
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 676,
+        "end": 680
+      },
+      "related": [
+        {
+          "message": "no Show<bigints.BigIntPowerError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 565,
+            "end": 730
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Show<bigints.BigIntPowerError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 565,
+            "end": 730
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 850,
+        "end": 854
+      },
+      "related": [
+        {
+          "message": "no Show<bigints.BigIntConversionError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 732,
+            "end": 894
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Show<bigints.BigIntConversionError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 732,
+            "end": 894
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d5",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 956,
+        "end": 963
+      },
+      "related": [
+        {
+          "message": "no Ord instance matches the inferred call arguments",
+          "primary": {
+            "start": 896,
+            "end": 1037
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Ord instance matches the inferred call arguments",
+          "primary": {
+            "start": 896,
+            "end": 1037
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d6",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 1430,
+        "end": 1450
+      },
+      "related": [
+        {
+          "message": "no Show<unknown> instance matches the inferred call arguments",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Show<unknown> instance matches the inferred call arguments",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d7",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 109,
+        "end": 133
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 77,
+            "end": 237
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 77,
+            "end": 237
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d8",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 135,
+        "end": 141
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 77,
+            "end": 237
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 77,
+            "end": 237
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d9",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 146,
+        "end": 152
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 77,
+            "end": 237
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 77,
+            "end": 237
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d10",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 191,
+        "end": 206
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 77,
+            "end": 237
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 77,
+            "end": 237
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d11",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 270,
+        "end": 294
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 239,
+            "end": 390
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 239,
+            "end": 390
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d12",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 425,
+        "end": 452
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 392,
+            "end": 563
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 392,
+            "end": 563
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d13",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 454,
+        "end": 460
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 392,
+            "end": 563
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 392,
+            "end": 563
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d14",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 539,
+        "end": 553
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 392,
+            "end": 563
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 392,
+            "end": 563
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d15",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 595,
+        "end": 619
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 565,
+            "end": 730
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 565,
+            "end": 730
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d16",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 621,
+        "end": 627
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 565,
+            "end": 730
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 565,
+            "end": 730
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d17",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 706,
+        "end": 720
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 565,
+            "end": 730
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 565,
+            "end": 730
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d18",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 767,
+        "end": 796
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 732,
+            "end": 894
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 732,
+            "end": 894
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d19",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 914,
+        "end": 920
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 896,
+            "end": 1037
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 896,
+            "end": 1037
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d20",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 931,
+        "end": 937
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 896,
+            "end": 1037
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 896,
+            "end": 1037
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d21",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1104,
+        "end": 1117
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d22",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1190,
+        "end": 1208
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d23",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1265,
+        "end": 1280
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d24",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1296,
+        "end": 1311
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d25",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1331,
+        "end": 1346
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d26",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1374,
+        "end": 1389
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d27",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1394,
+        "end": 1409
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d28",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1430,
+        "end": 1444
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d29",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1471,
+        "end": 1485
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d30",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1532,
+        "end": 1551
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d31",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1581,
+        "end": 1595
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d32",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1619,
+        "end": 1633
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d33",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1673,
+        "end": 1694
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d34",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1731,
+        "end": 1755
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d35",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1792,
+        "end": 1813
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d36",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1815,
+        "end": 1830
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d37",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1861,
+        "end": 1875
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d38",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1907,
+        "end": 1927
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d39",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1978,
+        "end": 1991
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d40",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 1993,
+        "end": 2008
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d41",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2037,
+        "end": 2050
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d42",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2087,
+        "end": 2100
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d43",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2116,
+        "end": 2129
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d44",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2147,
+        "end": 2160
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d45",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2190,
+        "end": 2204
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d46",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2206,
+        "end": 2217
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d47",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2233,
+        "end": 2245
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d48",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2392,
+        "end": 2406
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d49",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2422,
+        "end": 2436
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d50",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2470,
+        "end": 2498
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d51",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2502,
+        "end": 2530
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d52",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2536,
+        "end": 2566
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d53",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 2575,
+        "end": 2605
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 1039,
+            "end": 2619
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

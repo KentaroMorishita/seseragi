@@ -102,6 +102,11 @@ pub enum PreludeSpecialInstanceDispatch {
 enum PreludeSpecialInstanceHead {
     Value(&'static str),
     Homogeneous3(&'static str),
+    ExternalArithmetic3 {
+        type_name: &'static str,
+        canonical: &'static str,
+        int_exponent: bool,
+    },
     Collection {
         constructor: &'static str,
         canonical: Option<&'static str>,
@@ -449,6 +454,139 @@ const fn method(
 }
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "BigInt",
+        type_canonical: Some("std/big-int::BigInt"),
+        type_arity: 0,
+        identity: "std/big-int::Eq",
+    },
+    PreludeStandardInstance {
+        trait_name: "Ord",
+        type_name: "BigInt",
+        type_canonical: Some("std/big-int::BigInt"),
+        type_arity: 0,
+        identity: "std/big-int::Ord",
+    },
+    PreludeStandardInstance {
+        trait_name: "Hash",
+        type_name: "BigInt",
+        type_canonical: Some("std/big-int::BigInt"),
+        type_arity: 0,
+        identity: "std/big-int::Hash",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "BigInt",
+        type_canonical: Some("std/big-int::BigInt"),
+        type_arity: 0,
+        identity: "Show<std/big-int::BigInt>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "BigInt",
+        type_canonical: Some("std/big-int::BigInt"),
+        type_arity: 0,
+        identity: "Debug<std/big-int::BigInt>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Zero",
+        type_name: "BigInt",
+        type_canonical: Some("std/big-int::BigInt"),
+        type_arity: 0,
+        identity: "std/big-int::Zero",
+    },
+    PreludeStandardInstance {
+        trait_name: "One",
+        type_name: "BigInt",
+        type_canonical: Some("std/big-int::BigInt"),
+        type_arity: 0,
+        identity: "std/big-int::One",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "BigIntParseError",
+        type_canonical: Some("std/big-int::BigIntParseError"),
+        type_arity: 0,
+        identity: "Eq<std/big-int::BigIntParseError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "BigIntParseError",
+        type_canonical: Some("std/big-int::BigIntParseError"),
+        type_arity: 0,
+        identity: "Show<std/big-int::BigIntParseError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "BigIntParseError",
+        type_canonical: Some("std/big-int::BigIntParseError"),
+        type_arity: 0,
+        identity: "Debug<std/big-int::BigIntParseError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "BigIntDivisionError",
+        type_canonical: Some("std/big-int::BigIntDivisionError"),
+        type_arity: 0,
+        identity: "Eq<std/big-int::BigIntDivisionError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "BigIntDivisionError",
+        type_canonical: Some("std/big-int::BigIntDivisionError"),
+        type_arity: 0,
+        identity: "Show<std/big-int::BigIntDivisionError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "BigIntDivisionError",
+        type_canonical: Some("std/big-int::BigIntDivisionError"),
+        type_arity: 0,
+        identity: "Debug<std/big-int::BigIntDivisionError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "BigIntPowerError",
+        type_canonical: Some("std/big-int::BigIntPowerError"),
+        type_arity: 0,
+        identity: "Eq<std/big-int::BigIntPowerError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "BigIntPowerError",
+        type_canonical: Some("std/big-int::BigIntPowerError"),
+        type_arity: 0,
+        identity: "Show<std/big-int::BigIntPowerError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "BigIntPowerError",
+        type_canonical: Some("std/big-int::BigIntPowerError"),
+        type_arity: 0,
+        identity: "Debug<std/big-int::BigIntPowerError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "BigIntConversionError",
+        type_canonical: Some("std/big-int::BigIntConversionError"),
+        type_arity: 0,
+        identity: "Eq<std/big-int::BigIntConversionError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "BigIntConversionError",
+        type_canonical: Some("std/big-int::BigIntConversionError"),
+        type_arity: 0,
+        identity: "Show<std/big-int::BigIntConversionError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "BigIntConversionError",
+        type_canonical: Some("std/big-int::BigIntConversionError"),
+        type_arity: 0,
+        identity: "Debug<std/big-int::BigIntConversionError>",
+    },
     PreludeStandardInstance {
         trait_name: "Eq",
         type_name: "TextSliceError",
@@ -2238,6 +2376,54 @@ pub(crate) const SPECIAL_STANDARD_INSTANCES: &[PreludeSpecialInstance] = &[
         "std/float::Pow",
         "Float",
     ),
+    special_external_arithmetic(
+        "Add",
+        &["BigInt", "BigInt", "BigInt"],
+        "std/big-int::Add",
+        "BigInt",
+        "std/big-int::BigInt",
+        false,
+    ),
+    special_external_arithmetic(
+        "Sub",
+        &["BigInt", "BigInt", "BigInt"],
+        "std/big-int::Sub",
+        "BigInt",
+        "std/big-int::BigInt",
+        false,
+    ),
+    special_external_arithmetic(
+        "Mul",
+        &["BigInt", "BigInt", "BigInt"],
+        "std/big-int::Mul",
+        "BigInt",
+        "std/big-int::BigInt",
+        false,
+    ),
+    special_external_arithmetic(
+        "Div",
+        &["BigInt", "BigInt", "BigInt"],
+        "std/big-int::Div",
+        "BigInt",
+        "std/big-int::BigInt",
+        false,
+    ),
+    special_external_arithmetic(
+        "Rem",
+        &["BigInt", "BigInt", "BigInt"],
+        "std/big-int::Rem",
+        "BigInt",
+        "std/big-int::BigInt",
+        false,
+    ),
+    special_external_arithmetic(
+        "Pow",
+        &["BigInt", "Int", "BigInt"],
+        "std/big-int::Pow",
+        "BigInt",
+        "std/big-int::BigInt",
+        true,
+    ),
     special_collection(
         "Iterable",
         &["Array<A>", "A"],
@@ -2370,6 +2556,29 @@ const fn special_homogeneous(
         arguments,
         dispatch: PreludeSpecialInstanceDispatch::OperatorAbi,
         head: PreludeSpecialInstanceHead::Homogeneous3(type_name),
+    }
+}
+
+const fn special_external_arithmetic(
+    trait_name: &'static str,
+    arguments: &'static [&'static str],
+    identity: &'static str,
+    type_name: &'static str,
+    canonical: &'static str,
+    int_exponent: bool,
+) -> PreludeSpecialInstance {
+    PreludeSpecialInstance {
+        type_name,
+        identity,
+        strict_equality_compatible: false,
+        trait_name,
+        arguments,
+        dispatch: PreludeSpecialInstanceDispatch::Dictionary,
+        head: PreludeSpecialInstanceHead::ExternalArithmetic3 {
+            type_name,
+            canonical,
+            int_exponent,
+        },
     }
 }
 
@@ -3084,6 +3293,26 @@ pub(crate) fn special_standard_instance_constraints() -> Vec<TypedConstraint> {
                 PreludeSpecialInstanceHead::Homogeneous3(type_name) => {
                     vec![named(type_name), named(type_name), named(type_name)]
                 }
+                PreludeSpecialInstanceHead::ExternalArithmetic3 {
+                    type_name,
+                    canonical,
+                    int_exponent,
+                } => {
+                    let value = TypedType::ExternalNamed {
+                        name: type_name.to_owned(),
+                        canonical: canonical.to_owned(),
+                        arguments: Vec::new(),
+                    };
+                    vec![
+                        value.clone(),
+                        if int_exponent {
+                            named("Int")
+                        } else {
+                            value.clone()
+                        },
+                        value,
+                    ]
+                }
                 PreludeSpecialInstanceHead::Collection {
                     constructor,
                     canonical,
@@ -3178,6 +3407,22 @@ pub(crate) fn special_standard_instance(
                     .all(|value| prelude_named_type_is(value, expected))
             }
             (
+                PreludeSpecialInstanceHead::ExternalArithmetic3 {
+                    canonical,
+                    int_exponent,
+                    ..
+                },
+                [left, right, output],
+            ) => {
+                external_named_type_is(left, canonical)
+                    && external_named_type_is(output, canonical)
+                    && if int_exponent {
+                        prelude_named_type_is(right, "Int")
+                    } else {
+                        external_named_type_is(right, canonical)
+                    }
+            }
+            (
                 PreludeSpecialInstanceHead::Collection {
                     constructor,
                     canonical,
@@ -3206,6 +3451,26 @@ pub(crate) fn special_homogeneous_instance_heads(trait_name: &str) -> Vec<[Typed
                     arguments: Vec::new(),
                 };
                 Some([type_ref.clone(), type_ref.clone(), type_ref])
+            }
+            PreludeSpecialInstanceHead::ExternalArithmetic3 {
+                type_name,
+                canonical,
+                int_exponent,
+            } if instance.trait_name == trait_name => {
+                let type_ref = TypedType::ExternalNamed {
+                    name: type_name.to_owned(),
+                    canonical: canonical.to_owned(),
+                    arguments: Vec::new(),
+                };
+                Some([
+                    type_ref.clone(),
+                    if int_exponent {
+                        named("Int")
+                    } else {
+                        type_ref.clone()
+                    },
+                    type_ref,
+                ])
             }
             _ => None,
         })
@@ -3269,6 +3534,11 @@ fn collection_type_arguments<'a>(
 fn prelude_named_type_is(type_ref: &TypedType, expected: &str) -> bool {
     matches!(type_ref, TypedType::Named { name, arguments }
         if name == expected && arguments.is_empty())
+}
+
+fn external_named_type_is(type_ref: &TypedType, expected: &str) -> bool {
+    matches!(type_ref, TypedType::ExternalNamed { canonical, arguments, .. }
+        if canonical == expected && arguments.is_empty())
 }
 
 pub(crate) fn overlapping_standard_instance(
@@ -3687,8 +3957,15 @@ mod tests {
     #[test]
     fn keeps_special_instance_heads_and_dispatch_in_the_registry() {
         let add_heads = special_homogeneous_instance_heads("Add");
-        assert_eq!(add_heads.len(), 3);
+        assert_eq!(add_heads.len(), 4);
         assert!(add_heads.contains(&[named("String"), named("String"), named("String")]));
+        let big_int = external("std/big-int", "BigInt");
+        assert!(add_heads.contains(&[big_int.clone(), big_int.clone(), big_int.clone()]));
+        assert!(special_homogeneous_instance_heads("Pow").contains(&[
+            big_int.clone(),
+            named("Int"),
+            big_int,
+        ]));
 
         let array = applied("Array", named("String"));
         assert_eq!(
