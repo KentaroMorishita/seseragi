@@ -487,7 +487,7 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 200);
+        assert_eq!(surface.instances.len(), 213);
         assert_eq!(surface.builtin_instances.len(), 35);
         for identity in [
             "std/int::Hash",
@@ -526,7 +526,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 200 + 35 + 10);
+        assert_eq!(implemented.len(), 213 + 35 + 10);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()

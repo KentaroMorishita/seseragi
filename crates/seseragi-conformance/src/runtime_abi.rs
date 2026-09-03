@@ -95,6 +95,13 @@ fn check_runtime_abi_envelope(abi: &serde_json::Value) -> Result<(), String> {
         return Err("runtime ABI major must be 1".to_owned());
     }
     if abi
+        .pointer("/unicodeVersion")
+        .and_then(|value| value.as_str())
+        != Some(seseragi_syntax::unicode::UNICODE_VERSION)
+    {
+        return Err("runtime ABI Unicode version differs from the compiler".to_owned());
+    }
+    if abi
         .pointer("/targetFamily")
         .and_then(|value| value.as_str())
         != Some("typescript")

@@ -1,4 +1,6 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export const apply = <A, B,>(f: (argument: A) => B) => (value: A) => f(value)
 export const increment = (value: number) => _ssrg_int_add(value, 1)

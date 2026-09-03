@@ -705,14 +705,19 @@ orders
 Stringを扱う最低APIは次です。
 
 ```text
-isEmpty, lengthScalars, lengthBytes
-concat, join, split, lines, words
-trim, trimStart, trimEnd
-startsWith, endsWith, contains
-replace, replaceAll
-toLower, toUpper, caseFold
-sliceScalars, scalarAt
-encodeUtf8, decodeUtf8
+isEmpty : String -> Bool
+lengthScalars, lengthBytes : String -> Int
+concat : Array<String> -> String
+join : String -> Array<String> -> String
+split : String -> String -> Array<String>
+lines, words : String -> Array<String>
+trim, trimStart, trimEnd : String -> String
+startsWith, endsWith, contains : String -> String -> Bool
+replace, replaceAll : String -> String -> String -> String
+toLower, toUpper, caseFold : String -> String
+scalarAt : Int -> String -> Maybe<Char>
+encodeUtf8 : String -> Bytes
+decodeUtf8 : Bytes -> Either<Utf8DecodeError, String>
 ```
 
 数値のparseはtext操作ではないため、`std/int.parse` と `std/float.parse` を使います。
@@ -739,12 +744,35 @@ Unicode scalar、UTF-8 byte、grapheme clusterを混同しません。grapheme�
 `words` はUnicode whitespaceで分割して空要素を除きます。punctuationは削除しません。
 `caseFold` はlocale非依存のUnicode default case foldingです。
 
+`trim` / `trimStart` / `trimEnd`も同じUnicode White_Spaceを使い、U+FEFFを除去しません。
+`toLower` / `toUpper`はlocale非依存のUnicode default full casingです。lowercaseのFinal_Sigma
+contextを含み、Turkish / Lithuanianなどのlocale固有規則は適用しません。
+
+`join`の第一引数はseparatorです。検索・split・replaceはliteral Stringを使い、対象textを最後に取ります。
+`replace` / `replaceAll`の引数順はneedle、replacement、対象textです。replacement内の`$`等を展開しません。
+`split`は空要素を保持し、空separatorではUnicode scalarごとに分割します（空Stringなら空配列）。
+`replaceAll`は左から非重複に置換します。空needleのreplaceは先頭へ一度挿入し、replaceAllは先頭・scalar間・
+末尾へ挿入します。`lines`はCRLFを一つの区切りとして扱い、CR / LF / NEL / LS / PSでも分割します。
+内部の空行は保持し、末尾の区切りに対応する余分な空要素は返しません。空Stringのlinesは空配列です。
+
+```seseragi
+type TextSliceError deriving Eq, Show =
+  | InvalidScalarRange { start: Int, end: Int, length: Int }
+
+fn sliceScalars start: Int -> end: Int -> text: String
+  -> Either<TextSliceError, String>
+```
+
+sliceScalarsは0-based・end-exclusiveです。`0 <= start <= end <= lengthScalars text`を満たさなければ、
+元のstart / endと実際のscalar数を含むInvalidScalarRangeを返します。indexを暗黙clampしません。
+
 ```text
 words    : String -> Array<String>
 caseFold : String -> String
 ```
 
-`isEmpty`と`lengthBytes`はO(1)です。`lengthScalars`、`scalarAt`、`sliceScalars`はUTF-8 byte数に対して
+`isEmpty`はO(1)です。Stringの既存primitive ABIを維持し、`lengthBytes`はUTF-8 byte数に対してO(n)です。
+`lengthScalars`、`scalarAt`、`sliceScalars`はUTF-8 byte数に対して
 O(n)を許し、scalar indexのrandom accessをO(1)とは保証しません。`concat`、`join`、case変換、trim、
 split、lines、words、replaceは入力と出力のbyte数に対して線形です。`startsWith`、`endsWith`、
 `contains`は入力と検索textのbyte数に対してO(n + m)です。
@@ -1287,6 +1315,12 @@ White_Space / General_Category tableを使います。simpleCaseFoldは一scalar
 folding、fullCaseFoldは複数scalarへの展開を含むdefault full case foldingです。どちらもlocale非依存で、
 `std/text.caseFold` はfullCaseFoldと同じ結果を返します。versionはcompiler、runtime、formatter、LSPが
 artifact metadataで共有する `major.minor.patch` のUnicode data versionです。
+
+現在のcanonical data versionは`runtime/unicode/manifest.json`で固定し、Unicode 17.0.0を使います。
+compilerのXID / normalization依存とruntimeのUCD tablesは同じversionを検証します。生成moduleの
+`runtime.unicodeVersion`と各module先頭のguardが要求版を保持し、異なるUnicode dataを持つruntimeは
+source initializerを実行する前にABI mismatchとして拒否します。UnicodeGeneralCategoryのOrdは上記の
+constructor宣言順です。公開error / enumには通常のDebug辞書もあり、構造化したpayloadを失いません。
 
 ## 10.9 `std/json` とdecoder
 

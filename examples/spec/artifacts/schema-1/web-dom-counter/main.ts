@@ -1,6 +1,8 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { style as _ssrg_html_style, button as _ssrg_html_button, main as _ssrg_html_main, section as _ssrg_html_section, div as _ssrg_html_div, span as _ssrg_html_span, h1 as _ssrg_html_h1, p as _ssrg_html_p, type Style as Style, type Html as Html } from "@seseragi/runtime/html"
 import { app as _ssrg_dom_app, type Dom as Dom } from "@seseragi/runtime/dom"
 import { type Effect as Effect } from "@seseragi/runtime/effect"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Mode =
   | { readonly tag: "Ready" }

@@ -1,0 +1,698 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-unicode::operations",
+  "externalTypeBindings": [
+    {
+      "spelling": "NormalizationForm",
+      "canonical": "std/text/unicode::NormalizationForm",
+      "provider": {
+        "module": "std/text/unicode",
+        "export": "NormalizationForm"
+      }
+    },
+    {
+      "spelling": "text.TextSliceError",
+      "canonical": "std/text::TextSliceError",
+      "provider": {
+        "module": "std/text",
+        "export": "TextSliceError"
+      }
+    },
+    {
+      "spelling": "graphemes.GraphemeSliceError",
+      "canonical": "std/text/grapheme::GraphemeSliceError",
+      "provider": {
+        "module": "std/text/grapheme",
+        "export": "GraphemeSliceError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/text",
+      "module": "std/text",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 0,
+        "end": 32
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "TextSliceError",
+          "local": "text.TextSliceError",
+          "canonical": "std/text::TextSliceError",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "sliceScalars",
+          "local": "text.sliceScalars",
+          "canonical": "std/text::sliceScalars",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/char",
+      "module": "std/char",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 33,
+        "end": 65
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "fromCodePoint",
+          "local": "char.fromCodePoint",
+          "canonical": "std/char::fromCodePoint",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 45,
+            "end": 49
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "codePoint",
+          "local": "char.codePoint",
+          "canonical": "std/char::codePoint",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 45,
+            "end": 49
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/text/unicode",
+      "module": "std/text/unicode",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 66,
+        "end": 109
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "NFC",
+          "local": "unicode.NFC",
+          "canonical": "std/text/unicode::NFC",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 78,
+            "end": 85
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "normalize",
+          "local": "unicode.normalize",
+          "canonical": "std/text/unicode::normalize",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 78,
+            "end": 85
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/text/grapheme",
+      "module": "std/text/grapheme",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 110,
+        "end": 156
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "GraphemeSliceError",
+          "local": "graphemes.GraphemeSliceError",
+          "canonical": "std/text/grapheme::GraphemeSliceError",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 122,
+            "end": 131
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "slice",
+          "local": "graphemes.slice",
+          "canonical": "std/text/grapheme::slice",
+          "origin": {
+            "source": "operations.ssrg",
+            "start": 122,
+            "end": 131
+          }
+        }
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "symbol": "fixture/imported-unicode::operations::canonicalize",
+      "visibility": "private",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 158,
+        "end": 224
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/text/unicode::normalize",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "std/text/unicode::NFC",
+            "type": {
+              "kind": "external-named",
+              "name": "NormalizationForm",
+              "canonical": "std/text/unicode::NormalizationForm",
+              "arguments": []
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 213,
+              "end": 224
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 195,
+          "end": 224
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::takeScalars",
+      "visibility": "private",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 225,
+        "end": 311
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/text::sliceScalars",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "1",
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 308,
+              "end": 309
+            }
+          },
+          {
+            "kind": "integer",
+            "value": "3",
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 310,
+              "end": 311
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "text.TextSliceError",
+                "canonical": "std/text::TextSliceError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 290,
+          "end": 311
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::takeGraphemes",
+      "visibility": "private",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 312,
+        "end": 409
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/text/grapheme::slice",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "1",
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 406,
+              "end": 407
+            }
+          },
+          {
+            "kind": "integer",
+            "value": "3",
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 408,
+              "end": 409
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "graphemes.GraphemeSliceError",
+                "canonical": "std/text/grapheme::GraphemeSliceError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 390,
+          "end": 409
+        }
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-unicode::operations::normalize",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 411,
+        "end": 472
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "canonicalize",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 467,
+              "end": 472
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 454,
+          "end": 472
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::scalarSlice",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 473,
+        "end": 566
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "takeScalars",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 561,
+              "end": 566
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "text.TextSliceError",
+              "canonical": "std/text::TextSliceError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 549,
+          "end": 566
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::graphemeSlice",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 567,
+        "end": 673
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "takeGraphemes",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 668,
+              "end": 673
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "graphemes.GraphemeSliceError",
+              "canonical": "std/text/grapheme::GraphemeSliceError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 654,
+          "end": 673
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::character",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 674,
+        "end": 743
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/char::fromCodePoint",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 738,
+              "end": 743
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Char",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 719,
+          "end": 743
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::point",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 744,
+        "end": 798
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/char::codePoint",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Char",
+              "arguments": []
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 793,
+              "end": 798
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 778,
+          "end": 798
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::inspectError",
+      "visibility": "public",
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 799,
+        "end": 869
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "text.TextSliceError",
+            "canonical": "std/text::TextSliceError",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Debug::debug",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "text.TextSliceError",
+              "canonical": "std/text::TextSliceError",
+              "arguments": []
+            },
+            "origin": {
+              "source": "operations.ssrg",
+              "start": 864,
+              "end": 869
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Debug",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "text.TextSliceError",
+                  "canonical": "std/text::TextSliceError",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "Debug<std/text::TextSliceError>"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Debug",
+          "method": "debug"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "operations.ssrg",
+          "start": 858,
+          "end": 869
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+A👍🏽é
+Right 👍🏽
+Right 👍🏽é
+Just 👍 / Just 128077
+InvalidScalarRange { start: -1, end: 2, length: 5 }

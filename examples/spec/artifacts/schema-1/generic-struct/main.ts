@@ -1,5 +1,7 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 declare const __ssrg$brand$Box: unique symbol;
 export type Box<A> = {

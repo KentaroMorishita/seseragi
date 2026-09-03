@@ -1,6 +1,8 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { exclusive as _ssrg_range_exclusive, inclusive as _ssrg_range_inclusive, reduce as _ssrg_range_reduce } from "@seseragi/runtime/range"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const exclusiveValues = (unit: undefined) => _ssrg_range_exclusive(1, 10)
 const inclusiveValues = (unit: undefined) => _ssrg_range_inclusive(1, 10)

@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { arrayReducible as _ssrg_array_reducible, collectMap as _ssrg_array_comprehend, append as _ssrg_array_append, concat as _ssrg_array_concat, reverse as _ssrg_array_reverse } from "@seseragi/runtime/array"
 import { join as _ssrg_collection_join } from "@seseragi/runtime/collection"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { collectMap as _ssrg_list_comprehend, fromArray as _ssrg_list_from_array, append as _ssrg_list_append, concat as _ssrg_list_concat, reverse as _ssrg_list_reverse, type List as List } from "@seseragi/runtime/list"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const showArray = (values: ReadonlyArray<number>) => _ssrg_collection_join(_ssrg_array_reducible, ",", _ssrg_array_comprehend(values, (value) => true, (value) => _ssrg_show_intShow["show"](value)))
 const showList = (values: List<number>) => _ssrg_collection_join(_ssrg_array_reducible, ",", _ssrg_list_comprehend(values, (value) => true, (value) => _ssrg_show_intShow["show"](value)))

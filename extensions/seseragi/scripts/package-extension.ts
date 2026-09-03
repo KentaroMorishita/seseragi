@@ -66,6 +66,10 @@ copyFileSync(
   path.join(repositoryRoot, "LICENSE.txt"),
   path.join(packageRoot, "LICENSE.txt")
 )
+copyFileSync(
+  path.join(repositoryRoot, "runtime/unicode/LICENSE"),
+  path.join(packageRoot, "UNICODE-LICENSE")
+)
 
 run(["bun", "run", "build"])
 const output = path.resolve(
@@ -81,16 +85,7 @@ try {
   // GitHub renders the canonical brand. The Extensions view already displays
   // the extension icon, so omit the duplicate hero from the packaged README.
   writeFileSync(readmePath, packagedReadme(repositoryReadme))
-  run([
-    "bun",
-    "run",
-    "vsce",
-    "package",
-    "--target",
-    target,
-    "--out",
-    output,
-  ])
+  run(["bun", "run", "vsce", "package", "--target", target, "--out", output])
 } finally {
   writeFileSync(readmePath, repositoryReadme)
 }

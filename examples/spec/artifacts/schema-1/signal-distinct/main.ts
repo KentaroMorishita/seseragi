@@ -1,9 +1,11 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { remainder as _ssrg_int_remainder, add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { flatMap as _ssrg_effect_flatMap, type Effect as Effect } from "@seseragi/runtime/effect"
 import { make as _ssrg_signal_make, distinct as _ssrg_signal_distinct, subscribe as _ssrg_signal_subscribe, update as _ssrg_signal_update, transaction as _ssrg_signal_transaction, planSet as _ssrg_signal_planSet, set as _ssrg_signal_set, unsubscribe as _ssrg_signal_unsubscribe, read as _ssrg_signal_read, type MutableSignal as MutableSignal, type Signal as Signal, type Subscription as Subscription, type SignalChange as SignalChange } from "@seseragi/runtime/signal"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 declare const __ssrg$brand$Reading: unique symbol;
 type Reading = {

@@ -209,7 +209,10 @@ fn validate_host_packages(
     let mut seen = BTreeSet::new();
     for package in packages {
         if package.name.is_empty()
-            || package.name.chars().any(char::is_whitespace)
+            || package
+                .name
+                .chars()
+                .any(seseragi_syntax::unicode::is_whitespace)
             || package.version.trim().is_empty()
             || semver::VersionReq::parse(&package.version).is_err()
         {

@@ -1,6 +1,6 @@
 {
   "name": "seseragi",
-  "version": "0.49.0",
+  "version": "0.50.0",
   "private": true,
   "workspaces": [
     "runtime/ts"
@@ -27,6 +27,8 @@
     "postgres:bundle:check": "bun scripts/postgres-provider-bundle.ts",
     "timezones:bundle": "bun scripts/timezone-bundle.ts --write",
     "timezones:bundle:check": "bun scripts/timezone-bundle.ts",
+    "unicode:generate": "bun scripts/generate-unicode.ts",
+    "unicode:check": "bun scripts/generate-unicode.ts --check",
     "format": "./scripts/format.sh",
     "release:info": "bun scripts/release-contract.ts info",
     "release:sync": "bun scripts/release-contract.ts sync",

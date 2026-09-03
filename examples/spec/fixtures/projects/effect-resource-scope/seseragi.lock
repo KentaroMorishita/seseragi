@@ -1,7 +1,7 @@
 schema = 1
 language = "0.1.0"
 standard_library = "0.1.0"
-unicode = "16.0.0"
+unicode = "17.0.0"
 timezone_database = "2025b"
 root = "fixture/effect-resource-scope@0.0.0#workspace:."
 

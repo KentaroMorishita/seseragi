@@ -17,6 +17,7 @@ target/
 .vscode-test/
 apps/playground/test-results/
 extensions/seseragi/LICENSE.txt
+extensions/seseragi/UNICODE-LICENSE
 extensions/seseragi/server/
 extensions/seseragi-legacy/LICENSE.txt
 *.tsbuildinfo

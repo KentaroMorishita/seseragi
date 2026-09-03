@@ -1,4 +1,6 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { add as _ssrg_int_add, subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export const localFunctionWorks = (unit: undefined) => (() => { const offset: number = 2; return (() => { const identity = <A,>(value: A) => value; return (() => { const countdown = (current: number) => { const $ssrg$tail = Symbol(); while (true) { const $ssrg$result = _ssrg_int_eq_dictionary["eq"](current)(0) ? identity(_ssrg_int_add(40, offset)) : ({ [$ssrg$tail]: [_ssrg_int_subtract(current, 1)] } as never); const $ssrg$tailResult: unknown = $ssrg$result; if (typeof $ssrg$tailResult === "object" && $ssrg$tailResult !== null && $ssrg$tail in $ssrg$tailResult) { const $ssrg$arguments = ($ssrg$tailResult as { readonly [$ssrg$tail]: readonly [number] })[$ssrg$tail]; current = $ssrg$arguments[0]; continue; } return $ssrg$result; } }; return _ssrg_int_eq_dictionary["eq"](countdown(3))(42); })(); })(); })()

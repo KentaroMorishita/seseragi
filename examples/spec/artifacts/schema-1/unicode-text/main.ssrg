@@ -1,0 +1,45 @@
+import * as text from "std/text"
+import * as char from "std/char"
+import * as graphemes from "std/text/grapheme"
+import * as unicode from "std/text/unicode"
+import * as arrays from "std/array"
+
+let source = "A👍🏽e\u{0301}"
+let normalizeNfc: String -> String = unicode.normalize unicode.NFC
+let scalarSlice: String -> Either<text.TextSliceError, String> = text.sliceScalars 1 3
+let graphemeSlice: String -> Either<graphemes.GraphemeSliceError, String> =
+  graphemes.slice 1 3
+
+fn same<A> a: A -> b: A -> Bool where Eq<A> = a == b
+fn order<A> a: A -> b: A -> String where Ord<A> = match compare a b {
+  Less -> "Less"
+  Equal -> "Equal"
+  Greater -> "Greater"
+}
+fn inspect<A> value: A -> String where Debug<A> = debug value
+
+pub effect fn main = do {
+  println `version: ${unicode.version ()}`
+  println `units: ${text.lengthScalars source} / ${text.lengthBytes source} / ${graphemes.length source}`
+  println `scalar: ${text.scalarAt 1 source} / ${text.scalarAt (-1) source}`
+  println `clusters: ${graphemes.clusters source} / ${graphemes.byteBoundaries source}`
+  println `at: ${graphemes.at 1 source} / ${graphemes.at 3 source}`
+  println `slice: ${scalarSlice source} / ${graphemeSlice source}`
+  println `ranges: ${text.sliceScalars (-1) 2 source} / ${graphemes.slice 2 1 source}`
+  println `empty: ${text.isEmpty ""} / ${graphemes.byteBoundaries ""} / ${graphemes.slice 0 0 ""}`
+  println `normalize: ${normalizeNfc source} / ${unicode.normalize unicode.NFD "é"} / ${unicode.normalize unicode.NFKC "ﬃ①"} / ${unicode.normalize unicode.NFKD "①"}`
+  println `normalized: ${unicode.isNormalized unicode.NFC source} / ${unicode.isNormalized unicode.NFC (normalizeNfc source)}`
+  println `fold: ${map unicode.simpleCaseFold (text.scalarAt 0 "Σ")} / ${unicode.fullCaseFold "Straße İ"} / ${text.caseFold "Straße İ"}`
+  println `casing: ${text.toLower "ΟΣ ΟΣΑ İ"} / ${text.toUpper "Straße ﬃ"}`
+  println `properties: ${map unicode.generalCategory (text.scalarAt 0 "A")} / ${map unicode.isAlphabetic (text.scalarAt 0 "\u{0345}")} / ${map unicode.isWhitespace (text.scalarAt 0 "\u{0085}")} / ${map unicode.isWhitespace (text.scalarAt 0 "\u{feff}")} / ${map unicode.isDecimalDigit (text.scalarAt 0 "٣")} / ${map unicode.isMark (text.scalarAt 0 "\u{0301}")}`
+  println `char: ${map char.codePoint (text.scalarAt 1 source)} / ${char.fromCodePoint 128077} / ${char.fromCodePoint 55296} / ${map char.toString (text.scalarAt 1 source)}`
+  println `trim: [${text.trim "\u{0085} a \u{2003}"}] / [${text.trimStart "  a  "}] / [${text.trimEnd "  a  "}]`
+  println `words: ${text.words "hello,\u{2003}世界!"} / ${text.lines "a\r\nb\u{2028}"}`
+  println `join: ${text.concat ["a", "👍"]} / ${text.join "/" ["a", "👍"]} / ${text.split "." "a..b."} / ${text.split "" "a👍"}`
+  println `search: ${text.startsWith "👍" "👍🏽"} / ${text.endsWith "🏽" "👍🏽"} / ${text.contains "e\u{0301}" source}`
+  println `replace: ${text.replace "aa" "$1" "aaaa"} / ${text.replaceAll "aa" "$&" "aaaaa"} / ${text.replaceAll "" "/" "a👍"}`
+  println `utf8: ${text.decodeUtf8 (text.encodeUtf8 "\u{feff}👍")} / ${text.decodeUtf8Lossy (text.encodeUtf8 source)}`
+  println `enums: ${same unicode.NFC unicode.NFD} / ${order unicode.UppercaseLetter unicode.LowercaseLetter} / ${arrays.sort [unicode.Unassigned, unicode.UppercaseLetter, unicode.Control]}`
+  println `errors: ${same (text.InvalidScalarRange { start: -1, end: 2, length: 5 }) (text.InvalidScalarRange { start: -1, end: 2, length: 5 })} / ${same (graphemes.InvalidGraphemeRange { start: 2, end: 1, length: 3 }) (graphemes.InvalidGraphemeRange { start: 2, end: 1, length: 4 })}`
+  println `debug: ${inspect unicode.NFC} / ${inspect unicode.UppercaseLetter} / ${inspect (text.InvalidScalarRange { start: -1, end: 2, length: 5 })} / ${inspect (graphemes.InvalidGraphemeRange { start: 2, end: 1, length: 3 })}`
+}

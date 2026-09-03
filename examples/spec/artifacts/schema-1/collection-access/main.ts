@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { fromArray as _ssrg_list_from_array, length as _ssrg_list_length, isEmpty as _ssrg_list_isEmpty, get as _ssrg_list_get, head as _ssrg_list_head, tail as _ssrg_list_tail, type List as List } from "@seseragi/runtime/list"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { length as _ssrg_array_length, isEmpty as _ssrg_array_isEmpty, get as _ssrg_array_get, head as _ssrg_array_head, tail as _ssrg_array_tail } from "@seseragi/runtime/array"
 import { subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const emptyArray = (unit: undefined) => [] as ReadonlyArray<number>
 const emptyList = (unit: undefined) => _ssrg_list_from_array([] as ReadonlyArray<number>)

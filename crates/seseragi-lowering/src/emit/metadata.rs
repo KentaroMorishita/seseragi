@@ -37,6 +37,7 @@ pub struct GeneratedInstance {
 pub struct GeneratedRuntime {
     pub identity: String,
     pub abi_major: u32,
+    pub unicode_version: String,
     pub requirements: Vec<String>,
 }
 
@@ -64,6 +65,7 @@ pub(super) fn generated_module_for(
         runtime: GeneratedRuntime {
             identity: "@seseragi/runtime".to_owned(),
             abi_major: 1,
+            unicode_version: seseragi_syntax::unicode::UNICODE_VERSION.to_owned(),
             requirements: module.runtime_requirements,
         },
         exports,

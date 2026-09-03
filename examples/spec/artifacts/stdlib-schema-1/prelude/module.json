@@ -1066,6 +1066,110 @@
     {
       "trait": "Eq",
       "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "TextSliceError",
+      "typeConstructorCanonical": "std/text::TextSliceError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/text::TextSliceError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "TextSliceError",
+      "typeConstructorCanonical": "std/text::TextSliceError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/text::TextSliceError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "TextSliceError",
+      "typeConstructorCanonical": "std/text::TextSliceError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/text::TextSliceError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "GraphemeSliceError",
+      "typeConstructorCanonical": "std/text/grapheme::GraphemeSliceError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/text/grapheme::GraphemeSliceError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "GraphemeSliceError",
+      "typeConstructorCanonical": "std/text/grapheme::GraphemeSliceError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/text/grapheme::GraphemeSliceError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "GraphemeSliceError",
+      "typeConstructorCanonical": "std/text/grapheme::GraphemeSliceError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/text/grapheme::GraphemeSliceError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "NormalizationForm",
+      "typeConstructorCanonical": "std/text/unicode::NormalizationForm",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/text/unicode::NormalizationForm>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "NormalizationForm",
+      "typeConstructorCanonical": "std/text/unicode::NormalizationForm",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/text/unicode::NormalizationForm>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "NormalizationForm",
+      "typeConstructorCanonical": "std/text/unicode::NormalizationForm",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/text/unicode::NormalizationForm>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "UnicodeGeneralCategory",
+      "typeConstructorCanonical": "std/text/unicode::UnicodeGeneralCategory",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/text/unicode::UnicodeGeneralCategory>"
+    },
+    {
+      "trait": "Ord",
+      "traitCanonical": "std/prelude::Ord",
+      "typeConstructor": "UnicodeGeneralCategory",
+      "typeConstructorCanonical": "std/text/unicode::UnicodeGeneralCategory",
+      "typeConstructorArity": 0,
+      "identity": "Ord<std/text/unicode::UnicodeGeneralCategory>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "UnicodeGeneralCategory",
+      "typeConstructorCanonical": "std/text/unicode::UnicodeGeneralCategory",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/text/unicode::UnicodeGeneralCategory>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "UnicodeGeneralCategory",
+      "typeConstructorCanonical": "std/text/unicode::UnicodeGeneralCategory",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/text/unicode::UnicodeGeneralCategory>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
       "typeConstructor": "Validation",
       "typeConstructorCanonical": "std/validation::Validation",
       "typeConstructorArity": 2,
@@ -3781,6 +3885,14 @@
       },
       {
         "trait": "Debug",
+        "head": "GraphemeSliceError",
+        "identity": "Debug<std/text/grapheme::GraphemeSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
         "head": "HtmlBuildError",
         "identity": "Debug<std/web/html::HtmlBuildError>",
         "status": "specified-and-implemented",
@@ -3865,6 +3977,14 @@
         "identity": "std/non-empty-list::Debug",
         "status": "specified-and-implemented",
         "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "NormalizationForm",
+        "identity": "Debug<std/text/unicode::NormalizationForm>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
         "spec": "9.11"
       },
       {
@@ -4013,6 +4133,14 @@
       },
       {
         "trait": "Debug",
+        "head": "TextSliceError",
+        "identity": "Debug<std/text::TextSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
         "head": "TimeZoneError",
         "identity": "Debug<std/time::TimeZoneError>",
         "status": "specified-and-implemented",
@@ -4025,6 +4153,14 @@
         "identity": "std/tuple::Debug",
         "status": "specified-and-implemented",
         "classification": "structural",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "UnicodeGeneralCategory",
+        "identity": "Debug<std/text/unicode::UnicodeGeneralCategory>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
         "spec": "9.11"
       },
       {
@@ -4155,6 +4291,14 @@
       },
       {
         "trait": "Eq",
+        "head": "GraphemeSliceError",
+        "identity": "Eq<std/text/grapheme::GraphemeSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
         "head": "Int",
         "identity": "std/int::Eq",
         "status": "specified-and-implemented",
@@ -4187,6 +4331,14 @@
       },
       {
         "trait": "Eq",
+        "head": "NormalizationForm",
+        "identity": "Eq<std/text/unicode::NormalizationForm>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
         "head": "Set",
         "identity": "std/set::Eq",
         "status": "specified-and-implemented",
@@ -4211,11 +4363,27 @@
       },
       {
         "trait": "Eq",
+        "head": "TextSliceError",
+        "identity": "Eq<std/text::TextSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
         "head": "Tuple<...>",
         "identity": "std/tuple::Eq",
         "status": "specified-and-implemented",
         "classification": "structural",
         "spec": "9.3"
+      },
+      {
+        "trait": "Eq",
+        "head": "UnicodeGeneralCategory",
+        "identity": "Eq<std/text/unicode::UnicodeGeneralCategory>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Eq",
@@ -5043,6 +5211,14 @@
       },
       {
         "trait": "Ord",
+        "head": "UnicodeGeneralCategory",
+        "identity": "Ord<std/text/unicode::UnicodeGeneralCategory>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Ord",
         "head": "Unit",
         "identity": "std/unit::Ord",
         "status": "specified-and-implemented",
@@ -5403,6 +5579,14 @@
       },
       {
         "trait": "Show",
+        "head": "GraphemeSliceError",
+        "identity": "Show<std/text/grapheme::GraphemeSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
         "head": "HtmlBuildError",
         "identity": "Show<std/web/html::HtmlBuildError>",
         "status": "specified-and-implemented",
@@ -5495,6 +5679,14 @@
         "identity": "std/non-empty-list::Show",
         "status": "specified-and-implemented",
         "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "NormalizationForm",
+        "identity": "Show<std/text/unicode::NormalizationForm>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
         "spec": "9.11"
       },
       {
@@ -5643,6 +5835,14 @@
       },
       {
         "trait": "Show",
+        "head": "TextSliceError",
+        "identity": "Show<std/text::TextSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
         "head": "TimeZoneError",
         "identity": "Show<std/time::TimeZoneError>",
         "status": "specified-and-implemented",
@@ -5655,6 +5855,14 @@
         "identity": "std/tuple::Show",
         "status": "specified-and-implemented",
         "classification": "structural",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "UnicodeGeneralCategory",
+        "identity": "Show<std/text/unicode::UnicodeGeneralCategory>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
         "spec": "9.11"
       },
       {

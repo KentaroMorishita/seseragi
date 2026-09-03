@@ -20,6 +20,7 @@ mod span;
 mod standard_ops;
 mod stream_ops;
 mod sum_ops;
+mod text_ops;
 mod trait_method_ops;
 mod typescript;
 mod web_html_ops;
@@ -63,6 +64,13 @@ mod tests {
     use seseragi_semantics::{type_module, TypedModule, TypedModuleDependency, TypedModuleImport};
 
     use seseragi_syntax::{ByteSpan, Visibility};
+
+    fn with_unicode_header(imports: &str, declarations: &str) -> String {
+        format!(
+            "import {{ assertUnicodeVersion as $ssrg$assertUnicodeVersion }} from \"@seseragi/runtime/unicode-version\"\n{imports}$ssrg$assertUnicodeVersion({:?})\n\n{declarations}",
+            seseragi_syntax::unicode::UNICODE_VERSION
+        )
+    }
 
     #[test]
     fn lowers_public_let_to_core_binding() {
@@ -538,7 +546,9 @@ pub fn wrap value: String -> Label =
         );
         assert_eq!(
             bundle.typescript,
-            "\
+            with_unicode_header(
+                "",
+                "\
 export type Hand =
   | { readonly tag: \"Rock\" }
   | { readonly tag: \"Paper\" }
@@ -554,6 +564,7 @@ export const Present = (value: string): Label => ({ tag: \"Present\", value } as
 export const wrap = (value: string) => Present(value)
 export const opening: Hand = Rock;
 "
+            )
         );
         assert_eq!(
             bundle.source_map.names,
@@ -564,7 +575,7 @@ export const opening: Hand = Rock;
         );
         assert_eq!(
             bundle.source_map.mappings,
-            "AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;AACIC;AACAC;AAIJC;AAFAE"
+            ";;;AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;AACIC;AACAC;AAIJC;AAFAE"
         );
     }
 
@@ -622,7 +633,7 @@ type Internal =
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.string"]);
         assert_eq!(
             bundle.typescript,
-            "export const greeting: string = \"hello\";\n"
+            with_unicode_header("", "export const greeting: string = \"hello\";\n")
         );
     }
 
@@ -635,7 +646,10 @@ type Internal =
         let bundle = emit_typescript_module(typescript, source);
 
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.bool"]);
-        assert_eq!(bundle.typescript, "export const enabled: boolean = true;\n");
+        assert_eq!(
+            bundle.typescript,
+            with_unicode_header("", "export const enabled: boolean = true;\n")
+        );
     }
 
     #[test]
@@ -650,7 +664,7 @@ type Internal =
         assert_eq!(bundle.metadata.exports, vec!["identity"]);
         assert_eq!(
             bundle.typescript,
-            "export const identity = (value: number) => value\n"
+            with_unicode_header("", "export const identity = (value: number) => value\n")
         );
     }
 
@@ -677,7 +691,10 @@ type Internal =
         let bundle = emit_typescript_module(typescript, source);
         assert_eq!(
             bundle.typescript,
-            "export const first = <A, B,>(left: A) => (right: B) => left\n"
+            with_unicode_header(
+                "",
+                "export const first = <A, B,>(left: A) => (right: B) => left\n"
+            )
         );
     }
 
@@ -790,7 +807,10 @@ where Lift<F> = {
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int"]);
         assert_eq!(
             bundle.typescript,
-            "export const first = (left: number) => (right: number) => left\n"
+            with_unicode_header(
+                "",
+                "export const first = (left: number) => (right: number) => left\n"
+            )
         );
     }
 
@@ -899,7 +919,10 @@ pub fn listLength values: List<Int> -> Int = {
         );
         assert_eq!(
             bundle.typescript,
-            "import { add as _ssrg_int_add } from \"@seseragi/runtime/int\"\n\nexport const add = (x: number) => (y: number) => _ssrg_int_add(x, y)\n"
+            with_unicode_header(
+                "import { add as _ssrg_int_add } from \"@seseragi/runtime/int\"\n",
+                "export const add = (x: number) => (y: number) => _ssrg_int_add(x, y)\n"
+            )
         );
     }
 
@@ -1036,7 +1059,10 @@ pub fn listLength values: List<Int> -> Int = {
         assert!(typescript.imports.is_empty());
         assert_eq!(
             bundle.typescript,
-            "export const invoke = (value: number) => _default(value)\n"
+            with_unicode_header(
+                "",
+                "export const invoke = (value: number) => _default(value)\n"
+            )
         );
         assert_eq!(bundle.source_map.names, vec!["invoke", "_default"]);
     }
@@ -1080,7 +1106,7 @@ pub fn useIdentity value: Int -> Int = identity value
         assert!(typescript.imports.is_empty());
         assert_eq!(
             bundle.typescript,
-            "export const identity = (value: number) => value\nexport const useIdentity = (value: number) => identity(value)\n"
+            with_unicode_header("", "export const identity = (value: number) => value\nexport const useIdentity = (value: number) => identity(value)\n")
         );
         assert_eq!(
             bundle.source_map.names,
@@ -1141,7 +1167,7 @@ fails ConsoleError =
 
         assert_eq!(
             bundle.typescript,
-            "export const pick = (_default: number) => _default\n"
+            with_unicode_header("", "export const pick = (_default: number) => _default\n")
         );
     }
 
@@ -1563,10 +1589,13 @@ fails ConsoleError =
         assert_eq!(bundle.metadata.exports, vec!["answer"]);
         assert_eq!(bundle.metadata.outputs.typescript, "main.ts");
         assert_eq!(bundle.metadata.outputs.source_map, "main.ts.map");
-        assert_eq!(bundle.typescript, "export const answer: number = 42;\n");
+        assert_eq!(
+            bundle.typescript,
+            with_unicode_header("", "export const answer: number = 42;\n")
+        );
         assert_eq!(bundle.source_map.file, "main.ts");
         assert_eq!(bundle.source_map.names, vec!["answer"]);
-        assert_eq!(bundle.source_map.mappings, "AAAAA");
+        assert_eq!(bundle.source_map.mappings, ";;;AAAAA");
     }
 
     #[test]
@@ -1802,7 +1831,7 @@ fails ConsoleError =
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript, source);
 
-        assert_eq!(bundle.source_map.mappings, "AAEAA");
+        assert_eq!(bundle.source_map.mappings, ";;;AAEAA");
     }
 
     #[test]
@@ -1819,7 +1848,7 @@ fails ConsoleError =
             .contains("import { println as _ssrg_console_println }"));
         assert_eq!(bundle.metadata.exports, vec!["main"]);
         assert_eq!(bundle.source_map.names, vec!["main", "println"]);
-        assert_eq!(bundle.source_map.mappings, ";;AAAAA");
+        assert_eq!(bundle.source_map.mappings, ";;;;AAAAA");
     }
 
     #[test]
@@ -1832,7 +1861,7 @@ fails ConsoleError =
 
         assert_eq!(
             bundle.typescript,
-            "export const main = (_unit: undefined) => undefined\n"
+            with_unicode_header("", "export const main = (_unit: undefined) => undefined\n")
         );
     }
 }

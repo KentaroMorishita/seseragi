@@ -137,6 +137,13 @@ fn check_generated_runtime_requirements(
     root: &Path,
     generated_module: &serde_json::Value,
 ) -> Result<(), String> {
+    if generated_module
+        .pointer("/runtime/unicodeVersion")
+        .and_then(|value| value.as_str())
+        != Some(seseragi_syntax::unicode::UNICODE_VERSION)
+    {
+        return Err("generated module Unicode version must match the toolchain".to_owned());
+    }
     let available = runtime_feature_ids(root)?;
     let requirements = generated_module
         .pointer("/runtime/requirements")

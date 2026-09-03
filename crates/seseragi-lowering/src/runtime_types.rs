@@ -8,6 +8,30 @@ pub(crate) struct RuntimeTypeImport {
 
 const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
     RuntimeTypeImport {
+        canonical: "std/text::TextSliceError",
+        runtime_feature: "core.text.slice-error",
+        module: "@seseragi/runtime/text",
+        export_name: "TextSliceError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/text/grapheme::GraphemeSliceError",
+        runtime_feature: "core.text.grapheme.slice-error",
+        module: "@seseragi/runtime/grapheme",
+        export_name: "GraphemeSliceError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/text/unicode::NormalizationForm",
+        runtime_feature: "core.text.unicode.normalization-form",
+        module: "@seseragi/runtime/unicode",
+        export_name: "NormalizationForm",
+    },
+    RuntimeTypeImport {
+        canonical: "std/text/unicode::UnicodeGeneralCategory",
+        runtime_feature: "core.text.unicode.category",
+        module: "@seseragi/runtime/unicode",
+        export_name: "UnicodeGeneralCategory",
+    },
+    RuntimeTypeImport {
         canonical: "std/validation::Validation",
         runtime_feature: "core.validation",
         module: "@seseragi/runtime/validation",

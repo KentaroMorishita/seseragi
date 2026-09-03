@@ -1056,6 +1056,87 @@ pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
     }
 
     #[test]
+    fn compiles_unicode_text_lesson_and_canonical_execution_fixture() {
+        for source in [
+            include_str!("../../../examples/spec/fixtures/compile/unicode-text.ssrg"),
+            include_str!("../../../examples/spec/lessons/28-unicode-text.ssrg"),
+            include_str!("../../../examples/spec/artifacts/schema-1/unicode-text/main.ssrg"),
+        ] {
+            let compiled = compile_module(CompileInput::new(
+                "main.ssrg",
+                "artifact/unicode-text",
+                source,
+            ))
+            .expect("canonical text and Unicode source should compile");
+            assert_eq!(
+                compiled.generated.metadata.runtime.unicode_version,
+                seseragi_syntax::unicode::UNICODE_VERSION
+            );
+            assert!(compiled
+                .generated
+                .typescript
+                .contains("@seseragi/runtime/unicode"));
+            assert!(compiled
+                .generated
+                .typescript
+                .contains("@seseragi/runtime/grapheme"));
+        }
+    }
+
+    #[test]
+    fn checks_unicode_version_before_source_initializers_and_preserves_source_maps() {
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/unicode-guard",
+            "pub let answer: Int = 42\n",
+        ))
+        .unwrap();
+        let lines = compiled.generated.typescript.lines().collect::<Vec<_>>();
+        let guard = lines
+            .iter()
+            .position(|line| line.starts_with("$ssrg$assertUnicodeVersion("))
+            .unwrap();
+        let declaration = lines
+            .iter()
+            .position(|line| line.starts_with("export const answer"))
+            .unwrap();
+        assert!(guard < declaration);
+        let mappings = compiled
+            .generated
+            .source_map
+            .mappings
+            .split(';')
+            .collect::<Vec<_>>();
+        assert!(mappings[..declaration]
+            .iter()
+            .all(|mapping| mapping.is_empty()));
+        assert!(!mappings[declaration].is_empty());
+    }
+
+    #[test]
+    fn unicode_abi_guard_cannot_be_shadowed_by_a_source_binding() {
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/unicode-guard-shadow",
+            "fn _ssrg_assertUnicodeVersion value: String -> Int = 42\npub let answer: Int = _ssrg_assertUnicodeVersion \"local\"\n",
+        ))
+        .unwrap();
+        let typescript = &compiled.generated.typescript;
+        assert!(
+            typescript.contains("import { assertUnicodeVersion as $ssrg$assertUnicodeVersion }")
+        );
+        assert!(typescript.contains("const _ssrg_assertUnicodeVersion = (value: string) => 42"));
+        assert!(typescript
+            .contains("export const answer: number = _ssrg_assertUnicodeVersion(\"local\")"));
+        assert!(
+            typescript
+                .find("$ssrg$assertUnicodeVersion(\"17.0.0\")")
+                .unwrap()
+                < typescript.find("const _ssrg_assertUnicodeVersion").unwrap()
+        );
+    }
+
+    #[test]
     fn compiles_random_and_entropy_through_provider_runtime_imports() {
         let source =
             include_str!("../../../examples/spec/fixtures/compile/random-and-entropy.ssrg");

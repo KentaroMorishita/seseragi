@@ -7,6 +7,9 @@ import * as json from "std/json"
 import * as lists from "std/list"
 import * as numbers from "std/number"
 import * as texts from "std/text"
+import * as chars from "std/char"
+import * as graphemes from "std/text/grapheme"
+import * as unicode from "std/text/unicode"
 import * as maps from "std/map"
 import * as sets from "std/set"
 import * as maybe from "std/maybe"
@@ -22,6 +25,9 @@ let numeric = match floats.toInt numbers.HalfEven (floats.fromInt 2) {
   Right value -> value
 }
 let encoded = texts.encodeUtf8 "ok"
+let unicodeText = unicode.normalize unicode.NFC "A👍🏽e\u{0301}"
+let unicodeSummary =
+  `${unicode.version ()} / ${graphemes.length unicodeText} / ${texts.lengthScalars unicodeText} / ${texts.lengthBytes unicodeText} / ${map chars.codePoint (texts.scalarAt 1 unicodeText)}`
 let decoded = match texts.decodeUtf8 encoded {
   Left _ -> "error"
   Right value -> value
@@ -42,7 +48,11 @@ let eitherResult = either.mapRight (\value -> value + 1) successful
 let firstInvalid: validation.Validation<String, Int> = validation.invalid "first"
 let secondInvalid: validation.Validation<String, Int> = validation.invalid "second"
 let validationResult: validation.Validation<String, Int> =
-  pure (\a: Int -> \b: Int -> a + b) <*> firstInvalid <*> secondInvalid
+  pure (\a: Int -> \b: Int -> a + b)
+  <*> firstInvalid
+  <*> secondInvalid
 
-pub effect fn main =
+pub effect fn main = do {
   println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique} / grouped: ${maps.values grouped} / sorted: ${sorted} / size: ${invalidSize} / maybe: ${maybeResult} / either: ${eitherResult} / validation: ${validationResult}`
+  println `unicode: ${unicodeSummary}`
+}

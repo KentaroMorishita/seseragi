@@ -1,8 +1,10 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { eitherMonad as _ssrg_either_monad, eitherApplicative as _ssrg_either_applicative, Right as _ssrg_either_Right, Left as _ssrg_either_Left } from "@seseragi/runtime/sum"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { stringAdd as _ssrg_string_add_dictionary } from "@seseragi/runtime/string"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const addEither = (left: { readonly tag: "Left"; readonly value: string } | { readonly tag: "Right"; readonly value: number }) => (right: { readonly tag: "Left"; readonly value: string } | { readonly tag: "Right"; readonly value: number }) => _ssrg_either_monad["flatMap"]((first: number) => _ssrg_either_monad["flatMap"]((second: number) => _ssrg_either_applicative["pure"](_ssrg_int_add(first, second)))(right))(left)
 const addEitherExplicit = (left: { readonly tag: "Left"; readonly value: string } | { readonly tag: "Right"; readonly value: number }) => (right: { readonly tag: "Left"; readonly value: string } | { readonly tag: "Right"; readonly value: number }) => _ssrg_either_monad["flatMap"]((first: number) => _ssrg_either_monad["flatMap"]((second: number) => _ssrg_either_applicative["pure"](_ssrg_int_add(first, second)))(right))(left)

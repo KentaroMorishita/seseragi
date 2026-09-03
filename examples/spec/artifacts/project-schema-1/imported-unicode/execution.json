@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "target": "node-process",
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "kind": "effect-project-execution",
+  "entry": {
+    "module": "fixture/imported-unicode::main",
+    "export": "main"
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.text.unicode.normalization-form",
+      "core.text.slice-error",
+      "core.text.grapheme.slice-error",
+      "core.text.unicode.normalize",
+      "core.string",
+      "core.text.unicode.nfc",
+      "core.text.slice-scalars",
+      "core.either",
+      "core.int",
+      "core.text.grapheme.slice",
+      "core.char.from-code-point",
+      "core.maybe",
+      "core.char",
+      "core.char.code-point",
+      "core.text.slice-error.debug",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.text.slice-error.show",
+      "core.string.show",
+      "core.either.show",
+      "core.text.grapheme.slice-error.show",
+      "core.char.show",
+      "core.maybe.show",
+      "core.int.show",
+      "core.maybe.functor",
+      "core.text.invalid-scalar-range",
+      "core.int.subtract"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "A👍🏽é"
+        ],
+        "stdout": "A👍🏽é\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Right 👍🏽"
+        ],
+        "stdout": "Right 👍🏽\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Right 👍🏽é"
+        ],
+        "stdout": "Right 👍🏽é\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Just 👍 / Just 128077"
+        ],
+        "stdout": "Just 👍 / Just 128077\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "InvalidScalarRange { start: -1, end: 2, length: 5 }"
+        ],
+        "stdout": "InvalidScalarRange { start: -1, end: 2, length: 5 }\n"
+      }
+    ]
+  }
+}

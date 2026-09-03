@@ -1,3 +1,4 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { remainder as _ssrg_int_remainder, subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
 import { Just as _ssrg_maybe_Just, Nothing as _ssrg_maybe_Nothing } from "@seseragi/runtime/sum"
@@ -5,6 +6,7 @@ import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { fromArray as _ssrg_list_from_array, collectMap as _ssrg_list_comprehend, filter as _ssrg_list_filter, listReducible as _ssrg_list_reducible, filterMap as _ssrg_list_filterMap, flatMap as _ssrg_list_flatMap, type List as List } from "@seseragi/runtime/list"
 import { arrayReducible as _ssrg_array_reducible, collectMap as _ssrg_array_comprehend, filter as _ssrg_array_filter, filterMap as _ssrg_array_filterMap, flatMap as _ssrg_array_flatMap } from "@seseragi/runtime/array"
 import { join as _ssrg_collection_join } from "@seseragi/runtime/collection"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const even = (value: number) => _ssrg_int_eq_dictionary["eq"](_ssrg_int_remainder(value, 2))(0)
 const labelEven = (value: number) => even(value) ? _ssrg_maybe_Just("#" + _ssrg_show_intShow["show"](value)) : _ssrg_maybe_Nothing

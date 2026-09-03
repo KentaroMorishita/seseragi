@@ -840,8 +840,10 @@ fn namespace_prefix(source: &str, position: usize) -> Option<&str> {
         .char_indices()
         .rev()
         .find_map(|(offset, scalar)| {
-            (!(scalar == '_' || scalar == '\'' || scalar.is_alphanumeric()))
-                .then_some(offset + scalar.len_utf8())
+            (!(scalar == '_'
+                || scalar == '\''
+                || seseragi_syntax::unicode::is_xid_continue(scalar)))
+            .then_some(offset + scalar.len_utf8())
         })
         .unwrap_or(0);
     let name = &prefix[start..];

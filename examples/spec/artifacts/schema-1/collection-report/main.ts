@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { stringShow as _ssrg_show_stringShow, intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { arrayReducible as _ssrg_array_reducible, collectMap as _ssrg_array_comprehend, filter as _ssrg_array_filter, arrayFunctor as _ssrg_array_functor } from "@seseragi/runtime/array"
 import { intZero as _ssrg_int_zero, intAdd as _ssrg_int_add_dictionary } from "@seseragi/runtime/int"
 import { sum as _ssrg_collection_sum, join as _ssrg_collection_join } from "@seseragi/runtime/collection"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 declare const __ssrg$brand$Sale: unique symbol;
 type Sale = {

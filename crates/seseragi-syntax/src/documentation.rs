@@ -109,7 +109,7 @@ pub fn extract_document_tests(
                         == 1
                     && source[previous.line_end..line.line_start]
                         .chars()
-                        .all(char::is_whitespace)
+                        .all(crate::unicode::is_whitespace)
             });
         if continues {
             groups.last_mut().unwrap().push(line);
@@ -128,7 +128,7 @@ pub fn extract_document_tests(
                 declaration.span().start >= end
                     && source[end..declaration.span().start]
                         .chars()
-                        .all(char::is_whitespace)
+                        .all(crate::unicode::is_whitespace)
                     && source[end..declaration.span().start].matches('\n').count() <= 1
             }) else {
                 continue;

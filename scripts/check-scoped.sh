@@ -201,6 +201,9 @@ run_conformance_checks() {
   bun test runtime/ts/tests/sum.test.ts
   echo "Testing Validation accumulation and conditional dictionaries..."
   bun test runtime/ts/tests/validation.test.ts
+  echo "Checking pinned Unicode data and text conformance..."
+  bun run unicode:check
+  bun test runtime/ts/tests/unicode.test.ts runtime/ts/tests/unicode-artifact.test.ts
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     cargo run -p seseragi-conformance -- .

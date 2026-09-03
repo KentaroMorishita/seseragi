@@ -5,9 +5,14 @@
   "runtime": {
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
-    "requirements": ["core.bool"]
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.bool"
+    ]
   },
-  "exports": ["enabled"],
+  "exports": [
+    "enabled"
+  ],
   "outputs": {
     "typescript": "main.ts",
     "sourceMap": "main.ts.map"

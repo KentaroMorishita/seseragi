@@ -41,6 +41,8 @@ wasm-pack build "$ROOT/crates/seseragi-wasm" \
   --release \
   --no-opt
 
+cp "$ROOT/runtime/unicode/LICENSE" "$OUT_DIR/UNICODE-LICENSE"
+
 # wasm-pack 0.15 resolves wasm-opt as "latest", independently of the pinned
 # wasm-pack version. Keep the committed artifact reproducible across fresh
 # release runners; static hosting remains responsible for transport compression.

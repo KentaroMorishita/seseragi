@@ -30,7 +30,11 @@ fn desugars_logical_operators_to_core_control_flow() {
     let generated = emit_typescript_module(typescript, source);
     assert_eq!(
         generated.typescript,
-        "export const decide = (left: boolean) => (middle: boolean) => (right: boolean) => left ? true : middle ? right : false\n"
+        concat!(
+            "import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from \"@seseragi/runtime/unicode-version\"\n",
+            "$ssrg$assertUnicodeVersion(\"17.0.0\")\n\n",
+            "export const decide = (left: boolean) => (middle: boolean) => (right: boolean) => left ? true : middle ? right : false\n"
+        )
     );
 }
 

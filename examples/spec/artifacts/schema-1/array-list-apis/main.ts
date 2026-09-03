@@ -1,3 +1,4 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intEq as _ssrg_int_eq_dictionary, intOrd as _ssrg_int_ord_dictionary, boolOrd as _ssrg_bool_ord_dictionary, unitOrd as _ssrg_unit_ord_dictionary, stringOrd as _ssrg_string_ord_dictionary } from "@seseragi/runtime/equality"
 import { remainder as _ssrg_int_remainder, add as _ssrg_int_add, subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
 import { stringAdd as _ssrg_string_add_dictionary } from "@seseragi/runtime/string"
@@ -9,6 +10,7 @@ import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { keys as _ssrg_map_keys, values as _ssrg_map_values, mapValues as _ssrg_map_mapValues, type Map as Map } from "@seseragi/runtime/map"
 import { sizeErrorEq as _ssrg_sizeErrorEq, NonPositiveSize as _ssrg_collection_NonPositiveSize, type SizeError as SizeError } from "@seseragi/runtime/collection"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Key =
   | { readonly tag: "Key"; readonly value: readonly [number, string] };

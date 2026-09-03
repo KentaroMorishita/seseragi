@@ -1,12 +1,4 @@
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) struct RuntimeBytesOperation {
-    pub(crate) canonical: &'static str,
-    pub(crate) runtime_feature: &'static str,
-    pub(crate) local_name: &'static str,
-    pub(crate) module: &'static str,
-    pub(crate) export_name: &'static str,
-    pub(crate) source_map_name: &'static str,
-}
+use crate::runtime_modules::RuntimeDataOperation as RuntimeBytesOperation;
 
 macro_rules! bytes_operation {
     ($name:literal, $feature:literal) => {
@@ -15,19 +7,6 @@ macro_rules! bytes_operation {
             runtime_feature: $feature,
             local_name: concat!("_ssrg_bytes_", $name),
             module: "@seseragi/runtime/bytes",
-            export_name: $name,
-            source_map_name: $name,
-        }
-    };
-}
-
-macro_rules! text_operation {
-    ($name:literal, $feature:literal) => {
-        RuntimeBytesOperation {
-            canonical: concat!("std/text::", $name),
-            runtime_feature: $feature,
-            local_name: concat!("_ssrg_text_", $name),
-            module: "@seseragi/runtime/text",
             export_name: $name,
             source_map_name: $name,
         }
@@ -52,10 +31,6 @@ const OPERATIONS: &[RuntimeBytesOperation] = &[
     bytes_operation!("copy", "core.bytes.copy"),
     bytes_operation!("append", "core.bytes.append"),
     bytes_operation!("concat", "core.bytes.concat"),
-    text_operation!("InvalidUtf8", "core.text.invalid-utf8"),
-    text_operation!("encodeUtf8", "core.text.encode-utf8"),
-    text_operation!("decodeUtf8", "core.text.decode-utf8"),
-    text_operation!("decodeUtf8Lossy", "core.text.decode-utf8-lossy"),
 ];
 
 pub(crate) fn runtime_bytes_operation(canonical: &str) -> Option<RuntimeBytesOperation> {
@@ -77,12 +52,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn maps_bytes_and_utf8_operations_by_canonical_identity() {
+    fn maps_bytes_operations_by_canonical_identity() {
         for (canonical, feature) in [
             ("std/bytes::fromInts", "core.bytes.from-ints"),
             ("std/bytes::slice", "core.bytes.slice"),
-            ("std/text::encodeUtf8", "core.text.encode-utf8"),
-            ("std/text::decodeUtf8", "core.text.decode-utf8"),
         ] {
             let operation = runtime_bytes_operation(canonical).unwrap();
             assert_eq!(operation.runtime_feature, feature);

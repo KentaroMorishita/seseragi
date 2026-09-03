@@ -1,6 +1,8 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export const __ssrg$instance$Difference$0 = { "difference": (left: number) => (right: number) => _ssrg_int_subtract(left, right) } as const;
 const __ssrg$operator$3c5e3e = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0["difference"](left)(right)

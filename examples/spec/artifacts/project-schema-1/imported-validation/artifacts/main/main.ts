@@ -1,4 +1,5 @@
 import { combine as ops_combine, display as ops_display, inspect as ops_inspect, same as ops_same, errors as ops_errors, convert as ops_convert } from "./operations.js"
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedShow as _ssrg_show_boundedShow, boundedDebug as _ssrg_debug_boundedDebug, stringShow as _ssrg_show_stringShow, stringDebug as _ssrg_debug_stringDebug, intShow as _ssrg_show_intShow, intDebug as _ssrg_debug_intDebug, boolShow as _ssrg_show_boolShow, listShow as _ssrg_show_listShow, nonEmptyListShow as _ssrg_show_nonEmptyListShow, eitherShow as _ssrg_show_eitherShow, type Show as _ssrg_show_Show, type Debug as _ssrg_debug_Debug } from "@seseragi/runtime/show"
 import { stringEq as _ssrg_string_eq_dictionary, intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
@@ -6,6 +7,7 @@ import { invalid as _ssrg_validation_invalid, type Validation as Validation } fr
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { type List as List, type NonEmptyList as NonEmptyList } from "@seseragi/runtime/list"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Problem =
   | { readonly tag: "Problem"; readonly value: string };

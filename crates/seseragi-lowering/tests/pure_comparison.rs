@@ -4,6 +4,9 @@ use seseragi_lowering::{
 };
 use seseragi_semantics::type_module;
 
+mod support;
+use support::with_unicode_header;
+
 #[test]
 fn lowers_int_comparison_to_sync_boolean_function() {
     let source = "pub fn isZero value: Int -> Bool = value == 0\n";
@@ -41,7 +44,10 @@ fn lowers_int_comparison_to_sync_boolean_function() {
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "import { intEq as _ssrg_int_eq_dictionary } from \"@seseragi/runtime/equality\"\n\nexport const isZero = (value: number) => _ssrg_int_eq_dictionary[\"eq\"](value)(0)\n"
+        with_unicode_header(
+            "import { intEq as _ssrg_int_eq_dictionary } from \"@seseragi/runtime/equality\"\n",
+            "export const isZero = (value: number) => _ssrg_int_eq_dictionary[\"eq\"](value)(0)\n"
+        )
     );
 }
 
@@ -75,6 +81,6 @@ pub fn sameString left: String -> right: String -> Bool = left != right
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "import { boolEq as _ssrg_bool_eq_dictionary, stringEq as _ssrg_string_eq_dictionary } from \"@seseragi/runtime/equality\"\n\nexport const sameBool = (left: boolean) => (right: boolean) => _ssrg_bool_eq_dictionary[\"eq\"](left)(right)\nexport const sameString = (left: string) => (right: string) => _ssrg_string_eq_dictionary[\"eq\"](left)(right) === false\n"
+        with_unicode_header("import { boolEq as _ssrg_bool_eq_dictionary, stringEq as _ssrg_string_eq_dictionary } from \"@seseragi/runtime/equality\"\n", "export const sameBool = (left: boolean) => (right: boolean) => _ssrg_bool_eq_dictionary[\"eq\"](left)(right)\nexport const sameString = (left: string) => (right: string) => _ssrg_string_eq_dictionary[\"eq\"](left)(right) === false\n")
     );
 }

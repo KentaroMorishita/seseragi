@@ -1,4 +1,6 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { DispatchPreventDefault as _ssrg_html_DispatchPreventDefault, DispatchStopPropagation as _ssrg_html_DispatchStopPropagation, DispatchPreventDefaultAndStop as _ssrg_html_DispatchPreventDefaultAndStop, div as _ssrg_html_div, type MouseEvent as MouseEvent, type EventAction as EventAction, type PointerEvent as PointerEvent, type ScrollEvent as ScrollEvent, type Html as Html } from "@seseragi/runtime/html"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Action =
   | { readonly tag: "Clicked" }

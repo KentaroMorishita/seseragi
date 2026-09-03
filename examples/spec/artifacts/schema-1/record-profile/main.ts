@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { stringAdd as _ssrg_string_add_dictionary } from "@seseragi/runtime/string"
 import { Nothing as _ssrg_maybe_Nothing, Just as _ssrg_maybe_Just } from "@seseragi/runtime/sum"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const profile = (name: string) => (score: number) => ({ "name": name, "score": score } as const)
 const displayName = (user: { readonly "name": string }) => (($ssrg_match: { readonly "name": string }): string => ((name: string): string => name)($ssrg_match["name"]))(user)

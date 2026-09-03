@@ -17,6 +17,9 @@ use crate::{
 
 pub(super) fn render_import_lines(module: &TypeScriptModule) -> Vec<String> {
     let mut lines = render_source_imports(module);
+    // A leading `$` cannot be spelled by a source identifier, so a user binding
+    // cannot shadow this mandatory ABI check (including through import aliases).
+    lines.push("import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from \"@seseragi/runtime/unicode-version\"".to_owned());
     lines.extend(render_runtime_imports(module));
     lines
 }
@@ -57,6 +60,9 @@ fn render_runtime_imports(module: &TypeScriptModule) -> Vec<String> {
             .map(|operation| (operation.module, operation.export_name))
             .or_else(|| {
                 runtime_bytes_operation_for_feature(&import.feature)
+                    .or_else(|| {
+                        crate::text_ops::runtime_text_operation_for_feature(&import.feature)
+                    })
                     .map(|operation| (operation.module, operation.export_name))
                     .or_else(|| {
                         runtime_json_operation_for_feature(&import.feature)

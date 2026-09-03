@@ -1,3 +1,4 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { unfold as _ssrg_iterator_unfold, iteratorIterable as _ssrg_iterator_iterable, type Iterator as Iterator } from "@seseragi/runtime/iterator"
 import { Just as _ssrg_maybe_Just, Nothing as _ssrg_maybe_Nothing } from "@seseragi/runtime/sum"
 import { add as _ssrg_int_add, subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
@@ -10,6 +11,7 @@ import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { intShow as _ssrg_show_intShow, tupleShow as _ssrg_show_tupleShow, stringShow as _ssrg_show_stringShow } from "@seseragi/runtime/show"
 import { listIterable as _ssrg_list_iterable, fromArray as _ssrg_list_from_array } from "@seseragi/runtime/list"
 import { stringAdd as _ssrg_string_add_dictionary } from "@seseragi/runtime/string"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Countdown =
   | { readonly tag: "Countdown"; readonly value: number };

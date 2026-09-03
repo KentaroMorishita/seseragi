@@ -1,4 +1,6 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { Just as _ssrg_maybe_Just, Right as _ssrg_either_Right } from "@seseragi/runtime/sum"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Box<A> =
   | { readonly tag: "Boxed"; readonly value: A };

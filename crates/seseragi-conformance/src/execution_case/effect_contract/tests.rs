@@ -194,6 +194,7 @@ fn requires_unit_success_only_for_the_package_main_entry() {
         "runtime": {
             "identity": "@seseragi/runtime",
             "abiMajor": 1,
+            "unicodeVersion": seseragi_syntax::unicode::UNICODE_VERSION,
             "requirements": []
         },
         "exports": ["parse"],
@@ -307,6 +308,7 @@ fn validates_an_in_memory_entry_with_the_callers_exact_module_specifier() {
         "runtime": {
             "identity": "@seseragi/runtime",
             "abiMajor": 1,
+            "unicodeVersion": seseragi_syntax::unicode::UNICODE_VERSION,
             "requirements": []
         },
         "exports": ["main"],

@@ -3,6 +3,54 @@ use std::path::Path;
 
 const FILES: &[(&str, &str)] = &[
     (
+        "UNICODE-LICENSE",
+        include_str!("../../../runtime/ts/UNICODE-LICENSE"),
+    ),
+    (
+        "src/char.ts",
+        include_str!("../../../runtime/ts/src/char.ts"),
+    ),
+    (
+        "src/grapheme.ts",
+        include_str!("../../../runtime/ts/src/grapheme.ts"),
+    ),
+    (
+        "src/unicode.ts",
+        include_str!("../../../runtime/ts/src/unicode.ts"),
+    ),
+    (
+        "src/unicode-data.ts",
+        include_str!("../../../runtime/ts/src/unicode-data.ts"),
+    ),
+    (
+        "src/unicode-version.ts",
+        include_str!("../../../runtime/ts/src/unicode-version.ts"),
+    ),
+    (
+        "src/unicode-version-data.ts",
+        include_str!("../../../runtime/ts/src/unicode-version-data.ts"),
+    ),
+    (
+        "src/unicode-case.ts",
+        include_str!("../../../runtime/ts/src/unicode-case.ts"),
+    ),
+    (
+        "src/unicode-normalization.ts",
+        include_str!("../../../runtime/ts/src/unicode-normalization.ts"),
+    ),
+    (
+        "src/unicode-properties.ts",
+        include_str!("../../../runtime/ts/src/unicode-properties.ts"),
+    ),
+    (
+        "src/text-core.ts",
+        include_str!("../../../runtime/ts/src/text-core.ts"),
+    ),
+    (
+        "src/text-search.ts",
+        include_str!("../../../runtime/ts/src/text-search.ts"),
+    ),
+    (
         "THIRD_PARTY_NOTICES.txt",
         include_str!("../../../runtime/ts/THIRD_PARTY_NOTICES.txt"),
     ),

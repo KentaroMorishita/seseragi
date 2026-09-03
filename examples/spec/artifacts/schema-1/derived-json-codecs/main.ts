@@ -1,6 +1,8 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { stringJsonEncode as _ssrg_string_json_encode, derivedStructJsonEncode as _ssrg_json_derivedstruct_encode, stringJsonDecode as _ssrg_string_json_decode, derivedStructJsonDecode as _ssrg_json_derivedstruct_decode, intJsonEncode as _ssrg_int_json_encode, derivedNewtypeJsonEncode as _ssrg_json_derivednewtype_encode, intJsonDecode as _ssrg_int_json_decode, derivedNewtypeJsonDecode as _ssrg_json_derivednewtype_decode, tupleJsonEncode as _ssrg_tuple_json_encode, derivedAdtJsonEncode as _ssrg_json_derivedadt_encode, tupleJsonDecode as _ssrg_tuple_json_decode, derivedAdtJsonDecode as _ssrg_json_derivedadt_decode, recordJsonEncode as _ssrg_record_json_encode, recordJsonDecode as _ssrg_record_json_decode, decodeString as _ssrg_json_decodeString, encodeString as _ssrg_json_encodeString, type JsonReadError as JsonReadError, type JsonEncode as _ssrg_json_JsonEncode, type JsonDecode as _ssrg_json_JsonDecode } from "@seseragi/runtime/json"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type UserId =
   | { readonly tag: "UserId"; readonly value: number };

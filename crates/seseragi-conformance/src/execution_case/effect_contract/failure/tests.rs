@@ -107,6 +107,7 @@ fn generated_module(module: &str, instances: serde_json::Value) -> GeneratedModu
         "runtime": {
             "identity": "@seseragi/runtime",
             "abiMajor": 1,
+            "unicodeVersion": seseragi_syntax::unicode::UNICODE_VERSION,
             "requirements": []
         },
         "exports": [],

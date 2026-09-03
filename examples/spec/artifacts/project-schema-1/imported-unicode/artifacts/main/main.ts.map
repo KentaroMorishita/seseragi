@@ -1,0 +1,42 @@
+{
+  "version": 3,
+  "file": "dist/imported-unicode/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-unicode::main"
+  ],
+  "sourcesContent": [
+    "import * as ops from \"./operations\"\nimport * as text from \"std/text\"\n\nlet source = \"A👍🏽e\\u{0301}\"\n\npub effect fn main = do {\n  let normalize: String -> String = ops.normalize\n  let slice: String -> Either<text.TextSliceError, String> = ops.scalarSlice\n  println $ normalize source\n  println $ show (slice source)\n  println $ show (ops.graphemeSlice source)\n  println `${ops.character 128077} / ${map ops.point (ops.character 128077)}`\n  println $ ops.inspectError (text.InvalidScalarRange { start: - 1, end: 2, length: 5 })\n}\n"
+  ],
+  "names": [
+    "main",
+    "normalize",
+    "slice",
+    "println",
+    "normalize",
+    "println",
+    "eitherShow",
+    "textSliceErrorShow",
+    "stringShow",
+    "slice",
+    "println",
+    "eitherShow",
+    "graphemeSliceErrorShow",
+    "stringShow",
+    "ops.graphemeSlice",
+    "println",
+    "maybeShow",
+    "charShow",
+    "ops.character",
+    "maybeShow",
+    "intShow",
+    "maybeFunctor",
+    "ops.character",
+    "println",
+    "ops.inspectError",
+    "InvalidScalarRange",
+    "subtract",
+    "source"
+  ],
+  "mappings": ";;;;;;;;;;;AAKAA;AAFA2B"
+}

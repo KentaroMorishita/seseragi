@@ -1,3 +1,6 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
+$ssrg$assertUnicodeVersion("17.0.0")
+
 export type Status =
   | { readonly tag: "Ready" }
   | { readonly tag: "Waiting" };

@@ -8,6 +8,26 @@ use seseragi_semantics::{analyze_linked_module, analyze_module_interface};
 use seseragi_syntax::{parse_diagnostics, parse_unlinked_module_interface};
 use std::collections::BTreeMap;
 
+const UNICODE_IMPORT: &str = "import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from \"@seseragi/runtime/unicode-version\"";
+
+fn with_unicode_guard(source_imports: &str) -> String {
+    format!(
+        "{}\n{UNICODE_IMPORT}\n$ssrg$assertUnicodeVersion({:?})\n\n",
+        source_imports.trim_end(),
+        seseragi_syntax::unicode::UNICODE_VERSION
+    )
+}
+
+fn assert_only_unicode_runtime_import(typescript: &str) {
+    assert_eq!(
+        typescript
+            .lines()
+            .filter(|line| line.contains("@seseragi/runtime"))
+            .collect::<Vec<_>>(),
+        vec![UNICODE_IMPORT]
+    );
+}
+
 #[test]
 fn lowers_an_imported_alias_call_to_a_planned_typescript_module_import() {
     let domain_source = "pub fn increment value: Int -> Int = value + 1\n";
@@ -49,9 +69,9 @@ fn lowers_an_imported_alias_call_to_a_planned_typescript_module_import() {
     ));
 
     let generated = emit_typescript_module(typescript, main_source);
-    assert!(generated
-        .typescript
-        .starts_with("import { increment as next } from \"./domain.js\"\n\n"));
+    assert!(generated.typescript.starts_with(&with_unicode_guard(
+        "import { increment as next } from \"./domain.js\""
+    )));
     assert!(!generated.typescript.contains(".ssrg"));
     assert!(generated
         .typescript
@@ -81,9 +101,9 @@ fn lowers_an_imported_top_level_value_to_a_runtime_binding() {
     );
     let generated = emit_typescript_module(typescript, main_source);
     assert!(
-        generated
-            .typescript
-            .starts_with("import { answer as importedAnswer } from \"./domain.js\"\n\n"),
+        generated.typescript.starts_with(&with_unicode_guard(
+            "import { answer as importedAnswer } from \"./domain.js\""
+        )),
         "{}",
         generated.typescript
     );
@@ -126,9 +146,9 @@ fn lowers_an_imported_custom_operator_to_its_provider_abi_name() {
     ));
 
     let generated = emit_typescript_module(typescript, main_source);
-    assert!(generated
-        .typescript
-        .starts_with("import { __ssrg$operator$3c5e3e } from \"./domain.js\"\n\n"));
+    assert!(generated.typescript.starts_with(&with_unicode_guard(
+        "import { __ssrg$operator$3c5e3e } from \"./domain.js\""
+    )));
     assert!(generated.typescript.contains(
         "export const run = (left: number) => (right: number) => __ssrg$operator$3c5e3e(left)(right)"
     ));
@@ -167,9 +187,9 @@ pub fn run left: Int -> right: Int -> Int =
     assert_eq!(binding.local, "__ssrg$operator$3c5e3e");
 
     let generated = emit_typescript_module(typescript, main_source);
-    assert!(generated
-        .typescript
-        .starts_with("import { __ssrg$operator$3c5e3e } from \"./domain.js\"\n\n"));
+    assert!(generated.typescript.starts_with(&with_unicode_guard(
+        "import { __ssrg$operator$3c5e3e } from \"./domain.js\""
+    )));
     assert!(generated.typescript.contains(
         "export const run = (left: number) => (right: number) => apply(__ssrg$operator$3c5e3e)(left)(right)"
     ));
@@ -263,9 +283,9 @@ fn freshens_an_imported_custom_operator_around_a_local_operator_abi_name() {
     ));
 
     let generated = emit_typescript_module(typescript, main_source);
-    assert!(generated.typescript.starts_with(
-        "import { __ssrg$operator$3c5e3e as __ssrg$operator$3c5e3e_1 } from \"./domain.js\"\n\n"
-    ));
+    assert!(generated.typescript.starts_with(&with_unicode_guard(
+        "import { __ssrg$operator$3c5e3e as __ssrg$operator$3c5e3e_1 } from \"./domain.js\""
+    )));
     assert!(generated
         .typescript
         .contains("const __ssrg$operator$3c5e3e = (unit: undefined) => undefined"));
@@ -306,7 +326,7 @@ pub fn status value: Badge -> String = describe value
     assert!(generated.typescript.contains(
         "export const status = (value: Badge) => ((describe(value)(__ssrg$instance$Ready$0)) as string)"
     ));
-    assert!(!generated.typescript.contains("@seseragi/runtime"));
+    assert_only_unicode_runtime_import(&generated.typescript);
 }
 
 #[test]
@@ -342,7 +362,7 @@ pub fn status value: Unit -> String = describe Active
     assert!(generated.typescript.contains(
         "export const status = (value: undefined) => ((describe(Active)(__ssrg$instance$Ready$0)) as string)"
     ));
-    assert!(!generated.typescript.contains("@seseragi/runtime"));
+    assert_only_unicode_runtime_import(&generated.typescript);
 }
 
 #[test]
@@ -435,9 +455,9 @@ fn lowers_a_namespace_member_call_to_a_selected_named_import() {
     ));
 
     let generated = emit_typescript_module(typescript, main_source);
-    assert!(generated
-        .typescript
-        .starts_with("import { identity as domain_identity } from \"./domain.js\"\n\n"));
+    assert!(generated.typescript.starts_with(&with_unicode_guard(
+        "import { identity as domain_identity } from \"./domain.js\""
+    )));
     assert!(generated
         .typescript
         .contains("export const run = (value: string) => domain_identity(value)"));
@@ -471,9 +491,9 @@ fn lowers_a_namespace_type_member_to_a_selected_type_import() {
     ));
 
     let generated = emit_typescript_module(typescript, main_source);
-    assert!(generated.typescript.starts_with(
-        "import { type Hand as domain_Hand } from \"./domain.js\"\nimport \"./domain.js\"\n\n"
-    ));
+    assert!(generated.typescript.starts_with(&with_unicode_guard(
+        "import { type Hand as domain_Hand } from \"./domain.js\"\nimport \"./domain.js\""
+    )));
     assert!(generated
         .typescript
         .contains("export const keep = (value: domain_Hand) => value"));
@@ -675,7 +695,7 @@ fn keeps_a_namespace_only_edge_as_a_side_effect_import() {
     let generated = emit_typescript_module(typescript, main_source);
     assert!(generated
         .typescript
-        .starts_with("import \"./domain.js\"\n\n"));
+        .starts_with(&with_unicode_guard("import \"./domain.js\"")));
 }
 
 #[test]
@@ -696,9 +716,9 @@ fn emits_a_type_binding_and_a_runtime_edge_for_an_imported_adt_alias() {
     assert!(typescript.source_imports[0].bindings[0].type_only);
 
     let generated = emit_typescript_module(typescript, main_source);
-    assert!(generated.typescript.starts_with(
-        "import { type Hand as LocalHand } from \"./domain.js\"\nimport \"./domain.js\"\n\n"
-    ));
+    assert!(generated.typescript.starts_with(&with_unicode_guard(
+        "import { type Hand as LocalHand } from \"./domain.js\"\nimport \"./domain.js\""
+    )));
     assert!(generated
         .typescript
         .contains("export const keep = (hand: LocalHand) => hand"));

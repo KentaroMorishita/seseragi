@@ -1,8 +1,10 @@
 import { type Hand, Rock, Paper, Scissors } from "./domain.js"
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedShow as _ssrg_show_boundedShow, stdinErrorShow as _ssrg_show_stdinErrorShow, stringShow as _ssrg_show_stringShow, type Show as _ssrg_show_Show } from "@seseragi/runtime/show"
 import { Right as _ssrg_either_Right, Left as _ssrg_either_Left } from "@seseragi/runtime/sum"
 import { flatMap as _ssrg_effect_flatMap, mapError as _ssrg_effect_mapError, fromEither as _ssrg_effect_fromEither } from "@seseragi/runtime/effect"
 import { readLine as _ssrg_stdin_readLine, type StdinError as StdinError } from "@seseragi/runtime/stdin"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export type InputError =
   | { readonly tag: "StdinFailure"; readonly value: StdinError }

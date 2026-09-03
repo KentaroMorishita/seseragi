@@ -1,5 +1,7 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { Dispatch as _ssrg_html_Dispatch, IgnoreEvent as _ssrg_html_IgnoreEvent, button as _ssrg_html_button, type KeyboardEvent as KeyboardEvent, type EventAction as EventAction, type Html as Html } from "@seseragi/runtime/html"
 import { type Effect as Effect } from "@seseragi/runtime/effect"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Action =
   | { readonly tag: "Focused" }

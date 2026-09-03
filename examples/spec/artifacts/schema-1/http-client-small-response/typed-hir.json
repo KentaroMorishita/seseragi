@@ -545,7 +545,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 86,
+              "symbol": 88,
               "name": "url",
               "type": {
                 "kind": "external-named",
@@ -687,7 +687,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 90,
+              "symbol": 92,
               "name": "request",
               "type": {
                 "kind": "external-named",
@@ -886,7 +886,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 92,
+              "symbol": 94,
               "name": "body",
               "type": {
                 "kind": "external-named",
@@ -1139,7 +1139,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 95,
+              "symbol": 97,
               "name": "response",
               "type": {
                 "kind": "external-named",

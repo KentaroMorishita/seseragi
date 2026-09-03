@@ -1,4 +1,6 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { Right as _ssrg_either_Right, Left as _ssrg_either_Left } from "@seseragi/runtime/sum"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export type Hand =
   | { readonly tag: "Rock" }

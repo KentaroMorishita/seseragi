@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/unicode-text",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/text",
+      "module": "std/text",
+      "origin": {
+        "start": 0,
+        "end": 32
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/text::*",
+          "localName": "text"
+        }
+      ]
+    },
+    {
+      "specifier": "std/char",
+      "module": "std/char",
+      "origin": {
+        "start": 33,
+        "end": 65
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/char::*",
+          "localName": "char"
+        }
+      ]
+    },
+    {
+      "specifier": "std/text/grapheme",
+      "module": "std/text/grapheme",
+      "origin": {
+        "start": 66,
+        "end": 112
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/text/grapheme::*",
+          "localName": "graphemes"
+        }
+      ]
+    },
+    {
+      "specifier": "std/text/unicode",
+      "module": "std/text/unicode",
+      "origin": {
+        "start": 113,
+        "end": 156
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/text/unicode::*",
+          "localName": "unicode"
+        }
+      ]
+    },
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "start": 157,
+        "end": 192
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/array::*",
+          "localName": "arrays"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/unicode-text::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 728,
+        "end": 3878
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

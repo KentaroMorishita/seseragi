@@ -56543,11 +56543,111 @@
     {
       "specifier": "std/char",
       "identity": "std/char",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/char",
+        "source": "std/char.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/char::codePoint",
+            "namespace": "value",
+            "name": "codePoint",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/char::fromCodePoint",
+            "namespace": "value",
+            "name": "fromCodePoint",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Char",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/char::toString",
+            "namespace": "value",
+            "name": "toString",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/child-process",
@@ -77819,6 +77919,817 @@
                 }
               }
             }
+          },
+          {
+            "symbol": "std/text::TextSliceError",
+            "namespace": "type",
+            "name": "TextSliceError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "TextSliceError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/text::InvalidScalarRange",
+            "namespace": "value",
+            "name": "InvalidScalarRange",
+            "constructorOf": "std/text::TextSliceError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "start",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "end",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "length",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "TextSliceError",
+                  "canonical": "std/text::TextSliceError",
+                  "providerModule": "std/text",
+                  "providerExport": "TextSliceError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::isEmpty",
+            "namespace": "value",
+            "name": "isEmpty",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::concat",
+            "namespace": "value",
+            "name": "concat",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::join",
+            "namespace": "value",
+            "name": "join",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::split",
+            "namespace": "value",
+            "name": "split",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::scalarAt",
+            "namespace": "value",
+            "name": "scalarAt",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::sliceScalars",
+            "namespace": "value",
+            "name": "sliceScalars",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "TextSliceError",
+                          "canonical": "std/text::TextSliceError",
+                          "providerModule": "std/text",
+                          "providerExport": "TextSliceError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::lengthScalars",
+            "namespace": "value",
+            "name": "lengthScalars",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::lengthBytes",
+            "namespace": "value",
+            "name": "lengthBytes",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::lines",
+            "namespace": "value",
+            "name": "lines",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::words",
+            "namespace": "value",
+            "name": "words",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::trim",
+            "namespace": "value",
+            "name": "trim",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::trimStart",
+            "namespace": "value",
+            "name": "trimStart",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::trimEnd",
+            "namespace": "value",
+            "name": "trimEnd",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::toLower",
+            "namespace": "value",
+            "name": "toLower",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::toUpper",
+            "namespace": "value",
+            "name": "toUpper",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::caseFold",
+            "namespace": "value",
+            "name": "caseFold",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::startsWith",
+            "namespace": "value",
+            "name": "startsWith",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::endsWith",
+            "namespace": "value",
+            "name": "endsWith",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::contains",
+            "namespace": "value",
+            "name": "contains",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::replace",
+            "namespace": "value",
+            "name": "replace",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text::replaceAll",
+            "namespace": "value",
+            "name": "replaceAll",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
           }
         ],
         "operators": [],
@@ -77828,20 +78739,1450 @@
     {
       "specifier": "std/text/grapheme",
       "identity": "std/text/grapheme",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/text/grapheme",
+        "source": "std/text/grapheme.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/text/grapheme::GraphemeSliceError",
+            "namespace": "type",
+            "name": "GraphemeSliceError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "GraphemeSliceError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/text/grapheme::InvalidGraphemeRange",
+            "namespace": "value",
+            "name": "InvalidGraphemeRange",
+            "constructorOf": "std/text/grapheme::GraphemeSliceError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "start",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "end",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "length",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "GraphemeSliceError",
+                  "canonical": "std/text/grapheme::GraphemeSliceError",
+                  "providerModule": "std/text/grapheme",
+                  "providerExport": "GraphemeSliceError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/grapheme::length",
+            "namespace": "value",
+            "name": "length",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/grapheme::clusters",
+            "namespace": "value",
+            "name": "clusters",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/grapheme::byteBoundaries",
+            "namespace": "value",
+            "name": "byteBoundaries",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/grapheme::at",
+            "namespace": "value",
+            "name": "at",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/grapheme::slice",
+            "namespace": "value",
+            "name": "slice",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "GraphemeSliceError",
+                          "canonical": "std/text/grapheme::GraphemeSliceError",
+                          "providerModule": "std/text/grapheme",
+                          "providerExport": "GraphemeSliceError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/text/unicode",
       "identity": "std/text/unicode",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/text/unicode",
+        "source": "std/text/unicode.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/text/unicode::NormalizationForm",
+            "namespace": "type",
+            "name": "NormalizationForm",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "NormalizationForm",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::UnicodeGeneralCategory",
+            "namespace": "type",
+            "name": "UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "UnicodeGeneralCategory",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::version",
+            "namespace": "value",
+            "name": "version",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::normalize",
+            "namespace": "value",
+            "name": "normalize",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "NormalizationForm",
+                  "canonical": "std/text/unicode::NormalizationForm",
+                  "providerModule": "std/text/unicode",
+                  "providerExport": "NormalizationForm",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::isNormalized",
+            "namespace": "value",
+            "name": "isNormalized",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "NormalizationForm",
+                  "canonical": "std/text/unicode::NormalizationForm",
+                  "providerModule": "std/text/unicode",
+                  "providerExport": "NormalizationForm",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::generalCategory",
+            "namespace": "value",
+            "name": "generalCategory",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "UnicodeGeneralCategory",
+                  "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                  "providerModule": "std/text/unicode",
+                  "providerExport": "UnicodeGeneralCategory",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::simpleCaseFold",
+            "namespace": "value",
+            "name": "simpleCaseFold",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::fullCaseFold",
+            "namespace": "value",
+            "name": "fullCaseFold",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::NFC",
+            "namespace": "value",
+            "name": "NFC",
+            "constructorOf": "std/text/unicode::NormalizationForm",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "NormalizationForm",
+                "canonical": "std/text/unicode::NormalizationForm",
+                "providerModule": "std/text/unicode",
+                "providerExport": "NormalizationForm",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::NFD",
+            "namespace": "value",
+            "name": "NFD",
+            "constructorOf": "std/text/unicode::NormalizationForm",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "NormalizationForm",
+                "canonical": "std/text/unicode::NormalizationForm",
+                "providerModule": "std/text/unicode",
+                "providerExport": "NormalizationForm",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::NFKC",
+            "namespace": "value",
+            "name": "NFKC",
+            "constructorOf": "std/text/unicode::NormalizationForm",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "NormalizationForm",
+                "canonical": "std/text/unicode::NormalizationForm",
+                "providerModule": "std/text/unicode",
+                "providerExport": "NormalizationForm",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::NFKD",
+            "namespace": "value",
+            "name": "NFKD",
+            "constructorOf": "std/text/unicode::NormalizationForm",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "NormalizationForm",
+                "canonical": "std/text/unicode::NormalizationForm",
+                "providerModule": "std/text/unicode",
+                "providerExport": "NormalizationForm",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::UppercaseLetter",
+            "namespace": "value",
+            "name": "UppercaseLetter",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::LowercaseLetter",
+            "namespace": "value",
+            "name": "LowercaseLetter",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::TitlecaseLetter",
+            "namespace": "value",
+            "name": "TitlecaseLetter",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::ModifierLetter",
+            "namespace": "value",
+            "name": "ModifierLetter",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::OtherLetter",
+            "namespace": "value",
+            "name": "OtherLetter",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::NonspacingMark",
+            "namespace": "value",
+            "name": "NonspacingMark",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::SpacingMark",
+            "namespace": "value",
+            "name": "SpacingMark",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::EnclosingMark",
+            "namespace": "value",
+            "name": "EnclosingMark",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::DecimalNumber",
+            "namespace": "value",
+            "name": "DecimalNumber",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::LetterNumber",
+            "namespace": "value",
+            "name": "LetterNumber",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::OtherNumber",
+            "namespace": "value",
+            "name": "OtherNumber",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::ConnectorPunctuation",
+            "namespace": "value",
+            "name": "ConnectorPunctuation",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::DashPunctuation",
+            "namespace": "value",
+            "name": "DashPunctuation",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::OpenPunctuation",
+            "namespace": "value",
+            "name": "OpenPunctuation",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::ClosePunctuation",
+            "namespace": "value",
+            "name": "ClosePunctuation",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::InitialPunctuation",
+            "namespace": "value",
+            "name": "InitialPunctuation",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::FinalPunctuation",
+            "namespace": "value",
+            "name": "FinalPunctuation",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::OtherPunctuation",
+            "namespace": "value",
+            "name": "OtherPunctuation",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::MathSymbol",
+            "namespace": "value",
+            "name": "MathSymbol",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::CurrencySymbol",
+            "namespace": "value",
+            "name": "CurrencySymbol",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::ModifierSymbol",
+            "namespace": "value",
+            "name": "ModifierSymbol",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::OtherSymbol",
+            "namespace": "value",
+            "name": "OtherSymbol",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::SpaceSeparator",
+            "namespace": "value",
+            "name": "SpaceSeparator",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::LineSeparator",
+            "namespace": "value",
+            "name": "LineSeparator",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::ParagraphSeparator",
+            "namespace": "value",
+            "name": "ParagraphSeparator",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::Control",
+            "namespace": "value",
+            "name": "Control",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::Format",
+            "namespace": "value",
+            "name": "Format",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::PrivateUse",
+            "namespace": "value",
+            "name": "PrivateUse",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::Unassigned",
+            "namespace": "value",
+            "name": "Unassigned",
+            "constructorOf": "std/text/unicode::UnicodeGeneralCategory",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UnicodeGeneralCategory",
+                "canonical": "std/text/unicode::UnicodeGeneralCategory",
+                "providerModule": "std/text/unicode",
+                "providerExport": "UnicodeGeneralCategory",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::isAlphabetic",
+            "namespace": "value",
+            "name": "isAlphabetic",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::isWhitespace",
+            "namespace": "value",
+            "name": "isWhitespace",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::isDecimalDigit",
+            "namespace": "value",
+            "name": "isDecimalDigit",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/text/unicode::isMark",
+            "namespace": "value",
+            "name": "isMark",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/transformer/either",

@@ -1,6 +1,8 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { stringShow as _ssrg_show_stringShow } from "@seseragi/runtime/show"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { Just as _ssrg_maybe_Just } from "@seseragi/runtime/sum"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export const __ssrg$instance$Render$0 = <T,>(__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ({ "render": (value: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: T }) => (($ssrg_match: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: T }): string => $ssrg_match.tag === "Nothing" ? "No value" : $ssrg_match.tag === "Just" ? ((item: T): string => ((acknowledge(item)(__ssrg$evidence$0)) as string))($ssrg_match.value) : ((): never => { throw new Error("non-exhaustive Seseragi match"); })())(value) }) as const;
 const acknowledge = <T,>(value: T) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => "Standard Show evidence"

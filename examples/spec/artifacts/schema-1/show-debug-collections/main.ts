@@ -1,8 +1,10 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { stringShow as _ssrg_show_stringShow, intShow as _ssrg_show_intShow, listShow as _ssrg_show_listShow, eitherShow as _ssrg_show_eitherShow, maybeShow as _ssrg_show_maybeShow, arrayShow as _ssrg_show_arrayShow, stringDebug as _ssrg_debug_stringDebug, boolDebug as _ssrg_debug_boolDebug, listDebug as _ssrg_debug_listDebug, eitherDebug as _ssrg_debug_eitherDebug, maybeDebug as _ssrg_debug_maybeDebug, arrayDebug as _ssrg_debug_arrayDebug } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { Just as _ssrg_maybe_Just, Right as _ssrg_either_Right, Nothing as _ssrg_maybe_Nothing, Left as _ssrg_either_Left } from "@seseragi/runtime/sum"
 import { fromArray as _ssrg_list_from_array, type List as List } from "@seseragi/runtime/list"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Badge =
   | { readonly tag: "Active" }

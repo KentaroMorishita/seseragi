@@ -1,4 +1,6 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedShow as _ssrg_show_boundedShow, boundedDebug as _ssrg_debug_boundedDebug, stringShow as _ssrg_show_stringShow, stringDebug as _ssrg_debug_stringDebug, maybeShow as _ssrg_show_maybeShow, maybeDebug as _ssrg_debug_maybeDebug, type Show as _ssrg_show_Show, type Debug as _ssrg_debug_Debug } from "@seseragi/runtime/show"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export type Code =
   | { readonly tag: "Code"; readonly value: string };

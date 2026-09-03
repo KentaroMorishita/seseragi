@@ -114,6 +114,10 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         output.push_str(line);
         output.push('\n');
     }
+    output.push_str(&format!(
+        "$ssrg$assertUnicodeVersion({:?})\n",
+        seseragi_syntax::unicode::UNICODE_VERSION
+    ));
     if !import_lines.is_empty()
         && (!module.adts.is_empty()
             || !module.structs.is_empty()

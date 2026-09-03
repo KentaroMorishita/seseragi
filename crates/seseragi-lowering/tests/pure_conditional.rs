@@ -4,6 +4,9 @@ use seseragi_lowering::{
 };
 use seseragi_semantics::type_module;
 
+mod support;
+use support::with_unicode_header;
+
 #[test]
 fn lowers_typed_conditional_to_sync_typescript_expression() {
     let source =
@@ -49,6 +52,6 @@ fn lowers_typed_conditional_to_sync_typescript_expression() {
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "import { intEq as _ssrg_int_eq_dictionary } from \"@seseragi/runtime/equality\"\n\nexport const classify = (value: number) => _ssrg_int_eq_dictionary[\"eq\"](value)(0) ? \"zero\" : \"other\"\n"
+        with_unicode_header("import { intEq as _ssrg_int_eq_dictionary } from \"@seseragi/runtime/equality\"\n", "export const classify = (value: number) => _ssrg_int_eq_dictionary[\"eq\"](value)(0) ? \"zero\" : \"other\"\n")
     );
 }

@@ -1,0 +1,18 @@
+import * as text from "std/text"
+import * as char from "std/char"
+import * as unicode from "std/text/unicode"
+import * as graphemes from "std/text/grapheme"
+
+let canonicalize: String -> String = unicode.normalize unicode.NFC
+let takeScalars: String -> Either<text.TextSliceError, String> = text.sliceScalars 1 3
+let takeGraphemes: String -> Either<graphemes.GraphemeSliceError, String> =
+  graphemes.slice 1 3
+
+pub fn normalize value: String -> String = canonicalize value
+pub fn scalarSlice value: String -> Either<text.TextSliceError, String> =
+  takeScalars value
+pub fn graphemeSlice value: String -> Either<graphemes.GraphemeSliceError, String> =
+  takeGraphemes value
+pub fn character value: Int -> Maybe<Char> = char.fromCodePoint value
+pub fn point value: Char -> Int = char.codePoint value
+pub fn inspectError value: text.TextSliceError -> String = debug value

@@ -1,3 +1,4 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedShow as _ssrg_show_boundedShow, boundedDebug as _ssrg_debug_boundedDebug, stringShow as _ssrg_show_stringShow, intShow as _ssrg_show_intShow, stringDebug as _ssrg_debug_stringDebug, intDebug as _ssrg_debug_intDebug, validationShow as _ssrg_show_validationShow, validationDebug as _ssrg_debug_validationDebug, boolShow as _ssrg_show_boolShow, nonEmptyListShow as _ssrg_show_nonEmptyListShow, eitherShow as _ssrg_show_eitherShow, tupleShow as _ssrg_show_tupleShow, type Show as _ssrg_show_Show, type Debug as _ssrg_debug_Debug } from "@seseragi/runtime/show"
 import { stringEq as _ssrg_string_eq_dictionary, intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { fromArray as _ssrg_list_from_array, listFunctor as _ssrg_list_functor, toListNonEmpty as _ssrg_non_empty_list_toList, listIterable as _ssrg_list_iterable, consNonEmpty as _ssrg_non_empty_list_cons, type List as List, type NonEmptyList as NonEmptyList } from "@seseragi/runtime/list"
@@ -7,6 +8,7 @@ import { flatMap as _ssrg_effect_flatMap, type Effect as Effect } from "@seserag
 import { forEach as _ssrg_collection_for_each } from "@seseragi/runtime/collection"
 import { println as _ssrg_console_println, type Console as Console, type ConsoleError as ConsoleError } from "@seseragi/runtime/console"
 import { Left as _ssrg_either_Left, Right as _ssrg_either_Right } from "@seseragi/runtime/sum"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type FormError =
   | { readonly tag: "NameRequired" }

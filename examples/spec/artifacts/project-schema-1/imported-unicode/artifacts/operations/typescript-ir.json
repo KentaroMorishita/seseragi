@@ -1,0 +1,371 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-unicode::operations",
+  "runtimeRequirements": [
+    "core.text.unicode.normalization-form",
+    "core.text.slice-error",
+    "core.text.grapheme.slice-error",
+    "core.text.unicode.normalize",
+    "core.string",
+    "core.text.unicode.nfc",
+    "core.text.slice-scalars",
+    "core.either",
+    "core.int",
+    "core.text.grapheme.slice",
+    "core.char.from-code-point",
+    "core.maybe",
+    "core.char",
+    "core.char.code-point",
+    "core.text.slice-error.debug"
+  ],
+  "imports": [
+    {
+      "feature": "core.text.unicode.normalize",
+      "local": "_ssrg_unicode_normalize"
+    },
+    {
+      "feature": "core.text.unicode.nfc",
+      "local": "_ssrg_unicode_NFC"
+    },
+    {
+      "feature": "core.text.slice-scalars",
+      "local": "_ssrg_text_sliceScalars"
+    },
+    {
+      "feature": "core.text.grapheme.slice",
+      "local": "_ssrg_grapheme_slice"
+    },
+    {
+      "feature": "core.char.from-code-point",
+      "local": "_ssrg_char_fromCodePoint"
+    },
+    {
+      "feature": "core.char.code-point",
+      "local": "_ssrg_char_codePoint"
+    },
+    {
+      "feature": "core.text.slice-error.debug",
+      "local": "_ssrg_textSliceErrorDebug"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.text.unicode.normalization-form",
+      "local": "NormalizationForm"
+    },
+    {
+      "feature": "core.text.slice-error",
+      "local": "TextSliceError"
+    },
+    {
+      "feature": "core.text.grapheme.slice-error",
+      "local": "GraphemeSliceError"
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "canonicalize",
+      "type": {
+        "kind": "function",
+        "parameter": {
+          "kind": "string"
+        },
+        "result": {
+          "kind": "string"
+        }
+      },
+      "initializer": {
+        "kind": "lambda",
+        "parameter": "__ssrg$text_bytes$partial$0: string",
+        "body": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_unicode_normalize",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_unicode_NFC"
+            },
+            {
+              "kind": "identifier",
+              "name": "__ssrg$text_bytes$partial$0"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 158,
+        "end": 224
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "takeScalars",
+      "type": {
+        "kind": "function",
+        "parameter": {
+          "kind": "string"
+        },
+        "result": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "TextSliceError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "string"
+          }
+        }
+      },
+      "initializer": {
+        "kind": "lambda",
+        "parameter": "__ssrg$text_bytes$partial$0: string",
+        "body": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_text_sliceScalars",
+          "arguments": [
+            {
+              "kind": "number",
+              "value": "1"
+            },
+            {
+              "kind": "number",
+              "value": "3"
+            },
+            {
+              "kind": "identifier",
+              "name": "__ssrg$text_bytes$partial$0"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 225,
+        "end": 311
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "takeGraphemes",
+      "type": {
+        "kind": "function",
+        "parameter": {
+          "kind": "string"
+        },
+        "result": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "GraphemeSliceError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "string"
+          }
+        }
+      },
+      "initializer": {
+        "kind": "lambda",
+        "parameter": "__ssrg$text_bytes$partial$0: string",
+        "body": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_grapheme_slice",
+          "arguments": [
+            {
+              "kind": "number",
+              "value": "1"
+            },
+            {
+              "kind": "number",
+              "value": "3"
+            },
+            {
+              "kind": "identifier",
+              "name": "__ssrg$text_bytes$partial$0"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 312,
+        "end": 409
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "normalize",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "canonicalize",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 411,
+        "end": 472
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "scalarSlice",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "takeScalars",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 473,
+        "end": 566
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "graphemeSlice",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "takeGraphemes",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 567,
+        "end": 673
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "character",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "number",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_char_fromCodePoint",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 674,
+        "end": 743
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "point",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_char_codePoint",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 744,
+        "end": 798
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "inspectError",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "TextSliceError",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_textSliceErrorDebug"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "operations.ssrg",
+        "start": 799,
+        "end": 869
+      }
+    }
+  ]
+}

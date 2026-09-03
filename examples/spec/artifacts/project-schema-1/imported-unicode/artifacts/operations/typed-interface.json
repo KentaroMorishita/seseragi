@@ -1,0 +1,281 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-unicode::operations",
+  "source": "operations.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/text",
+      "module": "std/text",
+      "origin": {
+        "start": 0,
+        "end": 32
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/text::*",
+          "localName": "text"
+        }
+      ]
+    },
+    {
+      "specifier": "std/char",
+      "module": "std/char",
+      "origin": {
+        "start": 33,
+        "end": 65
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/char::*",
+          "localName": "char"
+        }
+      ]
+    },
+    {
+      "specifier": "std/text/unicode",
+      "module": "std/text/unicode",
+      "origin": {
+        "start": 66,
+        "end": 109
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/text/unicode::*",
+          "localName": "unicode"
+        }
+      ]
+    },
+    {
+      "specifier": "std/text/grapheme",
+      "module": "std/text/grapheme",
+      "origin": {
+        "start": 110,
+        "end": 156
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/text/grapheme::*",
+          "localName": "graphemes"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-unicode::operations::normalize",
+      "namespace": "value",
+      "name": "normalize",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 411,
+        "end": 472
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::scalarSlice",
+      "namespace": "value",
+      "name": "scalarSlice",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 473,
+        "end": 566
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "text.TextSliceError",
+                "canonical": "std/text::TextSliceError",
+                "providerModule": "std/text",
+                "providerExport": "TextSliceError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::graphemeSlice",
+      "namespace": "value",
+      "name": "graphemeSlice",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 567,
+        "end": 673
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "graphemes.GraphemeSliceError",
+                "canonical": "std/text/grapheme::GraphemeSliceError",
+                "providerModule": "std/text/grapheme",
+                "providerExport": "GraphemeSliceError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::character",
+      "namespace": "value",
+      "name": "character",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 674,
+        "end": 743
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Char",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::point",
+      "namespace": "value",
+      "name": "point",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 744,
+        "end": 798
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Char",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-unicode::operations::inspectError",
+      "namespace": "value",
+      "name": "inspectError",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 799,
+        "end": 869
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "external-named",
+            "name": "text.TextSliceError",
+            "canonical": "std/text::TextSliceError",
+            "providerModule": "std/text",
+            "providerExport": "TextSliceError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

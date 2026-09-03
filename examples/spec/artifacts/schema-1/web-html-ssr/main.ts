@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { div as _ssrg_html_div, p as _ssrg_html_p, button as _ssrg_html_button, a as _ssrg_html_a, img as _ssrg_html_img, renderToString as _ssrg_html_renderToString, parseWebUrl as _ssrg_html_parseWebUrl, type WebUrl as WebUrl, type Html as Html, type HtmlBuildError as HtmlBuildError } from "@seseragi/runtime/html"
 import { htmlBuildErrorShow as _ssrg_show_htmlBuildErrorShow } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Action =
   | { readonly tag: "Confirm" };

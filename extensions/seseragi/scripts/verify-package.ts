@@ -1,7 +1,7 @@
 import {
   chmodSync,
-  mkdtempSync,
   mkdirSync,
+  mkdtempSync,
   rmSync,
   statSync,
   writeFileSync,
@@ -285,6 +285,7 @@ export async function verifyPackage(
     "extension/package.json",
     "extension/dist/extension.js",
     "extension/LICENSE.txt",
+    "extension/UNICODE-LICENSE",
     "extension/readme.md",
     "extension/changelog.md",
     "extension/syntaxes/seseragi.tmLanguage.json",

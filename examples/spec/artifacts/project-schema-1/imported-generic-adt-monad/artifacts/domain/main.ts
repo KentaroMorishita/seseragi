@@ -1,3 +1,6 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
+$ssrg$assertUnicodeVersion("17.0.0")
+
 export type Box<A> =
   | { readonly tag: "Boxed"; readonly value: A };
 export const Boxed = <A>(value: A): Box<A> => ({ tag: "Boxed", value } as const);

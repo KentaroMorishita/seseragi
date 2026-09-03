@@ -1,16 +1,15 @@
 import type { ByteError, BytesSliceError } from "./bytes"
-import type { SizeError } from "./collection"
 import type {
   ChildExitStatus,
   ChildProcessConfigError,
   ChildProcessError,
 } from "./child-process"
 import type { DurationError } from "./clock"
-import type { DateTimeError, TimeZoneError } from "./time"
+import type { SizeError } from "./collection"
 import type { ConsoleError } from "./console-service"
 import type { DomError, DomRuntimeError } from "./dom"
 import type { ParallelismError, ScheduleError } from "./effect"
-import type { JsError } from "./foreign"
+import type { EntropyConfigError, EntropyError } from "./entropy"
 import type {
   DirectoryEntry,
   FileMetadata,
@@ -21,25 +20,28 @@ import type {
   FileType,
   WriteMode,
 } from "./filesystem"
+import type { JsError } from "./foreign"
+import type { GraphemeSliceError } from "./grapheme"
 import type { HtmlBuildError } from "./html"
 import type { HttpBuildError, HttpError } from "./http-client"
 import type { List, NonEmptyList } from "./list"
-import { entries as mapEntries, type Map as PersistentMap } from "./map"
-import { toArray as setValues, type Set as PersistentSet } from "./set"
 import type { LogError } from "./logger-service"
+import { entries as mapEntries, type Map as PersistentMap } from "./map"
 import type { NavigationError, UrlBuildError } from "./navigation"
 import { type PathError, render as renderPath } from "./path"
 import type { ProcessError, ProcessSignal } from "./process"
-import type { RandomConfigError, RandomRangeError } from "./random"
-import type { EntropyConfigError, EntropyError } from "./entropy"
 import type { QueueClosed, QueueCreateError } from "./queue"
+import type { RandomConfigError, RandomRangeError } from "./random"
 import type { SemaphoreCreateError } from "./semaphore"
+import { type Set as PersistentSet, toArray as setValues } from "./set"
 import type { StdinConfigError, StdinError } from "./stdin-service"
 import type { StorageArea, StorageError } from "./storage"
 import type { BufferCapacityError } from "./stream"
 import type { Either, Maybe } from "./sum"
+import type { TextSliceError, Utf8DecodeError } from "./text"
+import type { DateTimeError, TimeZoneError } from "./time"
+import type { NormalizationForm, UnicodeGeneralCategory } from "./unicode"
 import type { Validation } from "./validation"
-import type { Utf8DecodeError } from "./text"
 
 export type RenderLayout = "compact" | "multiline" | "auto"
 
@@ -1188,6 +1190,41 @@ function recordConstructorDocument(
     true
   )
 }
+
+function textRangeErrorDocument(
+  error: TextSliceError | GraphemeSliceError
+): RenderDocument {
+  return recordConstructorDocument(error.tag, [
+    ["start", String(error.value.start)],
+    ["end", String(error.value.end)],
+    ["length", String(error.value.length)],
+  ])
+}
+
+export const textSliceErrorShow = defineShow<TextSliceError>(
+  textRangeErrorDocument
+)
+export const textSliceErrorDebug = defineDebug<TextSliceError>(
+  textRangeErrorDocument
+)
+export const graphemeSliceErrorShow = defineShow<GraphemeSliceError>(
+  textRangeErrorDocument
+)
+export const graphemeSliceErrorDebug = defineDebug<GraphemeSliceError>(
+  textRangeErrorDocument
+)
+export const normalizationFormShow = defineShow((value: NormalizationForm) =>
+  text(value.tag)
+)
+export const normalizationFormDebug = defineDebug((value: NormalizationForm) =>
+  text(value.tag)
+)
+export const unicodeGeneralCategoryShow = defineShow(
+  (value: UnicodeGeneralCategory) => text(value.tag)
+)
+export const unicodeGeneralCategoryDebug = defineDebug(
+  (value: UnicodeGeneralCategory) => text(value.tag)
+)
 
 function utf8DecodeErrorDocument(error: Utf8DecodeError): RenderDocument {
   return delimited(

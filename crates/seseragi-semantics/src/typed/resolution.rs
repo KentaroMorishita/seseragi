@@ -1006,11 +1006,7 @@ fn explicit_effect_value_type(
 }
 
 fn lower_first(value: &str) -> String {
-    let mut chars = value.chars();
-    match chars.next() {
-        Some(first) => first.to_lowercase().chain(chars).collect(),
-        None => String::new(),
-    }
+    seseragi_syntax::unicode::lowercase_first(value)
 }
 
 fn semantic_typed_type_from_type_ref(

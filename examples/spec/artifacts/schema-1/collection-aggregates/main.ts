@@ -1,9 +1,11 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intOne as _ssrg_int_one, intMul as _ssrg_int_mul_dictionary } from "@seseragi/runtime/int"
 import { product as _ssrg_collection_product, any as _ssrg_collection_any, all as _ssrg_collection_all } from "@seseragi/runtime/collection"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { arrayReducible as _ssrg_array_reducible, arrayIterable as _ssrg_array_iterable } from "@seseragi/runtime/array"
 import { listReducible as _ssrg_list_reducible, fromArray as _ssrg_list_from_array, listIterable as _ssrg_list_iterable } from "@seseragi/runtime/list"
 import { rangeReducible as _ssrg_range_reducible, inclusive as _ssrg_range_inclusive, rangeIterable as _ssrg_range_iterable } from "@seseragi/runtime/range"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const productValues = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => _ssrg_collection_product(__ssrg$evidence$0, _ssrg_int_one, _ssrg_int_mul_dictionary, values)
 const anyPositive = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => _ssrg_collection_any(__ssrg$evidence$0, (value: number) => value > 0, values)

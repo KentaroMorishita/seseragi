@@ -1,5 +1,7 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { style as _ssrg_html_style, section as _ssrg_html_section, h2 as _ssrg_html_h2, p as _ssrg_html_p, main as _ssrg_html_main, h1 as _ssrg_html_h1, renderToString as _ssrg_html_renderToString, type Style as Style, type Html as Html } from "@seseragi/runtime/html"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Action =
   | { readonly tag: "Confirm" };

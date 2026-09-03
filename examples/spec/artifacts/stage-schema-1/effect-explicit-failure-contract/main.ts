@@ -1,5 +1,7 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedShow as _ssrg_show_boundedShow, type Show as _ssrg_show_Show } from "@seseragi/runtime/show"
 import { succeed as _ssrg_effect_succeed, flatMap as _ssrg_effect_flatMap, mapError as _ssrg_effect_mapError, fail as _ssrg_effect_fail } from "@seseragi/runtime/effect"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export type SourceError =
   | { readonly tag: "Source" };

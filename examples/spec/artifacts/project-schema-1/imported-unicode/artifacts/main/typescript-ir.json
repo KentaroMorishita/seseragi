@@ -1,0 +1,538 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-unicode::main",
+  "runtimeRequirements": [
+    "core.text.slice-error",
+    "core.text.grapheme.slice-error",
+    "core.string",
+    "core.unit",
+    "effect.core.flatMap",
+    "core.either",
+    "effect.console.println",
+    "core.text.slice-error.show",
+    "core.string.show",
+    "core.either.show",
+    "core.text.grapheme.slice-error.show",
+    "core.char.show",
+    "core.maybe.show",
+    "core.maybe",
+    "core.char",
+    "core.int",
+    "core.int.show",
+    "core.maybe.functor",
+    "core.text.invalid-scalar-range",
+    "core.int.subtract"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.text.slice-error.show",
+      "local": "_ssrg_textSliceErrorShow"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.either.show",
+      "local": "_ssrg_show_eitherShow"
+    },
+    {
+      "feature": "core.text.grapheme.slice-error.show",
+      "local": "_ssrg_graphemeSliceErrorShow"
+    },
+    {
+      "feature": "core.char.show",
+      "local": "_ssrg_show_charShow"
+    },
+    {
+      "feature": "core.maybe.show",
+      "local": "_ssrg_show_maybeShow"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.maybe.functor",
+      "local": "_ssrg_maybe_functor"
+    },
+    {
+      "feature": "core.text.invalid-scalar-range",
+      "local": "_ssrg_text_InvalidScalarRange"
+    },
+    {
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.text.slice-error",
+      "local": "TextSliceError"
+    },
+    {
+      "feature": "core.text.grapheme.slice-error",
+      "local": "GraphemeSliceError"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-unicode::operations",
+      "specifier": "./operations.js",
+      "bindings": [
+        {
+          "imported": "normalize",
+          "local": "ops_normalize",
+          "sourceLocal": "ops.normalize",
+          "canonical": "fixture/imported-unicode::operations::normalize",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "imported": "scalarSlice",
+          "local": "ops_scalarSlice",
+          "sourceLocal": "ops.scalarSlice",
+          "canonical": "fixture/imported-unicode::operations::scalarSlice",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "imported": "graphemeSlice",
+          "local": "ops_graphemeSlice",
+          "sourceLocal": "ops.graphemeSlice",
+          "canonical": "fixture/imported-unicode::operations::graphemeSlice",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "imported": "character",
+          "local": "ops_character",
+          "sourceLocal": "ops.character",
+          "canonical": "fixture/imported-unicode::operations::character",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "imported": "point",
+          "local": "ops_point",
+          "sourceLocal": "ops.point",
+          "canonical": "fixture/imported-unicode::operations::point",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "imported": "inspectError",
+          "local": "ops_inspectError",
+          "sourceLocal": "ops.inspectError",
+          "canonical": "fixture/imported-unicode::operations::inspectError",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 15
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 35
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "source",
+      "type": {
+        "kind": "string"
+      },
+      "initializer": {
+        "kind": "string",
+        "value": "A👍🏽é"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 70,
+        "end": 103
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "normalize",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "string"
+              },
+              "result": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "ops_normalize"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 133,
+              "end": 180
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "slice",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "string"
+              },
+              "result": {
+                "kind": "either",
+                "error": {
+                  "kind": "reference",
+                  "name": "TextSliceError",
+                  "arguments": []
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "ops_scalarSlice"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 183,
+              "end": 257
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "normalize",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "source"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_show_eitherShow",
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "TextSliceError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "string"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_textSliceErrorShow"
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_stringShow"
+                      }
+                    ]
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "slice",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "source"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_show_eitherShow",
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "GraphemeSliceError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "string"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_graphemeSliceErrorShow"
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_stringShow"
+                      }
+                    ]
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "ops_graphemeSlice",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "source"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_maybeShow",
+                        "typeArguments": [
+                          {
+                            "kind": "string"
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_show_charShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "ops_character",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "128077"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": " / "
+                    }
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_maybe_functor"
+                        },
+                        "method": "map",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "ops_point"
+                          },
+                          {
+                            "kind": "call",
+                            "callee": "ops_character",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "128077"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "ops_inspectError",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_text_InvalidScalarRange",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "start",
+                          "value": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_int_subtract",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "0"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "1"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "end",
+                          "value": {
+                            "kind": "number",
+                            "value": "2"
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "length",
+                          "value": {
+                            "kind": "number",
+                            "value": "5"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 105,
+        "end": 531
+      }
+    }
+  ]
+}

@@ -1,6 +1,8 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boolJsonEncode as _ssrg_bool_json_encode, stringJsonEncode as _ssrg_string_json_encode, intJsonEncode as _ssrg_int_json_encode, recordJsonEncode as _ssrg_record_json_encode, encodeString as _ssrg_json_encodeString, boolJsonDecode as _ssrg_bool_json_decode, stringJsonDecode as _ssrg_string_json_decode, intJsonDecode as _ssrg_int_json_decode, recordJsonDecode as _ssrg_record_json_decode, decodeString as _ssrg_json_decodeString, type JsonReadError as JsonReadError } from "@seseragi/runtime/json"
 import { Left as _ssrg_either_Left, Right as _ssrg_either_Right } from "@seseragi/runtime/sum"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export const encodeRecord = (value: { readonly "active": boolean; readonly "name": string; readonly "score": number }) => _ssrg_json_encodeString(value, _ssrg_record_json_encode<{ readonly "active": boolean; readonly "name": string; readonly "score": number }>(["active", "name", "score"] as const, [false, false, false] as const, _ssrg_bool_json_encode, _ssrg_string_json_encode, _ssrg_int_json_encode))
 export const decodeRecord = (text: string) => _ssrg_json_decodeString(text, _ssrg_record_json_decode<{ readonly "active": boolean; readonly "name": string; readonly "score": number }>(["active", "name", "score"] as const, [false, false, false] as const, _ssrg_bool_json_decode, _ssrg_string_json_decode, _ssrg_int_json_decode))
