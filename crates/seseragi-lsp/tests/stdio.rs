@@ -279,6 +279,61 @@ fn prelude_registry_methods_reach_hover_and_completion_with_canonical_signatures
             assert!(detail.contains("NonEmptyList<E>"), "{name}: {detail}");
         }
     }
+    for (identity, signature) in [
+        ("std/char::fromCodePoint", "Int -> Maybe<Char>"),
+        ("std/text::sliceScalars", "Either<TextSliceError, String>"),
+        (
+            "std/text/unicode::normalize",
+            "NormalizationForm -> arg2: String -> String",
+        ),
+        (
+            "std/text/grapheme::slice",
+            "Either<GraphemeSliceError, String>",
+        ),
+    ] {
+        let item = completions
+            .iter()
+            .find(|item| item["data"]["identity"] == identity)
+            .expect("canonical Unicode completion");
+        assert!(
+            item["detail"].as_str().unwrap().contains(signature),
+            "{identity}: {item}"
+        );
+    }
+}
+
+#[test]
+fn unicode_namespace_completion_keeps_combining_identifier_continuations() {
+    let uri = "file:///unicode-completion.ssrg";
+    let source =
+        "import * as te\u{301}xt from \"std/text/unicode\"\npub fn value -> String = te\u{301}xt.";
+    let character = source.lines().nth(1).unwrap().encode_utf16().count();
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{}}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{
+            "uri":uri,"languageId":"seseragi","version":1,"text":source
+        }}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/completion","params":{
+            "textDocument":{"uri":uri},"position":{"line":1,"character":character}
+        }}),
+        json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    let items = response(&messages, 2)["result"].as_array().unwrap();
+    assert!(
+        items
+            .iter()
+            .any(|item| item["data"]["identity"] == "std/text/unicode::normalize"),
+        "normalize missing from {} completions",
+        items.len()
+    );
+    assert!(
+        items.iter().all(|item| item["data"]["identity"]
+            .as_str()
+            .unwrap()
+            .starts_with("std/text/unicode::")),
+        "namespace completion leaked other modules"
+    );
 }
 
 #[test]

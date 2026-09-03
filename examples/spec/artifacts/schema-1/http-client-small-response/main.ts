@@ -1,8 +1,10 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedShow as _ssrg_show_boundedShow, httpBuildErrorShow as _ssrg_show_httpBuildErrorShow, byteErrorShow as _ssrg_show_byteErrorShow, httpErrorShow as _ssrg_show_httpErrorShow, utf8DecodeErrorShow as _ssrg_show_utf8DecodeErrorShow, type Show as _ssrg_show_Show } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap, mapError as _ssrg_effect_mapError, fromEither as _ssrg_effect_fromEither } from "@seseragi/runtime/effect"
 import { parseUrl as _ssrg_http_client_parseUrl, withRequestHeader as _ssrg_http_client_withRequestHeader, request as _ssrg_http_client_request, post as _ssrg_http_client_post, sendBytes as _ssrg_http_client_sendBytes, defaultBodyLimit as _ssrg_http_client_defaultBodyLimit, responseBody as _ssrg_http_client_responseBody, type HttpBuildError as HttpBuildError, type HttpError as HttpError, type HttpUrl as HttpUrl, type Request as Request, type Method as Method, type Response as Response, type HttpBodyLimit as HttpBodyLimit } from "@seseragi/runtime/http-client"
 import { fromInts as _ssrg_bytes_fromInts, type ByteError as ByteError, type Bytes as Bytes } from "@seseragi/runtime/bytes"
 import { decodeUtf8 as _ssrg_text_decodeUtf8, type Utf8DecodeError as Utf8DecodeError } from "@seseragi/runtime/text"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type AppError =
   | { readonly tag: "BuildFailure"; readonly value: HttpBuildError }

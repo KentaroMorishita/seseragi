@@ -1,0 +1,14 @@
+import * as ops from "./operations"
+import * as text from "std/text"
+
+let source = "A👍🏽e\u{0301}"
+
+pub effect fn main = do {
+  let normalize: String -> String = ops.normalize
+  let slice: String -> Either<text.TextSliceError, String> = ops.scalarSlice
+  println $ normalize source
+  println $ show (slice source)
+  println $ show (ops.graphemeSlice source)
+  println `${ops.character 128077} / ${map ops.point (ops.character 128077)}`
+  println $ ops.inspectError (text.InvalidScalarRange { start: - 1, end: 2, length: 5 })
+}

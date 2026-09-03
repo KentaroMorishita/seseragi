@@ -213,9 +213,5 @@ fn named_type_is(type_ref: &TypedType, expected_name: &str) -> bool {
 }
 
 fn lower_first(value: &str) -> String {
-    let mut chars = value.chars();
-    match chars.next() {
-        Some(first) => first.to_lowercase().chain(chars).collect(),
-        None => String::new(),
-    }
+    seseragi_syntax::unicode::lowercase_first(value)
 }

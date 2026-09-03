@@ -1,5 +1,20 @@
 # Change Log
 
+## [0.50.0] - 2026-09-04
+
+### Added
+
+- Connect scalar/UTF-8 text operations, `std/char`, pinned Unicode normalization,
+  properties, default casing/folding, and extended grapheme APIs through the
+  canonical standard interface and all supported products.
+- Pin Unicode 17.0.0 data and official conformance suites; use the same version
+  for compiler identifiers, normalization, casing, runtime, formatter, and LSP.
+- Reject generated modules before source initialization when their Unicode data
+  version differs from the runtime. Preserve the primitive String ABI and
+  specify UTF-8 `lengthBytes` as O(n).
+- Preserve U+FEFF through UTF-8 decoding and detached text slices; provide
+  checked scalar/grapheme range errors with Eq, Show, and Debug dictionaries.
+
 ## [0.49.0] - 2026-09-03
 
 ### Added

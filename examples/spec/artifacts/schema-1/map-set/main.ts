@@ -1,3 +1,4 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intEq as _ssrg_int_eq_dictionary, stringEq as _ssrg_string_eq_dictionary } from "@seseragi/runtime/equality"
 import { singleton as _ssrg_map_singleton, insert as _ssrg_map_insert, keys as _ssrg_map_keys, values as _ssrg_map_values, get as _ssrg_map_get, fromEntries as _ssrg_map_fromEntries, mapReducible as _ssrg_map_reducible, remove as _ssrg_map_remove, mapEq as _ssrg_map_eq, mapFunctor as _ssrg_map_functor, mapIterable as _ssrg_map_iterable, empty as _ssrg_map_empty, containsKey as _ssrg_map_containsKey, upsert as _ssrg_map_upsert, filter as _ssrg_map_filter, mapValues as _ssrg_map_mapValues, mapKeysWith as _ssrg_map_mapKeysWith, mergeWith as _ssrg_map_mergeWith, entries as _ssrg_map_entries, size as _ssrg_map_size, isEmpty as _ssrg_map_isEmpty, type Map as Map } from "@seseragi/runtime/map"
 import { stringShow as _ssrg_show_stringShow, arrayShow as _ssrg_show_arrayShow, maybeShow as _ssrg_show_maybeShow, tupleShow as _ssrg_show_tupleShow, intShow as _ssrg_show_intShow, mapShow as _ssrg_map_show, stringDebug as _ssrg_debug_stringDebug, intDebug as _ssrg_debug_intDebug, mapDebug as _ssrg_map_debug, boolShow as _ssrg_show_boolShow, setShow as _ssrg_set_show, listShow as _ssrg_show_listShow, setDebug as _ssrg_set_debug } from "@seseragi/runtime/show"
@@ -10,6 +11,7 @@ import { flatMap as _ssrg_effect_flatMap, type Effect as Effect } from "@seserag
 import { println as _ssrg_console_println, type Console as Console, type ConsoleError as ConsoleError } from "@seseragi/runtime/console"
 import { forEach as _ssrg_collection_for_each, sum as _ssrg_collection_sum } from "@seseragi/runtime/collection"
 import { listIterable as _ssrg_list_iterable, fromArray as _ssrg_list_from_array, type List as List } from "@seseragi/runtime/list"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Key =
   | { readonly tag: "Key"; readonly value: readonly [number, string] };

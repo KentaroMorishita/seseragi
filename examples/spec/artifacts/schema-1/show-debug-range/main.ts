@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intShow as _ssrg_show_intShow, rangeShow as _ssrg_show_rangeShow, intDebug as _ssrg_debug_intDebug, rangeDebug as _ssrg_debug_rangeDebug, arrayDebug as _ssrg_debug_arrayDebug } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { exclusive as _ssrg_range_exclusive, inclusive as _ssrg_range_inclusive } from "@seseragi/runtime/range"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export const showRange = (value: Readonly<{ start: number; end: number; inclusive: boolean }>) => _ssrg_show_rangeShow<number>(_ssrg_show_intShow)["show"](value)
 export const debugRange = (value: Readonly<{ start: number; end: number; inclusive: boolean }>) => _ssrg_debug_rangeDebug<number>(_ssrg_debug_intDebug)["debug"](value)

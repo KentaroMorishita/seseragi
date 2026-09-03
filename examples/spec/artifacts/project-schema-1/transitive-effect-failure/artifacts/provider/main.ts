@@ -1,5 +1,7 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedShow as _ssrg_show_boundedShow, stringShow as _ssrg_show_stringShow, type Show as _ssrg_show_Show } from "@seseragi/runtime/show"
 import { fail as _ssrg_effect_fail } from "@seseragi/runtime/effect"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export type InputError =
   | { readonly tag: "InvalidInput"; readonly value: string };

@@ -10,6 +10,46 @@ pub(crate) struct RuntimePreludeDictionary {
 
 const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
     RuntimePreludeDictionary {
+        semantic_identity: "Eq<std/text::TextSliceError>",
+        runtime_feature: "core.text.slice-error.eq",
+        local_name: "_ssrg_textSliceErrorEq",
+        module: "@seseragi/runtime/text",
+        export_name: "textSliceErrorEq",
+        source_map_name: "textSliceErrorEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "Eq<std/text/grapheme::GraphemeSliceError>",
+        runtime_feature: "core.text.grapheme.slice-error.eq",
+        local_name: "_ssrg_graphemeSliceErrorEq",
+        module: "@seseragi/runtime/grapheme",
+        export_name: "graphemeSliceErrorEq",
+        source_map_name: "graphemeSliceErrorEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "Eq<std/text/unicode::NormalizationForm>",
+        runtime_feature: "core.text.unicode.normalization-form.eq",
+        local_name: "_ssrg_normalizationFormEq",
+        module: "@seseragi/runtime/unicode",
+        export_name: "normalizationFormEq",
+        source_map_name: "normalizationFormEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "Eq<std/text/unicode::UnicodeGeneralCategory>",
+        runtime_feature: "core.text.unicode.category.eq",
+        local_name: "_ssrg_unicodeGeneralCategoryEq",
+        module: "@seseragi/runtime/unicode",
+        export_name: "unicodeGeneralCategoryEq",
+        source_map_name: "unicodeGeneralCategoryEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "Ord<std/text/unicode::UnicodeGeneralCategory>",
+        runtime_feature: "core.text.unicode.category.ord",
+        local_name: "_ssrg_unicodeGeneralCategoryOrd",
+        module: "@seseragi/runtime/unicode",
+        export_name: "unicodeGeneralCategoryOrd",
+        source_map_name: "unicodeGeneralCategoryOrd",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/validation::Eq",
         runtime_feature: "core.validation.eq",
         local_name: "_ssrg_validation_eq",

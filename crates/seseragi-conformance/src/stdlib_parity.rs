@@ -78,6 +78,9 @@ const ROUTES: &[RouteDefinition] = &[
             "std/bytes",
             "std/json",
             "std/text",
+            "std/char",
+            "std/text/grapheme",
+            "std/text/unicode",
         ],
     },
     RouteDefinition {
@@ -307,7 +310,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 45);
+        assert_eq!(surface.modules.len(), 48);
         assert!(surface
             .modules
             .iter()

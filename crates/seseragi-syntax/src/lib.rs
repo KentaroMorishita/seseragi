@@ -13,6 +13,8 @@ mod surface;
 mod surface_model;
 mod template;
 mod token;
+pub mod unicode;
+mod unicode_data;
 
 pub use cst::{parse_cst, parse_cst_from_tokens, CstArtifact, CstError, CstMissing, CstNode};
 pub use diagnostics::{

@@ -1,6 +1,8 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { Just as _ssrg_maybe_Just, maybeFunctor as _ssrg_maybe_functor, maybeApplicative as _ssrg_maybe_applicative, maybeMonad as _ssrg_maybe_monad, Nothing as _ssrg_maybe_Nothing } from "@seseragi/runtime/sum"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const increment = (value: number) => _ssrg_int_add(value, 1)
 const incrementMaybe = (value: number) => _ssrg_maybe_Just(_ssrg_int_add(value, 2))

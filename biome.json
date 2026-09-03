@@ -1,7 +1,11 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",
   "files": {
-    "includes": ["**", "!runtime/ts/src/timezone-rules.js"]
+    "includes": [
+      "**",
+      "!runtime/ts/src/timezone-rules.js",
+      "!runtime/ts/src/unicode-data.ts"
+    ]
   },
   "linter": {
     "enabled": true,

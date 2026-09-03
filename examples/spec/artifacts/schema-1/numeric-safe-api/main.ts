@@ -1,6 +1,8 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { format as _ssrg_int_format, parse as _ssrg_int_parse, checkedAdd as _ssrg_int_checkedAdd, maxValue as _ssrg_int_maxValue, saturatingSubtract as _ssrg_int_saturatingSubtract, minValue as _ssrg_int_minValue, formatRadix as _ssrg_int_formatRadix, type IntParseError as IntParseError } from "@seseragi/runtime/int"
 import { format as _ssrg_float_format, fromInt as _ssrg_float_fromInt, toInt as _ssrg_float_toInt, totalCompare as _ssrg_float_totalCompare, type FloatConversionError as FloatConversionError } from "@seseragi/runtime/float"
 import { HalfEven as _ssrg_number_HalfEven, type RoundingMode as RoundingMode } from "@seseragi/runtime/number"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const renderParsed = (value: { readonly tag: "Left"; readonly value: IntParseError } | { readonly tag: "Right"; readonly value: number }) => (($ssrg_match: { readonly tag: "Left"; readonly value: IntParseError } | { readonly tag: "Right"; readonly value: number }): string => $ssrg_match.tag === "Left" ? "parse error" : $ssrg_match.tag === "Right" ? ((parsed: number): string => _ssrg_int_format(parsed))($ssrg_match.value) : ((): never => { throw new Error("non-exhaustive Seseragi match"); })())(value)
 const renderMaybe = (value: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number }) => (($ssrg_match: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number }): string => $ssrg_match.tag === "Nothing" ? "Nothing" : $ssrg_match.tag === "Just" ? ((integer: number): string => _ssrg_int_format(integer))($ssrg_match.value) : ((): never => { throw new Error("non-exhaustive Seseragi match"); })())(value)

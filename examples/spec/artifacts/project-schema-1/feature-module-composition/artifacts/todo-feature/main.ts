@@ -1,11 +1,13 @@
 import { view as todoForm } from "./form.js"
 import { view as todoList } from "./list.js"
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { stringEq as _ssrg_string_eq_dictionary } from "@seseragi/runtime/equality"
 import { append as _ssrg_array_append, arrayReducible as _ssrg_array_reducible } from "@seseragi/runtime/array"
 import { update as _ssrg_signal_update, make as _ssrg_signal_make, map as _ssrg_signal_map, type MutableSignal as MutableSignal, type Signal as Signal } from "@seseragi/runtime/signal"
 import { join as _ssrg_collection_join } from "@seseragi/runtime/collection"
 import { section as _ssrg_html_section, h2 as _ssrg_html_h2, type InputEvent as InputEvent, type Html as Html } from "@seseragi/runtime/html"
 import { flatMap as _ssrg_effect_flatMap, succeed as _ssrg_effect_succeed, type Effect as Effect } from "@seseragi/runtime/effect"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type TodoAction =
   | { readonly tag: "DraftChanged"; readonly value: string }

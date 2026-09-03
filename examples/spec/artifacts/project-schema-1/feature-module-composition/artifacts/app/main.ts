@@ -1,10 +1,12 @@
 import { create as createCounter } from "./counter.js"
 import { create as createTodo } from "./todo/feature.js"
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { update as _ssrg_signal_update, make as _ssrg_signal_make, map as _ssrg_signal_map, signalApplicative as _ssrg_signal_applicative, signalFunctor as _ssrg_signal_functor, type MutableSignal as MutableSignal, type Signal as Signal } from "@seseragi/runtime/signal"
 import { section as _ssrg_html_section, button as _ssrg_html_button, h1 as _ssrg_html_h1, main as _ssrg_html_main, type Html as Html } from "@seseragi/runtime/html"
 import { stringShow as _ssrg_show_stringShow } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap, mapError as _ssrg_effect_mapError, type Effect as Effect } from "@seseragi/runtime/effect"
 import { query as _ssrg_dom_query, run as _ssrg_dom_run, defaultOptions as _ssrg_dom_defaultOptions, type DomTarget as DomTarget, type DomError as DomError, type Dom as Dom, type DomRuntimeError as DomRuntimeError, type DomOptions as DomOptions } from "@seseragi/runtime/dom"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Theme =
   | { readonly tag: "Light" }

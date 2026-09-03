@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { append as _ssrg_array_append, filter as _ssrg_array_filter, arrayReducible as _ssrg_array_reducible, arrayFunctor as _ssrg_array_functor } from "@seseragi/runtime/array"
 import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { intShow as _ssrg_show_intShow, stringShow as _ssrg_show_stringShow } from "@seseragi/runtime/show"
 import { join as _ssrg_collection_join } from "@seseragi/runtime/collection"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 declare const __ssrg$brand$Todo: unique symbol;
 type Todo = {

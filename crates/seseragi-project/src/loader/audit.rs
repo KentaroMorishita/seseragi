@@ -137,7 +137,7 @@ fn audit_records(root: &Path, mut files: Vec<SourceFile>) -> Result<(), PackageL
                 });
             }
         }
-        let folded = normalized.to_lowercase();
+        let folded = seseragi_syntax::unicode::lowercase(&normalized);
         if let Some(first) = case_owners.insert(folded, module.clone()) {
             if first != module {
                 return Err(PackageLoadError::SourceCaseCollision {

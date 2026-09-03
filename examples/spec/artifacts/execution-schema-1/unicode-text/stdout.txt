@@ -1,0 +1,23 @@
+version: 17.0.0
+units: 5 / 12 / 3
+scalar: Just 👍 / Nothing
+clusters: [A, 👍🏽, é] / [0, 1, 9, 12]
+at: Just 👍🏽 / Nothing
+slice: Right 👍🏽 / Right 👍🏽é
+ranges: Left InvalidScalarRange { start: -1, end: 2, length: 5 } / Left InvalidGraphemeRange { start: 2, end: 1, length: 3 }
+empty: True / [0] / Right 
+normalize: A👍🏽é / é / ffi1 / 1
+normalized: False / True
+fold: Just σ / strasse i̇ / strasse i̇
+casing: ος οσα i̇ / STRASSE FFI
+properties: Just UppercaseLetter / Just True / Just True / Just False / Just True / Just True
+char: Just 128077 / Just 👍 / Nothing / Just 👍
+trim: [a] / [a  ] / [  a]
+words: [hello,, 世界!] / [a, b]
+join: a👍 / a/👍 / [a, , b, ] / [a, 👍]
+search: True / True / True
+replace: $1aa / $&$&a / /a/👍/
+utf8: Right ﻿👍 / A👍🏽é
+enums: False / Less / [UppercaseLetter, Control, Unassigned]
+errors: True / False
+debug: NFC / UppercaseLetter / InvalidScalarRange { start: -1, end: 2, length: 5 } / InvalidGraphemeRange { start: 2, end: 1, length: 3 }

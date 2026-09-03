@@ -20,6 +20,7 @@ use crate::signal_ops::{runtime_signal_distinct_operation, runtime_signal_operat
 use crate::standard_ops::runtime_standard_operation;
 use crate::stream_ops::runtime_stream_operation;
 use crate::sum_ops::runtime_sum_constructor;
+use crate::text_ops::runtime_text_operation;
 use crate::trait_method_ops::{runtime_trait_method_operation, RuntimeTraitMethodOperation};
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
@@ -184,19 +185,21 @@ pub(super) fn lower_core_expr_to_typescript(
                     })
                 })
                 .or_else(|| {
-                    runtime_bytes_operation(&name).map(|operation| {
-                        let arity = core_function_arity(&type_ref);
-                        if arity > 1 {
-                            TypeScriptExpr::CurriedRuntimeReference {
-                                name: operation.local_name.to_owned(),
-                                arity,
+                    runtime_bytes_operation(&name)
+                        .or_else(|| runtime_text_operation(&name))
+                        .map(|operation| {
+                            let arity = core_function_arity(&type_ref);
+                            if arity > 1 {
+                                TypeScriptExpr::CurriedRuntimeReference {
+                                    name: operation.local_name.to_owned(),
+                                    arity,
+                                }
+                            } else {
+                                TypeScriptExpr::RuntimeReference {
+                                    name: operation.local_name.to_owned(),
+                                }
                             }
-                        } else {
-                            TypeScriptExpr::RuntimeReference {
-                                name: operation.local_name.to_owned(),
-                            }
-                        }
-                    })
+                        })
                 })
                 .or_else(|| {
                     runtime_json_operation(&name).map(|operation| {
@@ -512,11 +515,18 @@ pub(super) fn lower_core_expr_to_typescript(
                     callee: operation.local_name.to_owned(),
                     arguments,
                 }
-            } else if let Some(operation) = runtime_bytes_operation(&callee) {
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
+            } else if let Some(operation) =
+                runtime_bytes_operation(&callee).or_else(|| runtime_text_operation(&callee))
+            {
+                lower_uncurried_runtime_call(
+                    operation.local_name.to_owned(),
                     arguments,
-                }
+                    &type_ref,
+                    imported_types,
+                    "text_bytes",
+                    Vec::new(),
+                    None,
+                )
             } else if let Some(operation) = runtime_json_operation(&callee) {
                 arguments.extend(evidence.iter().map(|selected| {
                     local_dictionary_expression(&selected.evidence, imported_values, imported_types)

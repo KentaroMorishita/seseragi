@@ -1,9 +1,11 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { remainder as _ssrg_int_remainder, subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { arrayReducible as _ssrg_array_reducible, collectMap as _ssrg_array_comprehend, find as _ssrg_array_find, take as _ssrg_array_take, drop as _ssrg_array_drop } from "@seseragi/runtime/array"
 import { join as _ssrg_collection_join } from "@seseragi/runtime/collection"
 import { collectMap as _ssrg_list_comprehend, find as _ssrg_list_find, fromArray as _ssrg_list_from_array, take as _ssrg_list_take, drop as _ssrg_list_drop, type List as List } from "@seseragi/runtime/list"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const even = (value: number) => _ssrg_int_eq_dictionary["eq"](_ssrg_int_remainder(value, 2))(0)
 const negative = (value: number) => value < 0

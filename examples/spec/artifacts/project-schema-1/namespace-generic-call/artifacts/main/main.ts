@@ -1,4 +1,6 @@
 import { type Hand as domain_Hand, Rock as domain_Rock, Paper as domain_Paper, Scissors as domain_Scissors, identity as domain_identity } from "./domain.js"
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export const keep = (value: domain_Hand) => value
 export const choose = (value: string) => (($ssrg_match: string): domain_Hand => $ssrg_match === "paper" ? domain_Paper : $ssrg_match === "scissors" ? domain_Scissors : domain_Rock)(value)

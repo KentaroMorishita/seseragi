@@ -222,7 +222,7 @@ fn validates_a_mixed_path_and_registry_graph_with_semver_ranges() {
         schema: 1,
         language: semver::Version::new(0, 1, 0),
         standard_library: semver::Version::new(0, 1, 0),
-        unicode: "16.0.0".to_owned(),
+        unicode: UNICODE_VERSION.to_owned(),
         timezone_database: "2025b".to_owned(),
         root: "acme/app@1.0.0#workspace:.".to_owned(),
         packages: vec![

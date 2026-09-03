@@ -1,3 +1,4 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { stringAdd as _ssrg_string_add_dictionary, stringSemigroup as _ssrg_string_semigroup } from "@seseragi/runtime/string"
 import { maybeSequence as _ssrg_maybe_sequence, maybeTraverse as _ssrg_maybe_traverse, Left as _ssrg_either_Left, Right as _ssrg_either_Right, maybeMonoid as _ssrg_maybe_monoid, withDefault as _ssrg_maybe_withDefault, Just as _ssrg_maybe_Just, fold as _ssrg_either_fold, Nothing as _ssrg_maybe_Nothing, orElse as _ssrg_maybe_orElse, mapLeft as _ssrg_either_mapLeft, mapRight as _ssrg_either_mapRight, bimap as _ssrg_either_bimap, swap as _ssrg_either_swap, eitherTraverse as _ssrg_either_traverse, eitherSequence as _ssrg_either_sequence, maybeFunctor as _ssrg_maybe_functor, maybeSemigroup as _ssrg_maybe_semigroup } from "@seseragi/runtime/sum"
 import { intShow as _ssrg_show_intShow, tupleShow as _ssrg_show_tupleShow, maybeShow as _ssrg_show_maybeShow, stringShow as _ssrg_show_stringShow, eitherShow as _ssrg_show_eitherShow, arrayShow as _ssrg_show_arrayShow, listShow as _ssrg_show_listShow, nonEmptyListShow as _ssrg_show_nonEmptyListShow } from "@seseragi/runtime/show"
@@ -7,6 +8,7 @@ import { combine as _ssrg_collection_combine } from "@seseragi/runtime/collectio
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { listTraversable as _ssrg_list_traversable, fromArray as _ssrg_list_from_array, nonEmptyListTraversable as _ssrg_non_empty_list_traversable, consNonEmpty as _ssrg_non_empty_list_cons, type List as List, type NonEmptyList as NonEmptyList } from "@seseragi/runtime/list"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Box<A> =
   | { readonly tag: "Box"; readonly value: A };

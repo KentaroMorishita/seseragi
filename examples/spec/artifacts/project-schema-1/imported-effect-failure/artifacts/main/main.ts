@@ -1,6 +1,8 @@
 import { type InputError, reject, __ssrg$instance$Show$0 as __ssrg$instance$Show$0_1 } from "./input.js"
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedShow as _ssrg_show_boundedShow, type Show as _ssrg_show_Show } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap, mapError as _ssrg_effect_mapError, succeed as _ssrg_effect_succeed } from "@seseragi/runtime/effect"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export type AppError =
   | { readonly tag: "InputFailure"; readonly value: InputError };

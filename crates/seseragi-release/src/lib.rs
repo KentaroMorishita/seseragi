@@ -2,6 +2,9 @@
 
 use serde::Serialize;
 
+mod unicode_version;
+pub use unicode_version::{UNICODE_VERSION, UNICODE_VERSION_TUPLE};
+
 pub const TOOLCHAIN_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const COMMIT_SHA: &str = env!("SESERAGI_COMMIT_SHA");
 pub const BUILD_CHANNEL: &str = env!("SESERAGI_BUILD_CHANNEL");
@@ -14,6 +17,7 @@ const RELEASE_TAG: &str = env!("SESERAGI_RELEASE_TAG");
 pub struct BuildMetadata {
     pub name: &'static str,
     pub version: &'static str,
+    pub unicode_version: &'static str,
     pub commit: &'static str,
     pub channel: &'static str,
     pub target: &'static str,
@@ -26,6 +30,7 @@ pub fn build_metadata(name: &'static str) -> BuildMetadata {
     BuildMetadata {
         name,
         version: TOOLCHAIN_VERSION,
+        unicode_version: UNICODE_VERSION,
         commit: COMMIT_SHA,
         channel: BUILD_CHANNEL,
         target: BUILD_TARGET,

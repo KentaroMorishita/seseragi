@@ -77,6 +77,10 @@ mod tests {
 
     #[test]
     fn normalizes_module_paths_to_unicode_nfc() {
+        assert_eq!(
+            unicode_normalization::UNICODE_VERSION,
+            seseragi_syntax::unicode::UNICODE_VERSION_TUPLE
+        );
         let decomposed = ModulePath::parse("model/cafe\u{301}").unwrap();
         let composed = ModulePath::parse("model/café").unwrap();
 

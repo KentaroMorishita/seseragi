@@ -1,5 +1,7 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Status =
   | { readonly tag: "Ready" }

@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { Nothing as _ssrg_maybe_Nothing, Right as _ssrg_either_Right } from "@seseragi/runtime/sum"
 import { intShow as _ssrg_show_intShow, intDebug as _ssrg_debug_intDebug, floatShow as _ssrg_show_floatShow, floatDebug as _ssrg_debug_floatDebug, neverShow as _ssrg_show_neverShow, neverDebug as _ssrg_debug_neverDebug, boolShow as _ssrg_show_boolShow, boolDebug as _ssrg_debug_boolDebug, unitShow as _ssrg_show_unitShow, unitDebug as _ssrg_debug_unitDebug, charShow as _ssrg_show_charShow, charDebug as _ssrg_debug_charDebug, stringDebug as _ssrg_debug_stringDebug, maybeShow as _ssrg_show_maybeShow, eitherDebug as _ssrg_debug_eitherDebug } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export const showInt = (value: number) => _ssrg_show_intShow["show"](value)
 export const debugInt = (value: number) => _ssrg_debug_intDebug["debug"](value)

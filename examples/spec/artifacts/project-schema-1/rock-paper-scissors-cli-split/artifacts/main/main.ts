@@ -1,8 +1,10 @@
 import { decide, renderOutcome, type Hand, type Outcome } from "./domain.js"
 import { type InputError, readHand, __ssrg$instance$Show$0 as __ssrg$instance$Show$0_1 } from "./input.js"
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedShow as _ssrg_show_boundedShow, consoleErrorShow as _ssrg_show_consoleErrorShow, type Show as _ssrg_show_Show } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap, mapError as _ssrg_effect_mapError } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println, type ConsoleError as ConsoleError } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export type AppError =
   | { readonly tag: "InputFailure"; readonly value: InputError }

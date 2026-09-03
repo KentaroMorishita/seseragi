@@ -1,0 +1,327 @@
+{
+  "schema": 1,
+  "target": "node-process",
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "case": "unicode-text",
+  "entry": {
+    "module": "artifact/unicode-text",
+    "export": "main",
+    "compiledModule": "../../schema-1/unicode-text/generated-module.json",
+    "typedInterface": "../../schema-1/unicode-text/typed-interface.json"
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.text.unicode.normalization-form",
+      "core.text.slice-error",
+      "core.text.grapheme.slice-error",
+      "core.text.unicode.category",
+      "core.text.utf8-error-type",
+      "core.bytes.type",
+      "core.string",
+      "core.text.unicode.normalize",
+      "core.text.unicode.nfc",
+      "core.text.slice-scalars",
+      "core.either",
+      "core.int",
+      "core.text.grapheme.slice",
+      "core.bool",
+      "core.adt",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.string.show",
+      "core.text.unicode.version",
+      "core.int.show",
+      "core.text.length-scalars",
+      "core.text.length-bytes",
+      "core.text.grapheme.length",
+      "core.char.show",
+      "core.maybe.show",
+      "core.text.scalar-at",
+      "core.maybe",
+      "core.char",
+      "core.int.subtract",
+      "core.array.show",
+      "core.text.grapheme.clusters",
+      "core.text.grapheme.byte-boundaries",
+      "core.text.grapheme.at",
+      "core.text.slice-error.show",
+      "core.either.show",
+      "core.text.grapheme.slice-error.show",
+      "core.bool.show",
+      "core.text.is-empty",
+      "core.text.unicode.nfd",
+      "core.text.unicode.nfkc",
+      "core.text.unicode.nfkd",
+      "core.text.unicode.is-normalized",
+      "core.maybe.functor",
+      "core.text.unicode.simple-case-fold",
+      "core.text.unicode.full-case-fold",
+      "core.text.case-fold",
+      "core.text.to-lower",
+      "core.text.to-upper",
+      "core.text.unicode.category.show",
+      "core.text.unicode.general-category",
+      "core.text.unicode.is-alphabetic",
+      "core.text.unicode.is-whitespace",
+      "core.text.unicode.is-decimal-digit",
+      "core.text.unicode.is-mark",
+      "core.char.code-point",
+      "core.char.from-code-point",
+      "core.char.to-string",
+      "core.text.trim",
+      "core.text.trim-start",
+      "core.text.trim-end",
+      "core.text.words",
+      "core.text.lines",
+      "core.text.concat",
+      "core.text.join",
+      "core.text.split",
+      "core.text.starts-with",
+      "core.text.ends-with",
+      "core.text.contains",
+      "core.text.replace",
+      "core.text.replace-all",
+      "core.text.utf8-error.show",
+      "core.text.decode-utf8",
+      "core.text.encode-utf8",
+      "core.text.decode-utf8-lossy",
+      "core.text.unicode.normalization-form.eq",
+      "core.text.unicode.category.ord",
+      "core.text.unicode.uppercase-letter",
+      "core.text.unicode.lowercase-letter",
+      "core.array.sort",
+      "core.text.unicode.unassigned",
+      "core.text.unicode.control",
+      "core.text.slice-error.eq",
+      "core.text.invalid-scalar-range",
+      "core.text.grapheme.slice-error.eq",
+      "core.text.grapheme.invalid-grapheme-range",
+      "core.text.unicode.normalization-form.debug",
+      "core.text.unicode.category.debug",
+      "core.text.slice-error.debug",
+      "core.text.grapheme.slice-error.debug"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "version: 17.0.0"
+        ],
+        "stdout": "version: 17.0.0\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "units: 5 / 12 / 3"
+        ],
+        "stdout": "units: 5 / 12 / 3\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "scalar: Just 👍 / Nothing"
+        ],
+        "stdout": "scalar: Just 👍 / Nothing\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "clusters: [A, 👍🏽, é] / [0, 1, 9, 12]"
+        ],
+        "stdout": "clusters: [A, 👍🏽, é] / [0, 1, 9, 12]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "at: Just 👍🏽 / Nothing"
+        ],
+        "stdout": "at: Just 👍🏽 / Nothing\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "slice: Right 👍🏽 / Right 👍🏽é"
+        ],
+        "stdout": "slice: Right 👍🏽 / Right 👍🏽é\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "ranges: Left InvalidScalarRange { start: -1, end: 2, length: 5 } / Left InvalidGraphemeRange { start: 2, end: 1, length: 3 }"
+        ],
+        "stdout": "ranges: Left InvalidScalarRange { start: -1, end: 2, length: 5 } / Left InvalidGraphemeRange { start: 2, end: 1, length: 3 }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "empty: True / [0] / Right "
+        ],
+        "stdout": "empty: True / [0] / Right \n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "normalize: A👍🏽é / é / ffi1 / 1"
+        ],
+        "stdout": "normalize: A👍🏽é / é / ffi1 / 1\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "normalized: False / True"
+        ],
+        "stdout": "normalized: False / True\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "fold: Just σ / strasse i̇ / strasse i̇"
+        ],
+        "stdout": "fold: Just σ / strasse i̇ / strasse i̇\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "casing: ος οσα i̇ / STRASSE FFI"
+        ],
+        "stdout": "casing: ος οσα i̇ / STRASSE FFI\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "properties: Just UppercaseLetter / Just True / Just True / Just False / Just True / Just True"
+        ],
+        "stdout": "properties: Just UppercaseLetter / Just True / Just True / Just False / Just True / Just True\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "char: Just 128077 / Just 👍 / Nothing / Just 👍"
+        ],
+        "stdout": "char: Just 128077 / Just 👍 / Nothing / Just 👍\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "trim: [a] / [a  ] / [  a]"
+        ],
+        "stdout": "trim: [a] / [a  ] / [  a]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "words: [hello,, 世界!] / [a, b]"
+        ],
+        "stdout": "words: [hello,, 世界!] / [a, b]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "join: a👍 / a/👍 / [a, , b, ] / [a, 👍]"
+        ],
+        "stdout": "join: a👍 / a/👍 / [a, , b, ] / [a, 👍]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "search: True / True / True"
+        ],
+        "stdout": "search: True / True / True\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "replace: $1aa / $&$&a / /a/👍/"
+        ],
+        "stdout": "replace: $1aa / $&$&a / /a/👍/\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "utf8: Right ﻿👍 / A👍🏽é"
+        ],
+        "stdout": "utf8: Right ﻿👍 / A👍🏽é\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "enums: False / Less / [UppercaseLetter, Control, Unassigned]"
+        ],
+        "stdout": "enums: False / Less / [UppercaseLetter, Control, Unassigned]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "errors: True / False"
+        ],
+        "stdout": "errors: True / False\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "debug: NFC / UppercaseLetter / InvalidScalarRange { start: -1, end: 2, length: 5 } / InvalidGraphemeRange { start: 2, end: 1, length: 3 }"
+        ],
+        "stdout": "debug: NFC / UppercaseLetter / InvalidScalarRange { start: -1, end: 2, length: 5 } / InvalidGraphemeRange { start: 2, end: 1, length: 3 }\n"
+      }
+    ]
+  }
+}

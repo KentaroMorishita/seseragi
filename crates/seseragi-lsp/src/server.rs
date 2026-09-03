@@ -782,7 +782,7 @@ impl State {
         let Some(params) = parse_params::<WorkspaceSymbolParams>(message) else {
             return response(id, json!([]));
         };
-        let query = params.query.to_lowercase();
+        let query = seseragi_syntax::unicode::lowercase(&params.query);
         let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
         let mut symbols = self
             .documents
@@ -792,7 +792,9 @@ impl State {
                     .analysis
                     .workspace_symbols()
                     .into_iter()
-                    .filter(|symbol| symbol.name.to_lowercase().contains(&query))
+                    .filter(|symbol| {
+                        seseragi_syntax::unicode::lowercase(&symbol.name).contains(&query)
+                    })
                     .filter_map(move |symbol| {
                         let range = features::range_json(
                             &document.source,
@@ -801,7 +803,7 @@ impl State {
                             encoding,
                         )?;
                         Some((
-                            symbol.name.to_lowercase(),
+                            seseragi_syntax::unicode::lowercase(&symbol.name),
                             symbol.module.clone(),
                             symbol.namespace.clone(),
                             symbol.identity.clone(),

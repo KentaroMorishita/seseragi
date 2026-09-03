@@ -4,8 +4,8 @@ import {
   copyFile,
   mkdir,
   mkdtemp,
-  readFile,
   readdir,
+  readFile,
   rm,
   stat,
   writeFile,
@@ -185,6 +185,10 @@ export async function packageNativeRelease(
     await mkdir(staging)
     await copyFile(cli, path.join(staging, cliName))
     await copyFile(lsp, path.join(staging, lspName))
+    await copyFile(
+      path.join(repositoryRoot, "runtime/unicode/LICENSE"),
+      path.join(staging, "UNICODE-LICENSE")
+    )
     if (contract.archiveExtension === "tar.gz") {
       await chmod(path.join(staging, cliName), 0o755)
       await chmod(path.join(staging, lspName), 0o755)
@@ -195,14 +199,23 @@ export async function packageNativeRelease(
     await rm(`${archive}.sha256`, { force: true })
 
     if (contract.archiveExtension === "tar.gz") {
-      run(["tar", "-C", staging, "-czf", archive, cliName, lspName])
+      run([
+        "tar",
+        "-C",
+        staging,
+        "-czf",
+        archive,
+        cliName,
+        lspName,
+        "UNICODE-LICENSE",
+      ])
     } else {
       run([
         "powershell.exe",
         "-NoProfile",
         "-NonInteractive",
         "-Command",
-        `Compress-Archive -LiteralPath ${powershellLiteral(path.join(staging, cliName))},${powershellLiteral(path.join(staging, lspName))} -DestinationPath ${powershellLiteral(archive)} -Force`,
+        `Compress-Archive -LiteralPath ${[cliName, lspName, "UNICODE-LICENSE"].map((name) => powershellLiteral(path.join(staging, name))).join(",")} -DestinationPath ${powershellLiteral(archive)} -Force`,
       ])
     }
 
@@ -271,7 +284,7 @@ export async function verifyNativeRelease(
       ])
     }
 
-    const expectedFiles = [cliName, lspName].sort()
+    const expectedFiles = [cliName, lspName, "UNICODE-LICENSE"].sort()
     const actualFiles = await extractedFiles(temporary)
     if (JSON.stringify(actualFiles) !== JSON.stringify(expectedFiles)) {
       fail(
@@ -280,6 +293,15 @@ export async function verifyNativeRelease(
     }
 
     const cli = path.join(temporary, cliName)
+    if (
+      (await readFile(path.join(temporary, "UNICODE-LICENSE"), "utf8")) !==
+      (await readFile(
+        path.join(repositoryRoot, "runtime/unicode/LICENSE"),
+        "utf8"
+      ))
+    ) {
+      fail("archive Unicode license notice differs from the pinned data notice")
+    }
     const lsp = path.join(temporary, lspName)
     if (contract.archiveExtension === "tar.gz") {
       for (const executable of [cli, lsp]) {

@@ -15,5 +15,5 @@
     "Just",
     "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>"
   ],
-  "mappings": ";;;;AAEAA"
+  "mappings": ";;;;;;AAEAA"
 }

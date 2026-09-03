@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "file": "dist/imported-unicode/operations.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-unicode::operations"
+  ],
+  "sourcesContent": [
+    "import * as text from \"std/text\"\nimport * as char from \"std/char\"\nimport * as unicode from \"std/text/unicode\"\nimport * as graphemes from \"std/text/grapheme\"\n\nlet canonicalize: String -> String = unicode.normalize unicode.NFC\nlet takeScalars: String -> Either<text.TextSliceError, String> = text.sliceScalars 1 3\nlet takeGraphemes: String -> Either<graphemes.GraphemeSliceError, String> =\n  graphemes.slice 1 3\n\npub fn normalize value: String -> String = canonicalize value\npub fn scalarSlice value: String -> Either<text.TextSliceError, String> =\n  takeScalars value\npub fn graphemeSlice value: String -> Either<graphemes.GraphemeSliceError, String> =\n  takeGraphemes value\npub fn character value: Int -> Maybe<Char> = char.fromCodePoint value\npub fn point value: Char -> Int = char.codePoint value\npub fn inspectError value: text.TextSliceError -> String = debug value\n"
+  ],
+  "names": [
+    "normalize",
+    "canonicalize",
+    "scalarSlice",
+    "takeScalars",
+    "graphemeSlice",
+    "takeGraphemes",
+    "character",
+    "fromCodePoint",
+    "point",
+    "codePoint",
+    "inspectError",
+    "textSliceErrorDebug",
+    "canonicalize",
+    "normalize",
+    "NFC",
+    "takeScalars",
+    "sliceScalars",
+    "takeGraphemes",
+    "slice"
+  ],
+  "mappings": ";;;;;;;;AAUAA;AACAE;AAEAE;AAEAE;AACAE;AACAE;AAZAE;AACAG;AACAE"
+}

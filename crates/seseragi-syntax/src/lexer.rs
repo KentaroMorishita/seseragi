@@ -124,7 +124,7 @@ impl Lexer<'_> {
             "with" => TokenKind::KeywordWith,
             "True" | "False" => TokenKind::LiteralBoolean,
             "_" => TokenKind::Wildcard,
-            _ if raw.chars().next().is_some_and(|char| char.is_uppercase()) => {
+            _ if raw.chars().next().is_some_and(crate::unicode::is_uppercase) => {
                 TokenKind::IdentifierUpper
             }
             _ => TokenKind::IdentifierLower,

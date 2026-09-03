@@ -1,3 +1,13 @@
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct RuntimeDataOperation {
+    pub(crate) canonical: &'static str,
+    pub(crate) runtime_feature: &'static str,
+    pub(crate) local_name: &'static str,
+    pub(crate) module: &'static str,
+    pub(crate) export_name: &'static str,
+    pub(crate) source_map_name: &'static str,
+}
+
 const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/number",
     "std/int",
@@ -24,6 +34,9 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/ref",
     "std/stream",
     "std/text",
+    "std/char",
+    "std/text/grapheme",
+    "std/text/unicode",
     "std/path",
     "std/process",
     "std/child-process",

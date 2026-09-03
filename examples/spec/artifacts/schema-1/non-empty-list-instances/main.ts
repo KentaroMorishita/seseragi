@@ -1,3 +1,4 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { Equal as _ssrg_ordering_Equal, Less as _ssrg_ordering_Less, Greater as _ssrg_ordering_Greater } from "@seseragi/runtime/sum"
 import { consNonEmpty as _ssrg_non_empty_list_cons, fromArray as _ssrg_list_from_array, nonEmptyListApplicative as _ssrg_non_empty_list_applicative, nonEmptyListOrd as _ssrg_non_empty_list_ord_dictionary, fromListNonEmpty as _ssrg_non_empty_list_fromList, toListNonEmpty as _ssrg_non_empty_list_toList, headNonEmpty as _ssrg_non_empty_list_head, tailNonEmpty as _ssrg_non_empty_list_tail, reduce1NonEmpty as _ssrg_non_empty_list_reduce1, nonEmptyListSemigroup as _ssrg_non_empty_list_semigroup, singleton as _ssrg_non_empty_list_singleton, nonEmptyListFunctor as _ssrg_non_empty_list_functor, nonEmptyListMonad as _ssrg_non_empty_list_monad, nonEmptyListReducible as _ssrg_non_empty_list_reducible, nonEmptyListIterable as _ssrg_non_empty_list_iterable, type NonEmptyList as NonEmptyList, type List as List } from "@seseragi/runtime/list"
 import { add as _ssrg_int_add, multiply as _ssrg_int_multiply } from "@seseragi/runtime/int"
@@ -7,6 +8,7 @@ import { println as _ssrg_console_println, type Console as Console, type Console
 import { intEq as _ssrg_int_eq_dictionary, nonEmptyListEq as _ssrg_non_empty_list_eq_dictionary } from "@seseragi/runtime/equality"
 import { intHash as _ssrg_int_hash_dictionary, nonEmptyListHash as _ssrg_non_empty_list_hash_dictionary } from "@seseragi/runtime/hash"
 import { forEach as _ssrg_collection_for_each } from "@seseragi/runtime/collection"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Rank =
   | { readonly tag: "Low" }

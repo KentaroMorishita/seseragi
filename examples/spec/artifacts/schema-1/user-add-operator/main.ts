@@ -1,6 +1,8 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { reduce as _ssrg_array_reduce } from "@seseragi/runtime/array"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export type Score =
   | { readonly tag: "Score"; readonly value: number };

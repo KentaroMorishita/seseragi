@@ -1359,7 +1359,10 @@ fn single_file_and_package_compile_diagnostics_share_the_json_envelope() {
         assert_eq!(envelope["schema"], 1);
         assert_eq!(envelope["toolVersion"], env!("CARGO_PKG_VERSION"));
         assert_eq!(envelope["languageVersion"], "0.1.0");
-        assert_eq!(envelope["unicodeVersion"], "16.0.0");
+        assert_eq!(
+            envelope["unicodeVersion"],
+            seseragi_release::UNICODE_VERSION
+        );
         let diagnostics = envelope["diagnostics"].as_array().unwrap();
         assert!(!diagnostics.is_empty());
         assert!(diagnostics

@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { flatMap as _ssrg_effect_flatMap, type Effect as Effect } from "@seseragi/runtime/effect"
 import { make as _ssrg_signal_make, switchMap as _ssrg_signal_switchMap, constant as _ssrg_signal_constant, subscribe as _ssrg_signal_subscribe, set as _ssrg_signal_set, unsubscribe as _ssrg_signal_unsubscribe, read as _ssrg_signal_read, type MutableSignal as MutableSignal, type Signal as Signal, type Subscription as Subscription } from "@seseragi/runtime/signal"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_signal_make<number>(10), (source: MutableSignal<number>) => _ssrg_effect_flatMap(_ssrg_signal_make<number>(0), (mirror: MutableSignal<number>) => (() => { const selected: Signal<number> = _ssrg_signal_switchMap((value: number) => _ssrg_signal_constant(_ssrg_int_add(value, 1)), source); return _ssrg_effect_flatMap(_ssrg_signal_subscribe((value: number) => _ssrg_signal_set(value, mirror), selected), (subscription: Subscription) => _ssrg_effect_flatMap(_ssrg_signal_set(41, source), () => _ssrg_effect_flatMap(_ssrg_signal_unsubscribe(subscription), () => _ssrg_effect_flatMap(_ssrg_signal_read(mirror), (current: number) => _ssrg_console_println("switchMap: " + _ssrg_show_intShow["show"](current)))))); })()))

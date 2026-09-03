@@ -5,6 +5,7 @@
   "runtime": {
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
     "requirements": [
       "signal.mutable-type",
       "effect.core.type",

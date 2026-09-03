@@ -1,8 +1,10 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { update as _ssrg_signal_update, make as _ssrg_signal_make, map as _ssrg_signal_map, type MutableSignal as MutableSignal, type Signal as Signal } from "@seseragi/runtime/signal"
 import { section as _ssrg_html_section, button as _ssrg_html_button, h2 as _ssrg_html_h2, p as _ssrg_html_p, type Html as Html } from "@seseragi/runtime/html"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap, succeed as _ssrg_effect_succeed, type Effect as Effect } from "@seseragi/runtime/effect"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type CounterAction =
   | { readonly tag: "Increment" };

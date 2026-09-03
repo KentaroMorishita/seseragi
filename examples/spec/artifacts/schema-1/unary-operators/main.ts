@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intShow as _ssrg_show_intShow, intDebug as _ssrg_debug_intDebug, floatShow as _ssrg_show_floatShow, boolDebug as _ssrg_debug_boolDebug, arrayDebug as _ssrg_debug_arrayDebug } from "@seseragi/runtime/show"
 import { subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 declare const __ssrg$brand$Snapshot: unique symbol;
 export type Snapshot = {

@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { combine as _ssrg_collection_combine, join as _ssrg_collection_join } from "@seseragi/runtime/collection"
 import { arrayReducible as _ssrg_array_reducible, arrayMonoid as _ssrg_array_monoid, arraySemigroup as _ssrg_array_semigroup } from "@seseragi/runtime/array"
 import { stringMonoid as _ssrg_string_monoid, stringSemigroup as _ssrg_string_semigroup } from "@seseragi/runtime/string"
 import { listMonoid as _ssrg_list_monoid, fromArray as _ssrg_list_from_array, listReducible as _ssrg_list_reducible, listSemigroup as _ssrg_list_semigroup, type List as List } from "@seseragi/runtime/list"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const combineValues = <C, A,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => (__ssrg$evidence$1: Readonly<Record<string, (...args: any[]) => any>>) => _ssrg_collection_combine(__ssrg$evidence$0, __ssrg$evidence$1, values)
 const combinedString = (unit: undefined) => ((combineValues(["Sese", "ragi"])(_ssrg_array_reducible)(_ssrg_string_monoid)) as string)

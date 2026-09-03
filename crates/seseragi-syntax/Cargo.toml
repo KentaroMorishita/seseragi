@@ -8,6 +8,7 @@ repository.workspace = true
 [dependencies]
 serde.workspace = true
 seseragi-source = { path = "../seseragi-source" }
+seseragi-release = { path = "../seseragi-release" }
 unicode-ident.workspace = true
 
 [dev-dependencies]

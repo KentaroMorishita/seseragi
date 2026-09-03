@@ -8802,6 +8802,17 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::ClosePunctuation",
+      "name": "ClosePunctuation",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/child-process::Command",
       "name": "Command",
       "module": "std/child-process",
@@ -8824,6 +8835,17 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::ConnectorPunctuation",
+      "name": "ConnectorPunctuation",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::Console",
       "name": "Console",
       "module": "std/console",
@@ -8841,6 +8863,17 @@
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "ConsoleError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::Control",
+      "name": "Control",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -8901,12 +8934,34 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::CurrencySymbol",
+      "name": "CurrencySymbol",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/process::CurrentDirectoryUnavailable",
       "name": "CurrentDirectoryUnavailable",
       "module": "std/process",
       "category": "Prelude",
       "kind": "constructor",
       "signature": "ProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::DashPunctuation",
+      "name": "DashPunctuation",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -8919,6 +8974,17 @@
       "kind": "opaque-type",
       "signature": "DateTimeError",
       "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::DecimalNumber",
+      "name": "DecimalNumber",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -9042,6 +9108,17 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "EmptyRandomIntRange arg1: { lower: Int, upperExclusive: Int } -> RandomRangeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::EnclosingMark",
+      "name": "EnclosingMark",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -9355,6 +9432,28 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::FinalPunctuation",
+      "name": "FinalPunctuation",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::Format",
+      "name": "Format",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::Gap",
       "name": "Gap",
       "module": "std/time",
@@ -9362,6 +9461,17 @@
       "kind": "constructor",
       "signature": "Gap arg1: { transition: Instant, offsetBefore: UtcOffset, offsetAfter: UtcOffset } -> LocalResolution",
       "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/grapheme::GraphemeSliceError",
+      "name": "GraphemeSliceError",
+      "module": "std/text/grapheme",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "GraphemeSliceError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -9734,6 +9844,17 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::InitialPunctuation",
+      "name": "InitialPunctuation",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::Instant",
       "name": "Instant",
       "module": "std/time",
@@ -9839,6 +9960,17 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "InvalidEnvironmentName arg1: String -> ProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/grapheme::InvalidGraphemeRange",
+      "name": "InvalidGraphemeRange",
+      "module": "std/text/grapheme",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidGraphemeRange arg1: { start: Int, end: Int, length: Int } -> GraphemeSliceError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10108,6 +10240,17 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::LetterNumber",
+      "name": "LetterNumber",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/stdin::LineLimit",
       "name": "LineLimit",
       "module": "std/stdin",
@@ -10125,6 +10268,17 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "LineLimitTooLarge arg1: Int -> StdinConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::LineSeparator",
+      "name": "LineSeparator",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10350,6 +10504,17 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::LowercaseLetter",
+      "name": "LowercaseLetter",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::ManagedHttpHeader",
       "name": "ManagedHttpHeader",
       "module": "std/http",
@@ -10375,6 +10540,17 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::MathSymbol",
+      "name": "MathSymbol",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::Method",
       "name": "Method",
       "module": "std/http",
@@ -10382,6 +10558,28 @@
       "kind": "opaque-type",
       "signature": "Method",
       "description": "Opaque validated HTTP request method.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::ModifierLetter",
+      "name": "ModifierLetter",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::ModifierSymbol",
+      "name": "ModifierSymbol",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -10417,6 +10615,50 @@
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "MultipartBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::NFC",
+      "name": "NFC",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NormalizationForm",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::NFD",
+      "name": "NFD",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NormalizationForm",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::NFKC",
+      "name": "NFKC",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NormalizationForm",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::NFKD",
+      "name": "NFKD",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NormalizationForm",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10567,6 +10809,28 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::NonspacingMark",
+      "name": "NonspacingMark",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::NormalizationForm",
+      "name": "NormalizationForm",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "NormalizationForm",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/fs::NotADirectory",
       "name": "NotADirectory",
       "module": "std/fs",
@@ -10600,6 +10864,17 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::OpenPunctuation",
+      "name": "OpenPunctuation",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/fs::OtherFileSystemError",
       "name": "OtherFileSystemError",
       "module": "std/fs",
@@ -10617,6 +10892,61 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "FileType",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::OtherLetter",
+      "name": "OtherLetter",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::OtherNumber",
+      "name": "OtherNumber",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::OtherPunctuation",
+      "name": "OtherPunctuation",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::OtherSymbol",
+      "name": "OtherSymbol",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::ParagraphSeparator",
+      "name": "ParagraphSeparator",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10694,6 +11024,17 @@
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "Permit",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::PrivateUse",
+      "name": "PrivateUse",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -11074,6 +11415,28 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "SignalChild arg1: ProcessSignal -> ChildInput",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::SpaceSeparator",
+      "name": "SpaceSeparator",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::SpacingMark",
+      "name": "SpacingMark",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -11468,12 +11831,45 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::TitlecaseLetter",
+      "name": "TitlecaseLetter",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/test::TypedFailureDidNotMatch",
       "name": "TypedFailureDidNotMatch",
       "module": "std/test",
       "category": "Prelude",
       "kind": "constructor",
       "signature": "TypedFailureDidNotMatch arg1: String -> TestFailure",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::Unassigned",
+      "name": "Unassigned",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::UnicodeGeneralCategory",
+      "name": "UnicodeGeneralCategory",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "UnicodeGeneralCategory",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -11540,6 +11936,17 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "UnsupportedUrlScheme arg1: String -> UrlBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::UppercaseLetter",
+      "name": "UppercaseLetter",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnicodeGeneralCategory",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -11873,6 +12280,17 @@
       "constraints": []
     },
     {
+      "identity": "std/text/grapheme::at",
+      "name": "at",
+      "module": "std/text/grapheme",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "at arg1: Int -> arg2: String -> Maybe<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::atOffset",
       "name": "atOffset",
       "module": "std/time",
@@ -12001,6 +12419,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "bufferCapacity arg1: Int -> Either<BufferCapacityError, BufferCapacity>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/grapheme::byteBoundaries",
+      "name": "byteBoundaries",
+      "module": "std/text/grapheme",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "byteBoundaries arg1: String -> Array<Int>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -12184,6 +12613,28 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "closeWasClean arg1: WebSocketClose -> Bool",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/grapheme::clusters",
+      "name": "clusters",
+      "module": "std/text/grapheme",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "clusters arg1: String -> Array<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/char::codePoint",
+      "name": "codePoint",
+      "module": "std/char",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "codePoint arg1: Char -> Int",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -13076,6 +13527,17 @@
       "constraints": []
     },
     {
+      "identity": "std/char::fromCodePoint",
+      "name": "fromCodePoint",
+      "module": "std/char",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromCodePoint arg1: Int -> Maybe<Char>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/stream::fromEffect",
       "name": "fromEffect",
       "module": "std/stream",
@@ -13156,6 +13618,28 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::fullCaseFold",
+      "name": "fullCaseFold",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fullCaseFold arg1: String -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::generalCategory",
+      "name": "generalCategory",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "generalCategory arg1: Char -> UnicodeGeneralCategory",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -13361,6 +13845,17 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::isAlphabetic",
+      "name": "isAlphabetic",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isAlphabetic arg1: Char -> Bool",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::isClientError",
       "name": "isClientError",
       "module": "std/http",
@@ -13368,6 +13863,17 @@
       "kind": "function",
       "signature": "isClientError arg1: Status -> Bool",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::isDecimalDigit",
+      "name": "isDecimalDigit",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isDecimalDigit arg1: Char -> Bool",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -13417,6 +13923,28 @@
       "kind": "function",
       "signature": "isInformational arg1: Status -> Bool",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::isMark",
+      "name": "isMark",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isMark arg1: Char -> Bool",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::isNormalized",
+      "name": "isNormalized",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isNormalized arg1: NormalizationForm -> arg2: String -> Bool",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -13476,6 +14004,17 @@
       "category": "Prelude",
       "kind": "effect-function",
       "signature": "isTrue arg1: Bool -> Effect<{}, TestFailure, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::isWhitespace",
+      "name": "isWhitespace",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isWhitespace arg1: Char -> Bool",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -13546,6 +14085,17 @@
       "kind": "function",
       "signature": "lastModifiedMillis arg1: File -> Int",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/grapheme::length",
+      "name": "length",
+      "module": "std/text/grapheme",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "length arg1: String -> Int",
+      "description": "Returns the number of elements in the collection.",
       "typeParameters": [],
       "constraints": []
     },
@@ -13979,6 +14529,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "normalize arg1: Path -> Path",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::normalize",
+      "name": "normalize",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "normalize arg1: NormalizationForm -> arg2: String -> String",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -15017,6 +15578,17 @@
       "constraints": []
     },
     {
+      "identity": "std/text/unicode::simpleCaseFold",
+      "name": "simpleCaseFold",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "simpleCaseFold arg1: Char -> Char",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/map::singleton",
       "name": "singleton",
       "module": "std/map",
@@ -15147,6 +15719,17 @@
       "kind": "effect-function",
       "signature": "sleep arg1: Duration -> Effect<{ clock: Clock }, Never, Unit>",
       "description": "Waits for a Duration through the Clock Effect capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/grapheme::slice",
+      "name": "slice",
+      "module": "std/text/grapheme",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "slice arg1: Int -> arg2: Int -> arg3: String -> Either<GraphemeSliceError, String>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -15393,6 +15976,17 @@
       "constraints": []
     },
     {
+      "identity": "std/char::toString",
+      "name": "toString",
+      "module": "std/char",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "toString arg1: Char -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::toWebUrl",
       "name": "toWebUrl",
       "module": "std/web/navigation",
@@ -15593,6 +16187,17 @@
         "K",
         "V"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/text/unicode::version",
+      "name": "version",
+      "module": "std/text/unicode",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "version arg1: Unit -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -16102,12 +16707,34 @@
       "constraints": []
     },
     {
+      "identity": "std/text::InvalidScalarRange",
+      "name": "InvalidScalarRange",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "constructor",
+      "signature": "InvalidScalarRange arg1: { start: Int, end: Int, length: Int } -> TextSliceError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/text::InvalidUtf8",
       "name": "InvalidUtf8",
       "module": "std/text",
       "category": "Text",
       "kind": "constructor",
       "signature": "InvalidUtf8 arg1: { offset: Int } -> Utf8DecodeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::TextSliceError",
+      "name": "TextSliceError",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "opaque-type",
+      "signature": "TextSliceError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -16120,6 +16747,39 @@
       "kind": "opaque-type",
       "signature": "Utf8DecodeError",
       "description": "Reports the byte offset of the first invalid UTF-8 sequence.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::caseFold",
+      "name": "caseFold",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "caseFold arg1: String -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::concat",
+      "name": "concat",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "concat arg1: Array<String> -> String",
+      "description": "Flattens one level of nested collections in source order.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::contains",
+      "name": "contains",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "contains arg1: String -> arg2: String -> Bool",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -16153,6 +16813,204 @@
       "kind": "function",
       "signature": "encodeUtf8 arg1: String -> Bytes",
       "description": "Encodes String as UTF-8 Bytes.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::endsWith",
+      "name": "endsWith",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "endsWith arg1: String -> arg2: String -> Bool",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::isEmpty",
+      "name": "isEmpty",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "isEmpty arg1: String -> Bool",
+      "description": "Returns whether the collection contains no elements.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::join",
+      "name": "join",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "join arg1: String -> arg2: Array<String> -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::lengthBytes",
+      "name": "lengthBytes",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "lengthBytes arg1: String -> Int",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::lengthScalars",
+      "name": "lengthScalars",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "lengthScalars arg1: String -> Int",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::lines",
+      "name": "lines",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "lines arg1: String -> Array<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::replace",
+      "name": "replace",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "replace arg1: String -> arg2: String -> arg3: String -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::replaceAll",
+      "name": "replaceAll",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "replaceAll arg1: String -> arg2: String -> arg3: String -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::scalarAt",
+      "name": "scalarAt",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "scalarAt arg1: Int -> arg2: String -> Maybe<Char>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::sliceScalars",
+      "name": "sliceScalars",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "sliceScalars arg1: Int -> arg2: Int -> arg3: String -> Either<TextSliceError, String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::split",
+      "name": "split",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "split arg1: String -> arg2: String -> Array<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::startsWith",
+      "name": "startsWith",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "startsWith arg1: String -> arg2: String -> Bool",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::toLower",
+      "name": "toLower",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "toLower arg1: String -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::toUpper",
+      "name": "toUpper",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "toUpper arg1: String -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::trim",
+      "name": "trim",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "trim arg1: String -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::trimEnd",
+      "name": "trimEnd",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "trimEnd arg1: String -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::trimStart",
+      "name": "trimStart",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "trimStart arg1: String -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::words",
+      "name": "words",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "words arg1: String -> Array<String>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },

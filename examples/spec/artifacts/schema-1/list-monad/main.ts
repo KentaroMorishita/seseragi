@@ -1,8 +1,10 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { fromArray as _ssrg_list_from_array, reduce as _ssrg_list_reduce, listFunctor as _ssrg_list_functor, listApplicative as _ssrg_list_applicative, listMonad as _ssrg_list_monad, type List as List } from "@seseragi/runtime/list"
 import { stringShow as _ssrg_show_stringShow, intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const increment = (value: number) => _ssrg_int_add(value, 1)
 const expand = (value: number) => _ssrg_list_from_array([value, _ssrg_int_add(value, 10)])

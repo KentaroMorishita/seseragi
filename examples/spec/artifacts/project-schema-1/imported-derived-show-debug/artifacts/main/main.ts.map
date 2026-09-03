@@ -14,5 +14,5 @@
     "inspect",
     "Debug<fixture/imported-derived-show-debug::domain::Remote<$0>>"
   ],
-  "mappings": ";;AAEAA;AAGAE"
+  "mappings": ";;;;AAEAA;AAGAE"
 }

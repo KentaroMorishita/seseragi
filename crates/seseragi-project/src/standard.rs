@@ -299,7 +299,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     available_module!("std/bytes", bytes_interface, PORTABLE_TARGETS),
     contract_module!("std/bytes/base64", PORTABLE_TARGETS),
     contract_module!("std/bytes/hex", PORTABLE_TARGETS),
-    contract_module!("std/char", PORTABLE_TARGETS),
+    available_module!("std/char", char_interface, PORTABLE_TARGETS),
     available_module!(
         "std/child-process",
         child_process_interface,
@@ -380,8 +380,8 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     available_module!("std/stream", stream_interface, PORTABLE_TARGETS),
     available_module!("std/test", test_interface, PORTABLE_TARGETS),
     available_module!("std/text", text_interface, PORTABLE_TARGETS),
-    contract_module!("std/text/grapheme", PORTABLE_TARGETS),
-    contract_module!("std/text/unicode", PORTABLE_TARGETS),
+    available_module!("std/text/grapheme", grapheme_interface, PORTABLE_TARGETS),
+    available_module!("std/text/unicode", unicode_interface, PORTABLE_TARGETS),
     contract_module!("std/transformer/either", PORTABLE_TARGETS),
     contract_module!("std/transformer/maybe", PORTABLE_TARGETS),
     contract_module!("std/transformer/reader", PORTABLE_TARGETS),
@@ -5572,43 +5572,404 @@ fn text_interface() -> ModuleInterface {
         "Utf8DecodeError",
         Vec::new(),
     );
+    let mut exports = vec![
+        opaque_adt_type_export(module, "Utf8DecodeError", []),
+        constructor_export(
+            module,
+            "Utf8DecodeError",
+            "InvalidUtf8",
+            [],
+            Some(record([required("offset", named("Int"))])),
+        ),
+        function_export(
+            module,
+            "encodeUtf8",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            bytes.clone(),
+        ),
+        function_export(
+            module,
+            "decodeUtf8",
+            [],
+            Vec::new(),
+            vec![bytes.clone()],
+            named_with("Either", vec![error, named("String")]),
+        ),
+        function_export(
+            module,
+            "decodeUtf8Lossy",
+            [],
+            Vec::new(),
+            vec![bytes],
+            named("String"),
+        ),
+    ];
+    exports.extend([
+        opaque_adt_type_export(module, "TextSliceError", []),
+        constructor_export(
+            module,
+            "TextSliceError",
+            "InvalidScalarRange",
+            [],
+            Some(text_range_payload()),
+        ),
+        function_export(
+            module,
+            "isEmpty",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            named("Bool"),
+        ),
+        function_export(
+            module,
+            "concat",
+            [],
+            Vec::new(),
+            vec![named_with("Array", vec![named("String")])],
+            named("String"),
+        ),
+        function_export(
+            module,
+            "join",
+            [],
+            Vec::new(),
+            vec![named("String"), named_with("Array", vec![named("String")])],
+            named("String"),
+        ),
+        function_export(
+            module,
+            "split",
+            [],
+            Vec::new(),
+            vec![named("String"), named("String")],
+            named_with("Array", vec![named("String")]),
+        ),
+        function_export(
+            module,
+            "scalarAt",
+            [],
+            Vec::new(),
+            vec![named("Int"), named("String")],
+            named_with("Maybe", vec![named("Char")]),
+        ),
+        function_export(
+            module,
+            "sliceScalars",
+            [],
+            Vec::new(),
+            vec![named("Int"), named("Int"), named("String")],
+            named_with(
+                "Either",
+                vec![
+                    external_type(
+                        "TextSliceError",
+                        "std/text::TextSliceError",
+                        module,
+                        "TextSliceError",
+                        Vec::new(),
+                    ),
+                    named("String"),
+                ],
+            ),
+        ),
+    ]);
+    for name in ["lengthScalars", "lengthBytes"] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("String")],
+            named("Int"),
+        ));
+    }
+    for name in ["lines", "words"] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("String")],
+            named_with("Array", vec![named("String")]),
+        ));
+    }
+    for name in [
+        "trim",
+        "trimStart",
+        "trimEnd",
+        "toLower",
+        "toUpper",
+        "caseFold",
+    ] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("String")],
+            named("String"),
+        ));
+    }
+    for name in ["startsWith", "endsWith", "contains"] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("String"), named("String")],
+            named("Bool"),
+        ));
+    }
+    for name in ["replace", "replaceAll"] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("String"), named("String"), named("String")],
+            named("String"),
+        ));
+    }
+    standard_interface(module, exports)
+}
+
+fn text_range_payload() -> InterfaceType {
+    record([
+        required("start", named("Int")),
+        required("end", named("Int")),
+        required("length", named("Int")),
+    ])
+}
+
+fn char_interface() -> ModuleInterface {
+    let module = "std/char";
     standard_interface(
         module,
         vec![
-            opaque_adt_type_export(module, "Utf8DecodeError", []),
-            constructor_export(
+            function_export(
                 module,
-                "Utf8DecodeError",
-                "InvalidUtf8",
+                "codePoint",
                 [],
-                Some(record([required("offset", named("Int"))])),
+                Vec::new(),
+                vec![named("Char")],
+                named("Int"),
             ),
             function_export(
                 module,
-                "encodeUtf8",
+                "fromCodePoint",
                 [],
                 Vec::new(),
-                vec![named("String")],
-                bytes.clone(),
+                vec![named("Int")],
+                named_with("Maybe", vec![named("Char")]),
             ),
             function_export(
                 module,
-                "decodeUtf8",
+                "toString",
                 [],
                 Vec::new(),
-                vec![bytes.clone()],
-                named_with("Either", vec![error, named("String")]),
-            ),
-            function_export(
-                module,
-                "decodeUtf8Lossy",
-                [],
-                Vec::new(),
-                vec![bytes],
+                vec![named("Char")],
                 named("String"),
             ),
         ],
     )
+}
+
+fn grapheme_interface() -> ModuleInterface {
+    let module = "std/text/grapheme";
+    let error = external_type(
+        "GraphemeSliceError",
+        "std/text/grapheme::GraphemeSliceError",
+        module,
+        "GraphemeSliceError",
+        Vec::new(),
+    );
+    standard_interface(
+        module,
+        vec![
+            opaque_adt_type_export(module, "GraphemeSliceError", []),
+            constructor_export(
+                module,
+                "GraphemeSliceError",
+                "InvalidGraphemeRange",
+                [],
+                Some(text_range_payload()),
+            ),
+            function_export(
+                module,
+                "length",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "clusters",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                named_with("Array", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "byteBoundaries",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                named_with("Array", vec![named("Int")]),
+            ),
+            function_export(
+                module,
+                "at",
+                [],
+                Vec::new(),
+                vec![named("Int"), named("String")],
+                named_with("Maybe", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "slice",
+                [],
+                Vec::new(),
+                vec![named("Int"), named("Int"), named("String")],
+                named_with("Either", vec![error, named("String")]),
+            ),
+        ],
+    )
+}
+
+fn unicode_interface() -> ModuleInterface {
+    let module = "std/text/unicode";
+    let form = || {
+        external_type(
+            "NormalizationForm",
+            "std/text/unicode::NormalizationForm",
+            module,
+            "NormalizationForm",
+            Vec::new(),
+        )
+    };
+    let category = external_type(
+        "UnicodeGeneralCategory",
+        "std/text/unicode::UnicodeGeneralCategory",
+        module,
+        "UnicodeGeneralCategory",
+        Vec::new(),
+    );
+    let mut exports = vec![
+        opaque_adt_type_export(module, "NormalizationForm", []),
+        opaque_adt_type_export(module, "UnicodeGeneralCategory", []),
+        function_export(
+            module,
+            "version",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            named("String"),
+        ),
+        function_export(
+            module,
+            "normalize",
+            [],
+            Vec::new(),
+            vec![form(), named("String")],
+            named("String"),
+        ),
+        function_export(
+            module,
+            "isNormalized",
+            [],
+            Vec::new(),
+            vec![form(), named("String")],
+            named("Bool"),
+        ),
+        function_export(
+            module,
+            "generalCategory",
+            [],
+            Vec::new(),
+            vec![named("Char")],
+            category,
+        ),
+        function_export(
+            module,
+            "simpleCaseFold",
+            [],
+            Vec::new(),
+            vec![named("Char")],
+            named("Char"),
+        ),
+        function_export(
+            module,
+            "fullCaseFold",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            named("String"),
+        ),
+    ];
+    for name in ["NFC", "NFD", "NFKC", "NFKD"] {
+        exports.push(constructor_export(
+            module,
+            "NormalizationForm",
+            name,
+            [],
+            None,
+        ));
+    }
+    for name in [
+        "UppercaseLetter",
+        "LowercaseLetter",
+        "TitlecaseLetter",
+        "ModifierLetter",
+        "OtherLetter",
+        "NonspacingMark",
+        "SpacingMark",
+        "EnclosingMark",
+        "DecimalNumber",
+        "LetterNumber",
+        "OtherNumber",
+        "ConnectorPunctuation",
+        "DashPunctuation",
+        "OpenPunctuation",
+        "ClosePunctuation",
+        "InitialPunctuation",
+        "FinalPunctuation",
+        "OtherPunctuation",
+        "MathSymbol",
+        "CurrencySymbol",
+        "ModifierSymbol",
+        "OtherSymbol",
+        "SpaceSeparator",
+        "LineSeparator",
+        "ParagraphSeparator",
+        "Control",
+        "Format",
+        "PrivateUse",
+        "Unassigned",
+    ] {
+        exports.push(constructor_export(
+            module,
+            "UnicodeGeneralCategory",
+            name,
+            [],
+            None,
+        ));
+    }
+    for name in ["isAlphabetic", "isWhitespace", "isDecimalDigit", "isMark"] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("Char")],
+            named("Bool"),
+        ));
+    }
+    standard_interface(module, exports)
 }
 
 fn number_interface() -> ModuleInterface {

@@ -1,8 +1,10 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedShow as _ssrg_show_boundedShow, boundedDebug as _ssrg_debug_boundedDebug, intShow as _ssrg_show_intShow, intDebug as _ssrg_debug_intDebug, arrayShow as _ssrg_show_arrayShow, arrayDebug as _ssrg_debug_arrayDebug, stringShow as _ssrg_show_stringShow, rangeShow as _ssrg_show_rangeShow, tupleShow as _ssrg_show_tupleShow, boolShow as _ssrg_show_boolShow, recordShow as _ssrg_show_recordShow, stringDebug as _ssrg_debug_stringDebug, rangeDebug as _ssrg_debug_rangeDebug, tupleDebug as _ssrg_debug_tupleDebug, boolDebug as _ssrg_debug_boolDebug, recordDebug as _ssrg_debug_recordDebug, floatDebug as _ssrg_debug_floatDebug, type Show as _ssrg_show_Show, type Debug as _ssrg_debug_Debug } from "@seseragi/runtime/show"
 import { inclusive as _ssrg_range_inclusive } from "@seseragi/runtime/range"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export type UserId =
   | { readonly tag: "UserId"; readonly value: number };

@@ -1,9 +1,11 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { boundedDebug as _ssrg_debug_boundedDebug, intDebug as _ssrg_debug_intDebug, maybeDebug as _ssrg_debug_maybeDebug, stringDebug as _ssrg_debug_stringDebug, eitherDebug as _ssrg_debug_eitherDebug, arrayDebug as _ssrg_debug_arrayDebug, listDebug as _ssrg_debug_listDebug, type Debug as _ssrg_debug_Debug } from "@seseragi/runtime/show"
 import { Just as _ssrg_maybe_Just, Nothing as _ssrg_maybe_Nothing, maybeMonad as _ssrg_maybe_monad, maybeApplicative as _ssrg_maybe_applicative, Right as _ssrg_either_Right } from "@seseragi/runtime/sum"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { fromArray as _ssrg_list_from_array, type List as List } from "@seseragi/runtime/list"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 export type Packet<A> =
   | { readonly tag: "Packet"; readonly value: A };

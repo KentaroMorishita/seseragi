@@ -1,8 +1,10 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { Just as _ssrg_maybe_Just, Nothing as _ssrg_maybe_Nothing } from "@seseragi/runtime/sum"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { next as _ssrg_iterator_next, unfold as _ssrg_iterator_unfold, type Iterator as Iterator } from "@seseragi/runtime/iterator"
 import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const step = (current: number) => current <= 3 ? _ssrg_maybe_Just([current, _ssrg_int_add(current, 1)] as const) : _ssrg_maybe_Nothing
 const render = (iterator: Iterator<number>) => (($ssrg_match: readonly [{ readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: readonly [number, Iterator<number>] }, { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: readonly [number, Iterator<number>] }]): string => $ssrg_match[0].tag === "Just" && $ssrg_match[1].tag === "Just" ? ((left: number, leftRest: Iterator<number>, right: number, rightRest: Iterator<number>): string => _ssrg_int_eq_dictionary["eq"](left)(right) ? (($ssrg_match: readonly [{ readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: readonly [number, Iterator<number>] }, { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: readonly [number, Iterator<number>] }]): string => $ssrg_match[0].tag === "Just" && $ssrg_match[1].tag === "Just" ? ((leftNext: number, rightNext: number): string => _ssrg_int_eq_dictionary["eq"](leftNext)(rightNext) ? "persistent iterator: 1 then 2" : "iterator rest changed")($ssrg_match[0].value[0], $ssrg_match[1].value[0]) : "iterator ended early")([_ssrg_iterator_next(leftRest), _ssrg_iterator_next(rightRest)] as const) : "iterator changed")($ssrg_match[0].value[0], $ssrg_match[0].value[1], $ssrg_match[1].value[0], $ssrg_match[1].value[1]) : "iterator changed")([_ssrg_iterator_next(iterator), _ssrg_iterator_next(iterator)] as const)

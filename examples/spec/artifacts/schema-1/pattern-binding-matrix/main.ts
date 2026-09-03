@@ -1,3 +1,4 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { add as _ssrg_int_add, multiply as _ssrg_int_multiply } from "@seseragi/runtime/int"
 import { fromArray as _ssrg_list_from_array, length as _ssrg_list_length, type List as List } from "@seseragi/runtime/list"
 import { collectMap as _ssrg_array_comprehend, length as _ssrg_array_length, arrayIterable as _ssrg_array_iterable } from "@seseragi/runtime/array"
@@ -6,6 +7,7 @@ import { stringShow as _ssrg_show_stringShow, intShow as _ssrg_show_intShow } fr
 import { flatMap as _ssrg_effect_flatMap, succeed as _ssrg_effect_succeed, type Effect as Effect } from "@seseragi/runtime/effect"
 import { forEach as _ssrg_collection_for_each } from "@seseragi/runtime/collection"
 import { println as _ssrg_console_println, type Console as Console, type ConsoleError as ConsoleError } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type UserId =
   | { readonly tag: "UserId"; readonly value: number };

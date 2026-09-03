@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-unicode::operations",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.text.unicode.normalization-form",
+      "core.text.slice-error",
+      "core.text.grapheme.slice-error",
+      "core.text.unicode.normalize",
+      "core.string",
+      "core.text.unicode.nfc",
+      "core.text.slice-scalars",
+      "core.either",
+      "core.int",
+      "core.text.grapheme.slice",
+      "core.char.from-code-point",
+      "core.maybe",
+      "core.char",
+      "core.char.code-point",
+      "core.text.slice-error.debug"
+    ]
+  },
+  "exports": [
+    "normalize",
+    "scalarSlice",
+    "graphemeSlice",
+    "character",
+    "point",
+    "inspectError"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-unicode/operations.ts",
+    "sourceMap": "dist/imported-unicode/operations.ts.map"
+  }
+}

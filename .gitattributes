@@ -1,0 +1,5 @@
+# Hash-pinned upstream bytes must not be normalized or whitespace-cleaned.
+runtime/unicode/ucd/** -text whitespace=-blank-at-eol,-blank-at-eof
+
+# The canonical renderer emits a trailing space for Right of the empty String.
+examples/spec/artifacts/execution-schema-1/unicode-text/stdout.txt -text whitespace=-blank-at-eol

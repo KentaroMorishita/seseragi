@@ -18,6 +18,7 @@ use crate::signal_ops::runtime_signal_operation;
 use crate::standard_ops::runtime_standard_operation;
 use crate::stream_ops::runtime_stream_operation;
 use crate::sum_ops::runtime_sum_constructor;
+use crate::text_ops::runtime_text_operation;
 use crate::trait_method_ops::{runtime_trait_method_operation, RuntimeTraitMethodOperation};
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
@@ -76,7 +77,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if let Some(operation) = runtime_standard_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
-            if let Some(operation) = runtime_bytes_operation(name) {
+            if let Some(operation) =
+                runtime_bytes_operation(name).or_else(|| runtime_text_operation(name))
+            {
                 push_unique(requirements, operation.runtime_feature);
             }
             if let Some(operation) = runtime_json_operation(name) {
@@ -142,7 +145,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_iterator_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
-            } else if let Some(operation) = runtime_bytes_operation(callee) {
+            } else if let Some(operation) =
+                runtime_bytes_operation(callee).or_else(|| runtime_text_operation(callee))
+            {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_json_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
@@ -586,7 +591,9 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     },
                 );
             }
-            if let Some(operation) = runtime_bytes_operation(name) {
+            if let Some(operation) =
+                runtime_bytes_operation(name).or_else(|| runtime_text_operation(name))
+            {
                 push_import_unique(
                     imports,
                     TypeScriptImport {
@@ -740,7 +747,9 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                         local: operation.local_name.to_owned(),
                     },
                 );
-            } else if let Some(operation) = runtime_bytes_operation(callee) {
+            } else if let Some(operation) =
+                runtime_bytes_operation(callee).or_else(|| runtime_text_operation(callee))
+            {
                 push_import_unique(
                     imports,
                     TypeScriptImport {

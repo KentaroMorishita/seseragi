@@ -4,6 +4,9 @@ use seseragi_lowering::{
 };
 use seseragi_semantics::type_module;
 
+mod support;
+use support::with_unicode_header;
+
 #[test]
 fn lowers_tuple_values_without_a_runtime_helper() {
     let source = "pub fn pair left: Int -> right: Bool -> (Int, Bool) = (left, right)\n";
@@ -41,7 +44,10 @@ fn lowers_tuple_values_without_a_runtime_helper() {
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "export const pair = (left: number) => (right: boolean) => [left, right] as const\n"
+        with_unicode_header(
+            "",
+            "export const pair = (left: number) => (right: boolean) => [left, right] as const\n"
+        )
     );
 }
 
@@ -56,7 +62,10 @@ fn emits_a_top_level_tuple_with_a_readonly_typescript_type() {
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "export const pair: readonly [number, boolean] = [1, true] as const;\n"
+        with_unicode_header(
+            "",
+            "export const pair: readonly [number, boolean] = [1, true] as const;\n"
+        )
     );
 }
 

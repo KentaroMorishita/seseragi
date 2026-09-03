@@ -1,9 +1,11 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { update as _ssrg_signal_update, map as _ssrg_signal_map, make as _ssrg_signal_make, read as _ssrg_signal_read, type MutableSignal as MutableSignal, type Signal as Signal } from "@seseragi/runtime/signal"
 import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { button as _ssrg_html_button, type Html as Html } from "@seseragi/runtime/html"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { succeed as _ssrg_effect_succeed, flatMap as _ssrg_effect_flatMap, type Effect as Effect } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type AppError =
   | { readonly tag: "AppFailed" };

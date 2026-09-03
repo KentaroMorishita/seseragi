@@ -1,9 +1,11 @@
 import { Countdown, __ssrg$instance$Iterable$0, __ssrg$instance$Reducible$1 } from "./domain.js"
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { multiply as _ssrg_int_multiply, remainder as _ssrg_int_remainder, add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { collectMap as _ssrg_iterator_comprehend } from "@seseragi/runtime/iterator"
 import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { reduce as _ssrg_array_reduce } from "@seseragi/runtime/array"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 const oddSquares = (values: Countdown) => _ssrg_iterator_comprehend(__ssrg$instance$Iterable$0["iterate"](values), (value) => _ssrg_int_eq_dictionary["eq"](_ssrg_int_remainder(value, 2))(0) === false, (value) => _ssrg_int_multiply(value, value))
 const addInt = (left: number) => (right: number) => _ssrg_int_add(left, right)

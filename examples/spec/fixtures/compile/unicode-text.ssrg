@@ -1,0 +1,29 @@
+import * as text from "std/text"
+import * as char from "std/char"
+import * as graphemes from "std/text/grapheme"
+import * as unicode from "std/text/unicode"
+
+pub fn normalizedClusters value: String -> Array<String> =
+  value
+  |> unicode.normalize unicode.NFC
+  |> graphemes.clusters
+
+pub fn checkedScalars start: Int
+  -> end: Int
+  -> value: String
+  -> Either<text.TextSliceError, String> =
+  text.sliceScalars start end value
+
+pub fn checkedGraphemes start: Int
+  -> end: Int
+  -> value: String
+  -> Either<graphemes.GraphemeSliceError, String> =
+  graphemes.slice start end value
+
+pub fn foldedCodePoint value: Char -> Int =
+  value
+  |> unicode.simpleCaseFold
+  |> char.codePoint
+
+pub fn normalizedCategory value: Char -> unicode.UnicodeGeneralCategory =
+  unicode.generalCategory value

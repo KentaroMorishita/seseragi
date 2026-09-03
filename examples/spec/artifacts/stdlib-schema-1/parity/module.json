@@ -27,7 +27,10 @@
         "std/set",
         "std/bytes",
         "std/json",
-        "std/text"
+        "std/text",
+        "std/char",
+        "std/text/grapheme",
+        "std/text/unicode"
       ]
     },
     {
@@ -451,6 +454,16 @@
       "route": "portable-project"
     },
     {
+      "specifier": "std/char",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:67563e12f056ecad",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
       "specifier": "std/child-process",
       "targets": [
         "process"
@@ -707,7 +720,27 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:f9db02476e731dfd",
+      "interfaceFingerprint": "fnv1a64:8c07cad5b4a104c6",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/text/grapheme",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:3067b59066a3972c",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/text/unicode",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:7889ddcc3d49e8ec",
       "implementation": "lowering-runtime",
       "route": "portable-project"
     },

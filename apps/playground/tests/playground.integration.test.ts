@@ -398,6 +398,9 @@ describe("Playground project compiler boundary", () => {
             "std/set",
             "std/number",
             "std/text",
+            "std/char",
+            "std/text/grapheme",
+            "std/text/unicode",
           ].includes(module)
         )
         .map(({ identity }) => identity)
@@ -418,6 +421,10 @@ describe("Playground project compiler boundary", () => {
         "std/number::HalfEven",
         "std/text::decodeUtf8",
         "std/text::encodeUtf8",
+        "std/text::lengthScalars",
+        "std/char::codePoint",
+        "std/text/grapheme::length",
+        "std/text/unicode::normalize",
       ])
     )
     expect(response.status).toBe("success")
@@ -448,7 +455,13 @@ describe("Playground project compiler boundary", () => {
       'length as _ssrg_bytes_length, type Bytes as Bytes } from "@seseragi/runtime/bytes"'
     )
     expect(response.modules[0]?.generated.typescript).toContain(
-      "encodeUtf8 as _ssrg_text_encodeUtf8, decodeUtf8 as _ssrg_text_decodeUtf8"
+      [
+        "encodeUtf8 as _ssrg_text_encodeUtf8",
+        "lengthScalars as _ssrg_text_lengthScalars",
+        "lengthBytes as _ssrg_text_lengthBytes",
+        "scalarAt as _ssrg_text_scalarAt",
+        "decodeUtf8 as _ssrg_text_decodeUtf8",
+      ].join(", ")
     )
     expect(response.modules[0]?.generated.typescript).toContain(
       'from "@seseragi/runtime/text"'
@@ -1442,6 +1455,88 @@ describe("Playground project compiler boundary", () => {
         response.entry
       )
     ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
+  })
+
+  test("executes pinned Unicode scalar, byte and grapheme APIs through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/unicode-text/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expected = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/unicode-text/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("unicode-text.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing Unicode execution entry")
+    expect(response.generated.typescript).toContain(
+      '$ssrg$assertUnicodeVersion("17.0.0")'
+    )
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
+    const formatted = await format(source)
+    expect(formatted.status).toBe("success")
+  })
+
+  test("executes imported Unicode APIs and enforces dependency guards in the browser runtime", async () => {
+    const root =
+      "../../../examples/spec/artifacts/project-schema-1/imported-unicode/"
+    const files = await Promise.all(
+      ["main", "operations"].map(async (name) => ({
+        path: `${name}.ssrg`,
+        source: await Bun.file(
+          new URL(`${root}src/${name}.ssrg`, import.meta.url)
+        ).text(),
+      }))
+    )
+    const expected = await Bun.file(
+      new URL(`${root}stdout.txt`, import.meta.url)
+    ).text()
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files,
+    })
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry.contract)
+      throw new Error("missing imported Unicode execution entry")
+    const modules = response.modules.map(({ path, generated }) => ({
+      path,
+      typescript: generated.typescript,
+    }))
+    expect(
+      await executeGeneratedProject(
+        modules,
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
+    const incompatible = modules.map((module) => ({
+      ...module,
+      typescript:
+        module.path === "operations.ssrg"
+          ? module.typescript.replace(
+              '$ssrg$assertUnicodeVersion("17.0.0")',
+              '$ssrg$assertUnicodeVersion("18.0.0")'
+            )
+          : module.typescript,
+    }))
+    await expect(
+      executeGeneratedProject(
+        incompatible,
+        response.entry.path,
+        response.entry.contract
+      )
+    ).rejects.toThrow("runtime ABI mismatch")
   })
 
   test("rejects Monad for Validation through WASM", async () => {

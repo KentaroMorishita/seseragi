@@ -176,6 +176,7 @@ fn push_declaration_mapping(
 fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
     let import_lines = render_import_lines(module).len();
     import_lines
+        + 1 // Unicode ABI guard precedes every source declaration.
         + usize::from(
             import_lines > 0
                 && (!module.adts.is_empty()
@@ -210,6 +211,7 @@ fn runtime_source_name_for_feature(feature: &str) -> Option<&'static str> {
         .map(|operation| operation.source_map_name)
         .or_else(|| {
             runtime_bytes_operation_for_feature(feature)
+                .or_else(|| crate::text_ops::runtime_text_operation_for_feature(feature))
                 .map(|operation| operation.source_map_name)
                 .or_else(|| {
                     runtime_json_operation_for_feature(feature)
@@ -578,15 +580,19 @@ mod tests {
             }],
         };
 
-        assert_eq!(render_import_lines(&module).len(), 2);
-        assert_eq!(generated_declaration_start_line(&module), 3);
+        assert_eq!(render_import_lines(&module).len(), 3);
+        // Two source import lines, the ABI import, the guard, then a blank line.
+        assert_eq!(generated_declaration_start_line(&module), 5);
 
         let mut inferred_only = module;
         inferred_only.source_imports[0].runtime_edge = false;
         assert_eq!(
             render_import_lines(&inferred_only),
-            vec!["import { type Hand as LocalHand } from \"./domain.js\""],
+            vec![
+                "import { type Hand as LocalHand } from \"./domain.js\"",
+                "import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from \"@seseragi/runtime/unicode-version\"",
+            ],
         );
-        assert_eq!(generated_declaration_start_line(&inferred_only), 2);
+        assert_eq!(generated_declaration_start_line(&inferred_only), 4);
     }
 }

@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": ["fixture/imported-unicode::operations", "fixture/imported-unicode::main"],
+  "modules": [
+    {"id":"fixture/imported-unicode::operations","source":"src/operations.ssrg","output":"dist/imported-unicode/operations.js","artifacts":"artifacts/operations","imports":[]},
+    {"id":"fixture/imported-unicode::main","source":"src/main.ssrg","output":"dist/imported-unicode/main.js","artifacts":"artifacts/main","imports":[{"specifier":"./operations","module":"fixture/imported-unicode::operations"}]}
+  ]
+}

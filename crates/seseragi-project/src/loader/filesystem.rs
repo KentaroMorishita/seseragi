@@ -92,9 +92,10 @@ fn exact_child(directory: &Path, expected: &str) -> Result<PathBuf, PackageLoadE
         [] => {}
     }
 
+    let expected_lower = seseragi_syntax::unicode::lowercase(expected);
     if let Some(actual) = names
         .iter()
-        .find(|name| name.to_lowercase() == expected.to_lowercase())
+        .find(|name| seseragi_syntax::unicode::lowercase(name) == expected_lower)
     {
         return Err(PackageLoadError::CaseMismatch {
             expected: expected.to_owned(),

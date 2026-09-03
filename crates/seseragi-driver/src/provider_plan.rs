@@ -315,11 +315,7 @@ fn trace(input: &ProjectModuleInput, span: ByteSpan) -> RequirementTrace {
 }
 
 fn lower_camel(value: &str) -> String {
-    let mut chars = value.chars();
-    match chars.next() {
-        Some(first) => first.to_lowercase().chain(chars).collect(),
-        None => String::new(),
-    }
+    seseragi_syntax::unicode::lowercase_first(value)
 }
 
 fn invalid_configuration(

@@ -1,7 +1,7 @@
 schema = 1
 language = "0.1.0"
 standard_library = "0.1.0"
-unicode = "16.0.0"
+unicode = "17.0.0"
 timezone_database = "2025b"
 root = "fixture/std-parity-portable@0.0.0#workspace:."
 
@@ -12,5 +12,5 @@ version = "0.0.0"
 source_kind = "workspace"
 source = "."
 manifest_digest = "sha256:a9f95603493e6a24eb11a87b08e15808e5b477b92f751dd9c1321206af5e9568"
-content_digest = "sha256:261ce4416c34b9eccea51dd1780885b08d04d83e3b7fcefdde4cad5c63f10057"
+content_digest = "sha256:689eea2fa95983882d69004fea461baf35d495d0daca32569ea1071f2ba2176b"
 dependencies = []

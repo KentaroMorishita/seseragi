@@ -1,7 +1,9 @@
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { intShow as _ssrg_show_intShow, stringShow as _ssrg_show_stringShow, tupleShow as _ssrg_show_tupleShow, intDebug as _ssrg_debug_intDebug, stringDebug as _ssrg_debug_stringDebug, recordDebug as _ssrg_debug_recordDebug, rangeDebug as _ssrg_debug_rangeDebug, boolDebug as _ssrg_debug_boolDebug, tupleDebug as _ssrg_debug_tupleDebug, arrayDebug as _ssrg_debug_arrayDebug, recordShow as _ssrg_show_recordShow } from "@seseragi/runtime/show"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { exclusive as _ssrg_range_exclusive, inclusive as _ssrg_range_inclusive } from "@seseragi/runtime/range"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type Badge =
   | { readonly tag: "Active" }

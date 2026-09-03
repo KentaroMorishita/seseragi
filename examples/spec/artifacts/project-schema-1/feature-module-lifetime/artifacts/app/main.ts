@@ -1,8 +1,10 @@
 import { create as createCounter } from "./counter.js"
+import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { update as _ssrg_signal_update, constant as _ssrg_signal_constant, make as _ssrg_signal_make, map as _ssrg_signal_map, signalApplicative as _ssrg_signal_applicative, signalFunctor as _ssrg_signal_functor, switchMap as _ssrg_signal_switchMap, type MutableSignal as MutableSignal, type Signal as Signal } from "@seseragi/runtime/signal"
 import { section as _ssrg_html_section, button as _ssrg_html_button, p as _ssrg_html_p, main as _ssrg_html_main, type Html as Html } from "@seseragi/runtime/html"
 import { flatMap as _ssrg_effect_flatMap, mapError as _ssrg_effect_mapError, type Effect as Effect } from "@seseragi/runtime/effect"
 import { query as _ssrg_dom_query, run as _ssrg_dom_run, defaultOptions as _ssrg_dom_defaultOptions, type DomTarget as DomTarget, type DomError as DomError, type Dom as Dom, type DomRuntimeError as DomRuntimeError, type DomOptions as DomOptions } from "@seseragi/runtime/dom"
+$ssrg$assertUnicodeVersion("17.0.0")
 
 type LayoutAction =
   | { readonly tag: "ToggleFirst" }

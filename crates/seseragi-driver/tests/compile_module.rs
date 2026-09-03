@@ -10,6 +10,13 @@ use seseragi_semantics::{TypedDecl, TypedModuleInterface};
 use seseragi_syntax::parse_unlinked_module_interface;
 use std::collections::BTreeMap;
 
+fn with_unicode_header(imports: &str, declarations: &str) -> String {
+    format!(
+        "import {{ assertUnicodeVersion as $ssrg$assertUnicodeVersion }} from \"@seseragi/runtime/unicode-version\"\n{imports}$ssrg$assertUnicodeVersion({:?})\n\n{declarations}",
+        seseragi_syntax::unicode::UNICODE_VERSION
+    )
+}
+
 fn input<'source>(
     source_name: &'source str,
     module_id: &'source str,
@@ -36,7 +43,7 @@ fn compiles_a_valid_module_through_every_owned_stage() {
     assert_eq!(compiled.generated.metadata.exports, vec!["answer"]);
     assert_eq!(
         compiled.generated.typescript,
-        "export const answer: number = 42;\n"
+        with_unicode_header("", "export const answer: number = 42;\n")
     );
 }
 
@@ -235,9 +242,12 @@ fn compiles_typed_logical_operators_as_short_circuit_control_flow() {
         .all(|function| matches!(function.body, seseragi_lowering::CoreExpr::If { .. })));
     assert_eq!(
         compiled.generated.typescript,
-        concat!(
+        with_unicode_header(
+            "",
+            concat!(
             "export const andValue = (left: boolean) => (right: boolean) => left ? right : false\n",
             "export const orValue = (left: boolean) => (right: boolean) => left ? true : right\n",
+        )
         )
     );
 }
@@ -308,13 +318,11 @@ fn compiles_a_higher_order_parameter_call_through_every_owned_stage() {
     assert!(compiled.diagnostics.diagnostics.is_empty());
     assert_eq!(
         compiled.generated.typescript,
-        concat!(
-            "import { add as _ssrg_int_add } from \"@seseragi/runtime/int\"\n",
-            "\n",
+        with_unicode_header("import { add as _ssrg_int_add } from \"@seseragi/runtime/int\"\n", concat!(
             "export const apply = (f: (argument: number) => number) => (value: number) => f(value)\n",
             "export const increment = (value: number) => _ssrg_int_add(value, 1)\n",
             "export const example = (value: number) => apply(increment)(value)\n",
-        )
+        ))
     );
 }
 
@@ -623,7 +631,10 @@ fn compiles_a_lambda_discard_parameter() {
     assert!(compiled.diagnostics.diagnostics.is_empty());
     assert_eq!(
         compiled.generated.typescript,
-        "export const keep: (argument: number) => string = (_: number) => \"ok\";\n"
+        with_unicode_header(
+            "",
+            "export const keep: (argument: number) => string = (_: number) => \"ok\";\n"
+        )
     );
 }
 
@@ -667,7 +678,7 @@ fn diagnoses_a_contract_only_standard_module_without_synthesizing_an_interface()
     let diagnostics = compile_module(input(
         "entry.ssrg",
         "demo@1.2.3::game/domain",
-        "import * as text from \"std/text/grapheme\"\npub let answer: Int = 42\n",
+        "import * as regex from \"std/regex\"\npub let answer: Int = 42\n",
     ))
     .expect_err("unlinked imports must prevent all later compiler outputs");
 
@@ -688,7 +699,7 @@ fn reports_unlinked_imports_in_source_order() {
     let diagnostics = compile_module(input(
         "entry.ssrg",
         "artifact/driver-imports",
-        "import * as support from \"./support\"\nimport * as text from \"std/text/grapheme\"\npub let answer: Int = 42\n",
+        "import * as support from \"./support\"\nimport * as regex from \"std/regex\"\npub let answer: Int = 42\n",
     ))
     .expect_err("a single-module driver cannot resolve imports");
 
