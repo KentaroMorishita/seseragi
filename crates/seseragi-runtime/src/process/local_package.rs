@@ -145,7 +145,7 @@ fn test_entry_source(
     project: &CompiledLocalTests,
     options: &TestRunOptions,
 ) -> Result<String, RunError> {
-    let mut source = String::from("import { runTestModules } from \"@seseragi/runtime/test\";\n");
+    let mut source = String::from("import { runTestModules } from \"@seseragi/runtime/test\";\nimport { processHashSeed } from \"@seseragi/runtime/hash\";\nprocessHashSeed();\n");
     let mut modules = Vec::new();
     for (index, test) in project.test_modules.iter().enumerate() {
         let module = project
@@ -156,7 +156,7 @@ fn test_entry_source(
         let path = canonical_output_path(&module.generated.metadata.outputs.typescript)
             .map_err(RunError::Host)?;
         source.push_str(&format!(
-            "import {{ tests as tests{index} }} from \"./{}\";\n",
+            "const {{ tests: tests{index} }} = await import(\"./{}\");\n",
             path.to_string_lossy()
         ));
         modules.push(serde_json::json!({

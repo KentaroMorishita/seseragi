@@ -4,7 +4,7 @@ import type {
 } from "./collection"
 import type { Unit } from "./effect"
 import type { Eq } from "./equality"
-import { type Hash, mixHash, processHashSeed } from "./hash"
+import { type Hash, type HashSeed, mixHash, processHashSeed } from "./hash"
 import type { Iterator } from "./iterator"
 import {
   type Index,
@@ -24,7 +24,7 @@ type Entry<K, V> = Readonly<{
 }>
 
 type State<K, V> = Readonly<{
-  seed: number
+  seed: HashSeed
   buckets: Index<ReadonlyArray<number>>
   order: Index<Entry<K, V>>
   first: number | undefined
@@ -39,7 +39,7 @@ export type Map<K, V> = Readonly<{ [stateKey]: State<K, V> }>
 const wrap = <K, V>(state: State<K, V>): Map<K, V> =>
   Object.freeze({ [stateKey]: Object.freeze(state) })
 
-const emptyWithSeed = <K, V>(seed: number): Map<K, V> =>
+const emptyWithSeed = <K, V>(seed: HashSeed): Map<K, V> =>
   wrap({
     seed,
     buckets: undefined,

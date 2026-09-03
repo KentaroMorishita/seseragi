@@ -12,7 +12,7 @@ import {
 } from "../src/hash"
 
 type HashSeedGlobal = typeof globalThis & {
-  __SESERAGI_HASH_SEED__?: number
+  __SESERAGI_HASH_SEED__?: number | bigint
 }
 
 const host = globalThis as HashSeedGlobal
@@ -73,5 +73,28 @@ describe("process-local hash indexing", () => {
   test("mixes deterministically for an explicit seed", () => {
     expect(mixHash(123, 456)).toBe(mixHash(123, 456))
     expect(mixHash(123, 456)).not.toBe(mixHash(123, 457))
+  })
+
+  test("accepts exact signed 64-bit manifest seeds without changing user Int hashes", () => {
+    const saved = process.env.SESERAGI_HASH_SEED
+    try {
+      for (const seed of [-(1n << 63n), (1n << 63n) - 1n]) {
+        process.env.SESERAGI_HASH_SEED = String(seed)
+        resetProcessHashSeedForTest()
+        expect(processHashSeed()).toBe(seed)
+        expect(mixHash(7, processHashSeed())).toBe(mixHash(7, seed))
+      }
+      process.env.SESERAGI_HASH_SEED = "9223372036854775808"
+      resetProcessHashSeedForTest()
+      expect(() => processHashSeed()).toThrow("signed 64-bit integer")
+      host.__SESERAGI_HASH_SEED__ = -(1n << 63n) - 1n
+      expect(() => processHashSeed()).toThrow("signed 64-bit integer")
+      expect(() => intHash.hash(Number.MAX_SAFE_INTEGER + 1)).toThrow(
+        "Seseragi Int overflow"
+      )
+    } finally {
+      if (saved === undefined) delete process.env.SESERAGI_HASH_SEED
+      else process.env.SESERAGI_HASH_SEED = saved
+    }
   })
 })

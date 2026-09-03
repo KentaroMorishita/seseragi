@@ -13,20 +13,26 @@ pub(super) fn entry_source(
     let mut imports = vec![
         "import { createEffectExecution, isEffectCancellation, run } from \"@seseragi/runtime/effect\";".to_owned(),
         "import { installProcessShutdown } from \"@seseragi/runtime/process\";".to_owned(),
+        "import { processHashSeed } from \"@seseragi/runtime/hash\";".to_owned(),
     ];
-    let mut setup = Vec::new();
-    setup.push(match options.hash_seed {
+    let mut startup = Vec::new();
+    startup.push(match options.hash_seed {
         RandomSeed::Entropy => "delete process.env.SESERAGI_HASH_SEED;".to_owned(),
         RandomSeed::Fixed(seed) => {
             format!("process.env.SESERAGI_HASH_SEED = {:?};", seed.to_string())
         }
     });
-    setup.push(match options.random_seed {
+    startup.push(match options.random_seed {
         RandomSeed::Entropy => "delete process.env.SESERAGI_RANDOM_SEED;".to_owned(),
         RandomSeed::Fixed(seed) => {
             format!("process.env.SESERAGI_RANDOM_SEED = {:?};", seed.to_string())
         }
     });
+    startup.push("processHashSeed();".to_owned());
+    let mut application_imports = vec![format!(
+        "const {{ main }} = await import(\"{entry_module}\");"
+    )];
+    let mut setup = Vec::new();
     let mut fields = Vec::new();
     let mut cleanup = Vec::new();
     let mut imports_console = false;
@@ -602,7 +608,6 @@ pub(super) fn entry_source(
     }
     let failure = match &contract.failure_renderer {
         FailureRenderer::Never => {
-            imports.push(format!("import {{ main }} from \"{entry_module}\";"));
             "process.stderr.write(\"seseragi: unreachable typed failure\\n\");\n  process.exitCode = 1;".to_owned()
         }
         FailureRenderer::Show {
@@ -610,7 +615,6 @@ pub(super) fn entry_source(
             export,
             arguments,
         } => {
-            imports.push(format!("import {{ main }} from \"{entry_module}\";"));
             imports.push(
                 "import { renderShow as failureRenderShow } from \"@seseragi/runtime/show\";"
                     .to_owned(),
@@ -623,7 +627,7 @@ pub(super) fn entry_source(
                     arguments: arguments.clone(),
                 },
                 entry_module,
-                &mut imports,
+                &mut application_imports,
                 &mut dictionary_index,
             );
             setup.push(format!("const failureShow = {expression};"));
@@ -657,7 +661,7 @@ pub(super) fn entry_source(
     };
     format!(
         "{}\n{}\nconst rootExecution = createEffectExecution();\nconst processShutdown = installProcessShutdown(rootExecution, {{ mode: {:?}, graceMs: {} }});\nconst environment = {{ {} }};\nlet result;\nlet hasRuntimeDefect = false;\nlet runtimeDefect;\nlet wasCancelled = false;\ntry {{\n  result = await run(main(undefined), environment, rootExecution.context);\n}} catch (runDefect) {{\n  if (isEffectCancellation(runDefect)) wasCancelled = true;\n  else {{ hasRuntimeDefect = true; runtimeDefect = runDefect; }}\n}}\ntry {{\n  await rootExecution.close();\n  await processShutdown.close();\n{}\n}} catch (cleanupDefect) {{\n  hasRuntimeDefect = true;\n  runtimeDefect ??= cleanupDefect;\n}}\nif (hasRuntimeDefect) {{\n  {}\n}} else if (wasCancelled) {{\n  {}\n}} else if (result?.kind === \"failure\") {{\n  {}\n}}\n",
-        imports.join("\n"),
+        format!("{}\n{}\n{}", imports.join("\n"), startup.join("\n"), application_imports.join("\n")),
         setup.join("\n"),
         signal_mode,
         options.shutdown_grace_ms,
@@ -684,7 +688,7 @@ fn display_dictionary_expression(
         &dictionary.module
     };
     imports.push(format!(
-        "import {{ {} as {local} }} from \"{module}\";",
+        "const {{ {}: {local} }} = await import(\"{module}\");",
         dictionary.export
     ));
     if dictionary.arguments.is_empty() {

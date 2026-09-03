@@ -11,7 +11,7 @@ import * as maps from "../src/map"
 import { Just, Nothing } from "../src/sum"
 
 const host = globalThis as typeof globalThis & {
-  __SESERAGI_HASH_SEED__?: number
+  __SESERAGI_HASH_SEED__?: number | bigint
 }
 const savedSeed = host.__SESERAGI_HASH_SEED__
 afterEach(() => {
@@ -272,6 +272,26 @@ test("iteration is persistent and reduction and Functor use insertion order", ()
     ["b", 3],
     ["a", 2],
   ])
+})
+
+test("signed 64-bit seeds remain internal across lookup, update and removal", () => {
+  for (const seed of [-(1n << 63n), (1n << 63n) - 1n]) {
+    host.__SESERAGI_HASH_SEED__ = seed
+    resetProcessHashSeedForTest()
+    const original = stringMap([
+      ["first", 1],
+      ["second", 2],
+    ])
+    const updated = maps.insert(stringEq, stringHash, "first", 3, original)
+    expect(maps.get(stringEq, stringHash, "first", updated)).toEqual(Just(3))
+    expect(maps.entries(original)).toEqual([
+      ["first", 1],
+      ["second", 2],
+    ])
+    expect(
+      maps.keys(maps.remove(stringEq, stringHash, "first", updated))
+    ).toEqual(["second"])
+  }
 })
 
 test("point updates share storage; deletion and mapValues retain no removed user objects", () => {

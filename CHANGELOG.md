@@ -9,6 +9,9 @@
 - Preserve inferred collection elements and partial applications across native,
   generated TypeScript, WASM, and Playground boundaries. JsonObject now exposes
   the canonical persistent Map payload.
+- Initialize hash seeds before evaluating application modules, including top-level
+  Map values, and preserve the manifest's full signed 64-bit seed range. Missing secure entropy fails
+  during startup before any application code runs.
 
 ## [0.44.1] - 2026-09-03
 
