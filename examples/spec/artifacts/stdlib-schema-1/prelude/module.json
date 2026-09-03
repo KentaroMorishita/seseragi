@@ -2446,6 +2446,14 @@
       "identity": "std/array::Monad"
     },
     {
+      "trait": "Traversable",
+      "traitCanonical": "std/prelude::Traversable",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::Traversable"
+    },
+    {
       "trait": "Functor",
       "traitCanonical": "std/prelude::Functor",
       "typeConstructor": "List",
@@ -2468,6 +2476,14 @@
       "typeConstructorCanonical": "std/prelude::List",
       "typeConstructorArity": 1,
       "identity": "std/list::Monad"
+    },
+    {
+      "trait": "Traversable",
+      "traitCanonical": "std/prelude::Traversable",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::Traversable"
     },
     {
       "trait": "Functor",
@@ -2639,6 +2655,14 @@
       "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
       "typeConstructorArity": 1,
       "identity": "std/non-empty-list::Monad"
+    },
+    {
+      "trait": "Traversable",
+      "traitCanonical": "std/prelude::Traversable",
+      "typeConstructor": "NonEmptyList",
+      "typeConstructorCanonical": "std/non-empty-list::NonEmptyList",
+      "typeConstructorArity": 1,
+      "identity": "std/non-empty-list::Traversable"
     }
   ],
   "builtinInstances": [
@@ -5235,26 +5259,26 @@
       {
         "trait": "Traversable",
         "head": "Array",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 331
+        "identity": "std/array::Traversable",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
       },
       {
         "trait": "Traversable",
         "head": "List",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 331
+        "identity": "std/list::Traversable",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
       },
       {
         "trait": "Traversable",
         "head": "NonEmptyList",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.5",
-        "trackingIssue": 331
+        "identity": "std/non-empty-list::Traversable",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.5"
       },
       {
         "trait": "Zero",

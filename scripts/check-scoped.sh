@@ -187,6 +187,8 @@ run_conformance_checks() {
   "$PLAYGROUND_TSC" --noEmit -p "$ROOT/runtime/providers/tsconfig.json"
   echo "Testing the foreign TypeScript runtime boundary..."
   bun test runtime/ts/tests/foreign.test.ts
+  echo "Testing the Traversable runtime boundary..."
+  bun test runtime/ts/tests/traversable.test.ts
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     cargo run -p seseragi-conformance -- .

@@ -2440,6 +2440,17 @@
       }
     },
     {
+      "id": "core.non-empty-list.traversable",
+      "kind": "runtime-binding",
+      "typescript": "readonly Traversable<NonEmptyList> dictionary",
+      "boundary": "source-order traversal through selected Applicative preserving non-emptiness",
+      "instanceIdentity": "std/non-empty-list::Traversable",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "nonEmptyListTraversable"
+      }
+    },
+    {
       "id": "core.non-empty-list.iterable",
       "kind": "runtime-binding",
       "typescript": "readonly Iterable<NonEmptyList<A>, A> dictionary",
@@ -3004,6 +3015,17 @@
       }
     },
     {
+      "id": "core.array.traversable",
+      "kind": "runtime-binding",
+      "typescript": "readonly Traversable<Array> dictionary",
+      "boundary": "source-order traversal through selected Applicative preserving array order",
+      "instanceIdentity": "std/array::Traversable",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "arrayTraversable"
+      }
+    },
+    {
       "id": "core.list.functor",
       "kind": "runtime-binding",
       "typescript": "readonly Functor dictionary",
@@ -3053,6 +3075,17 @@
       "import": {
         "module": "@seseragi/runtime/list",
         "export": "listMonad"
+      }
+    },
+    {
+      "id": "core.list.traversable",
+      "kind": "runtime-binding",
+      "typescript": "readonly Traversable<List> dictionary",
+      "boundary": "source-order traversal through selected Applicative preserving list shape",
+      "instanceIdentity": "std/list::Traversable",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "listTraversable"
       }
     },
     {

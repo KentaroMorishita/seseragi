@@ -899,6 +899,37 @@ fn selects_the_prelude_list_monad_without_source_declarations() {
 }
 
 #[test]
+fn selects_traversable_and_target_applicative_evidence() {
+    let typed = type_module(
+        "artifact/prelude-array-traversable/main.ssrg",
+        "fn increment value: Int -> Maybe<Int> = Just (value + 1)\n\
+         fn traversed values: Array<Int> -> Maybe<Array<Int>> =\n\
+           traverse increment values\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+        panic!("expected traversed function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call { callee, evidence, type_ref, .. }
+            if callee == "std/prelude::Traversable::traverse"
+                && type_ref == &applied("Maybe", vec![applied("Array", vec![named("Int")])])
+                && matches!(evidence.as_slice(), [
+                    crate::TypedCallEvidence {
+                        evidence: TypedInstanceEvidence::Standard { identity: traversable, .. },
+                        ..
+                    },
+                    crate::TypedCallEvidence {
+                        evidence: TypedInstanceEvidence::Standard { identity: applicative, .. },
+                        ..
+                    },
+                ] if traversable == "std/array::Traversable"
+                    && applicative == "std/maybe::Applicative")
+    ));
+}
+
+#[test]
 fn selects_the_prelude_effect_functor_without_source_declarations() {
     let typed = type_module(
         "artifact/prelude-effect-functor/main.ssrg",

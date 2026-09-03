@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "case": "traversable",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/traversable",
+    "export": "main",
+    "compiledModule": "../../schema-1/traversable/generated-module.json",
+    "typedInterface": "../../schema-1/traversable/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.list",
+      "core.non-empty-list",
+      "core.int",
+      "core.either",
+      "core.string",
+      "core.bool",
+      "core.either.right",
+      "core.int.add",
+      "core.either.left",
+      "core.unit",
+      "effect.core.flatMap",
+      "core.array.traversable",
+      "core.maybe.applicative",
+      "core.maybe",
+      "core.maybe.just",
+      "core.list.traversable",
+      "core.either.applicative",
+      "core.list.from-array",
+      "core.non-empty-list.traversable",
+      "core.non-empty-list.cons",
+      "effect.console.println",
+      "core.int.show",
+      "core.array.show",
+      "core.maybe.show",
+      "core.string.show",
+      "core.list.show",
+      "core.either.show",
+      "core.non-empty-list.show"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

@@ -30,3 +30,9 @@ pub fn genericPow<A> left: A -> right: A -> A where Pow<A, A, A> = pow left righ
 pub fn genericZero<A> unit: Unit -> A where Zero<A> = zero ()
 
 pub fn genericOne<A> unit: Unit -> A where One<A> = one ()
+
+pub fn genericTraverse<F<_>, G<_>, A, B> f: (A -> G<B>)
+  -> values: F<A>
+  -> G<F<B>>
+where Traversable<F>, Applicative<G> =
+  traverse f values

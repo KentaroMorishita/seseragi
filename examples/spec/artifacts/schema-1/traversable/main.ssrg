@@ -1,0 +1,19 @@
+import * as nonEmpty from "std/non-empty-list"
+
+fn checked value: Int -> Either<String, Int> =
+  if value < 3 then Right (value + 10) else Left "stopped"
+
+pub effect fn main = do {
+  let array: Maybe<Array<Int>> = traverse (\value: Int -> Just (value + 1)) [1, 2, 3]
+  let list: Either<String, List<Int>> = traverse checked `[1, 2]
+  let failed: Either<String, List<Int>> = traverse checked `[1, 3, 4]
+  let nonempty: Maybe<nonEmpty.NonEmptyList<Int>> =
+    traverse (\value: Int -> Just (value + 1)) (nonEmpty.cons 1 `[
+      2,
+      3
+    ])
+  println $ show array
+  println $ show list
+  println $ show failed
+  println $ show nonempty
+}

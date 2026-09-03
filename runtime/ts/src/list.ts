@@ -9,6 +9,7 @@ import {
   Nothing,
   type Ordering,
 } from "./sum"
+import { type RuntimeDictionary, traverseValues } from "./traversable"
 
 /** Immutable persistent linked list used by the Seseragi `List<A>` ABI. */
 export type List<A> = Empty | Cons<A>
@@ -441,6 +442,20 @@ export const listMonad = Object.freeze({
     },
 })
 
+export const listTraversable = Object.freeze({
+  ...listFunctor,
+  traverse:
+    <Value, Result>(f: (value: Value) => unknown) =>
+    (values: List<Value>) =>
+    (applicativeEvidence: RuntimeDictionary) =>
+      traverseValues<Value, Result, List<Result>>(
+        toArray(values),
+        f,
+        applicativeEvidence,
+        fromArray
+      ),
+})
+
 function fromNonEmptyArray<A>(values: ReadonlyArray<A>): NonEmptyList<A> {
   const head = values[0]
   if (head === undefined && values.length === 0) {
@@ -494,4 +509,18 @@ export const nonEmptyListMonad = Object.freeze({
       }
       return fromNonEmptyArray(result)
     },
+})
+
+export const nonEmptyListTraversable = Object.freeze({
+  ...nonEmptyListFunctor,
+  traverse:
+    <Value, Result>(f: (value: Value) => unknown) =>
+    (values: NonEmptyList<Value>) =>
+    (applicativeEvidence: RuntimeDictionary) =>
+      traverseValues<Value, Result, NonEmptyList<Result>>(
+        toArray(toListNonEmpty(values)),
+        f,
+        applicativeEvidence,
+        fromNonEmptyArray
+      ),
 })

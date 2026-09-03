@@ -7,6 +7,7 @@ import {
   genericRem,
   genericSub,
   genericZero,
+  genericTraverse,
   delayedHash,
   genericHash,
   hashAll,
@@ -15,6 +16,8 @@ import {
   nestedSame,
   same,
 } from "./evidence"
+
+import * as nonEmpty from "std/non-empty-list"
 
 pub type Status =
   | Ready
@@ -33,6 +36,91 @@ instance Hash<Status> {
     Ready -> 17
     Waiting -> 29
   }
+}
+
+type Box<A> =
+  | Box A
+
+instance Functor<Box> {
+  fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> = match value {
+    Box item -> Box (f item)
+  }
+}
+
+instance Traversable<Box> {
+  fn traverse<G<_>, A, B> f: (A -> G<B>)
+    -> value: Box<A>
+    -> G<Box<B>>
+  where Applicative<G> =
+    match value {
+    Box item -> map Box (f item)
+  }
+}
+
+type Audit<A> =
+  | Audit (Array<Int>, A)
+
+instance Functor<Audit> {
+  fn map<A, B> f: (A -> B) -> value: Audit<A> -> Audit<B> = match value {
+    Audit (events, item) -> Audit (events, f item)
+  }
+}
+
+instance Applicative<Audit> {
+  fn pure<A> value: A -> Audit<A> = Audit ([], value)
+
+  fn apply<A, B> wrapped: Audit<A -> B> -> value: Audit<A> -> Audit<B> =
+    match (wrapped, value) {
+    (Audit (leftEvents, f), Audit (rightEvents, item)) -> Audit (append leftEvents rightEvents, f item)
+  }
+}
+
+fn maybeIncrement value: Int -> Maybe<Int> =
+  if value < 3 then Just (value + 10) else Nothing
+
+fn eitherIncrement value: Int -> Either<String, Int> =
+  if value < 3 then Right (value + 20) else Left "stopped at 3"
+
+fn auditIncrement value: Int -> Audit<Int> = Audit ([value], value + 30)
+
+type Checked<A> =
+  | Valid A
+  | Invalid (Array<Int>)
+
+instance Functor<Checked> {
+  fn map<A, B> f: (A -> B) -> value: Checked<A> -> Checked<B> = match value {
+    Valid item -> Valid (f item)
+    Invalid errors -> Invalid errors
+  }
+}
+
+instance Applicative<Checked> {
+  fn pure<A> value: A -> Checked<A> = Valid value
+
+  fn apply<A, B> wrapped: Checked<A -> B> -> value: Checked<A> -> Checked<B> =
+    match (wrapped, value) {
+    (Valid f, Valid item) -> Valid (f item)
+    (Invalid left, Invalid right) -> Invalid (append left right)
+    (Invalid errors, _) -> Invalid errors
+    (_, Invalid errors) -> Invalid errors
+  }
+}
+
+fn checkedIncrement value: Int -> Checked<Int> =
+  if value >= 2 then Invalid [value] else Valid (value + 1)
+
+fn renderChecked value: Checked<Array<Int>> -> String = match value {
+  Valid items -> `Valid ${show items}`
+  Invalid errors -> `Invalid ${show errors}`
+}
+
+fn renderBox value: Maybe<Box<Int>> -> String = match value {
+  Just (Box item) -> `Just Box ${item}`
+  Nothing -> "Nothing"
+}
+
+fn renderAudit value: Audit<Array<Int>> -> String = match value {
+  Audit (events, items) -> `${show events}|${show items}`
 }
 
 fn applyInt predicate: (Int -> Bool) -> Bool = predicate 42
@@ -76,4 +164,43 @@ pub effect fn main = do {
     `Float arithmetic: ${genericAdd 20.5 21.5}|${genericSub 50.5 8.5}|${genericMul 6.0 7.0}|${genericDiv 84.0 2.0}|${genericRem 43.0 2.0}|${genericPow 2.0 5.0}|${floatZero}|${floatOne}`
   println $
     `Operator parity: ${genericAdd 20 22 == 20 + 22}|${same 42 42 == (42 == 42)}|${genericAdd "se" "seragi"}`
+
+  let arraySuccess: Maybe<Array<Int>> =
+    genericTraverse (\value: Int -> Just (value + 10)) [
+      1,
+      2,
+      3
+    ]
+  let arrayFailure: Maybe<Array<Int>> = genericTraverse maybeIncrement [1, 2, 3]
+  println $ `Traverse Array/Maybe: ${show arraySuccess}|${show arrayFailure}`
+
+  let listFailure: Either<String, List<Int>> = genericTraverse eitherIncrement `[
+    1,
+    2,
+    3
+  ]
+  println $ `Traverse List/Either: ${show listFailure}`
+
+  let listSuccess: Either<String, List<Int>> = genericTraverse eitherIncrement `[1, 2]
+  let emptyArray: Maybe<Array<Int>> = genericTraverse maybeIncrement []
+  let emptyList: Either<String, List<Int>> = genericTraverse eitherIncrement `[]
+  println $
+    `Traverse success/empty: ${show listSuccess}|${show emptyArray}|${show emptyList}`
+
+  let nonEmptySuccess: Maybe<nonEmpty.NonEmptyList<Int>> =
+    genericTraverse (\value: Int -> Just (value + 1)) (nonEmpty.cons 1 `[
+      2,
+      3
+    ])
+  println $ `Traverse NonEmptyList/Maybe: ${show nonEmptySuccess}`
+
+  let auditResult: Audit<Array<Int>> = genericTraverse auditIncrement [1, 2, 3]
+  println $ `Traverse user Applicative: ${renderAudit auditResult}`
+
+  let boxResult: Maybe<Box<Int>> =
+    genericTraverse (\value: Int -> Just (value + 1)) (Box 41)
+  println $ `Traverse user Traversable: ${renderBox boxResult}`
+
+  let checkedResult: Checked<Array<Int>> = genericTraverse checkedIncrement [1, 2, 3]
+  println $ `Traverse accumulated failure: ${renderChecked checkedResult}`
 }

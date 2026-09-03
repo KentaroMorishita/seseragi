@@ -8,3 +8,10 @@ Hash tuple/collection: True|True
 Int arithmetic: 42|42|42|42|1|32|0|1
 Float arithmetic: 42.0|42.0|42.0|42.0|1.0|32.0|0.0|1.0
 Operator parity: True|True|seseragi
+Traverse Array/Maybe: Just [11, 12, 13]|Nothing
+Traverse List/Either: Left stopped at 3
+Traverse success/empty: Right `[21, 22]|Just []|Right `[]
+Traverse NonEmptyList/Maybe: Just `[2, 3, 4]
+Traverse user Applicative: [1, 2, 3]|[31, 32, 33]
+Traverse user Traversable: Just Box 42
+Traverse accumulated failure: Invalid [2, 3]

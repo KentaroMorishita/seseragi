@@ -858,6 +858,13 @@ Show / Debug / Semigroup / Functor / Applicative / Monad / Iterable / Reducible�
 `schema-1/non-empty-list-instances`は辞書順比較、決定的Hash、function-major apply、source-order flatMap / iteration /
 reductionを通常sourceから実行し、全operationが少なくとも一要素を保つことを固定します。
 
+`Traversable<Array>` / `Traversable<List>` / `Traversable<NonEmptyList>`は同じcanonical Prelude registryと
+method-level `Applicative<G>` evidenceを使います。runtimeはtarget型を判定せず`pure` / `map` / `apply`だけで
+source順に合成し、balanced immutable treeと最後のmapで元のcollection shapeを復元します。
+`projects/standard-evidence-parity`はCLIとWASM browser executionでmodule越しgeneric evidence、標準Maybe / Either、
+user Applicativeの順序・error蓄積、user Traversableを固定します。Effectのcold性とfailure後の未実行、空入力、
+Cartesian branchの独立性、大きな入力の非再帰構築もruntime testで検証します。
+
 `schema-1/monad-maybe`は同じ仕組みを`Monad<M> where Applicative<M>`へ一般化します。local Monad instanceの
 factory argumentは具体化済みApplicative dictionaryで、その内部にFunctor dictionaryも含まれるため、生成Monad
 dictionaryは`map`、`pure`、`apply`、`flatMap`を同じevidence objectとして公開します。`where Monad<M>` scopeでも

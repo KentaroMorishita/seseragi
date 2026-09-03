@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 286,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 13,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 13,
+        "endToken": 62,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 13,
+            "endToken": 62,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 62,
+        "endToken": 286,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 62,
+            "endToken": 63,
+            "children": []
+          },
+          {
+            "kind": "effect-fn-decl",
+            "startToken": 64,
+            "endToken": 286,
+            "children": [
+              {
+                "kind": "effect-signature",
+                "startToken": 64,
+                "endToken": 286,
+                "children": []
+              },
+              {
+                "kind": "do-block",
+                "startToken": 72,
+                "endToken": 285,
+                "children": [
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 77,
+                    "endToken": 123,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 125,
+                    "endToken": 153,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 155,
+                    "endToken": 186,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 188,
+                    "endToken": 236,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 238,
+                    "endToken": 240,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 242,
+                    "endToken": 243,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 245,
+                    "endToken": 247,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 249,
+                    "endToken": 256,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 258,
+                    "endToken": 265,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 267,
+                    "endToken": 274,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 276,
+                    "endToken": 283,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

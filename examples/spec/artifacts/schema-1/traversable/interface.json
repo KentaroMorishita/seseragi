@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "module": "artifact/traversable",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/non-empty-list",
+      "module": "artifact/traversable/std/non-empty-list",
+      "origin": {
+        "start": 0,
+        "end": 46
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/traversable/std/non-empty-list::*",
+          "localName": "nonEmpty"
+        }
+      ]
+    }
+  ],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}
