@@ -170,8 +170,13 @@ const ROUTES: &[RouteDefinition] = &[
     },
     RouteDefinition {
         id: "random-provider-project",
-        evidence: "examples/spec/fixtures/projects/random-seed",
-        products: &["cli-run", "runtime-provider"],
+        evidence: "examples/spec/fixtures/projects/random-shuffle",
+        products: &[
+            "cli-run",
+            "wasm-project",
+            "playground-execution",
+            "runtime-provider",
+        ],
         modules: &["std/random"],
     },
     RouteDefinition {

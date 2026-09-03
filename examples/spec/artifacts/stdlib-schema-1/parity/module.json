@@ -180,9 +180,11 @@
     },
     {
       "id": "random-provider-project",
-      "evidence": "examples/spec/fixtures/projects/random-seed",
+      "evidence": "examples/spec/fixtures/projects/random-shuffle",
       "products": [
         "cli-run",
+        "wasm-project",
+        "playground-execution",
         "runtime-provider"
       ],
       "modules": [

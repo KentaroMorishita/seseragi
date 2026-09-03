@@ -107,6 +107,7 @@ run_playground_lint() {
     scripts/check-project-fixtures.ts \
     scripts/check-project-fixtures.test.ts \
     scripts/check-playground-isolated-build.ts \
+    scripts/generate-playground-runtime.ts \
     scripts/generate-playground-samples.ts \
     scripts/generate-playground-tour.ts \
     scripts/tour-curriculum.ts \
@@ -129,6 +130,7 @@ run_playground_checks() {
   (
     cd apps/playground
     bun run tour:check
+    bun run runtime:check
     bun test tests
   )
 

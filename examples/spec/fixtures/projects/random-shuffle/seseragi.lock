@@ -3,50 +3,50 @@ language = "0.1.0"
 standard_library = "0.1.0"
 unicode = "16.0.0"
 timezone_database = "2025b"
-root = "fixture/effect-temporal-control@0.0.0#workspace:."
+root = "fixture/random-shuffle@0.0.0#workspace:."
 
 [[packages]]
-id = "fixture/effect-temporal-control@0.0.0#workspace:."
-name = "fixture/effect-temporal-control"
+id = "fixture/random-shuffle@0.0.0#workspace:."
+name = "fixture/random-shuffle"
 version = "0.0.0"
 source_kind = "workspace"
 source = "."
-manifest_digest = "sha256:d6c3d7cc247ea24c95ef601d63feac3990d8a80fa51125baf9bc06168aa7a5a3"
-content_digest = "sha256:4bd256dcd4fca8102a299f6e5908359b5a6f4e31ffd54ce7088c2b597b8ffad3"
+manifest_digest = "sha256:b06c25b6ffe134ec7b61974d17e6409e2c8324779345b091cee4d1280486fb20"
+content_digest = "sha256:b8e6b322cc20eeba56f6246f074265c2192df537889d430c662e511a8e5cd143"
 dependencies = []
 
 [[providers]]
-field = "clock"
-service = "std/clock::Clock"
+field = "random"
+service = "std/random::Random"
 required_contract = "1.0"
 provider_contract = "1.0"
-provider = "seseragi/runtime-browser#clock"
+provider = "seseragi/runtime#random"
 package_version = "0.44.1"
 package_source = "toolchain:seseragi/runtime-browser@0.44.1"
 package_digest = "sha256:d4d05e41d7803d72cb5f02a70209683c13567ca4275f99c24fecf7d98732dd13"
-artifact_digest = "sha256:33e156e81d0830c6c7c33e72a5690aa12ad61e7e7c3e994ffb16ebd31a4816c2"
+artifact_digest = "sha256:50279284c61b1bd7416ed81f4c7725d43ac83481ac0e7c7db4f7d5dd14f2fc76"
 backend = "typescript"
 backend_abi_major = 1
 target = "browser"
-entry_module = "seseragi/runtime-browser/clock"
+entry_module = "seseragi/runtime-browser/random"
 entry_export = "provider"
 runtime_features = ["foreign.task-load"]
 host_packages = []
 
 [[providers]]
-field = "clock"
-service = "std/clock::Clock"
+field = "random"
+service = "std/random::Random"
 required_contract = "1.0"
 provider_contract = "1.0"
-provider = "seseragi/runtime-bun#clock"
+provider = "seseragi/runtime#random"
 package_version = "0.44.1"
 package_source = "toolchain:seseragi/runtime-bun@0.44.1"
 package_digest = "sha256:8237aa2d4468dbd239df3feb2c0e6bef27d8fa1be975969386417a57e0d5821a"
-artifact_digest = "sha256:9c3afe724bf24b2fdeed6479bdeb40c54a70e15d8e1c262260e256b1b2ee23cc"
+artifact_digest = "sha256:ba2f528a4c290ef48ccc573e45fe7b2b7f7a4563f5ca47c4e10959bcd1828e81"
 backend = "typescript"
 backend_abi_major = 1
 target = "bun-process"
-entry_module = "seseragi/runtime-bun/clock"
+entry_module = "seseragi/runtime-bun/random"
 entry_export = "provider"
 runtime_features = ["foreign.task-load"]
 host_packages = []

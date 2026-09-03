@@ -1,0 +1,9 @@
+import * as random from "std/random"
+
+pub effect fn main -> Unit
+with Console, Random
+fails ConsoleError =
+  do {
+    values <- random.shuffle [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    println (show values)
+  }

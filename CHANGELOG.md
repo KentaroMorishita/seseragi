@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.44.1] - 2026-09-03
+
+- Generate the Playground runtime resolver from canonical package exports,
+  including Random, Entropy, Deferred, Queue, and Semaphore, and retain browser
+  host adapters and provider target boundaries.
+- Export the shared Stdin error constructors in the browser runtime and detect
+  module/export drift against the compiler ABI and provider manifests.
+- Verify seeded Random shuffle through native CLI, WASM, and the browser editor.
+
 ## [0.44.0] - 2026-09-03
 
 - Implemented canonical `Traversable` dictionaries for Array, List, and
