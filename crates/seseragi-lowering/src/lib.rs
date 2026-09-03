@@ -17,6 +17,7 @@ mod runtime_modules;
 mod runtime_types;
 mod signal_ops;
 mod span;
+mod standard_ops;
 mod stream_ops;
 mod sum_ops;
 mod trait_method_ops;

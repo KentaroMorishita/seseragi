@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": ["fixture/imported-maybe-either::operations", "fixture/imported-maybe-either::main"],
+  "modules": [
+    {"id":"fixture/imported-maybe-either::operations","source":"src/operations.ssrg","output":"dist/imported-maybe-either/operations.js","artifacts":"artifacts/operations","imports":[]},
+    {"id":"fixture/imported-maybe-either::main","source":"src/main.ssrg","output":"dist/imported-maybe-either/main.js","artifacts":"artifacts/main","imports":[{"specifier":"./operations","module":"fixture/imported-maybe-either::operations"}]}
+  ]
+}

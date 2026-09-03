@@ -4,7 +4,6 @@ use crate::collection_ops::{
     runtime_collection_combine_operation, runtime_collection_join_operation,
     runtime_collection_operation, runtime_collection_predicate_operation,
     runtime_collection_product_operation, runtime_collection_sum_operation,
-    runtime_standard_collection_operation,
 };
 use crate::effect_ops::runtime_effect_operation;
 use crate::equality_ops::strict_equality_operator_with_evidence;
@@ -18,6 +17,7 @@ use crate::provider_service_ops::{
 };
 use crate::range_ops::runtime_range_operation;
 use crate::signal_ops::{runtime_signal_distinct_operation, runtime_signal_operation};
+use crate::standard_ops::runtime_standard_operation;
 use crate::stream_ops::runtime_stream_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::trait_method_ops::{runtime_trait_method_operation, RuntimeTraitMethodOperation};
@@ -62,7 +62,7 @@ pub(super) fn lower_core_expr_to_typescript(
             origin,
         } => {
             if matches!(type_ref, CoreType::Function { .. }) {
-                if runtime_standard_collection_operation(&name).is_some() {
+                if runtime_standard_operation(&name).is_some() {
                     // A bare function reference is a partial application with
                     // no source arguments. Keep evidence and currying identical
                     // to ordinary calls instead of emitting an unbound name.
@@ -425,7 +425,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     callee: operation.local_name.to_owned(),
                     arguments,
                 }
-            } else if let Some(operation) = runtime_standard_collection_operation(&callee) {
+            } else if let Some(operation) = runtime_standard_operation(&callee) {
                 // Rank-polymorphic Iterable dictionaries do not let TypeScript
                 // recover the element type from C. Preserve the types already
                 // selected by Seseragi instead of accepting host `unknown`.
@@ -454,7 +454,7 @@ pub(super) fn lower_core_expr_to_typescript(
                         .collect(),
                     _ => Vec::new(),
                 };
-                // Standard collection functions receive their canonical where
+                // Standard functions receive their canonical where
                 // dictionaries before user arguments, in interface order.
                 let dictionaries = evidence
                     .iter()
@@ -464,7 +464,7 @@ pub(super) fn lower_core_expr_to_typescript(
                             imported_values,
                             imported_types,
                         )
-                        .expect("standard collection call requires materialized evidence")
+                        .expect("standard call requires materialized evidence")
                     })
                     .collect::<Vec<_>>();
                 let remaining_parameters = operation.source_arity.saturating_sub(arguments.len());

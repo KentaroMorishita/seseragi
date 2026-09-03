@@ -143,6 +143,41 @@ preludeの目的は「最小programが書けること」であり、「標準ラ
 - `mapLeft`, `bimap`, `fold`, `swap`
 - `sequence`, `traverse`
 
+固有operationのsignatureは次のとおりです。型とconstructorはpreludeが所有し、moduleは再定義しません。
+
+```seseragi
+// std/maybe
+fn withDefault<A> fallback: A -> value: Maybe<A> -> A
+fn orElse<A> fallback: Maybe<A> -> value: Maybe<A> -> Maybe<A>
+fn sequence<F<_>, A> values: F<Maybe<A>> -> Maybe<F<A>>
+where Traversable<F>
+fn traverse<F<_>, A, B> f: (A -> Maybe<B>) -> values: F<A> -> Maybe<F<B>>
+where Traversable<F>
+
+// std/either
+fn mapLeft<E, F, A> f: (E -> F) -> value: Either<E, A> -> Either<F, A>
+fn mapRight<E, A, B> f: (A -> B) -> value: Either<E, A> -> Either<E, B>
+fn bimap<E, F, A, B>
+  left: (E -> F) -> right: (A -> B) -> value: Either<E, A> -> Either<F, B>
+fn fold<E, A, B> left: (E -> B) -> right: (A -> B) -> value: Either<E, A> -> B
+fn swap<E, A> value: Either<E, A> -> Either<A, E>
+fn sequence<F<_>, E, A> values: F<Either<E, A>> -> Either<E, F<A>>
+where Traversable<F>
+fn traverse<F<_>, E, A, B>
+  f: (A -> Either<E, B>) -> values: F<A> -> Either<E, F<B>>
+where Traversable<F>
+```
+
+`withDefault`と`orElse`はNothingの場合だけfallbackを結果に選び、Justの場合は元のpayload/valueを
+返します。通常のstrictな関数適用なので、fallback引数の式自体は呼び出し前に評価します。遅延fallback構文
+`??`とはこの点が異なります。`mapLeft`、`mapRight`、`bimap`、`fold`は選択されたbranchのcallbackだけを
+一度呼び、`swap`はpayloadを変換せずLeft/Rightを交換します。`mapRight`はpreludeのFunctor mapと同じ操作です。
+
+`sequence`はidentityをcallbackとする`traverse`です。両moduleの`traverse`はsourceのTraversable instanceへ
+対応するMaybe/Either Applicativeを渡し、独自のcollection判定や走査をしません。順序・shape・strictなcallback
+評価は10.6の共通traverseと同じです。Nothing/Leftは結果を失敗にし、複数Leftではsource順で最初のLeftを保持します。
+これは後続のpure callbackを呼ばないという短絡保証ではありません。その保証が必要な走査には`reduceUntil`を使います。
+
 Eitherはfail-fastです。Validationは独立した入力のerror accumulationを次の型で表します。
 
 ```seseragi

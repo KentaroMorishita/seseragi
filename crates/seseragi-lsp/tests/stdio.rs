@@ -234,11 +234,24 @@ fn prelude_registry_methods_reach_hover_and_completion_with_canonical_signatures
     let completions = response(&messages, 3)["result"].as_array().unwrap();
     let traverse = completions
         .iter()
-        .find(|item| item["label"] == "traverse")
+        .find(|item| item["data"]["identity"] == "std/prelude::Traversable::traverse")
         .expect("Traversable.traverse completion");
     let detail = traverse["detail"].as_str().expect("traverse detail");
     assert!(detail.contains("Traversable<F"), "{detail}");
     assert!(detail.contains("Applicative<G"), "{detail}");
+    for (identity, result) in [
+        ("std/maybe::traverse", "Maybe<F<B>>"),
+        ("std/either::traverse", "Either<E, F<B>>"),
+    ] {
+        let item = completions
+            .iter()
+            .find(|item| item["data"]["identity"] == identity)
+            .expect("module-specific traverse completion");
+        let detail = item["detail"].as_str().expect("traverse detail");
+        assert!(detail.contains("Traversable<F"), "{detail}");
+        assert!(detail.contains(result), "{detail}");
+        assert!(!detail.contains("Applicative<G"), "{detail}");
+    }
 }
 
 #[test]

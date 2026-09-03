@@ -1410,6 +1410,8 @@ fn standard_category(name: &str, module: &str) -> &'static str {
     match module {
         "std/number" | "std/int" | "std/float" => "Number",
         "std/array" | "std/list" | "std/collection" => "Collection",
+        "std/maybe" => "Maybe",
+        "std/either" => "Either",
         "std/bytes" => "Bytes",
         "std/json" => "JSON",
         "std/text" => "Text",
@@ -1585,6 +1587,15 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/prelude::any" => "Returns true at the first element accepted by the predicate.",
         "std/prelude::all" => "Returns false at the first element rejected by the predicate.",
         "std/prelude::reduce" => "Folds a reducible collection into one accumulated value.",
+        "std/maybe::withDefault" => "Selects the fallback for Nothing, or the Just payload. Arguments are strict.",
+        "std/maybe::orElse" => "Selects the fallback Maybe for Nothing, preserving an existing Just.",
+        "std/maybe::sequence" | "std/either::sequence" => "Traverses wrapped values with identity, preserving source shape and order.",
+        "std/maybe::traverse" | "std/either::traverse" => "Uses the source Traversable and the module's Applicative without a separate traversal implementation.",
+        "std/either::mapLeft" => "Transforms only the Left payload.",
+        "std/either::mapRight" => "Transforms only the Right payload using the standard Functor instance.",
+        "std/either::bimap" => "Transforms the selected Left or Right branch once.",
+        "std/either::fold" => "Eliminates Either by calling only the selected branch function.",
+        "std/either::swap" => "Exchanges Left and Right without changing the payload.",
         "std/collection::reduceUntil" => {
             "Folds an Iterable in source order until Done; does not pull the remaining elements."
         }

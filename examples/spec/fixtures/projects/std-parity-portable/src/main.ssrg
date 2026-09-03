@@ -9,6 +9,8 @@ import * as numbers from "std/number"
 import * as texts from "std/text"
 import * as maps from "std/map"
 import * as sets from "std/set"
+import * as maybe from "std/maybe"
+import * as either from "std/either"
 
 fn even value: Int -> Bool = value % 2 == 0
 
@@ -32,6 +34,10 @@ let invalidSize = match arrays.windows 0 selected {
   Left (collections.NonPositiveSize size) -> size
   Right _ -> 1
 }
+let optional: Array<Maybe<Int>> = [Just 1, Just 2]
+let maybeResult = maybe.sequence optional
+let successful: Either<String, Int> = Right 2
+let eitherResult = either.mapRight (\value -> value + 1) successful
 
 pub effect fn main =
-  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique} / grouped: ${maps.values grouped} / sorted: ${sorted} / size: ${invalidSize}`
+  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique} / grouped: ${maps.values grouped} / sorted: ${sorted} / size: ${invalidSize} / maybe: ${maybeResult} / either: ${eitherResult}`

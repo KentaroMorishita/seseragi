@@ -412,6 +412,14 @@ foreign入力とJavaScript JSON value入力はfinite、integral、safe integer�
 正規化します。`.d.ts` converterはhost `number`を既定でFloat、明示overrideでIntとし、host `bigint`は
 任意精度BigIntへ対応させます。IntとBigIntのadapter、runtime feature、暗黙変換は共有しません。
 
+### 2026-09-03: #303 Maybe / Either固有operation
+
+`std/maybe` / `std/either`をcanonical interface・runtime・Referenceへ接続し、9.2/10.4の固有operationと
+9.5のMaybe条件付きSemigroup/Monoidを実装しました。traverse/sequenceは既存TraversableとApplicativeを再利用し、
+first Leftとstrictなsource順callback評価を区別します。callable値・部分適用・custom/imported evidenceは専用fixtureで
+検証します。generic inferenceの既存漏れは#503へ具体例を追記し、本sliceで修正済みとは扱いません。
+詳細は`docs/reviews/issue-303/README.md`です。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。

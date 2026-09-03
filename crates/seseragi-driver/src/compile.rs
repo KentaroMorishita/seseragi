@@ -1856,6 +1856,43 @@ pub fn listRest -> Maybe<List<Int>> = lists.tail `[10, 20]
     }
 
     #[test]
+    fn compiles_maybe_either_apis_with_traversable_and_conditional_monoid_evidence() {
+        let source =
+            include_str!("../../../examples/spec/artifacts/schema-1/maybe-either-apis/main.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/maybe-either-apis",
+            source,
+        ))
+        .expect("Maybe/Either APIs must compile through the standard registry");
+        let output = &compiled.generated.typescript;
+        for helper in [
+            "_ssrg_maybe_sequence",
+            "_ssrg_maybe_traverse",
+            "_ssrg_either_fold",
+            "_ssrg_either_bimap",
+            "_ssrg_either_sequence",
+            "_ssrg_either_traverse",
+            "_ssrg_maybe_monoid",
+        ] {
+            assert!(output.contains(helper), "missing {helper}");
+        }
+        assert!(!output.contains("from \"std/"));
+    }
+
+    #[test]
+    fn rejects_maybe_either_calls_without_matching_types_and_evidence() {
+        for source in [
+            "import * as m from \"std/maybe\"\npub fn bad -> Int = m.withDefault 1 (Just \"wrong\")\n",
+            "import * as m from \"std/maybe\"\npub fn bad values: Iterator<Maybe<Int>> -> Maybe<Iterator<Int>> = m.sequence values\n",
+            "import * as e from \"std/either\"\npub fn bad value: Either<String, Int> -> Int = e.fold (\\error -> error) (\\n -> n) value\n",
+            "pub fn bad values: Array<Maybe<Int>> -> Maybe<Int> = combine values\n",
+        ] {
+            assert!(compile_module(CompileInput::new("main.ssrg", "artifact/invalid-sum-apis", source)).is_err(), "{source}");
+        }
+    }
+
+    #[test]
     fn rejects_invalid_reduce_until_step_accumulator_and_missing_iterable() {
         for source in [
             "import * as c from \"std/collection\"\npub fn bad -> Int = c.reduceUntil 0 (\\acc value -> acc + value) [1]\n",

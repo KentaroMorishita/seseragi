@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-maybe-either::operations",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.maybe",
+      "core.maybe.sequence",
+      "core.either",
+      "core.either.sequence",
+      "core.array.reducible",
+      "core.maybe.monoid",
+      "core.collection.combine"
+    ]
+  },
+  "exports": [
+    "gather",
+    "gatherEither",
+    "accumulated"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-maybe-either/operations.ts",
+    "sourceMap": "dist/imported-maybe-either/operations.ts.map"
+  }
+}

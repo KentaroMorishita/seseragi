@@ -1,0 +1,13 @@
+import * as maybe from "std/maybe"
+import * as either from "std/either"
+
+pub fn gather<F<_>, A> values: F<Maybe<A>> -> Maybe<F<A>> where Traversable<F> =
+  maybe.sequence values
+
+pub fn gatherEither<F<_>, E, A> values: F<Either<E, A>>
+  -> Either<E, F<A>>
+where Traversable<F> =
+  either.sequence values
+
+pub fn accumulated<A> values: Array<Maybe<A>> -> Maybe<A> where Semigroup<A> =
+  combine values

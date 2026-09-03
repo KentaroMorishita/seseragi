@@ -1,0 +1,204 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/maybe-either-apis",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/maybe",
+      "module": "std/maybe",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/maybe::*",
+          "localName": "maybe"
+        }
+      ]
+    },
+    {
+      "specifier": "std/either",
+      "module": "std/either",
+      "origin": {
+        "start": 35,
+        "end": 71
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/either::*",
+          "localName": "either"
+        }
+      ]
+    },
+    {
+      "specifier": "std/non-empty-list",
+      "module": "std/non-empty-list",
+      "origin": {
+        "start": 72,
+        "end": 118
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/non-empty-list::*",
+          "localName": "nonEmpty"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/maybe-either-apis::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 1879,
+        "end": 3767
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Functor<artifact/maybe-either-apis::Box>",
+      "providerModule": "artifact/maybe-either-apis",
+      "traitIdentity": "std/prelude::Functor",
+      "argumentIdentities": [
+        "artifact/maybe-either-apis::Box"
+      ],
+      "trait": "Functor",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Functor",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Box",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 143,
+        "end": 271
+      }
+    },
+    {
+      "identity": "std/prelude::Traversable<artifact/maybe-either-apis::Box>",
+      "providerModule": "artifact/maybe-either-apis",
+      "traitIdentity": "std/prelude::Traversable",
+      "argumentIdentities": [
+        "artifact/maybe-either-apis::Box"
+      ],
+      "trait": "Traversable",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Traversable",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Box",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Functor",
+          "traitIdentity": "std/prelude::Functor",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Box",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 273,
+        "end": 436
+      }
+    },
+    {
+      "identity": "std/prelude::Semigroup<artifact/maybe-either-apis::Token>",
+      "providerModule": "artifact/maybe-either-apis",
+      "traitIdentity": "std/prelude::Semigroup",
+      "argumentIdentities": [
+        "artifact/maybe-either-apis::Token"
+      ],
+      "trait": "Semigroup",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Semigroup",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Token",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 534,
+        "end": 694
+      }
+    }
+  ]
+}

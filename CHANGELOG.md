@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.48.0] - 2026-09-03
+
+- Publish the specified `std/maybe` and `std/either` operations through the
+  canonical interface, Reference, native compiler, and Playground.
+- Reuse Traversable and the existing Maybe/Either Applicative dictionaries for
+  shape-preserving `sequence`/`traverse`, including custom and imported evidence.
+- Provide conditional Maybe Semigroup/Monoid with Nothing as identity and
+  source-ordered element append; retain callable values and partial application.
+
 ## [0.47.0] - 2026-09-03
 
 - Expose `std/collection.ReduceStep`, `Next`, `Done`, and generic `reduceUntil`

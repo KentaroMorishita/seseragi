@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "module": "artifact/maybe-either-apis",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "core.non-empty-list",
+      "core.adt",
+      "core.string",
+      "core.string.add-dictionary",
+      "core.maybe",
+      "core.maybe.sequence",
+      "core.maybe.traverse",
+      "core.int",
+      "core.either",
+      "core.bool",
+      "core.either.left",
+      "core.int.show",
+      "core.either.right",
+      "core.int.add",
+      "core.array.reducible",
+      "core.maybe.monoid",
+      "core.collection.combine",
+      "core.unit",
+      "core.maybe.with-default",
+      "core.maybe.just",
+      "core.either.fold",
+      "core.array.traversable",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.tuple.show",
+      "core.maybe.nothing",
+      "core.maybe.show",
+      "core.maybe.or-else",
+      "core.string.show",
+      "core.either.show",
+      "core.either.map-left",
+      "core.either.map-right",
+      "core.either.bimap",
+      "core.either.swap",
+      "core.array.show",
+      "core.list.show",
+      "core.list.traversable",
+      "core.list.from-array",
+      "core.non-empty-list.traversable",
+      "core.either.traverse",
+      "core.non-empty-list.cons",
+      "core.non-empty-list.show",
+      "core.either.sequence",
+      "core.int.subtract",
+      "core.maybe.functor",
+      "core.string.semigroup",
+      "core.maybe.semigroup"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Functor<artifact/maybe-either-apis::Box>",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Functor$0"
+    },
+    {
+      "identity": "std/prelude::Traversable<artifact/maybe-either-apis::Box>",
+      "trait": "Traversable",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Traversable$1"
+    },
+    {
+      "identity": "std/prelude::Semigroup<artifact/maybe-either-apis::Token>",
+      "trait": "Semigroup",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Token",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Semigroup$2"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

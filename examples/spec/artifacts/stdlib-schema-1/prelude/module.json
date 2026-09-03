@@ -2299,6 +2299,36 @@
       "identity": "std/json::JsonDecode"
     },
     {
+      "trait": "Semigroup",
+      "traitCanonical": "std/prelude::Semigroup",
+      "typeConstructor": "Maybe",
+      "typeConstructorCanonical": "std/prelude::Maybe",
+      "typeConstructorArity": 1,
+      "identity": "std/maybe::Semigroup",
+      "constraints": [
+        {
+          "trait": "Semigroup",
+          "traitCanonical": "std/prelude::Semigroup",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Monoid",
+      "traitCanonical": "std/prelude::Monoid",
+      "typeConstructor": "Maybe",
+      "typeConstructorCanonical": "std/prelude::Maybe",
+      "typeConstructorArity": 1,
+      "identity": "std/maybe::Monoid",
+      "constraints": [
+        {
+          "trait": "Semigroup",
+          "traitCanonical": "std/prelude::Semigroup",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
       "trait": "JsonEncode",
       "traitCanonical": "std/prelude::JsonEncode",
       "typeConstructor": "Maybe",
@@ -4780,11 +4810,11 @@
       },
       {
         "trait": "Monoid",
-        "head": "Maybe<A> where Semigroup<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.5",
-        "trackingIssue": 303
+        "head": "Maybe",
+        "identity": "std/maybe::Monoid",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.5"
       },
       {
         "trait": "Monoid",
@@ -5053,6 +5083,14 @@
         "identity": "std/list::Semigroup",
         "status": "specified-and-implemented",
         "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Semigroup",
+        "head": "Maybe",
+        "identity": "std/maybe::Semigroup",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
         "spec": "9.5"
       },
       {

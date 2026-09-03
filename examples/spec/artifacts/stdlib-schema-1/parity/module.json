@@ -19,6 +19,8 @@
         "std/float",
         "std/array",
         "std/collection",
+        "std/maybe",
+        "std/either",
         "std/list",
         "std/map",
         "std/set",
@@ -503,6 +505,16 @@
       "route": "effect-temporal-project"
     },
     {
+      "specifier": "std/either",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:f59e19a332c87cc6",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
       "specifier": "std/entropy",
       "targets": [
         "process",
@@ -558,6 +570,16 @@
         "browser"
       ],
       "interfaceFingerprint": "fnv1a64:99d6ab794b708213",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/maybe",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:356c98f9eb4fb05c",
       "implementation": "lowering-runtime",
       "route": "portable-project"
     },

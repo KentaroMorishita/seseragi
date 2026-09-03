@@ -1,3 +1,50 @@
+use crate::collection_ops::RuntimeCollectionOperation;
+
+macro_rules! sum_operation {
+    ($module:literal, $name:literal, $feature:literal, $export:literal, $arity:literal) => {
+        (
+            concat!("std/", $module, "::", $name),
+            RuntimeCollectionOperation {
+                runtime_feature: concat!("core.", $module, ".", $feature),
+                local_name: concat!("_ssrg_", $module, "_", $name),
+                module: "@seseragi/runtime/sum",
+                export_name: $export,
+                source_arity: $arity,
+            },
+        )
+    };
+}
+
+const SUM_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
+    sum_operation!("maybe", "withDefault", "with-default", "withDefault", 2),
+    sum_operation!("maybe", "orElse", "or-else", "orElse", 2),
+    sum_operation!("maybe", "sequence", "sequence", "maybeSequence", 1),
+    sum_operation!("maybe", "traverse", "traverse", "maybeTraverse", 2),
+    sum_operation!("either", "mapLeft", "map-left", "mapLeft", 2),
+    sum_operation!("either", "mapRight", "map-right", "mapRight", 2),
+    sum_operation!("either", "bimap", "bimap", "bimap", 3),
+    sum_operation!("either", "fold", "fold", "fold", 3),
+    sum_operation!("either", "swap", "swap", "swap", 1),
+    sum_operation!("either", "sequence", "sequence", "eitherSequence", 1),
+    sum_operation!("either", "traverse", "traverse", "eitherTraverse", 2),
+];
+
+pub(crate) fn runtime_sum_operation(name: &str) -> Option<&'static RuntimeCollectionOperation> {
+    SUM_OPERATIONS
+        .iter()
+        .find(|(canonical, _)| *canonical == name)
+        .map(|(_, operation)| operation)
+}
+
+pub(crate) fn runtime_sum_operation_for_feature(
+    feature: &str,
+) -> Option<RuntimeCollectionOperation> {
+    SUM_OPERATIONS
+        .iter()
+        .map(|(_, operation)| *operation)
+        .find(|operation| operation.runtime_feature == feature)
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct RuntimeSumConstructor {
     pub(crate) semantic_name: &'static str,

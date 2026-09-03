@@ -1,0 +1,103 @@
+import * as maybe from "std/maybe"
+import * as either from "std/either"
+import * as nonEmpty from "std/non-empty-list"
+
+type Box<A> = | Box A
+
+instance Functor<Box> {
+  fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> = match value {
+    Box item -> Box (f item)
+  }
+}
+
+instance Traversable<Box> {
+  fn traverse<G<_>, A, B> f: (A -> G<B>)
+    -> value: Box<A>
+    -> G<Box<B>>
+  where Applicative<G> =
+    map Box (f (unbox value))
+}
+
+fn unbox<A> value: Box<A> -> A = match value { Box item -> item }
+
+type Token = | Token String
+
+instance Semigroup<Token> {
+  fn append left: Token -> right: Token -> Token = match (left, right) {
+    (Token left, Token right) -> Token (left + right)
+  }
+}
+
+fn tokenText value: Token -> String = match value { Token text -> text }
+
+fn collect<F<_>, A> values: F<Maybe<A>> -> Maybe<F<A>> where Traversable<F> =
+  maybe.sequence values
+
+fn transform<F<_>, A, B> f: (A -> Maybe<B>)
+  -> values: F<A>
+  -> Maybe<F<B>>
+where Traversable<F> =
+  maybe.traverse f values
+
+fn checked value: Int -> Either<String, Int> =
+  if value < 0 then Left (show value) else Right (value + 1)
+
+fn aggregate<A> values: Array<Maybe<A>> -> Maybe<A> where Semigroup<A> = combine values
+
+fn callable unit: Unit -> (Int, Int) = {
+  let select: (Int -> Int) -> Maybe<Int -> Int> -> (Int -> Int) = maybe.withDefault
+  let partial: Maybe<Int -> Int> -> (Int -> Int) = select (\n -> n + 1)
+  let chosen: Int -> Int = partial (Just (\n -> n + 2))
+  let right: Either<String, Int> = Right 3
+  let result: Int -> Int =
+    either.fold (\error: String -> \n: Int -> n + 1) (\value: Int -> \n: Int -> n + value) right
+  (chosen 10, result 10)
+}
+
+fn partialTraversal unit: Unit -> Maybe<Array<Int>> = {
+  let run: (Int -> Maybe<Int>) -> Array<Int> -> Maybe<Array<Int>> = maybe.traverse
+  let finish: Array<Int> -> Maybe<Array<Int>> = run (\n -> Just (n + 1))
+  finish [4, 5]
+}
+
+pub effect fn main = do {
+  println $ show (maybe.withDefault 9 Nothing, maybe.withDefault 9 (Just 3))
+  println $ show (maybe.orElse (Just 9) Nothing, maybe.orElse (Just 9) (Just 3))
+  let left: Either<String, Int> = Left "bad"
+  let right: Either<String, Int> = Right 7
+  println $
+    show (either.mapLeft (\error -> error + "!") left, either.mapRight (\n -> n + 1) right)
+  println $
+    show (
+      either.bimap (\error -> error + "!") (\n: Int -> show n) left,
+      either.bimap (\error -> error + "!") (\n: Int -> show n) right
+    )
+  println $ either.fold (\error -> "error:" + error) (\n: Int -> show n) left
+  println $ show (either.swap left, either.swap right)
+  let values: Array<Maybe<Int>> = [Just 1, Just 2]
+  let absent: Array<Maybe<Int>> = [Just 1, Nothing, Just 3]
+  let emptyValues: Array<Maybe<Int>> = []
+  println $ show (collect values, maybe.sequence absent, maybe.sequence emptyValues)
+  println $ show (transform (\n: Int -> Just (n + 1)) `[1, 2])
+  let nel: Either<String, nonEmpty.NonEmptyList<Int>> =
+    either.traverse checked (nonEmpty.cons 1 `[
+      2,
+      3
+    ])
+  println $ show nel
+  let list: List<Either<String, Int>> = `[Right 1, Left "first", Left "second"]
+  println $ show (either.sequence list)
+  println $ show (either.traverse checked `[1, -2, -3])
+  let box: Maybe<Box<Int>> = maybe.traverse (\n: Int -> Just (n + 1)) (Box 3)
+  let unwrapped: Maybe<Int> = map unbox box
+  println $ show unwrapped
+  let tokens: Array<Maybe<Token>> = [Just (Token "a"), Nothing, Just (Token "b")]
+  println $ show (map tokenText (aggregate tokens))
+  let none: Maybe<Token> = empty ()
+  println $ show (map tokenText none)
+  let strings: Array<Maybe<String>> = [Just "a", Nothing, Just "b"]
+  println $ show (combine strings)
+  println $ show (append (Just "left") (Just "right"))
+  println $ show (callable ())
+  println $ show (partialTraversal ())
+}
