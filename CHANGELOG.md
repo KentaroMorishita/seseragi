@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.51.0] - 2026-09-04
+
+### Added
+
+- Connect the specified `std/regex` opaque type, typed compile errors, options,
+  UTF-8 byte spans, captures, matching, splitting, escaping, and literal or
+  callback replacement through every supported product surface.
+- Implement a portable leftmost-first, greedy counted NFA without delegating
+  semantics to a host regular-expression engine, including scalar progress
+  after empty matches and bounded behavior for ambiguous inputs.
+- Share pinned Unicode 17.0.0 properties and simple case folding with the text
+  runtime, and cover native CLI, generated TypeScript, WASM, Playground,
+  Reference, LSP, and actual conformance execution.
+
 ## [0.50.0] - 2026-09-04
 
 ### Added

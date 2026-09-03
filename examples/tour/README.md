@@ -122,6 +122,6 @@ stable slugとsource fileは役割の再分類後も維持します。
 ## 現行Tourへ入れない完成仕様surface
 
 `excludedDesignSurfaces`は、design curriculumには存在するものの現行Tourへ公開しないsurfaceを明示します。
-concurrency、stream、resource scope、transformer、bytes、decimal、regex、timezone、filesystem、JSON codec、temporal effect、BigIntを教材都合で捏造しません。
+concurrency、stream、resource scope、transformer、bytes、decimal、timezone、filesystem、JSON codec、temporal effect、BigIntを教材都合で捏造しません。
 pure Htmlとinteractive DOMは現行実装があるためTourへ含めます。再帰、newtype、alias、
 Monoidなど実装済みでもcanonical pathの中心線から外れるsurfaceはRecipeまたはReferenceへ送ります。

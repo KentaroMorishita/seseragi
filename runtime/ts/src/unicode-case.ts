@@ -13,6 +13,48 @@ export function simpleFold(scalar: string): string {
   return String.fromCodePoint(SIMPLE_FOLD[point]?.[0] ?? point)
 }
 
+const foldEquivalenceCache = new Map<number, readonly number[]>()
+let foldAdjacency: ReadonlyMap<number, readonly number[]> | undefined
+
+/** Equivalence class induced by the pinned default simple-case-fold table. */
+export function simpleFoldEquivalents(point: number): readonly number[] {
+  const cached = foldEquivalenceCache.get(point)
+  if (cached !== undefined) return cached
+  if (foldAdjacency === undefined) {
+    const mutable = new Map<number, Set<number>>()
+    const connect = (left: number, right: number): void => {
+      const neighbors = mutable.get(left) ?? new Set<number>()
+      neighbors.add(right)
+      mutable.set(left, neighbors)
+    }
+    for (const [source, mapping] of Object.entries(SIMPLE_FOLD)) {
+      const from = Number(source)
+      const to = mapping[0]!
+      connect(from, to)
+      connect(to, from)
+    }
+    foldAdjacency = new Map(
+      [...mutable].map(([value, neighbors]) => [
+        value,
+        Object.freeze([...neighbors]),
+      ])
+    )
+  }
+  const seen = new Set<number>([point])
+  const pending = [point]
+  while (pending.length > 0) {
+    for (const neighbor of foldAdjacency.get(pending.pop()!) ?? []) {
+      if (!seen.has(neighbor)) {
+        seen.add(neighbor)
+        pending.push(neighbor)
+      }
+    }
+  }
+  const result = Object.freeze([...seen])
+  for (const member of result) foldEquivalenceCache.set(member, result)
+  return result
+}
+
 function mappedText(
   text: string,
   mapping: Readonly<Record<number, readonly number[]>>

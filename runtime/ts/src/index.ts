@@ -780,6 +780,7 @@ export {
   set as setRef,
   update as updateRef,
 } from "./ref"
+export * as regex from "./regex"
 export type { Permit, Semaphore, SemaphoreCreateError } from "./semaphore"
 export {
   acquire as acquireSemaphore,

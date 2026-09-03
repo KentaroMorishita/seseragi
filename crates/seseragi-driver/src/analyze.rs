@@ -463,6 +463,38 @@ let result = configure { host: "localhost" } { secure: true }
     }
 
     #[test]
+    fn exposes_regex_in_the_reference_catalog() {
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/regex-reference",
+            "pub let value = 1\n",
+        ));
+        let catalog = analysis.standard_library_catalog();
+        for name in [
+            "Regex",
+            "RegexCompileError",
+            "RegexOptions",
+            "RegexSpan",
+            "RegexCapture",
+            "RegexMatch",
+            "compile",
+            "compileWith",
+            "find",
+            "findAll",
+            "replaceAllWith",
+            "escape",
+        ] {
+            let item = catalog
+                .iter()
+                .find(|item| item.identity == format!("std/regex::{name}"))
+                .unwrap_or_else(|| panic!("missing Reference entry for std/regex::{name}"));
+            assert_eq!(item.category, "Regex");
+            assert!(item.signature.is_some());
+            assert!(!item.description.is_empty());
+        }
+    }
+
+    #[test]
     fn exposes_process_and_non_empty_list_in_the_reference_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",

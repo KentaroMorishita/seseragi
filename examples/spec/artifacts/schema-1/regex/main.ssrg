@@ -1,0 +1,113 @@
+import { RegexOptions, RegexSpan } from "std/regex"
+import * as regex from "std/regex"
+
+fn same<A> left: A -> right: A -> Bool where Eq<A> = left == right
+
+fn earlier<A> left: A -> right: A -> Bool where Ord<A> = match compare left right {
+  Less -> True
+  _ -> False
+}
+
+fn inspect<A> value: A -> String where Debug<A> = debug value
+
+fn describeCompile result: Either<regex.RegexCompileError, regex.Regex> -> String =
+  match result {
+    Left error -> inspect error
+    Right _pattern -> "unexpected success"
+  }
+
+fn useRegex render: (regex.Regex -> String)
+  -> result: Either<regex.RegexCompileError, regex.Regex>
+  -> String =
+  match result {
+    Left error -> inspect error
+    Right pattern -> render pattern
+  }
+
+fn exercise -> Array<String> = {
+  let captures =
+    regex.compile "(?<word>\\w+)(?:-(a+))?"
+    |> useRegex (\pattern: regex.Regex -> show (regex.find pattern "👍 é́-aa"))
+  let alternatives =
+    regex.compile "a|aa"
+    |> useRegex (\pattern: regex.Regex -> show (regex.find pattern "xaa"))
+  let counted =
+    regex.compile "a{2,4}"
+    |> useRegex (\pattern: regex.Regex -> show (regex.find pattern "xaaaaa"))
+  let unicodeWord =
+    regex.compile "^\\w+$"
+    |> useRegex (\pattern: regex.Regex -> show (regex.isMatch pattern "漢́٣_"))
+  let asciiDigit =
+    regex.compile "^\\d+$"
+    |> useRegex (\pattern: regex.Regex -> show (regex.isMatch pattern "٣"))
+  let unicodeDigit =
+    regex.compile "^\\p{Decimal_Number}+$"
+    |> useRegex (\pattern: regex.Regex -> show (regex.isMatch pattern "٣"))
+  let whitespace =
+    regex.compile "^\\s$"
+    |> useRegex (\pattern: regex.Regex -> `${regex.isMatch pattern "\u{0085}"} / ${regex.isMatch pattern "\u{feff}"}`)
+  let emptyMatches =
+    regex.compile ""
+    |> useRegex (\pattern: regex.Regex -> show (regex.findAll pattern "a👍"))
+  let emptySplit =
+    regex.compile ""
+    |> useRegex (\pattern: regex.Regex -> show (regex.split pattern "a👍"))
+  let replaced =
+    regex.compile "(?<digits>[0-9]+)"
+    |> useRegex (\pattern: regex.Regex -> regex.replaceAll pattern "$1" "a12b3")
+  let replacedWith = regex.compile "(?<digits>[0-9]+)"
+    |> useRegex (
+      \pattern: regex.Regex -> regex.replaceAllWith pattern
+        (\matched: regex.RegexMatch -> `<${matched.text}>`) "a12b3"
+    )
+  let escaped =
+    regex.compile ("^" + regex.escape "a.b[c]" + "$")
+    |> useRegex (\pattern: regex.Regex -> show (regex.isMatch pattern "a.b[c]"))
+  let foldOptions = RegexOptions {
+    caseInsensitive: True,
+    multiline: False,
+    dotMatchesNewline: False,
+  }
+  let folded =
+    regex.compileWith foldOptions "^[A-ZΣ]+$"
+    |> useRegex (\pattern: regex.Regex -> show (regex.isMatch pattern "aςσ"))
+  let multilineOptions = RegexOptions {
+    caseInsensitive: False,
+    multiline: True,
+    dotMatchesNewline: False,
+  }
+  let multiline =
+    regex.compileWith multilineOptions "^b$"
+    |> useRegex (\pattern: regex.Regex -> show (regex.isMatch pattern "a\r\nb\n"))
+  let dotAllOptions = RegexOptions {
+    caseInsensitive: False,
+    multiline: False,
+    dotMatchesNewline: True,
+  }
+  let dotAll =
+    regex.compileWith dotAllOptions "."
+    |> useRegex (\pattern: regex.Regex -> show (regex.isMatch pattern "\n"))
+  let firstSpan = RegexSpan { start: 1, end: 2 }
+  let secondSpan = RegexSpan { start: 2, end: 2 }
+  [
+    `defaults: ${regex.defaultOptions ()}`,
+    `captures: ${captures}`,
+    `alternatives: ${alternatives}`,
+    `counted: ${counted}`,
+    `unicode: ${unicodeWord} / ${asciiDigit} / ${unicodeDigit}`,
+    `whitespace: ${whitespace}`,
+    `fold: ${folded}`,
+    `anchors: ${multiline} / ${dotAll}`,
+    `all-empty: ${emptyMatches}`,
+    `split-empty: ${emptySplit}`,
+    `replace-literal: ${replaced}`,
+    `replace-with: ${replacedWith}`,
+    `escaped: ${escaped}`,
+    `error: ${describeCompile (regex.compile "(a)\\1")}`,
+    `kind: ${same regex.InvalidRegexRange regex.InvalidRegexRange} / ${inspect regex.InvalidRegexQuantifier}`,
+    `span: ${earlier firstSpan secondSpan}`,
+  ]
+}
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  for line <- exercise () { println line }

@@ -1170,6 +1170,158 @@
     {
       "trait": "Eq",
       "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "RegexCompileErrorKind",
+      "typeConstructorCanonical": "std/regex::RegexCompileErrorKind",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/regex::RegexCompileErrorKind>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "RegexCompileErrorKind",
+      "typeConstructorCanonical": "std/regex::RegexCompileErrorKind",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/regex::RegexCompileErrorKind>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "RegexCompileErrorKind",
+      "typeConstructorCanonical": "std/regex::RegexCompileErrorKind",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/regex::RegexCompileErrorKind>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "RegexCompileError",
+      "typeConstructorCanonical": "std/regex::RegexCompileError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/regex::RegexCompileError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "RegexCompileError",
+      "typeConstructorCanonical": "std/regex::RegexCompileError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/regex::RegexCompileError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "RegexCompileError",
+      "typeConstructorCanonical": "std/regex::RegexCompileError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/regex::RegexCompileError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "RegexOptions",
+      "typeConstructorCanonical": "std/regex::RegexOptions",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/regex::RegexOptions>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "RegexOptions",
+      "typeConstructorCanonical": "std/regex::RegexOptions",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/regex::RegexOptions>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "RegexOptions",
+      "typeConstructorCanonical": "std/regex::RegexOptions",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/regex::RegexOptions>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "RegexSpan",
+      "typeConstructorCanonical": "std/regex::RegexSpan",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/regex::RegexSpan>"
+    },
+    {
+      "trait": "Ord",
+      "traitCanonical": "std/prelude::Ord",
+      "typeConstructor": "RegexSpan",
+      "typeConstructorCanonical": "std/regex::RegexSpan",
+      "typeConstructorArity": 0,
+      "identity": "Ord<std/regex::RegexSpan>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "RegexSpan",
+      "typeConstructorCanonical": "std/regex::RegexSpan",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/regex::RegexSpan>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "RegexSpan",
+      "typeConstructorCanonical": "std/regex::RegexSpan",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/regex::RegexSpan>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "RegexCapture",
+      "typeConstructorCanonical": "std/regex::RegexCapture",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/regex::RegexCapture>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "RegexCapture",
+      "typeConstructorCanonical": "std/regex::RegexCapture",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/regex::RegexCapture>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "RegexCapture",
+      "typeConstructorCanonical": "std/regex::RegexCapture",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/regex::RegexCapture>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "RegexMatch",
+      "typeConstructorCanonical": "std/regex::RegexMatch",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/regex::RegexMatch>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "RegexMatch",
+      "typeConstructorCanonical": "std/regex::RegexMatch",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/regex::RegexMatch>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "RegexMatch",
+      "typeConstructorCanonical": "std/regex::RegexMatch",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/regex::RegexMatch>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
       "typeConstructor": "Validation",
       "typeConstructorCanonical": "std/validation::Validation",
       "typeConstructorArity": 2,
@@ -4061,6 +4213,54 @@
       },
       {
         "trait": "Debug",
+        "head": "RegexCapture",
+        "identity": "Debug<std/regex::RegexCapture>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "RegexCompileError",
+        "identity": "Debug<std/regex::RegexCompileError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "RegexCompileErrorKind",
+        "identity": "Debug<std/regex::RegexCompileErrorKind>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "RegexMatch",
+        "identity": "Debug<std/regex::RegexMatch>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "RegexOptions",
+        "identity": "Debug<std/regex::RegexOptions>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "RegexSpan",
+        "identity": "Debug<std/regex::RegexSpan>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
         "head": "ScheduleError",
         "identity": "Debug<std/effect::ScheduleError>",
         "status": "specified-and-implemented",
@@ -4333,6 +4533,54 @@
         "trait": "Eq",
         "head": "NormalizationForm",
         "identity": "Eq<std/text/unicode::NormalizationForm>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "RegexCapture",
+        "identity": "Eq<std/regex::RegexCapture>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "RegexCompileError",
+        "identity": "Eq<std/regex::RegexCompileError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "RegexCompileErrorKind",
+        "identity": "Eq<std/regex::RegexCompileErrorKind>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "RegexMatch",
+        "identity": "Eq<std/regex::RegexMatch>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "RegexOptions",
+        "identity": "Eq<std/regex::RegexOptions>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "RegexSpan",
+        "identity": "Eq<std/regex::RegexSpan>",
         "status": "specified-and-implemented",
         "classification": "dictionary",
         "spec": "9.3 / 9.4"
@@ -5203,6 +5451,14 @@
       },
       {
         "trait": "Ord",
+        "head": "RegexSpan",
+        "identity": "Ord<std/regex::RegexSpan>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Ord",
         "head": "String",
         "identity": "std/string::Ord",
         "status": "specified-and-implemented",
@@ -5759,6 +6015,54 @@
         "identity": "std/range::Show",
         "status": "specified-and-implemented",
         "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "RegexCapture",
+        "identity": "Show<std/regex::RegexCapture>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "RegexCompileError",
+        "identity": "Show<std/regex::RegexCompileError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "RegexCompileErrorKind",
+        "identity": "Show<std/regex::RegexCompileErrorKind>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "RegexMatch",
+        "identity": "Show<std/regex::RegexMatch>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "RegexOptions",
+        "identity": "Show<std/regex::RegexOptions>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "RegexSpan",
+        "identity": "Show<std/regex::RegexSpan>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
         "spec": "9.11"
       },
       {

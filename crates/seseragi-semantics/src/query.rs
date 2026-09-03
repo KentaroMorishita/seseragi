@@ -1413,6 +1413,7 @@ fn standard_category(name: &str, module: &str) -> &'static str {
         "std/maybe" => "Maybe",
         "std/either" => "Either",
         "std/validation" => "Validation",
+        "std/regex" => "Regex",
         "std/bytes" => "Bytes",
         "std/json" => "JSON",
         "std/text" => "Text",
@@ -1594,6 +1595,30 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/validation::invalid" => "Constructs an invalid result containing one error.",
         "std/validation::fromEither" => "Explicitly converts Left to one error and Right to Valid.",
         "std/validation::toEither" => "Explicitly converts Invalid to Left containing all errors, or Valid to Right.",
+        "std/regex::Regex" => "Opaque compiled portable regular expression with pinned Unicode semantics.",
+        "std/regex::RegexCompileErrorKind" => "Classifies a portable regular-expression compile failure.",
+        "std/regex::RegexCompileError" => "Reports a compile failure at a UTF-8 byte offset in the pattern.",
+        "std/regex::RegexOptions" => "Controls case folding, multiline anchors, and dot-newline matching.",
+        "std/regex::RegexSpan" => "Half-open UTF-8 byte span in the searched text.",
+        "std/regex::RegexCapture" => "Captured source text together with its UTF-8 byte span.",
+        "std/regex::RegexMatch" => "A leftmost match with ordered and named captures.",
+        "std/regex::UnexpectedRegexEnd" => "Reports a pattern that ends before its syntax is complete.",
+        "std/regex::UnexpectedRegexToken" => "Reports an unexpected pattern character.",
+        "std/regex::InvalidRegexEscape" => "Reports an invalid or incomplete regular-expression escape.",
+        "std/regex::InvalidRegexRange" => "Reports an invalid character-class range.",
+        "std/regex::InvalidRegexQuantifier" => "Reports a malformed or misplaced quantifier.",
+        "std/regex::DuplicateCaptureName" => "Reports a repeated named-capture identifier.",
+        "std/regex::UnsupportedRegexFeature" => "Reports syntax intentionally excluded from the portable Regex contract.",
+        "std/regex::defaultOptions" => "Returns the portable Regex defaults with every option disabled.",
+        "std/regex::compile" => "Compiles a portable pattern or returns a typed error without throwing.",
+        "std/regex::compileWith" => "Compiles a portable pattern using explicit RegexOptions.",
+        "std/regex::isMatch" => "Reports whether the leftmost-first engine finds a match.",
+        "std/regex::find" => "Returns the first leftmost match and its UTF-8 byte spans.",
+        "std/regex::findAll" => "Returns non-overlapping matches and advances one scalar after an empty match.",
+        "std/regex::split" => "Splits text at non-overlapping portable Regex matches.",
+        "std/regex::replaceAll" => "Replaces every match with literal text; capture markers are not expanded.",
+        "std/regex::replaceAllWith" => "Replaces matches by invoking a callback in source order.",
+        "std/regex::escape" => "Escapes text so it denotes a literal portable Regex fragment.",
         "std/maybe::withDefault" => "Selects the fallback for Nothing, or the Just payload. Arguments are strict.",
         "std/maybe::orElse" => "Selects the fallback Maybe for Nothing, preserving an existing Just.",
         "std/maybe::sequence" | "std/either::sequence" => "Traverses wrapped values with identity, preserving source shape and order.",
@@ -1871,6 +1896,10 @@ fn module_description(module: &str, export: &InterfaceExport) -> &'static str {
             "Performs HTTP client operations through the standard HttpClient capability."
         }
         ("std/http", _) => "Type from the standard HTTP client capability surface.",
+        ("std/regex", "value") => {
+            "Compiles, searches, splits, or replaces with the portable Regex engine."
+        }
+        ("std/regex", _) => "Type from the portable Regex surface.",
         _ => "Compiler-owned standard library symbol.",
     }
 }

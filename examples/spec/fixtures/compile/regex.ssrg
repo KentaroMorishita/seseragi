@@ -1,0 +1,56 @@
+import * as regex from "std/regex"
+
+pub fn defaults -> regex.RegexOptions = regex.defaultOptions ()
+
+pub fn compile pattern: String -> Either<regex.RegexCompileError, regex.Regex> =
+  regex.compile pattern
+
+pub fn compileConfigured options: regex.RegexOptions
+  -> pattern: String
+  -> Either<regex.RegexCompileError, regex.Regex> =
+  regex.compileWith options pattern
+
+pub fn matches pattern: regex.Regex -> text: String -> Bool = regex.isMatch pattern text
+
+pub fn first pattern: regex.Regex -> text: String -> Maybe<regex.RegexMatch> =
+  regex.find pattern text
+
+pub fn every pattern: regex.Regex -> text: String -> Array<regex.RegexMatch> =
+  regex.findAll pattern text
+
+pub fn parts pattern: regex.Regex -> text: String -> Array<String> =
+  regex.split pattern text
+
+pub fn replace pattern: regex.Regex -> replacement: String -> text: String -> String =
+  regex.replaceAll pattern replacement text
+
+pub fn replaceWith pattern: regex.Regex
+  -> render: (regex.RegexMatch -> String)
+  -> text: String
+  -> String =
+  regex.replaceAllWith pattern render text
+
+pub fn literal value: String -> String = regex.escape value
+
+pub fn unexpected value: Char -> regex.RegexCompileErrorKind =
+  regex.UnexpectedRegexToken value
+
+pub fn duplicate name: String -> regex.RegexCompileErrorKind =
+  regex.DuplicateCaptureName name
+
+pub fn unsupported feature: String -> regex.RegexCompileErrorKind =
+  regex.UnsupportedRegexFeature feature
+
+pub fn errorOffset error: regex.RegexCompileError -> Int = error.offset
+pub fn captureText capture: regex.RegexCapture -> String = capture.text
+pub fn matchSpan matched: regex.RegexMatch -> regex.RegexSpan = matched.span
+
+pub fn sameError left: regex.RegexCompileError
+  -> right: regex.RegexCompileError
+  -> Bool =
+  left == right
+
+pub fn compareSpan left: regex.RegexSpan -> right: regex.RegexSpan -> Ordering =
+  compare left right
+
+pub fn inspectMatch matched: regex.RegexMatch -> String = debug matched

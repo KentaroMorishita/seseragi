@@ -1,0 +1,2516 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/regex",
+  "runtimeRequirements": [
+    "core.regex.compile-error-type",
+    "core.regex.type",
+    "core.regex.match-type",
+    "core.regex.options-type",
+    "core.regex.span-type",
+    "core.regex.compile-error-kind-type",
+    "effect.core.type",
+    "effect.console.service",
+    "effect.console.error",
+    "core.bool",
+    "core.adt",
+    "core.string",
+    "core.either",
+    "core.regex.compile-error.debug",
+    "core.unit",
+    "core.regex.match.show",
+    "core.maybe.show",
+    "core.regex.find",
+    "core.maybe",
+    "core.regex.compile",
+    "core.bool.show",
+    "core.regex.is-match",
+    "core.array.show",
+    "core.regex.find-all",
+    "core.string.show",
+    "core.regex.split",
+    "core.regex.replace-all",
+    "core.regex.replace-all-with",
+    "core.string.add-dictionary",
+    "core.regex.escape",
+    "core.regex.compile-with",
+    "core.int",
+    "core.regex.options.show",
+    "core.regex.default-options",
+    "core.regex.compile-error-kind.eq",
+    "core.regex.invalid-range",
+    "core.regex.compile-error-kind.debug",
+    "core.regex.invalid-quantifier",
+    "core.regex.span.ord",
+    "core.array.iterable",
+    "effect.collection.for-each",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.regex.compile-error.debug",
+      "local": "_ssrg_regexCompileErrorDebug"
+    },
+    {
+      "feature": "core.regex.match.show",
+      "local": "_ssrg_regexMatchShow"
+    },
+    {
+      "feature": "core.maybe.show",
+      "local": "_ssrg_show_maybeShow"
+    },
+    {
+      "feature": "core.regex.find",
+      "local": "_ssrg_regex_find"
+    },
+    {
+      "feature": "core.regex.compile",
+      "local": "_ssrg_regex_compile"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
+    },
+    {
+      "feature": "core.regex.is-match",
+      "local": "_ssrg_regex_isMatch"
+    },
+    {
+      "feature": "core.array.show",
+      "local": "_ssrg_show_arrayShow"
+    },
+    {
+      "feature": "core.regex.find-all",
+      "local": "_ssrg_regex_findAll"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.regex.split",
+      "local": "_ssrg_regex_split"
+    },
+    {
+      "feature": "core.regex.replace-all",
+      "local": "_ssrg_regex_replaceAll"
+    },
+    {
+      "feature": "core.regex.replace-all-with",
+      "local": "_ssrg_regex_replaceAllWith"
+    },
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
+    },
+    {
+      "feature": "core.regex.escape",
+      "local": "_ssrg_regex_escape"
+    },
+    {
+      "feature": "core.regex.compile-with",
+      "local": "_ssrg_regex_compileWith"
+    },
+    {
+      "feature": "core.regex.options.show",
+      "local": "_ssrg_regexOptionsShow"
+    },
+    {
+      "feature": "core.regex.default-options",
+      "local": "_ssrg_regex_defaultOptions"
+    },
+    {
+      "feature": "core.regex.compile-error-kind.eq",
+      "local": "_ssrg_regexCompileErrorKindEq"
+    },
+    {
+      "feature": "core.regex.invalid-range",
+      "local": "_ssrg_regex_InvalidRegexRange"
+    },
+    {
+      "feature": "core.regex.compile-error-kind.debug",
+      "local": "_ssrg_regexCompileErrorKindDebug"
+    },
+    {
+      "feature": "core.regex.invalid-quantifier",
+      "local": "_ssrg_regex_InvalidRegexQuantifier"
+    },
+    {
+      "feature": "core.regex.span.ord",
+      "local": "_ssrg_regexSpanOrd"
+    },
+    {
+      "feature": "core.array.iterable",
+      "local": "_ssrg_array_iterable"
+    },
+    {
+      "feature": "effect.collection.for-each",
+      "local": "_ssrg_collection_for_each"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.regex.compile-error-type",
+      "local": "RegexCompileError"
+    },
+    {
+      "feature": "core.regex.type",
+      "local": "Regex"
+    },
+    {
+      "feature": "core.regex.match-type",
+      "local": "RegexMatch"
+    },
+    {
+      "feature": "core.regex.options-type",
+      "local": "RegexOptions"
+    },
+    {
+      "feature": "core.regex.span-type",
+      "local": "RegexSpan"
+    },
+    {
+      "feature": "core.regex.compile-error-kind-type",
+      "local": "RegexCompileErrorKind"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "effect.console.service",
+      "local": "Console"
+    },
+    {
+      "feature": "effect.console.error",
+      "local": "ConsoleError"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "same",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "A",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "eq",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 88,
+        "end": 154
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "earlier",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "A",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          "method": "compare",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "left"
+            },
+            {
+              "kind": "identifier",
+              "name": "right"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "ordering"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Less"
+              }
+            ],
+            "value": {
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "boolean",
+              "value": false
+            }
+          }
+        ],
+        "type": {
+          "kind": "boolean"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 156,
+        "end": 269
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "inspect",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 271,
+        "end": 332
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "describeCompile",
+      "parameters": [
+        {
+          "name": "result",
+          "type": "{ readonly tag: \"Left\"; readonly value: RegexCompileError } | { readonly tag: \"Right\"; readonly value: Regex }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "RegexCompileError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Regex",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "RegexCompileError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "inspect",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_regexCompileErrorDebug"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_pattern",
+                "type": {
+                  "kind": "reference",
+                  "name": "Regex",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "unexpected success"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 334,
+        "end": 513
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "useRegex",
+      "parameters": [
+        {
+          "name": "render",
+          "type": "(argument: Regex) => string",
+          "implicit": false
+        },
+        {
+          "name": "result",
+          "type": "{ readonly tag: \"Left\"; readonly value: RegexCompileError } | { readonly tag: \"Right\"; readonly value: Regex }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "RegexCompileError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Regex",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "RegexCompileError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "inspect",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_regexCompileErrorDebug"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "pattern",
+                "type": {
+                  "kind": "reference",
+                  "name": "Regex",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "render",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "pattern"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 515,
+        "end": 719
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "exercise",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "captures",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "RegexMatch",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_regexMatchShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_find",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "👍 é́-aa"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "(?<word>\\w+)(?:-(a+))?"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 753,
+              "end": 898
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "alternatives",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "RegexMatch",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_regexMatchShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_find",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "xaa"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "a|aa"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 899,
+              "end": 1019
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "counted",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "RegexMatch",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_regexMatchShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_find",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "xaaaaa"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "a{2,4}"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1020,
+              "end": 1140
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "unicodeWord",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_isMatch",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "漢́٣_"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "^\\w+$"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1141,
+              "end": 1270
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "asciiDigit",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_isMatch",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "٣"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "^\\d+$"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1271,
+              "end": 1393
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "unicodeDigit",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_isMatch",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "٣"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "^\\p{Decimal_Number}+$"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1394,
+              "end": 1534
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "whitespace",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_boolShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_regex_isMatch",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "pattern"
+                              },
+                              {
+                                "kind": "string",
+                                "value": ""
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "right": {
+                        "kind": "string",
+                        "value": " / "
+                      }
+                    },
+                    "right": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_boolShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_isMatch",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "﻿"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "^\\s$"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1535,
+              "end": 1698
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "emptyMatches",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_arrayShow",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "RegexMatch",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_regexMatchShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_findAll",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "a👍"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": ""
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1699,
+              "end": 1820
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "emptySplit",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_arrayShow",
+                      "typeArguments": [
+                        {
+                          "kind": "string"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_split",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "a👍"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": ""
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1821,
+              "end": 1938
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "replaced",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_regex_replaceAll",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "pattern"
+                      },
+                      {
+                        "kind": "string",
+                        "value": "$1"
+                      },
+                      {
+                        "kind": "string",
+                        "value": "a12b3"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "(?<digits>[0-9]+)"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1939,
+              "end": 2074
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "replacedWith",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_regex_replaceAllWith",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "pattern"
+                      },
+                      {
+                        "kind": "lambda",
+                        "parameter": "matched: RegexMatch",
+                        "body": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "left": {
+                            "kind": "binary",
+                            "operator": "+",
+                            "left": {
+                              "kind": "string",
+                              "value": "<"
+                            },
+                            "right": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_show_stringShow"
+                              },
+                              "method": "show",
+                              "arguments": [
+                                {
+                                  "kind": "field-access",
+                                  "receiver": {
+                                    "kind": "identifier",
+                                    "name": "matched"
+                                  },
+                                  "field": "text"
+                                }
+                              ]
+                            }
+                          },
+                          "right": {
+                            "kind": "string",
+                            "value": ">"
+                          }
+                        }
+                      },
+                      {
+                        "kind": "string",
+                        "value": "a12b3"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "(?<digits>[0-9]+)"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2075,
+              "end": 2281
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "escaped",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_isMatch",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "a.b[c]"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compile",
+                  "arguments": [
+                    {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_string_add_dictionary"
+                      },
+                      "method": "add",
+                      "arguments": [
+                        {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_string_add_dictionary"
+                          },
+                          "method": "add",
+                          "arguments": [
+                            {
+                              "kind": "string",
+                              "value": "^"
+                            },
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_regex_escape",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "a.b[c]"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "string",
+                          "value": "$"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2282,
+              "end": 2432
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "foldOptions",
+            "type": {
+              "kind": "reference",
+              "name": "RegexOptions",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "caseInsensitive",
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "multiline",
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "dotMatchesNewline",
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "RegexOptions",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2433,
+              "end": 2550
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "folded",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_isMatch",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "aςσ"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compileWith",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "foldOptions"
+                    },
+                    {
+                      "kind": "string",
+                      "value": "^[A-ZΣ]+$"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2551,
+              "end": 2692
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "multilineOptions",
+            "type": {
+              "kind": "reference",
+              "name": "RegexOptions",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "caseInsensitive",
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "multiline",
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "dotMatchesNewline",
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "RegexOptions",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2693,
+              "end": 2815
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "multiline",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_isMatch",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "a\r\nb\n"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compileWith",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "multilineOptions"
+                    },
+                    {
+                      "kind": "string",
+                      "value": "^b$"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2816,
+              "end": 2961
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "dotAllOptions",
+            "type": {
+              "kind": "reference",
+              "name": "RegexOptions",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "caseInsensitive",
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "multiline",
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "dotMatchesNewline",
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "RegexOptions",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2962,
+              "end": 3081
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "dotAll",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "useRegex",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "pattern: Regex",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_isMatch",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "pattern"
+                          },
+                          {
+                            "kind": "string",
+                            "value": "\n"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_regex_compileWith",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "dotAllOptions"
+                    },
+                    {
+                      "kind": "string",
+                      "value": "."
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 3082,
+              "end": 3213
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "firstSpan",
+            "type": {
+              "kind": "reference",
+              "name": "RegexSpan",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "start",
+                  "value": {
+                    "kind": "number",
+                    "value": "1"
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "end",
+                  "value": {
+                    "kind": "number",
+                    "value": "2"
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "RegexSpan",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 3214,
+              "end": 3262
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "secondSpan",
+            "type": {
+              "kind": "reference",
+              "name": "RegexSpan",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "start",
+                  "value": {
+                    "kind": "number",
+                    "value": "2"
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "end",
+                  "value": {
+                    "kind": "number",
+                    "value": "2"
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "RegexSpan",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 3263,
+              "end": 3312
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "defaults: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_regexOptionsShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_regex_defaultOptions",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "captures: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "captures"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "alternatives: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "alternatives"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "counted: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "counted"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "string",
+                        "value": "unicode: "
+                      },
+                      "right": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "unicodeWord"
+                          }
+                        ]
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": " / "
+                    }
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "asciiDigit"
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "unicodeDigit"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "whitespace: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "whitespace"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "fold: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "folded"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "anchors: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "multiline"
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "dotAll"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "all-empty: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "emptyMatches"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "split-empty: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "emptySplit"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "replace-literal: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "replaced"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "replace-with: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "replacedWith"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "escaped: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "escaped"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "error: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "describeCompile",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_regex_compile",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "(a)\\1"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "kind: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "call",
+                          "callee": "same",
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_regex_InvalidRegexRange"
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_regex_InvalidRegexRange"
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_regexCompileErrorKindEq"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "boolean"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "inspect",
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_regex_InvalidRegexQuantifier"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_regexCompileErrorKindDebug"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "span: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_boolShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "earlier",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "firstSpan"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "secondSpan"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_regexSpanOrd"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "boolean"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "elementType": {
+            "kind": "string"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 721,
+        "end": 4003
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_for_each",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_iterable"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_for_value: string",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "$ssrg_for_value"
+              },
+              "scrutineeType": {
+                "kind": "string"
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "line",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": []
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "line"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "reference",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "fields": [
+                      {
+                        "name": "console",
+                        "optional": false,
+                        "type": {
+                          "kind": "reference",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "exercise",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 4005,
+        "end": 4108
+      }
+    }
+  ]
+}

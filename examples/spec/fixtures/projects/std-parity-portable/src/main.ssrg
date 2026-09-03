@@ -15,6 +15,7 @@ import * as sets from "std/set"
 import * as maybe from "std/maybe"
 import * as either from "std/either"
 import * as validation from "std/validation"
+import * as regex from "std/regex"
 
 fn even value: Int -> Bool = value % 2 == 0
 
@@ -51,8 +52,13 @@ let validationResult: validation.Validation<String, Int> =
   pure (\a: Int -> \b: Int -> a + b)
   <*> firstInvalid
   <*> secondInvalid
+let regexSummary = match regex.compile "[0-9]+" {
+  Left _ -> "regex error"
+  Right pattern -> regex.replaceAll pattern "<number>" "order 123"
+}
 
 pub effect fn main = do {
   println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique} / grouped: ${maps.values grouped} / sorted: ${sorted} / size: ${invalidSize} / maybe: ${maybeResult} / either: ${eitherResult} / validation: ${validationResult}`
   println `unicode: ${unicodeSummary}`
+  println `regex: ${regexSummary}`
 }

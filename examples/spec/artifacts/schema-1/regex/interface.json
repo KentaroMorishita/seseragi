@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "module": "artifact/regex",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/regex",
+      "module": "artifact/regex/std/regex",
+      "origin": {
+        "start": 0,
+        "end": 51
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "RegexOptions",
+          "symbol": "artifact/regex/std/regex::RegexOptions"
+        },
+        {
+          "namespace": "value",
+          "name": "RegexSpan",
+          "symbol": "artifact/regex/std/regex::RegexSpan"
+        }
+      ]
+    },
+    {
+      "specifier": "std/regex",
+      "module": "artifact/regex/std/regex",
+      "origin": {
+        "start": 52,
+        "end": 86
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/regex/std/regex::*",
+          "localName": "regex"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/regex::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 4005,
+        "end": 4108
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

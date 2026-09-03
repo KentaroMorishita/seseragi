@@ -14,6 +14,7 @@ use crate::provider_service_ops::{
     runtime_provider_service_operation, runtime_provider_service_value_operation,
 };
 use crate::range_ops::runtime_range_operation;
+use crate::regex_ops::runtime_regex_operation;
 use crate::signal_ops::runtime_signal_operation;
 use crate::standard_ops::runtime_standard_operation;
 use crate::stream_ops::runtime_stream_operation;
@@ -77,8 +78,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if let Some(operation) = runtime_standard_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
-            if let Some(operation) =
-                runtime_bytes_operation(name).or_else(|| runtime_text_operation(name))
+            if let Some(operation) = runtime_bytes_operation(name)
+                .or_else(|| runtime_text_operation(name))
+                .or_else(|| runtime_regex_operation(name))
             {
                 push_unique(requirements, operation.runtime_feature);
             }
@@ -145,8 +147,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_iterator_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
-            } else if let Some(operation) =
-                runtime_bytes_operation(callee).or_else(|| runtime_text_operation(callee))
+            } else if let Some(operation) = runtime_bytes_operation(callee)
+                .or_else(|| runtime_text_operation(callee))
+                .or_else(|| runtime_regex_operation(callee))
             {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_json_operation(callee) {
@@ -591,8 +594,9 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     },
                 );
             }
-            if let Some(operation) =
-                runtime_bytes_operation(name).or_else(|| runtime_text_operation(name))
+            if let Some(operation) = runtime_bytes_operation(name)
+                .or_else(|| runtime_text_operation(name))
+                .or_else(|| runtime_regex_operation(name))
             {
                 push_import_unique(
                     imports,
@@ -747,8 +751,9 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                         local: operation.local_name.to_owned(),
                     },
                 );
-            } else if let Some(operation) =
-                runtime_bytes_operation(callee).or_else(|| runtime_text_operation(callee))
+            } else if let Some(operation) = runtime_bytes_operation(callee)
+                .or_else(|| runtime_text_operation(callee))
+                .or_else(|| runtime_regex_operation(callee))
             {
                 push_import_unique(
                     imports,

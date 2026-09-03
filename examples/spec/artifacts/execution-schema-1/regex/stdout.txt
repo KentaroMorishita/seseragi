@@ -1,0 +1,16 @@
+defaults: RegexOptions { caseInsensitive: False, multiline: False, dotMatchesNewline: False }
+captures: Just RegexMatch { span: RegexSpan { start: 5, end: 12 }, text: é́-aa, captures: [Just RegexCapture { span: RegexSpan { start: 5, end: 9 }, text: é́ }, Just RegexCapture { span: RegexSpan { start: 10, end: 12 }, text: aa }], named: Map [(word, Just RegexCapture { span: RegexSpan { start: 5, end: 9 }, text: é́ })] }
+alternatives: Just RegexMatch { span: RegexSpan { start: 1, end: 2 }, text: a, captures: [], named: Map [] }
+counted: Just RegexMatch { span: RegexSpan { start: 1, end: 5 }, text: aaaa, captures: [], named: Map [] }
+unicode: True / False / True
+whitespace: True / False
+fold: True
+anchors: True / True
+all-empty: [RegexMatch { span: RegexSpan { start: 0, end: 0 }, text: , captures: [], named: Map [] }, RegexMatch { span: RegexSpan { start: 1, end: 1 }, text: , captures: [], named: Map [] }, RegexMatch { span: RegexSpan { start: 5, end: 5 }, text: , captures: [], named: Map [] }]
+split-empty: [, a, 👍, ]
+replace-literal: a$1b$1
+replace-with: a<12>b<3>
+escaped: True
+error: RegexCompileError { kind: UnsupportedRegexFeature "backreference", offset: 3 }
+kind: True / InvalidRegexQuantifier
+span: True

@@ -37,6 +37,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/char",
     "std/text/grapheme",
     "std/text/unicode",
+    "std/regex",
     "std/path",
     "std/process",
     "std/child-process",
@@ -94,6 +95,7 @@ mod tests {
         assert!(is_runtime_provided_module("std/ref"));
         assert!(is_runtime_provided_module("std/stream"));
         assert!(is_runtime_provided_module("std/text"));
+        assert!(is_runtime_provided_module("std/regex"));
         assert!(is_runtime_provided_module("std/path"));
         assert!(is_runtime_provided_module("std/process"));
         assert!(is_runtime_provided_module("std/child-process"));

@@ -43,6 +43,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/unicode-properties.ts"),
     ),
     (
+        "src/regex.ts",
+        include_str!("../../../runtime/ts/src/regex.ts"),
+    ),
+    (
         "src/text-core.ts",
         include_str!("../../../runtime/ts/src/text-core.ts"),
     ),
@@ -686,6 +690,7 @@ mod tests {
         assert!(package.join("src/foreign.ts").is_file());
         assert!(package.join("src/stream.ts").is_file());
         assert!(package.join("src/sse.ts").is_file());
+        assert!(package.join("src/regex.ts").is_file());
         assert!(package.join("src/multipart.ts").is_file());
         assert!(package.join("src/web-file.ts").is_file());
         assert!(package.join("src/provider-clock.ts").is_file());

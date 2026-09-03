@@ -16,6 +16,7 @@ use crate::provider_service_ops::{
     runtime_provider_service_operation, runtime_provider_service_value_operation,
 };
 use crate::range_ops::runtime_range_operation;
+use crate::regex_ops::runtime_regex_operation;
 use crate::signal_ops::{runtime_signal_distinct_operation, runtime_signal_operation};
 use crate::standard_ops::runtime_standard_operation;
 use crate::stream_ops::runtime_stream_operation;
@@ -187,6 +188,7 @@ pub(super) fn lower_core_expr_to_typescript(
                 .or_else(|| {
                     runtime_bytes_operation(&name)
                         .or_else(|| runtime_text_operation(&name))
+                        .or_else(|| runtime_regex_operation(&name))
                         .map(|operation| {
                             let arity = core_function_arity(&type_ref);
                             if arity > 1 {
@@ -515,8 +517,9 @@ pub(super) fn lower_core_expr_to_typescript(
                     callee: operation.local_name.to_owned(),
                     arguments,
                 }
-            } else if let Some(operation) =
-                runtime_bytes_operation(&callee).or_else(|| runtime_text_operation(&callee))
+            } else if let Some(operation) = runtime_bytes_operation(&callee)
+                .or_else(|| runtime_text_operation(&callee))
+                .or_else(|| runtime_regex_operation(&callee))
             {
                 lower_uncurried_runtime_call(
                     operation.local_name.to_owned(),

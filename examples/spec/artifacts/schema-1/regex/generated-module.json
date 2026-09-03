@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "module": "artifact/regex",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.regex.compile-error-type",
+      "core.regex.type",
+      "core.regex.match-type",
+      "core.regex.options-type",
+      "core.regex.span-type",
+      "core.regex.compile-error-kind-type",
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.bool",
+      "core.adt",
+      "core.string",
+      "core.either",
+      "core.regex.compile-error.debug",
+      "core.unit",
+      "core.regex.match.show",
+      "core.maybe.show",
+      "core.regex.find",
+      "core.maybe",
+      "core.regex.compile",
+      "core.bool.show",
+      "core.regex.is-match",
+      "core.array.show",
+      "core.regex.find-all",
+      "core.string.show",
+      "core.regex.split",
+      "core.regex.replace-all",
+      "core.regex.replace-all-with",
+      "core.string.add-dictionary",
+      "core.regex.escape",
+      "core.regex.compile-with",
+      "core.int",
+      "core.regex.options.show",
+      "core.regex.default-options",
+      "core.regex.compile-error-kind.eq",
+      "core.regex.invalid-range",
+      "core.regex.compile-error-kind.debug",
+      "core.regex.invalid-quantifier",
+      "core.regex.span.ord",
+      "core.array.iterable",
+      "effect.collection.for-each",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

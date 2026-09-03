@@ -30,7 +30,8 @@
         "std/text",
         "std/char",
         "std/text/grapheme",
-        "std/text/unicode"
+        "std/text/unicode",
+        "std/regex"
       ]
     },
     {
@@ -661,6 +662,16 @@
       "interfaceFingerprint": "fnv1a64:1d39a019ff9d1886",
       "implementation": "lowering-runtime",
       "route": "effect-temporal-project"
+    },
+    {
+      "specifier": "std/regex",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:0cd0957eda09a821",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
     },
     {
       "specifier": "std/semaphore",

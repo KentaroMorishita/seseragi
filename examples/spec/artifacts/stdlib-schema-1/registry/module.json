@@ -72956,11 +72956,979 @@
     {
       "specifier": "std/regex",
       "identity": "std/regex",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/regex",
+        "source": "std/regex.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/regex::Regex",
+            "namespace": "type",
+            "name": "Regex",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Regex",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::RegexCompileErrorKind",
+            "namespace": "type",
+            "name": "RegexCompileErrorKind",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "RegexCompileErrorKind",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::UnexpectedRegexEnd",
+            "namespace": "value",
+            "name": "UnexpectedRegexEnd",
+            "constructorOf": "std/regex::RegexCompileErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "RegexCompileErrorKind",
+                "canonical": "std/regex::RegexCompileErrorKind",
+                "providerModule": "std/regex",
+                "providerExport": "RegexCompileErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::UnexpectedRegexToken",
+            "namespace": "value",
+            "name": "UnexpectedRegexToken",
+            "constructorOf": "std/regex::RegexCompileErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "RegexCompileErrorKind",
+                  "canonical": "std/regex::RegexCompileErrorKind",
+                  "providerModule": "std/regex",
+                  "providerExport": "RegexCompileErrorKind",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::InvalidRegexEscape",
+            "namespace": "value",
+            "name": "InvalidRegexEscape",
+            "constructorOf": "std/regex::RegexCompileErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "RegexCompileErrorKind",
+                "canonical": "std/regex::RegexCompileErrorKind",
+                "providerModule": "std/regex",
+                "providerExport": "RegexCompileErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::InvalidRegexRange",
+            "namespace": "value",
+            "name": "InvalidRegexRange",
+            "constructorOf": "std/regex::RegexCompileErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "RegexCompileErrorKind",
+                "canonical": "std/regex::RegexCompileErrorKind",
+                "providerModule": "std/regex",
+                "providerExport": "RegexCompileErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::InvalidRegexQuantifier",
+            "namespace": "value",
+            "name": "InvalidRegexQuantifier",
+            "constructorOf": "std/regex::RegexCompileErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "RegexCompileErrorKind",
+                "canonical": "std/regex::RegexCompileErrorKind",
+                "providerModule": "std/regex",
+                "providerExport": "RegexCompileErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::DuplicateCaptureName",
+            "namespace": "value",
+            "name": "DuplicateCaptureName",
+            "constructorOf": "std/regex::RegexCompileErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "RegexCompileErrorKind",
+                  "canonical": "std/regex::RegexCompileErrorKind",
+                  "providerModule": "std/regex",
+                  "providerExport": "RegexCompileErrorKind",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::UnsupportedRegexFeature",
+            "namespace": "value",
+            "name": "UnsupportedRegexFeature",
+            "constructorOf": "std/regex::RegexCompileErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "RegexCompileErrorKind",
+                  "canonical": "std/regex::RegexCompileErrorKind",
+                  "providerModule": "std/regex",
+                  "providerExport": "RegexCompileErrorKind",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::RegexCompileError",
+            "namespace": "type",
+            "name": "RegexCompileError",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "RegexCompileError",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "kind",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "RegexCompileErrorKind",
+                    "canonical": "std/regex::RegexCompileErrorKind",
+                    "providerModule": "std/regex",
+                    "providerExport": "RegexCompileErrorKind",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "offset",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/regex::RegexOptions",
+            "namespace": "type",
+            "name": "RegexOptions",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "RegexOptions",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "caseInsensitive",
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "multiline",
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "dotMatchesNewline",
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/regex::RegexSpan",
+            "namespace": "type",
+            "name": "RegexSpan",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "RegexSpan",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "start",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "end",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/regex::RegexCapture",
+            "namespace": "type",
+            "name": "RegexCapture",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "RegexCapture",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "span",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "RegexSpan",
+                    "canonical": "std/regex::RegexSpan",
+                    "providerModule": "std/regex",
+                    "providerExport": "RegexSpan",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "text",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/regex::RegexMatch",
+            "namespace": "type",
+            "name": "RegexMatch",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "RegexMatch",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "span",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "RegexSpan",
+                    "canonical": "std/regex::RegexSpan",
+                    "providerModule": "std/regex",
+                    "providerExport": "RegexSpan",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "text",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "captures",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "RegexCapture",
+                            "canonical": "std/regex::RegexCapture",
+                            "providerModule": "std/regex",
+                            "providerExport": "RegexCapture",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "named",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Map",
+                    "canonical": "std/map::Map",
+                    "providerModule": "std/map",
+                    "providerExport": "Map",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "RegexCapture",
+                            "canonical": "std/regex::RegexCapture",
+                            "providerModule": "std/regex",
+                            "providerExport": "RegexCapture",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/regex::defaultOptions",
+            "namespace": "value",
+            "name": "defaultOptions",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "RegexOptions",
+                  "canonical": "std/regex::RegexOptions",
+                  "providerModule": "std/regex",
+                  "providerExport": "RegexOptions",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::compile",
+            "namespace": "value",
+            "name": "compile",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "RegexCompileError",
+                      "canonical": "std/regex::RegexCompileError",
+                      "providerModule": "std/regex",
+                      "providerExport": "RegexCompileError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Regex",
+                      "canonical": "std/regex::Regex",
+                      "providerModule": "std/regex",
+                      "providerExport": "Regex",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::compileWith",
+            "namespace": "value",
+            "name": "compileWith",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "RegexOptions",
+                  "canonical": "std/regex::RegexOptions",
+                  "providerModule": "std/regex",
+                  "providerExport": "RegexOptions",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "RegexCompileError",
+                        "canonical": "std/regex::RegexCompileError",
+                        "providerModule": "std/regex",
+                        "providerExport": "RegexCompileError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Regex",
+                        "canonical": "std/regex::Regex",
+                        "providerModule": "std/regex",
+                        "providerExport": "Regex",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::isMatch",
+            "namespace": "value",
+            "name": "isMatch",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Regex",
+                  "canonical": "std/regex::Regex",
+                  "providerModule": "std/regex",
+                  "providerExport": "Regex",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::find",
+            "namespace": "value",
+            "name": "find",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Regex",
+                  "canonical": "std/regex::Regex",
+                  "providerModule": "std/regex",
+                  "providerExport": "Regex",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "RegexMatch",
+                        "canonical": "std/regex::RegexMatch",
+                        "providerModule": "std/regex",
+                        "providerExport": "RegexMatch",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::findAll",
+            "namespace": "value",
+            "name": "findAll",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Regex",
+                  "canonical": "std/regex::Regex",
+                  "providerModule": "std/regex",
+                  "providerExport": "Regex",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "RegexMatch",
+                        "canonical": "std/regex::RegexMatch",
+                        "providerModule": "std/regex",
+                        "providerExport": "RegexMatch",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::split",
+            "namespace": "value",
+            "name": "split",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Regex",
+                  "canonical": "std/regex::Regex",
+                  "providerModule": "std/regex",
+                  "providerExport": "Regex",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::replaceAll",
+            "namespace": "value",
+            "name": "replaceAll",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Regex",
+                  "canonical": "std/regex::Regex",
+                  "providerModule": "std/regex",
+                  "providerExport": "Regex",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::replaceAllWith",
+            "namespace": "value",
+            "name": "replaceAllWith",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Regex",
+                  "canonical": "std/regex::Regex",
+                  "providerModule": "std/regex",
+                  "providerExport": "Regex",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "RegexMatch",
+                      "canonical": "std/regex::RegexMatch",
+                      "providerModule": "std/regex",
+                      "providerExport": "RegexMatch",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/regex::escape",
+            "namespace": "value",
+            "name": "escape",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/semaphore",
