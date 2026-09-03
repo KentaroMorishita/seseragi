@@ -1056,6 +1056,40 @@ pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
     }
 
     #[test]
+    fn compiles_hex_and_base64_through_runtime_imports() {
+        let source = include_str!("../../../examples/spec/fixtures/compile/bytes-and-unicode.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/bytes-and-unicode",
+            source,
+        ))
+        .expect("Hex, Base64, and Unicode source should compile");
+
+        for runtime_name in [
+            "_ssrg_base64_encodeUrl",
+            "_ssrg_base64_decodeUrl",
+            "_ssrg_hex_encode",
+            "_ssrg_hex_decode",
+        ] {
+            assert!(
+                compiled.generated.typescript.contains(runtime_name),
+                "missing runtime import for {runtime_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+        for type_name in ["HexDecodeError", "Base64DecodeError"] {
+            assert!(
+                compiled
+                    .generated
+                    .typescript
+                    .contains(&format!("type {type_name}")),
+                "missing runtime type import for {type_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+    }
+
+    #[test]
     fn compiles_unicode_text_lesson_and_canonical_execution_fixture() {
         for source in [
             include_str!("../../../examples/spec/fixtures/compile/unicode-text.ssrg"),

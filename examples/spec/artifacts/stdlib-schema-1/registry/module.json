@@ -56525,20 +56525,536 @@
     {
       "specifier": "std/bytes/base64",
       "identity": "std/bytes/base64",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/bytes/base64",
+        "source": "std/bytes/base64.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/bytes/base64::Base64DecodeError",
+            "namespace": "type",
+            "name": "Base64DecodeError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Base64DecodeError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/base64::InvalidBase64Length",
+            "namespace": "value",
+            "name": "InvalidBase64Length",
+            "constructorOf": "std/bytes/base64::Base64DecodeError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Base64DecodeError",
+                  "canonical": "std/bytes/base64::Base64DecodeError",
+                  "providerModule": "std/bytes/base64",
+                  "providerExport": "Base64DecodeError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/base64::InvalidBase64Digit",
+            "namespace": "value",
+            "name": "InvalidBase64Digit",
+            "constructorOf": "std/bytes/base64::Base64DecodeError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Base64DecodeError",
+                  "canonical": "std/bytes/base64::Base64DecodeError",
+                  "providerModule": "std/bytes/base64",
+                  "providerExport": "Base64DecodeError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/base64::InvalidBase64Padding",
+            "namespace": "value",
+            "name": "InvalidBase64Padding",
+            "constructorOf": "std/bytes/base64::Base64DecodeError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Base64DecodeError",
+                  "canonical": "std/bytes/base64::Base64DecodeError",
+                  "providerModule": "std/bytes/base64",
+                  "providerExport": "Base64DecodeError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/base64::NonCanonicalBase64Bits",
+            "namespace": "value",
+            "name": "NonCanonicalBase64Bits",
+            "constructorOf": "std/bytes/base64::Base64DecodeError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Base64DecodeError",
+                  "canonical": "std/bytes/base64::Base64DecodeError",
+                  "providerModule": "std/bytes/base64",
+                  "providerExport": "Base64DecodeError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/base64::encode",
+            "namespace": "value",
+            "name": "encode",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/base64::decode",
+            "namespace": "value",
+            "name": "decode",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "Base64DecodeError",
+                      "canonical": "std/bytes/base64::Base64DecodeError",
+                      "providerModule": "std/bytes/base64",
+                      "providerExport": "Base64DecodeError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/base64::encodeUrl",
+            "namespace": "value",
+            "name": "encodeUrl",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/base64::decodeUrl",
+            "namespace": "value",
+            "name": "decodeUrl",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "Base64DecodeError",
+                      "canonical": "std/bytes/base64::Base64DecodeError",
+                      "providerModule": "std/bytes/base64",
+                      "providerExport": "Base64DecodeError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/bytes/hex",
       "identity": "std/bytes/hex",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/bytes/hex",
+        "source": "std/bytes/hex.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/bytes/hex::HexDecodeError",
+            "namespace": "type",
+            "name": "HexDecodeError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "HexDecodeError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/hex::OddHexLength",
+            "namespace": "value",
+            "name": "OddHexLength",
+            "constructorOf": "std/bytes/hex::HexDecodeError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "HexDecodeError",
+                  "canonical": "std/bytes/hex::HexDecodeError",
+                  "providerModule": "std/bytes/hex",
+                  "providerExport": "HexDecodeError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/hex::InvalidHexDigit",
+            "namespace": "value",
+            "name": "InvalidHexDigit",
+            "constructorOf": "std/bytes/hex::HexDecodeError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "HexDecodeError",
+                  "canonical": "std/bytes/hex::HexDecodeError",
+                  "providerModule": "std/bytes/hex",
+                  "providerExport": "HexDecodeError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/hex::encode",
+            "namespace": "value",
+            "name": "encode",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/bytes/hex::decode",
+            "namespace": "value",
+            "name": "decode",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "HexDecodeError",
+                      "canonical": "std/bytes/hex::HexDecodeError",
+                      "providerModule": "std/bytes/hex",
+                      "providerExport": "HexDecodeError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/char",

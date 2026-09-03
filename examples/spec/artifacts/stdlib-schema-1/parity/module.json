@@ -26,6 +26,8 @@
         "std/map",
         "std/set",
         "std/bytes",
+        "std/bytes/base64",
+        "std/bytes/hex",
         "std/json",
         "std/text",
         "std/char",
@@ -451,6 +453,26 @@
         "browser"
       ],
       "interfaceFingerprint": "fnv1a64:576c419d6908fe94",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/bytes/base64",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:b20c59bd65ce310c",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/bytes/hex",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:304764c5c8868138",
       "implementation": "lowering-runtime",
       "route": "portable-project"
     },

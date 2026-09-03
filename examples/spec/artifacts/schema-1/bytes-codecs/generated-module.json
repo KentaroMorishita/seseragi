@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "module": "artifact/bytes-codecs",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.bytes.byte-error-type",
+      "core.bytes.type",
+      "core.bytes.hex.decode-error-type",
+      "core.bytes.base64.decode-error-type",
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.either",
+      "core.adt",
+      "core.bytes.empty",
+      "core.unit",
+      "core.string",
+      "core.bool",
+      "core.bytes.hex.decode",
+      "core.int.eq-dictionary",
+      "core.array.eq-dictionary",
+      "core.bytes.to-ints",
+      "core.int",
+      "core.bytes.base64.decode",
+      "core.bytes.base64.decode-url",
+      "core.bytes.hex.decode-error.show",
+      "core.bytes.base64.decode-error.show",
+      "core.bytes.from-ints",
+      "core.bytes.hex.encode",
+      "core.bytes.base64.encode",
+      "core.bytes.base64.encode-url",
+      "core.string.show",
+      "core.bool.show",
+      "core.bytes.hex.decode-error.eq",
+      "core.bytes.hex.error.odd-length",
+      "core.bytes.base64.decode-error.eq",
+      "core.bytes.base64.error.invalid-padding",
+      "core.array.iterable",
+      "effect.collection.for-each",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "exercise",
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

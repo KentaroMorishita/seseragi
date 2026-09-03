@@ -22,6 +22,8 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/map",
     "std/set",
     "std/bytes",
+    "std/bytes/base64",
+    "std/bytes/hex",
     "std/json",
     "std/console",
     "std/log",
@@ -87,6 +89,8 @@ mod tests {
         assert!(is_runtime_provided_module("std/list"));
         assert!(is_runtime_provided_module("std/non-empty-list"));
         assert!(is_runtime_provided_module("std/bytes"));
+        assert!(is_runtime_provided_module("std/bytes/base64"));
+        assert!(is_runtime_provided_module("std/bytes/hex"));
         assert!(is_runtime_provided_module("std/json"));
         assert!(is_runtime_provided_module("std/effect"));
         assert!(is_runtime_provided_module("std/deferred"));

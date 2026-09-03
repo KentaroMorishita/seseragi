@@ -2151,6 +2151,54 @@
       "identity": "Debug<std/web/html::HtmlBuildError>"
     },
     {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "HexDecodeError",
+      "typeConstructorCanonical": "std/bytes/hex::HexDecodeError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/bytes/hex::HexDecodeError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "HexDecodeError",
+      "typeConstructorCanonical": "std/bytes/hex::HexDecodeError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/bytes/hex::HexDecodeError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "HexDecodeError",
+      "typeConstructorCanonical": "std/bytes/hex::HexDecodeError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/bytes/hex::HexDecodeError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "Base64DecodeError",
+      "typeConstructorCanonical": "std/bytes/base64::Base64DecodeError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/bytes/base64::Base64DecodeError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Base64DecodeError",
+      "typeConstructorCanonical": "std/bytes/base64::Base64DecodeError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/bytes/base64::Base64DecodeError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Base64DecodeError",
+      "typeConstructorCanonical": "std/bytes/base64::Base64DecodeError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/bytes/base64::Base64DecodeError>"
+    },
+    {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
       "typeConstructor": "ByteError",
@@ -3829,6 +3877,14 @@
       },
       {
         "trait": "Debug",
+        "head": "Base64DecodeError",
+        "identity": "Debug<std/bytes/base64::Base64DecodeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
         "head": "BigInt",
         "status": "specified-but-implementation-missing",
         "classification": "missing",
@@ -4039,6 +4095,14 @@
         "trait": "Debug",
         "head": "GraphemeSliceError",
         "identity": "Debug<std/text/grapheme::GraphemeSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "HexDecodeError",
+        "identity": "Debug<std/bytes/hex::HexDecodeError>",
         "status": "specified-and-implemented",
         "classification": "dictionary",
         "spec": "9.11"
@@ -4452,6 +4516,14 @@
       },
       {
         "trait": "Eq",
+        "head": "Base64DecodeError",
+        "identity": "Eq<std/bytes/base64::Base64DecodeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
         "head": "BigInt",
         "status": "specified-but-implementation-missing",
         "classification": "missing",
@@ -4493,6 +4565,14 @@
         "trait": "Eq",
         "head": "GraphemeSliceError",
         "identity": "Eq<std/text/grapheme::GraphemeSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "HexDecodeError",
+        "identity": "Eq<std/bytes/hex::HexDecodeError>",
         "status": "specified-and-implemented",
         "classification": "dictionary",
         "spec": "9.3 / 9.4"
@@ -5627,6 +5707,14 @@
       },
       {
         "trait": "Show",
+        "head": "Base64DecodeError",
+        "identity": "Show<std/bytes/base64::Base64DecodeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
         "head": "BigInt",
         "status": "specified-but-implementation-missing",
         "classification": "missing",
@@ -5837,6 +5925,14 @@
         "trait": "Show",
         "head": "GraphemeSliceError",
         "identity": "Show<std/text/grapheme::GraphemeSliceError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "HexDecodeError",
+        "identity": "Show<std/bytes/hex::HexDecodeError>",
         "status": "specified-and-implemented",
         "classification": "dictionary",
         "spec": "9.11"

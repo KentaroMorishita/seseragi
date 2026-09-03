@@ -5,15 +5,17 @@ import * as hex from "std/bytes/hex"
 import * as text from "std/text"
 import * as unicode from "std/text/unicode"
 
-fn encodeToken token: String -> String =
-  token
-    |> text.encodeUtf8
-    |> base64.encodeUrl
+fn encodeToken token: String -> String = token |> text.encodeUtf8 |> base64.encodeUrl
 
 fn decodeDigest value: String -> Either<hex.HexDecodeError, bytes.Bytes> =
   hex.decode value
 
+fn encodeDigest value: bytes.Bytes -> String = hex.encode value
+
+fn decodeToken value: String -> Either<base64.Base64DecodeError, bytes.Bytes> =
+  base64.decodeUrl value
+
 fn normalizedClusters value: String -> Array<String> =
   value
-    |> unicode.normalize unicode.NFC
-    |> graphemes.clusters
+  |> unicode.normalize unicode.NFC
+  |> graphemes.clusters

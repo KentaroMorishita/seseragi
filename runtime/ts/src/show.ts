@@ -1,4 +1,6 @@
 import type { ByteError, BytesSliceError } from "./bytes"
+import type { Base64DecodeError } from "./bytes-base64"
+import type { HexDecodeError } from "./bytes-hex"
 import type {
   ChildExitStatus,
   ChildProcessConfigError,
@@ -840,6 +842,38 @@ function bytesSliceErrorDocument(error: BytesSliceError): RenderDocument {
     true
   )
 }
+
+function offsetErrorDocument(tag: string, offset: number): RenderDocument {
+  return delimited(`${tag} {`, [text(`offset: ${offset}`)], "}", ",", true)
+}
+
+function hexDecodeErrorDocument(error: HexDecodeError): RenderDocument {
+  return error.tag === "OddHexLength"
+    ? constructorDocument(error.tag, text(String(error.value)))
+    : offsetErrorDocument(error.tag, error.value.offset)
+}
+
+export const hexDecodeErrorShow = defineShow((error: HexDecodeError) =>
+  hexDecodeErrorDocument(error)
+)
+
+export const hexDecodeErrorDebug = defineDebug((error: HexDecodeError) =>
+  hexDecodeErrorDocument(error)
+)
+
+function base64DecodeErrorDocument(error: Base64DecodeError): RenderDocument {
+  return error.tag === "InvalidBase64Length"
+    ? constructorDocument(error.tag, text(String(error.value)))
+    : offsetErrorDocument(error.tag, error.value.offset)
+}
+
+export const base64DecodeErrorShow = defineShow((error: Base64DecodeError) =>
+  base64DecodeErrorDocument(error)
+)
+
+export const base64DecodeErrorDebug = defineDebug((error: Base64DecodeError) =>
+  base64DecodeErrorDocument(error)
+)
 
 export const utf8DecodeErrorShow = defineShow((error: Utf8DecodeError) =>
   utf8DecodeErrorDocument(error)

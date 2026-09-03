@@ -23,6 +23,30 @@ macro_rules! display_dictionary {
 
 const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
     display_dictionary!(
+        "Show<std/bytes/hex::HexDecodeError>",
+        "core.bytes.hex.decode-error.show",
+        "_ssrg_hexDecodeErrorShow",
+        "hexDecodeErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/bytes/hex::HexDecodeError>",
+        "core.bytes.hex.decode-error.debug",
+        "_ssrg_hexDecodeErrorDebug",
+        "hexDecodeErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/bytes/base64::Base64DecodeError>",
+        "core.bytes.base64.decode-error.show",
+        "_ssrg_base64DecodeErrorShow",
+        "base64DecodeErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/bytes/base64::Base64DecodeError>",
+        "core.bytes.base64.decode-error.debug",
+        "_ssrg_base64DecodeErrorDebug",
+        "base64DecodeErrorDebug"
+    ),
+    display_dictionary!(
         "Show<std/text::TextSliceError>",
         "core.text.slice-error.show",
         "_ssrg_textSliceErrorShow",

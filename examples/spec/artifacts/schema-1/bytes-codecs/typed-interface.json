@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/bytes-codecs",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/bytes/base64",
+      "module": "std/bytes/base64",
+      "origin": {
+        "start": 0,
+        "end": 42
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/bytes/base64::*",
+          "localName": "base64"
+        }
+      ]
+    },
+    {
+      "specifier": "std/bytes",
+      "module": "std/bytes",
+      "origin": {
+        "start": 43,
+        "end": 77
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/bytes::*",
+          "localName": "bytes"
+        }
+      ]
+    },
+    {
+      "specifier": "std/bytes/hex",
+      "module": "std/bytes/hex",
+      "origin": {
+        "start": 78,
+        "end": 114
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/bytes/hex::*",
+          "localName": "hex"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/bytes-codecs::exercise",
+      "namespace": "value",
+      "name": "exercise",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 1218,
+        "end": 2228
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/bytes-codecs::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 2230,
+        "end": 2333
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

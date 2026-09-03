@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "module": "artifact/bytes-codecs",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/bytes/base64",
+      "module": "artifact/bytes-codecs/std/bytes/base64",
+      "origin": {
+        "start": 0,
+        "end": 42
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/bytes-codecs/std/bytes/base64::*",
+          "localName": "base64"
+        }
+      ]
+    },
+    {
+      "specifier": "std/bytes",
+      "module": "artifact/bytes-codecs/std/bytes",
+      "origin": {
+        "start": 43,
+        "end": 77
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/bytes-codecs/std/bytes::*",
+          "localName": "bytes"
+        }
+      ]
+    },
+    {
+      "specifier": "std/bytes/hex",
+      "module": "artifact/bytes-codecs/std/bytes/hex",
+      "origin": {
+        "start": 78,
+        "end": 114
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/bytes-codecs/std/bytes/hex::*",
+          "localName": "hex"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/bytes-codecs::exercise",
+      "namespace": "value",
+      "name": "exercise",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 1218,
+        "end": 2228
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/bytes-codecs::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 2230,
+        "end": 2333
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

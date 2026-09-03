@@ -1414,7 +1414,7 @@ fn standard_category(name: &str, module: &str) -> &'static str {
         "std/either" => "Either",
         "std/validation" => "Validation",
         "std/regex" => "Regex",
-        "std/bytes" => "Bytes",
+        "std/bytes" | "std/bytes/base64" | "std/bytes/hex" => "Bytes",
         "std/json" => "JSON",
         "std/text" => "Text",
         "std/signal" => "Signal",
@@ -1473,6 +1473,46 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/bytes::toInts" => "Copies Bytes into an Array of Int values.",
         "std/bytes::slice" => "Returns a validated half-open slice without exposing mutation.",
         "std/bytes::copy" => "Creates an independent copy of Bytes.",
+        "std/bytes/hex::HexDecodeError" => {
+            "Describes an invalid hexadecimal text input with a UTF-8 byte position."
+        }
+        "std/bytes/hex::OddHexLength" => {
+            "Reports an odd hexadecimal input length measured in UTF-8 bytes."
+        }
+        "std/bytes/hex::InvalidHexDigit" => {
+            "Reports the UTF-8 byte offset of the first non-hexadecimal digit."
+        }
+        "std/bytes/hex::encode" => "Encodes Bytes as canonical lowercase hexadecimal text.",
+        "std/bytes/hex::decode" => {
+            "Decodes ASCII hexadecimal text or reports the first typed failure."
+        }
+        "std/bytes/base64::Base64DecodeError" => {
+            "Describes a strict RFC 4648 Base64 decoding failure."
+        }
+        "std/bytes/base64::InvalidBase64Length" => {
+            "Reports an invalid Base64 input length measured in UTF-8 bytes."
+        }
+        "std/bytes/base64::InvalidBase64Digit" => {
+            "Reports the UTF-8 byte offset of the first invalid Base64 digit."
+        }
+        "std/bytes/base64::InvalidBase64Padding" => {
+            "Reports the UTF-8 byte offset of invalid Base64 padding."
+        }
+        "std/bytes/base64::NonCanonicalBase64Bits" => {
+            "Reports non-zero unused bits in the final Base64 sextet."
+        }
+        "std/bytes/base64::encode" => {
+            "Encodes Bytes as canonical padded RFC 4648 Base64 text."
+        }
+        "std/bytes/base64::decode" => {
+            "Strictly decodes canonical padded RFC 4648 Base64 text."
+        }
+        "std/bytes/base64::encodeUrl" => {
+            "Encodes Bytes as canonical unpadded URL-safe Base64 text."
+        }
+        "std/bytes/base64::decodeUrl" => {
+            "Strictly decodes canonical unpadded URL-safe Base64 text."
+        }
         "std/text::Utf8DecodeError" => "Reports the byte offset of the first invalid UTF-8 sequence.",
         "std/text::encodeUtf8" => "Encodes String as UTF-8 Bytes.",
         "std/text::decodeUtf8" => "Strictly decodes UTF-8 or reports the first invalid byte offset.",

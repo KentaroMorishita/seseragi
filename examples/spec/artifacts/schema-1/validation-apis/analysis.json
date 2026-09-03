@@ -11401,6 +11401,17 @@
   ],
   "standardLibrary": [
     {
+      "identity": "std/bytes/base64::Base64DecodeError",
+      "name": "Base64DecodeError",
+      "module": "std/bytes/base64",
+      "category": "Bytes",
+      "kind": "opaque-type",
+      "signature": "Base64DecodeError",
+      "description": "Describes a strict RFC 4648 Base64 decoding failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/bytes::Byte",
       "name": "Byte",
       "module": "std/bytes",
@@ -11456,6 +11467,50 @@
       "constraints": []
     },
     {
+      "identity": "std/bytes/hex::HexDecodeError",
+      "name": "HexDecodeError",
+      "module": "std/bytes/hex",
+      "category": "Bytes",
+      "kind": "opaque-type",
+      "signature": "HexDecodeError",
+      "description": "Describes an invalid hexadecimal text input with a UTF-8 byte position.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/base64::InvalidBase64Digit",
+      "name": "InvalidBase64Digit",
+      "module": "std/bytes/base64",
+      "category": "Bytes",
+      "kind": "constructor",
+      "signature": "InvalidBase64Digit arg1: { offset: Int } -> Base64DecodeError",
+      "description": "Reports the UTF-8 byte offset of the first invalid Base64 digit.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/base64::InvalidBase64Length",
+      "name": "InvalidBase64Length",
+      "module": "std/bytes/base64",
+      "category": "Bytes",
+      "kind": "constructor",
+      "signature": "InvalidBase64Length arg1: Int -> Base64DecodeError",
+      "description": "Reports an invalid Base64 input length measured in UTF-8 bytes.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/base64::InvalidBase64Padding",
+      "name": "InvalidBase64Padding",
+      "module": "std/bytes/base64",
+      "category": "Bytes",
+      "kind": "constructor",
+      "signature": "InvalidBase64Padding arg1: { offset: Int } -> Base64DecodeError",
+      "description": "Reports the UTF-8 byte offset of invalid Base64 padding.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/bytes::InvalidByteRange",
       "name": "InvalidByteRange",
       "module": "std/bytes",
@@ -11463,6 +11518,39 @@
       "kind": "constructor",
       "signature": "InvalidByteRange arg1: { start: Int, end: Int, length: Int } -> BytesSliceError",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/hex::InvalidHexDigit",
+      "name": "InvalidHexDigit",
+      "module": "std/bytes/hex",
+      "category": "Bytes",
+      "kind": "constructor",
+      "signature": "InvalidHexDigit arg1: { offset: Int } -> HexDecodeError",
+      "description": "Reports the UTF-8 byte offset of the first non-hexadecimal digit.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/base64::NonCanonicalBase64Bits",
+      "name": "NonCanonicalBase64Bits",
+      "module": "std/bytes/base64",
+      "category": "Bytes",
+      "kind": "constructor",
+      "signature": "NonCanonicalBase64Bits arg1: { offset: Int } -> Base64DecodeError",
+      "description": "Reports non-zero unused bits in the final Base64 sextet.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/hex::OddHexLength",
+      "name": "OddHexLength",
+      "module": "std/bytes/hex",
+      "category": "Bytes",
+      "kind": "constructor",
+      "signature": "OddHexLength arg1: Int -> HexDecodeError",
+      "description": "Reports an odd hexadecimal input length measured in UTF-8 bytes.",
       "typeParameters": [],
       "constraints": []
     },
@@ -11511,6 +11599,39 @@
       "constraints": []
     },
     {
+      "identity": "std/bytes/base64::decode",
+      "name": "decode",
+      "module": "std/bytes/base64",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "decode arg1: String -> Either<Base64DecodeError, Bytes>",
+      "description": "Strictly decodes canonical padded RFC 4648 Base64 text.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/hex::decode",
+      "name": "decode",
+      "module": "std/bytes/hex",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "decode arg1: String -> Either<HexDecodeError, Bytes>",
+      "description": "Decodes ASCII hexadecimal text or reports the first typed failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/base64::decodeUrl",
+      "name": "decodeUrl",
+      "module": "std/bytes/base64",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "decodeUrl arg1: String -> Either<Base64DecodeError, Bytes>",
+      "description": "Strictly decodes canonical unpadded URL-safe Base64 text.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/bytes::empty",
       "name": "empty",
       "module": "std/bytes",
@@ -11518,6 +11639,39 @@
       "kind": "function",
       "signature": "empty arg1: Unit -> Bytes",
       "description": "Creates an empty immutable Bytes value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/base64::encode",
+      "name": "encode",
+      "module": "std/bytes/base64",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "encode arg1: Bytes -> String",
+      "description": "Encodes Bytes as canonical padded RFC 4648 Base64 text.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/hex::encode",
+      "name": "encode",
+      "module": "std/bytes/hex",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "encode arg1: Bytes -> String",
+      "description": "Encodes Bytes as canonical lowercase hexadecimal text.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes/base64::encodeUrl",
+      "name": "encodeUrl",
+      "module": "std/bytes/base64",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "encodeUrl arg1: Bytes -> String",
+      "description": "Encodes Bytes as canonical unpadded URL-safe Base64 text.",
       "typeParameters": [],
       "constraints": []
     },
