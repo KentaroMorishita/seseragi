@@ -959,6 +959,32 @@
       "constraints": []
     },
     {
+      "identity": "std/array::chunksOf",
+      "name": "chunksOf",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "chunksOf<A> arg1: Int -> arg2: Array<A> -> Either<SizeError, Array<Array<A>>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::chunksOf",
+      "name": "chunksOf",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "chunksOf<A> arg1: Int -> arg2: List<A> -> Either<SizeError, List<List<A>>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::combine",
       "name": "combine",
       "module": "std/prelude",
@@ -1022,6 +1048,58 @@
       "kind": "function",
       "signature": "drop<A> arg1: Int -> arg2: List<A> -> List<A>",
       "description": "Returns the elements after skipping the requested leading count.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::dropWhile",
+      "name": "dropWhile",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "dropWhile<A> arg1: (A -> Bool) -> arg2: Array<A> -> Array<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::dropWhile",
+      "name": "dropWhile",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "dropWhile<A> arg1: (A -> Bool) -> arg2: List<A> -> List<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::empty",
+      "name": "empty",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "empty<A> arg1: Unit -> Array<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::empty",
+      "name": "empty",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "empty<A> arg1: Unit -> List<A>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [
         "A"
       ],
@@ -1108,6 +1186,32 @@
       "constraints": []
     },
     {
+      "identity": "std/array::findIndex",
+      "name": "findIndex",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "findIndex<A> arg1: (A -> Bool) -> arg2: Array<A> -> Maybe<Int>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::findIndex",
+      "name": "findIndex",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "findIndex<A> arg1: (A -> Bool) -> arg2: List<A> -> Maybe<Int>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/array::flatMap",
       "name": "flatMap",
       "module": "std/array",
@@ -1154,6 +1258,38 @@
       ]
     },
     {
+      "identity": "std/array::fromIterable",
+      "name": "fromIterable",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "fromIterable<C, A> arg1: C -> Array<A> where Iterable<C, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
+    },
+    {
+      "identity": "std/list::fromIterable",
+      "name": "fromIterable",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "fromIterable<C, A> arg1: C -> List<A> where Iterable<C, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
+    },
+    {
       "identity": "std/array::get",
       "name": "get",
       "module": "std/array",
@@ -1180,6 +1316,40 @@
       "constraints": []
     },
     {
+      "identity": "std/array::groupBy",
+      "name": "groupBy",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "groupBy<A, K> arg1: (A -> K) -> arg2: Array<A> -> Map<K, Array<A>> where Eq<K>, Hash<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "K"
+      ],
+      "constraints": [
+        "Eq<K>",
+        "Hash<K>"
+      ]
+    },
+    {
+      "identity": "std/list::groupBy",
+      "name": "groupBy",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "groupBy<A, K> arg1: (A -> K) -> arg2: List<A> -> Map<K, List<A>> where Eq<K>, Hash<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "K"
+      ],
+      "constraints": [
+        "Eq<K>",
+        "Hash<K>"
+      ]
+    },
+    {
       "identity": "std/array::head",
       "name": "head",
       "module": "std/array",
@@ -1200,6 +1370,32 @@
       "kind": "function",
       "signature": "head<A> arg1: List<A> -> Maybe<A>",
       "description": "Returns the first element, or Nothing for an empty collection.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::init",
+      "name": "init",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "init<A> arg1: Array<A> -> Maybe<Array<A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::init",
+      "name": "init",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "init<A> arg1: List<A> -> Maybe<List<A>>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [
         "A"
       ],
@@ -1245,6 +1441,32 @@
       "constraints": [
         "Reducible<C, String>"
       ]
+    },
+    {
+      "identity": "std/array::last",
+      "name": "last",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "last<A> arg1: Array<A> -> Maybe<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::last",
+      "name": "last",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "last<A> arg1: List<A> -> Maybe<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
     },
     {
       "identity": "std/array::length",
@@ -1321,6 +1543,34 @@
       ]
     },
     {
+      "identity": "std/array::reduceRight",
+      "name": "reduceRight",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "reduceRight<A, B> arg1: B -> arg2: (A -> B -> B) -> arg3: Array<A> -> B",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::reduceRight",
+      "name": "reduceRight",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "reduceRight<A, B> arg1: B -> arg2: (A -> B -> B) -> arg3: List<A> -> B",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/array::reverse",
       "name": "reverse",
       "module": "std/array",
@@ -1345,6 +1595,94 @@
         "A"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/array::singleton",
+      "name": "singleton",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "singleton<A> arg1: A -> Array<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::singleton",
+      "name": "singleton",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "singleton<A> arg1: A -> List<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::sort",
+      "name": "sort",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "sort<A> arg1: Array<A> -> Array<A> where Ord<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Ord<A>"
+      ]
+    },
+    {
+      "identity": "std/list::sort",
+      "name": "sort",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "sort<A> arg1: List<A> -> List<A> where Ord<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Ord<A>"
+      ]
+    },
+    {
+      "identity": "std/array::sortBy",
+      "name": "sortBy",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "sortBy<A, K> arg1: (A -> K) -> arg2: Array<A> -> Array<A> where Ord<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "K"
+      ],
+      "constraints": [
+        "Ord<K>"
+      ]
+    },
+    {
+      "identity": "std/list::sortBy",
+      "name": "sortBy",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "sortBy<A, K> arg1: (A -> K) -> arg2: List<A> -> List<A> where Ord<K>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "K"
+      ],
+      "constraints": [
+        "Ord<K>"
+      ]
     },
     {
       "identity": "std/prelude::sum",
@@ -1417,6 +1755,32 @@
       "constraints": []
     },
     {
+      "identity": "std/array::takeWhile",
+      "name": "takeWhile",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "takeWhile<A> arg1: (A -> Bool) -> arg2: Array<A> -> Array<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::takeWhile",
+      "name": "takeWhile",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "takeWhile<A> arg1: (A -> Bool) -> arg2: List<A> -> List<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/list::toArray",
       "name": "toArray",
       "module": "std/list",
@@ -1453,6 +1817,118 @@
       "typeParameters": [
         "S",
         "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::unzip",
+      "name": "unzip",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "unzip<A, B> arg1: Array<(A, B)> -> (Array<A>, Array<B>)",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::unzip",
+      "name": "unzip",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "unzip<A, B> arg1: List<(A, B)> -> (List<A>, List<B>)",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::windows",
+      "name": "windows",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "windows<A> arg1: Int -> arg2: Array<A> -> Either<SizeError, Array<Array<A>>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::windows",
+      "name": "windows",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "windows<A> arg1: Int -> arg2: List<A> -> Either<SizeError, List<List<A>>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::zip",
+      "name": "zip",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "zip<A, B> arg1: Array<B> -> arg2: Array<A> -> Array<(A, B)>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::zip",
+      "name": "zip",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "zip<A, B> arg1: List<B> -> arg2: List<A> -> List<(A, B)>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::zipWith",
+      "name": "zipWith",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "zipWith<A, B, C> arg1: (A -> B -> C) -> arg2: Array<B> -> arg3: Array<A> -> Array<C>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "B",
+        "C"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::zipWith",
+      "name": "zipWith",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "zipWith<A, B, C> arg1: (A -> B -> C) -> arg2: List<B> -> arg3: List<A> -> List<C>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A",
+        "B",
+        "C"
       ],
       "constraints": []
     },
@@ -7741,6 +8217,17 @@
       "constraints": []
     },
     {
+      "identity": "std/collection::NonPositiveSize",
+      "name": "NonPositiveSize",
+      "module": "std/collection",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NonPositiveSize arg1: Int -> SizeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/fs::NotADirectory",
       "name": "NotADirectory",
       "module": "std/fs",
@@ -8248,6 +8735,17 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "SignalChild arg1: ProcessSignal -> ChildInput",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/collection::SizeError",
+      "name": "SizeError",
+      "module": "std/collection",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "SizeError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []

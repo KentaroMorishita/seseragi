@@ -1,4 +1,5 @@
 import type { ByteError, BytesSliceError } from "./bytes"
+import type { SizeError } from "./collection"
 import type {
   ChildExitStatus,
   ChildProcessConfigError,
@@ -826,6 +827,14 @@ export const parallelismErrorShow = defineShow((error: ParallelismError) =>
 )
 
 export const parallelismErrorDebug = defineDebug((error: ParallelismError) =>
+  constructorDocument(error.tag, debugDocument(intDebug, error.value))
+)
+
+export const sizeErrorShow = defineShow((error: SizeError) =>
+  constructorDocument(error.tag, showDocument(intShow, error.value))
+)
+
+export const sizeErrorDebug = defineDebug((error: SizeError) =>
   constructorDocument(error.tag, debugDocument(intDebug, error.value))
 )
 

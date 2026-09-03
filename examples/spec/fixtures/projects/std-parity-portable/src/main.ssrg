@@ -1,4 +1,5 @@
 import * as arrays from "std/array"
+import * as collections from "std/collection"
 import * as bytes from "std/bytes"
 import * as floats from "std/float"
 import * as ints from "std/int"
@@ -25,6 +26,12 @@ let decoded = match texts.decodeUtf8 encoded {
 let jsonText = json.encodeString selected
 let ordered = maps.fromEntries [("b", 2), ("a", 1), ("b", 3)]
 let unique = sets.fromIterable [3, 1, 3, 2]
+let grouped = arrays.groupBy even [3, 2, 1, 4]
+let sorted = lists.sort `[3, 1, 2]
+let invalidSize = match arrays.windows 0 selected {
+  Left (collections.NonPositiveSize size) -> size
+  Right _ -> 1
+}
 
 pub effect fn main =
-  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique}`
+  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique} / grouped: ${maps.values grouped} / sorted: ${sorted} / size: ${invalidSize}`

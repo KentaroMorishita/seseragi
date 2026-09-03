@@ -422,7 +422,7 @@ describe("Playground project compiler boundary", () => {
       throw new Error("missing std parity execution entry")
     }
     expect(response.modules[0]?.generated.typescript).toContain(
-      'filter as _ssrg_array_filter, toList as _ssrg_array_toList, arrayIterable as _ssrg_array_iterable, length as _ssrg_array_length } from "@seseragi/runtime/array"'
+      'filter as _ssrg_array_filter, toList as _ssrg_array_toList, arrayIterable as _ssrg_array_iterable, groupBy as _ssrg_array_groupBy, windows as _ssrg_array_windows, length as _ssrg_array_length } from "@seseragi/runtime/array"'
     )
     expect(response.modules[0]?.generated.typescript).toContain(
       'length as _ssrg_list_length, type List as List } from "@seseragi/runtime/list"'
@@ -447,7 +447,7 @@ describe("Playground project compiler boundary", () => {
       )
     ).toEqual({
       stdout:
-        'array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4] / map: [["b",3],["a",1]] / set: 6',
+        'array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4] / map: [["b",3],["a",1]] / set: 6 / grouped: [[3, 1], [2, 4]] / sorted: `[1, 2, 3] / size: 0',
       debug: "()",
     })
   })
@@ -1368,6 +1368,31 @@ describe("Playground project compiler boundary", () => {
     expect(response.status).toBe("success")
     if (response.status !== "success" || !response.entry)
       throw new Error("missing Map / Set execution entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
+  })
+
+  test("executes all Array / List APIs, SizeError and Ord evidence through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/array-list-apis/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expected = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/array-list-apis/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("array-list-apis.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing sequence entry")
     expect(
       await executeGeneratedModule(
         response.generated.typescript,

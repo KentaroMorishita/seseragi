@@ -93,13 +93,8 @@ const STRUCTURAL_INSTANCES: &[StandardInstanceAuditSpec] = &[
 const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
     audit_spec("Eq", "BigInt", "9.4 / 10.8", Some(308)),
     audit_spec("Eq", "Decimal", "9.4 / 10.8", Some(309)),
-    audit_spec("Ord", "Int", "9.4", Some(333)),
     audit_spec("Ord", "BigInt", "9.4 / 10.8", Some(308)),
     audit_spec("Ord", "Decimal", "9.4 / 10.8", Some(309)),
-    audit_spec("Ord", "Bool", "9.4", Some(333)),
-    audit_spec("Ord", "Char", "9.4", Some(333)),
-    audit_spec("Ord", "String", "9.4", Some(333)),
-    audit_spec("Ord", "Unit", "9.4", Some(333)),
     audit_spec("Hash", "BigInt", "9.4 / 10.8", Some(308)),
     audit_spec("Hash", "Decimal", "9.4 / 10.8", Some(309)),
     audit_spec("Zero", "BigInt", "9.5 / 10.8", Some(308)),
@@ -498,7 +493,7 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 185);
+        assert_eq!(surface.instances.len(), 193);
         assert_eq!(surface.builtin_instances.len(), 34);
         for identity in [
             "std/int::Hash",
@@ -536,7 +531,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 185 + 34 + 10);
+        assert_eq!(implemented.len(), 193 + 34 + 10);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()

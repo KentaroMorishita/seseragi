@@ -72,6 +72,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/persistent-index.ts"),
     ),
     (
+        "src/sequence.ts",
+        include_str!("../../../runtime/ts/src/sequence.ts"),
+    ),
+    (
         "src/equality.ts",
         include_str!("../../../runtime/ts/src/equality.ts"),
     ),

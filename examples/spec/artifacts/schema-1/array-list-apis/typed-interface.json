@@ -1,0 +1,220 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/array-list-apis",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/array::*",
+          "localName": "arrays"
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "std/list",
+      "origin": {
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/list::*",
+          "localName": "lists"
+        }
+      ]
+    },
+    {
+      "specifier": "std/collection",
+      "module": "std/collection",
+      "origin": {
+        "start": 70,
+        "end": 115
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/collection::*",
+          "localName": "collections"
+        }
+      ]
+    },
+    {
+      "specifier": "std/map",
+      "module": "std/map",
+      "origin": {
+        "start": 116,
+        "end": 147
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/map::*",
+          "localName": "maps"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/array-list-apis::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 2251,
+        "end": 4961
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/array-list-apis::Key>",
+      "providerModule": "artifact/array-list-apis",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "artifact/array-list-apis::Key"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Key",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 181,
+        "end": 288
+      }
+    },
+    {
+      "identity": "std/prelude::Hash<artifact/array-list-apis::Key>",
+      "providerModule": "artifact/array-list-apis",
+      "traitIdentity": "std/prelude::Hash",
+      "argumentIdentities": [
+        "artifact/array-list-apis::Key"
+      ],
+      "trait": "Hash",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Hash",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Key",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 290,
+        "end": 344
+      }
+    },
+    {
+      "identity": "std/prelude::Ord<artifact/array-list-apis::Key>",
+      "providerModule": "artifact/array-list-apis",
+      "traitIdentity": "std/prelude::Ord",
+      "argumentIdentities": [
+        "artifact/array-list-apis::Key"
+      ],
+      "trait": "Ord",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Key",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Key",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 346,
+        "end": 472
+      }
+    }
+  ]
+}

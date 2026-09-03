@@ -306,7 +306,11 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         PROCESS_TARGET,
         &["std/child-process::ChildProcesses"]
     ),
-    contract_module!("std/collection", PORTABLE_TARGETS),
+    available_module!(
+        "std/collection",
+        collection_core_interface,
+        PORTABLE_TARGETS
+    ),
     available_module!(
         "std/console",
         console_interface,
@@ -5996,6 +6000,23 @@ fn array_interface() -> ModuleInterface {
     collection_interface("std/array", "Array", "toList", "List")
 }
 
+fn collection_core_interface() -> ModuleInterface {
+    let module = "std/collection";
+    standard_interface(
+        module,
+        vec![
+            opaque_adt_type_export(module, "SizeError", []),
+            constructor_export(
+                module,
+                "SizeError",
+                "NonPositiveSize",
+                [],
+                Some(named("Int")),
+            ),
+        ],
+    )
+}
+
 fn list_interface() -> ModuleInterface {
     collection_interface("std/list", "List", "toArray", "Array")
 }
@@ -6007,9 +6028,10 @@ fn collection_interface(
     conversion_target: &str,
 ) -> ModuleInterface {
     let values = named_with(collection, vec![named("A")]);
+    let tuple = |elements| InterfaceType::Tuple { elements };
     let mapped_values = named_with(collection, vec![named("B")]);
     let maybe_value = named_with("Maybe", vec![named("A")]);
-    let exports = vec![
+    let mut exports = vec![
         function_export(
             module,
             conversion,
@@ -6140,9 +6162,176 @@ fn collection_interface(
             ["A"],
             Vec::new(),
             vec![values.clone()],
-            named_with("Maybe", vec![values]),
+            named_with("Maybe", vec![values.clone()]),
         ),
     ];
+    exports.extend([
+        function_export(
+            module,
+            "empty",
+            ["A"],
+            Vec::new(),
+            vec![named("Unit")],
+            values.clone(),
+        ),
+        function_export(
+            module,
+            "singleton",
+            ["A"],
+            Vec::new(),
+            vec![named("A")],
+            values.clone(),
+        ),
+        function_export(
+            module,
+            "fromIterable",
+            ["C", "A"],
+            vec![collection_constraint(
+                "Iterable",
+                vec![named("C"), named("A")],
+            )],
+            vec![named("C")],
+            values.clone(),
+        ),
+        function_export(
+            module,
+            "reduceRight",
+            ["A", "B"],
+            Vec::new(),
+            vec![
+                named("B"),
+                function_type(vec![named("A"), named("B")], named("B")),
+                values.clone(),
+            ],
+            named("B"),
+        ),
+        function_export(
+            module,
+            "findIndex",
+            ["A"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("A")], named("Bool")),
+                values.clone(),
+            ],
+            named_with("Maybe", vec![named("Int")]),
+        ),
+        function_export(
+            module,
+            "zip",
+            ["A", "B"],
+            Vec::new(),
+            vec![named_with(collection, vec![named("B")]), values.clone()],
+            named_with(collection, vec![tuple(vec![named("A"), named("B")])]),
+        ),
+        function_export(
+            module,
+            "zipWith",
+            ["A", "B", "C"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("A"), named("B")], named("C")),
+                named_with(collection, vec![named("B")]),
+                values.clone(),
+            ],
+            named_with(collection, vec![named("C")]),
+        ),
+        function_export(
+            module,
+            "unzip",
+            ["A", "B"],
+            Vec::new(),
+            vec![named_with(
+                collection,
+                vec![tuple(vec![named("A"), named("B")])],
+            )],
+            tuple(vec![
+                values.clone(),
+                named_with(collection, vec![named("B")]),
+            ]),
+        ),
+        function_export(
+            module,
+            "sort",
+            ["A"],
+            vec![collection_constraint("Ord", vec![named("A")])],
+            vec![values.clone()],
+            values.clone(),
+        ),
+        function_export(
+            module,
+            "sortBy",
+            ["A", "K"],
+            vec![collection_constraint("Ord", vec![named("K")])],
+            vec![function_type(vec![named("A")], named("K")), values.clone()],
+            values.clone(),
+        ),
+        function_export(
+            module,
+            "groupBy",
+            ["A", "K"],
+            key_constraints("K"),
+            vec![function_type(vec![named("A")], named("K")), values.clone()],
+            external_type(
+                "Map",
+                "std/map::Map",
+                "std/map",
+                "Map",
+                vec![named("K"), values.clone()],
+            ),
+        ),
+        function_export(
+            module,
+            "last",
+            ["A"],
+            Vec::new(),
+            vec![values.clone()],
+            named_with("Maybe", vec![named("A")]),
+        ),
+        function_export(
+            module,
+            "init",
+            ["A"],
+            Vec::new(),
+            vec![values.clone()],
+            named_with("Maybe", vec![values.clone()]),
+        ),
+    ]);
+    for name in ["takeWhile", "dropWhile"] {
+        exports.push(function_export(
+            module,
+            name,
+            ["A"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("A")], named("Bool")),
+                values.clone(),
+            ],
+            values.clone(),
+        ));
+    }
+    for name in ["chunksOf", "windows"] {
+        exports.push(function_export(
+            module,
+            name,
+            ["A"],
+            Vec::new(),
+            vec![named("Int"), values.clone()],
+            named_with(
+                "Either",
+                vec![
+                    external_type(
+                        "SizeError",
+                        "std/collection::SizeError",
+                        "std/collection",
+                        "SizeError",
+                        Vec::new(),
+                    ),
+                    named_with(collection, vec![values.clone()]),
+                ],
+            ),
+        ));
+    }
     ModuleInterface {
         schema: 1,
         module: module.to_owned(),
@@ -8914,6 +9103,23 @@ mod tests {
         for (module, conversion) in [("std/array", "toList"), ("std/list", "toArray")] {
             let target = standard_module_target(module).unwrap();
             for name in [
+                "empty",
+                "singleton",
+                "fromIterable",
+                "reduceRight",
+                "findIndex",
+                "takeWhile",
+                "dropWhile",
+                "zip",
+                "zipWith",
+                "unzip",
+                "sort",
+                "sortBy",
+                "groupBy",
+                "last",
+                "init",
+                "chunksOf",
+                "windows",
                 "filter",
                 "filterMap",
                 "flatMap",
@@ -8936,7 +9142,36 @@ mod tests {
                     .iter()
                     .any(|export| export.namespace == "value" && export.name == name));
             }
+            assert_eq!(target.interface().exports.len(), 32);
+            let group = target
+                .interface()
+                .exports
+                .iter()
+                .find(|e| e.name == "groupBy")
+                .unwrap();
+            assert_eq!(group.scheme.constraints, key_constraints("K"));
+            let collect = target
+                .interface()
+                .exports
+                .iter()
+                .find(|e| e.name == "fromIterable")
+                .unwrap();
+            assert_eq!(
+                collect.scheme.constraints,
+                vec![collection_constraint(
+                    "Iterable",
+                    vec![named("C"), named("A")]
+                )]
+            );
         }
+        let collection = standard_module_target("std/collection").unwrap();
+        assert_eq!(collection.interface().exports.len(), 2);
+        assert!(collection
+            .interface()
+            .exports
+            .iter()
+            .any(|e| e.name == "NonPositiveSize"
+                && e.constructor_of.as_deref() == Some("std/collection::SizeError")));
         let signal = standard_module_target("std/signal").unwrap();
         let distinct = signal
             .interface()

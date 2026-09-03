@@ -1064,6 +1064,70 @@
   ],
   "instances": [
     {
+      "trait": "Ord",
+      "traitCanonical": "std/prelude::Ord",
+      "typeConstructor": "Int",
+      "typeConstructorCanonical": "std/prelude::Int",
+      "typeConstructorArity": 0,
+      "identity": "std/int::Ord"
+    },
+    {
+      "trait": "Ord",
+      "traitCanonical": "std/prelude::Ord",
+      "typeConstructor": "Bool",
+      "typeConstructorCanonical": "std/prelude::Bool",
+      "typeConstructorArity": 0,
+      "identity": "std/bool::Ord"
+    },
+    {
+      "trait": "Ord",
+      "traitCanonical": "std/prelude::Ord",
+      "typeConstructor": "Char",
+      "typeConstructorCanonical": "std/prelude::Char",
+      "typeConstructorArity": 0,
+      "identity": "std/char::Ord"
+    },
+    {
+      "trait": "Ord",
+      "traitCanonical": "std/prelude::Ord",
+      "typeConstructor": "String",
+      "typeConstructorCanonical": "std/prelude::String",
+      "typeConstructorArity": 0,
+      "identity": "std/string::Ord"
+    },
+    {
+      "trait": "Ord",
+      "traitCanonical": "std/prelude::Ord",
+      "typeConstructor": "Unit",
+      "typeConstructorCanonical": "std/prelude::Unit",
+      "typeConstructorArity": 0,
+      "identity": "std/unit::Ord"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "SizeError",
+      "typeConstructorCanonical": "std/collection::SizeError",
+      "typeConstructorArity": 0,
+      "identity": "std/collection::EqSizeError"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "SizeError",
+      "typeConstructorCanonical": "std/collection::SizeError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/collection::SizeError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "SizeError",
+      "typeConstructorCanonical": "std/collection::SizeError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/collection::SizeError>"
+    },
+    {
       "trait": "JsonEncode",
       "traitCanonical": "std/prelude::JsonEncode",
       "typeConstructor": "Map",
@@ -3785,6 +3849,14 @@
       },
       {
         "trait": "Debug",
+        "head": "SizeError",
+        "identity": "Debug<std/collection::SizeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
         "head": "StdinConfigError",
         "identity": "Debug<std/stdin::StdinConfigError>",
         "status": "specified-and-implemented",
@@ -4003,6 +4075,14 @@
         "identity": "std/set::Eq",
         "status": "specified-and-implemented",
         "classification": "conditional",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "SizeError",
+        "identity": "std/collection::EqSizeError",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
         "spec": "9.3 / 9.4"
       },
       {
@@ -4785,18 +4865,18 @@
       {
         "trait": "Ord",
         "head": "Bool",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4",
-        "trackingIssue": 333
+        "identity": "std/bool::Ord",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Ord",
         "head": "Char",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4",
-        "trackingIssue": 333
+        "identity": "std/char::Ord",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Ord",
@@ -4816,10 +4896,10 @@
       {
         "trait": "Ord",
         "head": "Int",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4",
-        "trackingIssue": 333
+        "identity": "std/int::Ord",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Ord",
@@ -4832,18 +4912,18 @@
       {
         "trait": "Ord",
         "head": "String",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4",
-        "trackingIssue": 333
+        "identity": "std/string::Ord",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Ord",
         "head": "Unit",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4",
-        "trackingIssue": 333
+        "identity": "std/unit::Ord",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Pow",
@@ -5379,6 +5459,14 @@
         "identity": "std/set::Show",
         "status": "specified-and-implemented",
         "classification": "conditional",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "SizeError",
+        "identity": "Show<std/collection::SizeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
         "spec": "9.11"
       },
       {

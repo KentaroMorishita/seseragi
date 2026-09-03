@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.46.0] - 2026-09-03
+
+- Complete the specified Array/List sequence APIs, including constructors,
+  short-circuit prefix operations, stable sorting, insertion-ordered grouping,
+  right folds, zip/unzip, and compact chunks/windows.
+- Publish `std/collection.SizeError` with Eq/Show/Debug, and connect primitive
+  Int/Bool/Char/String/Unit Ord dictionaries required by sorting. String ordering
+  follows Unicode scalar values; Float remains intentionally without Ord.
+- Preserve first-class collection functions, partial applications, and callable
+  fold accumulators across native CLI, TypeScript, WASM, and Playground.
+
 ## [0.45.0] - 2026-09-03
 
 - Implement persistent insertion-ordered `std/map` and `std/set`, with structural

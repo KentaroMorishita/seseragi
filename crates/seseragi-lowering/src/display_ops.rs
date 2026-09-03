@@ -22,6 +22,18 @@ macro_rules! display_dictionary {
 }
 
 const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
+    display_dictionary!(
+        "Show<std/collection::SizeError>",
+        "core.collection.size-error.show",
+        "_ssrg_sizeErrorShow",
+        "sizeErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/collection::SizeError>",
+        "core.collection.size-error.debug",
+        "_ssrg_sizeErrorDebug",
+        "sizeErrorDebug"
+    ),
     RuntimeDisplayDictionary {
         semantic_identity: "std/map::Show",
         runtime_feature: "core.map.show",

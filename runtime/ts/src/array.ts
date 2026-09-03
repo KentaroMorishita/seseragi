@@ -1,8 +1,155 @@
-import type { Iterator as SeseragiIterator } from "./iterator"
+import { type Iterable, NonPositiveSize, type SizeError } from "./collection"
 import type { Unit } from "./effect"
+import type { Eq } from "./equality"
+import type { Hash } from "./hash"
+import type { Iterator as SeseragiIterator } from "./iterator"
 import { fromArray, type List } from "./list"
-import { Just, Nothing, type Maybe } from "./sum"
+import * as maps from "./map"
+import { stableSort, stableSortBy } from "./sequence"
+import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 import { type RuntimeDictionary, traverseValues } from "./traversable"
+
+export const empty = <A>(_unit?: Unit): ReadonlyArray<A> => []
+
+export const singleton = <A>(value: A): ReadonlyArray<A> => [value]
+
+export function fromIterable<C, A>(
+  dictionary: Iterable<C, A> | RuntimeDictionary,
+  values: C
+): ReadonlyArray<A> {
+  let iterator = (dictionary as Iterable<C, A>).iterate(values)
+  const result: A[] = []
+  while (true) {
+    const step = iterator.next()
+    if (step.tag === "Nothing") return result
+    result.push(step.value[0])
+    iterator = step.value[1]
+  }
+}
+
+export function reduceRight<A, B>(
+  initial: B,
+  step: (value: A) => (accumulator: B) => B,
+  values: ReadonlyArray<A>
+): B {
+  let result = initial
+  for (let index = values.length - 1; index >= 0; index -= 1) {
+    result = step(values[index] as A)(result)
+  }
+  return result
+}
+
+export function findIndex<A>(
+  predicate: (value: A) => boolean,
+  values: ReadonlyArray<A>
+): Maybe<number> {
+  for (let index = 0; index < values.length; index += 1) {
+    if (predicate(values[index] as A)) return Just(index)
+  }
+  return Nothing
+}
+
+export function takeWhile<A>(
+  predicate: (value: A) => boolean,
+  values: ReadonlyArray<A>
+): ReadonlyArray<A> {
+  let end = 0
+  while (end < values.length && predicate(values[end] as A)) end += 1
+  return values.slice(0, end)
+}
+
+export function dropWhile<A>(
+  predicate: (value: A) => boolean,
+  values: ReadonlyArray<A>
+): ReadonlyArray<A> {
+  let start = 0
+  while (start < values.length && predicate(values[start] as A)) start += 1
+  return values.slice(start)
+}
+
+export function zipWith<A, B, C>(
+  f: (left: A) => (right: B) => C,
+  right: ReadonlyArray<B>,
+  left: ReadonlyArray<A>
+): ReadonlyArray<C> {
+  const result: C[] = []
+  const size = Math.min(left.length, right.length)
+  for (let index = 0; index < size; index += 1) {
+    result.push(f(left[index] as A)(right[index] as B))
+  }
+  return result
+}
+
+export function zip<A, B>(
+  right: ReadonlyArray<B>,
+  left: ReadonlyArray<A>
+): ReadonlyArray<readonly [A, B]> {
+  return zipWith<A, B, readonly [A, B]>((a) => (b) => [a, b], right, left)
+}
+
+export function unzip<A, B>(
+  values: ReadonlyArray<readonly [A, B]>
+): readonly [ReadonlyArray<A>, ReadonlyArray<B>] {
+  const left: A[] = []
+  const right: B[] = []
+  for (const [a, b] of values) {
+    left.push(a)
+    right.push(b)
+  }
+  return [left, right]
+}
+
+export const sort = stableSort
+export const sortBy = stableSortBy
+
+export function groupBy<A, K>(
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
+  key: (value: A) => K,
+  values: ReadonlyArray<A>
+): maps.Map<K, ReadonlyArray<A>> {
+  // Builders are private to this call: no repeated immutable append per group.
+  let groups = maps.empty<K, A[]>()
+  for (const value of values) {
+    const k = key(value)
+    const group = maps.get(eq, hash, k, groups)
+    if (group.tag === "Just") group.value.push(value)
+    else groups = maps.insert(eq, hash, k, [value], groups)
+  }
+  return maps.mapValues((group: A[]) => Object.freeze(group), groups)
+}
+
+export function last<A>(values: ReadonlyArray<A>): Maybe<A> {
+  return values.length === 0 ? Nothing : Just(values[values.length - 1] as A)
+}
+
+export function init<A>(values: ReadonlyArray<A>): Maybe<ReadonlyArray<A>> {
+  return values.length === 0 ? Nothing : Just(values.slice(0, -1))
+}
+
+export function chunksOf<A>(
+  size: number,
+  values: ReadonlyArray<A>
+): Either<SizeError, ReadonlyArray<ReadonlyArray<A>>> {
+  if (size <= 0) return Left(NonPositiveSize(size))
+  const result: ReadonlyArray<A>[] = []
+  for (let start = 0; start < values.length; start += size) {
+    result.push(values.slice(start, start + size))
+  }
+  return Right(result)
+}
+
+export function windows<A>(
+  size: number,
+  values: ReadonlyArray<A>
+): Either<SizeError, ReadonlyArray<ReadonlyArray<A>>> {
+  if (size <= 0) return Left(NonPositiveSize(size))
+  const result: ReadonlyArray<A>[] = []
+  for (let start = 0; start <= values.length - size; start += 1) {
+    result.push(values.slice(start, start + size))
+  }
+  return Right(result)
+}
 
 /** Runtime dictionary for the standard `Semigroup<Array<A>>` instance. */
 export const arraySemigroup = Object.freeze({
