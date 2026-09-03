@@ -191,6 +191,8 @@ run_conformance_checks() {
   bun test runtime/ts/tests/foreign.test.ts
   echo "Testing the Traversable runtime boundary..."
   bun test runtime/ts/tests/traversable.test.ts
+  echo "Testing persistent Map / Set and serialization boundaries..."
+  bun test runtime/ts/tests/persistent-index.test.ts runtime/ts/tests/map.test.ts runtime/ts/tests/set.test.ts runtime/ts/tests/map-set-codecs.test.ts
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     cargo run -p seseragi-conformance -- .

@@ -391,6 +391,8 @@ describe("Playground project compiler boundary", () => {
             "std/float",
             "std/int",
             "std/list",
+            "std/map",
+            "std/set",
             "std/number",
             "std/text",
           ].includes(module)
@@ -405,6 +407,8 @@ describe("Playground project compiler boundary", () => {
         "std/float::toInt",
         "std/int::saturatingAdd",
         "std/list::length",
+        "std/map::fromEntries",
+        "std/set::fromIterable",
         "std/number::HalfEven",
         "std/text::decodeUtf8",
         "std/text::encodeUtf8",
@@ -418,7 +422,7 @@ describe("Playground project compiler boundary", () => {
       throw new Error("missing std parity execution entry")
     }
     expect(response.modules[0]?.generated.typescript).toContain(
-      'filter as _ssrg_array_filter, toList as _ssrg_array_toList, length as _ssrg_array_length } from "@seseragi/runtime/array"'
+      'filter as _ssrg_array_filter, toList as _ssrg_array_toList, arrayIterable as _ssrg_array_iterable, length as _ssrg_array_length } from "@seseragi/runtime/array"'
     )
     expect(response.modules[0]?.generated.typescript).toContain(
       'length as _ssrg_list_length, type List as List } from "@seseragi/runtime/list"'
@@ -443,7 +447,7 @@ describe("Playground project compiler boundary", () => {
       )
     ).toEqual({
       stdout:
-        "array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4]",
+        'array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4] / map: [["b",3],["a",1]] / set: 6',
       debug: "()",
     })
   })
@@ -1345,6 +1349,31 @@ describe("Playground project compiler boundary", () => {
         message: "generated project omitted entry module: main.ssrg",
       })
     }
+  })
+
+  test("executes every persistent Map / Set operation and dictionary through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/map-set/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expected = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/map-set/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("map-set.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing Map / Set execution entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
   })
 
   test("executes shared pattern bindings across standard generic ADTs", async () => {

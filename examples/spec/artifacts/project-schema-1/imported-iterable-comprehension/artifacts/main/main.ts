@@ -8,6 +8,6 @@ import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 const oddSquares = (values: Countdown) => _ssrg_iterator_comprehend(__ssrg$instance$Iterable$0["iterate"](values), (value) => _ssrg_int_eq_dictionary["eq"](_ssrg_int_remainder(value, 2))(0) === false, (value) => _ssrg_int_multiply(value, value))
 const addInt = (left: number) => (right: number) => _ssrg_int_add(left, right)
 const total = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0["reduce"](0)(addInt)(values)
-const totals = (values: Countdown) => [_ssrg_array_reduce(0, (_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1), oddSquares(values)), total(values)(__ssrg$instance$Reducible$1(__ssrg$instance$Iterable$0))] as const
+const totals = (values: Countdown) => [_ssrg_array_reduce(0, (_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1), oddSquares(values)), ((total(values)(__ssrg$instance$Reducible$1(__ssrg$instance$Iterable$0))) as number)] as const
 const renderTotals = (values: readonly [number, number]) => (($ssrg_match: readonly [number, number]): string => $ssrg_match[0] === 35 && $ssrg_match[1] === 15 ? "imported collection totals: 35 / 15" : "unexpected imported collection totals")(values)
 export const main = (_unit: undefined) => _ssrg_console_println(renderTotals(totals(Countdown(5))))

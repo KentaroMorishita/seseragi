@@ -125,18 +125,24 @@
                     }
                   ],
                   "value": {
-                    "kind": "call",
-                    "callee": "acknowledge",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "item"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "__ssrg$evidence$0"
-                      }
-                    ]
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "acknowledge",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "item"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 }
               ],

@@ -6,23 +6,25 @@ import * as json from "std/json"
 import * as lists from "std/list"
 import * as numbers from "std/number"
 import * as texts from "std/text"
+import * as maps from "std/map"
+import * as sets from "std/set"
 
 fn even value: Int -> Bool = value % 2 == 0
 
 let selected = arrays.filter even [1, 2, 3, 4]
 let converted = arrays.toList selected
-let numeric =
-  match floats.toInt numbers.HalfEven (floats.fromInt 2) {
-    Left _ -> 0
-    Right value -> value
-  }
+let numeric = match floats.toInt numbers.HalfEven (floats.fromInt 2) {
+  Left _ -> 0
+  Right value -> value
+}
 let encoded = texts.encodeUtf8 "ok"
-let decoded =
-  match texts.decodeUtf8 encoded {
-    Left _ -> "error"
-    Right value -> value
-  }
+let decoded = match texts.decodeUtf8 encoded {
+  Left _ -> "error"
+  Right value -> value
+}
 let jsonText = json.encodeString selected
+let ordered = maps.fromEntries [("b", 2), ("a", 1), ("b", 3)]
+let unique = sets.fromIterable [3, 1, 3, 2]
 
 pub effect fn main =
-  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText}`
+  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique}`

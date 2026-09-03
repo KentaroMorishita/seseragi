@@ -7,8 +7,8 @@ import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 
 const sumValues = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => _ssrg_collection_sum(__ssrg$evidence$0, _ssrg_int_zero, _ssrg_int_add_dictionary, values)
 const emptyValues = (unit: undefined) => [] as ReadonlyArray<number>
-const arrayTotal = (unit: undefined) => sumValues([20, 22])(_ssrg_array_reducible)
-const listTotal = (unit: undefined) => sumValues(_ssrg_list_from_array([10, 20, 12]))(_ssrg_list_reducible)
-const rangeTotal = (unit: undefined) => sumValues(_ssrg_range_inclusive(1, 4))(_ssrg_range_reducible)
-const emptyTotal = (unit: undefined) => sumValues(emptyValues(undefined))(_ssrg_array_reducible)
+const arrayTotal = (unit: undefined) => ((sumValues([20, 22])(_ssrg_array_reducible)) as number)
+const listTotal = (unit: undefined) => ((sumValues(_ssrg_list_from_array([10, 20, 12]))(_ssrg_list_reducible)) as number)
+const rangeTotal = (unit: undefined) => ((sumValues(_ssrg_range_inclusive(1, 4))(_ssrg_range_reducible)) as number)
+const emptyTotal = (unit: undefined) => ((sumValues(emptyValues(undefined))(_ssrg_array_reducible)) as number)
 export const collectionSumResults = (unit: undefined) => [_ssrg_show_intShow["show"](arrayTotal(undefined)), _ssrg_show_intShow["show"](listTotal(undefined)), _ssrg_show_intShow["show"](rangeTotal(undefined)), _ssrg_show_intShow["show"](emptyTotal(undefined))]

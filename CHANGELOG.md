@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.45.0] - 2026-09-03
+
+- Implement persistent insertion-ordered `std/map` and `std/set`, with structural
+  Eq/Hash lookup, shared point updates, and removal without retained tombstones.
+- Connect all collection operations, conditional Eq/Show/Debug/JSON dictionaries,
+  Iterable/Reducible evidence, and Map's fixed-key Functor to the standard registry.
+- Preserve inferred collection elements and partial applications across native,
+  generated TypeScript, WASM, and Playground boundaries. JsonObject now exposes
+  the canonical persistent Map payload.
+
 ## [0.44.1] - 2026-09-03
 
 - Generate the Playground runtime resolver from canonical package exports,

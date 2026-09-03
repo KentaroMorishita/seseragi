@@ -693,73 +693,106 @@
             "callee": "render",
             "arguments": [
               {
-                "kind": "call",
-                "callee": "applyWrapped",
-                "arguments": [
-                  {
-                    "kind": "call",
-                    "callee": "lifted",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "increment"
-                      },
-                      {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Applicative$1",
-                        "typeArguments": [],
+                "kind": "checked-result",
+                "value": {
+                  "kind": "call",
+                  "callee": "applyWrapped",
+                  "arguments": [
+                    {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "call",
+                        "callee": "lifted",
                         "arguments": [
                           {
                             "kind": "identifier",
-                            "name": "__ssrg$instance$Functor$0"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "call",
-                    "callee": "mapped",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "increment"
-                      },
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_maybe_Just",
-                        "arguments": [
+                            "name": "increment"
+                          },
                           {
-                            "kind": "number",
-                            "value": "40"
+                            "kind": "type-application-call",
+                            "callee": "__ssrg$instance$Applicative$1",
+                            "typeArguments": [],
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "__ssrg$instance$Functor$0"
+                              }
+                            ]
                           }
                         ]
                       },
-                      {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Applicative$1",
-                        "typeArguments": [],
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "number"
+                          },
+                          "result": {
+                            "kind": "number"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "call",
+                        "callee": "mapped",
                         "arguments": [
                           {
                             "kind": "identifier",
-                            "name": "__ssrg$instance$Functor$0"
+                            "name": "increment"
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_maybe_Just",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "40"
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "type-application-call",
+                            "callee": "__ssrg$instance$Applicative$1",
+                            "typeArguments": [],
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "__ssrg$instance$Functor$0"
+                              }
+                            ]
                           }
                         ]
+                      },
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
+                        }
                       }
-                    ]
-                  },
-                  {
-                    "kind": "type-application-call",
-                    "callee": "__ssrg$instance$Applicative$1",
-                    "typeArguments": [],
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Functor$0"
-                      }
-                    ]
+                    },
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Applicative$1",
+                      "typeArguments": [],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$instance$Functor$0"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "type": {
+                  "kind": "maybe",
+                  "element": {
+                    "kind": "number"
                   }
-                ]
+                }
               }
             ]
           }

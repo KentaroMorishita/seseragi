@@ -23,6 +23,38 @@ macro_rules! display_dictionary {
 
 const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
     RuntimeDisplayDictionary {
+        semantic_identity: "std/map::Show",
+        runtime_feature: "core.map.show",
+        local_name: "_ssrg_map_show",
+        module: "@seseragi/runtime/show",
+        export_name: "mapShow",
+        source_map_name: "mapShow",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/map::Debug",
+        runtime_feature: "core.map.debug",
+        local_name: "_ssrg_map_debug",
+        module: "@seseragi/runtime/show",
+        export_name: "mapDebug",
+        source_map_name: "mapDebug",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/set::Show",
+        runtime_feature: "core.set.show",
+        local_name: "_ssrg_set_show",
+        module: "@seseragi/runtime/show",
+        export_name: "setShow",
+        source_map_name: "setShow",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/set::Debug",
+        runtime_feature: "core.set.debug",
+        local_name: "_ssrg_set_debug",
+        module: "@seseragi/runtime/show",
+        export_name: "setDebug",
+        source_map_name: "setDebug",
+    },
+    RuntimeDisplayDictionary {
         semantic_identity: "Show<std/prelude::Int>",
         runtime_feature: "core.int.show",
         local_name: "_ssrg_show_intShow",

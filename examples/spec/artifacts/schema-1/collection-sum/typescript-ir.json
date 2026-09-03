@@ -151,30 +151,36 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "sumValues",
-        "arguments": [
-          {
-            "kind": "array",
-            "elements": [
-              {
-                "kind": "number",
-                "value": "20"
-              },
-              {
-                "kind": "number",
-                "value": "22"
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "sumValues",
+          "arguments": [
+            {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "number",
+                  "value": "20"
+                },
+                {
+                  "kind": "number",
+                  "value": "22"
+                }
+              ],
+              "elementType": {
+                "kind": "number"
               }
-            ],
-            "elementType": {
-              "kind": "number"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_array_reducible"
             }
-          },
-          {
-            "kind": "runtime-reference",
-            "name": "_ssrg_array_reducible"
-          }
-        ]
+          ]
+        },
+        "type": {
+          "kind": "number"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -194,40 +200,46 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "sumValues",
-        "arguments": [
-          {
-            "kind": "runtime-call",
-            "callee": "_ssrg_list_from_array",
-            "arguments": [
-              {
-                "kind": "array",
-                "elements": [
-                  {
-                    "kind": "number",
-                    "value": "10"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "20"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "12"
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "sumValues",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_list_from_array",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "number",
+                      "value": "10"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "20"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "12"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "number"
                   }
-                ],
-                "elementType": {
-                  "kind": "number"
                 }
-              }
-            ]
-          },
-          {
-            "kind": "runtime-reference",
-            "name": "_ssrg_list_reducible"
-          }
-        ]
+              ]
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_list_reducible"
+            }
+          ]
+        },
+        "type": {
+          "kind": "number"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -247,28 +259,34 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "sumValues",
-        "arguments": [
-          {
-            "kind": "runtime-call",
-            "callee": "_ssrg_range_inclusive",
-            "arguments": [
-              {
-                "kind": "number",
-                "value": "1"
-              },
-              {
-                "kind": "number",
-                "value": "4"
-              }
-            ]
-          },
-          {
-            "kind": "runtime-reference",
-            "name": "_ssrg_range_reducible"
-          }
-        ]
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "sumValues",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_range_inclusive",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "1"
+                },
+                {
+                  "kind": "number",
+                  "value": "4"
+                }
+              ]
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_range_reducible"
+            }
+          ]
+        },
+        "type": {
+          "kind": "number"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -288,23 +306,29 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "sumValues",
-        "arguments": [
-          {
-            "kind": "call",
-            "callee": "emptyValues",
-            "arguments": [
-              {
-                "kind": "undefined"
-              }
-            ]
-          },
-          {
-            "kind": "runtime-reference",
-            "name": "_ssrg_array_reducible"
-          }
-        ]
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "sumValues",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "emptyValues",
+              "arguments": [
+                {
+                  "kind": "undefined"
+                }
+              ]
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_array_reducible"
+            }
+          ]
+        },
+        "type": {
+          "kind": "number"
+        }
       },
       "origin": {
         "source": "main.ssrg",

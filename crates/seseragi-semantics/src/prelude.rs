@@ -106,6 +106,7 @@ enum PreludeSpecialInstanceHead {
         constructor: &'static str,
         canonical: Option<&'static str>,
         int_element: bool,
+        tuple_elements: bool,
     },
 }
 
@@ -448,6 +449,83 @@ const fn method(
 }
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "Map",
+        type_canonical: Some("std/map::Map"),
+        type_arity: 2,
+        identity: "std/map::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "Map",
+        type_canonical: Some("std/map::Map"),
+        type_arity: 2,
+        identity: "std/map::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "Set",
+        type_canonical: Some("std/set::Set"),
+        type_arity: 1,
+        identity: "std/set::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "Set",
+        type_canonical: Some("std/set::Set"),
+        type_arity: 1,
+        identity: "std/set::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "Map",
+        type_canonical: Some("std/map::Map"),
+        type_arity: 2,
+        identity: "std/map::Eq",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Map",
+        type_canonical: Some("std/map::Map"),
+        type_arity: 2,
+        identity: "std/map::Show",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Map",
+        type_canonical: Some("std/map::Map"),
+        type_arity: 2,
+        identity: "std/map::Debug",
+    },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "Map",
+        type_canonical: Some("std/map::Map"),
+        type_arity: 2,
+        identity: "std/map::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "Set",
+        type_canonical: Some("std/set::Set"),
+        type_arity: 1,
+        identity: "std/set::Eq",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Set",
+        type_canonical: Some("std/set::Set"),
+        type_arity: 1,
+        identity: "std/set::Show",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Set",
+        type_canonical: Some("std/set::Set"),
+        type_arity: 1,
+        identity: "std/set::Debug",
+    },
     PreludeStandardInstance {
         trait_name: "Hash",
         type_name: "Int",
@@ -1837,6 +1915,7 @@ pub(crate) const SPECIAL_STANDARD_INSTANCES: &[PreludeSpecialInstance] = &[
         "std/non-empty-list::Iterable",
         "NonEmptyList",
         "std/non-empty-list::NonEmptyList",
+        false,
     ),
     special_external_collection(
         "Reducible",
@@ -1844,6 +1923,39 @@ pub(crate) const SPECIAL_STANDARD_INSTANCES: &[PreludeSpecialInstance] = &[
         "std/non-empty-list::Reducible",
         "NonEmptyList",
         "std/non-empty-list::NonEmptyList",
+        false,
+    ),
+    special_external_collection(
+        "Iterable",
+        &["Map<K, V>", "(K, V)"],
+        "std/map::Iterable",
+        "Map",
+        "std/map::Map",
+        true,
+    ),
+    special_external_collection(
+        "Reducible",
+        &["Map<K, V>", "(K, V)"],
+        "std/map::Reducible",
+        "Map",
+        "std/map::Map",
+        true,
+    ),
+    special_external_collection(
+        "Iterable",
+        &["Set<A>", "A"],
+        "std/set::Iterable",
+        "Set",
+        "std/set::Set",
+        false,
+    ),
+    special_external_collection(
+        "Reducible",
+        &["Set<A>", "A"],
+        "std/set::Reducible",
+        "Set",
+        "std/set::Set",
+        false,
     ),
 ];
 
@@ -1901,6 +2013,7 @@ const fn special_collection(
             constructor: type_name,
             canonical: None,
             int_element,
+            tuple_elements: false,
         },
     }
 }
@@ -1911,6 +2024,7 @@ const fn special_external_collection(
     identity: &'static str,
     type_name: &'static str,
     canonical: &'static str,
+    tuple_elements: bool,
 ) -> PreludeSpecialInstance {
     PreludeSpecialInstance {
         type_name,
@@ -1923,6 +2037,7 @@ const fn special_external_collection(
             constructor: type_name,
             canonical: Some(canonical),
             int_element: false,
+            tuple_elements,
         },
     }
 }
@@ -2441,7 +2556,73 @@ pub(crate) fn standard_instance_constraint_specs(
             type_argument_index: 1,
         },
     ];
+    const MAP_EQ: &[PreludeStandardInstanceConstraint] = &[
+        PreludeStandardInstanceConstraint {
+            trait_name: "Eq",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "Hash",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "Eq",
+            type_argument_index: 1,
+        },
+    ];
+    const SET_EQ: &[PreludeStandardInstanceConstraint] = &[
+        PreludeStandardInstanceConstraint {
+            trait_name: "Eq",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "Hash",
+            type_argument_index: 0,
+        },
+    ];
+    const MAP_DECODE: &[PreludeStandardInstanceConstraint] = &[
+        PreludeStandardInstanceConstraint {
+            trait_name: "Eq",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "Hash",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "JsonDecode",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "JsonDecode",
+            type_argument_index: 1,
+        },
+    ];
+    const SET_DECODE: &[PreludeStandardInstanceConstraint] = &[
+        PreludeStandardInstanceConstraint {
+            trait_name: "Eq",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "Hash",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "JsonDecode",
+            type_argument_index: 0,
+        },
+    ];
     match identity {
+        "std/map::JsonEncode" => JSON_ENCODE_EITHER,
+        "std/map::JsonDecode" => MAP_DECODE,
+        "std/set::JsonEncode" => JSON_ENCODE_ELEMENT,
+        "std/set::JsonDecode" => SET_DECODE,
+        "std/map::Eq" => MAP_EQ,
+        "std/set::Eq" => SET_EQ,
+        "std/map::Show" => SHOW_EITHER,
+        "std/map::Debug" => DEBUG_EITHER,
+        "std/set::Show" => SHOW_ELEMENT,
+        "std/set::Debug" => DEBUG_ELEMENT,
         "std/array::Eq" | "std/list::Eq" | "std/non-empty-list::Eq" => EQ_ELEMENT,
         "std/non-empty-list::Ord" => ORD_ELEMENT,
         "std/non-empty-list::Hash" => HASH_ELEMENT,
@@ -2511,6 +2692,7 @@ pub(crate) fn special_standard_instance_constraints() -> Vec<TypedConstraint> {
                     constructor,
                     canonical,
                     int_element,
+                    tuple_elements,
                 } => {
                     let element = if int_element {
                         named("Int")
@@ -2521,9 +2703,20 @@ pub(crate) fn special_standard_instance_constraints() -> Vec<TypedConstraint> {
                         Some(canonical) => TypedType::ExternalNamed {
                             name: constructor.to_owned(),
                             canonical: canonical.to_owned(),
-                            arguments: vec![element.clone()],
+                            arguments: if tuple_elements {
+                                vec![element.clone(), element.clone()]
+                            } else {
+                                vec![element.clone()]
+                            },
                         },
                         None => applied(constructor, element.clone()),
+                    };
+                    let element = if tuple_elements {
+                        TypedType::Tuple {
+                            elements: vec![element.clone(), element],
+                        }
+                    } else {
+                        element
                     };
                     vec![collection, element]
                 }
@@ -2593,11 +2786,12 @@ pub(crate) fn special_standard_instance(
                     constructor,
                     canonical,
                     int_element,
+                    tuple_elements,
                 },
                 [collection, element],
             ) => collection_type_arguments(collection, constructor, canonical).is_some_and(
                 |arguments| {
-                    matches!(arguments, [actual] if actual == element)
+                    collection_element(arguments, tuple_elements).as_ref() == Some(element)
                         && (!int_element || prelude_named_type_is(element, "Int"))
                 },
             ),
@@ -2631,6 +2825,7 @@ pub(crate) fn special_collection_constraint(
             constructor,
             canonical,
             int_element,
+            tuple_elements,
         } = instance.head
         else {
             return None;
@@ -2639,14 +2834,22 @@ pub(crate) fn special_collection_constraint(
             return None;
         }
         let arguments = collection_type_arguments(collection, constructor, canonical)?;
-        let [element] = arguments else {
-            return None;
-        };
-        (!int_element || prelude_named_type_is(element, "Int")).then(|| TypedConstraint {
+        let element = collection_element(arguments, tuple_elements)?;
+        (!int_element || prelude_named_type_is(&element, "Int")).then(|| TypedConstraint {
             name: trait_name.to_owned(),
             arguments: vec![collection.clone(), element.clone()],
         })
     })
+}
+
+fn collection_element(arguments: &[TypedType], tuple_elements: bool) -> Option<TypedType> {
+    match (tuple_elements, arguments) {
+        (false, [element]) => Some(element.clone()),
+        (true, [key, value]) => Some(TypedType::Tuple {
+            elements: vec![key.clone(), value.clone()],
+        }),
+        _ => None,
+    }
 }
 
 fn collection_type_arguments<'a>(

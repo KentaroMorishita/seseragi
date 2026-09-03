@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.44.1",
+  "version": "0.45.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -96,6 +96,14 @@
     "./array": {
       "types": "./src/array.ts",
       "default": "./src/array.ts"
+    },
+    "./map": {
+      "types": "./src/map.ts",
+      "default": "./src/map.ts"
+    },
+    "./set": {
+      "types": "./src/set.ts",
+      "default": "./src/set.ts"
     },
     "./bytes": {
       "types": "./src/bytes.ts",

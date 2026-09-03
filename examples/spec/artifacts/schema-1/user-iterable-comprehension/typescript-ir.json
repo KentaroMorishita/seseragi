@@ -653,25 +653,31 @@
             ]
           },
           {
-            "kind": "call",
-            "callee": "total",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "values"
-              },
-              {
-                "kind": "type-application-call",
-                "callee": "__ssrg$instance$Reducible$1",
-                "typeArguments": [],
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Iterable$0"
-                  }
-                ]
-              }
-            ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "total",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "values"
+                },
+                {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Reducible$1",
+                  "typeArguments": [],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Iterable$0"
+                    }
+                  ]
+                }
+              ]
+            },
+            "type": {
+              "kind": "number"
+            }
           }
         ]
       },

@@ -6015,13 +6015,520 @@
       "import": null
     },
     {
-      "id": "json.map-type",
+      "id": "core.map",
       "kind": "value-representation",
-      "typescript": "type JsonMap<K, V>",
-      "boundary": "insertion-ordered immutable entry sequence used by JsonObject",
+      "typescript": "type Map<K, V>",
+      "boundary": "opaque persistent insertion-ordered hash map; no mutable host identity",
       "typeIdentity": "std/map::Map",
-      "typeImport": { "module": "@seseragi/runtime/json", "export": "JsonMap" },
+      "typeImport": { "module": "@seseragi/runtime/map", "export": "Map" },
       "import": null
+    },
+    {
+      "id": "core.set",
+      "kind": "value-representation",
+      "typescript": "type Set<A>",
+      "boundary": "opaque persistent insertion-ordered hash set; no mutable host identity",
+      "typeIdentity": "std/set::Set",
+      "typeImport": {
+        "module": "@seseragi/runtime/set",
+        "export": "Set"
+      },
+      "import": null
+    },
+    {
+      "id": "core.map.empty",
+      "kind": "runtime-helper",
+      "typescript": "Unit -> Map<K,V>",
+      "boundary": "fresh empty persistent collection",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "empty"
+      }
+    },
+    {
+      "id": "core.map.singleton",
+      "kind": "runtime-helper",
+      "typescript": "Eq<K>, Hash<K>, K, V -> Map<K,V>",
+      "boundary": "one entry",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "singleton"
+      }
+    },
+    {
+      "id": "core.map.from-entries",
+      "kind": "runtime-helper",
+      "typescript": "Iterable<C,(K,V)>, Eq<K>, Hash<K>, C -> Map<K,V>",
+      "boundary": "first key position and last value",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "fromEntries"
+      }
+    },
+    {
+      "id": "core.map.get",
+      "kind": "runtime-helper",
+      "typescript": "Eq<K>, Hash<K>, K, Map<K,V> -> Maybe<V>",
+      "boundary": "structural key lookup",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "get"
+      }
+    },
+    {
+      "id": "core.map.contains-key",
+      "kind": "runtime-helper",
+      "typescript": "Eq<K>, Hash<K>, K, Map<K,V> -> Bool",
+      "boundary": "structural key membership",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "containsKey"
+      }
+    },
+    {
+      "id": "core.map.insert",
+      "kind": "runtime-helper",
+      "typescript": "Eq<K>, Hash<K>, K, V, Map<K,V> -> Map<K,V>",
+      "boundary": "existing position or append",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "insert"
+      }
+    },
+    {
+      "id": "core.map.upsert",
+      "kind": "runtime-helper",
+      "typescript": "Eq<K>, Hash<K>, K, (Maybe<V> -> V), Map<K,V> -> Map<K,V>",
+      "boundary": "callback exactly once",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "upsert"
+      }
+    },
+    {
+      "id": "core.map.remove",
+      "kind": "runtime-helper",
+      "typescript": "Eq<K>, Hash<K>, K, Map<K,V> -> Map<K,V>",
+      "boundary": "no removed entry retention",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "remove"
+      }
+    },
+    {
+      "id": "core.map.filter",
+      "kind": "runtime-helper",
+      "typescript": "(K -> V -> Bool), Map<K,V> -> Map<K,V>",
+      "boundary": "insertion order and source seed",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "filter"
+      }
+    },
+    {
+      "id": "core.map.map-values",
+      "kind": "runtime-helper",
+      "typescript": "(A -> B), Map<K,A> -> Map<K,B>",
+      "boundary": "retain keys and positions",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "mapValues"
+      }
+    },
+    {
+      "id": "core.map.map-keys-with",
+      "kind": "runtime-helper",
+      "typescript": "Eq<K2>, Hash<K2>, (V -> V -> V), (K1 -> K2), Map<K1,V> -> Map<K2,V>",
+      "boundary": "resolve current then incoming",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "mapKeysWith"
+      }
+    },
+    {
+      "id": "core.map.merge-with",
+      "kind": "runtime-helper",
+      "typescript": "Eq<K>, Hash<K>, (V -> V -> V), Map<K,V>, Map<K,V> -> Map<K,V>",
+      "boundary": "data-last left order and seed",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "mergeWith"
+      }
+    },
+    {
+      "id": "core.map.keys",
+      "kind": "runtime-helper",
+      "typescript": "Map<K,V> -> Array<K>",
+      "boundary": "insertion order",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "keys"
+      }
+    },
+    {
+      "id": "core.map.values",
+      "kind": "runtime-helper",
+      "typescript": "Map<K,V> -> Array<V>",
+      "boundary": "insertion order",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "values"
+      }
+    },
+    {
+      "id": "core.map.entries",
+      "kind": "runtime-helper",
+      "typescript": "Map<K,V> -> Array<(K,V)>",
+      "boundary": "insertion order",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "entries"
+      }
+    },
+    {
+      "id": "core.map.size",
+      "kind": "runtime-helper",
+      "typescript": "Map<K,V> -> Int",
+      "boundary": "constant time",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "size"
+      }
+    },
+    {
+      "id": "core.map.is-empty",
+      "kind": "runtime-helper",
+      "typescript": "Map<K,V> -> Bool",
+      "boundary": "constant time",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "isEmpty"
+      }
+    },
+    {
+      "id": "core.map.eq",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "order-independent structural membership; Eq and Hash key evidence",
+      "instanceIdentity": "std/map::Eq",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "mapEq"
+      }
+    },
+    {
+      "id": "core.map.show",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Show in insertion order without hash seed or index",
+      "instanceIdentity": "std/map::Show",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "mapShow"
+      }
+    },
+    {
+      "id": "core.map.debug",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Debug in insertion order without hash seed or index",
+      "instanceIdentity": "std/map::Debug",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "mapDebug"
+      }
+    },
+    {
+      "id": "core.map.iterable",
+      "kind": "runtime-binding",
+      "typescript": "readonly Iterable dictionary",
+      "boundary": "Iterable in insertion order without hash seed or index",
+      "instanceIdentity": "std/map::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "mapIterable"
+      }
+    },
+    {
+      "id": "core.map.reducible",
+      "kind": "runtime-binding",
+      "typescript": "readonly Reducible dictionary",
+      "boundary": "Reducible in insertion order without hash seed or index",
+      "instanceIdentity": "std/map::Reducible",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "mapReducible"
+      }
+    },
+    {
+      "id": "core.map.json-encode",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "insertion-order sequence encoding without hash seed or index",
+      "instanceIdentity": "std/map::JsonEncode",
+      "import": {
+        "module": "@seseragi/runtime/json",
+        "export": "mapJsonEncode"
+      }
+    },
+    {
+      "id": "core.map.json-decode",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "sequence decoding with constructor duplicate rules and destination seed",
+      "instanceIdentity": "std/map::JsonDecode",
+      "import": {
+        "module": "@seseragi/runtime/json",
+        "export": "mapJsonDecode"
+      }
+    },
+    {
+      "id": "core.map.functor",
+      "kind": "runtime-binding",
+      "typescript": "readonly Functor dictionary",
+      "boundary": "value mapping with fixed key and insertion order",
+      "instanceIdentity": "std/map::Functor",
+      "import": {
+        "module": "@seseragi/runtime/map",
+        "export": "mapFunctor"
+      }
+    },
+    {
+      "id": "core.set.empty",
+      "kind": "runtime-helper",
+      "typescript": "Unit -> Set<A>",
+      "boundary": "fresh empty persistent collection",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "empty"
+      }
+    },
+    {
+      "id": "core.set.singleton",
+      "kind": "runtime-helper",
+      "typescript": "Eq<A>, Hash<A>, A -> Set<A>",
+      "boundary": "one element",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "singleton"
+      }
+    },
+    {
+      "id": "core.set.from-iterable",
+      "kind": "runtime-helper",
+      "typescript": "Iterable<C,A>, Eq<A>, Hash<A>, C -> Set<A>",
+      "boundary": "first occurrence order",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "fromIterable"
+      }
+    },
+    {
+      "id": "core.set.contains",
+      "kind": "runtime-helper",
+      "typescript": "Eq<A>, Hash<A>, A, Set<A> -> Bool",
+      "boundary": "structural membership",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "contains"
+      }
+    },
+    {
+      "id": "core.set.insert",
+      "kind": "runtime-helper",
+      "typescript": "Eq<A>, Hash<A>, A, Set<A> -> Set<A>",
+      "boundary": "existing position or append",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "insert"
+      }
+    },
+    {
+      "id": "core.set.remove",
+      "kind": "runtime-helper",
+      "typescript": "Eq<A>, Hash<A>, A, Set<A> -> Set<A>",
+      "boundary": "no removed element retention",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "remove"
+      }
+    },
+    {
+      "id": "core.set.filter",
+      "kind": "runtime-helper",
+      "typescript": "(A -> Bool), Set<A> -> Set<A>",
+      "boundary": "insertion order and source seed",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "filter"
+      }
+    },
+    {
+      "id": "core.set.map",
+      "kind": "runtime-helper",
+      "typescript": "Eq<B>, Hash<B>, (A -> B), Set<A> -> Set<B>",
+      "boundary": "first mapped occurrence order",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "map"
+      }
+    },
+    {
+      "id": "core.set.union",
+      "kind": "runtime-helper",
+      "typescript": "Eq<A>, Hash<A>, Set<A>, Set<A> -> Set<A>",
+      "boundary": "data-last left order and seed",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "union"
+      }
+    },
+    {
+      "id": "core.set.intersection",
+      "kind": "runtime-helper",
+      "typescript": "Eq<A>, Hash<A>, Set<A>, Set<A> -> Set<A>",
+      "boundary": "data-last left order and seed",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "intersection"
+      }
+    },
+    {
+      "id": "core.set.difference",
+      "kind": "runtime-helper",
+      "typescript": "Eq<A>, Hash<A>, Set<A>, Set<A> -> Set<A>",
+      "boundary": "data-last source order and seed",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "difference"
+      }
+    },
+    {
+      "id": "core.set.is-subset-of",
+      "kind": "runtime-helper",
+      "typescript": "Eq<A>, Hash<A>, Set<A>, Set<A> -> Bool",
+      "boundary": "data-last source subset",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "isSubsetOf"
+      }
+    },
+    {
+      "id": "core.set.to-array",
+      "kind": "runtime-helper",
+      "typescript": "Set<A> -> Array<A>",
+      "boundary": "insertion order",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "toArray"
+      }
+    },
+    {
+      "id": "core.set.to-list",
+      "kind": "runtime-helper",
+      "typescript": "Set<A> -> List<A>",
+      "boundary": "insertion order",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "toList"
+      }
+    },
+    {
+      "id": "core.set.size",
+      "kind": "runtime-helper",
+      "typescript": "Set<A> -> Int",
+      "boundary": "constant time",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "size"
+      }
+    },
+    {
+      "id": "core.set.is-empty",
+      "kind": "runtime-helper",
+      "typescript": "Set<A> -> Bool",
+      "boundary": "constant time",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "isEmpty"
+      }
+    },
+    {
+      "id": "core.set.eq",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "order-independent structural membership; Eq and Hash key evidence",
+      "instanceIdentity": "std/set::Eq",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "setEq"
+      }
+    },
+    {
+      "id": "core.set.show",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Show in insertion order without hash seed or index",
+      "instanceIdentity": "std/set::Show",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "setShow"
+      }
+    },
+    {
+      "id": "core.set.debug",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Debug in insertion order without hash seed or index",
+      "instanceIdentity": "std/set::Debug",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "setDebug"
+      }
+    },
+    {
+      "id": "core.set.iterable",
+      "kind": "runtime-binding",
+      "typescript": "readonly Iterable dictionary",
+      "boundary": "Iterable in insertion order without hash seed or index",
+      "instanceIdentity": "std/set::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "setIterable"
+      }
+    },
+    {
+      "id": "core.set.reducible",
+      "kind": "runtime-binding",
+      "typescript": "readonly Reducible dictionary",
+      "boundary": "Reducible in insertion order without hash seed or index",
+      "instanceIdentity": "std/set::Reducible",
+      "import": {
+        "module": "@seseragi/runtime/set",
+        "export": "setReducible"
+      }
+    },
+    {
+      "id": "core.set.json-encode",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "insertion-order sequence encoding without hash seed or index",
+      "instanceIdentity": "std/set::JsonEncode",
+      "import": {
+        "module": "@seseragi/runtime/json",
+        "export": "setJsonEncode"
+      }
+    },
+    {
+      "id": "core.set.json-decode",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "sequence decoding with constructor duplicate rules and destination seed",
+      "instanceIdentity": "std/set::JsonDecode",
+      "import": {
+        "module": "@seseragi/runtime/json",
+        "export": "setJsonDecode"
+      }
     },
     {
       "id": "json.value-type",

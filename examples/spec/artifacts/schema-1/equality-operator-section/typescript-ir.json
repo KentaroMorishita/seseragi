@@ -716,22 +716,28 @@
                     ]
                   },
                   {
-                    "kind": "call",
-                    "callee": "genericSame",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "Waiting"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "Waiting"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Eq$0"
-                      }
-                    ]
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "genericSame",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "Waiting"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "Waiting"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$instance$Eq$0"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "boolean"
+                    }
                   }
                 ]
               }

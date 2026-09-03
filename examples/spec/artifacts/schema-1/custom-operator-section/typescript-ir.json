@@ -226,25 +226,37 @@
         "callee": "applyOne",
         "arguments": [
           {
-            "kind": "lambda",
-            "parameter": "__ssrg$partial$0: number",
-            "body": {
-              "kind": "call",
-              "callee": "__ssrg$operator$3c5e3e",
-              "arguments": [
-                {
-                  "kind": "number",
-                  "value": "10"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "__ssrg$partial$0"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "__ssrg$instance$Difference$0"
-                }
-              ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "lambda",
+              "parameter": "__ssrg$partial$0: number",
+              "body": {
+                "kind": "call",
+                "callee": "__ssrg$operator$3c5e3e",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "10"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$partial$0"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Difference$0"
+                  }
+                ]
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "number"
+              }
             }
           },
           {
@@ -300,28 +312,46 @@
                       "callee": "applyPair",
                       "arguments": [
                         {
-                          "kind": "lambda",
-                          "parameter": "__ssrg$partial$0: number",
-                          "body": {
+                          "kind": "checked-result",
+                          "value": {
                             "kind": "lambda",
-                            "parameter": "__ssrg$partial$1: number",
+                            "parameter": "__ssrg$partial$0: number",
                             "body": {
-                              "kind": "call",
-                              "callee": "__ssrg$operator$3c5e3e",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "__ssrg$partial$0"
-                                },
-                                {
-                                  "kind": "identifier",
-                                  "name": "__ssrg$partial$1"
-                                },
-                                {
-                                  "kind": "identifier",
-                                  "name": "__ssrg$instance$Difference$0"
-                                }
-                              ]
+                              "kind": "lambda",
+                              "parameter": "__ssrg$partial$1: number",
+                              "body": {
+                                "kind": "call",
+                                "callee": "__ssrg$operator$3c5e3e",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$partial$0"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$partial$1"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$instance$Difference$0"
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "number"
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "number"
+                              },
+                              "result": {
+                                "kind": "number"
+                              }
                             }
                           }
                         },

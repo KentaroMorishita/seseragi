@@ -59,18 +59,24 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "providerReport",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          },
-          {
-            "kind": "identifier",
-            "name": "__ssrg$evidence$0"
-          }
-        ]
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "providerReport",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            },
+            {
+              "kind": "identifier",
+              "name": "__ssrg$evidence$0"
+            }
+          ]
+        },
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "facade.ssrg",

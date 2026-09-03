@@ -212,25 +212,37 @@
         "callee": "applyLabel",
         "arguments": [
           {
-            "kind": "lambda",
-            "parameter": "__ssrg$partial$0: string",
-            "body": {
-              "kind": "call",
-              "callee": "describe",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "value"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "__ssrg$partial$0"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "__ssrg$evidence$0"
-                }
-              ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "lambda",
+              "parameter": "__ssrg$partial$0: string",
+              "body": {
+                "kind": "call",
+                "callee": "describe",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$partial$0"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$evidence$0"
+                  }
+                ]
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "string"
+              },
+              "result": {
+                "kind": "string"
+              }
             }
           }
         ]
@@ -257,18 +269,24 @@
         "callee": "_ssrg_console_println",
         "arguments": [
           {
-            "kind": "call",
-            "callee": "label",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "Active"
-              },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$instance$Ready$0"
-              }
-            ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "call",
+              "callee": "label",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Active"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Ready$0"
+                }
+              ]
+            },
+            "type": {
+              "kind": "string"
+            }
           }
         ]
       },

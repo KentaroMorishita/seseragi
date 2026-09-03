@@ -122,6 +122,303 @@ const LIST_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperat
 
 const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
     (
+        "std/map::empty",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.empty",
+            local_name: "_ssrg_map_empty",
+            module: "@seseragi/runtime/map",
+            export_name: "empty",
+        },
+    ),
+    (
+        "std/map::singleton",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.singleton",
+            local_name: "_ssrg_map_singleton",
+            module: "@seseragi/runtime/map",
+            export_name: "singleton",
+        },
+    ),
+    (
+        "std/map::fromEntries",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.from-entries",
+            local_name: "_ssrg_map_fromEntries",
+            module: "@seseragi/runtime/map",
+            export_name: "fromEntries",
+        },
+    ),
+    (
+        "std/map::get",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.get",
+            local_name: "_ssrg_map_get",
+            module: "@seseragi/runtime/map",
+            export_name: "get",
+        },
+    ),
+    (
+        "std/map::containsKey",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.contains-key",
+            local_name: "_ssrg_map_containsKey",
+            module: "@seseragi/runtime/map",
+            export_name: "containsKey",
+        },
+    ),
+    (
+        "std/map::insert",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.insert",
+            local_name: "_ssrg_map_insert",
+            module: "@seseragi/runtime/map",
+            export_name: "insert",
+        },
+    ),
+    (
+        "std/map::upsert",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.upsert",
+            local_name: "_ssrg_map_upsert",
+            module: "@seseragi/runtime/map",
+            export_name: "upsert",
+        },
+    ),
+    (
+        "std/map::remove",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.remove",
+            local_name: "_ssrg_map_remove",
+            module: "@seseragi/runtime/map",
+            export_name: "remove",
+        },
+    ),
+    (
+        "std/map::filter",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.filter",
+            local_name: "_ssrg_map_filter",
+            module: "@seseragi/runtime/map",
+            export_name: "filter",
+        },
+    ),
+    (
+        "std/map::mapValues",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.map-values",
+            local_name: "_ssrg_map_mapValues",
+            module: "@seseragi/runtime/map",
+            export_name: "mapValues",
+        },
+    ),
+    (
+        "std/map::mapKeysWith",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.map-keys-with",
+            local_name: "_ssrg_map_mapKeysWith",
+            module: "@seseragi/runtime/map",
+            export_name: "mapKeysWith",
+        },
+    ),
+    (
+        "std/map::mergeWith",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.merge-with",
+            local_name: "_ssrg_map_mergeWith",
+            module: "@seseragi/runtime/map",
+            export_name: "mergeWith",
+        },
+    ),
+    (
+        "std/map::keys",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.keys",
+            local_name: "_ssrg_map_keys",
+            module: "@seseragi/runtime/map",
+            export_name: "keys",
+        },
+    ),
+    (
+        "std/map::values",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.values",
+            local_name: "_ssrg_map_values",
+            module: "@seseragi/runtime/map",
+            export_name: "values",
+        },
+    ),
+    (
+        "std/map::entries",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.entries",
+            local_name: "_ssrg_map_entries",
+            module: "@seseragi/runtime/map",
+            export_name: "entries",
+        },
+    ),
+    (
+        "std/map::size",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.size",
+            local_name: "_ssrg_map_size",
+            module: "@seseragi/runtime/map",
+            export_name: "size",
+        },
+    ),
+    (
+        "std/map::isEmpty",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.map.is-empty",
+            local_name: "_ssrg_map_isEmpty",
+            module: "@seseragi/runtime/map",
+            export_name: "isEmpty",
+        },
+    ),
+    (
+        "std/set::empty",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.empty",
+            local_name: "_ssrg_set_empty",
+            module: "@seseragi/runtime/set",
+            export_name: "empty",
+        },
+    ),
+    (
+        "std/set::singleton",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.singleton",
+            local_name: "_ssrg_set_singleton",
+            module: "@seseragi/runtime/set",
+            export_name: "singleton",
+        },
+    ),
+    (
+        "std/set::fromIterable",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.from-iterable",
+            local_name: "_ssrg_set_fromIterable",
+            module: "@seseragi/runtime/set",
+            export_name: "fromIterable",
+        },
+    ),
+    (
+        "std/set::contains",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.contains",
+            local_name: "_ssrg_set_contains",
+            module: "@seseragi/runtime/set",
+            export_name: "contains",
+        },
+    ),
+    (
+        "std/set::insert",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.insert",
+            local_name: "_ssrg_set_insert",
+            module: "@seseragi/runtime/set",
+            export_name: "insert",
+        },
+    ),
+    (
+        "std/set::remove",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.remove",
+            local_name: "_ssrg_set_remove",
+            module: "@seseragi/runtime/set",
+            export_name: "remove",
+        },
+    ),
+    (
+        "std/set::filter",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.filter",
+            local_name: "_ssrg_set_filter",
+            module: "@seseragi/runtime/set",
+            export_name: "filter",
+        },
+    ),
+    (
+        "std/set::map",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.map",
+            local_name: "_ssrg_set_map",
+            module: "@seseragi/runtime/set",
+            export_name: "map",
+        },
+    ),
+    (
+        "std/set::union",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.union",
+            local_name: "_ssrg_set_union",
+            module: "@seseragi/runtime/set",
+            export_name: "union",
+        },
+    ),
+    (
+        "std/set::intersection",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.intersection",
+            local_name: "_ssrg_set_intersection",
+            module: "@seseragi/runtime/set",
+            export_name: "intersection",
+        },
+    ),
+    (
+        "std/set::difference",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.difference",
+            local_name: "_ssrg_set_difference",
+            module: "@seseragi/runtime/set",
+            export_name: "difference",
+        },
+    ),
+    (
+        "std/set::isSubsetOf",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.is-subset-of",
+            local_name: "_ssrg_set_isSubsetOf",
+            module: "@seseragi/runtime/set",
+            export_name: "isSubsetOf",
+        },
+    ),
+    (
+        "std/set::toArray",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.to-array",
+            local_name: "_ssrg_set_toArray",
+            module: "@seseragi/runtime/set",
+            export_name: "toArray",
+        },
+    ),
+    (
+        "std/set::toList",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.to-list",
+            local_name: "_ssrg_set_toList",
+            module: "@seseragi/runtime/set",
+            export_name: "toList",
+        },
+    ),
+    (
+        "std/set::size",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.size",
+            local_name: "_ssrg_set_size",
+            module: "@seseragi/runtime/set",
+            export_name: "size",
+        },
+    ),
+    (
+        "std/set::isEmpty",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.set.is-empty",
+            local_name: "_ssrg_set_isEmpty",
+            module: "@seseragi/runtime/set",
+            export_name: "isEmpty",
+        },
+    ),
+    (
         "std/array::toList",
         RuntimeCollectionOperation {
             runtime_feature: "core.array.to-list",

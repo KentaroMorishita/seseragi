@@ -200,25 +200,37 @@
             "callee": "applyLabel",
             "arguments": [
               {
-                "kind": "lambda",
-                "parameter": "__ssrg$partial$0: string",
-                "body": {
-                  "kind": "call",
-                  "callee": "describe",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "Active"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "__ssrg$partial$0"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "__ssrg$instance$Ready$0"
-                    }
-                  ]
+                "kind": "checked-result",
+                "value": {
+                  "kind": "lambda",
+                  "parameter": "__ssrg$partial$0: string",
+                  "body": {
+                    "kind": "call",
+                    "callee": "describe",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Active"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$partial$0"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Ready$0"
+                      }
+                    ]
+                  }
+                },
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "string"
+                  },
+                  "result": {
+                    "kind": "string"
+                  }
                 }
               }
             ]

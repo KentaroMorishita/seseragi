@@ -786,8 +786,18 @@ pub(crate) fn select_iterable_evidence(
     resolution: &TypedResolution<'_>,
     scoped: &[ScopedCallEvidence],
 ) -> Result<(TypedType, TypedCallEvidence), TypedConstraint> {
+    select_collection_evidence("Iterable", collection, trait_identity, resolution, scoped)
+}
+
+pub(crate) fn select_collection_evidence(
+    trait_name: &str,
+    collection: TypedType,
+    trait_identity: Option<&str>,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+) -> Result<(TypedType, TypedCallEvidence), TypedConstraint> {
     let missing = || TypedConstraint {
-        name: "Iterable".to_owned(),
+        name: trait_name.to_owned(),
         arguments: vec![collection.clone(), TypedType::Hole],
     };
     if let Some(trait_identity) = trait_identity {
@@ -817,7 +827,7 @@ pub(crate) fn select_iterable_evidence(
         }
         if let Some((element, evidence)) = local::infer_local_functional_instance(
             trait_identity,
-            "Iterable",
+            trait_name,
             &collection,
             resolution,
             scoped,
@@ -826,7 +836,7 @@ pub(crate) fn select_iterable_evidence(
                 element.clone(),
                 TypedCallEvidence {
                     constraint: TypedConstraint {
-                        name: "Iterable".to_owned(),
+                        name: trait_name.to_owned(),
                         arguments: vec![collection, element],
                     },
                     evidence,
@@ -835,7 +845,7 @@ pub(crate) fn select_iterable_evidence(
         }
         if let Some((element, evidence)) = imported::infer_imported_functional_instance(
             trait_identity,
-            "Iterable",
+            trait_name,
             &collection,
             resolution,
             scoped,
@@ -844,7 +854,7 @@ pub(crate) fn select_iterable_evidence(
                 element.clone(),
                 TypedCallEvidence {
                     constraint: TypedConstraint {
-                        name: "Iterable".to_owned(),
+                        name: trait_name.to_owned(),
                         arguments: vec![collection, element],
                     },
                     evidence,
@@ -852,7 +862,7 @@ pub(crate) fn select_iterable_evidence(
             ));
         }
     }
-    let constraint = crate::prelude::special_collection_constraint("Iterable", &collection)
+    let constraint = crate::prelude::special_collection_constraint(trait_name, &collection)
         .ok_or_else(missing)?;
     let element = constraint.arguments[1].clone();
     select_call_evidence(std::slice::from_ref(&constraint))

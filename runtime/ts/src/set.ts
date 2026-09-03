@@ -1,4 +1,7 @@
-import type { Iterable as CollectionIterable } from "./collection"
+import type {
+  Iterable as CollectionIterable,
+  RuntimeDictionary,
+} from "./collection"
 import type { Unit } from "./effect"
 import { type Eq, unitEq } from "./equality"
 import type { Hash } from "./hash"
@@ -13,17 +16,20 @@ const wrap = <A>(values: maps.Map<A, Unit>): Set<A> =>
   Object.freeze({ [valuesKey]: values })
 
 export const empty = <A>(_unit?: Unit): Set<A> => wrap(maps.empty())
-export const singleton = <A>(eq: Eq<A>, hash: Hash<A>, value: A): Set<A> =>
-  wrap(maps.singleton(eq, hash, value, undefined))
+export const singleton = <A>(
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary,
+  value: A
+): Set<A> => wrap(maps.singleton(eq, hash, value, undefined))
 
 export function fromIterable<C, A>(
-  iterable: CollectionIterable<C, A>,
-  eq: Eq<A>,
-  hash: Hash<A>,
+  iterable: CollectionIterable<C, A> | RuntimeDictionary,
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary,
   values: C
 ): Set<A> {
   let result = empty<A>()
-  let iterator = iterable.iterate(values)
+  let iterator = (iterable as CollectionIterable<C, A>).iterate(values)
   while (true) {
     const step = iterator.next()
     if (step.tag === "Nothing") return result
@@ -33,22 +39,22 @@ export function fromIterable<C, A>(
 }
 
 export const contains = <A>(
-  eq: Eq<A>,
-  hash: Hash<A>,
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary,
   value: A,
   values: Set<A>
 ): boolean => maps.containsKey(eq, hash, value, values[valuesKey])
 
 export const insert = <A>(
-  eq: Eq<A>,
-  hash: Hash<A>,
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary,
   value: A,
   values: Set<A>
 ): Set<A> => wrap(maps.insert(eq, hash, value, undefined, values[valuesKey]))
 
 export const remove = <A>(
-  eq: Eq<A>,
-  hash: Hash<A>,
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary,
   value: A,
   values: Set<A>
 ): Set<A> => wrap(maps.remove(eq, hash, value, values[valuesKey]))
@@ -61,16 +67,16 @@ export const filter = <A>(
 // There is deliberately no Functor<Set> dictionary: mapping requires Eq/Hash
 // of the output, and can collapse distinct inputs into one output element.
 export const map = <A, B>(
-  eq: Eq<B>,
-  hash: Hash<B>,
+  eq: Eq<B> | RuntimeDictionary,
+  hash: Hash<B> | RuntimeDictionary,
   f: (value: A) => B,
   values: Set<A>
 ): Set<B> =>
   wrap(maps.mapKeysWith(eq, hash, () => () => undefined, f, values[valuesKey]))
 
 export const union = <A>(
-  eq: Eq<A>,
-  hash: Hash<A>,
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary,
   right: Set<A>,
   left: Set<A>
 ): Set<A> =>
@@ -85,22 +91,22 @@ export const union = <A>(
   )
 
 export const intersection = <A>(
-  eq: Eq<A>,
-  hash: Hash<A>,
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary,
   right: Set<A>,
   left: Set<A>
 ): Set<A> => filter((value) => contains(eq, hash, value, right), left)
 
 export const difference = <A>(
-  eq: Eq<A>,
-  hash: Hash<A>,
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary,
   removed: Set<A>,
   values: Set<A>
 ): Set<A> => filter((value) => !contains(eq, hash, value, removed), values)
 
 export function isSubsetOf<A>(
-  eq: Eq<A>,
-  hash: Hash<A>,
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary,
   superset: Set<A>,
   values: Set<A>
 ): boolean {
@@ -147,7 +153,10 @@ export const setReducible = Object.freeze({
         values[valuesKey]
       ),
 })
-export const setEq = <A>(eq: Eq<A>, hash: Hash<A>): Eq<Set<A>> =>
+export const setEq = <A>(
+  eq: Eq<A> | RuntimeDictionary,
+  hash: Hash<A> | RuntimeDictionary
+): Eq<Set<A>> =>
   Object.freeze({
     eq:
       (left: Set<A>) =>

@@ -1,4 +1,7 @@
-import type { Iterable as CollectionIterable } from "./collection"
+import type {
+  Iterable as CollectionIterable,
+  RuntimeDictionary,
+} from "./collection"
 import type { Unit } from "./effect"
 import type { Eq } from "./equality"
 import { type Hash, mixHash, processHashSeed } from "./hash"
@@ -55,13 +58,13 @@ function entryAt<K, V>(state: State<K, V>, id: number): Entry<K, V> {
 }
 
 function find<K, V>(
-  eq: Eq<K>,
+  eq: Eq<K> | RuntimeDictionary,
   key: K,
   hash: number,
   state: State<K, V>
 ): number | undefined {
   for (const id of indexGet(state.buckets, hash) ?? []) {
-    if (eq.eq(entryAt(state, id).key)(key)) return id
+    if ((eq as Eq<K>).eq(entryAt(state, id).key)(key)) return id
   }
   return undefined
 }
@@ -111,8 +114,8 @@ function replace<K, V>(id: number, value: V, values: Map<K, V>): Map<K, V> {
 }
 
 export function singleton<K, V>(
-  eq: Eq<K>,
-  hash: Hash<K>,
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
   key: K,
   value: V
 ): Map<K, V> {
@@ -120,19 +123,24 @@ export function singleton<K, V>(
 }
 
 export function get<K, V>(
-  eq: Eq<K>,
-  hash: Hash<K>,
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
   key: K,
   values: Map<K, V>
 ): Maybe<V> {
   const state = values[stateKey]
-  const id = find(eq, key, mixHash(hash.hash(key), state.seed), state)
+  const id = find(
+    eq,
+    key,
+    mixHash((hash as Hash<K>).hash(key), state.seed),
+    state
+  )
   return id === undefined ? Nothing : Just(entryAt(state, id).value)
 }
 
 export function containsKey<K, V>(
-  eq: Eq<K>,
-  hash: Hash<K>,
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
   key: K,
   values: Map<K, V>
 ): boolean {
@@ -140,14 +148,14 @@ export function containsKey<K, V>(
 }
 
 export function insert<K, V>(
-  eq: Eq<K>,
-  hash: Hash<K>,
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
   key: K,
   value: V,
   values: Map<K, V>
 ): Map<K, V> {
   const state = values[stateKey]
-  const mixed = mixHash(hash.hash(key), state.seed)
+  const mixed = mixHash((hash as Hash<K>).hash(key), state.seed)
   const id = find(eq, key, mixed, state)
   return id === undefined
     ? append(key, value, mixed, values)
@@ -155,14 +163,14 @@ export function insert<K, V>(
 }
 
 export function upsert<K, V>(
-  eq: Eq<K>,
-  hash: Hash<K>,
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
   key: K,
   update: (value: Maybe<V>) => V,
   values: Map<K, V>
 ): Map<K, V> {
   const state = values[stateKey]
-  const mixed = mixHash(hash.hash(key), state.seed)
+  const mixed = mixHash((hash as Hash<K>).hash(key), state.seed)
   const id = find(eq, key, mixed, state)
   const value = update(
     id === undefined ? Nothing : Just(entryAt(state, id).value)
@@ -173,13 +181,13 @@ export function upsert<K, V>(
 }
 
 export function remove<K, V>(
-  eq: Eq<K>,
-  hash: Hash<K>,
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
   key: K,
   values: Map<K, V>
 ): Map<K, V> {
   const state = values[stateKey]
-  const mixed = mixHash(hash.hash(key), state.seed)
+  const mixed = mixHash((hash as Hash<K>).hash(key), state.seed)
   const id = find(eq, key, mixed, state)
   if (id === undefined) return values
   const entry = entryAt(state, id)
@@ -224,13 +232,15 @@ function* ordered<K, V>(values: Map<K, V>): Generator<Entry<K, V>> {
 }
 
 export function fromEntries<C, K, V>(
-  iterable: CollectionIterable<C, readonly [K, V]>,
-  eq: Eq<K>,
-  hash: Hash<K>,
+  iterable: CollectionIterable<C, readonly [K, V]> | RuntimeDictionary,
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
   source: C
 ): Map<K, V> {
   let result = empty<K, V>()
-  let iterator = iterable.iterate(source)
+  let iterator = (iterable as CollectionIterable<C, readonly [K, V]>).iterate(
+    source
+  )
   while (true) {
     const step = iterator.next()
     if (step.tag === "Nothing") return result
@@ -300,8 +310,8 @@ export function mapValues<K, A, B>(
 }
 
 export function mapKeysWith<K1, K2, V>(
-  eq: Eq<K2>,
-  hash: Hash<K2>,
+  eq: Eq<K2> | RuntimeDictionary,
+  hash: Hash<K2> | RuntimeDictionary,
   resolve: (current: V) => (incoming: V) => V,
   key: (key: K1) => K2,
   values: Map<K1, V>
@@ -323,8 +333,8 @@ export function mapKeysWith<K1, K2, V>(
 }
 
 export function mergeWith<K, V>(
-  eq: Eq<K>,
-  hash: Hash<K>,
+  eq: Eq<K> | RuntimeDictionary,
+  hash: Hash<K> | RuntimeDictionary,
   resolve: (left: V) => (right: V) => V,
   right: Map<K, V>,
   left: Map<K, V>
@@ -407,9 +417,9 @@ export const mapFunctor = Object.freeze({
 })
 
 export const mapEq = <K, V>(
-  keyEq: Eq<K>,
-  keyHash: Hash<K>,
-  valueEq: Eq<V>
+  keyEq: Eq<K> | RuntimeDictionary,
+  keyHash: Hash<K> | RuntimeDictionary,
+  valueEq: Eq<V> | RuntimeDictionary
 ): Eq<Map<K, V>> =>
   Object.freeze({
     eq:
@@ -418,7 +428,10 @@ export const mapEq = <K, V>(
         if (size(left) !== size(right)) return false
         for (const entry of ordered(left)) {
           const value = get(keyEq, keyHash, entry.key, right)
-          if (value.tag === "Nothing" || !valueEq.eq(entry.value)(value.value))
+          if (
+            value.tag === "Nothing" ||
+            !(valueEq as Eq<V>).eq(entry.value)(value.value)
+          )
             return false
         }
         return true

@@ -1313,7 +1313,8 @@ IntはJsonNumberへ整数値としてencodeし、decodeはexact Decimalが整数
 JavaScript JSON value adapterでも通常の`number`を使い、finite / integral / safe integerを検査して`-0`を`0`へ
 正規化します。BigIntはJSON numberへ暗黙encodeせず、canonical decimal Stringなどの明示codecを使います。
 
-Map<String, V>はobject、ほかのMap<K, V>はentryの2要素Array列、SetはArrayとして10.5の順序と重複規則を使います。
+Map<K, V>はkey型によらずentryの2要素Array列、SetはArrayとして10.5の順序と重複規則を使います。
+Map<String, V>とobjectの変換には名前付きadapterを使い、標準instanceでは暗黙変換しません。
 structural recordのfieldはUnicode scalarの辞書順でencodeし、decodeでは全fieldを必須として未知fieldを拒否します。
 `optionalField` を使う手書きDecoderだけが欠落を許可します。Maybe fieldもdefault derivingでは必須で、Nothingは
 missingではなく明示JsonNullです。

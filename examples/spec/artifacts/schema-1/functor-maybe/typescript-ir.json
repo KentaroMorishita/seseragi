@@ -347,28 +347,37 @@
             "callee": "render",
             "arguments": [
               {
-                "kind": "call",
-                "callee": "transform",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "increment"
-                  },
-                  {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_maybe_Just",
-                    "arguments": [
-                      {
-                        "kind": "number",
-                        "value": "41"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Functor$0"
+                "kind": "checked-result",
+                "value": {
+                  "kind": "call",
+                  "callee": "transform",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "increment"
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_maybe_Just",
+                      "arguments": [
+                        {
+                          "kind": "number",
+                          "value": "41"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Functor$0"
+                    }
+                  ]
+                },
+                "type": {
+                  "kind": "maybe",
+                  "element": {
+                    "kind": "number"
                   }
-                ]
+                }
               }
             ]
           }

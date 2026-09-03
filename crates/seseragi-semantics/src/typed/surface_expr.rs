@@ -255,6 +255,22 @@ impl<'a> PureExpressionContext<'a> {
         )
     }
 
+    pub(super) fn infer_standard_collection_element(
+        &self,
+        trait_name: &str,
+        collection: TypedType,
+    ) -> Option<TypedType> {
+        super::call_evidence::select_collection_evidence(
+            trait_name,
+            collection,
+            Some(&format!("std/prelude::{trait_name}")),
+            self.resolution,
+            &self.evidence_parameters,
+        )
+        .ok()
+        .map(|(element, _)| element)
+    }
+
     pub(super) fn select_show_evidence(
         &self,
         value: TypedType,

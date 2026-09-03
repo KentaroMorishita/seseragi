@@ -170,6 +170,18 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "NonEmptyList",
     },
     RuntimeTypeImport {
+        canonical: "std/map::Map",
+        runtime_feature: "core.map",
+        module: "@seseragi/runtime/map",
+        export_name: "Map",
+    },
+    RuntimeTypeImport {
+        canonical: "std/set::Set",
+        runtime_feature: "core.set",
+        module: "@seseragi/runtime/set",
+        export_name: "Set",
+    },
+    RuntimeTypeImport {
         canonical: "std/number::RoundingMode",
         runtime_feature: "core.number.rounding-mode",
         module: "@seseragi/runtime/number",
@@ -240,12 +252,6 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         runtime_feature: "json.decimal-type",
         module: "@seseragi/runtime/json",
         export_name: "Decimal",
-    },
-    RuntimeTypeImport {
-        canonical: "std/map::Map",
-        runtime_feature: "json.map-type",
-        module: "@seseragi/runtime/json",
-        export_name: "JsonMap",
     },
     RuntimeTypeImport {
         canonical: "std/json::Json",

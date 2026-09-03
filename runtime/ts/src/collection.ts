@@ -13,7 +13,10 @@ export type Iterable<Collection, Element> = Readonly<{
   iterate: (values: Collection) => Iterator<Element>
 }>
 
-type RuntimeDictionary = Readonly<Record<string, (...arguments_: any[]) => any>>
+/** Erased dictionary parameters emitted after Seseragi evidence checking. */
+export type RuntimeDictionary = Readonly<
+  Record<string, (...arguments_: any[]) => any>
+>
 
 /** Join a reducible collection without depending on its concrete representation. */
 export function join<Collection>(

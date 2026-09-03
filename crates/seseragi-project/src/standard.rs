@@ -342,7 +342,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         PORTABLE_TARGETS,
         &["std/log::Logger"]
     ),
-    contract_module!("std/map", PORTABLE_TARGETS),
+    available_module!("std/map", map_interface, PORTABLE_TARGETS),
     contract_module!("std/maybe", PORTABLE_TARGETS),
     available_module!(
         "std/non-empty-list",
@@ -366,7 +366,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     available_module!("std/ref", ref_interface, PORTABLE_TARGETS),
     contract_module!("std/regex", PORTABLE_TARGETS),
     available_module!("std/semaphore", semaphore_interface, PORTABLE_TARGETS),
-    contract_module!("std/set", PORTABLE_TARGETS),
+    available_module!("std/set", set_interface, PORTABLE_TARGETS),
     available_module!(
         "std/stdin",
         stdin_interface,
@@ -784,6 +784,295 @@ fn path_interface() -> ModuleInterface {
             ),
         ],
     )
+}
+
+fn collection_constraint(name: &str, arguments: Vec<InterfaceType>) -> InterfaceConstraint {
+    InterfaceConstraint {
+        name: name.to_owned(),
+        trait_identity: Some(format!("std/prelude::{name}")),
+        arguments,
+    }
+}
+
+fn key_constraints(parameter: &str) -> Vec<InterfaceConstraint> {
+    ["Eq", "Hash"]
+        .into_iter()
+        .map(|name| collection_constraint(name, vec![named(parameter)]))
+        .collect()
+}
+
+fn map_interface() -> ModuleInterface {
+    let module = "std/map";
+    let map = |key: &str, value: &str| named_with("Map", vec![named(key), named(value)]);
+    let pair = || InterfaceType::Tuple {
+        elements: vec![named("K"), named("V")],
+    };
+    let mut exports = vec![
+        type_export(module, "Map", 2, "opaque-type"),
+        function_export(
+            module,
+            "empty",
+            ["K", "V"],
+            vec![],
+            vec![named("Unit")],
+            map("K", "V"),
+        ),
+        function_export(
+            module,
+            "singleton",
+            ["K", "V"],
+            key_constraints("K"),
+            vec![named("K"), named("V")],
+            map("K", "V"),
+        ),
+        function_export(
+            module,
+            "fromEntries",
+            ["C", "K", "V"],
+            {
+                let mut constraints =
+                    vec![collection_constraint("Iterable", vec![named("C"), pair()])];
+                constraints.extend(key_constraints("K"));
+                constraints
+            },
+            vec![named("C")],
+            map("K", "V"),
+        ),
+        function_export(
+            module,
+            "get",
+            ["K", "V"],
+            key_constraints("K"),
+            vec![named("K"), map("K", "V")],
+            named_with("Maybe", vec![named("V")]),
+        ),
+        function_export(
+            module,
+            "containsKey",
+            ["K", "V"],
+            key_constraints("K"),
+            vec![named("K"), map("K", "V")],
+            named("Bool"),
+        ),
+        function_export(
+            module,
+            "insert",
+            ["K", "V"],
+            key_constraints("K"),
+            vec![named("K"), named("V"), map("K", "V")],
+            map("K", "V"),
+        ),
+        function_export(
+            module,
+            "upsert",
+            ["K", "V"],
+            key_constraints("K"),
+            vec![
+                named("K"),
+                function_type(vec![named_with("Maybe", vec![named("V")])], named("V")),
+                map("K", "V"),
+            ],
+            map("K", "V"),
+        ),
+        function_export(
+            module,
+            "remove",
+            ["K", "V"],
+            key_constraints("K"),
+            vec![named("K"), map("K", "V")],
+            map("K", "V"),
+        ),
+        function_export(
+            module,
+            "filter",
+            ["K", "V"],
+            vec![],
+            vec![
+                function_type(vec![named("K"), named("V")], named("Bool")),
+                map("K", "V"),
+            ],
+            map("K", "V"),
+        ),
+        function_export(
+            module,
+            "mapValues",
+            ["K", "A", "B"],
+            vec![],
+            vec![function_type(vec![named("A")], named("B")), map("K", "A")],
+            map("K", "B"),
+        ),
+        function_export(
+            module,
+            "mapKeysWith",
+            ["K1", "K2", "V"],
+            key_constraints("K2"),
+            vec![
+                function_type(vec![named("V"), named("V")], named("V")),
+                function_type(vec![named("K1")], named("K2")),
+                map("K1", "V"),
+            ],
+            map("K2", "V"),
+        ),
+        function_export(
+            module,
+            "mergeWith",
+            ["K", "V"],
+            key_constraints("K"),
+            vec![
+                function_type(vec![named("V"), named("V")], named("V")),
+                map("K", "V"),
+                map("K", "V"),
+            ],
+            map("K", "V"),
+        ),
+        function_export(
+            module,
+            "keys",
+            ["K", "V"],
+            vec![],
+            vec![map("K", "V")],
+            named_with("Array", vec![named("K")]),
+        ),
+        function_export(
+            module,
+            "values",
+            ["K", "V"],
+            vec![],
+            vec![map("K", "V")],
+            named_with("Array", vec![named("V")]),
+        ),
+        function_export(
+            module,
+            "entries",
+            ["K", "V"],
+            vec![],
+            vec![map("K", "V")],
+            named_with("Array", vec![pair()]),
+        ),
+    ];
+    for (name, result) in [("size", "Int"), ("isEmpty", "Bool")] {
+        exports.push(function_export(
+            module,
+            name,
+            ["K", "V"],
+            vec![],
+            vec![map("K", "V")],
+            named(result),
+        ));
+    }
+    standard_interface(module, exports)
+}
+
+fn set_interface() -> ModuleInterface {
+    let module = "std/set";
+    let set = |element: &str| named_with("Set", vec![named(element)]);
+    let mut exports = vec![
+        type_export(module, "Set", 1, "opaque-type"),
+        function_export(
+            module,
+            "empty",
+            ["A"],
+            vec![],
+            vec![named("Unit")],
+            set("A"),
+        ),
+        function_export(
+            module,
+            "singleton",
+            ["A"],
+            key_constraints("A"),
+            vec![named("A")],
+            set("A"),
+        ),
+        function_export(
+            module,
+            "fromIterable",
+            ["C", "A"],
+            {
+                let mut constraints = vec![collection_constraint(
+                    "Iterable",
+                    vec![named("C"), named("A")],
+                )];
+                constraints.extend(key_constraints("A"));
+                constraints
+            },
+            vec![named("C")],
+            set("A"),
+        ),
+        function_export(
+            module,
+            "contains",
+            ["A"],
+            key_constraints("A"),
+            vec![named("A"), set("A")],
+            named("Bool"),
+        ),
+        function_export(
+            module,
+            "filter",
+            ["A"],
+            vec![],
+            vec![function_type(vec![named("A")], named("Bool")), set("A")],
+            set("A"),
+        ),
+        function_export(
+            module,
+            "map",
+            ["A", "B"],
+            key_constraints("B"),
+            vec![function_type(vec![named("A")], named("B")), set("A")],
+            set("B"),
+        ),
+        function_export(
+            module,
+            "isSubsetOf",
+            ["A"],
+            key_constraints("A"),
+            vec![set("A"), set("A")],
+            named("Bool"),
+        ),
+    ];
+    for name in ["insert", "remove"] {
+        exports.push(function_export(
+            module,
+            name,
+            ["A"],
+            key_constraints("A"),
+            vec![named("A"), set("A")],
+            set("A"),
+        ));
+    }
+    for name in ["union", "intersection", "difference"] {
+        exports.push(function_export(
+            module,
+            name,
+            ["A"],
+            key_constraints("A"),
+            vec![set("A"), set("A")],
+            set("A"),
+        ));
+    }
+    for (name, result) in [("toArray", "Array"), ("toList", "List")] {
+        exports.push(function_export(
+            module,
+            name,
+            ["A"],
+            vec![],
+            vec![set("A")],
+            named_with(result, vec![named("A")]),
+        ));
+    }
+    for (name, result) in [("size", "Int"), ("isEmpty", "Bool")] {
+        exports.push(function_export(
+            module,
+            name,
+            ["A"],
+            vec![],
+            vec![set("A")],
+            named(result),
+        ));
+    }
+    standard_interface(module, exports)
 }
 
 fn non_empty_list_interface() -> ModuleInterface {
