@@ -1,6 +1,8 @@
 import * as arrays from "std/array"
 import * as collections from "std/collection"
 import * as bytes from "std/bytes"
+import * as base64 from "std/bytes/base64"
+import * as hex from "std/bytes/hex"
 import * as floats from "std/float"
 import * as ints from "std/int"
 import * as json from "std/json"
@@ -56,9 +58,30 @@ let regexSummary = match regex.compile "[0-9]+" {
   Left _ -> "regex error"
   Right pattern -> regex.replaceAll pattern "<number>" "order 123"
 }
+let decodedHex = match hex.decode "6F6B" {
+  Left error -> show error
+  Right value -> show (bytes.toInts value)
+}
+let decodedBase64 = match base64.decode "b2s=" {
+  Left error -> show error
+  Right value -> show (bytes.toInts value)
+}
+let decodedBase64Url = match base64.decodeUrl "b2s" {
+  Left error -> show error
+  Right value -> show (bytes.toInts value)
+}
+let invalidHex = match hex.decode "00é" {
+  Left error -> show error
+  Right _ -> "unexpected success"
+}
+let invalidBase64 = match base64.decode "AB==" {
+  Left error -> show error
+  Right _ -> "unexpected success"
+}
 
 pub effect fn main = do {
   println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique} / grouped: ${maps.values grouped} / sorted: ${sorted} / size: ${invalidSize} / maybe: ${maybeResult} / either: ${eitherResult} / validation: ${validationResult}`
   println `unicode: ${unicodeSummary}`
   println `regex: ${regexSummary}`
+  println `codecs: ${hex.encode encoded} / ${base64.encode encoded} / ${base64.encodeUrl encoded} / ${decodedHex} / ${decodedBase64} / ${decodedBase64Url} / ${invalidHex} / ${invalidBase64}`
 }

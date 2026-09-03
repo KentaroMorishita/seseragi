@@ -712,6 +712,30 @@
       "import": null
     },
     {
+      "id": "core.bytes.hex.decode-error-type",
+      "kind": "value-representation",
+      "typescript": "type HexDecodeError",
+      "boundary": "tagged hexadecimal decoding failure with UTF-8 byte positions",
+      "typeIdentity": "std/bytes/hex::HexDecodeError",
+      "typeImport": {
+        "module": "@seseragi/runtime/bytes-hex",
+        "export": "HexDecodeError"
+      },
+      "import": null
+    },
+    {
+      "id": "core.bytes.base64.decode-error-type",
+      "kind": "value-representation",
+      "typescript": "type Base64DecodeError",
+      "boundary": "tagged strict Base64 decoding failure with UTF-8 byte positions",
+      "typeIdentity": "std/bytes/base64::Base64DecodeError",
+      "typeImport": {
+        "module": "@seseragi/runtime/bytes-base64",
+        "export": "Base64DecodeError"
+      },
+      "import": null
+    },
+    {
       "id": "core.text.utf8-error-type",
       "kind": "value-representation",
       "typescript": "type Utf8DecodeError",
@@ -914,6 +938,126 @@
       }
     },
     {
+      "id": "core.bytes.hex.error.odd-length",
+      "kind": "runtime-helper",
+      "typescript": "number -> HexDecodeError",
+      "boundary": "constructs OddHexLength with the UTF-8 byte length",
+      "import": {
+        "module": "@seseragi/runtime/bytes-hex",
+        "export": "OddHexLength"
+      }
+    },
+    {
+      "id": "core.bytes.hex.error.invalid-digit",
+      "kind": "runtime-helper",
+      "typescript": "{ offset: number } -> HexDecodeError",
+      "boundary": "constructs InvalidHexDigit with the first invalid UTF-8 byte offset",
+      "import": {
+        "module": "@seseragi/runtime/bytes-hex",
+        "export": "InvalidHexDigit"
+      }
+    },
+    {
+      "id": "core.bytes.hex.encode",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> string",
+      "boundary": "encodes Bytes as canonical lowercase hexadecimal text",
+      "import": {
+        "module": "@seseragi/runtime/bytes-hex",
+        "export": "encode"
+      }
+    },
+    {
+      "id": "core.bytes.hex.decode",
+      "kind": "runtime-helper",
+      "typescript": "string -> Either<HexDecodeError, Bytes>",
+      "boundary": "decodes ASCII hexadecimal text with UTF-8 byte offsets",
+      "import": {
+        "module": "@seseragi/runtime/bytes-hex",
+        "export": "decode"
+      }
+    },
+    {
+      "id": "core.bytes.base64.error.invalid-length",
+      "kind": "runtime-helper",
+      "typescript": "number -> Base64DecodeError",
+      "boundary": "constructs InvalidBase64Length with the UTF-8 byte length",
+      "import": {
+        "module": "@seseragi/runtime/bytes-base64",
+        "export": "InvalidBase64Length"
+      }
+    },
+    {
+      "id": "core.bytes.base64.error.invalid-digit",
+      "kind": "runtime-helper",
+      "typescript": "{ offset: number } -> Base64DecodeError",
+      "boundary": "constructs InvalidBase64Digit with the first invalid UTF-8 byte offset",
+      "import": {
+        "module": "@seseragi/runtime/bytes-base64",
+        "export": "InvalidBase64Digit"
+      }
+    },
+    {
+      "id": "core.bytes.base64.error.invalid-padding",
+      "kind": "runtime-helper",
+      "typescript": "{ offset: number } -> Base64DecodeError",
+      "boundary": "constructs InvalidBase64Padding at the responsible ASCII byte",
+      "import": {
+        "module": "@seseragi/runtime/bytes-base64",
+        "export": "InvalidBase64Padding"
+      }
+    },
+    {
+      "id": "core.bytes.base64.error.non-canonical-bits",
+      "kind": "runtime-helper",
+      "typescript": "{ offset: number } -> Base64DecodeError",
+      "boundary": "constructs NonCanonicalBase64Bits at the final effective sextet",
+      "import": {
+        "module": "@seseragi/runtime/bytes-base64",
+        "export": "NonCanonicalBase64Bits"
+      }
+    },
+    {
+      "id": "core.bytes.base64.encode",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> string",
+      "boundary": "encodes canonical padded RFC 4648 Base64 text",
+      "import": {
+        "module": "@seseragi/runtime/bytes-base64",
+        "export": "encode"
+      }
+    },
+    {
+      "id": "core.bytes.base64.decode",
+      "kind": "runtime-helper",
+      "typescript": "string -> Either<Base64DecodeError, Bytes>",
+      "boundary": "strictly decodes canonical padded RFC 4648 Base64 text",
+      "import": {
+        "module": "@seseragi/runtime/bytes-base64",
+        "export": "decode"
+      }
+    },
+    {
+      "id": "core.bytes.base64.encode-url",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> string",
+      "boundary": "encodes canonical unpadded RFC 4648 URL-safe Base64 text",
+      "import": {
+        "module": "@seseragi/runtime/bytes-base64",
+        "export": "encodeUrl"
+      }
+    },
+    {
+      "id": "core.bytes.base64.decode-url",
+      "kind": "runtime-helper",
+      "typescript": "string -> Either<Base64DecodeError, Bytes>",
+      "boundary": "strictly decodes canonical unpadded RFC 4648 URL-safe Base64 text",
+      "import": {
+        "module": "@seseragi/runtime/bytes-base64",
+        "export": "decodeUrl"
+      }
+    },
+    {
       "id": "core.text.invalid-utf8",
       "kind": "runtime-helper",
       "typescript": "{ offset: number } -> Utf8DecodeError",
@@ -991,6 +1135,72 @@
       "import": {
         "module": "@seseragi/runtime/show",
         "export": "bytesSliceErrorDebug"
+      }
+    },
+    {
+      "id": "core.bytes.hex.decode-error.eq",
+      "kind": "runtime-binding",
+      "typescript": "Eq<HexDecodeError>",
+      "boundary": "structural equality for HexDecodeError",
+      "instanceIdentity": "Eq<std/bytes/hex::HexDecodeError>",
+      "import": {
+        "module": "@seseragi/runtime/bytes-hex",
+        "export": "hexDecodeErrorEq"
+      }
+    },
+    {
+      "id": "core.bytes.hex.decode-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<HexDecodeError>",
+      "boundary": "stable source-like HexDecodeError rendering",
+      "instanceIdentity": "Show<std/bytes/hex::HexDecodeError>",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "hexDecodeErrorShow"
+      }
+    },
+    {
+      "id": "core.bytes.hex.decode-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<HexDecodeError>",
+      "boundary": "stable source-like HexDecodeError debug rendering",
+      "instanceIdentity": "Debug<std/bytes/hex::HexDecodeError>",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "hexDecodeErrorDebug"
+      }
+    },
+    {
+      "id": "core.bytes.base64.decode-error.eq",
+      "kind": "runtime-binding",
+      "typescript": "Eq<Base64DecodeError>",
+      "boundary": "structural equality for Base64DecodeError",
+      "instanceIdentity": "Eq<std/bytes/base64::Base64DecodeError>",
+      "import": {
+        "module": "@seseragi/runtime/bytes-base64",
+        "export": "base64DecodeErrorEq"
+      }
+    },
+    {
+      "id": "core.bytes.base64.decode-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<Base64DecodeError>",
+      "boundary": "stable source-like Base64DecodeError rendering",
+      "instanceIdentity": "Show<std/bytes/base64::Base64DecodeError>",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "base64DecodeErrorShow"
+      }
+    },
+    {
+      "id": "core.bytes.base64.decode-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<Base64DecodeError>",
+      "boundary": "stable source-like Base64DecodeError debug rendering",
+      "instanceIdentity": "Debug<std/bytes/base64::Base64DecodeError>",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "base64DecodeErrorDebug"
       }
     },
     {

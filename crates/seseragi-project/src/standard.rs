@@ -297,8 +297,8 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/benchmark", PORTABLE_TARGETS),
     contract_module!("std/big-int", PORTABLE_TARGETS),
     available_module!("std/bytes", bytes_interface, PORTABLE_TARGETS),
-    contract_module!("std/bytes/base64", PORTABLE_TARGETS),
-    contract_module!("std/bytes/hex", PORTABLE_TARGETS),
+    available_module!("std/bytes/base64", base64_interface, PORTABLE_TARGETS),
+    available_module!("std/bytes/hex", hex_interface, PORTABLE_TARGETS),
     available_module!("std/char", char_interface, PORTABLE_TARGETS),
     available_module!(
         "std/child-process",
@@ -5265,6 +5265,144 @@ fn bytes_interface() -> ModuleInterface {
                 Vec::new(),
                 vec![named_with("Array", vec![bytes.clone()])],
                 bytes,
+            ),
+        ],
+    )
+}
+
+fn hex_interface() -> ModuleInterface {
+    let module = "std/bytes/hex";
+    let bytes = external_type(
+        "Bytes",
+        "std/bytes::Bytes",
+        "std/bytes",
+        "Bytes",
+        Vec::new(),
+    );
+    let error = external_type(
+        "HexDecodeError",
+        "std/bytes/hex::HexDecodeError",
+        module,
+        "HexDecodeError",
+        Vec::new(),
+    );
+    standard_interface(
+        module,
+        vec![
+            opaque_adt_type_export(module, "HexDecodeError", []),
+            constructor_export(
+                module,
+                "HexDecodeError",
+                "OddHexLength",
+                [],
+                Some(named("Int")),
+            ),
+            constructor_export(
+                module,
+                "HexDecodeError",
+                "InvalidHexDigit",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            function_export(
+                module,
+                "encode",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "decode",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                named_with("Either", vec![error, bytes]),
+            ),
+        ],
+    )
+}
+
+fn base64_interface() -> ModuleInterface {
+    let module = "std/bytes/base64";
+    let bytes = external_type(
+        "Bytes",
+        "std/bytes::Bytes",
+        "std/bytes",
+        "Bytes",
+        Vec::new(),
+    );
+    let error = external_type(
+        "Base64DecodeError",
+        "std/bytes/base64::Base64DecodeError",
+        module,
+        "Base64DecodeError",
+        Vec::new(),
+    );
+    standard_interface(
+        module,
+        vec![
+            opaque_adt_type_export(module, "Base64DecodeError", []),
+            constructor_export(
+                module,
+                "Base64DecodeError",
+                "InvalidBase64Length",
+                [],
+                Some(named("Int")),
+            ),
+            constructor_export(
+                module,
+                "Base64DecodeError",
+                "InvalidBase64Digit",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            constructor_export(
+                module,
+                "Base64DecodeError",
+                "InvalidBase64Padding",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            constructor_export(
+                module,
+                "Base64DecodeError",
+                "NonCanonicalBase64Bits",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            function_export(
+                module,
+                "encode",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "decode",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                named_with("Either", vec![error.clone(), bytes.clone()]),
+            ),
+            function_export(
+                module,
+                "encodeUrl",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "decodeUrl",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                named_with("Either", vec![error, bytes]),
             ),
         ],
     )
@@ -10294,8 +10432,40 @@ mod tests {
                 .iter()
                 .any(|export| export.name == name));
         }
-        assert!(standard_module_target("std/bytes/hex").is_none());
-        assert!(standard_module_target("std/bytes/base64").is_none());
+        let hex = standard_module_target("std/bytes/hex").expect("std/bytes/hex is available");
+        for name in [
+            "HexDecodeError",
+            "OddHexLength",
+            "InvalidHexDigit",
+            "encode",
+            "decode",
+        ] {
+            assert!(hex
+                .interface()
+                .exports
+                .iter()
+                .any(|export| export.name == name));
+        }
+
+        let base64 =
+            standard_module_target("std/bytes/base64").expect("std/bytes/base64 is available");
+        for name in [
+            "Base64DecodeError",
+            "InvalidBase64Length",
+            "InvalidBase64Digit",
+            "InvalidBase64Padding",
+            "NonCanonicalBase64Bits",
+            "encode",
+            "decode",
+            "encodeUrl",
+            "decodeUrl",
+        ] {
+            assert!(base64
+                .interface()
+                .exports
+                .iter()
+                .any(|export| export.name == name));
+        }
     }
 
     #[test]

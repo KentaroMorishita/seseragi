@@ -1,0 +1,4096 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/bytes-codecs",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    },
+    {
+      "spelling": "base64.Base64DecodeError",
+      "canonical": "std/bytes/base64::Base64DecodeError",
+      "provider": {
+        "module": "std/bytes/base64",
+        "export": "Base64DecodeError"
+      }
+    },
+    {
+      "spelling": "hex.HexDecodeError",
+      "canonical": "std/bytes/hex::HexDecodeError",
+      "provider": {
+        "module": "std/bytes/hex",
+        "export": "HexDecodeError"
+      }
+    },
+    {
+      "spelling": "bytes.Bytes",
+      "canonical": "std/bytes::Bytes",
+      "provider": {
+        "module": "std/bytes",
+        "export": "Bytes"
+      }
+    },
+    {
+      "spelling": "bytes.ByteError",
+      "canonical": "std/bytes::ByteError",
+      "provider": {
+        "module": "std/bytes",
+        "export": "ByteError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/bytes/base64",
+      "module": "std/bytes/base64",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 42
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Base64DecodeError",
+          "local": "base64.Base64DecodeError",
+          "canonical": "std/bytes/base64::Base64DecodeError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "InvalidBase64Padding",
+          "local": "base64.InvalidBase64Padding",
+          "canonical": "std/bytes/base64::InvalidBase64Padding",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "decode",
+          "local": "base64.decode",
+          "canonical": "std/bytes/base64::decode",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "decodeUrl",
+          "local": "base64.decodeUrl",
+          "canonical": "std/bytes/base64::decodeUrl",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "encode",
+          "local": "base64.encode",
+          "canonical": "std/bytes/base64::encode",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "encodeUrl",
+          "local": "base64.encodeUrl",
+          "canonical": "std/bytes/base64::encodeUrl",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/bytes",
+      "module": "std/bytes",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 43,
+        "end": 77
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Bytes",
+          "local": "bytes.Bytes",
+          "canonical": "std/bytes::Bytes",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 55,
+            "end": 60
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "ByteError",
+          "local": "bytes.ByteError",
+          "canonical": "std/bytes::ByteError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 55,
+            "end": 60
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "empty",
+          "local": "bytes.empty",
+          "canonical": "std/bytes::empty",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 55,
+            "end": 60
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "toInts",
+          "local": "bytes.toInts",
+          "canonical": "std/bytes::toInts",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 55,
+            "end": 60
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "fromInts",
+          "local": "bytes.fromInts",
+          "canonical": "std/bytes::fromInts",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 55,
+            "end": 60
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/bytes/hex",
+      "module": "std/bytes/hex",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 78,
+        "end": 114
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "HexDecodeError",
+          "local": "hex.HexDecodeError",
+          "canonical": "std/bytes/hex::HexDecodeError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 90,
+            "end": 93
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "OddHexLength",
+          "local": "hex.OddHexLength",
+          "canonical": "std/bytes/hex::OddHexLength",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 90,
+            "end": 93
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "decode",
+          "local": "hex.decode",
+          "canonical": "std/bytes/hex::decode",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 90,
+            "end": 93
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "encode",
+          "local": "hex.encode",
+          "canonical": "std/bytes/hex::encode",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 90,
+            "end": 93
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/bytes-codecs::requireBytes",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 116,
+        "end": 273
+      },
+      "parameters": [
+        {
+          "id": "result",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bytes.ByteError",
+                "canonical": "std/bytes::ByteError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "bytes.ByteError",
+                "canonical": "std/bytes::ByteError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 202,
+            "end": 208
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bytes.ByteError",
+              "canonical": "std/bytes::ByteError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "bytes.Bytes",
+              "canonical": "std/bytes::Bytes",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 215,
+                  "end": 226
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bytes.ByteError",
+                  "canonical": "std/bytes::ByteError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 220,
+                  "end": 226
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/bytes::empty",
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 242,
+                    "end": 244
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 230,
+                "end": 244
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 215,
+              "end": 244
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 249,
+                  "end": 260
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bytes.Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 255,
+                  "end": 260
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 264,
+                "end": 269
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 249,
+              "end": 269
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "external-named",
+          "name": "bytes.Bytes",
+          "canonical": "std/bytes::Bytes",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 196,
+          "end": 273
+        }
+      }
+    },
+    {
+      "symbol": "artifact/bytes-codecs::hexRoundTrips",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 275,
+        "end": 467
+      },
+      "parameters": [
+        {
+          "id": "original",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "bytes.Bytes",
+            "canonical": "std/bytes::Bytes",
+            "arguments": []
+          }
+        },
+        {
+          "id": "encoded",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "std/bytes/hex::decode",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "encoded",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 362,
+                "end": 369
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "hex.HexDecodeError",
+                "canonical": "std/bytes/hex::HexDecodeError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 351,
+            "end": 369
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "hex.HexDecodeError",
+              "canonical": "std/bytes/hex::HexDecodeError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "bytes.Bytes",
+              "canonical": "std/bytes::Bytes",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 376,
+                  "end": 387
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "hex.HexDecodeError",
+                  "canonical": "std/bytes/hex::HexDecodeError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 381,
+                  "end": 387
+                }
+              }
+            ],
+            "value": {
+              "kind": "boolean",
+              "value": false,
+              "origin": {
+                "source": "main.ssrg",
+                "start": 391,
+                "end": 396
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 376,
+              "end": 396
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 401,
+                  "end": 414
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "decoded",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bytes.Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 407,
+                  "end": 414
+                }
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "call",
+                "callee": "std/bytes::toInts",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "decoded",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "bytes.Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 431,
+                      "end": 438
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 418,
+                  "end": 438
+                }
+              },
+              "right": {
+                "kind": "call",
+                "callee": "std/bytes::toInts",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "original",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "bytes.Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 455,
+                      "end": 463
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 442,
+                  "end": 463
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/array::Eq",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Eq"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 418,
+                "end": 463
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 401,
+              "end": 463
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 345,
+          "end": 467
+        }
+      }
+    },
+    {
+      "symbol": "artifact/bytes-codecs::base64RoundTrips",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 469,
+        "end": 667
+      },
+      "parameters": [
+        {
+          "id": "original",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "bytes.Bytes",
+            "canonical": "std/bytes::Bytes",
+            "arguments": []
+          }
+        },
+        {
+          "id": "encoded",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "std/bytes/base64::decode",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "encoded",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 562,
+                "end": 569
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "base64.Base64DecodeError",
+                "canonical": "std/bytes/base64::Base64DecodeError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 548,
+            "end": 569
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "base64.Base64DecodeError",
+              "canonical": "std/bytes/base64::Base64DecodeError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "bytes.Bytes",
+              "canonical": "std/bytes::Bytes",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 576,
+                  "end": 587
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "base64.Base64DecodeError",
+                  "canonical": "std/bytes/base64::Base64DecodeError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 581,
+                  "end": 587
+                }
+              }
+            ],
+            "value": {
+              "kind": "boolean",
+              "value": false,
+              "origin": {
+                "source": "main.ssrg",
+                "start": 591,
+                "end": 596
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 576,
+              "end": 596
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 601,
+                  "end": 614
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "decoded",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bytes.Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 607,
+                  "end": 614
+                }
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "call",
+                "callee": "std/bytes::toInts",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "decoded",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "bytes.Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 631,
+                      "end": 638
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 618,
+                  "end": 638
+                }
+              },
+              "right": {
+                "kind": "call",
+                "callee": "std/bytes::toInts",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "original",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "bytes.Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 655,
+                      "end": 663
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 642,
+                  "end": 663
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/array::Eq",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Eq"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 618,
+                "end": 663
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 601,
+              "end": 663
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 542,
+          "end": 667
+        }
+      }
+    },
+    {
+      "symbol": "artifact/bytes-codecs::base64UrlRoundTrips",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 669,
+        "end": 873
+      },
+      "parameters": [
+        {
+          "id": "original",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "bytes.Bytes",
+            "canonical": "std/bytes::Bytes",
+            "arguments": []
+          }
+        },
+        {
+          "id": "encoded",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "std/bytes/base64::decodeUrl",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "encoded",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 768,
+                "end": 775
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "base64.Base64DecodeError",
+                "canonical": "std/bytes/base64::Base64DecodeError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 751,
+            "end": 775
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "base64.Base64DecodeError",
+              "canonical": "std/bytes/base64::Base64DecodeError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "bytes.Bytes",
+              "canonical": "std/bytes::Bytes",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 782,
+                  "end": 793
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "base64.Base64DecodeError",
+                  "canonical": "std/bytes/base64::Base64DecodeError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 787,
+                  "end": 793
+                }
+              }
+            ],
+            "value": {
+              "kind": "boolean",
+              "value": false,
+              "origin": {
+                "source": "main.ssrg",
+                "start": 797,
+                "end": 802
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 782,
+              "end": 802
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 807,
+                  "end": 820
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "decoded",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bytes.Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 813,
+                  "end": 820
+                }
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "call",
+                "callee": "std/bytes::toInts",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "decoded",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "bytes.Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 837,
+                      "end": 844
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 824,
+                  "end": 844
+                }
+              },
+              "right": {
+                "kind": "call",
+                "callee": "std/bytes::toInts",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "original",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "bytes.Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 861,
+                      "end": 869
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 848,
+                  "end": 869
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/array::Eq",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Eq"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 824,
+                "end": 869
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 807,
+              "end": 869
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 745,
+          "end": 873
+        }
+      }
+    },
+    {
+      "symbol": "artifact/bytes-codecs::describeHex",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 875,
+        "end": 1040
+      },
+      "parameters": [
+        {
+          "id": "result",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "hex.HexDecodeError",
+                "canonical": "std/bytes/hex::HexDecodeError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "hex.HexDecodeError",
+                "canonical": "std/bytes/hex::HexDecodeError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 958,
+            "end": 964
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "hex.HexDecodeError",
+              "canonical": "std/bytes/hex::HexDecodeError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "bytes.Bytes",
+              "canonical": "std/bytes::Bytes",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 971,
+                  "end": 981
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "hex.HexDecodeError",
+                  "canonical": "std/bytes/hex::HexDecodeError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 976,
+                  "end": 981
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "hex.HexDecodeError",
+                    "canonical": "std/bytes/hex::HexDecodeError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 990,
+                    "end": 995
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "hex.HexDecodeError",
+                        "canonical": "std/bytes/hex::HexDecodeError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/bytes/hex::HexDecodeError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 985,
+                "end": 995
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 971,
+              "end": 995
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1000,
+                  "end": 1012
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_value",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bytes.Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1006,
+                  "end": 1012
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "unexpected success",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1016,
+                "end": 1036
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1000,
+              "end": 1036
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 952,
+          "end": 1040
+        }
+      }
+    },
+    {
+      "symbol": "artifact/bytes-codecs::describeBase64",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1042,
+        "end": 1216
+      },
+      "parameters": [
+        {
+          "id": "result",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "base64.Base64DecodeError",
+                "canonical": "std/bytes/base64::Base64DecodeError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "base64.Base64DecodeError",
+                "canonical": "std/bytes/base64::Base64DecodeError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1134,
+            "end": 1140
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "base64.Base64DecodeError",
+              "canonical": "std/bytes/base64::Base64DecodeError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "bytes.Bytes",
+              "canonical": "std/bytes::Bytes",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1147,
+                  "end": 1157
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "base64.Base64DecodeError",
+                  "canonical": "std/bytes/base64::Base64DecodeError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1152,
+                  "end": 1157
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "base64.Base64DecodeError",
+                    "canonical": "std/bytes/base64::Base64DecodeError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1166,
+                    "end": 1171
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "base64.Base64DecodeError",
+                        "canonical": "std/bytes/base64::Base64DecodeError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/bytes/base64::Base64DecodeError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1161,
+                "end": 1171
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1147,
+              "end": 1171
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1176,
+                  "end": 1188
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_value",
+                "type": {
+                  "kind": "external-named",
+                  "name": "bytes.Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1182,
+                  "end": 1188
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "unexpected success",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1192,
+                "end": 1212
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1176,
+              "end": 1212
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1128,
+          "end": 1216
+        }
+      }
+    },
+    {
+      "symbol": "artifact/bytes-codecs::exercise",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1218,
+        "end": 2228
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "bytes.Bytes",
+              "canonical": "std/bytes::Bytes",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/bytes-codecs::requireBytes",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/bytes::fromInts",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "integer",
+                          "value": "0",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1299,
+                            "end": 1300
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "value": "15",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1302,
+                            "end": 1304
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "value": "16",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1306,
+                            "end": 1308
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "value": "251",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1310,
+                            "end": 1313
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "value": "239",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1315,
+                            "end": 1318
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "value": "255",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1320,
+                            "end": 1323
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1298,
+                        "end": 1324
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "bytes.ByteError",
+                        "canonical": "std/bytes::ByteError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "bytes.Bytes",
+                        "canonical": "std/bytes::Bytes",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1283,
+                    "end": 1324
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "bytes.Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1269,
+                "end": 1325
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1254,
+              "end": 1325
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "hexadecimal",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/bytes/hex::encode",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "bytes.Bytes",
+                    "canonical": "std/bytes::Bytes",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1357,
+                    "end": 1362
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1346,
+                "end": 1362
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1326,
+              "end": 1362
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "standard",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/bytes/base64::encode",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "bytes.Bytes",
+                    "canonical": "std/bytes::Bytes",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1394,
+                    "end": 1399
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1380,
+                "end": 1399
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1363,
+              "end": 1399
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "urlSafe",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/bytes/base64::encodeUrl",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "bytes.Bytes",
+                    "canonical": "std/bytes::Bytes",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1433,
+                    "end": 1438
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1416,
+                "end": 1438
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1400,
+              "end": 1438
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "hex: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1448,
+                    "end": 1453
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "hexadecimal",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1455,
+                      "end": 1466
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1453,
+                    "end": 1467
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1467,
+                    "end": 1470
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::hexRoundTrips",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "value",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "bytes.Bytes",
+                          "canonical": "std/bytes::Bytes",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1486,
+                          "end": 1491
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "hexadecimal",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1492,
+                          "end": 1503
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1472,
+                      "end": 1503
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Bool>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1470,
+                    "end": 1504
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1504,
+                    "end": 1507
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::hexRoundTrips",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "value",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "bytes.Bytes",
+                          "canonical": "std/bytes::Bytes",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1523,
+                          "end": 1528
+                        }
+                      },
+                      {
+                        "kind": "string",
+                        "value": "000F10FBEFFF",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1529,
+                          "end": 1543
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1509,
+                      "end": 1543
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Bool>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1507,
+                    "end": 1544
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1447,
+                "end": 1545
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "base64: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1552,
+                    "end": 1560
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "standard",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1562,
+                      "end": 1570
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1560,
+                    "end": 1571
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1571,
+                    "end": 1574
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::base64RoundTrips",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "value",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "bytes.Bytes",
+                          "canonical": "std/bytes::Bytes",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1593,
+                          "end": 1598
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "standard",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1599,
+                          "end": 1607
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1576,
+                      "end": 1607
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Bool>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1574,
+                    "end": 1608
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1551,
+                "end": 1609
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "base64url: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1616,
+                    "end": 1627
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "urlSafe",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1629,
+                      "end": 1636
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1627,
+                    "end": 1637
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1637,
+                    "end": 1640
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::base64UrlRoundTrips",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "value",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "bytes.Bytes",
+                          "canonical": "std/bytes::Bytes",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1662,
+                          "end": 1667
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "urlSafe",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1668,
+                          "end": 1675
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1642,
+                      "end": 1675
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Bool>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1640,
+                    "end": 1676
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1615,
+                "end": 1677
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "hex-errors: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1684,
+                    "end": 1696
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::describeHex",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/bytes/hex::decode",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "abc",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1722,
+                              "end": 1727
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "hex.HexDecodeError",
+                              "canonical": "std/bytes/hex::HexDecodeError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "bytes.Bytes",
+                              "canonical": "std/bytes::Bytes",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1711,
+                          "end": 1727
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1698,
+                      "end": 1728
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1696,
+                    "end": 1729
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1729,
+                    "end": 1732
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::describeHex",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/bytes/hex::decode",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "00é",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1758,
+                              "end": 1764
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "hex.HexDecodeError",
+                              "canonical": "std/bytes/hex::HexDecodeError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "bytes.Bytes",
+                              "canonical": "std/bytes::Bytes",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1747,
+                          "end": 1764
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1734,
+                      "end": 1765
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1732,
+                    "end": 1766
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1683,
+                "end": 1767
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "base64-errors: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1774,
+                    "end": 1789
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::describeBase64",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/bytes/base64::decode",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "Zg",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1821,
+                              "end": 1825
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "base64.Base64DecodeError",
+                              "canonical": "std/bytes/base64::Base64DecodeError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "bytes.Bytes",
+                              "canonical": "std/bytes::Bytes",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1807,
+                          "end": 1825
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1791,
+                      "end": 1826
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1789,
+                    "end": 1827
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1827,
+                    "end": 1830
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::describeBase64",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/bytes/base64::decode",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "AA A",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1862,
+                              "end": 1868
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "base64.Base64DecodeError",
+                              "canonical": "std/bytes/base64::Base64DecodeError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "bytes.Bytes",
+                              "canonical": "std/bytes::Bytes",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1848,
+                          "end": 1868
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1832,
+                      "end": 1869
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1830,
+                    "end": 1870
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1870,
+                    "end": 1873
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::describeBase64",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/bytes/base64::decode",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "AA=A",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1905,
+                              "end": 1911
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "base64.Base64DecodeError",
+                              "canonical": "std/bytes/base64::Base64DecodeError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "bytes.Bytes",
+                              "canonical": "std/bytes::Bytes",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1891,
+                          "end": 1911
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1875,
+                      "end": 1912
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1873,
+                    "end": 1913
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1913,
+                    "end": 1916
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::describeBase64",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/bytes/base64::decode",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "AB==",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1948,
+                              "end": 1954
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "base64.Base64DecodeError",
+                              "canonical": "std/bytes/base64::Base64DecodeError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "bytes.Bytes",
+                              "canonical": "std/bytes::Bytes",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1934,
+                          "end": 1954
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1918,
+                      "end": 1955
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1916,
+                    "end": 1956
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1773,
+                "end": 1957
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "base64url-errors: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1964,
+                    "end": 1982
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::describeBase64",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/bytes/base64::decodeUrl",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "A",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2017,
+                              "end": 2020
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "base64.Base64DecodeError",
+                              "canonical": "std/bytes/base64::Base64DecodeError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "bytes.Bytes",
+                              "canonical": "std/bytes::Bytes",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2000,
+                          "end": 2020
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1984,
+                      "end": 2021
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1982,
+                    "end": 2022
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2022,
+                    "end": 2025
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/bytes-codecs::describeBase64",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "std/bytes/base64::decodeUrl",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "AA=",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2060,
+                              "end": 2065
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "base64.Base64DecodeError",
+                              "canonical": "std/bytes/base64::Base64DecodeError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "bytes.Bytes",
+                              "canonical": "std/bytes::Bytes",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2043,
+                          "end": 2065
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2027,
+                      "end": 2066
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2025,
+                    "end": 2067
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1963,
+                "end": 2068
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "error-eq: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2075,
+                    "end": 2085
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "==",
+                    "left": {
+                      "kind": "call",
+                      "callee": "std/bytes/hex::OddHexLength",
+                      "arguments": [
+                        {
+                          "kind": "integer",
+                          "value": "3",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2104,
+                            "end": 2105
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "hex.HexDecodeError",
+                        "canonical": "std/bytes/hex::HexDecodeError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2087,
+                        "end": 2105
+                      }
+                    },
+                    "right": {
+                      "kind": "call",
+                      "callee": "std/bytes/hex::OddHexLength",
+                      "arguments": [
+                        {
+                          "kind": "integer",
+                          "value": "3",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2126,
+                            "end": 2127
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "hex.HexDecodeError",
+                        "canonical": "std/bytes/hex::HexDecodeError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2109,
+                        "end": 2127
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "hex.HexDecodeError",
+                              "canonical": "std/bytes/hex::HexDecodeError",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Eq<std/bytes/hex::HexDecodeError>"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2087,
+                      "end": 2127
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Bool>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2085,
+                    "end": 2128
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2128,
+                    "end": 2131
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "==",
+                    "left": {
+                      "kind": "call",
+                      "callee": "std/bytes/base64::InvalidBase64Padding",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "offset",
+                              "value": {
+                                "kind": "integer",
+                                "value": "2",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 2171,
+                                  "end": 2172
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 2163,
+                                "end": 2172
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "offset",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2161,
+                            "end": 2174
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "base64.Base64DecodeError",
+                        "canonical": "std/bytes/base64::Base64DecodeError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2133,
+                        "end": 2174
+                      }
+                    },
+                    "right": {
+                      "kind": "call",
+                      "callee": "std/bytes/base64::InvalidBase64Padding",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "offset",
+                              "value": {
+                                "kind": "integer",
+                                "value": "2",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 2216,
+                                  "end": 2217
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 2208,
+                                "end": 2217
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "offset",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2206,
+                            "end": 2219
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "base64.Base64DecodeError",
+                        "canonical": "std/bytes/base64::Base64DecodeError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2178,
+                        "end": 2219
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "base64.Base64DecodeError",
+                              "canonical": "std/bytes/base64::Base64DecodeError",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Eq<std/bytes/base64::Base64DecodeError>"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2133,
+                      "end": 2219
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Bool>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2131,
+                    "end": 2220
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2074,
+                "end": 2221
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1441,
+            "end": 2226
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1253,
+          "end": 2228
+        }
+      }
+    },
+    {
+      "symbol": "artifact/bytes-codecs::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2230,
+        "end": 2333
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::forEach",
+        "arguments": [
+          {
+            "kind": "lambda",
+            "parameter": {
+              "id": "$ssrg_for_value",
+              "kind": "named",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "$ssrg_for_value",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2297,
+                  "end": 2301
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "line",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2297,
+                        "end": 2301
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "effect-operation",
+                    "operation": "console.println",
+                    "requirements": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "named",
+                            "name": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "failure": {
+                      "kind": "named",
+                      "name": "ConsoleError",
+                      "arguments": []
+                    },
+                    "success": {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    },
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "line",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 2327,
+                          "end": 2331
+                        }
+                      }
+                    ],
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2319,
+                      "end": 2331
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2297,
+                    "end": 2331
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2297,
+                "end": 2331
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2297,
+              "end": 2331
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/bytes-codecs::exercise",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2314,
+                  "end": 2316
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2305,
+              "end": 2316
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Iterable",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Iterable"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 2293,
+          "end": 2333
+        }
+      }
+    }
+  ]
+}

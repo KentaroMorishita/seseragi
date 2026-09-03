@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.52.0] - 2026-09-04
+
+### Added
+
+- Connect `std/bytes/hex` and `std/bytes/base64` through the canonical standard
+  interface, compiler, TypeScript runtime, Reference, LSP, WASM, and Playground.
+- Encode lowercase hexadecimal, padded RFC 4648 Base64, and unpadded URL-safe
+  Base64 canonically; decode strict alphabets, padding, and unused trailing bits.
+- Report typed decoding failures with 0-based UTF-8 byte offsets and provide
+  structural Eq plus stable Show/Debug dictionaries across execution surfaces.
+
 ## [0.51.0] - 2026-09-04
 
 ### Added

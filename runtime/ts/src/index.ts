@@ -48,6 +48,8 @@ export {
   toInts as bytesToInts,
   toUint8Array,
 } from "./bytes"
+export * as bytesBase64 from "./bytes-base64"
+export * as bytesHex from "./bytes-hex"
 export type {
   Clock,
   ClockEnvironment,
@@ -810,6 +812,8 @@ export {
   arrayShow,
   boolDebug,
   boolShow,
+  base64DecodeErrorDebug,
+  base64DecodeErrorShow,
   bufferCapacityErrorDebug,
   bufferCapacityErrorShow,
   byteErrorDebug,
@@ -825,6 +829,8 @@ export {
   eitherShow,
   floatDebug,
   floatShow,
+  hexDecodeErrorDebug,
+  hexDecodeErrorShow,
   indent,
   intDebug,
   intShow,

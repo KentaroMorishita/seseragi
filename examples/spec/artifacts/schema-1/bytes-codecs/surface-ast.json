@@ -1,0 +1,2914 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/bytes/base64",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 7,
+            "end": 8
+          },
+          "alias": "base64",
+          "aliasSpan": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 42
+      }
+    },
+    {
+      "specifier": "std/bytes",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 50,
+            "end": 51
+          },
+          "alias": "bytes",
+          "aliasSpan": {
+            "start": 55,
+            "end": 60
+          }
+        }
+      ],
+      "span": {
+        "start": 43,
+        "end": 77
+      }
+    },
+    {
+      "specifier": "std/bytes/hex",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 85,
+            "end": 86
+          },
+          "alias": "hex",
+          "aliasSpan": {
+            "start": 90,
+            "end": 93
+          }
+        }
+      ],
+      "span": {
+        "start": 78,
+        "end": 114
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "requireBytes",
+      "nameSpan": {
+        "start": 119,
+        "end": 131
+      },
+      "parameters": [
+        {
+          "name": "result",
+          "nameSpan": {
+            "start": 132,
+            "end": 138
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "bytes.ByteError",
+                "span": {
+                  "start": 147,
+                  "end": 162
+                }
+              },
+              {
+                "kind": "named",
+                "name": "bytes.Bytes",
+                "span": {
+                  "start": 164,
+                  "end": 175
+                }
+              }
+            ],
+            "span": {
+              "start": 140,
+              "end": 176
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "bytes.Bytes",
+        "span": {
+          "start": 180,
+          "end": 191
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "result",
+          "span": {
+            "start": 202,
+            "end": 208
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 215,
+                "end": 219
+              },
+              "argument": {
+                "kind": "name",
+                "name": "_error",
+                "nameSpan": {
+                  "start": 220,
+                  "end": 226
+                },
+                "span": {
+                  "start": 220,
+                  "end": 226
+                }
+              },
+              "span": {
+                "start": 215,
+                "end": 226
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "bytes",
+                  "span": {
+                    "start": 230,
+                    "end": 235
+                  }
+                },
+                "field": "empty",
+                "fieldSpan": {
+                  "start": 236,
+                  "end": 241
+                },
+                "span": {
+                  "start": 230,
+                  "end": 241
+                }
+              },
+              "argument": {
+                "kind": "unit",
+                "span": {
+                  "start": 242,
+                  "end": 244
+                }
+              },
+              "span": {
+                "start": 230,
+                "end": 244
+              }
+            },
+            "span": {
+              "start": 215,
+              "end": 244
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 249,
+                "end": 254
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 255,
+                  "end": 260
+                },
+                "span": {
+                  "start": 255,
+                  "end": 260
+                }
+              },
+              "span": {
+                "start": 249,
+                "end": 260
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 264,
+                "end": 269
+              }
+            },
+            "span": {
+              "start": 249,
+              "end": 269
+            }
+          }
+        ],
+        "span": {
+          "start": 196,
+          "end": 273
+        }
+      },
+      "span": {
+        "start": 116,
+        "end": 273
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "hexRoundTrips",
+      "nameSpan": {
+        "start": 278,
+        "end": 291
+      },
+      "parameters": [
+        {
+          "name": "original",
+          "nameSpan": {
+            "start": 292,
+            "end": 300
+          },
+          "type": {
+            "kind": "named",
+            "name": "bytes.Bytes",
+            "span": {
+              "start": 302,
+              "end": 313
+            }
+          }
+        },
+        {
+          "name": "encoded",
+          "nameSpan": {
+            "start": 317,
+            "end": 324
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 326,
+              "end": 332
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 336,
+          "end": 340
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "application",
+          "function": {
+            "kind": "member",
+            "receiver": {
+              "kind": "name",
+              "name": "hex",
+              "span": {
+                "start": 351,
+                "end": 354
+              }
+            },
+            "field": "decode",
+            "fieldSpan": {
+              "start": 355,
+              "end": 361
+            },
+            "span": {
+              "start": 351,
+              "end": 361
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "encoded",
+            "span": {
+              "start": 362,
+              "end": 369
+            }
+          },
+          "span": {
+            "start": 351,
+            "end": 369
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 376,
+                "end": 380
+              },
+              "argument": {
+                "kind": "name",
+                "name": "_error",
+                "nameSpan": {
+                  "start": 381,
+                  "end": 387
+                },
+                "span": {
+                  "start": 381,
+                  "end": 387
+                }
+              },
+              "span": {
+                "start": 376,
+                "end": 387
+              }
+            },
+            "body": {
+              "kind": "boolean",
+              "value": false,
+              "span": {
+                "start": 391,
+                "end": 396
+              }
+            },
+            "span": {
+              "start": 376,
+              "end": 396
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 401,
+                "end": 406
+              },
+              "argument": {
+                "kind": "name",
+                "name": "decoded",
+                "nameSpan": {
+                  "start": 407,
+                  "end": 414
+                },
+                "span": {
+                  "start": 407,
+                  "end": 414
+                }
+              },
+              "span": {
+                "start": 401,
+                "end": 414
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "==",
+              "operatorSpan": {
+                "start": 439,
+                "end": 441
+              },
+              "left": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "bytes",
+                    "span": {
+                      "start": 418,
+                      "end": 423
+                    }
+                  },
+                  "field": "toInts",
+                  "fieldSpan": {
+                    "start": 424,
+                    "end": 430
+                  },
+                  "span": {
+                    "start": 418,
+                    "end": 430
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "decoded",
+                  "span": {
+                    "start": 431,
+                    "end": 438
+                  }
+                },
+                "span": {
+                  "start": 418,
+                  "end": 438
+                }
+              },
+              "right": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "bytes",
+                    "span": {
+                      "start": 442,
+                      "end": 447
+                    }
+                  },
+                  "field": "toInts",
+                  "fieldSpan": {
+                    "start": 448,
+                    "end": 454
+                  },
+                  "span": {
+                    "start": 442,
+                    "end": 454
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "original",
+                  "span": {
+                    "start": 455,
+                    "end": 463
+                  }
+                },
+                "span": {
+                  "start": 442,
+                  "end": 463
+                }
+              },
+              "span": {
+                "start": 418,
+                "end": 463
+              }
+            },
+            "span": {
+              "start": 401,
+              "end": 463
+            }
+          }
+        ],
+        "span": {
+          "start": 345,
+          "end": 467
+        }
+      },
+      "span": {
+        "start": 275,
+        "end": 467
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "base64RoundTrips",
+      "nameSpan": {
+        "start": 472,
+        "end": 488
+      },
+      "parameters": [
+        {
+          "name": "original",
+          "nameSpan": {
+            "start": 489,
+            "end": 497
+          },
+          "type": {
+            "kind": "named",
+            "name": "bytes.Bytes",
+            "span": {
+              "start": 499,
+              "end": 510
+            }
+          }
+        },
+        {
+          "name": "encoded",
+          "nameSpan": {
+            "start": 514,
+            "end": 521
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 523,
+              "end": 529
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 533,
+          "end": 537
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "application",
+          "function": {
+            "kind": "member",
+            "receiver": {
+              "kind": "name",
+              "name": "base64",
+              "span": {
+                "start": 548,
+                "end": 554
+              }
+            },
+            "field": "decode",
+            "fieldSpan": {
+              "start": 555,
+              "end": 561
+            },
+            "span": {
+              "start": 548,
+              "end": 561
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "encoded",
+            "span": {
+              "start": 562,
+              "end": 569
+            }
+          },
+          "span": {
+            "start": 548,
+            "end": 569
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 576,
+                "end": 580
+              },
+              "argument": {
+                "kind": "name",
+                "name": "_error",
+                "nameSpan": {
+                  "start": 581,
+                  "end": 587
+                },
+                "span": {
+                  "start": 581,
+                  "end": 587
+                }
+              },
+              "span": {
+                "start": 576,
+                "end": 587
+              }
+            },
+            "body": {
+              "kind": "boolean",
+              "value": false,
+              "span": {
+                "start": 591,
+                "end": 596
+              }
+            },
+            "span": {
+              "start": 576,
+              "end": 596
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 601,
+                "end": 606
+              },
+              "argument": {
+                "kind": "name",
+                "name": "decoded",
+                "nameSpan": {
+                  "start": 607,
+                  "end": 614
+                },
+                "span": {
+                  "start": 607,
+                  "end": 614
+                }
+              },
+              "span": {
+                "start": 601,
+                "end": 614
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "==",
+              "operatorSpan": {
+                "start": 639,
+                "end": 641
+              },
+              "left": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "bytes",
+                    "span": {
+                      "start": 618,
+                      "end": 623
+                    }
+                  },
+                  "field": "toInts",
+                  "fieldSpan": {
+                    "start": 624,
+                    "end": 630
+                  },
+                  "span": {
+                    "start": 618,
+                    "end": 630
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "decoded",
+                  "span": {
+                    "start": 631,
+                    "end": 638
+                  }
+                },
+                "span": {
+                  "start": 618,
+                  "end": 638
+                }
+              },
+              "right": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "bytes",
+                    "span": {
+                      "start": 642,
+                      "end": 647
+                    }
+                  },
+                  "field": "toInts",
+                  "fieldSpan": {
+                    "start": 648,
+                    "end": 654
+                  },
+                  "span": {
+                    "start": 642,
+                    "end": 654
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "original",
+                  "span": {
+                    "start": 655,
+                    "end": 663
+                  }
+                },
+                "span": {
+                  "start": 642,
+                  "end": 663
+                }
+              },
+              "span": {
+                "start": 618,
+                "end": 663
+              }
+            },
+            "span": {
+              "start": 601,
+              "end": 663
+            }
+          }
+        ],
+        "span": {
+          "start": 542,
+          "end": 667
+        }
+      },
+      "span": {
+        "start": 469,
+        "end": 667
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "base64UrlRoundTrips",
+      "nameSpan": {
+        "start": 672,
+        "end": 691
+      },
+      "parameters": [
+        {
+          "name": "original",
+          "nameSpan": {
+            "start": 692,
+            "end": 700
+          },
+          "type": {
+            "kind": "named",
+            "name": "bytes.Bytes",
+            "span": {
+              "start": 702,
+              "end": 713
+            }
+          }
+        },
+        {
+          "name": "encoded",
+          "nameSpan": {
+            "start": 717,
+            "end": 724
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 726,
+              "end": 732
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 736,
+          "end": 740
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "application",
+          "function": {
+            "kind": "member",
+            "receiver": {
+              "kind": "name",
+              "name": "base64",
+              "span": {
+                "start": 751,
+                "end": 757
+              }
+            },
+            "field": "decodeUrl",
+            "fieldSpan": {
+              "start": 758,
+              "end": 767
+            },
+            "span": {
+              "start": 751,
+              "end": 767
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "encoded",
+            "span": {
+              "start": 768,
+              "end": 775
+            }
+          },
+          "span": {
+            "start": 751,
+            "end": 775
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 782,
+                "end": 786
+              },
+              "argument": {
+                "kind": "name",
+                "name": "_error",
+                "nameSpan": {
+                  "start": 787,
+                  "end": 793
+                },
+                "span": {
+                  "start": 787,
+                  "end": 793
+                }
+              },
+              "span": {
+                "start": 782,
+                "end": 793
+              }
+            },
+            "body": {
+              "kind": "boolean",
+              "value": false,
+              "span": {
+                "start": 797,
+                "end": 802
+              }
+            },
+            "span": {
+              "start": 782,
+              "end": 802
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 807,
+                "end": 812
+              },
+              "argument": {
+                "kind": "name",
+                "name": "decoded",
+                "nameSpan": {
+                  "start": 813,
+                  "end": 820
+                },
+                "span": {
+                  "start": 813,
+                  "end": 820
+                }
+              },
+              "span": {
+                "start": 807,
+                "end": 820
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "==",
+              "operatorSpan": {
+                "start": 845,
+                "end": 847
+              },
+              "left": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "bytes",
+                    "span": {
+                      "start": 824,
+                      "end": 829
+                    }
+                  },
+                  "field": "toInts",
+                  "fieldSpan": {
+                    "start": 830,
+                    "end": 836
+                  },
+                  "span": {
+                    "start": 824,
+                    "end": 836
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "decoded",
+                  "span": {
+                    "start": 837,
+                    "end": 844
+                  }
+                },
+                "span": {
+                  "start": 824,
+                  "end": 844
+                }
+              },
+              "right": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "bytes",
+                    "span": {
+                      "start": 848,
+                      "end": 853
+                    }
+                  },
+                  "field": "toInts",
+                  "fieldSpan": {
+                    "start": 854,
+                    "end": 860
+                  },
+                  "span": {
+                    "start": 848,
+                    "end": 860
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "original",
+                  "span": {
+                    "start": 861,
+                    "end": 869
+                  }
+                },
+                "span": {
+                  "start": 848,
+                  "end": 869
+                }
+              },
+              "span": {
+                "start": 824,
+                "end": 869
+              }
+            },
+            "span": {
+              "start": 807,
+              "end": 869
+            }
+          }
+        ],
+        "span": {
+          "start": 745,
+          "end": 873
+        }
+      },
+      "span": {
+        "start": 669,
+        "end": 873
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "describeHex",
+      "nameSpan": {
+        "start": 878,
+        "end": 889
+      },
+      "parameters": [
+        {
+          "name": "result",
+          "nameSpan": {
+            "start": 890,
+            "end": 896
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "hex.HexDecodeError",
+                "span": {
+                  "start": 905,
+                  "end": 923
+                }
+              },
+              {
+                "kind": "named",
+                "name": "bytes.Bytes",
+                "span": {
+                  "start": 925,
+                  "end": 936
+                }
+              }
+            ],
+            "span": {
+              "start": 898,
+              "end": 937
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 941,
+          "end": 947
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "result",
+          "span": {
+            "start": 958,
+            "end": 964
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 971,
+                "end": 975
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "nameSpan": {
+                  "start": 976,
+                  "end": 981
+                },
+                "span": {
+                  "start": 976,
+                  "end": 981
+                }
+              },
+              "span": {
+                "start": 971,
+                "end": 981
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "show",
+                "span": {
+                  "start": 985,
+                  "end": 989
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "span": {
+                  "start": 990,
+                  "end": 995
+                }
+              },
+              "span": {
+                "start": 985,
+                "end": 995
+              }
+            },
+            "span": {
+              "start": 971,
+              "end": 995
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 1000,
+                "end": 1005
+              },
+              "argument": {
+                "kind": "name",
+                "name": "_value",
+                "nameSpan": {
+                  "start": 1006,
+                  "end": 1012
+                },
+                "span": {
+                  "start": 1006,
+                  "end": 1012
+                }
+              },
+              "span": {
+                "start": 1000,
+                "end": 1012
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"unexpected success\"",
+              "span": {
+                "start": 1016,
+                "end": 1036
+              }
+            },
+            "span": {
+              "start": 1000,
+              "end": 1036
+            }
+          }
+        ],
+        "span": {
+          "start": 952,
+          "end": 1040
+        }
+      },
+      "span": {
+        "start": 875,
+        "end": 1040
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "describeBase64",
+      "nameSpan": {
+        "start": 1045,
+        "end": 1059
+      },
+      "parameters": [
+        {
+          "name": "result",
+          "nameSpan": {
+            "start": 1060,
+            "end": 1066
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "base64.Base64DecodeError",
+                "span": {
+                  "start": 1075,
+                  "end": 1099
+                }
+              },
+              {
+                "kind": "named",
+                "name": "bytes.Bytes",
+                "span": {
+                  "start": 1101,
+                  "end": 1112
+                }
+              }
+            ],
+            "span": {
+              "start": 1068,
+              "end": 1113
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 1117,
+          "end": 1123
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "result",
+          "span": {
+            "start": 1134,
+            "end": 1140
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 1147,
+                "end": 1151
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "nameSpan": {
+                  "start": 1152,
+                  "end": 1157
+                },
+                "span": {
+                  "start": 1152,
+                  "end": 1157
+                }
+              },
+              "span": {
+                "start": 1147,
+                "end": 1157
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "show",
+                "span": {
+                  "start": 1161,
+                  "end": 1165
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "span": {
+                  "start": 1166,
+                  "end": 1171
+                }
+              },
+              "span": {
+                "start": 1161,
+                "end": 1171
+              }
+            },
+            "span": {
+              "start": 1147,
+              "end": 1171
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 1176,
+                "end": 1181
+              },
+              "argument": {
+                "kind": "name",
+                "name": "_value",
+                "nameSpan": {
+                  "start": 1182,
+                  "end": 1188
+                },
+                "span": {
+                  "start": 1182,
+                  "end": 1188
+                }
+              },
+              "span": {
+                "start": 1176,
+                "end": 1188
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"unexpected success\"",
+              "span": {
+                "start": 1192,
+                "end": 1212
+              }
+            },
+            "span": {
+              "start": 1176,
+              "end": 1212
+            }
+          }
+        ],
+        "span": {
+          "start": 1128,
+          "end": 1216
+        }
+      },
+      "span": {
+        "start": 1042,
+        "end": 1216
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "exercise",
+      "nameSpan": {
+        "start": 1225,
+        "end": 1233
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 1243,
+              "end": 1249
+            }
+          }
+        ],
+        "span": {
+          "start": 1237,
+          "end": 1250
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "value",
+              "nameSpan": {
+                "start": 1261,
+                "end": 1266
+              },
+              "span": {
+                "start": 1261,
+                "end": 1266
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "requireBytes",
+                "span": {
+                  "start": 1269,
+                  "end": 1281
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "bytes",
+                      "span": {
+                        "start": 1283,
+                        "end": 1288
+                      }
+                    },
+                    "field": "fromInts",
+                    "fieldSpan": {
+                      "start": 1289,
+                      "end": 1297
+                    },
+                    "span": {
+                      "start": 1283,
+                      "end": 1297
+                    }
+                  },
+                  "argument": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "raw": "0",
+                        "span": {
+                          "start": 1299,
+                          "end": 1300
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "15",
+                        "span": {
+                          "start": 1302,
+                          "end": 1304
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "16",
+                        "span": {
+                          "start": 1306,
+                          "end": 1308
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "251",
+                        "span": {
+                          "start": 1310,
+                          "end": 1313
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "239",
+                        "span": {
+                          "start": 1315,
+                          "end": 1318
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "255",
+                        "span": {
+                          "start": 1320,
+                          "end": 1323
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 1298,
+                      "end": 1324
+                    }
+                  },
+                  "span": {
+                    "start": 1283,
+                    "end": 1324
+                  }
+                },
+                "span": {
+                  "start": 1282,
+                  "end": 1325
+                }
+              },
+              "span": {
+                "start": 1269,
+                "end": 1325
+              }
+            },
+            "span": {
+              "start": 1254,
+              "end": 1325
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "hexadecimal",
+              "nameSpan": {
+                "start": 1332,
+                "end": 1343
+              },
+              "span": {
+                "start": 1332,
+                "end": 1343
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "hex",
+                  "span": {
+                    "start": 1346,
+                    "end": 1349
+                  }
+                },
+                "field": "encode",
+                "fieldSpan": {
+                  "start": 1350,
+                  "end": 1356
+                },
+                "span": {
+                  "start": 1346,
+                  "end": 1356
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "span": {
+                  "start": 1357,
+                  "end": 1362
+                }
+              },
+              "span": {
+                "start": 1346,
+                "end": 1362
+              }
+            },
+            "span": {
+              "start": 1326,
+              "end": 1362
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "standard",
+              "nameSpan": {
+                "start": 1369,
+                "end": 1377
+              },
+              "span": {
+                "start": 1369,
+                "end": 1377
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "base64",
+                  "span": {
+                    "start": 1380,
+                    "end": 1386
+                  }
+                },
+                "field": "encode",
+                "fieldSpan": {
+                  "start": 1387,
+                  "end": 1393
+                },
+                "span": {
+                  "start": 1380,
+                  "end": 1393
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "span": {
+                  "start": 1394,
+                  "end": 1399
+                }
+              },
+              "span": {
+                "start": 1380,
+                "end": 1399
+              }
+            },
+            "span": {
+              "start": 1363,
+              "end": 1399
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "urlSafe",
+              "nameSpan": {
+                "start": 1406,
+                "end": 1413
+              },
+              "span": {
+                "start": 1406,
+                "end": 1413
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "base64",
+                  "span": {
+                    "start": 1416,
+                    "end": 1422
+                  }
+                },
+                "field": "encodeUrl",
+                "fieldSpan": {
+                  "start": 1423,
+                  "end": 1432
+                },
+                "span": {
+                  "start": 1416,
+                  "end": 1432
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "span": {
+                  "start": 1433,
+                  "end": 1438
+                }
+              },
+              "span": {
+                "start": 1416,
+                "end": 1438
+              }
+            },
+            "span": {
+              "start": 1400,
+              "end": 1438
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "hex: ",
+                  "span": {
+                    "start": 1448,
+                    "end": 1453
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "hexadecimal",
+                    "span": {
+                      "start": 1455,
+                      "end": 1466
+                    }
+                  },
+                  "span": {
+                    "start": 1453,
+                    "end": 1467
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 1467,
+                    "end": 1470
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "hexRoundTrips",
+                        "span": {
+                          "start": 1472,
+                          "end": 1485
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "value",
+                        "span": {
+                          "start": 1486,
+                          "end": 1491
+                        }
+                      },
+                      "span": {
+                        "start": 1472,
+                        "end": 1491
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "hexadecimal",
+                      "span": {
+                        "start": 1492,
+                        "end": 1503
+                      }
+                    },
+                    "span": {
+                      "start": 1472,
+                      "end": 1503
+                    }
+                  },
+                  "span": {
+                    "start": 1470,
+                    "end": 1504
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 1504,
+                    "end": 1507
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "hexRoundTrips",
+                        "span": {
+                          "start": 1509,
+                          "end": 1522
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "value",
+                        "span": {
+                          "start": 1523,
+                          "end": 1528
+                        }
+                      },
+                      "span": {
+                        "start": 1509,
+                        "end": 1528
+                      }
+                    },
+                    "argument": {
+                      "kind": "string",
+                      "raw": "\"000F10FBEFFF\"",
+                      "span": {
+                        "start": 1529,
+                        "end": 1543
+                      }
+                    },
+                    "span": {
+                      "start": 1509,
+                      "end": 1543
+                    }
+                  },
+                  "span": {
+                    "start": 1507,
+                    "end": 1544
+                  }
+                }
+              ],
+              "span": {
+                "start": 1447,
+                "end": 1545
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "base64: ",
+                  "span": {
+                    "start": 1552,
+                    "end": 1560
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "standard",
+                    "span": {
+                      "start": 1562,
+                      "end": 1570
+                    }
+                  },
+                  "span": {
+                    "start": 1560,
+                    "end": 1571
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 1571,
+                    "end": 1574
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "base64RoundTrips",
+                        "span": {
+                          "start": 1576,
+                          "end": 1592
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "value",
+                        "span": {
+                          "start": 1593,
+                          "end": 1598
+                        }
+                      },
+                      "span": {
+                        "start": 1576,
+                        "end": 1598
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "standard",
+                      "span": {
+                        "start": 1599,
+                        "end": 1607
+                      }
+                    },
+                    "span": {
+                      "start": 1576,
+                      "end": 1607
+                    }
+                  },
+                  "span": {
+                    "start": 1574,
+                    "end": 1608
+                  }
+                }
+              ],
+              "span": {
+                "start": 1551,
+                "end": 1609
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "base64url: ",
+                  "span": {
+                    "start": 1616,
+                    "end": 1627
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "urlSafe",
+                    "span": {
+                      "start": 1629,
+                      "end": 1636
+                    }
+                  },
+                  "span": {
+                    "start": 1627,
+                    "end": 1637
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 1637,
+                    "end": 1640
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "base64UrlRoundTrips",
+                        "span": {
+                          "start": 1642,
+                          "end": 1661
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "value",
+                        "span": {
+                          "start": 1662,
+                          "end": 1667
+                        }
+                      },
+                      "span": {
+                        "start": 1642,
+                        "end": 1667
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "urlSafe",
+                      "span": {
+                        "start": 1668,
+                        "end": 1675
+                      }
+                    },
+                    "span": {
+                      "start": 1642,
+                      "end": 1675
+                    }
+                  },
+                  "span": {
+                    "start": 1640,
+                    "end": 1676
+                  }
+                }
+              ],
+              "span": {
+                "start": 1615,
+                "end": 1677
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "hex-errors: ",
+                  "span": {
+                    "start": 1684,
+                    "end": 1696
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "describeHex",
+                      "span": {
+                        "start": 1698,
+                        "end": 1709
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "hex",
+                            "span": {
+                              "start": 1711,
+                              "end": 1714
+                            }
+                          },
+                          "field": "decode",
+                          "fieldSpan": {
+                            "start": 1715,
+                            "end": 1721
+                          },
+                          "span": {
+                            "start": 1711,
+                            "end": 1721
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"abc\"",
+                          "span": {
+                            "start": 1722,
+                            "end": 1727
+                          }
+                        },
+                        "span": {
+                          "start": 1711,
+                          "end": 1727
+                        }
+                      },
+                      "span": {
+                        "start": 1710,
+                        "end": 1728
+                      }
+                    },
+                    "span": {
+                      "start": 1698,
+                      "end": 1728
+                    }
+                  },
+                  "span": {
+                    "start": 1696,
+                    "end": 1729
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 1729,
+                    "end": 1732
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "describeHex",
+                      "span": {
+                        "start": 1734,
+                        "end": 1745
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "hex",
+                            "span": {
+                              "start": 1747,
+                              "end": 1750
+                            }
+                          },
+                          "field": "decode",
+                          "fieldSpan": {
+                            "start": 1751,
+                            "end": 1757
+                          },
+                          "span": {
+                            "start": 1747,
+                            "end": 1757
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"00é\"",
+                          "span": {
+                            "start": 1758,
+                            "end": 1764
+                          }
+                        },
+                        "span": {
+                          "start": 1747,
+                          "end": 1764
+                        }
+                      },
+                      "span": {
+                        "start": 1746,
+                        "end": 1765
+                      }
+                    },
+                    "span": {
+                      "start": 1734,
+                      "end": 1765
+                    }
+                  },
+                  "span": {
+                    "start": 1732,
+                    "end": 1766
+                  }
+                }
+              ],
+              "span": {
+                "start": 1683,
+                "end": 1767
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "base64-errors: ",
+                  "span": {
+                    "start": 1774,
+                    "end": 1789
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "describeBase64",
+                      "span": {
+                        "start": 1791,
+                        "end": 1805
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "base64",
+                            "span": {
+                              "start": 1807,
+                              "end": 1813
+                            }
+                          },
+                          "field": "decode",
+                          "fieldSpan": {
+                            "start": 1814,
+                            "end": 1820
+                          },
+                          "span": {
+                            "start": 1807,
+                            "end": 1820
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"Zg\"",
+                          "span": {
+                            "start": 1821,
+                            "end": 1825
+                          }
+                        },
+                        "span": {
+                          "start": 1807,
+                          "end": 1825
+                        }
+                      },
+                      "span": {
+                        "start": 1806,
+                        "end": 1826
+                      }
+                    },
+                    "span": {
+                      "start": 1791,
+                      "end": 1826
+                    }
+                  },
+                  "span": {
+                    "start": 1789,
+                    "end": 1827
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 1827,
+                    "end": 1830
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "describeBase64",
+                      "span": {
+                        "start": 1832,
+                        "end": 1846
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "base64",
+                            "span": {
+                              "start": 1848,
+                              "end": 1854
+                            }
+                          },
+                          "field": "decode",
+                          "fieldSpan": {
+                            "start": 1855,
+                            "end": 1861
+                          },
+                          "span": {
+                            "start": 1848,
+                            "end": 1861
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"AA A\"",
+                          "span": {
+                            "start": 1862,
+                            "end": 1868
+                          }
+                        },
+                        "span": {
+                          "start": 1848,
+                          "end": 1868
+                        }
+                      },
+                      "span": {
+                        "start": 1847,
+                        "end": 1869
+                      }
+                    },
+                    "span": {
+                      "start": 1832,
+                      "end": 1869
+                    }
+                  },
+                  "span": {
+                    "start": 1830,
+                    "end": 1870
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 1870,
+                    "end": 1873
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "describeBase64",
+                      "span": {
+                        "start": 1875,
+                        "end": 1889
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "base64",
+                            "span": {
+                              "start": 1891,
+                              "end": 1897
+                            }
+                          },
+                          "field": "decode",
+                          "fieldSpan": {
+                            "start": 1898,
+                            "end": 1904
+                          },
+                          "span": {
+                            "start": 1891,
+                            "end": 1904
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"AA=A\"",
+                          "span": {
+                            "start": 1905,
+                            "end": 1911
+                          }
+                        },
+                        "span": {
+                          "start": 1891,
+                          "end": 1911
+                        }
+                      },
+                      "span": {
+                        "start": 1890,
+                        "end": 1912
+                      }
+                    },
+                    "span": {
+                      "start": 1875,
+                      "end": 1912
+                    }
+                  },
+                  "span": {
+                    "start": 1873,
+                    "end": 1913
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 1913,
+                    "end": 1916
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "describeBase64",
+                      "span": {
+                        "start": 1918,
+                        "end": 1932
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "base64",
+                            "span": {
+                              "start": 1934,
+                              "end": 1940
+                            }
+                          },
+                          "field": "decode",
+                          "fieldSpan": {
+                            "start": 1941,
+                            "end": 1947
+                          },
+                          "span": {
+                            "start": 1934,
+                            "end": 1947
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"AB==\"",
+                          "span": {
+                            "start": 1948,
+                            "end": 1954
+                          }
+                        },
+                        "span": {
+                          "start": 1934,
+                          "end": 1954
+                        }
+                      },
+                      "span": {
+                        "start": 1933,
+                        "end": 1955
+                      }
+                    },
+                    "span": {
+                      "start": 1918,
+                      "end": 1955
+                    }
+                  },
+                  "span": {
+                    "start": 1916,
+                    "end": 1956
+                  }
+                }
+              ],
+              "span": {
+                "start": 1773,
+                "end": 1957
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "base64url-errors: ",
+                  "span": {
+                    "start": 1964,
+                    "end": 1982
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "describeBase64",
+                      "span": {
+                        "start": 1984,
+                        "end": 1998
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "base64",
+                            "span": {
+                              "start": 2000,
+                              "end": 2006
+                            }
+                          },
+                          "field": "decodeUrl",
+                          "fieldSpan": {
+                            "start": 2007,
+                            "end": 2016
+                          },
+                          "span": {
+                            "start": 2000,
+                            "end": 2016
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"A\"",
+                          "span": {
+                            "start": 2017,
+                            "end": 2020
+                          }
+                        },
+                        "span": {
+                          "start": 2000,
+                          "end": 2020
+                        }
+                      },
+                      "span": {
+                        "start": 1999,
+                        "end": 2021
+                      }
+                    },
+                    "span": {
+                      "start": 1984,
+                      "end": 2021
+                    }
+                  },
+                  "span": {
+                    "start": 1982,
+                    "end": 2022
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 2022,
+                    "end": 2025
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "describeBase64",
+                      "span": {
+                        "start": 2027,
+                        "end": 2041
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "base64",
+                            "span": {
+                              "start": 2043,
+                              "end": 2049
+                            }
+                          },
+                          "field": "decodeUrl",
+                          "fieldSpan": {
+                            "start": 2050,
+                            "end": 2059
+                          },
+                          "span": {
+                            "start": 2043,
+                            "end": 2059
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"AA=\"",
+                          "span": {
+                            "start": 2060,
+                            "end": 2065
+                          }
+                        },
+                        "span": {
+                          "start": 2043,
+                          "end": 2065
+                        }
+                      },
+                      "span": {
+                        "start": 2042,
+                        "end": 2066
+                      }
+                    },
+                    "span": {
+                      "start": 2027,
+                      "end": 2066
+                    }
+                  },
+                  "span": {
+                    "start": 2025,
+                    "end": 2067
+                  }
+                }
+              ],
+              "span": {
+                "start": 1963,
+                "end": 2068
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "error-eq: ",
+                  "span": {
+                    "start": 2075,
+                    "end": 2085
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "==",
+                    "operatorSpan": {
+                      "start": 2106,
+                      "end": 2108
+                    },
+                    "left": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "hex",
+                          "span": {
+                            "start": 2087,
+                            "end": 2090
+                          }
+                        },
+                        "field": "OddHexLength",
+                        "fieldSpan": {
+                          "start": 2091,
+                          "end": 2103
+                        },
+                        "span": {
+                          "start": 2087,
+                          "end": 2103
+                        }
+                      },
+                      "argument": {
+                        "kind": "integer",
+                        "raw": "3",
+                        "span": {
+                          "start": 2104,
+                          "end": 2105
+                        }
+                      },
+                      "span": {
+                        "start": 2087,
+                        "end": 2105
+                      }
+                    },
+                    "right": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "hex",
+                          "span": {
+                            "start": 2109,
+                            "end": 2112
+                          }
+                        },
+                        "field": "OddHexLength",
+                        "fieldSpan": {
+                          "start": 2113,
+                          "end": 2125
+                        },
+                        "span": {
+                          "start": 2109,
+                          "end": 2125
+                        }
+                      },
+                      "argument": {
+                        "kind": "integer",
+                        "raw": "3",
+                        "span": {
+                          "start": 2126,
+                          "end": 2127
+                        }
+                      },
+                      "span": {
+                        "start": 2109,
+                        "end": 2127
+                      }
+                    },
+                    "span": {
+                      "start": 2087,
+                      "end": 2127
+                    }
+                  },
+                  "span": {
+                    "start": 2085,
+                    "end": 2128
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "span": {
+                    "start": 2128,
+                    "end": 2131
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "==",
+                    "operatorSpan": {
+                      "start": 2175,
+                      "end": 2177
+                    },
+                    "left": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "base64",
+                          "span": {
+                            "start": 2133,
+                            "end": 2139
+                          }
+                        },
+                        "field": "InvalidBase64Padding",
+                        "fieldSpan": {
+                          "start": 2140,
+                          "end": 2160
+                        },
+                        "span": {
+                          "start": 2133,
+                          "end": 2160
+                        }
+                      },
+                      "argument": {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "offset",
+                            "nameSpan": {
+                              "start": 2163,
+                              "end": 2169
+                            },
+                            "value": {
+                              "kind": "integer",
+                              "raw": "2",
+                              "span": {
+                                "start": 2171,
+                                "end": 2172
+                              }
+                            },
+                            "span": {
+                              "start": 2163,
+                              "end": 2172
+                            }
+                          }
+                        ],
+                        "span": {
+                          "start": 2161,
+                          "end": 2174
+                        }
+                      },
+                      "span": {
+                        "start": 2133,
+                        "end": 2174
+                      }
+                    },
+                    "right": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "base64",
+                          "span": {
+                            "start": 2178,
+                            "end": 2184
+                          }
+                        },
+                        "field": "InvalidBase64Padding",
+                        "fieldSpan": {
+                          "start": 2185,
+                          "end": 2205
+                        },
+                        "span": {
+                          "start": 2178,
+                          "end": 2205
+                        }
+                      },
+                      "argument": {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "offset",
+                            "nameSpan": {
+                              "start": 2208,
+                              "end": 2214
+                            },
+                            "value": {
+                              "kind": "integer",
+                              "raw": "2",
+                              "span": {
+                                "start": 2216,
+                                "end": 2217
+                              }
+                            },
+                            "span": {
+                              "start": 2208,
+                              "end": 2217
+                            }
+                          }
+                        ],
+                        "span": {
+                          "start": 2206,
+                          "end": 2219
+                        }
+                      },
+                      "span": {
+                        "start": 2178,
+                        "end": 2219
+                      }
+                    },
+                    "span": {
+                      "start": 2133,
+                      "end": 2219
+                    }
+                  },
+                  "span": {
+                    "start": 2131,
+                    "end": 2220
+                  }
+                }
+              ],
+              "span": {
+                "start": 2074,
+                "end": 2221
+              }
+            }
+          ],
+          "span": {
+            "start": 1441,
+            "end": 2226
+          }
+        },
+        "span": {
+          "start": 1253,
+          "end": 2228
+        }
+      },
+      "span": {
+        "start": 1218,
+        "end": 2228
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 2244,
+        "end": 2248
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 2252,
+          "end": 2256
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 2262,
+            "end": 2269
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 2276,
+          "end": 2288
+        }
+      },
+      "body": {
+        "kind": "effectfulFor",
+        "pattern": {
+          "kind": "name",
+          "name": "line",
+          "nameSpan": {
+            "start": 2297,
+            "end": 2301
+          },
+          "span": {
+            "start": 2297,
+            "end": 2301
+          }
+        },
+        "source": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "exercise",
+            "span": {
+              "start": 2305,
+              "end": 2313
+            }
+          },
+          "argument": {
+            "kind": "unit",
+            "span": {
+              "start": 2314,
+              "end": 2316
+            }
+          },
+          "span": {
+            "start": 2305,
+            "end": 2316
+          }
+        },
+        "body": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 2319,
+              "end": 2326
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "line",
+            "span": {
+              "start": 2327,
+              "end": 2331
+            }
+          },
+          "span": {
+            "start": 2319,
+            "end": 2331
+          }
+        },
+        "span": {
+          "start": 2293,
+          "end": 2333
+        }
+      },
+      "span": {
+        "start": 2230,
+        "end": 2333
+      }
+    }
+  ]
+}

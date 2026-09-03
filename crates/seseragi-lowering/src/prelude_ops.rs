@@ -10,6 +10,22 @@ pub(crate) struct RuntimePreludeDictionary {
 
 const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
     RuntimePreludeDictionary {
+        semantic_identity: "Eq<std/bytes/hex::HexDecodeError>",
+        runtime_feature: "core.bytes.hex.decode-error.eq",
+        local_name: "_ssrg_hexDecodeErrorEq",
+        module: "@seseragi/runtime/bytes-hex",
+        export_name: "hexDecodeErrorEq",
+        source_map_name: "hexDecodeErrorEq",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "Eq<std/bytes/base64::Base64DecodeError>",
+        runtime_feature: "core.bytes.base64.decode-error.eq",
+        local_name: "_ssrg_base64DecodeErrorEq",
+        module: "@seseragi/runtime/bytes-base64",
+        export_name: "base64DecodeErrorEq",
+        source_map_name: "base64DecodeErrorEq",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "Eq<std/text::TextSliceError>",
         runtime_feature: "core.text.slice-error.eq",
         local_name: "_ssrg_textSliceErrorEq",

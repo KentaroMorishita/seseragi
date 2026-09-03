@@ -1,0 +1,58 @@
+import * as base64 from "std/bytes/base64"
+import * as bytes from "std/bytes"
+import * as hex from "std/bytes/hex"
+
+fn requireBytes result: Either<bytes.ByteError, bytes.Bytes> -> bytes.Bytes =
+  match result {
+    Left _error -> bytes.empty ()
+    Right value -> value
+  }
+
+fn hexRoundTrips original: bytes.Bytes -> encoded: String -> Bool =
+  match hex.decode encoded {
+    Left _error -> False
+    Right decoded -> bytes.toInts decoded == bytes.toInts original
+  }
+
+fn base64RoundTrips original: bytes.Bytes -> encoded: String -> Bool =
+  match base64.decode encoded {
+    Left _error -> False
+    Right decoded -> bytes.toInts decoded == bytes.toInts original
+  }
+
+fn base64UrlRoundTrips original: bytes.Bytes -> encoded: String -> Bool =
+  match base64.decodeUrl encoded {
+    Left _error -> False
+    Right decoded -> bytes.toInts decoded == bytes.toInts original
+  }
+
+fn describeHex result: Either<hex.HexDecodeError, bytes.Bytes> -> String =
+  match result {
+    Left error -> show error
+    Right _value -> "unexpected success"
+  }
+
+fn describeBase64 result: Either<base64.Base64DecodeError, bytes.Bytes> -> String =
+  match result {
+    Left error -> show error
+    Right _value -> "unexpected success"
+  }
+
+pub fn exercise -> Array<String> = {
+  let value = requireBytes (bytes.fromInts [0, 15, 16, 251, 239, 255])
+  let hexadecimal = hex.encode value
+  let standard = base64.encode value
+  let urlSafe = base64.encodeUrl value
+  [
+    `hex: ${hexadecimal} / ${hexRoundTrips value hexadecimal} / ${hexRoundTrips value "000F10FBEFFF"}`,
+    `base64: ${standard} / ${base64RoundTrips value standard}`,
+    `base64url: ${urlSafe} / ${base64UrlRoundTrips value urlSafe}`,
+    `hex-errors: ${describeHex (hex.decode "abc")} / ${describeHex (hex.decode "00é")}`,
+    `base64-errors: ${describeBase64 (base64.decode "Zg")} / ${describeBase64 (base64.decode "AA A")} / ${describeBase64 (base64.decode "AA=A")} / ${describeBase64 (base64.decode "AB==")}`,
+    `base64url-errors: ${describeBase64 (base64.decodeUrl "A")} / ${describeBase64 (base64.decodeUrl "AA=")}`,
+    `error-eq: ${hex.OddHexLength 3 == hex.OddHexLength 3} / ${base64.InvalidBase64Padding { offset: 2 } == base64.InvalidBase64Padding { offset: 2 }}`,
+  ]
+}
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  for line <- exercise () { println line }

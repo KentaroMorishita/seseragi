@@ -326,6 +326,18 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "BytesSliceError",
     },
     RuntimeTypeImport {
+        canonical: "std/bytes/hex::HexDecodeError",
+        runtime_feature: "core.bytes.hex.decode-error-type",
+        module: "@seseragi/runtime/bytes-hex",
+        export_name: "HexDecodeError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/bytes/base64::Base64DecodeError",
+        runtime_feature: "core.bytes.base64.decode-error-type",
+        module: "@seseragi/runtime/bytes-base64",
+        export_name: "Base64DecodeError",
+    },
+    RuntimeTypeImport {
         canonical: "std/text::Utf8DecodeError",
         runtime_feature: "core.text.utf8-error-type",
         module: "@seseragi/runtime/text",

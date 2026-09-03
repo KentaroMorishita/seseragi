@@ -1,0 +1,1799 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/bytes-codecs",
+  "runtimeRequirements": [
+    "core.bytes.byte-error-type",
+    "core.bytes.type",
+    "core.bytes.hex.decode-error-type",
+    "core.bytes.base64.decode-error-type",
+    "effect.core.type",
+    "effect.console.service",
+    "effect.console.error",
+    "core.either",
+    "core.adt",
+    "core.bytes.empty",
+    "core.unit",
+    "core.string",
+    "core.bool",
+    "core.bytes.hex.decode",
+    "core.int.eq-dictionary",
+    "core.array.eq-dictionary",
+    "core.bytes.to-ints",
+    "core.int",
+    "core.bytes.base64.decode",
+    "core.bytes.base64.decode-url",
+    "core.bytes.hex.decode-error.show",
+    "core.bytes.base64.decode-error.show",
+    "core.bytes.from-ints",
+    "core.bytes.hex.encode",
+    "core.bytes.base64.encode",
+    "core.bytes.base64.encode-url",
+    "core.string.show",
+    "core.bool.show",
+    "core.bytes.hex.decode-error.eq",
+    "core.bytes.hex.error.odd-length",
+    "core.bytes.base64.decode-error.eq",
+    "core.bytes.base64.error.invalid-padding",
+    "core.array.iterable",
+    "effect.collection.for-each",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.bytes.empty",
+      "local": "_ssrg_bytes_empty"
+    },
+    {
+      "feature": "core.bytes.hex.decode",
+      "local": "_ssrg_hex_decode"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
+    {
+      "feature": "core.array.eq-dictionary",
+      "local": "_ssrg_array_eq_dictionary"
+    },
+    {
+      "feature": "core.bytes.to-ints",
+      "local": "_ssrg_bytes_toInts"
+    },
+    {
+      "feature": "core.bytes.base64.decode",
+      "local": "_ssrg_base64_decode"
+    },
+    {
+      "feature": "core.bytes.base64.decode-url",
+      "local": "_ssrg_base64_decodeUrl"
+    },
+    {
+      "feature": "core.bytes.hex.decode-error.show",
+      "local": "_ssrg_hexDecodeErrorShow"
+    },
+    {
+      "feature": "core.bytes.base64.decode-error.show",
+      "local": "_ssrg_base64DecodeErrorShow"
+    },
+    {
+      "feature": "core.bytes.from-ints",
+      "local": "_ssrg_bytes_fromInts"
+    },
+    {
+      "feature": "core.bytes.hex.encode",
+      "local": "_ssrg_hex_encode"
+    },
+    {
+      "feature": "core.bytes.base64.encode",
+      "local": "_ssrg_base64_encode"
+    },
+    {
+      "feature": "core.bytes.base64.encode-url",
+      "local": "_ssrg_base64_encodeUrl"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
+    },
+    {
+      "feature": "core.bytes.hex.decode-error.eq",
+      "local": "_ssrg_hexDecodeErrorEq"
+    },
+    {
+      "feature": "core.bytes.hex.error.odd-length",
+      "local": "_ssrg_hex_OddHexLength"
+    },
+    {
+      "feature": "core.bytes.base64.decode-error.eq",
+      "local": "_ssrg_base64DecodeErrorEq"
+    },
+    {
+      "feature": "core.bytes.base64.error.invalid-padding",
+      "local": "_ssrg_base64_InvalidBase64Padding"
+    },
+    {
+      "feature": "core.array.iterable",
+      "local": "_ssrg_array_iterable"
+    },
+    {
+      "feature": "effect.collection.for-each",
+      "local": "_ssrg_collection_for_each"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.bytes.byte-error-type",
+      "local": "ByteError"
+    },
+    {
+      "feature": "core.bytes.type",
+      "local": "Bytes"
+    },
+    {
+      "feature": "core.bytes.hex.decode-error-type",
+      "local": "HexDecodeError"
+    },
+    {
+      "feature": "core.bytes.base64.decode-error-type",
+      "local": "Base64DecodeError"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "effect.console.service",
+      "local": "Console"
+    },
+    {
+      "feature": "effect.console.error",
+      "local": "ConsoleError"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "requireBytes",
+      "parameters": [
+        {
+          "name": "result",
+          "type": "{ readonly tag: \"Left\"; readonly value: ByteError } | { readonly tag: \"Right\"; readonly value: Bytes }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "ByteError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Bytes",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_error",
+                "type": {
+                  "kind": "reference",
+                  "name": "ByteError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_bytes_empty",
+              "arguments": [
+                {
+                  "kind": "undefined"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "reference",
+                  "name": "Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "Bytes",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 116,
+        "end": 273
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "hexRoundTrips",
+      "parameters": [
+        {
+          "name": "original",
+          "type": "Bytes",
+          "implicit": false
+        },
+        {
+          "name": "encoded",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_hex_decode",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "encoded"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "HexDecodeError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Bytes",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_error",
+                "type": {
+                  "kind": "reference",
+                  "name": "HexDecodeError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "boolean",
+              "value": false
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "decoded",
+                "type": {
+                  "kind": "reference",
+                  "name": "Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "_ssrg_array_eq_dictionary",
+                "typeArguments": [
+                  {
+                    "kind": "number"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_int_eq_dictionary"
+                  }
+                ]
+              },
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_bytes_toInts",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "decoded"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_bytes_toInts",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "original"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "boolean"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 275,
+        "end": 467
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "base64RoundTrips",
+      "parameters": [
+        {
+          "name": "original",
+          "type": "Bytes",
+          "implicit": false
+        },
+        {
+          "name": "encoded",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_base64_decode",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "encoded"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "Base64DecodeError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Bytes",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_error",
+                "type": {
+                  "kind": "reference",
+                  "name": "Base64DecodeError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "boolean",
+              "value": false
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "decoded",
+                "type": {
+                  "kind": "reference",
+                  "name": "Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "_ssrg_array_eq_dictionary",
+                "typeArguments": [
+                  {
+                    "kind": "number"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_int_eq_dictionary"
+                  }
+                ]
+              },
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_bytes_toInts",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "decoded"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_bytes_toInts",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "original"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "boolean"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 469,
+        "end": 667
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "base64UrlRoundTrips",
+      "parameters": [
+        {
+          "name": "original",
+          "type": "Bytes",
+          "implicit": false
+        },
+        {
+          "name": "encoded",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_base64_decodeUrl",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "encoded"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "Base64DecodeError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Bytes",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_error",
+                "type": {
+                  "kind": "reference",
+                  "name": "Base64DecodeError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "boolean",
+              "value": false
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "decoded",
+                "type": {
+                  "kind": "reference",
+                  "name": "Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "_ssrg_array_eq_dictionary",
+                "typeArguments": [
+                  {
+                    "kind": "number"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_int_eq_dictionary"
+                  }
+                ]
+              },
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_bytes_toInts",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "decoded"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_bytes_toInts",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "original"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "boolean"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 669,
+        "end": 873
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "describeHex",
+      "parameters": [
+        {
+          "name": "result",
+          "type": "{ readonly tag: \"Left\"; readonly value: HexDecodeError } | { readonly tag: \"Right\"; readonly value: Bytes }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "HexDecodeError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Bytes",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "HexDecodeError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_hexDecodeErrorShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_value",
+                "type": {
+                  "kind": "reference",
+                  "name": "Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "unexpected success"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 875,
+        "end": 1040
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "describeBase64",
+      "parameters": [
+        {
+          "name": "result",
+          "type": "{ readonly tag: \"Left\"; readonly value: Base64DecodeError } | { readonly tag: \"Right\"; readonly value: Bytes }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "result"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "Base64DecodeError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Bytes",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "Base64DecodeError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_base64DecodeErrorShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "_value",
+                "type": {
+                  "kind": "reference",
+                  "name": "Bytes",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "unexpected success"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1042,
+        "end": 1216
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "exercise",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "value",
+            "type": {
+              "kind": "reference",
+              "name": "Bytes",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "requireBytes",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_bytes_fromInts",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "number",
+                          "value": "0"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "15"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "16"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "251"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "239"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "255"
+                        }
+                      ],
+                      "elementType": {
+                        "kind": "number"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1254,
+              "end": 1325
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "hexadecimal",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_hex_encode",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1326,
+              "end": 1362
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "standard",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_base64_encode",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1363,
+              "end": 1399
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "urlSafe",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_base64_encodeUrl",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1400,
+              "end": 1438
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "string",
+                        "value": "hex: "
+                      },
+                      "right": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "hexadecimal"
+                          }
+                        ]
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": " / "
+                    }
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "hexRoundTrips",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "value"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "hexadecimal"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_boolShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "hexRoundTrips",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      },
+                      {
+                        "kind": "string",
+                        "value": "000F10FBEFFF"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "base64: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "standard"
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_boolShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "base64RoundTrips",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "standard"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "base64url: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "urlSafe"
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_boolShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "base64UrlRoundTrips",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "urlSafe"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "hex-errors: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "describeHex",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_hex_decode",
+                            "arguments": [
+                              {
+                                "kind": "string",
+                                "value": "abc"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "describeHex",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_hex_decode",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "00é"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "left": {
+                            "kind": "string",
+                            "value": "base64-errors: "
+                          },
+                          "right": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_stringShow"
+                            },
+                            "method": "show",
+                            "arguments": [
+                              {
+                                "kind": "call",
+                                "callee": "describeBase64",
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_base64_decode",
+                                    "arguments": [
+                                      {
+                                        "kind": "string",
+                                        "value": "Zg"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "right": {
+                          "kind": "string",
+                          "value": " / "
+                        }
+                      },
+                      "right": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "call",
+                            "callee": "describeBase64",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_base64_decode",
+                                "arguments": [
+                                  {
+                                    "kind": "string",
+                                    "value": "AA A"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": " / "
+                    }
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "describeBase64",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_base64_decode",
+                            "arguments": [
+                              {
+                                "kind": "string",
+                                "value": "AA=A"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "describeBase64",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_base64_decode",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "AB=="
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "base64url-errors: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "describeBase64",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_base64_decodeUrl",
+                            "arguments": [
+                              {
+                                "kind": "string",
+                                "value": "A"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "describeBase64",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_base64_decodeUrl",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "AA="
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "error-eq: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_hexDecodeErrorEq"
+                        },
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_hex_OddHexLength",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "3"
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_hex_OddHexLength",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "3"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": " / "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_boolShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_base64DecodeErrorEq"
+                    },
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_base64_InvalidBase64Padding",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "items": [
+                              {
+                                "kind": "field",
+                                "name": "offset",
+                                "value": {
+                                  "kind": "number",
+                                  "value": "2"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_base64_InvalidBase64Padding",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "items": [
+                              {
+                                "kind": "field",
+                                "name": "offset",
+                                "value": {
+                                  "kind": "number",
+                                  "value": "2"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "elementType": {
+            "kind": "string"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1218,
+        "end": 2228
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_for_each",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_iterable"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_for_value: string",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "$ssrg_for_value"
+              },
+              "scrutineeType": {
+                "kind": "string"
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "line",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": []
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_console_println",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "line"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "reference",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "fields": [
+                      {
+                        "name": "console",
+                        "optional": false,
+                        "type": {
+                          "kind": "reference",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "exercise",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2230,
+        "end": 2333
+      }
+    }
+  ]
+}

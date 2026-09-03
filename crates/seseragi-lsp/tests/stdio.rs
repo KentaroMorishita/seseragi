@@ -298,6 +298,14 @@ fn prelude_registry_methods_reach_hover_and_completion_with_canonical_signatures
             "std/regex::find",
             "Regex -> arg2: String -> Maybe<RegexMatch>",
         ),
+        (
+            "std/bytes/hex::decode",
+            "String -> Either<HexDecodeError, Bytes>",
+        ),
+        (
+            "std/bytes/base64::decodeUrl",
+            "String -> Either<Base64DecodeError, Bytes>",
+        ),
     ] {
         let item = completions
             .iter()
