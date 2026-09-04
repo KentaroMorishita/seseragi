@@ -13,6 +13,7 @@
       "core.int",
       "core.iterator.unfold",
       "core.maybe",
+      "core.int.ord-dictionary",
       "core.bool",
       "core.maybe.just",
       "core.int.add",

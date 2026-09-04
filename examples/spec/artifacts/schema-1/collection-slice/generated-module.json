@@ -12,6 +12,7 @@
       "core.int.eq-dictionary",
       "core.bool",
       "core.int.remainder",
+      "core.int.ord-dictionary",
       "core.maybe",
       "core.string",
       "core.adt",

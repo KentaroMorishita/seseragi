@@ -1155,7 +1155,8 @@ fn select_equality_evidence(
     .unwrap_or_default()
 }
 
-pub(crate) fn select_binary_equality_evidence(
+pub(crate) fn select_binary_same_type_evidence(
+    trait_name: &str,
     left: TypedType,
     right: TypedType,
     trait_identity: Option<&str>,
@@ -1163,7 +1164,7 @@ pub(crate) fn select_binary_equality_evidence(
     scoped: &[ScopedCallEvidence],
 ) -> Result<TypedCallEvidence, TypedConstraint> {
     let missing = || TypedConstraint {
-        name: "Eq".to_owned(),
+        name: trait_name.to_owned(),
         arguments: vec![left.clone()],
     };
     if left != right || matches!(left, TypedType::Hole) {
@@ -1182,10 +1183,11 @@ pub(crate) fn select_binary_equality_evidence(
     })
 }
 
-/// Selects an Eq head from the known operand parts of an expected curried
+/// Selects an Eq or Ord head from the known operand parts of an expected curried
 /// function type. A scoped generic constraint can supply the missing operand
 /// type when higher-order application has not inferred later arguments yet.
-pub(crate) fn select_equality_operator_reference_evidence(
+pub(crate) fn select_same_type_operator_reference_evidence(
+    trait_name: &str,
     left: TypedType,
     right: TypedType,
     trait_identity: Option<&str>,
@@ -1199,7 +1201,7 @@ pub(crate) fn select_equality_operator_reference_evidence(
         .find_map(|type_ref| (*type_ref).cloned())
         .unwrap_or(TypedType::Hole);
     let missing = || TypedConstraint {
-        name: "Eq".to_owned(),
+        name: trait_name.to_owned(),
         arguments: vec![missing_type.clone()],
     };
 
@@ -1220,7 +1222,7 @@ pub(crate) fn select_equality_operator_reference_evidence(
             .collect::<Vec<_>>();
         if let [available] = scoped_matches.as_slice() {
             let [value] = available.constraint.arguments.as_slice() else {
-                unreachable!("scoped equality match must have one argument");
+                unreachable!("scoped same-type match must have one argument");
             };
             return Ok((
                 value.clone(),
@@ -1248,7 +1250,8 @@ pub(crate) fn select_equality_operator_reference_evidence(
     }) {
         return Err(missing());
     }
-    let evidence = select_binary_equality_evidence(
+    let evidence = select_binary_same_type_evidence(
+        trait_name,
         value.clone(),
         value.clone(),
         trait_identity,

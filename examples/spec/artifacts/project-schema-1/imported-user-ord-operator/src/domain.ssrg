@@ -1,0 +1,8 @@
+pub struct Score { value: Int }
+instance Eq<Score> {
+  fn eq left: Score -> right: Score -> Bool = left.value == right.value
+}
+instance Ord<Score> {
+  fn compare left: Score -> right: Score -> Ordering = compare right.value left.value
+}
+pub fn ordered<A> left: A -> right: A -> Bool where Ord<A> = left <= right

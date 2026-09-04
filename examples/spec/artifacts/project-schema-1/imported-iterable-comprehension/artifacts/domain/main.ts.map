@@ -14,9 +14,10 @@
     "__ssrg$instance$Iterable$0",
     "__ssrg$instance$Reducible$1",
     "advance",
+    "intOrd",
     "Just",
     "add",
     "Nothing"
   ],
-  "mappings": ";;;;;;;AAAAA;;AACIC;AAQJC;AAOAC;AAbAC"
+  "mappings": ";;;;;;;;AAAAA;;AACIC;AAQJC;AAOAC;AAbAC"
 }

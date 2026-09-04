@@ -10,6 +10,7 @@
   ],
   "names": [
     "sumTo",
+    "intOrd",
     "sumTo",
     "subtract",
     "add",
@@ -17,5 +18,5 @@
     "intEq",
     "sumTo"
   ],
-  "mappings": ";;;;;AAAAA;AAMAI"
+  "mappings": ";;;;;AAAAA;AAMAK"
 }

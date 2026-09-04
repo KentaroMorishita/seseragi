@@ -138,13 +138,19 @@ impl<'a> PureExpressionContext<'a> {
     pub(super) fn callable_value(&self, target: SymbolId) -> Option<TopLevelPureFunction> {
         if let Some(callable) = self.callable(target) {
             let mut callable = callable.clone();
-            if let Some(operator) = self
+            if let Some(trait_name) = self
                 .resolution
                 .symbol(target)
                 .filter(|symbol| symbol.namespace == SymbolNamespace::Operator)
-                .and_then(|symbol| standard_trait_operator(&symbol.spelling))
+                .and_then(|symbol| {
+                    standard_trait_operator(&symbol.spelling)
+                        .map(|operator| operator.trait_name)
+                        .or_else(|| {
+                            standard_operator(&symbol.spelling).map(|operator| operator.trait_name)
+                        })
+                })
             {
-                let identity = self.trait_identity(operator.trait_name);
+                let identity = self.trait_identity(trait_name);
                 callable.trait_identity = identity.clone();
                 if let Some(primary) = callable.constraint_identities.first_mut() {
                     *primary = identity;
@@ -311,13 +317,15 @@ impl<'a> PureExpressionContext<'a> {
         )
     }
 
-    pub(super) fn select_binary_equality_evidence(
+    pub(super) fn select_binary_same_type_evidence(
         &self,
+        trait_name: &str,
         left: TypedType,
         right: TypedType,
     ) -> Result<crate::TypedCallEvidence, TypedConstraint> {
-        let trait_identity = self.trait_identity("Eq");
-        super::call_evidence::select_binary_equality_evidence(
+        let trait_identity = self.trait_identity(trait_name);
+        super::call_evidence::select_binary_same_type_evidence(
+            trait_name,
             left,
             right,
             trait_identity.as_deref(),
@@ -326,13 +334,15 @@ impl<'a> PureExpressionContext<'a> {
         )
     }
 
-    pub(super) fn select_equality_operator_reference_evidence(
+    pub(super) fn select_same_type_operator_reference_evidence(
         &self,
+        trait_name: &str,
         left: TypedType,
         right: TypedType,
     ) -> Result<(TypedType, crate::TypedCallEvidence), TypedConstraint> {
-        let trait_identity = self.trait_identity("Eq");
-        super::call_evidence::select_equality_operator_reference_evidence(
+        let trait_identity = self.trait_identity(trait_name);
+        super::call_evidence::select_same_type_operator_reference_evidence(
+            trait_name,
             left,
             right,
             trait_identity.as_deref(),
@@ -958,7 +968,7 @@ fn type_standard_operator_reference(
             StandardOperatorKind::Arithmetic => {
                 (named_type("Int"), named_type("Int"), named_type("Int"))
             }
-            StandardOperatorKind::Equality => {
+            StandardOperatorKind::Equality | StandardOperatorKind::Comparison => {
                 (named_type("Int"), named_type("Int"), named_type("Bool"))
             }
         });
@@ -986,8 +996,12 @@ fn type_standard_operator_reference(
                     }
                 }
             }
-            StandardOperatorKind::Equality => {
-                match context.select_equality_operator_reference_evidence(left, right) {
+            StandardOperatorKind::Equality | StandardOperatorKind::Comparison => {
+                match context.select_same_type_operator_reference_evidence(
+                    operator.trait_name,
+                    left,
+                    right,
+                ) {
                     Ok((value, evidence)) => (
                         curried_binary_type_with_parameters(
                             value.clone(),

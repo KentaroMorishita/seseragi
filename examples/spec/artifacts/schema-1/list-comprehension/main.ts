@@ -6,6 +6,6 @@ import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 $ssrg$assertUnicodeVersion("17.0.0")
 
 const oddSquares = (values: List<number>) => _ssrg_list_from_array(_ssrg_list_comprehend(values, (value) => _ssrg_int_eq_dictionary["eq"](_ssrg_int_remainder(value, 2))(1), (value) => _ssrg_int_multiply(value, value)))
-const total = (values: List<number>) => _ssrg_list_reduce(0, (_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1), values)
+const total = (values: List<number>) => _ssrg_list_reduce(0, (((_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1)) as (argument: number) => (argument: number) => number), values)
 const renderTotal = (total: number) => (($ssrg_match: number): string => $ssrg_match === 35 ? "persistent List total: 35" : "unexpected List total")(total)
 export const main = (_unit: undefined) => _ssrg_console_println(renderTotal(total(oddSquares(_ssrg_list_from_array([1, 2, 3, 4, 5])))))

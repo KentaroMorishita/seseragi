@@ -11543,6 +11543,19 @@
       ]
     },
     {
+      "identity": "std/prelude::<",
+      "name": "<",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "< via Ord.compare",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Ord"
+      ]
+    },
+    {
       "identity": "std/prelude::<$>",
       "name": "<$>",
       "module": "std/prelude",
@@ -11569,6 +11582,19 @@
       ]
     },
     {
+      "identity": "std/prelude::<=",
+      "name": "<=",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "<= via Ord.compare",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Ord"
+      ]
+    },
+    {
       "identity": "std/prelude::==",
       "name": "==",
       "module": "std/prelude",
@@ -11579,6 +11605,32 @@
       "typeParameters": [],
       "constraints": [
         "Eq"
+      ]
+    },
+    {
+      "identity": "std/prelude::>",
+      "name": ">",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "> via Ord.compare",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Ord"
+      ]
+    },
+    {
+      "identity": "std/prelude::>=",
+      "name": ">=",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": ">= via Ord.compare",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Ord"
       ]
     },
     {

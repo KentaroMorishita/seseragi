@@ -2883,6 +2883,39 @@ describe("Playground sample catalog", () => {
     })
   })
 
+  test("dispatches comparison operators through Ord in WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/user-ord-operator/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expected = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/user-ord-operator/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("user-ord-operator.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing Ord execution entry")
+    }
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
+    for (const operator of ["<", "<=", ">", ">="]) {
+      const negative = await compile(
+        "missing-ord.ssrg",
+        `pub let invalid = 1.0 ${operator} 2.0`
+      )
+      expect(negative.status).not.toBe("success")
+    }
+  })
+
   test("preserves exact Decimal values and rounding through WASM", async () => {
     const source = await Bun.file(
       new URL(

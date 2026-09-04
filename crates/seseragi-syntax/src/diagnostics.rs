@@ -1046,7 +1046,7 @@ pub fn text parts: Array<String> -> String =
     #[test]
     fn reports_operator_sections_that_cannot_be_function_values() {
         for operator in [
-            "&&", "||", "??", "|>", "$", ":=", "!", "..", "..=", "<", "<=", ">", ">=", ":", "^",
+            "&&", "||", "??", "|>", "$", ":=", "!", "..", "..=", ":", "^",
         ] {
             let source = format!("pub let operation = ({operator})\n");
             let diagnostics = parse_diagnostics("main.ssrg", &source);

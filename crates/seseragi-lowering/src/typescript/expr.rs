@@ -100,10 +100,14 @@ pub(super) fn lower_core_expr_to_typescript(
                     };
                 }
                 if let Some(operation) = runtime_int_operation_with_evidence(&name, &evidence) {
-                    return TypeScriptExpr::CurriedRuntimeReference {
-                        name: operation.local_name.to_owned(),
-                        arity: 2,
-                    };
+                    return checked_operator_reference(
+                        TypeScriptExpr::CurriedRuntimeReference {
+                            name: operation.local_name.to_owned(),
+                            arity: 2,
+                        },
+                        &type_ref,
+                        imported_types,
+                    );
                 }
                 if let Some(method) = operator_trait_method(&name) {
                     if let Some(dictionary) = evidence.first().and_then(|selected| {
@@ -113,7 +117,11 @@ pub(super) fn lower_core_expr_to_typescript(
                             imported_types,
                         )
                     }) {
-                        return curried_dictionary_method_reference(dictionary, method);
+                        return checked_operator_reference(
+                            curried_dictionary_method_reference(dictionary, method),
+                            &type_ref,
+                            imported_types,
+                        );
                     }
                     if name == "+"
                         && matches!(
@@ -122,8 +130,44 @@ pub(super) fn lower_core_expr_to_typescript(
                                 if identity == "std/string::Add"
                         )
                     {
-                        return curried_binary_reference("+");
+                        return checked_operator_reference(
+                            curried_binary_reference("+"),
+                            &type_ref,
+                            imported_types,
+                        );
                     }
+                }
+                if standard_operator(&name)
+                    .is_some_and(|operator| operator.kind == StandardOperatorKind::Comparison)
+                {
+                    let dictionary = evidence
+                        .first()
+                        .and_then(|selected| {
+                            local_dictionary_expression(
+                                &selected.evidence,
+                                imported_values,
+                                imported_types,
+                            )
+                        })
+                        .expect("comparison reference requires materialized Ord evidence");
+                    let left = "__ssrg$comparison$left".to_owned();
+                    let right = "__ssrg$comparison$right".to_owned();
+                    let function = TypeScriptExpr::Lambda {
+                        parameter: left.clone(),
+                        body: Box::new(TypeScriptExpr::Lambda {
+                            parameter: right.clone(),
+                            body: Box::new(comparison_result(
+                                &name,
+                                dictionary,
+                                TypeScriptExpr::Identifier { name: left },
+                                TypeScriptExpr::Identifier { name: right },
+                            )),
+                        }),
+                    };
+                    return TypeScriptExpr::CheckedResult {
+                        value: Box::new(function),
+                        type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                    };
                 }
                 if matches!(
                     standard_operator(&name).map(|operator| operator.kind),
@@ -136,11 +180,19 @@ pub(super) fn lower_core_expr_to_typescript(
                             imported_types,
                         )
                     }) {
-                        return curried_equality_reference(dictionary, name == "!=");
+                        return checked_operator_reference(
+                            curried_equality_reference(dictionary, name == "!="),
+                            &type_ref,
+                            imported_types,
+                        );
                     }
                     if let Some(operator) = strict_equality_operator_with_evidence(&name, &evidence)
                     {
-                        return curried_binary_reference(operator);
+                        return checked_operator_reference(
+                            curried_binary_reference(operator),
+                            &type_ref,
+                            imported_types,
+                        );
                     }
                 }
             }
@@ -282,7 +334,43 @@ pub(super) fn lower_core_expr_to_typescript(
                 })
                 .collect::<Vec<_>>();
             let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
-            if let Some(operator) = standard_trait_operator(&callee) {
+            if standard_operator(&callee)
+                .is_some_and(|operator| operator.kind == StandardOperatorKind::Comparison)
+            {
+                let dictionary = evidence
+                    .first()
+                    .and_then(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
+                    })
+                    .expect("comparison application requires materialized Ord evidence");
+                let supplied = arguments.len();
+                for index in supplied..2 {
+                    arguments.push(TypeScriptExpr::Identifier {
+                        name: format!("__ssrg$comparison$argument${index}"),
+                    });
+                }
+                let right = arguments.pop().expect("comparison right operand");
+                let left = arguments.pop().expect("comparison left operand");
+                let mut result = comparison_result(&callee, dictionary, left, right);
+                for index in (supplied..2).rev() {
+                    result = TypeScriptExpr::Lambda {
+                        parameter: format!("__ssrg$comparison$argument${index}"),
+                        body: Box::new(result),
+                    };
+                }
+                if supplied < 2 {
+                    TypeScriptExpr::CheckedResult {
+                        value: Box::new(result),
+                        type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                    }
+                } else {
+                    result
+                }
+            } else if let Some(operator) = standard_trait_operator(&callee) {
                 let dispatch = trait_dispatch
                     .as_ref()
                     .expect("standard trait operator requires typed trait dispatch");
@@ -1307,6 +1395,17 @@ fn lower_binary(
             };
         }
     }
+    if standard_operator(&operator)
+        .is_some_and(|operator| operator.kind == StandardOperatorKind::Comparison)
+    {
+        let dictionary = evidence
+            .first()
+            .and_then(|selected| {
+                local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+            })
+            .expect("comparison requires materialized Ord evidence");
+        return comparison_result(&operator, dictionary, left, right);
+    }
     if matches!(operator.as_str(), "==" | "!=") {
         if let Some(selected) = evidence.first().and_then(|selected| {
             local_dictionary_expression(&selected.evidence, imported_values, imported_types)
@@ -1349,6 +1448,49 @@ fn lower_binary(
         operator: typescript_binary_operator(&operator).to_owned(),
         left: Box::new(left),
         right: Box::new(right),
+    }
+}
+
+/// Inspect the canonical Ordering tag once; operands and compare each execute once.
+fn comparison_result(
+    operator: &str,
+    dictionary: TypeScriptExpr,
+    left: TypeScriptExpr,
+    right: TypeScriptExpr,
+) -> TypeScriptExpr {
+    let (test, tag) = match operator {
+        "<" => ("===", "Less"),
+        "<=" => ("!==", "Greater"),
+        ">" => ("===", "Greater"),
+        ">=" => ("!==", "Less"),
+        _ => unreachable!("comparison metadata must identify an Ord operator"),
+    };
+    TypeScriptExpr::Binary {
+        operator: test.to_owned(),
+        left: Box::new(TypeScriptExpr::FieldAccess {
+            receiver: Box::new(TypeScriptExpr::DictionaryCall {
+                dictionary: Box::new(dictionary),
+                method: "compare".to_owned(),
+                arguments: vec![left, right],
+            }),
+            field: "tag".to_owned(),
+        }),
+        right: Box::new(TypeScriptExpr::String {
+            value: tag.to_owned(),
+        }),
+    }
+}
+
+// Preserve source-selected operand types when TypeScript has no contextual
+// function type (returned sections) or would infer generics too early.
+fn checked_operator_reference(
+    value: TypeScriptExpr,
+    type_ref: &CoreType,
+    imported_types: &BTreeMap<String, String>,
+) -> TypeScriptExpr {
+    TypeScriptExpr::CheckedResult {
+        value: Box::new(value),
+        type_ref: type_ref_from_core_type(type_ref, imported_types),
     }
 }
 

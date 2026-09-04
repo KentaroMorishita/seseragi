@@ -59,6 +59,24 @@
               "end": 62
             }
           },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Ord",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/int::Ord"
+              }
+            }
+          ],
           "type": {
             "kind": "named",
             "name": "Bool",

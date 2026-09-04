@@ -18,7 +18,12 @@
   "requiredEnvironment": {
     "kind": "record",
     "closed": true,
-    "fields": [{ "name": "console", "type": "Console" }]
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
   },
   "hostEnvironment": {
     "closed": false,
@@ -31,11 +36,15 @@
     ]
   },
   "expected": {
-    "exit": { "kind": "success", "value": "Unit" },
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
     "runtimeRequirements": [
       "core.iterator",
       "core.int",
       "core.maybe",
+      "core.int.ord-dictionary",
       "core.bool",
       "core.maybe.just",
       "core.int.add",
@@ -48,14 +57,18 @@
       "effect.console.println",
       "core.iterator.unfold"
     ],
-    "process": { "exitCode": 0 },
+    "process": {
+      "exitCode": 0
+    },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt",
     "trace": [
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["persistent iterator: 1 then 2"],
+        "arguments": [
+          "persistent iterator: 1 then 2"
+        ],
         "stdout": "persistent iterator: 1 then 2\n"
       }
     ]

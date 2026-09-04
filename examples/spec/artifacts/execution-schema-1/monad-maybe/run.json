@@ -18,7 +18,12 @@
   "requiredEnvironment": {
     "kind": "record",
     "closed": true,
-    "fields": [{ "name": "console", "type": "Console" }]
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
   },
   "hostEnvironment": {
     "closed": false,
@@ -31,7 +36,10 @@
     ]
   },
   "expected": {
-    "exit": { "kind": "success", "value": "Unit" },
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
     "runtimeRequirements": [
       "core.maybe",
       "core.adt",
@@ -39,50 +47,65 @@
       "core.maybe.just",
       "core.int",
       "core.int.add",
+      "core.int.ord-dictionary",
       "core.bool",
       "core.string",
       "core.unit",
       "effect.core.flatMap",
       "effect.console.println"
     ],
-    "process": { "exitCode": 0 },
+    "process": {
+      "exitCode": 0
+    },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt",
     "trace": [
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Just 42"],
+        "arguments": [
+          "Just 42"
+        ],
         "stdout": "Just 42\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Just 42"],
+        "arguments": [
+          "Just 42"
+        ],
         "stdout": "Just 42\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Just 44"],
+        "arguments": [
+          "Just 44"
+        ],
         "stdout": "Just 44\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Nothing"],
+        "arguments": [
+          "Nothing"
+        ],
         "stdout": "Nothing\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Just 42"],
+        "arguments": [
+          "Just 42"
+        ],
         "stdout": "Just 42\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Nothing"],
+        "arguments": [
+          "Nothing"
+        ],
         "stdout": "Nothing\n"
       }
     ]

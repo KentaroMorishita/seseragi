@@ -362,28 +362,50 @@
         "callee": "applyEquality",
         "arguments": [
           {
-            "kind": "lambda",
-            "parameter": "_argument0",
-            "body": {
+            "kind": "checked-result",
+            "value": {
               "kind": "lambda",
-              "parameter": "_argument1",
+              "parameter": "_argument0",
               "body": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "identifier",
-                  "name": "__ssrg$evidence$0"
-                },
-                "method": "eq",
-                "arguments": [
-                  {
+                "kind": "lambda",
+                "parameter": "_argument1",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
                     "kind": "identifier",
-                    "name": "_argument0"
+                    "name": "__ssrg$evidence$0"
                   },
-                  {
-                    "kind": "identifier",
-                    "name": "_argument1"
-                  }
-                ]
+                  "method": "eq",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "_argument0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "_argument1"
+                    }
+                  ]
+                }
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "reference",
+                "name": "T",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "reference",
+                  "name": "T",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "boolean"
+                }
               }
             }
           },
@@ -544,28 +566,50 @@
                     "callee": "applyComparison",
                     "arguments": [
                       {
-                        "kind": "lambda",
-                        "parameter": "_argument0",
-                        "body": {
+                        "kind": "checked-result",
+                        "value": {
                           "kind": "lambda",
-                          "parameter": "_argument1",
+                          "parameter": "_argument0",
                           "body": {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "identifier",
-                              "name": "__ssrg$instance$Eq$0"
-                            },
-                            "method": "eq",
-                            "arguments": [
-                              {
+                            "kind": "lambda",
+                            "parameter": "_argument1",
+                            "body": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
                                 "kind": "identifier",
-                                "name": "_argument0"
+                                "name": "__ssrg$instance$Eq$0"
                               },
-                              {
-                                "kind": "identifier",
-                                "name": "_argument1"
-                              }
-                            ]
+                              "method": "eq",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "_argument0"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "_argument1"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "reference",
+                            "name": "Status",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "reference",
+                              "name": "Status",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "boolean"
+                            }
                           }
                         }
                       },
@@ -584,35 +628,57 @@
                     "callee": "applyComparison",
                     "arguments": [
                       {
-                        "kind": "lambda",
-                        "parameter": "_argument0",
-                        "body": {
+                        "kind": "checked-result",
+                        "value": {
                           "kind": "lambda",
-                          "parameter": "_argument1",
+                          "parameter": "_argument0",
                           "body": {
-                            "kind": "binary",
-                            "operator": "===",
-                            "left": {
-                              "kind": "dictionary-call",
-                              "dictionary": {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Eq$0"
-                              },
-                              "method": "eq",
-                              "arguments": [
-                                {
+                            "kind": "lambda",
+                            "parameter": "_argument1",
+                            "body": {
+                              "kind": "binary",
+                              "operator": "===",
+                              "left": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
                                   "kind": "identifier",
-                                  "name": "_argument0"
+                                  "name": "__ssrg$instance$Eq$0"
                                 },
-                                {
-                                  "kind": "identifier",
-                                  "name": "_argument1"
-                                }
-                              ]
+                                "method": "eq",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "_argument0"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "_argument1"
+                                  }
+                                ]
+                              },
+                              "right": {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            }
+                          }
+                        },
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "reference",
+                            "name": "Status",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "reference",
+                              "name": "Status",
+                              "arguments": []
                             },
-                            "right": {
-                              "kind": "boolean",
-                              "value": false
+                            "result": {
+                              "kind": "boolean"
                             }
                           }
                         }
@@ -632,28 +698,46 @@
                     "callee": "applyIntComparison",
                     "arguments": [
                       {
-                        "kind": "lambda",
-                        "parameter": "_argument0",
-                        "body": {
+                        "kind": "checked-result",
+                        "value": {
                           "kind": "lambda",
-                          "parameter": "_argument1",
+                          "parameter": "_argument0",
                           "body": {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_int_eq_dictionary"
-                            },
-                            "method": "eq",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "_argument0"
+                            "kind": "lambda",
+                            "parameter": "_argument1",
+                            "body": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_int_eq_dictionary"
                               },
-                              {
-                                "kind": "identifier",
-                                "name": "_argument1"
-                              }
-                            ]
+                              "method": "eq",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "_argument0"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "_argument1"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "number"
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "number"
+                            },
+                            "result": {
+                              "kind": "boolean"
+                            }
                           }
                         }
                       },
@@ -672,35 +756,53 @@
                     "callee": "applyIntComparison",
                     "arguments": [
                       {
-                        "kind": "lambda",
-                        "parameter": "_argument0",
-                        "body": {
+                        "kind": "checked-result",
+                        "value": {
                           "kind": "lambda",
-                          "parameter": "_argument1",
+                          "parameter": "_argument0",
                           "body": {
-                            "kind": "binary",
-                            "operator": "===",
-                            "left": {
-                              "kind": "dictionary-call",
-                              "dictionary": {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_eq_dictionary"
-                              },
-                              "method": "eq",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "_argument0"
+                            "kind": "lambda",
+                            "parameter": "_argument1",
+                            "body": {
+                              "kind": "binary",
+                              "operator": "===",
+                              "left": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_int_eq_dictionary"
                                 },
-                                {
-                                  "kind": "identifier",
-                                  "name": "_argument1"
-                                }
-                              ]
+                                "method": "eq",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "_argument0"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "_argument1"
+                                  }
+                                ]
+                              },
+                              "right": {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            }
+                          }
+                        },
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "number"
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "number"
                             },
-                            "right": {
-                              "kind": "boolean",
-                              "value": false
+                            "result": {
+                              "kind": "boolean"
                             }
                           }
                         }

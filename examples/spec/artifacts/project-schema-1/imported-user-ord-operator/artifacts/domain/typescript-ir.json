@@ -1,0 +1,266 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-user-ord-operator::domain",
+  "runtimeRequirements": [
+    "core.int.eq-dictionary",
+    "core.bool",
+    "core.int",
+    "core.int.ord-dictionary"
+  ],
+  "imports": [
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
+    }
+  ],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Score",
+      "brand": "__ssrg$brand$Score",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "number"
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 31
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 32,
+        "end": 126
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "Score",
+                "implicit": false
+              },
+              {
+                "name": "right",
+                "type": "Score",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_eq_dictionary"
+              },
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "left"
+                  },
+                  "field": "value"
+                },
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "right"
+                  },
+                  "field": "value"
+                }
+              ]
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 55,
+              "end": 124
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Score",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 127,
+        "end": 236
+      },
+      "dictionaryExport": "__ssrg$instance$Ord$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "compare",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "Score",
+                "implicit": false
+              },
+              {
+                "name": "right",
+                "type": "Score",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_ord_dictionary"
+              },
+              "method": "compare",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "right"
+                  },
+                  "field": "value"
+                },
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "left"
+                  },
+                  "field": "value"
+                }
+              ]
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 151,
+              "end": 234
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "ordered",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "A",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "!==",
+        "left": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "identifier",
+              "name": "__ssrg$evidence$0"
+            },
+            "method": "compare",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "left"
+              },
+              {
+                "kind": "identifier",
+                "name": "right"
+              }
+            ]
+          },
+          "field": "tag"
+        },
+        "right": {
+          "kind": "string",
+          "value": "Greater"
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 237,
+        "end": 311
+      }
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
+import { intOrd as _ssrg_int_ord_dictionary } from "@seseragi/runtime/equality"
 import { stringShow as _ssrg_show_stringShow, intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { arrayReducible as _ssrg_array_reducible, collectMap as _ssrg_array_comprehend, filter as _ssrg_array_filter, arrayFunctor as _ssrg_array_functor } from "@seseragi/runtime/array"
 import { intZero as _ssrg_int_zero, intAdd as _ssrg_int_add_dictionary } from "@seseragi/runtime/int"
@@ -11,7 +12,7 @@ type Sale = {
   readonly "amount": number;
   readonly [__ssrg$brand$Sale]: true;
 };
-const completed = (sale: Sale) => (sale)["amount"] > 0
+const completed = (sale: Sale) => (_ssrg_int_ord_dictionary["compare"]((sale)["amount"])(0))["tag"] === "Greater"
 const renderSale = (sale: Sale) => _ssrg_show_stringShow["show"]((sale)["item"]) + ": " + _ssrg_show_intShow["show"]((sale)["amount"])
 const totalSales = (values: ReadonlyArray<Sale>) => _ssrg_collection_sum(_ssrg_array_reducible, _ssrg_int_zero, _ssrg_int_add_dictionary, _ssrg_array_comprehend(values, (sale) => true, (sale) => (sale)["amount"]))
 const report = (values: ReadonlyArray<Sale>) => (() => { const completedSales: ReadonlyArray<Sale> = _ssrg_array_filter(completed, values); return (() => { const lines: ReadonlyArray<string> = _ssrg_array_functor["map"](renderSale)(completedSales); return (() => { const total: number = totalSales(completedSales); return _ssrg_collection_join(_ssrg_array_reducible, "\n", ["Completed: " + _ssrg_show_stringShow["show"](_ssrg_collection_join(_ssrg_array_reducible, ", ", lines)), "Total: " + _ssrg_show_intShow["show"](total)]); })(); })(); })()

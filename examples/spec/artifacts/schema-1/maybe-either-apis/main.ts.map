@@ -25,6 +25,7 @@
     "transform",
     "_ssrg_maybe_traverse",
     "checked",
+    "intOrd",
     "Left",
     "intShow",
     "Right",
@@ -248,5 +249,5 @@
     "intShow",
     "partialTraversal"
   ],
-  "mappings": ";;;;;;;;;;;;AAIAA;;AAAgBC;AAkBhBC;;AAAeC;AAhBfC;AAMAC;AAYAC;AAJAC;AAUAE;AAEAE;AAGAE;AAMAE;AAGAK;AAEAI;AAUAkB;AAMAS"
+  "mappings": ";;;;;;;;;;;;;AAIAA;;AAAgBC;AAkBhBC;;AAAeC;AAhBfC;AAMAC;AAYAC;AAJAC;AAUAE;AAEAE;AAGAE;AAMAE;AAGAM;AAEAI;AAUAkB;AAMAS"
 }

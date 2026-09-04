@@ -491,7 +491,7 @@ fn parses_signal_read_and_assignment_with_fixed_precedence() {
 
 #[test]
 fn parses_trait_operators_as_grouped_function_values() {
-    for operator in ["<$>", "<*>", ">>="] {
+    for operator in ["<$>", "<*>", ">>=", "<", "<=", ">", ">="] {
         let source = format!("pub let operation = ({operator})\n");
         let body = first_body(&source);
         let operator_start = source.find(operator).unwrap();
@@ -516,7 +516,7 @@ fn parses_trait_operators_as_grouped_function_values() {
 #[test]
 fn rejects_non_referenceable_and_pending_operator_sections_as_expressions() {
     for operator in [
-        "&&", "||", "??", "|>", "$", ":=", "!", "..", "..=", "<", "<=", ">", ">=", ":", "^",
+        "&&", "||", "??", "|>", "$", ":=", "!", "..", "..=", ":", "^",
     ] {
         let source = format!("pub let operation = ({operator})\n");
         let body = first_body(&source);

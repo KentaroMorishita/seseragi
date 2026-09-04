@@ -18,7 +18,12 @@
   "requiredEnvironment": {
     "kind": "record",
     "closed": true,
-    "fields": [{ "name": "console", "type": "Console" }]
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
   },
   "hostEnvironment": {
     "closed": false,
@@ -31,31 +36,41 @@
     ]
   },
   "expected": {
-    "exit": { "kind": "success", "value": "Unit" },
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
     "runtimeRequirements": [
       "core.adt",
       "core.string",
       "core.int",
       "core.string.eq-dictionary",
       "core.bool",
+      "core.int.ord-dictionary",
       "core.unit",
       "effect.core.flatMap",
       "effect.console.println"
     ],
-    "process": { "exitCode": 0 },
+    "process": {
+      "exitCode": 0
+    },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt",
     "trace": [
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["NameRequired, AgeMustBePositive"],
+        "arguments": [
+          "NameRequired, AgeMustBePositive"
+        ],
         "stdout": "NameRequired, AgeMustBePositive\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Valid user"],
+        "arguments": [
+          "Valid user"
+        ],
         "stdout": "Valid user\n"
       }
     ]

@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-user-ord-operator::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.int.eq-dictionary",
+      "core.bool",
+      "core.int",
+      "core.int.ord-dictionary"
+    ]
+  },
+  "exports": [
+    "ordered"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$0"
+    },
+    {
+      "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Ord$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-user-ord-operator/domain.ts",
+    "sourceMap": "dist/imported-user-ord-operator/domain.ts.map"
+  }
+}

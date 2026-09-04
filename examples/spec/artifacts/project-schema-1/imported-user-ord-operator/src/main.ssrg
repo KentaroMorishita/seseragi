@@ -1,0 +1,11 @@
+import { Score, ordered } from "./domain"
+
+fn localGeneric<A> left: A -> right: A -> Bool where Ord<A> = (>=) left right
+
+pub effect fn main = do {
+  let low = Score { value: 2 }
+  let high = Score { value: 1 }
+  let lower: Score -> Score -> Bool = (<)
+  println $ show (low < high, low <= high, high > low, high >= low)
+  println $ show (ordered low high, localGeneric high low, lower low high)
+}

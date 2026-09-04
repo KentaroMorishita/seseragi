@@ -18,7 +18,12 @@
   "requiredEnvironment": {
     "kind": "record",
     "closed": true,
-    "fields": [{ "name": "console", "type": "Console" }]
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
   },
   "hostEnvironment": {
     "closed": false,
@@ -31,7 +36,10 @@
     ]
   },
   "expected": {
-    "exit": { "kind": "success", "value": "Unit" },
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
     "runtimeRequirements": [
       "core.list",
       "effect.core.type",
@@ -56,6 +64,7 @@
       "core.int.show",
       "core.either",
       "core.either.monad",
+      "core.int.ord-dictionary",
       "core.bool",
       "core.either.left",
       "core.either.right",
@@ -66,44 +75,58 @@
       "effect.console.println",
       "core.maybe.functor"
     ],
-    "process": { "exitCode": 0 },
+    "process": {
+      "exitCode": 0
+    },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt",
     "trace": [
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Aki: 42"],
+        "arguments": [
+          "Aki: 42"
+        ],
         "stdout": "Aki: 42\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["id: 40"],
+        "arguments": [
+          "id: 40"
+        ],
         "stdout": "id: 40\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Maybe profile: Aki: 42"],
+        "arguments": [
+          "Maybe profile: Aki: 42"
+        ],
         "stdout": "Maybe profile: Aki: 42\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Maybe profile: missing"],
+        "arguments": [
+          "Maybe profile: missing"
+        ],
         "stdout": "Maybe profile: missing\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["Either profile: Mio: 42"],
+        "arguments": [
+          "Either profile: Mio: 42"
+        ],
         "stdout": "Either profile: Mio: 42\n"
       },
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["binding total: 60"],
+        "arguments": [
+          "binding total: 60"
+        ],
         "stdout": "binding total: 60\n"
       }
     ]

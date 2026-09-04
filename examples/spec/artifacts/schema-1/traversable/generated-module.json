@@ -12,6 +12,7 @@
       "core.int",
       "core.either",
       "core.string",
+      "core.int.ord-dictionary",
       "core.bool",
       "core.either.right",
       "core.int.add",

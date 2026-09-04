@@ -8,6 +8,7 @@
     "unicodeVersion": "17.0.0",
     "requirements": [
       "core.int",
+      "core.int.ord-dictionary",
       "core.bool",
       "core.int.subtract",
       "core.int.add",

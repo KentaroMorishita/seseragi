@@ -111,6 +111,7 @@
       "core.map.contains-key",
       "core.map.upsert",
       "core.map.filter",
+      "core.int.ord-dictionary",
       "core.map.map-values",
       "core.int.multiply",
       "core.map.map-keys-with",

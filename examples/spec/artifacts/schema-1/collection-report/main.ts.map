@@ -11,6 +11,7 @@
   "names": [
     "Sale",
     "completed",
+    "intOrd",
     "renderSale",
     "stringShow",
     "intShow",
@@ -37,5 +38,5 @@
     "report",
     "sales"
   ],
-  "mappings": ";;;;;;;;AAEAA;;;;;AAYAC;AAGAC;AAGAG;AAGAM;AAWAa;AA3BAE"
+  "mappings": ";;;;;;;;;AAEAA;;;;;AAYAC;AAGAE;AAGAG;AAGAM;AAWAa;AA3BAE"
 }

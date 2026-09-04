@@ -8,6 +8,7 @@
     "core.int",
     "core.string.eq-dictionary",
     "core.bool",
+    "core.int.ord-dictionary",
     "core.unit",
     "effect.core.flatMap",
     "effect.console.println"
@@ -16,6 +17,10 @@
     {
       "feature": "core.string.eq-dictionary",
       "local": "_ssrg_string_eq_dictionary"
+    },
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
     },
     {
       "feature": "effect.core.flatMap",
@@ -1147,14 +1152,32 @@
         "kind": "conditional",
         "condition": {
           "kind": "binary",
-          "operator": ">",
+          "operator": "===",
           "left": {
-            "kind": "identifier",
-            "name": "age"
+            "kind": "field-access",
+            "receiver": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_ord_dictionary"
+              },
+              "method": "compare",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "age"
+                },
+                {
+                  "kind": "number",
+                  "value": "0"
+                }
+              ]
+            },
+            "field": "tag"
           },
           "right": {
-            "kind": "number",
-            "value": "0"
+            "kind": "string",
+            "value": "Greater"
           }
         },
         "thenBranch": {

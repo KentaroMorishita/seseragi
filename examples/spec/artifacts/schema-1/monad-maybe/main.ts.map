@@ -23,6 +23,7 @@
     "increment",
     "add",
     "stopAfter42",
+    "intOrd",
     "Just",
     "Nothing",
     "addMaybe",
@@ -67,5 +68,5 @@
     "Just",
     "Nothing"
   ],
-  "mappings": ";;;;;;;AAIAA;AAcAC;AAeAC;AAQAC;AAKAE;AAMAG;AACAG;AAEAE;AAGAG;AAQAQ;AAQAC"
+  "mappings": ";;;;;;;;AAIAA;AAcAC;AAeAC;AAQAC;AAKAE;AAMAG;AACAG;AAEAE;AAGAI;AAQAQ;AAQAC"
 }

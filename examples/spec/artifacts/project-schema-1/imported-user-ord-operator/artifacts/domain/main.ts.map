@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "file": "dist/imported-user-ord-operator/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-user-ord-operator::domain"
+  ],
+  "sourcesContent": [
+    "pub struct Score { value: Int }\ninstance Eq<Score> {\n  fn eq left: Score -> right: Score -> Bool = left.value == right.value\n}\ninstance Ord<Score> {\n  fn compare left: Score -> right: Score -> Ordering = compare right.value left.value\n}\npub fn ordered<A> left: A -> right: A -> Bool where Ord<A> = left <= right\n"
+  ],
+  "names": [
+    "Score",
+    "__ssrg$instance$Eq$0",
+    "__ssrg$instance$Ord$1",
+    "ordered",
+    "__ssrg$evidence$0"
+  ],
+  "mappings": ";;;;;AAAAA;;;;AACAC;AAGAC;AAGAC"
+}

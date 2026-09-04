@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-user-ord-operator::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-user-ord-operator::domain",
+      "origin": {
+        "start": 0,
+        "end": 41
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "Score",
+          "symbol": "fixture/imported-user-ord-operator::domain::Score"
+        },
+        {
+          "namespace": "value",
+          "name": "ordered",
+          "symbol": "fixture/imported-user-ord-operator::domain::ordered"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-user-ord-operator::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 122,
+        "end": 397
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+      "providerModule": "fixture/imported-user-ord-operator::domain",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "fixture/imported-user-ord-operator::domain::Score"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 32,
+        "end": 126
+      }
+    },
+    {
+      "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+      "providerModule": "fixture/imported-user-ord-operator::domain",
+      "traitIdentity": "std/prelude::Ord",
+      "argumentIdentities": [
+        "fixture/imported-user-ord-operator::domain::Score"
+      ],
+      "trait": "Ord",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 127,
+        "end": 236
+      }
+    }
+  ]
+}

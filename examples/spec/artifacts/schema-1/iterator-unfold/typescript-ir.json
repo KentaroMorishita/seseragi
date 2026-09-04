@@ -6,6 +6,7 @@
     "core.iterator",
     "core.int",
     "core.maybe",
+    "core.int.ord-dictionary",
     "core.bool",
     "core.maybe.just",
     "core.int.add",
@@ -19,6 +20,10 @@
     "core.iterator.unfold"
   ],
   "imports": [
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
+    },
     {
       "feature": "core.maybe.just",
       "local": "_ssrg_maybe_Just"
@@ -70,14 +75,32 @@
         "kind": "conditional",
         "condition": {
           "kind": "binary",
-          "operator": "<=",
+          "operator": "!==",
           "left": {
-            "kind": "identifier",
-            "name": "current"
+            "kind": "field-access",
+            "receiver": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_ord_dictionary"
+              },
+              "method": "compare",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "current"
+                },
+                {
+                  "kind": "number",
+                  "value": "3"
+                }
+              ]
+            },
+            "field": "tag"
           },
           "right": {
-            "kind": "number",
-            "value": "3"
+            "kind": "string",
+            "value": "Greater"
           }
         },
         "thenBranch": {

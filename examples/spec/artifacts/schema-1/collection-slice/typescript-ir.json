@@ -8,6 +8,7 @@
     "core.int.eq-dictionary",
     "core.bool",
     "core.int.remainder",
+    "core.int.ord-dictionary",
     "core.maybe",
     "core.string",
     "core.adt",
@@ -34,6 +35,10 @@
     {
       "feature": "core.int.remainder",
       "local": "_ssrg_int_remainder"
+    },
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
     },
     {
       "feature": "core.int.show",
@@ -153,14 +158,32 @@
       ],
       "body": {
         "kind": "binary",
-        "operator": "<",
+        "operator": "===",
         "left": {
-          "kind": "identifier",
-          "name": "value"
+          "kind": "field-access",
+          "receiver": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_int_ord_dictionary"
+            },
+            "method": "compare",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              },
+              {
+                "kind": "number",
+                "value": "0"
+              }
+            ]
+          },
+          "field": "tag"
         },
         "right": {
-          "kind": "number",
-          "value": "0"
+          "kind": "string",
+          "value": "Less"
         }
       },
       "origin": {

@@ -5,6 +5,7 @@
   "runtimeRequirements": [
     "core.string",
     "core.int",
+    "core.int.ord-dictionary",
     "core.bool",
     "core.string.show",
     "core.int.show",
@@ -19,6 +20,10 @@
     "core.unit"
   ],
   "imports": [
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
+    },
     {
       "feature": "core.string.show",
       "local": "_ssrg_show_stringShow"
@@ -238,18 +243,36 @@
       ],
       "body": {
         "kind": "binary",
-        "operator": ">",
+        "operator": "===",
         "left": {
           "kind": "field-access",
           "receiver": {
-            "kind": "identifier",
-            "name": "sale"
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_int_ord_dictionary"
+            },
+            "method": "compare",
+            "arguments": [
+              {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "sale"
+                },
+                "field": "amount"
+              },
+              {
+                "kind": "number",
+                "value": "0"
+              }
+            ]
           },
-          "field": "amount"
+          "field": "tag"
         },
         "right": {
-          "kind": "number",
-          "value": "0"
+          "kind": "string",
+          "value": "Greater"
         }
       },
       "origin": {

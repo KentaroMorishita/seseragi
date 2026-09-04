@@ -28,6 +28,7 @@
     "core.non-empty-list.to-list",
     "core.validation.invalid",
     "core.validation.valid",
+    "core.int.ord-dictionary",
     "core.validation.applicative",
     "core.validation.eq",
     "core.validation.show",
@@ -105,6 +106,10 @@
     {
       "feature": "core.validation.valid",
       "local": "_ssrg_validation_valid"
+    },
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
     },
     {
       "feature": "core.validation.applicative",
@@ -987,14 +992,32 @@
         "kind": "conditional",
         "condition": {
           "kind": "binary",
-          "operator": ">",
+          "operator": "===",
           "left": {
-            "kind": "identifier",
-            "name": "age"
+            "kind": "field-access",
+            "receiver": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_ord_dictionary"
+              },
+              "method": "compare",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "age"
+                },
+                {
+                  "kind": "number",
+                  "value": "0"
+                }
+              ]
+            },
+            "field": "tag"
           },
           "right": {
-            "kind": "number",
-            "value": "0"
+            "kind": "string",
+            "value": "Greater"
           }
         },
         "thenBranch": {

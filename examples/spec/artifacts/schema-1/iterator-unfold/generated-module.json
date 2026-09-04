@@ -10,6 +10,7 @@
       "core.iterator",
       "core.int",
       "core.maybe",
+      "core.int.ord-dictionary",
       "core.bool",
       "core.maybe.just",
       "core.int.add",
