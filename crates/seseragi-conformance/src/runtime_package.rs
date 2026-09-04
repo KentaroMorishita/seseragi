@@ -7,6 +7,7 @@ mod bytes;
 mod child_process;
 mod clock_provider;
 mod comprehension;
+mod decimal;
 mod effect;
 mod filesystem;
 mod http_client;
@@ -103,6 +104,9 @@ pub(crate) fn check_typescript_runtime_package(
     }
     if runtime_helper_is_declared(abi, "core.big-int.api.parse") {
         big_int::check_typescript_runtime_big_int(root)?;
+    }
+    if runtime_helper_is_declared(abi, "core.decimal.api.parse") {
+        decimal::check_typescript_runtime_decimal(root)?;
     }
     if runtime_helper_is_declared(abi, "core.int.api.parse")
         || runtime_helper_is_declared(abi, "core.float64.api.to-int")

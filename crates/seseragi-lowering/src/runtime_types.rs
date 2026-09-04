@@ -302,6 +302,42 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "BigIntConversionError",
     },
     RuntimeTypeImport {
+        canonical: "std/decimal::Decimal",
+        runtime_feature: "core.decimal",
+        module: "@seseragi/runtime/decimal",
+        export_name: "Decimal",
+    },
+    RuntimeTypeImport {
+        canonical: "std/decimal::DecimalContext",
+        runtime_feature: "core.decimal.context",
+        module: "@seseragi/runtime/decimal",
+        export_name: "DecimalContext",
+    },
+    RuntimeTypeImport {
+        canonical: "std/decimal::DecimalParseError",
+        runtime_feature: "core.decimal.parse-error",
+        module: "@seseragi/runtime/decimal",
+        export_name: "DecimalParseError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/decimal::DecimalContextError",
+        runtime_feature: "core.decimal.context-error",
+        module: "@seseragi/runtime/decimal",
+        export_name: "DecimalContextError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/decimal::DecimalArithmeticError",
+        runtime_feature: "core.decimal.arithmetic-error",
+        module: "@seseragi/runtime/decimal",
+        export_name: "DecimalArithmeticError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/decimal::DecimalConversionError",
+        runtime_feature: "core.decimal.conversion-error",
+        module: "@seseragi/runtime/decimal",
+        export_name: "DecimalConversionError",
+    },
+    RuntimeTypeImport {
         canonical: "std/int::IntParseError",
         runtime_feature: "core.int.parse-error",
         module: "@seseragi/runtime/int",
@@ -376,7 +412,7 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
     RuntimeTypeImport {
         canonical: "std/decimal::Decimal",
         runtime_feature: "json.decimal-type",
-        module: "@seseragi/runtime/json",
+        module: "@seseragi/runtime/decimal",
         export_name: "Decimal",
     },
     RuntimeTypeImport {
@@ -1376,6 +1412,14 @@ mod tests {
         let nullable = runtime_type_import_for_surface("Js.Nullable").unwrap();
         assert_eq!(nullable.canonical, "std/prelude::Js.Nullable");
         assert_eq!(nullable.export_name, "JsNullable");
+
+        let decimal = runtime_type_import("std/decimal::Decimal").unwrap();
+        assert_eq!(decimal.runtime_feature, "core.decimal");
+        assert_eq!(decimal.module, "@seseragi/runtime/decimal");
+
+        let json_decimal = runtime_type_import_for_feature("json.decimal-type").unwrap();
+        assert_eq!(json_decimal.canonical, "std/decimal::Decimal");
+        assert_eq!(json_decimal.module, "@seseragi/runtime/decimal");
     }
 
     #[test]

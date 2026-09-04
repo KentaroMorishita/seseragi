@@ -43,7 +43,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | strict manifest + canonical local discovery + exact lock graph / Provider selection + linked compile / executionまで実装 |
 | TypeScript interop、`.d.ts`変換            | 初稿あり      | pure / task / failure / single-flight実行、ABI・変換snapshot fixtureあり | `foreign "typescript"`構文、typed interface、relative host staging、pure / task・境界codec・callback実行まで部分実装。`.d.ts`変換は未着手 |
 | collection、text、number、JSON             | 初稿あり      | Range / Array execution、persistent List traversalあり、他は境界fixture不足 | Array / `Range<Int>`のreduce・comprehensionとArray / ListのPrelude Monadまで部分実装 |
-| Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
+| Bytes、Decimal、Regex、timezone            | 初稿あり      | portable parity、runtime・provider・execution fixtureあり | compiler / runtime共通経路まで実装 |
 | filesystem、process、HTTP                  | 初稿あり      | cleanup・shutdown・body stream fixtureあり | 未着手             |
 | pure HTML、SSR、DOM、hydration             | 初稿あり      | SSR / component / style / interactive DOM / typed form fixtureあり | SSR、function component、inline style、browser DOM runtime、input / change snapshot、IME compositionとform submitまで部分実装。hydrationは未着手 |
 | 性能モデル、最適化境界                     | 初稿あり      | shape・profile差分・stack fixtureあり      | 未着手             |

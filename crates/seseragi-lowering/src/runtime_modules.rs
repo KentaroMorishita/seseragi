@@ -12,6 +12,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/number",
     "std/int",
     "std/big-int",
+    "std/decimal",
     "std/float",
     "std/array",
     "std/collection",
@@ -89,6 +90,7 @@ mod tests {
         assert!(is_runtime_provided_module("std/array"));
         assert!(is_runtime_provided_module("std/list"));
         assert!(is_runtime_provided_module("std/big-int"));
+        assert!(is_runtime_provided_module("std/decimal"));
         assert!(is_runtime_provided_module("std/non-empty-list"));
         assert!(is_runtime_provided_module("std/bytes"));
         assert!(is_runtime_provided_module("std/bytes/base64"));

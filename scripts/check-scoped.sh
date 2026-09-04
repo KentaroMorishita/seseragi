@@ -207,6 +207,8 @@ run_conformance_checks() {
   bun test runtime/ts/tests/bytes-codecs.test.ts
   echo "Testing arbitrary-precision BigInt arithmetic..."
   bun test runtime/ts/tests/big-int.test.ts
+  echo "Testing arbitrary-precision Decimal arithmetic..."
+  bun test runtime/ts/tests/decimal.test.ts
   echo "Checking pinned Unicode data and text conformance..."
   bun run unicode:check
   bun test runtime/ts/tests/unicode.test.ts runtime/ts/tests/unicode-artifact.test.ts

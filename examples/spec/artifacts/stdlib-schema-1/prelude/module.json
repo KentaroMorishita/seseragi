@@ -1066,6 +1066,174 @@
     {
       "trait": "Eq",
       "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "Decimal",
+      "typeConstructorCanonical": "std/decimal::Decimal",
+      "typeConstructorArity": 0,
+      "identity": "std/decimal::Eq"
+    },
+    {
+      "trait": "Ord",
+      "traitCanonical": "std/prelude::Ord",
+      "typeConstructor": "Decimal",
+      "typeConstructorCanonical": "std/decimal::Decimal",
+      "typeConstructorArity": 0,
+      "identity": "std/decimal::Ord"
+    },
+    {
+      "trait": "Hash",
+      "traitCanonical": "std/prelude::Hash",
+      "typeConstructor": "Decimal",
+      "typeConstructorCanonical": "std/decimal::Decimal",
+      "typeConstructorArity": 0,
+      "identity": "std/decimal::Hash"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Decimal",
+      "typeConstructorCanonical": "std/decimal::Decimal",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/decimal::Decimal>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Decimal",
+      "typeConstructorCanonical": "std/decimal::Decimal",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/decimal::Decimal>"
+    },
+    {
+      "trait": "Zero",
+      "traitCanonical": "std/prelude::Zero",
+      "typeConstructor": "Decimal",
+      "typeConstructorCanonical": "std/decimal::Decimal",
+      "typeConstructorArity": 0,
+      "identity": "std/decimal::Zero"
+    },
+    {
+      "trait": "One",
+      "traitCanonical": "std/prelude::One",
+      "typeConstructor": "Decimal",
+      "typeConstructorCanonical": "std/decimal::Decimal",
+      "typeConstructorArity": 0,
+      "identity": "std/decimal::One"
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "Decimal",
+      "typeConstructorCanonical": "std/decimal::Decimal",
+      "typeConstructorArity": 0,
+      "identity": "std/decimal::JsonEncode"
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "Decimal",
+      "typeConstructorCanonical": "std/decimal::Decimal",
+      "typeConstructorArity": 0,
+      "identity": "std/decimal::JsonDecode"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "DecimalParseError",
+      "typeConstructorCanonical": "std/decimal::DecimalParseError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/decimal::DecimalParseError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "DecimalParseError",
+      "typeConstructorCanonical": "std/decimal::DecimalParseError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/decimal::DecimalParseError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "DecimalParseError",
+      "typeConstructorCanonical": "std/decimal::DecimalParseError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/decimal::DecimalParseError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "DecimalContextError",
+      "typeConstructorCanonical": "std/decimal::DecimalContextError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/decimal::DecimalContextError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "DecimalContextError",
+      "typeConstructorCanonical": "std/decimal::DecimalContextError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/decimal::DecimalContextError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "DecimalContextError",
+      "typeConstructorCanonical": "std/decimal::DecimalContextError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/decimal::DecimalContextError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "DecimalArithmeticError",
+      "typeConstructorCanonical": "std/decimal::DecimalArithmeticError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/decimal::DecimalArithmeticError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "DecimalArithmeticError",
+      "typeConstructorCanonical": "std/decimal::DecimalArithmeticError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/decimal::DecimalArithmeticError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "DecimalArithmeticError",
+      "typeConstructorCanonical": "std/decimal::DecimalArithmeticError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/decimal::DecimalArithmeticError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "DecimalConversionError",
+      "typeConstructorCanonical": "std/decimal::DecimalConversionError",
+      "typeConstructorArity": 0,
+      "identity": "Eq<std/decimal::DecimalConversionError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "DecimalConversionError",
+      "typeConstructorCanonical": "std/decimal::DecimalConversionError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/decimal::DecimalConversionError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "DecimalConversionError",
+      "typeConstructorCanonical": "std/decimal::DecimalConversionError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/decimal::DecimalConversionError>"
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
       "typeConstructor": "BigInt",
       "typeConstructorCanonical": "std/big-int::BigInt",
       "typeConstructorArity": 0,
@@ -3801,6 +3969,39 @@
       "dispatch": "dictionary"
     },
     {
+      "trait": "Add",
+      "traitCanonical": "std/prelude::Add",
+      "arguments": [
+        "Decimal",
+        "Decimal",
+        "Decimal"
+      ],
+      "identity": "std/decimal::Add",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Sub",
+      "traitCanonical": "std/prelude::Sub",
+      "arguments": [
+        "Decimal",
+        "Decimal",
+        "Decimal"
+      ],
+      "identity": "std/decimal::Sub",
+      "dispatch": "dictionary"
+    },
+    {
+      "trait": "Mul",
+      "traitCanonical": "std/prelude::Mul",
+      "arguments": [
+        "Decimal",
+        "Decimal",
+        "Decimal"
+      ],
+      "identity": "std/decimal::Mul",
+      "dispatch": "dictionary"
+    },
+    {
       "trait": "Iterable",
       "traitCanonical": "std/prelude::Iterable",
       "arguments": [
@@ -3948,11 +4149,11 @@
       },
       {
         "trait": "Add",
-        "head": "Decimal, Decimal -> Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.8",
-        "trackingIssue": 309
+        "head": "Decimal, Decimal, Decimal",
+        "identity": "std/decimal::Add",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.6"
       },
       {
         "trait": "Add",
@@ -4224,10 +4425,42 @@
       {
         "trait": "Debug",
         "head": "Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.8",
-        "trackingIssue": 309
+        "identity": "Debug<std/decimal::Decimal>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "DecimalArithmeticError",
+        "identity": "Debug<std/decimal::DecimalArithmeticError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "DecimalContextError",
+        "identity": "Debug<std/decimal::DecimalContextError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "DecimalConversionError",
+        "identity": "Debug<std/decimal::DecimalConversionError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Debug",
+        "head": "DecimalParseError",
+        "identity": "Debug<std/decimal::DecimalParseError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
       },
       {
         "trait": "Debug",
@@ -4831,10 +5064,42 @@
       {
         "trait": "Eq",
         "head": "Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4 / 10.8",
-        "trackingIssue": 309
+        "identity": "std/decimal::Eq",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "DecimalArithmeticError",
+        "identity": "Eq<std/decimal::DecimalArithmeticError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "DecimalContextError",
+        "identity": "Eq<std/decimal::DecimalContextError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "DecimalConversionError",
+        "identity": "Eq<std/decimal::DecimalConversionError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "DecimalParseError",
+        "identity": "Eq<std/decimal::DecimalParseError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Eq",
@@ -5175,10 +5440,10 @@
       {
         "trait": "Hash",
         "head": "Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4 / 10.8",
-        "trackingIssue": 309
+        "identity": "std/decimal::Hash",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Hash",
@@ -5301,10 +5566,10 @@
       {
         "trait": "JsonDecode",
         "head": "Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.9",
-        "trackingIssue": 309
+        "identity": "std/decimal::JsonDecode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
       },
       {
         "trait": "JsonDecode",
@@ -5427,10 +5692,10 @@
       {
         "trait": "JsonEncode",
         "head": "Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.9",
-        "trackingIssue": 309
+        "identity": "std/decimal::JsonEncode",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "10.9"
       },
       {
         "trait": "JsonEncode",
@@ -5702,11 +5967,11 @@
       },
       {
         "trait": "Mul",
-        "head": "Decimal, Decimal -> Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.8",
-        "trackingIssue": 309
+        "head": "Decimal, Decimal, Decimal",
+        "identity": "std/decimal::Mul",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.6"
       },
       {
         "trait": "Mul",
@@ -5735,10 +6000,10 @@
       {
         "trait": "One",
         "head": "Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.5 / 10.8",
-        "trackingIssue": 309
+        "identity": "std/decimal::One",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
       },
       {
         "trait": "One",
@@ -5783,10 +6048,10 @@
       {
         "trait": "Ord",
         "head": "Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.4 / 10.8",
-        "trackingIssue": 309
+        "identity": "std/decimal::Ord",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
       },
       {
         "trait": "Ord",
@@ -6118,10 +6383,42 @@
       {
         "trait": "Show",
         "head": "Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.8",
-        "trackingIssue": 309
+        "identity": "Show<std/decimal::Decimal>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "DecimalArithmeticError",
+        "identity": "Show<std/decimal::DecimalArithmeticError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "DecimalContextError",
+        "identity": "Show<std/decimal::DecimalContextError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "DecimalConversionError",
+        "identity": "Show<std/decimal::DecimalConversionError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "DecimalParseError",
+        "identity": "Show<std/decimal::DecimalParseError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
       },
       {
         "trait": "Show",
@@ -6644,11 +6941,11 @@
       },
       {
         "trait": "Sub",
-        "head": "Decimal, Decimal -> Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "10.8",
-        "trackingIssue": 309
+        "head": "Decimal, Decimal, Decimal",
+        "identity": "std/decimal::Sub",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.6"
       },
       {
         "trait": "Sub",
@@ -6701,10 +6998,10 @@
       {
         "trait": "Zero",
         "head": "Decimal",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.5 / 10.8",
-        "trackingIssue": 309
+        "identity": "std/decimal::Zero",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.5"
       },
       {
         "trait": "Zero",

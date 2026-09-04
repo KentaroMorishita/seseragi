@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "module": "artifact/decimal-apis",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/decimal",
+      "module": "artifact/decimal-apis/std/decimal",
+      "origin": {
+        "start": 0,
+        "end": 53
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "Decimal",
+          "symbol": "artifact/decimal-apis/std/decimal::Decimal"
+        },
+        {
+          "namespace": "value",
+          "name": "DecimalContext",
+          "symbol": "artifact/decimal-apis/std/decimal::DecimalContext"
+        }
+      ]
+    },
+    {
+      "specifier": "std/decimal",
+      "module": "artifact/decimal-apis/std/decimal",
+      "origin": {
+        "start": 54,
+        "end": 93
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/decimal-apis/std/decimal::*",
+          "localName": "decimals"
+        }
+      ]
+    },
+    {
+      "specifier": "std/number",
+      "module": "artifact/decimal-apis/std/number",
+      "origin": {
+        "start": 94,
+        "end": 210
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "AwayFromZero",
+          "symbol": "artifact/decimal-apis/std/number::AwayFromZero"
+        },
+        {
+          "namespace": "value",
+          "name": "Ceiling",
+          "symbol": "artifact/decimal-apis/std/number::Ceiling"
+        },
+        {
+          "namespace": "value",
+          "name": "Floor",
+          "symbol": "artifact/decimal-apis/std/number::Floor"
+        },
+        {
+          "namespace": "value",
+          "name": "HalfEven",
+          "symbol": "artifact/decimal-apis/std/number::HalfEven"
+        },
+        {
+          "namespace": "value",
+          "name": "HalfUp",
+          "symbol": "artifact/decimal-apis/std/number::HalfUp"
+        },
+        {
+          "namespace": "value",
+          "name": "RoundingMode",
+          "symbol": "artifact/decimal-apis/std/number::RoundingMode"
+        },
+        {
+          "namespace": "value",
+          "name": "TowardZero",
+          "symbol": "artifact/decimal-apis/std/number::TowardZero"
+        }
+      ]
+    },
+    {
+      "specifier": "std/json",
+      "module": "artifact/decimal-apis/std/json",
+      "origin": {
+        "start": 211,
+        "end": 243
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/decimal-apis/std/json::*",
+          "localName": "json"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/decimal-apis::exercise",
+      "namespace": "value",
+      "name": "exercise",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 1500,
+        "end": 4186
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/decimal-apis::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 4188,
+        "end": 4291
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

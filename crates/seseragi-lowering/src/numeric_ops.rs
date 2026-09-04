@@ -47,6 +47,19 @@ macro_rules! big_int_operation {
     };
 }
 
+macro_rules! decimal_operation {
+    ($name:literal, $feature:literal) => {
+        RuntimeNumericOperation {
+            canonical: concat!("std/decimal::", $name),
+            runtime_feature: $feature,
+            local_name: concat!("_ssrg_decimal_", $name),
+            module: "@seseragi/runtime/decimal",
+            export_name: $name,
+            source_map_name: $name,
+        }
+    };
+}
+
 macro_rules! number_operation {
     ($name:literal, $feature:literal) => {
         RuntimeNumericOperation {
@@ -133,6 +146,46 @@ const OPERATIONS: &[RuntimeNumericOperation] = &[
     big_int_operation!("checkedPower", "core.big-int.api.checked-power"),
     big_int_operation!("abs", "core.big-int.api.abs"),
     big_int_operation!("sign", "core.big-int.api.sign"),
+    decimal_operation!("InvalidDecimal", "core.decimal.parse-error.invalid"),
+    decimal_operation!(
+        "NonPositiveDecimalPrecision",
+        "core.decimal.context-error.non-positive-precision"
+    ),
+    decimal_operation!(
+        "DecimalDivisionByZero",
+        "core.decimal.arithmetic-error.division-by-zero"
+    ),
+    decimal_operation!(
+        "NonTerminatingDecimal",
+        "core.decimal.arithmetic-error.non-terminating"
+    ),
+    decimal_operation!(
+        "DecimalNotIntegral",
+        "core.decimal.conversion-error.not-integral"
+    ),
+    decimal_operation!(
+        "DecimalOutsideIntRange",
+        "core.decimal.conversion-error.outside-int-range"
+    ),
+    decimal_operation!(
+        "DecimalOutsideFloatRange",
+        "core.decimal.conversion-error.outside-float-range"
+    ),
+    decimal_operation!(
+        "FloatNotFinite",
+        "core.decimal.conversion-error.float-not-finite"
+    ),
+    decimal_operation!("parse", "core.decimal.api.parse"),
+    decimal_operation!("fromInt", "core.decimal.api.from-int"),
+    decimal_operation!("toIntExact", "core.decimal.api.to-int-exact"),
+    decimal_operation!("fromFloat", "core.decimal.api.from-float"),
+    decimal_operation!("toFloat", "core.decimal.api.to-float"),
+    decimal_operation!("context", "core.decimal.api.context"),
+    decimal_operation!("precision", "core.decimal.api.precision"),
+    decimal_operation!("rounding", "core.decimal.api.rounding"),
+    decimal_operation!("divideExact", "core.decimal.api.divide-exact"),
+    decimal_operation!("divide", "core.decimal.api.divide"),
+    decimal_operation!("quantize", "core.decimal.api.quantize"),
     float_operation!("EmptyFloat", "core.float64.parse-error.empty"),
     float_operation!("InvalidFloat", "core.float64.parse-error.invalid"),
     float_operation!("FloatParseOverflow", "core.float64.parse-error.overflow"),
@@ -193,6 +246,8 @@ mod tests {
                 "std/big-int::checkedPower",
                 "core.big-int.api.checked-power",
             ),
+            ("std/decimal::parse", "core.decimal.api.parse"),
+            ("std/decimal::divide", "core.decimal.api.divide"),
             ("std/float::fromInt", "core.float64.api.from-int"),
             (
                 "std/float::roundIntegral",

@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.54.0] - 2026-09-04
+
+### Added
+
+- Connect canonical arbitrary-precision `Decimal` values and the complete
+  `std/decimal` surface through the compiler, TypeScript runtime, Reference,
+  LSP, WASM, and Playground without implicit host-number conversion.
+- Preserve exact base-10 addition, subtraction, multiplication, terminating
+  division, JSON numbers, and Int conversion, with explicit precision contexts,
+  quantization, binary64 conversion, and all six specified rounding modes.
+- Report typed parse, context, arithmetic, and conversion failures, including
+  UTF-8 byte offsets, and provide Eq, Ord, Hash, Show, Debug, Zero, One, and
+  arithmetic dictionaries plus canonical String foreign interop.
+
 ## [0.53.0] - 2026-09-04
 
 ### Added

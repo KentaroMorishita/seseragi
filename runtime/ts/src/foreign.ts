@@ -1,4 +1,9 @@
 import {
+  type Decimal,
+  format as formatDecimal,
+  parse as parseDecimal,
+} from "./decimal"
+import {
   awaitEffectValue,
   type Effect,
   type EffectContext,
@@ -11,7 +16,10 @@ export type RuntimeDiagnosticFrame = Readonly<{
   readonly language: "typescript" | "seseragi" | "interop"
   readonly function: string
   readonly uri: string | null
-  readonly range: Readonly<{ readonly start: number; readonly end: number }> | null
+  readonly range: Readonly<{
+    readonly start: number
+    readonly end: number
+  }> | null
   readonly generated: boolean
 }>
 
@@ -46,9 +54,7 @@ export type JsString = string
 export type JsNull = null
 export type JsUndefined = undefined
 export type JsMutableArray<Value> = Array<Value>
-export type JsCallback<Arguments, Result> = (
-  arguments_: Arguments
-) => Result
+export type JsCallback<Arguments, Result> = (arguments_: Arguments) => Result
 
 export type ForeignCodec =
   | "js-unknown"
@@ -61,6 +67,7 @@ export type ForeignCodec =
   | "int"
   | "float"
   | "bigint"
+  | "decimal"
   | "bytes"
   | "js-object"
   | "js-number"
@@ -98,10 +105,7 @@ export type ForeignTaskModule = Readonly<{
 export type ForeignPath = string | ReadonlyArray<string>
 export type ForeignCallKind = "function" | "constructor" | "method" | "property"
 
-const foreignModuleLoads = new Map<
-  string,
-  Promise<Record<string, unknown>>
->()
+const foreignModuleLoads = new Map<string, Promise<Record<string, unknown>>>()
 
 export function createForeignTaskModule(
   load: () => Promise<unknown>,
@@ -247,7 +251,11 @@ export function invokeForeignTask<Success>(
       }
     }
     try {
-      return decodeValue(value, returnCodec, `return value of ${label}`) as Success
+      return decodeValue(
+        value,
+        returnCodec,
+        `return value of ${label}`
+      ) as Success
     } catch (cause) {
       return fail(jsError("SynchronousThrow", cause, observedStack))(
         environment,
@@ -341,9 +349,7 @@ export function renderRuntimeDefectDiagnostic(
     kind: "Defect",
     phase: null,
     message: diagnosticMessage(value),
-    groups: [
-      { role: "Thrown", frames: frame === undefined ? [] : [frame] },
-    ],
+    groups: [{ role: "Thrown", frames: frame === undefined ? [] : [frame] }],
   })
 }
 
@@ -390,9 +396,7 @@ function stackDiagnosticFrame(
   stack: string | undefined,
   readSource: (url: string) => string | undefined
 ): RuntimeDiagnosticFrame | undefined {
-  const match = stack?.match(
-    /\n\s*at\s+([^\s(]+)\s+\((.+):(\d+):(\d+)\)/
-  )
+  const match = stack?.match(/\n\s*at\s+([^\s(]+)\s+\((.+):(\d+):(\d+)\)/)
   if (match == null) return undefined
   const [, functionName, url, lineText] = match
   if (url === undefined || lineText === undefined) return undefined
@@ -602,7 +606,8 @@ function convertValue(
     return value
   }
   if (codec === "char") {
-    const codePoint = typeof value === "string" ? value.codePointAt(0) : undefined
+    const codePoint =
+      typeof value === "string" ? value.codePointAt(0) : undefined
     if (
       typeof value !== "string" ||
       [...value].length !== 1 ||
@@ -628,6 +633,19 @@ function convertValue(
   if (codec === "bigint") {
     if (typeof value !== "bigint") invalid(path, "bigint")
     return value
+  }
+  if (codec === "decimal") {
+    if (direction === "encode") {
+      try {
+        return formatDecimal(value as Decimal)
+      } catch {
+        invalid(path, "Decimal")
+      }
+    }
+    if (typeof value !== "string") invalid(path, "Decimal string")
+    const parsed = parseDecimal(value)
+    if (parsed.tag === "Left") invalid(path, "Decimal string")
+    return parsed.value
   }
   if (codec === "bytes") {
     if (!(value instanceof Uint8Array)) invalid(path, "Uint8Array")

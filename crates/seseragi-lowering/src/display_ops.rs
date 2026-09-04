@@ -23,6 +23,66 @@ macro_rules! display_dictionary {
 
 const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
     display_dictionary!(
+        "Show<std/decimal::Decimal>",
+        "core.decimal.show",
+        "_ssrg_decimalShow",
+        "decimalShow"
+    ),
+    display_dictionary!(
+        "Debug<std/decimal::Decimal>",
+        "core.decimal.debug",
+        "_ssrg_decimalDebug",
+        "decimalDebug"
+    ),
+    display_dictionary!(
+        "Show<std/decimal::DecimalParseError>",
+        "core.decimal.parse-error.show",
+        "_ssrg_decimalParseErrorShow",
+        "decimalParseErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/decimal::DecimalParseError>",
+        "core.decimal.parse-error.debug",
+        "_ssrg_decimalParseErrorDebug",
+        "decimalParseErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/decimal::DecimalContextError>",
+        "core.decimal.context-error.show",
+        "_ssrg_decimalContextErrorShow",
+        "decimalContextErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/decimal::DecimalContextError>",
+        "core.decimal.context-error.debug",
+        "_ssrg_decimalContextErrorDebug",
+        "decimalContextErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/decimal::DecimalArithmeticError>",
+        "core.decimal.arithmetic-error.show",
+        "_ssrg_decimalArithmeticErrorShow",
+        "decimalArithmeticErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/decimal::DecimalArithmeticError>",
+        "core.decimal.arithmetic-error.debug",
+        "_ssrg_decimalArithmeticErrorDebug",
+        "decimalArithmeticErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/decimal::DecimalConversionError>",
+        "core.decimal.conversion-error.show",
+        "_ssrg_decimalConversionErrorShow",
+        "decimalConversionErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/decimal::DecimalConversionError>",
+        "core.decimal.conversion-error.debug",
+        "_ssrg_decimalConversionErrorDebug",
+        "decimalConversionErrorDebug"
+    ),
+    display_dictionary!(
         "Show<std/big-int::BigInt>",
         "core.big-int.show",
         "_ssrg_bigIntShow",
@@ -1440,7 +1500,7 @@ mod tests {
 
     #[test]
     fn rejects_unknown_display_dictionary_features() {
-        assert!(runtime_display_dictionary_for_feature("core.decimal.show").is_none());
+        assert!(runtime_display_dictionary_for_feature("core.rational.show").is_none());
         assert!(runtime_display_dictionary_for_identity("Show<fixture/local::Detail>").is_none());
     }
 }

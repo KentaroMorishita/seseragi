@@ -1,0 +1,90 @@
+import { Decimal, DecimalContext } from "std/decimal"
+import * as decimals from "std/decimal"
+import {
+  AwayFromZero,
+  Ceiling,
+  Floor,
+  HalfEven,
+  HalfUp,
+  RoundingMode,
+  TowardZero,
+} from "std/number"
+import * as json from "std/json"
+
+fn requireDecimal result: Either<decimals.DecimalParseError, Decimal> -> Decimal =
+  match result {
+    Left _error -> decimals.fromInt 0
+    Right value -> value
+  }
+
+fn requireContext result: Either<decimals.DecimalContextError, DecimalContext>
+  -> DecimalContext =
+  match result {
+    Left _error -> requireContext (decimals.context 1 HalfEven)
+    Right value -> value
+  }
+
+fn ordering left: Decimal -> right: Decimal -> String = match compare left right {
+  Less -> "Less"
+  Equal -> "Equal"
+  Greater -> "Greater"
+}
+
+fn roundingName mode: RoundingMode -> String = match mode {
+  HalfEven -> "HalfEven"
+  HalfUp -> "HalfUp"
+  TowardZero -> "TowardZero"
+  AwayFromZero -> "AwayFromZero"
+  Floor -> "Floor"
+  Ceiling -> "Ceiling"
+}
+
+fn renderContext result: Either<decimals.DecimalContextError, DecimalContext>
+  -> String =
+  match result {
+    Left error -> show error
+    Right value -> show (decimals.precision value)
+  }
+
+fn zeroDecimal -> Decimal = zero ()
+
+fn oneDecimal -> Decimal = one ()
+
+fn decodeDecimal text: String -> Either<json.JsonReadError, Decimal> =
+  json.decodeString text
+
+fn renderDecoded result: Either<json.JsonReadError, Decimal> -> String = match result {
+  Left _error -> "Left"
+  Right value -> `Right ${show value}`
+}
+
+pub fn exercise -> Array<String> = {
+  let huge = requireDecimal (decimals.parse "12345678901234567890.000000000000000001")
+  let same = requireDecimal (decimals.parse "12345678901234567890.0000000000000000010")
+  let tenth = requireDecimal (decimals.parse "0.1")
+  let fifth = requireDecimal (decimals.parse "0.2")
+  let eight = decimals.fromInt 8
+  let unitDecimal = decimals.fromInt 1
+  let three = decimals.fromInt 3
+  let ctx2Even = requireContext (decimals.context 2 HalfEven)
+  let ctx2Up = requireContext (decimals.context 2 HalfUp)
+  let ctx3 = requireContext (decimals.context 3 HalfEven)
+  let ctx17 = requireContext (decimals.context 17 HalfEven)
+  [
+    `canonical: ${show (decimals.parse "-0.000")} / ${show (decimals.parse "+12.3400")} / ${show (decimals.parse "1.25e3")}`,
+    `exact: ${show (tenth + fifth)} / ${show ((requireDecimal (decimals.parse "12.5")) * (requireDecimal (decimals.parse "0.08")))} / ${show ((decimals.fromInt 1000) - (requireDecimal (decimals.parse "0.001")))}`,
+    `division: ${show (decimals.divideExact eight unitDecimal)} / ${show (decimals.divideExact three unitDecimal)} / ${show (decimals.divideExact (decimals.fromInt 0) unitDecimal)}`,
+    `rounded: ${show (decimals.divide ctx2Even eight unitDecimal)} / ${show (decimals.divide ctx2Up eight unitDecimal)} / ${show (decimals.divide ctx3 three (decimals.fromInt 2))}`,
+    `quantize: ${show (decimals.quantize (-2) HalfEven (decimals.fromInt 1250))} / ${show (decimals.quantize (-2) HalfUp (decimals.fromInt 1250))} / ${show (decimals.quantize 0 AwayFromZero (requireDecimal (decimals.parse "-2.5")))} / ${show (decimals.quantize 0 Ceiling (requireDecimal (decimals.parse "-2.5")))}`,
+    `conversion: ${show (decimals.toIntExact (decimals.fromInt 42))} / ${show (decimals.toIntExact tenth)} / ${show (decimals.toIntExact (requireDecimal (decimals.parse "9007199254740992")))} / ${show (decimals.fromFloat ctx17 0.1)} / ${show (decimals.toFloat tenth)}`,
+    `parse-errors: ${show (decimals.parse "")} / ${show (decimals.parse "01")} / ${show (decimals.parse "1.2猫")}`,
+    `context: ${decimals.precision ctx3} / ${roundingName (decimals.rounding ctx3)} / ${renderContext (decimals.context 0 HalfEven)}`,
+    `display: ${show huge} / ${debug huge}`,
+    `instances: ${huge == same} / ${ordering tenth fifth} / ${hash huge == hash same} / ${show (zeroDecimal ())} / ${show (oneDecimal ())}`,
+    `json: ${json.encodeString huge} / ${renderDecoded (decodeDecimal "12345678901234567890.000000000000000001")}`,
+    `typed-errors: ${decimals.DecimalDivisionByZero == decimals.DecimalDivisionByZero} / ${decimals.InvalidDecimal { offset: 2 } == decimals.InvalidDecimal { offset: 2 }}`,
+  ]
+}
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  for line <- exercise () { println line }

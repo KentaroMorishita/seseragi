@@ -1408,7 +1408,7 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
 
 fn standard_category(name: &str, module: &str) -> &'static str {
     match module {
-        "std/number" | "std/int" | "std/big-int" | "std/float" => "Number",
+        "std/number" | "std/int" | "std/big-int" | "std/decimal" | "std/float" => "Number",
         "std/array" | "std/list" | "std/collection" => "Collection",
         "std/maybe" => "Maybe",
         "std/either" => "Either",
@@ -1459,6 +1459,69 @@ fn standard_category(name: &str, module: &str) -> &'static str {
 
 fn standard_description(identity: &str) -> Option<&'static str> {
     Some(match identity {
+        "std/decimal::Decimal" => "Opaque finite arbitrary-precision decimal value.",
+        "std/decimal::DecimalContext" => {
+            "Explicit positive precision and rounding policy for decimal operations."
+        }
+        "std/decimal::DecimalParseError" => {
+            "Describes invalid decimal text at a UTF-8 byte offset."
+        }
+        "std/decimal::InvalidDecimal" => {
+            "Reports the first byte where decimal parsing becomes invalid."
+        }
+        "std/decimal::DecimalContextError" => {
+            "Describes an invalid explicit decimal arithmetic context."
+        }
+        "std/decimal::NonPositiveDecimalPrecision" => {
+            "Reports a decimal precision that is zero or negative."
+        }
+        "std/decimal::DecimalArithmeticError" => {
+            "Describes a checked decimal division failure."
+        }
+        "std/decimal::DecimalDivisionByZero" => "Reports a zero Decimal divisor.",
+        "std/decimal::NonTerminatingDecimal" => {
+            "Reports an exact quotient with a non-terminating decimal expansion."
+        }
+        "std/decimal::DecimalConversionError" => {
+            "Describes a failed explicit Int or Float conversion."
+        }
+        "std/decimal::DecimalNotIntegral" => {
+            "Reports a Decimal with a nonzero fractional part."
+        }
+        "std/decimal::DecimalOutsideIntRange" => {
+            "Reports an integral Decimal outside the safe Int range."
+        }
+        "std/decimal::DecimalOutsideFloatRange" => {
+            "Reports a Decimal outside the finite binary64 range."
+        }
+        "std/decimal::FloatNotFinite" => {
+            "Reports NaN or infinity at the explicit Float conversion boundary."
+        }
+        "std/decimal::parse" => "Parses exact Decimal text without binary floating point.",
+        "std/decimal::fromInt" => "Converts Int to Decimal exactly.",
+        "std/decimal::toIntExact" => {
+            "Converts an integral in-range Decimal to Int without rounding."
+        }
+        "std/decimal::fromFloat" => {
+            "Converts the exact finite binary64 value under an explicit DecimalContext."
+        }
+        "std/decimal::toFloat" => {
+            "Rounds Decimal explicitly to the nearest finite binary64 value."
+        }
+        "std/decimal::context" => {
+            "Validates a positive precision and constructs a DecimalContext."
+        }
+        "std/decimal::precision" => "Returns the significant-digit precision of a context.",
+        "std/decimal::rounding" => "Returns the rounding mode of a context.",
+        "std/decimal::divideExact" => {
+            "Divides Decimals only when the exact result has a finite decimal expansion."
+        }
+        "std/decimal::divide" => {
+            "Divides Decimals using explicit significant-digit precision and rounding."
+        }
+        "std/decimal::quantize" => {
+            "Rounds a Decimal to an explicit decimal scale and rounding mode."
+        }
         "std/big-int::BigInt" => "Opaque arbitrary-precision signed integer value.",
         "std/big-int::BigIntParseError" => {
             "Describes an invalid BigInt text or radix without a magnitude limit."
@@ -1952,6 +2015,10 @@ fn module_description(module: &str, export: &InterfaceExport) -> &'static str {
             "Parses, formats, classifies, or explicitly converts an IEEE 754 Float."
         }
         ("std/float", _) => "Type from the explicit Float conversion surface.",
+        ("std/decimal", "value") => {
+            "Parses, converts, or computes exact decimals with explicit rounding."
+        }
+        ("std/decimal", _) => "Type from the exact arbitrary-precision decimal surface.",
         ("std/web/html", "value") => {
             "Creates or renders typed HTML through the standard HTML surface."
         }

@@ -1073,6 +1073,7 @@ fn foreign_codec_from_core_type(
 ) -> String {
     match type_ref {
         crate::CoreType::Named { name, arguments } if arguments.is_empty() => match name.as_str() {
+            name if foreign_opaque_names.contains(name) => "\"opaque\"".to_owned(),
             "Unit" => "\"unit\"".to_owned(),
             "Bool" => "\"bool\"".to_owned(),
             "Char" => "\"char\"".to_owned(),
@@ -1080,7 +1081,6 @@ fn foreign_codec_from_core_type(
             "Int" => "\"int\"".to_owned(),
             "Float" => "\"float\"".to_owned(),
             "BigInt" => "\"bigint\"".to_owned(),
-            name if foreign_opaque_names.contains(name) => "\"opaque\"".to_owned(),
             "Js.Unknown" => "\"js-unknown\"".to_owned(),
             "Js.Object" => "\"js-object\"".to_owned(),
             "Js.Number" => "\"js-number\"".to_owned(),
@@ -1125,6 +1125,13 @@ fn foreign_codec_from_core_type(
         crate::CoreType::ExternalNamed {
             name, canonical, ..
         } if name == "BigInt" || canonical == "std/big-int::BigInt" => "\"bigint\"".to_owned(),
+        crate::CoreType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if canonical == "std/decimal::Decimal" && arguments.is_empty() => {
+            "\"decimal\"".to_owned()
+        }
         crate::CoreType::ExternalNamed {
             canonical,
             arguments,
@@ -1346,4 +1353,41 @@ fn default_runtime_edge() -> bool {
 
 fn is_true(value: &bool) -> bool {
     *value
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn identifies_decimal_foreign_codecs_by_canonical_type() {
+        let foreign_opaque_names = std::collections::BTreeSet::from(["Decimal".to_owned()]);
+        let local_opaque = crate::CoreType::Named {
+            name: "Decimal".to_owned(),
+            arguments: Vec::new(),
+        };
+        let unrelated_external = crate::CoreType::ExternalNamed {
+            name: "Decimal".to_owned(),
+            canonical: "app/money::Decimal".to_owned(),
+            arguments: Vec::new(),
+        };
+        let aliased_standard = crate::CoreType::ExternalNamed {
+            name: "Money".to_owned(),
+            canonical: "std/decimal::Decimal".to_owned(),
+            arguments: Vec::new(),
+        };
+
+        assert_eq!(
+            foreign_codec_from_core_type(&local_opaque, &foreign_opaque_names),
+            "\"opaque\""
+        );
+        assert_eq!(
+            foreign_codec_from_core_type(&unrelated_external, &std::collections::BTreeSet::new()),
+            "\"unsupported\""
+        );
+        assert_eq!(
+            foreign_codec_from_core_type(&aliased_standard, &std::collections::BTreeSet::new()),
+            "\"decimal\""
+        );
+    }
 }

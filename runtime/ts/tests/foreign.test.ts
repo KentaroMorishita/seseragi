@@ -1,4 +1,9 @@
 import { describe, expect, test } from "bun:test"
+import {
+  type Decimal,
+  format as formatDecimal,
+  parse as parseDecimal,
+} from "../src/decimal"
 import { createEffectExecution, isEffectCancellation, run } from "../src/effect"
 import {
   annotateForeignTask,
@@ -275,6 +280,39 @@ describe("foreign TypeScript boundary", () => {
         "unsupported"
       )
     ).toThrow("unsupported foreign boundary type")
+  })
+
+  test("adapts Decimal through canonical strings without JS number coercion", () => {
+    const parsed = parseDecimal("12345678901234567890.000000000000000001")
+    if (parsed.tag === "Left") throw new Error("Decimal fixture failed")
+    let observed: unknown
+    const returned = invokeForeignPure<Decimal>(
+      {
+        same: (value: unknown) => {
+          observed = value
+          return value
+        },
+      },
+      "same",
+      "function",
+      [parsed.value],
+      ["decimal"],
+      "decimal"
+    )
+    expect(observed).toBe("12345678901234567890.000000000000000001")
+    expect(formatDecimal(returned)).toBe(
+      "12345678901234567890.000000000000000001"
+    )
+    expect(() =>
+      invokeForeignPure(
+        { invalid: () => Number.NaN },
+        "invalid",
+        "function",
+        [],
+        [],
+        "decimal"
+      )
+    ).toThrow("Decimal string")
   })
 
   test("keeps explicit raw callbacks stable across retention and reentrancy", () => {

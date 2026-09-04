@@ -17,6 +17,7 @@
         "std/number",
         "std/int",
         "std/big-int",
+        "std/decimal",
         "std/float",
         "std/array",
         "std/collection",
@@ -531,6 +532,16 @@
       "interfaceFingerprint": "fnv1a64:b7ea133be672ae1d",
       "implementation": "lowering-runtime",
       "route": "console-logger-stdin-project"
+    },
+    {
+      "specifier": "std/decimal",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:1b0bb1b488ac4e6a",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
     },
     {
       "specifier": "std/deferred",

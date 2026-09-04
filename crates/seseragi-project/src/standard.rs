@@ -317,7 +317,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         PORTABLE_TARGETS,
         &["std/prelude::Console"]
     ),
-    contract_module!("std/decimal", PORTABLE_TARGETS),
+    available_module!("std/decimal", decimal_interface, PORTABLE_TARGETS),
     available_module!("std/deferred", deferred_interface, PORTABLE_TARGETS),
     available_module!("std/effect", effect_interface, PORTABLE_TARGETS),
     available_module!("std/either", either_interface, PORTABLE_TARGETS),
@@ -6540,6 +6540,208 @@ fn big_int_interface() -> ModuleInterface {
     )
 }
 
+fn decimal_interface() -> ModuleInterface {
+    let module = "std/decimal";
+    let decimal = external_type(
+        "Decimal",
+        "std/decimal::Decimal",
+        module,
+        "Decimal",
+        Vec::new(),
+    );
+    let decimal_context = external_type(
+        "DecimalContext",
+        "std/decimal::DecimalContext",
+        module,
+        "DecimalContext",
+        Vec::new(),
+    );
+    let parse_error = external_type(
+        "DecimalParseError",
+        "std/decimal::DecimalParseError",
+        module,
+        "DecimalParseError",
+        Vec::new(),
+    );
+    let context_error = external_type(
+        "DecimalContextError",
+        "std/decimal::DecimalContextError",
+        module,
+        "DecimalContextError",
+        Vec::new(),
+    );
+    let arithmetic_error = external_type(
+        "DecimalArithmeticError",
+        "std/decimal::DecimalArithmeticError",
+        module,
+        "DecimalArithmeticError",
+        Vec::new(),
+    );
+    let conversion_error = external_type(
+        "DecimalConversionError",
+        "std/decimal::DecimalConversionError",
+        module,
+        "DecimalConversionError",
+        Vec::new(),
+    );
+    let rounding_mode = external_type(
+        "RoundingMode",
+        "std/number::RoundingMode",
+        "std/number",
+        "RoundingMode",
+        Vec::new(),
+    );
+    standard_interface(
+        module,
+        vec![
+            opaque_adt_type_export(module, "Decimal", []),
+            opaque_adt_type_export(module, "DecimalContext", []),
+            opaque_adt_type_export(module, "DecimalParseError", []),
+            constructor_export(
+                module,
+                "DecimalParseError",
+                "InvalidDecimal",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            opaque_adt_type_export(module, "DecimalContextError", []),
+            constructor_export(
+                module,
+                "DecimalContextError",
+                "NonPositiveDecimalPrecision",
+                [],
+                Some(named("Int")),
+            ),
+            opaque_adt_type_export(module, "DecimalArithmeticError", []),
+            constructor_export(
+                module,
+                "DecimalArithmeticError",
+                "DecimalDivisionByZero",
+                [],
+                None,
+            ),
+            constructor_export(
+                module,
+                "DecimalArithmeticError",
+                "NonTerminatingDecimal",
+                [],
+                None,
+            ),
+            opaque_adt_type_export(module, "DecimalConversionError", []),
+            constructor_export(
+                module,
+                "DecimalConversionError",
+                "DecimalNotIntegral",
+                [],
+                None,
+            ),
+            constructor_export(
+                module,
+                "DecimalConversionError",
+                "DecimalOutsideIntRange",
+                [],
+                None,
+            ),
+            constructor_export(
+                module,
+                "DecimalConversionError",
+                "DecimalOutsideFloatRange",
+                [],
+                None,
+            ),
+            constructor_export(module, "DecimalConversionError", "FloatNotFinite", [], None),
+            function_export(
+                module,
+                "parse",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                named_with("Either", vec![parse_error, decimal.clone()]),
+            ),
+            function_export(
+                module,
+                "fromInt",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                decimal.clone(),
+            ),
+            function_export(
+                module,
+                "toIntExact",
+                [],
+                Vec::new(),
+                vec![decimal.clone()],
+                named_with("Either", vec![conversion_error.clone(), named("Int")]),
+            ),
+            function_export(
+                module,
+                "fromFloat",
+                [],
+                Vec::new(),
+                vec![decimal_context.clone(), named("Float")],
+                named_with("Either", vec![conversion_error.clone(), decimal.clone()]),
+            ),
+            function_export(
+                module,
+                "toFloat",
+                [],
+                Vec::new(),
+                vec![decimal.clone()],
+                named_with("Either", vec![conversion_error, named("Float")]),
+            ),
+            function_export(
+                module,
+                "context",
+                [],
+                Vec::new(),
+                vec![named("Int"), rounding_mode.clone()],
+                named_with("Either", vec![context_error, decimal_context.clone()]),
+            ),
+            function_export(
+                module,
+                "precision",
+                [],
+                Vec::new(),
+                vec![decimal_context.clone()],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "rounding",
+                [],
+                Vec::new(),
+                vec![decimal_context.clone()],
+                rounding_mode.clone(),
+            ),
+            function_export(
+                module,
+                "divideExact",
+                [],
+                Vec::new(),
+                vec![decimal.clone(), decimal.clone()],
+                named_with("Either", vec![arithmetic_error.clone(), decimal.clone()]),
+            ),
+            function_export(
+                module,
+                "divide",
+                [],
+                Vec::new(),
+                vec![decimal_context, decimal.clone(), decimal.clone()],
+                named_with("Either", vec![arithmetic_error, decimal.clone()]),
+            ),
+            function_export(
+                module,
+                "quantize",
+                [],
+                Vec::new(),
+                vec![named("Int"), rounding_mode, decimal.clone()],
+                decimal,
+            ),
+        ],
+    )
+}
+
 fn int_interface() -> ModuleInterface {
     let module = "std/int";
     let parse_error = external_type(
@@ -9539,6 +9741,20 @@ mod tests {
     }
 
     #[test]
+    fn registry_specifiers_are_unique() {
+        let registry = standard_module_registry_surface();
+        let mut specifiers = std::collections::BTreeSet::new();
+
+        for module in registry.modules {
+            assert!(
+                specifiers.insert(module.specifier),
+                "duplicate standard module registry entry for `{}`",
+                module.specifier
+            );
+        }
+    }
+
+    #[test]
     fn exposes_the_portable_regex_surface() {
         let regex = standard_module_target("std/regex").expect("std/regex is available");
         let exports = &regex.interface().exports;
@@ -10603,6 +10819,38 @@ mod tests {
             "sign",
         ] {
             assert!(names.contains(&name), "missing std/big-int::{name}");
+        }
+    }
+
+    #[test]
+    fn exposes_the_exact_decimal_surface() {
+        let decimal = standard_module_target("std/decimal").expect("std/decimal is available");
+        let names = decimal
+            .interface()
+            .exports
+            .iter()
+            .map(|export| export.name.as_str())
+            .collect::<Vec<_>>();
+        for name in [
+            "Decimal",
+            "DecimalContext",
+            "DecimalParseError",
+            "DecimalContextError",
+            "DecimalArithmeticError",
+            "DecimalConversionError",
+            "parse",
+            "fromInt",
+            "toIntExact",
+            "fromFloat",
+            "toFloat",
+            "context",
+            "precision",
+            "rounding",
+            "divideExact",
+            "divide",
+            "quantize",
+        ] {
+            assert!(names.contains(&name), "missing std/decimal::{name}");
         }
     }
 

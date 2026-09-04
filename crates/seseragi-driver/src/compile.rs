@@ -1885,6 +1885,74 @@ pub fn debugAttribute value: html.Attribute -> String = debug value
     }
 
     #[test]
+    fn compiles_decimal_apis_and_operators_through_exact_runtime_dictionaries() {
+        let source = include_str!("../../../examples/spec/fixtures/compile/decimal-apis.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/decimal-apis",
+            source,
+        ))
+        .expect("Decimal APIs and exact arithmetic operators must compile");
+
+        for requirement in [
+            "core.decimal",
+            "core.decimal.context",
+            "core.decimal.parse-error",
+            "core.decimal.context-error",
+            "core.decimal.arithmetic-error",
+            "core.decimal.conversion-error",
+            "core.decimal.api.parse",
+            "core.decimal.api.context",
+            "core.decimal.api.divide",
+            "core.decimal.api.divide-exact",
+            "core.decimal.api.from-float",
+            "core.decimal.api.quantize",
+            "core.decimal.mul-dictionary",
+            "core.decimal.add-dictionary",
+            "core.decimal.show",
+            "json.decimal.encode",
+            "json.decimal.decode",
+        ] {
+            assert!(
+                compiled
+                    .generated
+                    .metadata
+                    .runtime
+                    .requirements
+                    .contains(&requirement.to_owned()),
+                "missing runtime requirement {requirement}: {:#?}",
+                compiled.generated.metadata.runtime.requirements
+            );
+        }
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("@seseragi/runtime/decimal"));
+        assert!(compiled.generated.typescript.contains("type Decimal"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("type DecimalContext"));
+        assert!(
+            compiled
+                .generated
+                .typescript
+                .contains("_ssrg_decimalMul[\"mul\"]"),
+            "{}",
+            compiled.generated.typescript
+        );
+        assert!(
+            compiled
+                .generated
+                .typescript
+                .contains("_ssrg_decimalAdd[\"add\"]"),
+            "{}",
+            compiled.generated.typescript
+        );
+        assert!(!compiled.generated.typescript.contains("Number("));
+    }
+
+    #[test]
     fn exposes_public_int_values_as_typescript_numbers_with_portable_metadata() {
         let source = "pub let answer: Int = 42\n\npub fn increment value: Int -> Int = value + 1\n";
         let compiled = compile_module(CompileInput::new(

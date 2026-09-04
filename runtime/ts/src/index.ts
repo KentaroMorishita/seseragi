@@ -4,10 +4,10 @@ export {
   arrayFunctor,
   arrayIterable,
   arrayMonad,
-  arrayTraversable,
   arrayMonoid,
   arrayReducible,
   arraySemigroup,
+  arrayTraversable,
   collectFlatMap as collectFlatMapArray,
   collectMap as collectMapArray,
   concat as concatArray,
@@ -59,6 +59,20 @@ export {
 export * as bytesBase64 from "./bytes-base64"
 export * as bytesHex from "./bytes-hex"
 export type {
+  CapturedProcess,
+  CaptureLimit,
+  ChildEvent,
+  ChildExitStatus,
+  ChildInput,
+  ChildOutputChannel,
+  ChildProcessConfigError,
+  ChildProcessError,
+  ChildProcesses,
+  ChildProcessesEnvironment,
+  Command,
+  Executable,
+} from "./child-process"
+export type {
   Clock,
   ClockEnvironment,
   Duration,
@@ -99,6 +113,15 @@ export {
   println,
   printValue,
 } from "./console"
+export type {
+  Decimal,
+  DecimalArithmeticError,
+  DecimalContext,
+  DecimalContextError,
+  DecimalConversionError,
+  DecimalParseError,
+} from "./decimal"
+export * as decimal from "./decimal"
 export type { Deferred } from "./deferred"
 export {
   awaitDeferred,
@@ -223,12 +246,12 @@ export type {
   EntropySize,
 } from "./entropy"
 export {
-  entropyConfigErrorShow,
-  entropyErrorShow,
-  entropySize,
   EntropyReadFailure,
   EntropySizeTooLarge,
   EntropyUnavailable,
+  entropyConfigErrorShow,
+  entropyErrorShow,
+  entropySize,
   NonPositiveEntropySize,
   secureBytes,
 } from "./entropy"
@@ -248,20 +271,6 @@ export type {
   TemporaryHandle,
   WriteMode,
 } from "./filesystem"
-export type {
-  CaptureLimit,
-  CapturedProcess,
-  ChildEvent,
-  ChildExitStatus,
-  ChildInput,
-  ChildOutputChannel,
-  ChildProcesses,
-  ChildProcessesEnvironment,
-  ChildProcessConfigError,
-  ChildProcessError,
-  Command,
-  Executable,
-} from "./child-process"
 export {
   Append as appendWriteMode,
   CreateNew as createNewWriteMode,
@@ -494,18 +503,18 @@ export {
   listFunctor,
   listIterable,
   listMonad,
-  listTraversable,
   listMonoid,
   listReducible,
   listSemigroup,
+  listTraversable,
   nonEmptyListApplicative,
   nonEmptyListFunctor,
   nonEmptyListIterable,
   nonEmptyListMonad,
-  nonEmptyListTraversable,
   nonEmptyListOrd,
   nonEmptyListReducible,
   nonEmptyListSemigroup,
+  nonEmptyListTraversable,
   reduce as reduceList,
   reduce1NonEmpty,
   reverse as reverseList,
@@ -702,15 +711,13 @@ export {
   providerRuntimeAbi,
   withProviderCancellation,
 } from "./provider"
+export { createProviderChildProcesses } from "./provider-child-process"
 export { createProviderClock } from "./provider-clock"
-export { createProviderTimeZones } from "./provider-timezones"
 export { createProviderEntropy } from "./provider-entropy"
 export { createProviderFileSystem } from "./provider-filesystem"
-export { createProviderChildProcesses } from "./provider-child-process"
 export { createProviderHttpClient } from "./provider-http-client"
 export { createProviderHttpServer } from "./provider-http-server"
 export { createProviderNavigation } from "./provider-navigation"
-export { createProviderRandom } from "./provider-random"
 export type {
   LoadedProviderEntry,
   ProviderLoadMode,
@@ -730,8 +737,10 @@ export {
   providerPackageRuntime,
 } from "./provider-package"
 export { createProviderPostgres } from "./provider-postgres"
+export { createProviderRandom } from "./provider-random"
 export { createProviderSqlite } from "./provider-sqlite"
 export { createProviderStorage } from "./provider-storage"
+export { createProviderTimeZones } from "./provider-timezones"
 export { createProviderWebSocketClient } from "./provider-websocket"
 export { createProviderWebSocketServer } from "./provider-websocket-server"
 export type { Queue, QueueCreateError } from "./queue"
@@ -759,16 +768,16 @@ export {
   chance as randomChance,
   choose as randomChoose,
   EmptyRandomIntRange,
-  intBetween as randomIntBetween,
   InvalidProbability,
+  intBetween as randomIntBetween,
+  NonPositiveRandomSize,
   nextBool as randomNextBool,
   nextInt as randomNextInt,
-  NonPositiveRandomSize,
+  RandomSizeTooLarge,
   randomBytes,
   randomConfigErrorShow,
   randomRangeErrorShow,
   randomSize,
-  RandomSizeTooLarge,
   shuffle as randomShuffle,
   unitFloat as randomUnitFloat,
 } from "./random"
@@ -818,6 +827,8 @@ export type {
 export {
   arrayDebug,
   arrayShow,
+  base64DecodeErrorDebug,
+  base64DecodeErrorShow,
   bigIntConversionErrorDebug,
   bigIntConversionErrorShow,
   bigIntDebug,
@@ -830,8 +841,6 @@ export {
   bigIntShow,
   boolDebug,
   boolShow,
-  base64DecodeErrorDebug,
-  base64DecodeErrorShow,
   bufferCapacityErrorDebug,
   bufferCapacityErrorShow,
   byteErrorDebug,
@@ -842,6 +851,16 @@ export {
   charShow,
   concat,
   consoleErrorShow,
+  decimalArithmeticErrorDebug,
+  decimalArithmeticErrorShow,
+  decimalContextErrorDebug,
+  decimalContextErrorShow,
+  decimalConversionErrorDebug,
+  decimalConversionErrorShow,
+  decimalDebug,
+  decimalParseErrorDebug,
+  decimalParseErrorShow,
+  decimalShow,
   delimited,
   eitherDebug,
   eitherShow,
@@ -857,10 +876,10 @@ export {
   listShow,
   maybeDebug,
   maybeShow,
-  nonEmptyListDebug,
-  nonEmptyListShow,
   neverDebug,
   neverShow,
+  nonEmptyListDebug,
+  nonEmptyListShow,
   parallelismErrorDebug,
   parallelismErrorShow,
   queueClosedDebug,

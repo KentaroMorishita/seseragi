@@ -8444,6 +8444,116 @@
       "constraints": []
     },
     {
+      "identity": "std/decimal::Decimal",
+      "name": "Decimal",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "Decimal",
+      "description": "Opaque finite arbitrary-precision decimal value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::DecimalArithmeticError",
+      "name": "DecimalArithmeticError",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "DecimalArithmeticError",
+      "description": "Describes a checked decimal division failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::DecimalContext",
+      "name": "DecimalContext",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "DecimalContext",
+      "description": "Explicit positive precision and rounding policy for decimal operations.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::DecimalContextError",
+      "name": "DecimalContextError",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "DecimalContextError",
+      "description": "Describes an invalid explicit decimal arithmetic context.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::DecimalConversionError",
+      "name": "DecimalConversionError",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "DecimalConversionError",
+      "description": "Describes a failed explicit Int or Float conversion.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::DecimalDivisionByZero",
+      "name": "DecimalDivisionByZero",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "DecimalArithmeticError",
+      "description": "Reports a zero Decimal divisor.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::DecimalNotIntegral",
+      "name": "DecimalNotIntegral",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "DecimalConversionError",
+      "description": "Reports a Decimal with a nonzero fractional part.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::DecimalOutsideFloatRange",
+      "name": "DecimalOutsideFloatRange",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "DecimalConversionError",
+      "description": "Reports a Decimal outside the finite binary64 range.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::DecimalOutsideIntRange",
+      "name": "DecimalOutsideIntRange",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "DecimalConversionError",
+      "description": "Reports an integral Decimal outside the safe Int range.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::DecimalParseError",
+      "name": "DecimalParseError",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "opaque-type",
+      "signature": "DecimalParseError",
+      "description": "Describes invalid decimal text at a UTF-8 byte offset.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/big-int::EmptyBigInt",
       "name": "EmptyBigInt",
       "module": "std/big-int",
@@ -8495,6 +8605,17 @@
       "kind": "opaque-type",
       "signature": "FloatConversionError",
       "description": "Type from the explicit Float conversion surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::FloatNotFinite",
+      "name": "FloatNotFinite",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "DecimalConversionError",
+      "description": "Reports NaN or infinity at the explicit Float conversion boundary.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8675,6 +8796,17 @@
       "constraints": []
     },
     {
+      "identity": "std/decimal::InvalidDecimal",
+      "name": "InvalidDecimal",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "InvalidDecimal arg1: { offset: Int } -> DecimalParseError",
+      "description": "Reports the first byte where decimal parsing becomes invalid.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::InvalidFloat",
       "name": "InvalidFloat",
       "module": "std/float",
@@ -8737,6 +8869,28 @@
       "kind": "constructor",
       "signature": "NegativeIntExponent arg1: Int -> IntPowerError",
       "description": "Parses, formats, or computes with Int under the safe integer contract.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::NonPositiveDecimalPrecision",
+      "name": "NonPositiveDecimalPrecision",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "NonPositiveDecimalPrecision arg1: Int -> DecimalContextError",
+      "description": "Reports a decimal precision that is zero or negative.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::NonTerminatingDecimal",
+      "name": "NonTerminatingDecimal",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "DecimalArithmeticError",
+      "description": "Reports an exact quotient with a non-terminating decimal expansion.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8928,6 +9082,39 @@
       "constraints": []
     },
     {
+      "identity": "std/decimal::context",
+      "name": "context",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "context arg1: Int -> arg2: RoundingMode -> Either<DecimalContextError, DecimalContext>",
+      "description": "Validates a positive precision and constructs a DecimalContext.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::divide",
+      "name": "divide",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "divide arg1: DecimalContext -> arg2: Decimal -> arg3: Decimal -> Either<DecimalArithmeticError, Decimal>",
+      "description": "Divides Decimals using explicit significant-digit precision and rounding.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::divideExact",
+      "name": "divideExact",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "divideExact arg1: Decimal -> arg2: Decimal -> Either<DecimalArithmeticError, Decimal>",
+      "description": "Divides Decimals only when the exact result has a finite decimal expansion.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/big-int::format",
       "name": "format",
       "module": "std/big-int",
@@ -8983,6 +9170,17 @@
       "constraints": []
     },
     {
+      "identity": "std/decimal::fromFloat",
+      "name": "fromFloat",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "fromFloat arg1: DecimalContext -> arg2: Float -> Either<DecimalConversionError, Decimal>",
+      "description": "Converts the exact finite binary64 value under an explicit DecimalContext.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/big-int::fromInt",
       "name": "fromInt",
       "module": "std/big-int",
@@ -8990,6 +9188,17 @@
       "kind": "function",
       "signature": "fromInt arg1: Int -> BigInt",
       "description": "Converts Int to BigInt exactly.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::fromInt",
+      "name": "fromInt",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "fromInt arg1: Int -> Decimal",
+      "description": "Converts Int to Decimal exactly.",
       "typeParameters": [],
       "constraints": []
     },
@@ -9159,6 +9368,17 @@
       "constraints": []
     },
     {
+      "identity": "std/decimal::parse",
+      "name": "parse",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "parse arg1: String -> Either<DecimalParseError, Decimal>",
+      "description": "Parses exact Decimal text without binary floating point.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::parse",
       "name": "parse",
       "module": "std/float",
@@ -9225,6 +9445,28 @@
       "constraints": []
     },
     {
+      "identity": "std/decimal::precision",
+      "name": "precision",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "precision arg1: DecimalContext -> Int",
+      "description": "Returns the significant-digit precision of a context.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::quantize",
+      "name": "quantize",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "quantize arg1: Int -> arg2: RoundingMode -> arg3: Decimal -> Decimal",
+      "description": "Rounds a Decimal to an explicit decimal scale and rounding mode.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::roundIntegral",
       "name": "roundIntegral",
       "module": "std/float",
@@ -9232,6 +9474,17 @@
       "kind": "function",
       "signature": "roundIntegral arg1: RoundingMode -> arg2: Float -> Float",
       "description": "Parses, formats, classifies, or explicitly converts an IEEE 754 Float.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::rounding",
+      "name": "rounding",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "rounding arg1: DecimalContext -> RoundingMode",
+      "description": "Returns the rounding mode of a context.",
       "typeParameters": [],
       "constraints": []
     },
@@ -9313,6 +9566,17 @@
       "constraints": []
     },
     {
+      "identity": "std/decimal::toFloat",
+      "name": "toFloat",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "toFloat arg1: Decimal -> Either<DecimalConversionError, Float>",
+      "description": "Rounds Decimal explicitly to the nearest finite binary64 value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/big-int::toInt",
       "name": "toInt",
       "module": "std/big-int",
@@ -9331,6 +9595,17 @@
       "kind": "function",
       "signature": "toInt arg1: RoundingMode -> arg2: Float -> Either<FloatConversionError, Int>",
       "description": "Parses, formats, classifies, or explicitly converts an IEEE 754 Float.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/decimal::toIntExact",
+      "name": "toIntExact",
+      "module": "std/decimal",
+      "category": "Number",
+      "kind": "function",
+      "signature": "toIntExact arg1: Decimal -> Either<DecimalConversionError, Int>",
+      "description": "Converts an integral in-range Decimal to Int without rounding.",
       "typeParameters": [],
       "constraints": []
     },
