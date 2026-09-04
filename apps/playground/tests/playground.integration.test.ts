@@ -2883,6 +2883,39 @@ describe("Playground sample catalog", () => {
     })
   })
 
+  test("preserves exact Decimal values and rounding through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/decimal-apis/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expectedOutput = JSON.parse(
+      await Bun.file(
+        new URL(
+          "../../../examples/spec/artifacts/execution-schema-1/decimal-apis/stdout.txt",
+          import.meta.url
+        )
+      ).text()
+    ) as string[]
+
+    const response = await compile("decimal-apis.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing Decimal execution entry")
+    }
+    expect(response.generated.typescript).toContain(
+      'from "@seseragi/runtime/decimal"'
+    )
+    expect(response.generated.typescript).not.toContain("Number(")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expectedOutput.join("\n"), debug: "()" })
+  })
+
   test("renders generic standard failures from nested Show evidence", async () => {
     const entry: EntryContract = {
       environment: [],

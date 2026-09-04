@@ -16,6 +16,14 @@ import type {
 import type { DurationError } from "./clock"
 import type { SizeError } from "./collection"
 import type { ConsoleError } from "./console-service"
+import {
+  type Decimal,
+  type DecimalArithmeticError,
+  type DecimalContextError,
+  type DecimalConversionError,
+  type DecimalParseError,
+  format as formatDecimal,
+} from "./decimal"
 import type { DomError, DomRuntimeError } from "./dom"
 import type { ParallelismError, ScheduleError } from "./effect"
 import type { EntropyConfigError, EntropyError } from "./entropy"
@@ -303,6 +311,44 @@ export const bigIntConversionErrorShow = defineShow(
 )
 export const bigIntConversionErrorDebug = defineDebug(
   (error: BigIntConversionError) => text(error.tag)
+)
+
+/** Decimal Show uses the canonical exact non-exponent spelling. */
+export const decimalShow: Show<Decimal> = defineShow((value: Decimal) =>
+  text(formatDecimal(value))
+)
+
+/** Decimal Debug deliberately matches its canonical Show spelling. */
+export const decimalDebug: Debug<Decimal> = defineDebug((value: Decimal) =>
+  text(formatDecimal(value))
+)
+
+const decimalParseErrorDocument = (error: DecimalParseError): RenderDocument =>
+  recordConstructorDocument(error.tag, [["offset", String(error.value.offset)]])
+
+export const decimalParseErrorShow = defineShow(decimalParseErrorDocument)
+export const decimalParseErrorDebug = defineDebug(decimalParseErrorDocument)
+
+const decimalContextErrorDocument = (
+  error: DecimalContextError
+): RenderDocument =>
+  constructorDocument(error.tag, showDocument(intShow, error.value))
+
+export const decimalContextErrorShow = defineShow(decimalContextErrorDocument)
+export const decimalContextErrorDebug = defineDebug(decimalContextErrorDocument)
+
+export const decimalArithmeticErrorShow = defineShow(
+  (error: DecimalArithmeticError) => text(error.tag)
+)
+export const decimalArithmeticErrorDebug = defineDebug(
+  (error: DecimalArithmeticError) => text(error.tag)
+)
+
+export const decimalConversionErrorShow = defineShow(
+  (error: DecimalConversionError) => text(error.tag)
+)
+export const decimalConversionErrorDebug = defineDebug(
+  (error: DecimalConversionError) => text(error.tag)
 )
 
 /**

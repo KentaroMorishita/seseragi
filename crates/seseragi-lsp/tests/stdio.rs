@@ -314,6 +314,14 @@ fn prelude_registry_methods_reach_hover_and_completion_with_canonical_signatures
             "std/big-int::checkedPower",
             "Int -> arg2: BigInt -> Either<BigIntPowerError, BigInt>",
         ),
+        (
+            "std/decimal::parse",
+            "String -> Either<DecimalParseError, Decimal>",
+        ),
+        (
+            "std/decimal::divide",
+            "DecimalContext -> arg2: Decimal -> arg3: Decimal -> Either<DecimalArithmeticError, Decimal>",
+        ),
     ] {
         let item = completions
             .iter()

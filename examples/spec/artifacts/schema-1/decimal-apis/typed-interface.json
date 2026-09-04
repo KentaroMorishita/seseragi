@@ -1,0 +1,196 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/decimal-apis",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/decimal",
+      "module": "std/decimal",
+      "origin": {
+        "start": 0,
+        "end": 53
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "Decimal",
+          "symbol": "std/decimal::Decimal"
+        },
+        {
+          "namespace": "type",
+          "name": "DecimalContext",
+          "symbol": "std/decimal::DecimalContext"
+        }
+      ]
+    },
+    {
+      "specifier": "std/decimal",
+      "module": "std/decimal",
+      "origin": {
+        "start": 54,
+        "end": 93
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/decimal::*",
+          "localName": "decimals"
+        }
+      ]
+    },
+    {
+      "specifier": "std/number",
+      "module": "std/number",
+      "origin": {
+        "start": 94,
+        "end": 210
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "AwayFromZero",
+          "symbol": "std/number::AwayFromZero"
+        },
+        {
+          "namespace": "value",
+          "name": "Ceiling",
+          "symbol": "std/number::Ceiling"
+        },
+        {
+          "namespace": "value",
+          "name": "Floor",
+          "symbol": "std/number::Floor"
+        },
+        {
+          "namespace": "value",
+          "name": "HalfEven",
+          "symbol": "std/number::HalfEven"
+        },
+        {
+          "namespace": "value",
+          "name": "HalfUp",
+          "symbol": "std/number::HalfUp"
+        },
+        {
+          "namespace": "type",
+          "name": "RoundingMode",
+          "symbol": "std/number::RoundingMode"
+        },
+        {
+          "namespace": "value",
+          "name": "TowardZero",
+          "symbol": "std/number::TowardZero"
+        }
+      ]
+    },
+    {
+      "specifier": "std/json",
+      "module": "std/json",
+      "origin": {
+        "start": 211,
+        "end": 243
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/json::*",
+          "localName": "json"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/decimal-apis::exercise",
+      "namespace": "value",
+      "name": "exercise",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 1500,
+        "end": 4186
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/decimal-apis::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 4188,
+        "end": 4291
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

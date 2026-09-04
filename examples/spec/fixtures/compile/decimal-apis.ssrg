@@ -1,0 +1,36 @@
+import { Decimal, DecimalContext } from "std/decimal"
+import * as decimals from "std/decimal"
+import { HalfEven, HalfUp } from "std/number"
+import * as json from "std/json"
+
+fn parseAmount text: String -> Either<decimals.DecimalParseError, Decimal> =
+  decimals.parse text
+
+fn makeContext precision: Int -> Either<decimals.DecimalContextError, DecimalContext> =
+  decimals.context precision HalfEven
+
+fn divideRounded context: DecimalContext
+  -> divisor: Decimal
+  -> dividend: Decimal
+  -> Either<decimals.DecimalArithmeticError, Decimal> =
+  decimals.divide context divisor dividend
+
+fn divideWithoutRounding divisor: Decimal
+  -> dividend: Decimal
+  -> Either<decimals.DecimalArithmeticError, Decimal> =
+  decimals.divideExact divisor dividend
+
+fn convertFloat context: DecimalContext
+  -> value: Float
+  -> Either<decimals.DecimalConversionError, Decimal> =
+  decimals.fromFloat context value
+
+fn render value: Decimal -> String = show value
+
+fn encode value: Decimal -> String = json.encodeString value
+
+fn decode text: String -> Either<json.JsonReadError, Decimal> = json.decodeString text
+
+let exact = decimals.fromInt 42
+let combined = exact * decimals.fromInt 3 + decimals.fromInt 1
+let rounded = decimals.quantize 2 HalfUp combined

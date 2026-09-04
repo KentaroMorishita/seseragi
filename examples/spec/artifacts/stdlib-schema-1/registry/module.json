@@ -60552,11 +60552,883 @@
     {
       "specifier": "std/decimal",
       "identity": "std/decimal",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/decimal",
+        "source": "std/decimal.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/decimal::Decimal",
+            "namespace": "type",
+            "name": "Decimal",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Decimal",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::DecimalContext",
+            "namespace": "type",
+            "name": "DecimalContext",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DecimalContext",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::DecimalParseError",
+            "namespace": "type",
+            "name": "DecimalParseError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DecimalParseError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::InvalidDecimal",
+            "namespace": "value",
+            "name": "InvalidDecimal",
+            "constructorOf": "std/decimal::DecimalParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DecimalParseError",
+                  "canonical": "std/decimal::DecimalParseError",
+                  "providerModule": "std/decimal",
+                  "providerExport": "DecimalParseError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::DecimalContextError",
+            "namespace": "type",
+            "name": "DecimalContextError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DecimalContextError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::NonPositiveDecimalPrecision",
+            "namespace": "value",
+            "name": "NonPositiveDecimalPrecision",
+            "constructorOf": "std/decimal::DecimalContextError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DecimalContextError",
+                  "canonical": "std/decimal::DecimalContextError",
+                  "providerModule": "std/decimal",
+                  "providerExport": "DecimalContextError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::DecimalArithmeticError",
+            "namespace": "type",
+            "name": "DecimalArithmeticError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DecimalArithmeticError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::DecimalDivisionByZero",
+            "namespace": "value",
+            "name": "DecimalDivisionByZero",
+            "constructorOf": "std/decimal::DecimalArithmeticError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "DecimalArithmeticError",
+                "canonical": "std/decimal::DecimalArithmeticError",
+                "providerModule": "std/decimal",
+                "providerExport": "DecimalArithmeticError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::NonTerminatingDecimal",
+            "namespace": "value",
+            "name": "NonTerminatingDecimal",
+            "constructorOf": "std/decimal::DecimalArithmeticError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "DecimalArithmeticError",
+                "canonical": "std/decimal::DecimalArithmeticError",
+                "providerModule": "std/decimal",
+                "providerExport": "DecimalArithmeticError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::DecimalConversionError",
+            "namespace": "type",
+            "name": "DecimalConversionError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DecimalConversionError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::DecimalNotIntegral",
+            "namespace": "value",
+            "name": "DecimalNotIntegral",
+            "constructorOf": "std/decimal::DecimalConversionError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "DecimalConversionError",
+                "canonical": "std/decimal::DecimalConversionError",
+                "providerModule": "std/decimal",
+                "providerExport": "DecimalConversionError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::DecimalOutsideIntRange",
+            "namespace": "value",
+            "name": "DecimalOutsideIntRange",
+            "constructorOf": "std/decimal::DecimalConversionError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "DecimalConversionError",
+                "canonical": "std/decimal::DecimalConversionError",
+                "providerModule": "std/decimal",
+                "providerExport": "DecimalConversionError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::DecimalOutsideFloatRange",
+            "namespace": "value",
+            "name": "DecimalOutsideFloatRange",
+            "constructorOf": "std/decimal::DecimalConversionError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "DecimalConversionError",
+                "canonical": "std/decimal::DecimalConversionError",
+                "providerModule": "std/decimal",
+                "providerExport": "DecimalConversionError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::FloatNotFinite",
+            "namespace": "value",
+            "name": "FloatNotFinite",
+            "constructorOf": "std/decimal::DecimalConversionError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "DecimalConversionError",
+                "canonical": "std/decimal::DecimalConversionError",
+                "providerModule": "std/decimal",
+                "providerExport": "DecimalConversionError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::parse",
+            "namespace": "value",
+            "name": "parse",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "DecimalParseError",
+                      "canonical": "std/decimal::DecimalParseError",
+                      "providerModule": "std/decimal",
+                      "providerExport": "DecimalParseError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Decimal",
+                      "canonical": "std/decimal::Decimal",
+                      "providerModule": "std/decimal",
+                      "providerExport": "Decimal",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::fromInt",
+            "namespace": "value",
+            "name": "fromInt",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Decimal",
+                  "canonical": "std/decimal::Decimal",
+                  "providerModule": "std/decimal",
+                  "providerExport": "Decimal",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::toIntExact",
+            "namespace": "value",
+            "name": "toIntExact",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Decimal",
+                  "canonical": "std/decimal::Decimal",
+                  "providerModule": "std/decimal",
+                  "providerExport": "Decimal",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "DecimalConversionError",
+                      "canonical": "std/decimal::DecimalConversionError",
+                      "providerModule": "std/decimal",
+                      "providerExport": "DecimalConversionError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::fromFloat",
+            "namespace": "value",
+            "name": "fromFloat",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "DecimalContext",
+                  "canonical": "std/decimal::DecimalContext",
+                  "providerModule": "std/decimal",
+                  "providerExport": "DecimalContext",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "DecimalConversionError",
+                        "canonical": "std/decimal::DecimalConversionError",
+                        "providerModule": "std/decimal",
+                        "providerExport": "DecimalConversionError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Decimal",
+                        "canonical": "std/decimal::Decimal",
+                        "providerModule": "std/decimal",
+                        "providerExport": "Decimal",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::toFloat",
+            "namespace": "value",
+            "name": "toFloat",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Decimal",
+                  "canonical": "std/decimal::Decimal",
+                  "providerModule": "std/decimal",
+                  "providerExport": "Decimal",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "DecimalConversionError",
+                      "canonical": "std/decimal::DecimalConversionError",
+                      "providerModule": "std/decimal",
+                      "providerExport": "DecimalConversionError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::context",
+            "namespace": "value",
+            "name": "context",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "RoundingMode",
+                    "canonical": "std/number::RoundingMode",
+                    "providerModule": "std/number",
+                    "providerExport": "RoundingMode",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "DecimalContextError",
+                        "canonical": "std/decimal::DecimalContextError",
+                        "providerModule": "std/decimal",
+                        "providerExport": "DecimalContextError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "DecimalContext",
+                        "canonical": "std/decimal::DecimalContext",
+                        "providerModule": "std/decimal",
+                        "providerExport": "DecimalContext",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::precision",
+            "namespace": "value",
+            "name": "precision",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "DecimalContext",
+                  "canonical": "std/decimal::DecimalContext",
+                  "providerModule": "std/decimal",
+                  "providerExport": "DecimalContext",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::rounding",
+            "namespace": "value",
+            "name": "rounding",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "DecimalContext",
+                  "canonical": "std/decimal::DecimalContext",
+                  "providerModule": "std/decimal",
+                  "providerExport": "DecimalContext",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "RoundingMode",
+                  "canonical": "std/number::RoundingMode",
+                  "providerModule": "std/number",
+                  "providerExport": "RoundingMode",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::divideExact",
+            "namespace": "value",
+            "name": "divideExact",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Decimal",
+                  "canonical": "std/decimal::Decimal",
+                  "providerModule": "std/decimal",
+                  "providerExport": "Decimal",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Decimal",
+                    "canonical": "std/decimal::Decimal",
+                    "providerModule": "std/decimal",
+                    "providerExport": "Decimal",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "DecimalArithmeticError",
+                        "canonical": "std/decimal::DecimalArithmeticError",
+                        "providerModule": "std/decimal",
+                        "providerExport": "DecimalArithmeticError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Decimal",
+                        "canonical": "std/decimal::Decimal",
+                        "providerModule": "std/decimal",
+                        "providerExport": "Decimal",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::divide",
+            "namespace": "value",
+            "name": "divide",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "DecimalContext",
+                  "canonical": "std/decimal::DecimalContext",
+                  "providerModule": "std/decimal",
+                  "providerExport": "DecimalContext",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Decimal",
+                    "canonical": "std/decimal::Decimal",
+                    "providerModule": "std/decimal",
+                    "providerExport": "Decimal",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Decimal",
+                      "canonical": "std/decimal::Decimal",
+                      "providerModule": "std/decimal",
+                      "providerExport": "Decimal",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecimalArithmeticError",
+                          "canonical": "std/decimal::DecimalArithmeticError",
+                          "providerModule": "std/decimal",
+                          "providerExport": "DecimalArithmeticError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "external-named",
+                          "name": "Decimal",
+                          "canonical": "std/decimal::Decimal",
+                          "providerModule": "std/decimal",
+                          "providerExport": "Decimal",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/decimal::quantize",
+            "namespace": "value",
+            "name": "quantize",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "RoundingMode",
+                    "canonical": "std/number::RoundingMode",
+                    "providerModule": "std/number",
+                    "providerExport": "RoundingMode",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Decimal",
+                      "canonical": "std/decimal::Decimal",
+                      "providerModule": "std/decimal",
+                      "providerExport": "Decimal",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "Decimal",
+                      "canonical": "std/decimal::Decimal",
+                      "providerModule": "std/decimal",
+                      "providerExport": "Decimal",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/deferred",

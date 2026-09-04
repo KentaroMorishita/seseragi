@@ -91,18 +91,6 @@ const STRUCTURAL_INSTANCES: &[StandardInstanceAuditSpec] = &[
 // stay explicit until their queue issue connects the real instance and removes
 // the corresponding entry here.
 const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
-    audit_spec("Eq", "Decimal", "9.4 / 10.8", Some(309)),
-    audit_spec("Ord", "Decimal", "9.4 / 10.8", Some(309)),
-    audit_spec("Hash", "Decimal", "9.4 / 10.8", Some(309)),
-    audit_spec("Zero", "Decimal", "9.5 / 10.8", Some(309)),
-    audit_spec("One", "Decimal", "9.5 / 10.8", Some(309)),
-    audit_spec("Add", "Decimal, Decimal -> Decimal", "10.8", Some(309)),
-    audit_spec("Sub", "Decimal, Decimal -> Decimal", "10.8", Some(309)),
-    audit_spec("Mul", "Decimal, Decimal -> Decimal", "10.8", Some(309)),
-    audit_spec("Show", "Decimal", "10.8", Some(309)),
-    audit_spec("Debug", "Decimal", "10.8", Some(309)),
-    audit_spec("JsonEncode", "Decimal", "10.9", Some(309)),
-    audit_spec("JsonDecode", "Decimal", "10.9", Some(309)),
     audit_spec("Monoid", "Sum<A>", "9.5", None),
     audit_spec("Monoid", "Product<A>", "9.5", None),
     audit_spec("Functor", "MaybeT<M, _> where Monad<M>", "9.9", None),
@@ -474,8 +462,8 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 257);
-        assert_eq!(surface.builtin_instances.len(), 41);
+        assert_eq!(surface.instances.len(), 278);
+        assert_eq!(surface.builtin_instances.len(), 44);
         for identity in [
             "std/int::Hash",
             "std/bool::Hash",
@@ -513,7 +501,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 257 + 41 + 10);
+        assert_eq!(implemented.len(), 278 + 44 + 10);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()
@@ -563,6 +551,12 @@ mod tests {
             );
         }
         for identity in [
+            "std/decimal::Eq",
+            "std/decimal::Ord",
+            "Show<std/decimal::Decimal>",
+            "Eq<std/decimal::DecimalParseError>",
+            "std/decimal::JsonEncode",
+            "std/decimal::JsonDecode",
             "std/big-int::Eq",
             "std/big-int::Ord",
             "Show<std/big-int::BigInt>",

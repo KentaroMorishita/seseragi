@@ -456,6 +456,153 @@ const fn method(
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     PreludeStandardInstance {
         trait_name: "Eq",
+        type_name: "Decimal",
+        type_canonical: Some("std/decimal::Decimal"),
+        type_arity: 0,
+        identity: "std/decimal::Eq",
+    },
+    PreludeStandardInstance {
+        trait_name: "Ord",
+        type_name: "Decimal",
+        type_canonical: Some("std/decimal::Decimal"),
+        type_arity: 0,
+        identity: "std/decimal::Ord",
+    },
+    PreludeStandardInstance {
+        trait_name: "Hash",
+        type_name: "Decimal",
+        type_canonical: Some("std/decimal::Decimal"),
+        type_arity: 0,
+        identity: "std/decimal::Hash",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Decimal",
+        type_canonical: Some("std/decimal::Decimal"),
+        type_arity: 0,
+        identity: "Show<std/decimal::Decimal>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Decimal",
+        type_canonical: Some("std/decimal::Decimal"),
+        type_arity: 0,
+        identity: "Debug<std/decimal::Decimal>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Zero",
+        type_name: "Decimal",
+        type_canonical: Some("std/decimal::Decimal"),
+        type_arity: 0,
+        identity: "std/decimal::Zero",
+    },
+    PreludeStandardInstance {
+        trait_name: "One",
+        type_name: "Decimal",
+        type_canonical: Some("std/decimal::Decimal"),
+        type_arity: 0,
+        identity: "std/decimal::One",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "Decimal",
+        type_canonical: Some("std/decimal::Decimal"),
+        type_arity: 0,
+        identity: "std/decimal::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "Decimal",
+        type_canonical: Some("std/decimal::Decimal"),
+        type_arity: 0,
+        identity: "std/decimal::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "DecimalParseError",
+        type_canonical: Some("std/decimal::DecimalParseError"),
+        type_arity: 0,
+        identity: "Eq<std/decimal::DecimalParseError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "DecimalParseError",
+        type_canonical: Some("std/decimal::DecimalParseError"),
+        type_arity: 0,
+        identity: "Show<std/decimal::DecimalParseError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "DecimalParseError",
+        type_canonical: Some("std/decimal::DecimalParseError"),
+        type_arity: 0,
+        identity: "Debug<std/decimal::DecimalParseError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "DecimalContextError",
+        type_canonical: Some("std/decimal::DecimalContextError"),
+        type_arity: 0,
+        identity: "Eq<std/decimal::DecimalContextError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "DecimalContextError",
+        type_canonical: Some("std/decimal::DecimalContextError"),
+        type_arity: 0,
+        identity: "Show<std/decimal::DecimalContextError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "DecimalContextError",
+        type_canonical: Some("std/decimal::DecimalContextError"),
+        type_arity: 0,
+        identity: "Debug<std/decimal::DecimalContextError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "DecimalArithmeticError",
+        type_canonical: Some("std/decimal::DecimalArithmeticError"),
+        type_arity: 0,
+        identity: "Eq<std/decimal::DecimalArithmeticError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "DecimalArithmeticError",
+        type_canonical: Some("std/decimal::DecimalArithmeticError"),
+        type_arity: 0,
+        identity: "Show<std/decimal::DecimalArithmeticError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "DecimalArithmeticError",
+        type_canonical: Some("std/decimal::DecimalArithmeticError"),
+        type_arity: 0,
+        identity: "Debug<std/decimal::DecimalArithmeticError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "DecimalConversionError",
+        type_canonical: Some("std/decimal::DecimalConversionError"),
+        type_arity: 0,
+        identity: "Eq<std/decimal::DecimalConversionError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "DecimalConversionError",
+        type_canonical: Some("std/decimal::DecimalConversionError"),
+        type_arity: 0,
+        identity: "Show<std/decimal::DecimalConversionError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "DecimalConversionError",
+        type_canonical: Some("std/decimal::DecimalConversionError"),
+        type_arity: 0,
+        identity: "Debug<std/decimal::DecimalConversionError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
         type_name: "BigInt",
         type_canonical: Some("std/big-int::BigInt"),
         type_arity: 0,
@@ -2424,6 +2571,30 @@ pub(crate) const SPECIAL_STANDARD_INSTANCES: &[PreludeSpecialInstance] = &[
         "std/big-int::BigInt",
         true,
     ),
+    special_external_arithmetic(
+        "Add",
+        &["Decimal", "Decimal", "Decimal"],
+        "std/decimal::Add",
+        "Decimal",
+        "std/decimal::Decimal",
+        false,
+    ),
+    special_external_arithmetic(
+        "Sub",
+        &["Decimal", "Decimal", "Decimal"],
+        "std/decimal::Sub",
+        "Decimal",
+        "std/decimal::Decimal",
+        false,
+    ),
+    special_external_arithmetic(
+        "Mul",
+        &["Decimal", "Decimal", "Decimal"],
+        "std/decimal::Mul",
+        "Decimal",
+        "std/decimal::Decimal",
+        false,
+    ),
     special_collection(
         "Iterable",
         &["Array<A>", "A"],
@@ -3957,10 +4128,12 @@ mod tests {
     #[test]
     fn keeps_special_instance_heads_and_dispatch_in_the_registry() {
         let add_heads = special_homogeneous_instance_heads("Add");
-        assert_eq!(add_heads.len(), 4);
+        assert_eq!(add_heads.len(), 5);
         assert!(add_heads.contains(&[named("String"), named("String"), named("String")]));
         let big_int = external("std/big-int", "BigInt");
         assert!(add_heads.contains(&[big_int.clone(), big_int.clone(), big_int.clone()]));
+        let decimal = external("std/decimal", "Decimal");
+        assert!(add_heads.contains(&[decimal.clone(), decimal.clone(), decimal]));
         assert!(special_homogeneous_instance_heads("Pow").contains(&[
             big_int.clone(),
             named("Int"),

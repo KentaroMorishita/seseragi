@@ -1,5 +1,12 @@
 import { arrayIterable } from "./array"
 import type { RuntimeDictionary } from "./collection"
+import {
+  type Decimal,
+  format as decimalFormat,
+  fromInt as decimalFromInt,
+  parse as decimalParse,
+  toIntExact as decimalToIntExact,
+} from "./decimal"
 import type { Unit } from "./effect"
 import { type Eq, stringEq } from "./equality"
 import { type Hash, stringHash } from "./hash"
@@ -8,16 +15,6 @@ import { toArray as listToArray } from "./list"
 import * as maps from "./map"
 import * as sets from "./set"
 import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
-
-declare const decimalBrand: unique symbol
-
-/** Exact, canonical finite decimal used by the JsonNumber ABI. */
-export type Decimal = Readonly<{
-  readonly negative: boolean
-  readonly digits: string
-  readonly scale: bigint
-  readonly [decimalBrand]: true
-}>
 
 export type JsonMap<Key = string, Value = Json> = maps.Map<Key, Value>
 
@@ -164,50 +161,14 @@ function prependPath(
   })
 }
 
-function canonicalDecimal(source: string): Decimal {
-  const match =
-    /^(-?)(0|[1-9][0-9]*)(?:\.([0-9]+))?(?:[eE]([+-]?[0-9]+))?$/.exec(source)
-  if (match === null) throw new Error(`invalid JSON number: ${source}`)
-  const fraction = match[3] ?? ""
-  const exponent = BigInt(match[4] ?? "0")
-  let digits = `${match[2]}${fraction}`.replace(/^0+/, "")
-  if (digits.length === 0) {
-    return Object.freeze({
-      negative: false,
-      digits: "0",
-      scale: 0n,
-    }) as Decimal
-  }
-  let scale = BigInt(fraction.length) - exponent
-  const trailing = /0+$/.exec(digits)?.[0].length ?? 0
-  if (trailing > 0) {
-    digits = digits.slice(0, -trailing)
-    scale -= BigInt(trailing)
-  }
-  return Object.freeze({
-    negative: match[1] === "-",
-    digits,
-    scale,
-  }) as Decimal
-}
-
-/** Runtime bridge for the future std/decimal implementation and codec tests. */
 export function decimalFromCanonical(source: string): Decimal {
-  return canonicalDecimal(source)
+  const parsed = decimalParse(source)
+  if (parsed.tag === "Left") throw new Error(`invalid JSON number: ${source}`)
+  return parsed.value
 }
 
 export function decimalToCanonical(value: Decimal): string {
-  if (value.digits === "0") return "0"
-  const sign = value.negative ? "-" : ""
-  if (value.scale <= 0n) {
-    return `${sign}${value.digits}${"0".repeat(Number(-value.scale))}`
-  }
-  const scale = Number(value.scale)
-  if (scale < value.digits.length) {
-    const split = value.digits.length - scale
-    return `${sign}${value.digits.slice(0, split)}.${value.digits.slice(split)}`
-  }
-  return `${sign}0.${"0".repeat(scale - value.digits.length)}${value.digits}`
+  return decimalFormat(value)
 }
 
 class ParseFailure {
@@ -308,7 +269,7 @@ class Parser {
       }
       while (/[0-9]/.test(this.source[this.index] ?? "")) this.index += 1
     }
-    return canonicalDecimal(this.source.slice(start, this.index))
+    return decimalFromCanonical(this.source.slice(start, this.index))
   }
 
   private string(): string {
@@ -679,31 +640,15 @@ export const stringJsonDecode: JsonDecode<string> = Object.freeze({
   ),
 })
 export const intJsonEncode: JsonEncode<number> = Object.freeze({
-  encodeJson: (value) => JsonNumber(canonicalDecimal(String(value))),
+  encodeJson: (value) => JsonNumber(decimalFromInt(value)),
 })
-const maximumSafeIntMagnitude = "9007199254740991"
 
 function decimalToSafeInt(value: Decimal): Either<DecodeError, number> {
-  if (value.digits === "0") return Right(0)
-  if (value.scale > 0n) return decodeError(InvalidJsonValue("expected integer"))
-
-  const integerDigits = BigInt(value.digits.length) - value.scale
-  if (integerDigits > BigInt(maximumSafeIntMagnitude.length)) {
-    return decodeError(
-      InvalidJsonValue("integer is outside the safe Int range")
-    )
-  }
-  const magnitude = `${value.digits}${"0".repeat(Number(-value.scale))}`
-  if (
-    magnitude.length === maximumSafeIntMagnitude.length &&
-    magnitude > maximumSafeIntMagnitude
-  ) {
-    return decodeError(
-      InvalidJsonValue("integer is outside the safe Int range")
-    )
-  }
-  const result = Number(`${value.negative ? "-" : ""}${magnitude}`)
-  return Right(Object.is(result, -0) ? 0 : result)
+  const converted = decimalToIntExact(value)
+  if (converted.tag === "Right") return converted
+  return converted.value.tag === "DecimalNotIntegral"
+    ? decodeError(InvalidJsonValue("expected integer"))
+    : decodeError(InvalidJsonValue("integer is outside the safe Int range"))
 }
 
 export const intJsonDecode: JsonDecode<number> = Object.freeze({
@@ -712,6 +657,15 @@ export const intJsonDecode: JsonDecode<number> = Object.freeze({
       return decodeError(ExpectedJsonType("number"))
     return decimalToSafeInt(value.value)
   },
+})
+export const decimalJsonEncode: JsonEncode<Decimal> = Object.freeze({
+  encodeJson: JsonNumber,
+})
+export const decimalJsonDecode: JsonDecode<Decimal> = Object.freeze({
+  decodeJson: (value) =>
+    value.tag === "JsonNumber"
+      ? Right(value.value)
+      : decodeError(ExpectedJsonType("number")),
 })
 export const unitJsonEncode: JsonEncode<Unit> = Object.freeze({
   encodeJson: () => JsonNull,
