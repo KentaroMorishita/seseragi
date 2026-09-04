@@ -13,6 +13,7 @@
       "core.int",
       "core.collection.any",
       "core.bool",
+      "core.int.ord-dictionary",
       "core.collection.all",
       "core.unit",
       "core.string",

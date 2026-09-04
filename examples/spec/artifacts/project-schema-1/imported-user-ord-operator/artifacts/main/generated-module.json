@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-user-ord-operator::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.bool",
+      "core.unit",
+      "effect.core.flatMap",
+      "core.int",
+      "effect.console.println",
+      "core.bool.show",
+      "core.tuple.show",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-user-ord-operator/main.ts",
+    "sourceMap": "dist/imported-user-ord-operator/main.ts.map"
+  }
+}

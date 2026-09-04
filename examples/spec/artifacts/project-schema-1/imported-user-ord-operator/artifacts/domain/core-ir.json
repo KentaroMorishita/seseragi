@@ -1,0 +1,437 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-user-ord-operator::domain",
+  "structs": [
+    {
+      "symbol": "fixture/imported-user-ord-operator::domain::Score",
+      "name": "Score",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 19,
+            "end": 24
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 31
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 32,
+        "end": 126
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "variable",
+                  "name": "left",
+                  "type": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 99,
+                    "end": 103
+                  }
+                },
+                "field": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 99,
+                  "end": 109
+                }
+              },
+              "right": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "variable",
+                  "name": "right",
+                  "type": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 113,
+                    "end": 118
+                  }
+                },
+                "field": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 113,
+                  "end": 124
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Eq"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 99,
+                "end": 124
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 55,
+              "end": 124
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 127,
+        "end": 236
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "compare",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Ord::compare",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 212,
+                      "end": 217
+                    }
+                  },
+                  "field": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 212,
+                    "end": 223
+                  }
+                },
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 224,
+                      "end": 228
+                    }
+                  },
+                  "field": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 224,
+                    "end": 234
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Ord"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Ord",
+                "method": "compare"
+              },
+              "type": {
+                "kind": "named",
+                "name": "Ordering",
+                "arguments": []
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 204,
+                "end": 234
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 151,
+              "end": 234
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-user-ord-operator::domain::ordered",
+      "visibility": "public",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 237,
+        "end": 311
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "<=",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 298,
+            "end": 302
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 306,
+            "end": 311
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Ord",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "domain.ssrg",
+          "start": 298,
+          "end": 311
+        }
+      }
+    }
+  ]
+}

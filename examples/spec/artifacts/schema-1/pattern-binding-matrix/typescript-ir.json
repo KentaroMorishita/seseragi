@@ -26,6 +26,7 @@
     "core.int.show",
     "core.either",
     "core.either.monad",
+    "core.int.ord-dictionary",
     "core.bool",
     "core.either.left",
     "core.either.right",
@@ -88,6 +89,10 @@
     {
       "feature": "core.either.monad",
       "local": "_ssrg_either_monad"
+    },
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
     },
     {
       "feature": "core.either.left",
@@ -3129,14 +3134,32 @@
           "kind": "conditional",
           "condition": {
             "kind": "binary",
-            "operator": "<",
+            "operator": "===",
             "left": {
-              "kind": "identifier",
-              "name": "typedAge"
+              "kind": "field-access",
+              "receiver": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_int_ord_dictionary"
+                },
+                "method": "compare",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "typedAge"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "0"
+                  }
+                ]
+              },
+              "field": "tag"
             },
             "right": {
-              "kind": "number",
-              "value": "0"
+              "kind": "string",
+              "value": "Less"
             }
           },
           "thenBranch": {

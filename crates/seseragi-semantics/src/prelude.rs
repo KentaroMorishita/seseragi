@@ -279,7 +279,7 @@ pub(crate) const TRAIT_METHODS: &[PreludeTraitMethod] = &[
         "compare",
         "std/prelude::Ord::compare",
         PreludeTraitMethodKind::Compare,
-        &[],
+        &["<", "<=", ">", ">="],
     ),
     method(
         "Hash",
@@ -2941,7 +2941,6 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
         SymbolNamespace::Operator => {
             seseragi_syntax::standard_operator(spelling).is_some()
                 || seseragi_syntax::standard_trait_operator(spelling).is_some()
-                || matches!(spelling, "<" | "<=" | ">" | ">=")
         }
         SymbolNamespace::Trait => trait_by_name(spelling).is_some(),
         _ => false,

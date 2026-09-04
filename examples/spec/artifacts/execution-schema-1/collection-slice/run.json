@@ -9,7 +9,9 @@
   },
   "invocation": {
     "argument": "Unit",
-    "pure": { "result": "json" }
+    "pure": {
+      "result": "json"
+    }
   },
   "expected": {
     "runtimeRequirements": [
@@ -18,6 +20,7 @@
       "core.int.eq-dictionary",
       "core.bool",
       "core.int.remainder",
+      "core.int.ord-dictionary",
       "core.maybe",
       "core.string",
       "core.adt",
@@ -36,7 +39,9 @@
       "core.list.take",
       "core.list.drop"
     ],
-    "process": { "exitCode": 0 },
+    "process": {
+      "exitCode": 0
+    },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt"
   }

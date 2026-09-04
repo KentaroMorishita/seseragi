@@ -240,28 +240,50 @@
                 ]
               },
               {
-                "kind": "lambda",
-                "parameter": "_argument0",
-                "body": {
+                "kind": "checked-result",
+                "value": {
                   "kind": "lambda",
-                  "parameter": "_argument1",
+                  "parameter": "_argument0",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "identifier",
-                      "name": "__ssrg$instance$Add$0"
-                    },
-                    "method": "add",
-                    "arguments": [
-                      {
+                    "kind": "lambda",
+                    "parameter": "_argument1",
+                    "body": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
                         "kind": "identifier",
-                        "name": "_argument0"
+                        "name": "__ssrg$instance$Add$0"
                       },
-                      {
-                        "kind": "identifier",
-                        "name": "_argument1"
-                      }
-                    ]
+                      "method": "add",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "_argument0"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "_argument1"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "reference",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "number"
+                    },
+                    "result": {
+                      "kind": "reference",
+                      "name": "Score",
+                      "arguments": []
+                    }
                   }
                 }
               },

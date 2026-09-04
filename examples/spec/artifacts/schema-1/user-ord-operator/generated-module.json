@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "module": "artifact/user-ord-operator",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.int.eq-dictionary",
+      "core.bool",
+      "core.int",
+      "core.int.ord-dictionary",
+      "core.unit",
+      "core.int.add",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.bool.show",
+      "core.tuple.show",
+      "core.string",
+      "core.bool.ord-dictionary",
+      "core.unit.ord-dictionary",
+      "core.string.ord-dictionary"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$0"
+    },
+    {
+      "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Ord$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

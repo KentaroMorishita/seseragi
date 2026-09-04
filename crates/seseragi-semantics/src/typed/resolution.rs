@@ -671,6 +671,23 @@ fn collect_callables(
     callables.extend(imports::collect_imported_callables(resolved));
     for symbol in &resolved.symbols {
         if symbol.namespace == SymbolNamespace::Operator {
+            if let Some(operator) =
+                seseragi_syntax::standard_operator(&symbol.spelling).filter(|operator| {
+                    operator.kind == seseragi_syntax::StandardOperatorKind::Comparison
+                })
+            {
+                let method =
+                    crate::prelude::trait_method(operator.trait_name, operator.method_name)
+                        .expect("comparison method must exist in Prelude");
+                let mut callable = standard_trait_method_callable(method);
+                callable.symbol = operator.spelling.to_owned();
+                callable.result = TypedType::Named {
+                    name: "Bool".to_owned(),
+                    arguments: Vec::new(),
+                };
+                callables.insert(symbol.id, callable);
+                continue;
+            }
             if let Some(operator) = seseragi_syntax::standard_trait_operator(&symbol.spelling) {
                 callables.insert(symbol.id, standard_trait_operator_callable(operator));
                 continue;

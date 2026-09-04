@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/user-ord-operator",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/user-ord-operator::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 1635,
+        "end": 2088
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>",
+      "providerModule": "artifact/user-ord-operator",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "artifact/user-ord-operator::Score"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 29,
+        "end": 123
+      }
+    },
+    {
+      "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+      "providerModule": "artifact/user-ord-operator",
+      "traitIdentity": "std/prelude::Ord",
+      "argumentIdentities": [
+        "artifact/user-ord-operator::Score"
+      ],
+      "trait": "Ord",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 205,
+        "end": 314
+      }
+    }
+  ]
+}

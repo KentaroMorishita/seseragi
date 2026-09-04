@@ -4,6 +4,7 @@
   "module": "fixture/self-tail-loop::main",
   "runtimeRequirements": [
     "core.int",
+    "core.int.ord-dictionary",
     "core.bool",
     "core.int.subtract",
     "core.int.add",
@@ -11,6 +12,10 @@
     "core.int.eq-dictionary"
   ],
   "imports": [
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
+    },
     {
       "feature": "core.int.subtract",
       "local": "_ssrg_int_subtract"
@@ -45,14 +50,32 @@
         "kind": "conditional",
         "condition": {
           "kind": "binary",
-          "operator": "<=",
+          "operator": "!==",
           "left": {
-            "kind": "identifier",
-            "name": "current"
+            "kind": "field-access",
+            "receiver": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_ord_dictionary"
+              },
+              "method": "compare",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "current"
+                },
+                {
+                  "kind": "number",
+                  "value": "0"
+                }
+              ]
+            },
+            "field": "tag"
           },
           "right": {
-            "kind": "number",
-            "value": "0"
+            "kind": "string",
+            "value": "Greater"
           }
         },
         "thenBranch": {

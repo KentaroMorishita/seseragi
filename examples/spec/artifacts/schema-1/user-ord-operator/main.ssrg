@@ -1,0 +1,49 @@
+struct Score { value: Int }
+
+instance Eq<Score> {
+  fn eq left: Score -> right: Score -> Bool = left.value == right.value
+}
+
+// Reverse order proves that source comparisons dispatch through this instance.
+instance Ord<Score> {
+  fn compare left: Score -> right: Score -> Ordering = compare right.value left.value
+}
+
+fn ordered<A> left: A -> right: A -> Bool where Ord<A> = left <= right
+fn referenced<A> left: A -> right: A -> Bool where Ord<A> = (>=) left right
+fn apply<A> f: (A -> A -> Bool) -> left: A -> right: A -> Bool = f left right
+
+fn arithmeticApply<A> f: (A -> A -> A) -> left: A -> right: A -> A = f left right
+fn arithmeticReference unit: Unit -> Int -> Int -> Int = (+)
+fn equalityReference unit: Unit -> Score -> Score -> Bool = (==)
+fn partial left: Score -> Score -> Bool = (<=) left
+fn reference unit: Unit -> Score -> Score -> Bool = (<)
+
+fn section unit: Unit -> Bool = {
+  let returnedPartial = partial (Score { value: 2 })
+  let returnedComparison = reference ()
+  let returnedEquality = equalityReference ()
+  let returnedArithmetic = arithmeticReference ()
+  let less: Score -> Score -> Bool = (<)
+  let greater: Score -> Bool = (>) (Score { value: 1 })
+  less (Score { value: 2 }) (Score { value: 1 })
+    && greater (Score { value: 2 })
+    && apply (<) (Score { value: 2 }) (Score { value: 1 })
+    && returnedPartial (Score { value: 1 })
+    && returnedComparison (Score { value: 2 }) (Score { value: 1 })
+    && apply (==) (Score { value: 2 }) (Score { value: 2 })
+    && returnedEquality (Score { value: 2 }) (Score { value: 2 })
+    && arithmeticApply (+) 1 2 == 3
+    && returnedArithmetic 1 2 == 3
+}
+
+pub effect fn main = do {
+  let low = Score { value: 2 }
+  let high = Score { value: 1 }
+  println $ show (low < high, low <= high, high > low, high >= low)
+  println $ show (low < low, low <= low, low > low, low >= low)
+  println $ show (low > high, low >= high, high < low, high <= low)
+  println $ show (ordered low high, referenced high low, section ())
+  println $ show (1 < 2, False < True, () <= (), "a" < "b")
+  println $ show ("𐀀" > "")
+}

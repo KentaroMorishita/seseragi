@@ -4,6 +4,7 @@ use crate::{SurfaceDecl, SurfaceImplMember, SurfaceMethod, SurfaceParameter, Typ
 pub enum StandardOperatorKind {
     Arithmetic,
     Equality,
+    Comparison,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -43,6 +44,10 @@ pub enum OperatorSectionPolicy {
 }
 
 const STANDARD_OPERATORS: &[StandardOperator] = &[
+    comparison("<"),
+    comparison("<="),
+    comparison(">"),
+    comparison(">="),
     arithmetic("+", "Add", "add"),
     arithmetic("-", "Sub", "sub"),
     arithmetic("*", "Mul", "mul"),
@@ -95,6 +100,16 @@ const STANDARD_TRAIT_OPERATORS: &[StandardTraitOperator] = &[
     },
 ];
 
+const fn comparison(spelling: &'static str) -> StandardOperator {
+    StandardOperator {
+        spelling,
+        trait_name: "Ord",
+        method_name: "compare",
+        kind: StandardOperatorKind::Comparison,
+        declarable: false,
+    }
+}
+
 const fn arithmetic(
     spelling: &'static str,
     trait_name: &'static str,
@@ -133,7 +148,7 @@ pub fn operator_section_policy(spelling: &str) -> OperatorSectionPolicy {
     if standard_operator(spelling).is_some() || standard_trait_operator(spelling).is_some() {
         return OperatorSectionPolicy::Referenceable;
     }
-    if matches!(spelling, "<" | "<=" | ">" | ">=" | ":") {
+    if spelling == ":" {
         return OperatorSectionPolicy::PendingReferenceable;
     }
     if matches!(
@@ -197,7 +212,9 @@ pub fn impl_operator_instances(declaration: &SurfaceDecl) -> Vec<SurfaceDecl> {
                         .unwrap_or(TypeRef::Hole { span: *self_span }),
                     return_type.clone(),
                 ],
-                StandardOperatorKind::Equality => vec![target.clone()],
+                StandardOperatorKind::Equality | StandardOperatorKind::Comparison => {
+                    vec![target.clone()]
+                }
             };
 
             Some(SurfaceDecl::Instance {
@@ -275,13 +292,13 @@ mod tests {
 
     #[test]
     fn classifies_operator_section_policy_without_spelling_fallbacks() {
-        for spelling in ["+", "==", "<$>", "<*>", ">>="] {
+        for spelling in ["+", "==", "<", "<=", ">", ">=", "<$>", "<*>", ">>="] {
             assert_eq!(
                 operator_section_policy(spelling),
                 OperatorSectionPolicy::Referenceable
             );
         }
-        for spelling in ["<", "<=", ">", ">=", ":"] {
+        for spelling in [":"] {
             assert_eq!(
                 operator_section_policy(spelling),
                 OperatorSectionPolicy::PendingReferenceable

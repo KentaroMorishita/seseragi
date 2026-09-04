@@ -185,6 +185,12 @@ trait Add<L, R, O> {
 struct内の `operator` 宣言はこれら標準trait instanceの糖衣です。coherenceとorphan ruleは
 通常のinstanceと同じです。
 
+比較演算子は左右に同じ型 `A` と `Ord<A>` の証拠を要求し、`compare left right` を一度だけ
+評価します。`<` は `Less`、`>` は `Greater`、`<=` は `Greater` 以外、`>=` は `Less` 以外を
+Trueとします。`(<)` / `(<=)` / `(>)` / `(>=)` は `A -> A -> Bool` の関数値として参照でき、
+部分適用も同じ証拠を使います。各比較演算子を個別にoverloadせず `Ord.compare` を実装します。
+Floatにはstandard Ordがないため、host比較へ迂回しません。
+
 `operator ==` は `Eq<A>.eq` の糖衣で、戻り型はBoolです。`!=` はEq.eqの結果を否定するため、
 個別instanceを持ちません。
 

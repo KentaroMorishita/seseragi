@@ -1,10 +1,10 @@
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { unfold as _ssrg_iterator_unfold, iteratorIterable as _ssrg_iterator_iterable, type Iterator as Iterator } from "@seseragi/runtime/iterator"
+import { intOrd as _ssrg_int_ord_dictionary, intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { Just as _ssrg_maybe_Just, Nothing as _ssrg_maybe_Nothing } from "@seseragi/runtime/sum"
 import { add as _ssrg_int_add, subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
 import { reduce as _ssrg_range_reduce, inclusive as _ssrg_range_inclusive, rangeIterable as _ssrg_range_iterable } from "@seseragi/runtime/range"
 import { reduceUntil as _ssrg_collection_reduceUntil, Done as _ssrg_collection_Done, Next as _ssrg_collection_Next, type ReduceStep as ReduceStep } from "@seseragi/runtime/collection"
-import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { arrayIterable as _ssrg_array_iterable, empty as _ssrg_array_empty } from "@seseragi/runtime/array"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
@@ -19,10 +19,10 @@ const Countdown = (value: number): Countdown => ({ tag: "Countdown", value } as 
 type Forever =
   | { readonly tag: "Forever" };
 const Forever: Forever = { tag: "Forever" } as const;
-export const __ssrg$instance$Iterable$0 = { "iterate": (values: Countdown) => (($ssrg_match: Countdown): Iterator<number> => $ssrg_match.tag === "Countdown" ? ((limit: number): Iterator<number> => _ssrg_iterator_unfold((current: number) => current <= limit ? _ssrg_maybe_Just([current, _ssrg_int_add(current, 1)] as const) : _ssrg_maybe_Nothing, 1))($ssrg_match.value) : ((): never => { throw new Error("non-exhaustive Seseragi match"); })())(values) } as const;
+export const __ssrg$instance$Iterable$0 = { "iterate": (values: Countdown) => (($ssrg_match: Countdown): Iterator<number> => $ssrg_match.tag === "Countdown" ? ((limit: number): Iterator<number> => _ssrg_iterator_unfold((current: number) => (_ssrg_int_ord_dictionary["compare"](current)(limit))["tag"] !== "Greater" ? _ssrg_maybe_Just([current, _ssrg_int_add(current, 1)] as const) : _ssrg_maybe_Nothing, 1))($ssrg_match.value) : ((): never => { throw new Error("non-exhaustive Seseragi match"); })())(values) } as const;
 export const __ssrg$instance$Reducible$1 = (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ({ ...__ssrg$evidence$0, "reduce": <B,>(initial: B) => (step: (argument: B) => (argument: number) => B) => (values: Countdown) => (($ssrg_match: Countdown): B => $ssrg_match.tag === "Countdown" ? ((limit: number): B => _ssrg_range_reduce(initial, step, _ssrg_range_inclusive(1, limit)))($ssrg_match.value) : ((): never => { throw new Error("non-exhaustive Seseragi match"); })())(values) }) as const;
 export const __ssrg$instance$Iterable$2 = { "iterate": (values: Forever) => _ssrg_iterator_unfold((n: number) => _ssrg_maybe_Just([n, _ssrg_int_add(n, 1)] as const), 1) } as const;
-const beforeNegative = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => _ssrg_collection_reduceUntil(__ssrg$evidence$0, 0, (total: number) => (value: number) => value < 0 ? _ssrg_collection_Done(total) : _ssrg_collection_Next(_ssrg_int_add(total, value)), values)
+const beforeNegative = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => _ssrg_collection_reduceUntil(__ssrg$evidence$0, 0, (total: number) => (value: number) => (_ssrg_int_ord_dictionary["compare"](value)(0))["tag"] === "Less" ? _ssrg_collection_Done(total) : _ssrg_collection_Next(_ssrg_int_add(total, value)), values)
 const firstThree = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => _ssrg_collection_reduceUntil(__ssrg$evidence$0, 0, (total: number) => (value: number) => _ssrg_int_eq_dictionary["eq"](value)(3) ? _ssrg_collection_Done(_ssrg_int_add(total, value)) : _ssrg_collection_Next(_ssrg_int_add(total, value)), values)
 const reducible = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ((firstThree(values)(__ssrg$evidence$0)) as number)
 const generic = <C, A, B,>(initial: B) => (step: (argument: B) => (argument: A) => ReduceStep<B>) => (values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => _ssrg_collection_reduceUntil(__ssrg$evidence$0, initial, step, values)

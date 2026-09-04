@@ -75,9 +75,27 @@
         "callee": "foldPair",
         "arguments": [
           {
-            "kind": "curried-runtime-reference",
-            "name": "_ssrg_int_add",
-            "arity": 2
+            "kind": "checked-result",
+            "value": {
+              "kind": "curried-runtime-reference",
+              "name": "_ssrg_int_add",
+              "arity": 2
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "number"
+                },
+                "result": {
+                  "kind": "number"
+                }
+              }
+            }
           },
           {
             "kind": "identifier",

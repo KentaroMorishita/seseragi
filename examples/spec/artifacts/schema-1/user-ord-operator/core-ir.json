@@ -1,0 +1,5274 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/user-ord-operator",
+  "structs": [
+    {
+      "symbol": "artifact/user-ord-operator::Score",
+      "name": "Score",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 15,
+            "end": 20
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 27
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 29,
+        "end": 123
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "variable",
+                  "name": "left",
+                  "type": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 96,
+                    "end": 100
+                  }
+                },
+                "field": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 96,
+                  "end": 106
+                }
+              },
+              "right": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "variable",
+                  "name": "right",
+                  "type": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 110,
+                    "end": 115
+                  }
+                },
+                "field": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 110,
+                  "end": 121
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Eq"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 96,
+                "end": 121
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 52,
+              "end": 121
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 205,
+        "end": 314
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "compare",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Ord::compare",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 290,
+                      "end": 295
+                    }
+                  },
+                  "field": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 290,
+                    "end": 301
+                  }
+                },
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 302,
+                      "end": 306
+                    }
+                  },
+                  "field": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 302,
+                    "end": 312
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Ord"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Ord",
+                "method": "compare"
+              },
+              "type": {
+                "kind": "named",
+                "name": "Ordering",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 282,
+                "end": 312
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 229,
+              "end": 312
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/user-ord-operator::ordered",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 316,
+        "end": 386
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "<=",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 373,
+            "end": 377
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 381,
+            "end": 386
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Ord",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 373,
+          "end": 386
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-ord-operator::referenced",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 387,
+        "end": 462
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": ">=",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 452,
+              "end": 456
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 457,
+              "end": 462
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Ord",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Ord",
+          "method": "compare"
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 447,
+          "end": 462
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-ord-operator::apply",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 463,
+        "end": 540
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "f",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            }
+          }
+        },
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "f",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 530,
+              "end": 534
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 535,
+              "end": 540
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 528,
+          "end": 540
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-ord-operator::arithmeticApply",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 542,
+        "end": 623
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "f",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            }
+          }
+        },
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "f",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 613,
+              "end": 617
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 618,
+              "end": 623
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 611,
+          "end": 623
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-ord-operator::arithmeticReference",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 624,
+        "end": 684
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "+",
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 682,
+          "end": 683
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-ord-operator::equalityReference",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 685,
+        "end": 749
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "==",
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 746,
+          "end": 748
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-ord-operator::partial",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 750,
+        "end": 801
+      },
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "<=",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 797,
+              "end": 801
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Ord",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Score",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Ord",
+          "method": "compare"
+        },
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 792,
+          "end": 801
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-ord-operator::reference",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 802,
+        "end": 857
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "<",
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Ord",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Score",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 855,
+          "end": 856
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-ord-operator::section",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 859,
+        "end": 1633
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "returnedPartial",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/user-ord-operator::partial",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "value",
+                      "value": {
+                        "kind": "integer",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 941,
+                          "end": 942
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 934,
+                        "end": 942
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 926,
+                    "end": 944
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 917,
+                "end": 945
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 892,
+              "end": 945
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "returnedComparison",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/user-ord-operator::reference",
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 983,
+                    "end": 985
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 973,
+                "end": 985
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 946,
+              "end": 985
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "returnedEquality",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/user-ord-operator::equalityReference",
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1029,
+                    "end": 1031
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1011,
+                "end": 1031
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 986,
+              "end": 1031
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "returnedArithmetic",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/user-ord-operator::arithmeticReference",
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1079,
+                    "end": 1081
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1059,
+                "end": 1081
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1032,
+              "end": 1081
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "less",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "<",
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Score",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "local",
+                          "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1120,
+                "end": 1121
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1082,
+              "end": 1122
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "greater",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": ">",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "value",
+                      "value": {
+                        "kind": "integer",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1174,
+                          "end": 1175
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1167,
+                        "end": 1175
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1159,
+                    "end": 1177
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Score",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "local",
+                          "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Ord",
+                "method": "compare"
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1154,
+                "end": 1178
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1123,
+              "end": 1178
+            }
+          }
+        ],
+        "result": {
+          "kind": "if",
+          "condition": {
+            "kind": "if",
+            "condition": {
+              "kind": "if",
+              "condition": {
+                "kind": "if",
+                "condition": {
+                  "kind": "if",
+                  "condition": {
+                    "kind": "if",
+                    "condition": {
+                      "kind": "if",
+                      "condition": {
+                        "kind": "if",
+                        "condition": {
+                          "kind": "call",
+                          "callee": "less",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "value",
+                                  "value": {
+                                    "kind": "integer",
+                                    "value": "2",
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 1202,
+                                      "end": 1203
+                                    }
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1195,
+                                    "end": 1203
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1187,
+                                "end": 1205
+                              }
+                            },
+                            {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "value",
+                                  "value": {
+                                    "kind": "integer",
+                                    "value": "1",
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 1223,
+                                      "end": 1224
+                                    }
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1216,
+                                    "end": 1224
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1208,
+                                "end": 1226
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1181,
+                            "end": 1227
+                          }
+                        },
+                        "thenBranch": {
+                          "kind": "call",
+                          "callee": "greater",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "value",
+                                  "value": {
+                                    "kind": "integer",
+                                    "value": "2",
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 1259,
+                                      "end": 1260
+                                    }
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1252,
+                                    "end": 1260
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1244,
+                                "end": 1262
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1235,
+                            "end": 1263
+                          }
+                        },
+                        "elseBranch": {
+                          "kind": "boolean",
+                          "value": false,
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1181,
+                            "end": 1263
+                          }
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1181,
+                          "end": 1263
+                        }
+                      },
+                      "thenBranch": {
+                        "kind": "call",
+                        "callee": "artifact/user-ord-operator::apply",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "<",
+                            "evidence": [
+                              {
+                                "constraint": {
+                                  "name": "Ord",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Score",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "local",
+                                  "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                  "evidenceArguments": [
+                                    {
+                                      "constraint": {
+                                        "name": "Eq",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Score",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      },
+                                      "evidence": {
+                                        "kind": "local",
+                                        "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "named",
+                                  "name": "Score",
+                                  "arguments": []
+                                },
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1278,
+                              "end": 1279
+                            }
+                          },
+                          {
+                            "kind": "record",
+                            "items": [
+                              {
+                                "kind": "field",
+                                "name": "value",
+                                "value": {
+                                  "kind": "integer",
+                                  "value": "2",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1297,
+                                    "end": 1298
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1290,
+                                  "end": 1298
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1282,
+                              "end": 1300
+                            }
+                          },
+                          {
+                            "kind": "record",
+                            "items": [
+                              {
+                                "kind": "field",
+                                "name": "value",
+                                "value": {
+                                  "kind": "integer",
+                                  "value": "1",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1318,
+                                    "end": 1319
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1311,
+                                  "end": 1319
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1303,
+                              "end": 1321
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1271,
+                          "end": 1322
+                        }
+                      },
+                      "elseBranch": {
+                        "kind": "boolean",
+                        "value": false,
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1181,
+                          "end": 1322
+                        }
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1181,
+                        "end": 1322
+                      }
+                    },
+                    "thenBranch": {
+                      "kind": "call",
+                      "callee": "returnedPartial",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "value": {
+                                "kind": "integer",
+                                "value": "1",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1362,
+                                  "end": 1363
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1355,
+                                "end": 1363
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Score",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1347,
+                            "end": 1365
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1330,
+                        "end": 1366
+                      }
+                    },
+                    "elseBranch": {
+                      "kind": "boolean",
+                      "value": false,
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1181,
+                        "end": 1366
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1181,
+                      "end": 1366
+                    }
+                  },
+                  "thenBranch": {
+                    "kind": "call",
+                    "callee": "returnedComparison",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "value",
+                            "value": {
+                              "kind": "integer",
+                              "value": "2",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1409,
+                                "end": 1410
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1402,
+                              "end": 1410
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Score",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1394,
+                          "end": 1412
+                        }
+                      },
+                      {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "value",
+                            "value": {
+                              "kind": "integer",
+                              "value": "1",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1430,
+                                "end": 1431
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1423,
+                              "end": 1431
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Score",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1415,
+                          "end": 1433
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1374,
+                      "end": 1434
+                    }
+                  },
+                  "elseBranch": {
+                    "kind": "boolean",
+                    "value": false,
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1181,
+                      "end": 1434
+                    }
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1181,
+                    "end": 1434
+                  }
+                },
+                "thenBranch": {
+                  "kind": "call",
+                  "callee": "artifact/user-ord-operator::apply",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "==",
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Eq",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "local",
+                            "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Score",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "Score",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1449,
+                        "end": 1451
+                      }
+                    },
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "value",
+                          "value": {
+                            "kind": "integer",
+                            "value": "2",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1469,
+                              "end": 1470
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1462,
+                            "end": 1470
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Score",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1454,
+                        "end": 1472
+                      }
+                    },
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "value",
+                          "value": {
+                            "kind": "integer",
+                            "value": "2",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1490,
+                              "end": 1491
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1483,
+                            "end": 1491
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Score",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1475,
+                        "end": 1493
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1442,
+                    "end": 1494
+                  }
+                },
+                "elseBranch": {
+                  "kind": "boolean",
+                  "value": false,
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1181,
+                    "end": 1494
+                  }
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1181,
+                  "end": 1494
+                }
+              },
+              "thenBranch": {
+                "kind": "call",
+                "callee": "returnedEquality",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "items": [
+                      {
+                        "kind": "field",
+                        "name": "value",
+                        "value": {
+                          "kind": "integer",
+                          "value": "2",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1535,
+                            "end": 1536
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1528,
+                          "end": 1536
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1520,
+                      "end": 1538
+                    }
+                  },
+                  {
+                    "kind": "record",
+                    "items": [
+                      {
+                        "kind": "field",
+                        "name": "value",
+                        "value": {
+                          "kind": "integer",
+                          "value": "2",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1556,
+                            "end": 1557
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1549,
+                          "end": 1557
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1541,
+                      "end": 1559
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1502,
+                  "end": 1560
+                }
+              },
+              "elseBranch": {
+                "kind": "boolean",
+                "value": false,
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1181,
+                  "end": 1560
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1181,
+                "end": 1560
+              }
+            },
+            "thenBranch": {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "call",
+                "callee": "artifact/user-ord-operator::arithmeticApply",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "+",
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Add",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Add"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1585,
+                      "end": 1586
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "value": "1",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1588,
+                      "end": 1589
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1590,
+                      "end": 1591
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1568,
+                  "end": 1591
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "3",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1595,
+                  "end": 1596
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Eq"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1568,
+                "end": 1596
+              }
+            },
+            "elseBranch": {
+              "kind": "boolean",
+              "value": false,
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1181,
+                "end": 1596
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1181,
+              "end": 1596
+            }
+          },
+          "thenBranch": {
+            "kind": "binary",
+            "operator": "==",
+            "left": {
+              "kind": "call",
+              "callee": "returnedArithmetic",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1623,
+                    "end": 1624
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "2",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1625,
+                    "end": 1626
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1604,
+                "end": 1626
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "value": "3",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1630,
+                "end": 1631
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/int::Eq"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1604,
+              "end": 1631
+            }
+          },
+          "elseBranch": {
+            "kind": "boolean",
+            "value": false,
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1181,
+              "end": 1631
+            }
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1181,
+            "end": 1631
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 891,
+          "end": 1633
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-ord-operator::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1635,
+        "end": 2088
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "low",
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "integer",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1688,
+                      "end": 1689
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1681,
+                    "end": 1689
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1673,
+                "end": 1691
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1663,
+              "end": 1691
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "high",
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "integer",
+                    "value": "1",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1720,
+                      "end": 1721
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1713,
+                    "end": 1721
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1705,
+                "end": 1723
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1694,
+              "end": 1723
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "binary",
+                          "operator": "<",
+                          "left": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1742,
+                              "end": 1745
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1748,
+                              "end": 1752
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1742,
+                            "end": 1752
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": "<=",
+                          "left": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1754,
+                              "end": 1757
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1761,
+                              "end": 1765
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1754,
+                            "end": 1765
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": ">",
+                          "left": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1767,
+                              "end": 1771
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1774,
+                              "end": 1777
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1767,
+                            "end": 1777
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": ">=",
+                          "left": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1779,
+                              "end": 1783
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1787,
+                              "end": 1790
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1779,
+                            "end": 1790
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1741,
+                        "end": 1791
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/tuple::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1736,
+                    "end": 1791
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1726,
+                "end": 1791
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "binary",
+                          "operator": "<",
+                          "left": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1810,
+                              "end": 1813
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1816,
+                              "end": 1819
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1810,
+                            "end": 1819
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": "<=",
+                          "left": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1821,
+                              "end": 1824
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1828,
+                              "end": 1831
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1821,
+                            "end": 1831
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": ">",
+                          "left": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1833,
+                              "end": 1836
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1839,
+                              "end": 1842
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1833,
+                            "end": 1842
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": ">=",
+                          "left": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1844,
+                              "end": 1847
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1851,
+                              "end": 1854
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1844,
+                            "end": 1854
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1809,
+                        "end": 1855
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/tuple::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1804,
+                    "end": 1855
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1794,
+                "end": 1855
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "binary",
+                          "operator": ">",
+                          "left": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1874,
+                              "end": 1877
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1880,
+                              "end": 1884
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1874,
+                            "end": 1884
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": ">=",
+                          "left": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1886,
+                              "end": 1889
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1893,
+                              "end": 1897
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1886,
+                            "end": 1897
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": "<",
+                          "left": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1899,
+                              "end": 1903
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1906,
+                              "end": 1909
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1899,
+                            "end": 1909
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": "<=",
+                          "left": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1911,
+                              "end": 1915
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1919,
+                              "end": 1922
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1911,
+                            "end": 1922
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1873,
+                        "end": 1923
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/tuple::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1868,
+                    "end": 1923
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1858,
+                "end": 1923
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/user-ord-operator::ordered",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "low",
+                              "type": {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1950,
+                                "end": 1953
+                              }
+                            },
+                            {
+                              "kind": "variable",
+                              "name": "high",
+                              "type": {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1954,
+                                "end": 1958
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1942,
+                            "end": 1958
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "artifact/user-ord-operator::referenced",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "high",
+                              "type": {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1971,
+                                "end": 1975
+                              }
+                            },
+                            {
+                              "kind": "variable",
+                              "name": "low",
+                              "type": {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1976,
+                                "end": 1979
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "std/prelude::Ord<artifact/user-ord-operator::Score>",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "local",
+                                      "identity": "std/prelude::Eq<artifact/user-ord-operator::Score>"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1960,
+                            "end": 1979
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "artifact/user-ord-operator::section",
+                          "arguments": [
+                            {
+                              "kind": "unit",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1989,
+                                "end": 1991
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1981,
+                            "end": 1991
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1941,
+                        "end": 1992
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/tuple::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1936,
+                    "end": 1992
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1926,
+                "end": 1992
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "binary",
+                          "operator": "<",
+                          "left": {
+                            "kind": "integer",
+                            "value": "1",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2011,
+                              "end": 2012
+                            }
+                          },
+                          "right": {
+                            "kind": "integer",
+                            "value": "2",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2015,
+                              "end": 2016
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/int::Ord"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2011,
+                            "end": 2016
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": "<",
+                          "left": {
+                            "kind": "boolean",
+                            "value": false,
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2018,
+                              "end": 2023
+                            }
+                          },
+                          "right": {
+                            "kind": "boolean",
+                            "value": true,
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2026,
+                              "end": 2030
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Bool",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/bool::Ord"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2018,
+                            "end": 2030
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": "<=",
+                          "left": {
+                            "kind": "unit",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2032,
+                              "end": 2034
+                            }
+                          },
+                          "right": {
+                            "kind": "unit",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2038,
+                              "end": 2040
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Unit",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/unit::Ord"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2032,
+                            "end": 2040
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": "<",
+                          "left": {
+                            "kind": "string",
+                            "value": "a",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2042,
+                              "end": 2045
+                            }
+                          },
+                          "right": {
+                            "kind": "string",
+                            "value": "b",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2048,
+                              "end": 2051
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/string::Ord"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2042,
+                            "end": 2051
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2010,
+                        "end": 2052
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/tuple::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2005,
+                    "end": 2052
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1995,
+                "end": 2052
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "binary",
+                  "operator": ">",
+                  "left": {
+                    "kind": "string",
+                    "value": "𐀀",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2071,
+                      "end": 2077
+                    }
+                  },
+                  "right": {
+                    "kind": "string",
+                    "value": "",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2080,
+                      "end": 2085
+                    }
+                  },
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Ord",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/string::Ord"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2071,
+                    "end": 2085
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Bool>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2065,
+                "end": 2086
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 2055,
+            "end": 2086
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1656,
+          "end": 2088
+        }
+      }
+    }
+  ]
+}

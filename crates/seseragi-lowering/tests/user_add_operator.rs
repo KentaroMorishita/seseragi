@@ -120,8 +120,15 @@ where Add<T, T, T> =
     let TypeScriptExpr::Call { arguments, .. } = body else {
         panic!("expected apply call");
     };
+    let TypeScriptExpr::CheckedResult { value, type_ref } = &arguments[0] else {
+        panic!("operator section must retain its source-checked function type");
+    };
     assert!(matches!(
-        &arguments[0],
+        type_ref,
+        seseragi_lowering::TypeScriptType::Function { .. }
+    ));
+    assert!(matches!(
+        value.as_ref(),
         TypeScriptExpr::Lambda { body, .. }
             if matches!(body.as_ref(), TypeScriptExpr::Lambda { body, .. }
                 if matches!(body.as_ref(), TypeScriptExpr::DictionaryCall { method, .. }

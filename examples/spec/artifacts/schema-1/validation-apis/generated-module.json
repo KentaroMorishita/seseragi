@@ -32,6 +32,7 @@
       "core.non-empty-list.to-list",
       "core.validation.invalid",
       "core.validation.valid",
+      "core.int.ord-dictionary",
       "core.validation.applicative",
       "core.validation.eq",
       "core.validation.show",

@@ -10,6 +10,7 @@
   ],
   "names": [
     "checked",
+    "intOrd",
     "Right",
     "add",
     "Left",
@@ -53,5 +54,5 @@
     "nonEmptyListShow",
     "intShow"
   ],
-  "mappings": ";;;;;;;;;;AAEAA;AAGAI"
+  "mappings": ";;;;;;;;;;;AAEAA;AAGAK"
 }

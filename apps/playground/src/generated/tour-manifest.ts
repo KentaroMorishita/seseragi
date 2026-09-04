@@ -1748,7 +1748,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         {
           "kind": "syntax",
           "name": "comparison",
-          "body": "`<`、`<=`、`>`、`>=`は同じ数値型を比較し、Bool valueを返します。このlessonでは`>`だけを扱います。"
+          "body": "`<`、`<=`、`>`、`>=`は大小を比較し、Bool valueを返します。このlessonでは同じInt型の二つのvalueを`>`で比較します。"
         }
       ],
       "exercise": {
@@ -1757,7 +1757,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       },
       "diagnostic": {
         "heading": "IntとStringを比較する",
-        "body": "大小比較の左右には互換な数値型が必要です。Stringを比較しようとした位置のdiagnosticを読みます。"
+        "body": "この比較では左辺のIntと右辺のStringが一致していません。右辺を指すdiagnosticを読み、左右を同じInt型へ揃えます。"
       },
       "recap": [
         "大小比較はBool resultを返す。",

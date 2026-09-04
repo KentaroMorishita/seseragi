@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.55.0] - 2026-09-05
+
+### Changed
+
+- Dispatch all four comparison operators through the selected `Ord.compare`
+  dictionary, including local, imported, generic, and standard instances.
+- Support comparison function references and partial application; preserve
+  Unicode scalar ordering and reject comparison without Ord evidence, including Float.
+
 ## [0.54.0] - 2026-09-04
 
 ### Added

@@ -1,0 +1,41 @@
+{
+  "version": 3,
+  "file": "dist/imported-user-ord-operator/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-user-ord-operator::main"
+  ],
+  "sourcesContent": [
+    "import { Score, ordered } from \"./domain\"\n\nfn localGeneric<A> left: A -> right: A -> Bool where Ord<A> = (>=) left right\n\npub effect fn main = do {\n  let low = Score { value: 2 }\n  let high = Score { value: 1 }\n  let lower: Score -> Score -> Bool = (<)\n  println $ show (low < high, low <= high, high > low, high >= low)\n  println $ show (ordered low high, localGeneric high low, lower low high)\n}\n"
+  ],
+  "names": [
+    "localGeneric",
+    "__ssrg$evidence$0",
+    "main",
+    "low",
+    "high",
+    "lower",
+    "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+    "println",
+    "tupleShow",
+    "boolShow",
+    "boolShow",
+    "boolShow",
+    "boolShow",
+    "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+    "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+    "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+    "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+    "println",
+    "tupleShow",
+    "boolShow",
+    "boolShow",
+    "boolShow",
+    "ordered",
+    "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+    "localGeneric",
+    "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+    "lower"
+  ],
+  "mappings": ";;;;;;;AAEAA;AAEAE"
+}

@@ -15,8 +15,10 @@
     "intMul",
     "anyPositive",
     "_ssrg_collection_any",
+    "intOrd",
     "allPositive",
     "_ssrg_collection_all",
+    "intOrd",
     "emptyValues",
     "yesNo",
     "number",
@@ -92,5 +94,5 @@
     "allRange",
     "allEmpty"
   ],
-  "mappings": ";;;;;;;;;AAAAA;AAIAI;AAIAE;AAIAE;AAGAC;AAGAC;AAGAE;AAGAI;AAGAK;AAGAK;AAGAK;AAGAI;AAGAK;AAGAK;AAGAK;AAGAI;AAGAK;AAGAK;AAGAK"
+  "mappings": ";;;;;;;;;;AAAAA;AAIAI;AAIAG;AAIAG;AAGAC;AAGAC;AAGAE;AAGAI;AAGAK;AAGAK;AAGAK;AAGAI;AAGAK;AAGAK;AAGAK;AAGAI;AAGAK;AAGAK;AAGAK"
 }

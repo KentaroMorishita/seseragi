@@ -8,6 +8,6 @@ $ssrg$assertUnicodeVersion("17.0.0")
 
 const increment = (value: number) => _ssrg_int_add(value, 1)
 const expand = (value: number) => [value, _ssrg_int_add(value, 10)]
-const total = (values: ReadonlyArray<number>) => _ssrg_array_reduce(0, (_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1), values)
+const total = (values: ReadonlyArray<number>) => _ssrg_array_reduce(0, (((_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1)) as (argument: number) => (argument: number) => number), values)
 const render = (label: string) => (value: number) => _ssrg_show_stringShow["show"](label) + ": " + _ssrg_show_intShow["show"](value)
 export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println(render("Array map")(total(_ssrg_array_functor["map"](increment)([1, 2, 3])))), () => _ssrg_effect_flatMap(_ssrg_console_println(render("Array apply")(total(_ssrg_array_applicative["apply"](_ssrg_array_applicative["pure"](increment))([40, 41])))), () => _ssrg_console_println(render("Array flatMap")(total(_ssrg_array_monad["flatMap"](expand)([1, 2]))))))

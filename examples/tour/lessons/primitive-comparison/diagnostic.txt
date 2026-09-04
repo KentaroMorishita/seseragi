@@ -1,3 +1,11 @@
+examples/tour/lessons/primitive-comparison/diagnostic.ssrg:1:20: error[SES-T0101]: Argument type does not match the parameter type
+  | let isLarge = 42 > "40"
+  |                    ^^^^ argument 2 expected Int, received String
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.
 examples/tour/lessons/primitive-comparison/diagnostic.ssrg:3:40: error[SES-T0201]: A required trait instance is not available
   | pub effect fn main = println `Large: ${isLarge}`
   |                                        ^^^^^^^ no Show<unknown> instance matches the inferred call arguments

@@ -28,7 +28,7 @@ pub fn matchingValues values: Array<(Int, Int)> -> Array<Int> =
     assert!(
         bundle
             .typescript
-            .contains("(value: number): boolean => value > 1"),
+            .contains("(value: number): boolean => (_ssrg_int_ord_dictionary[\"compare\"](value)(1))[\"tag\"] === \"Greater\""),
         "{}",
         bundle.typescript
     );

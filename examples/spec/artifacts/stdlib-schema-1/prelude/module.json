@@ -56,6 +56,12 @@
         {
           "name": "compare",
           "canonical": "std/prelude::Ord::compare",
+          "operators": [
+            "<",
+            "<=",
+            ">",
+            ">="
+          ],
           "signature": {
             "typeParameters": [
               "A"

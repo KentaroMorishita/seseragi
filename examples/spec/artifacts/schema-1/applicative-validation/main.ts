@@ -1,5 +1,5 @@
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
-import { stringEq as _ssrg_string_eq_dictionary } from "@seseragi/runtime/equality"
+import { stringEq as _ssrg_string_eq_dictionary, intOrd as _ssrg_int_ord_dictionary } from "@seseragi/runtime/equality"
 import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 $ssrg$assertUnicodeVersion("17.0.0")
@@ -27,7 +27,7 @@ export const __ssrg$instance$Applicative$1 = <E,>(__ssrg$evidence$0: Readonly<Re
 const appendErrors = <E,>(left: Errors<E>) => (right: Errors<E>) => (($ssrg_match: Errors<E>): Errors<E> => $ssrg_match.tag === "One" ? ((error: E): Errors<E> => More([error, right] as const))($ssrg_match.value) : $ssrg_match.tag === "More" ? ((error: E, rest: Errors<E>): Errors<E> => More([error, appendErrors(rest)(right)] as const))($ssrg_match.value[0], $ssrg_match.value[1]) : ((): never => { throw new Error("non-exhaustive Seseragi match"); })())(left)
 const makeUser = (name: string) => (age: number) => User([name, age] as const)
 const validateName = (name: string) => _ssrg_string_eq_dictionary["eq"](name)("") ? Invalid(One(NameRequired)) : Valid(name)
-const validateAge = (age: number) => age > 0 ? Valid(age) : Invalid(One(AgeMustBePositive))
+const validateAge = (age: number) => (_ssrg_int_ord_dictionary["compare"](age)(0))["tag"] === "Greater" ? Valid(age) : Invalid(One(AgeMustBePositive))
 const validateUser = (name: string) => (age: number) => __ssrg$instance$Applicative$1<FormError>(__ssrg$instance$Functor$0<FormError>())["apply"](__ssrg$instance$Applicative$1<FormError>(__ssrg$instance$Functor$0<FormError>())["apply"](__ssrg$instance$Applicative$1<FormError>(__ssrg$instance$Functor$0<FormError>())["pure"](makeUser))(validateName(name)))(validateAge(age))
 const renderRemainingErrors = (errors: Errors<FormError>) => (($ssrg_match: Errors<FormError>): string => $ssrg_match.tag === "One" && $ssrg_match.value.tag === "AgeMustBePositive" ? "NameRequired, AgeMustBePositive" : "Multiple validation errors")(errors)
 const renderErrors = (errors: Errors<FormError>) => (($ssrg_match: Errors<FormError>): string => $ssrg_match.tag === "More" && $ssrg_match.value[0].tag === "NameRequired" ? ((remaining: Errors<FormError>): string => renderRemainingErrors(remaining))($ssrg_match.value[1]) : "One validation error")(errors)

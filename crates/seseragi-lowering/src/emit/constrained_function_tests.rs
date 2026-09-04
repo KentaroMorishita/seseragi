@@ -196,7 +196,7 @@ pub fn answer unit: Unit -> Int =
 
     assert!(
         bundle.typescript.contains(
-            "__ssrg$evidence$0[\"reduce\"](0)((_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1))(values)"
+            "__ssrg$evidence$0[\"reduce\"](0)((((_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1)) as (argument: number) => (argument: number) => number))(values)"
         ),
         "{}",
         bundle.typescript

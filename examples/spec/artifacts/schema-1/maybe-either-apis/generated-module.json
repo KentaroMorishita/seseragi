@@ -17,6 +17,7 @@
       "core.maybe.traverse",
       "core.int",
       "core.either",
+      "core.int.ord-dictionary",
       "core.bool",
       "core.either.left",
       "core.int.show",

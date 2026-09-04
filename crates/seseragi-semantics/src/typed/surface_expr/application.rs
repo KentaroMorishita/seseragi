@@ -222,12 +222,12 @@ pub(crate) fn type_known_application_with_explicit(
     let argument_order = argument_nodes
         .iter()
         .enumerate()
-        .filter(|(_, argument)| !is_lambda_expression(argument))
+        .filter(|(_, argument)| !requires_callable_context(argument))
         .chain(
             argument_nodes
                 .iter()
                 .enumerate()
-                .filter(|(_, argument)| is_lambda_expression(argument)),
+                .filter(|(_, argument)| requires_callable_context(argument)),
         )
         .map(|(index, _)| index)
         .collect::<Vec<_>>();
@@ -568,10 +568,16 @@ fn instantiate_explicit_signature(
     (signature, None)
 }
 
-fn is_lambda_expression(expression: &SurfaceExpr) -> bool {
+// Like lambdas, operator sections need operand types from the other arguments
+// before selecting their dictionary. This changes typing order, not execution order.
+fn requires_callable_context(expression: &SurfaceExpr) -> bool {
     match expression {
         SurfaceExpr::Lambda { .. } => true,
-        SurfaceExpr::Grouped { value, .. } => is_lambda_expression(value),
+        SurfaceExpr::Name { name, .. } => {
+            seseragi_syntax::standard_operator(name).is_some()
+                || seseragi_syntax::standard_trait_operator(name).is_some()
+        }
+        SurfaceExpr::Grouped { value, .. } => requires_callable_context(value),
         _ => false,
     }
 }

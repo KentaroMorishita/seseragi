@@ -9,12 +9,15 @@
   },
   "invocation": {
     "argument": "Unit",
-    "pure": { "result": "json" }
+    "pure": {
+      "result": "json"
+    }
   },
   "expected": {
     "runtimeRequirements": [
       "core.string",
       "core.int",
+      "core.int.ord-dictionary",
       "core.bool",
       "core.string.show",
       "core.int.show",
@@ -28,7 +31,9 @@
       "core.collection.join",
       "core.unit"
     ],
-    "process": { "exitCode": 0 },
+    "process": {
+      "exitCode": 0
+    },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt"
   }

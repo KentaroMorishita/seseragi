@@ -16,7 +16,12 @@
   "requiredEnvironment": {
     "kind": "record",
     "closed": true,
-    "fields": [{ "name": "console", "type": "Console" }]
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
   },
   "hostEnvironment": {
     "closed": false,
@@ -29,7 +34,10 @@
     ]
   },
   "expected": {
-    "exit": { "kind": "success", "value": "Unit" },
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
     "runtimeRequirements": [
       "core.iterator",
       "core.adt",
@@ -39,6 +47,7 @@
       "core.range.reduce",
       "core.range",
       "core.range.inclusive",
+      "core.int.ord-dictionary",
       "core.bool",
       "core.maybe.just",
       "core.int.add",
@@ -52,14 +61,18 @@
       "core.unit",
       "effect.console.println"
     ],
-    "process": { "exitCode": 0 },
+    "process": {
+      "exitCode": 0
+    },
     "stdout": "execution.stdout.txt",
     "stderr": "execution.stderr.txt",
     "trace": [
       {
         "service": "console",
         "operation": "println",
-        "arguments": ["imported collection totals: 35 / 15"],
+        "arguments": [
+          "imported collection totals: 35 / 15"
+        ],
         "stdout": "imported collection totals: 35 / 15\n"
       }
     ]

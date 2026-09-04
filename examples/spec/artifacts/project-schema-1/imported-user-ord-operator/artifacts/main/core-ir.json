@@ -1,0 +1,1339 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-user-ord-operator::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Score",
+      "canonical": "fixture/imported-user-ord-operator::domain::Score",
+      "provider": {
+        "module": "fixture/imported-user-ord-operator::domain",
+        "export": "Score"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-user-ord-operator::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 41
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Score",
+          "local": "Score",
+          "canonical": "fixture/imported-user-ord-operator::domain::Score",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 14
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "ordered",
+          "local": "ordered",
+          "canonical": "fixture/imported-user-ord-operator::domain::ordered",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 16,
+            "end": 23
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-user-ord-operator::main::localGeneric",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 43,
+        "end": 120
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": ">=",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 110,
+              "end": 114
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 115,
+              "end": 120
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Ord",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Ord",
+          "method": "compare"
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 105,
+          "end": 120
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-user-ord-operator::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 122,
+        "end": 397
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "low",
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "integer",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 175,
+                      "end": 176
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 168,
+                    "end": 176
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 160,
+                "end": 178
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 150,
+              "end": 178
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "high",
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "integer",
+                    "value": "1",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 207,
+                      "end": 208
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 200,
+                    "end": 208
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 192,
+                "end": 210
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 181,
+              "end": 210
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "lower",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "external-named",
+                "name": "Score",
+                "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Score",
+                  "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "<",
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "Score",
+                        "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "imported",
+                    "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+                    "providerModule": "fixture/imported-user-ord-operator::domain",
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "Score",
+                              "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "imported",
+                          "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+                          "providerModule": "fixture/imported-user-ord-operator::domain"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Score",
+                  "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Score",
+                    "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 250,
+                "end": 251
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 213,
+              "end": 252
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "binary",
+                          "operator": "<",
+                          "left": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 271,
+                              "end": 274
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 277,
+                              "end": 281
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "imported",
+                                "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+                                "providerModule": "fixture/imported-user-ord-operator::domain",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "external-named",
+                                          "name": "Score",
+                                          "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "imported",
+                                      "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+                                      "providerModule": "fixture/imported-user-ord-operator::domain"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 271,
+                            "end": 281
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": "<=",
+                          "left": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 283,
+                              "end": 286
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 290,
+                              "end": 294
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "imported",
+                                "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+                                "providerModule": "fixture/imported-user-ord-operator::domain",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "external-named",
+                                          "name": "Score",
+                                          "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "imported",
+                                      "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+                                      "providerModule": "fixture/imported-user-ord-operator::domain"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 283,
+                            "end": 294
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": ">",
+                          "left": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 296,
+                              "end": 300
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 303,
+                              "end": 306
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "imported",
+                                "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+                                "providerModule": "fixture/imported-user-ord-operator::domain",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "external-named",
+                                          "name": "Score",
+                                          "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "imported",
+                                      "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+                                      "providerModule": "fixture/imported-user-ord-operator::domain"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 296,
+                            "end": 306
+                          }
+                        },
+                        {
+                          "kind": "binary",
+                          "operator": ">=",
+                          "left": {
+                            "kind": "variable",
+                            "name": "high",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 308,
+                              "end": 312
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "low",
+                            "type": {
+                              "kind": "named",
+                              "name": "Score",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 316,
+                              "end": 319
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Ord",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Score",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "imported",
+                                "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+                                "providerModule": "fixture/imported-user-ord-operator::domain",
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "external-named",
+                                          "name": "Score",
+                                          "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "imported",
+                                      "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+                                      "providerModule": "fixture/imported-user-ord-operator::domain"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 308,
+                            "end": 319
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 270,
+                        "end": 320
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/tuple::Show",
+                        "typeArguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Show<std/prelude::Bool>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 265,
+                    "end": 320
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 255,
+                "end": 320
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-user-ord-operator::domain::ordered",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "low",
+                          "type": {
+                            "kind": "named",
+                            "name": "Score",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 347,
+                            "end": 350
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "high",
+                          "type": {
+                            "kind": "named",
+                            "name": "Score",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 351,
+                            "end": 355
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Ord",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "imported",
+                            "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+                            "providerModule": "fixture/imported-user-ord-operator::domain",
+                            "evidenceArguments": [
+                              {
+                                "constraint": {
+                                  "name": "Eq",
+                                  "arguments": [
+                                    {
+                                      "kind": "external-named",
+                                      "name": "Score",
+                                      "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "imported",
+                                  "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+                                  "providerModule": "fixture/imported-user-ord-operator::domain"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 339,
+                        "end": 355
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-user-ord-operator::main::localGeneric",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "high",
+                          "type": {
+                            "kind": "named",
+                            "name": "Score",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 370,
+                            "end": 374
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "low",
+                          "type": {
+                            "kind": "named",
+                            "name": "Score",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 375,
+                            "end": 378
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Ord",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Score",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "imported",
+                            "identity": "std/prelude::Ord<fixture/imported-user-ord-operator::domain::Score>",
+                            "providerModule": "fixture/imported-user-ord-operator::domain",
+                            "evidenceArguments": [
+                              {
+                                "constraint": {
+                                  "name": "Eq",
+                                  "arguments": [
+                                    {
+                                      "kind": "external-named",
+                                      "name": "Score",
+                                      "canonical": "fixture/imported-user-ord-operator::domain::Score",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "imported",
+                                  "identity": "std/prelude::Eq<fixture/imported-user-ord-operator::domain::Score>",
+                                  "providerModule": "fixture/imported-user-ord-operator::domain"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 357,
+                        "end": 378
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "lower",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "low",
+                          "type": {
+                            "kind": "named",
+                            "name": "Score",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 386,
+                            "end": 389
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "high",
+                          "type": {
+                            "kind": "named",
+                            "name": "Score",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 390,
+                            "end": 394
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 380,
+                        "end": 394
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 338,
+                    "end": 395
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/tuple::Show",
+                    "typeArguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Bool",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Bool>"
+                        }
+                      },
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Bool",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Bool>"
+                        }
+                      },
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Bool",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Bool>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 333,
+                "end": 395
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 323,
+            "end": 395
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 143,
+          "end": 397
+        }
+      }
+    }
+  ]
+}

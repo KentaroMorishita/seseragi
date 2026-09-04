@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "kind": "effect-project-execution",
+  "target": "node-process",
+  "entry": {
+    "module": "fixture/imported-user-ord-operator::main",
+    "export": "main"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.int.eq-dictionary",
+      "core.bool",
+      "core.int",
+      "core.int.ord-dictionary",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.bool.show",
+      "core.tuple.show",
+      "core.string"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "execution.stdout.txt",
+    "stderr": "execution.stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "(True, True, True, True)"
+        ],
+        "stdout": "(True, True, True, True)\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "(True, True, True)"
+        ],
+        "stdout": "(True, True, True)\n"
+      }
+    ]
+  }
+}

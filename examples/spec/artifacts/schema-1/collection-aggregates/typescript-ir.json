@@ -9,6 +9,7 @@
     "core.int",
     "core.collection.any",
     "core.bool",
+    "core.int.ord-dictionary",
     "core.collection.all",
     "core.unit",
     "core.string",
@@ -40,6 +41,10 @@
     {
       "feature": "core.collection.any",
       "local": "_ssrg_collection_any"
+    },
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
     },
     {
       "feature": "core.collection.all",
@@ -184,14 +189,32 @@
             "parameter": "value: number",
             "body": {
               "kind": "binary",
-              "operator": ">",
+              "operator": "===",
               "left": {
-                "kind": "identifier",
-                "name": "value"
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_int_ord_dictionary"
+                  },
+                  "method": "compare",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "0"
+                    }
+                  ]
+                },
+                "field": "tag"
               },
               "right": {
-                "kind": "number",
-                "value": "0"
+                "kind": "string",
+                "value": "Greater"
               }
             }
           },
@@ -250,14 +273,32 @@
             "parameter": "value: number",
             "body": {
               "kind": "binary",
-              "operator": ">",
+              "operator": "===",
               "left": {
-                "kind": "identifier",
-                "name": "value"
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_int_ord_dictionary"
+                  },
+                  "method": "compare",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "0"
+                    }
+                  ]
+                },
+                "field": "tag"
               },
               "right": {
-                "kind": "number",
-                "value": "0"
+                "kind": "string",
+                "value": "Greater"
               }
             }
           },

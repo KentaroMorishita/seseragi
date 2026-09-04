@@ -1811,3 +1811,33 @@ impl Drop for TempWorkspace {
         let _ = fs::remove_dir_all(&self.path);
     }
 }
+
+#[test]
+fn comparison_hover_uses_the_canonical_ord_reference() {
+    let uri = "file:///comparison-ord.ssrg";
+    let source = "pub fn checks a: Int -> b: Int -> (Bool, Bool, Bool, Bool) = (a < b, a <= b, a > b, a >= b)\n";
+    let index = LineIndex::new(source);
+    let mut input = vec![
+        json!({"jsonrpc":"2.0", "id":1, "method":"initialize", "params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}}}}),
+        json!({"jsonrpc":"2.0", "method":"textDocument/didOpen", "params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+    ];
+    for (i, operator) in ["<", "<=", ">", ">="].iter().enumerate() {
+        let offset = source.find(&format!("a {operator} b")).unwrap() + 2;
+        let position = index
+            .try_locate_encoded(offset, PositionEncoding::Utf16)
+            .unwrap();
+        input.push(json!({"jsonrpc":"2.0","id":i+2,"method":"textDocument/hover","params":{"textDocument":{"uri":uri},"position":{"line":position.line,"character":position.character}}}));
+    }
+    input.push(json!({"jsonrpc":"2.0","id":6,"method":"shutdown"}));
+    input.push(json!({"jsonrpc":"2.0","method":"exit"}));
+    let messages = run_server(&input);
+    for (i, operator) in ["<", "<=", ">", ">="].iter().enumerate() {
+        let hover = response(&messages, (i + 2) as i64)["result"]["contents"]["value"]
+            .as_str()
+            .expect("comparison hover");
+        assert!(
+            hover.contains(&format!("{operator} via Ord.compare")),
+            "{hover}"
+        );
+    }
+}

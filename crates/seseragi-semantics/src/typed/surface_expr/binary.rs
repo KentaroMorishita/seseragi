@@ -44,7 +44,12 @@ pub(super) fn type_binary(
                 (TypedType::Hole, Vec::new())
             }
         }
-    } else if standard.is_some_and(|operator| operator.kind == StandardOperatorKind::Equality) {
+    } else if let Some(standard) = standard.filter(|operator| {
+        matches!(
+            operator.kind,
+            StandardOperatorKind::Equality | StandardOperatorKind::Comparison
+        )
+    }) {
         if left_type != TypedType::Hole && right_type != TypedType::Hole && left_type != right_type
         {
             missing_instance = Some(PureCallIssue::ArgumentType {
@@ -55,7 +60,11 @@ pub(super) fn type_binary(
             });
             (TypedType::Hole, Vec::new())
         } else {
-            match context.select_binary_equality_evidence(left_type.clone(), right_type.clone()) {
+            match context.select_binary_same_type_evidence(
+                standard.trait_name,
+                left_type.clone(),
+                right_type.clone(),
+            ) {
                 Ok(evidence) => (named_type("Bool"), vec![evidence]),
                 Err(constraint) => {
                     if left_type != TypedType::Hole && right_type != TypedType::Hole {
@@ -139,12 +148,6 @@ fn binary_result_type(operator: &str, left: &TypedExpr, right: &TypedExpr) -> Ty
         && named_type_is(&right_type, "String")
     {
         return named_type("String");
-    }
-    if matches!(operator, "<" | "<=" | ">" | ">=")
-        && named_type_is(&left_type, "Int")
-        && named_type_is(&right_type, "Int")
-    {
-        return named_type("Bool");
     }
     TypedType::Hole
 }
