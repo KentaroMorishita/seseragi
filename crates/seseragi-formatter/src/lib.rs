@@ -171,6 +171,20 @@ mod tests {
     }
 
     #[test]
+    fn dogfood_indentation_preserves_declaration_and_branch_boundaries() {
+        let input = include_str!("../tests/fixtures/dogfood-indentation.input.ssrg");
+        let expected = include_str!("../tests/fixtures/dogfood-indentation.expected.ssrg");
+        for source in [input.to_owned(), input.replace('\n', "\r\n")] {
+            let formatted = format(&source);
+            assert_eq!(formatted.text, expected);
+            assert_eq!(format(&formatted.text).text, expected);
+            assert_eq!(format(&format(&formatted.text).text).text, expected);
+        }
+        let tight = input.replace("\n\n//", "\n//");
+        assert_eq!(format(&tight).text, expected.replace("\n\n//", "\n//"));
+    }
+
+    #[test]
     fn preserves_foreign_member_boundaries() {
         let source = concat!(
             "foreign \"typescript\" from \"../host/logical.mjs\" {\n",

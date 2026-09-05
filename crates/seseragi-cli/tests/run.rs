@@ -1669,6 +1669,21 @@ fn reports_compiler_diagnostics_with_source_ranges() {
 
 #[test]
 fn formats_a_file_and_supports_check_mode() {
+    assert_file_formatting(
+        "pub fn identity value: Int -> Int =   \r\n      value   \r\n",
+        "pub fn identity value: Int -> Int = value\n",
+    );
+}
+
+#[test]
+fn formats_dogfood_indentation_and_converges() {
+    assert_file_formatting(
+        include_str!("../../seseragi-formatter/tests/fixtures/dogfood-indentation.input.ssrg"),
+        include_str!("../../seseragi-formatter/tests/fixtures/dogfood-indentation.expected.ssrg"),
+    );
+}
+
+fn assert_file_formatting(source: &str, expected: &str) {
     let unique = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()
@@ -1677,11 +1692,7 @@ fn formats_a_file_and_supports_check_mode() {
         std::env::temp_dir().join(format!("seseragi-format-{}-{unique}", std::process::id()));
     std::fs::create_dir_all(&directory).unwrap();
     let source_path = directory.join("main.ssrg");
-    std::fs::write(
-        &source_path,
-        "pub fn identity value: Int -> Int =   \r\n      value   \r\n",
-    )
-    .unwrap();
+    std::fs::write(&source_path, source).unwrap();
 
     let before = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .args(["format", "--check"])
@@ -1697,10 +1708,7 @@ fn formats_a_file_and_supports_check_mode() {
         .output()
         .unwrap();
     assert_eq!(formatted.status.code(), Some(0));
-    assert_eq!(
-        std::fs::read_to_string(&source_path).unwrap(),
-        "pub fn identity value: Int -> Int = value\n"
-    );
+    assert_eq!(std::fs::read_to_string(&source_path).unwrap(), expected);
 
     let after = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .args(["format", "--check"])

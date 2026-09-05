@@ -1,0 +1,40 @@
+fn matchesAt haystack: Array<Int>
+  -> needle: Array<Int>
+  -> offset: Int
+  -> Bool =
+  all (sameCodeAt haystack needle offset) (0..arrays.length needle)
+
+// Case-insensitive substring test, used by the city filter.
+// Attached to containsFolded.
+pub fn containsFolded haystack: String -> needle: String -> Bool = {
+  let hay = foldedCodes haystack
+  let pin = foldedCodes needle
+  match arrays.get 0 pin {
+    Nothing -> False
+    Just code -> {
+      let current = codeAt 0 hay
+      match arrays.get 1 pin {
+        Just next -> {
+          let pair = current + next
+          pair > code
+        }
+        Nothing -> current == code
+      }
+    }
+  }
+}
+
+fn availabilityFor hours: BusinessHours
+  -> weekend: Bool
+  -> hour: Int
+  -> Availability =
+  if weekend then
+    Closed
+  else if hour >= hours.startHour && hour < hours.endHour then
+    Open
+  else if hour >= hours.startHour - fringeWidth && hour < hours.endHour + fringeWidth then
+    Fringe
+  else if hour < hours.startHour - fringeWidth && hour > 0 then
+    Night
+  else
+    Closed

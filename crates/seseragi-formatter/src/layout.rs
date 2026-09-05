@@ -426,6 +426,8 @@ fn format_logical_line(
     let mut stack: Vec<(usize, usize)> = Vec::new();
     let mut before_equals = equals.is_some();
     let mut application_indent = None;
+    let mut conditional_indents = Vec::new();
+    let mut else_indent = base_indent;
 
     for (position, index) in indices.iter().copied().enumerate() {
         let token = &tokens[index];
@@ -437,7 +439,8 @@ fn format_logical_line(
         let is_member_body_close = token.kind == TokenKind::PunctuationBraceRight
             && member_bodies.get(index).copied().flatten().is_some();
         if token.kind == TokenKind::KeywordElse && needs_breaking {
-            writer.break_line(writer.current_indent.saturating_sub(1));
+            else_indent = conditional_indents.pop().unwrap_or(base_indent);
+            writer.break_line(else_indent);
         } else if is_member_body_close {
             writer.break_line(if position == 0 {
                 base_indent
@@ -556,6 +559,9 @@ fn format_logical_line(
             writer.break_line(indent);
         }
 
+        if token.kind == TokenKind::KeywordIf {
+            conditional_indents.push(writer.current_indent);
+        }
         writer.push(index);
         if Some(position) == equals {
             before_equals = false;
@@ -570,7 +576,12 @@ fn format_logical_line(
                     .get(position + 1)
                     .is_some_and(|next| tokens[*next].kind == TokenKind::KeywordIf))
         {
-            writer.break_line(writer.current_indent + 1);
+            let head_indent = if token.kind == TokenKind::KeywordThen {
+                conditional_indents.last().copied().unwrap_or(base_indent)
+            } else {
+                else_indent
+            };
+            writer.break_line(head_indent + 1);
         }
 
         if is_open_delimiter(token.kind) && !angles.contains(&index) {
@@ -1293,36 +1304,6 @@ impl Delimiters {
         let significant = significant_indices(tokens, 0, tokens.len());
         let mut branch_depth = vec![0; tokens.len()];
         for (position, index) in significant.iter().copied().enumerate() {
-            if tokens[index].kind != TokenKind::OperatorArrow {
-                continue;
-            }
-            let Some(next) = significant.get(position + 1).copied() else {
-                continue;
-            };
-            let open = if tokens[next].kind == TokenKind::PunctuationBraceLeft {
-                Some(next)
-            } else if matches!(
-                tokens[next].kind,
-                TokenKind::KeywordMatch | TokenKind::KeywordDo
-            ) {
-                significant[position + 2..]
-                    .iter()
-                    .copied()
-                    .find(|candidate| tokens[*candidate].kind == TokenKind::PunctuationBraceLeft)
-            } else {
-                None
-            };
-            let Some(open) = open else {
-                continue;
-            };
-            let Some(close) = matching[open] else {
-                continue;
-            };
-            for depth in branch_depth.iter_mut().take(close + 1).skip(open + 1) {
-                *depth += 1;
-            }
-        }
-        for (position, index) in significant.iter().copied().enumerate() {
             if tokens[index].kind != TokenKind::PunctuationColon {
                 continue;
             }
@@ -1660,6 +1641,16 @@ fn declaration_continuation(cst: &CstArtifact, first: usize, tokens: &[Token]) -
     else {
         return 0;
     };
+    // CST declaration ranges include trailing trivia. Standalone comments
+    // after the last syntax token belong to the declaration boundary.
+    let last_syntax = (declaration.start_token..declaration.end_token)
+        .rev()
+        .find(|index| {
+            !is_trivia(tokens[*index].kind) && tokens[*index].kind != TokenKind::TriviaComment
+        });
+    if last_syntax.is_none_or(|last| first > last) {
+        return 0;
+    }
     let mut depth = 0usize;
     let mut follows_equals = false;
     for (index, token) in tokens
