@@ -24,6 +24,9 @@ pub(super) fn imported_instance_evidence(module: &CoreModule) -> BTreeSet<(Strin
             CoreInstanceImplementation::DerivedShow {
                 payload_evidence, ..
             }
+            | CoreInstanceImplementation::DerivedStructural {
+                payload_evidence, ..
+            }
             | CoreInstanceImplementation::DerivedJson {
                 payload_evidence, ..
             } => {

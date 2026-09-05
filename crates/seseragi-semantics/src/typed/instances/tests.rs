@@ -589,3 +589,81 @@ fn named(name: &str) -> TypedType {
         arguments: Vec::new(),
     }
 }
+
+#[test]
+fn derives_structural_instances_with_nominal_eq_requirements() {
+    let typed = type_module(
+        "artifact/derived-structural/main.ssrg",
+        r#"
+struct Profile<A> deriving Eq, Ord, Hash { name: String, value: A }
+newtype UserId deriving Eq, Ord, Hash = Int
+type Tree<A> deriving Eq, Ord, Hash = | Leaf A | Branch (Tree<A>, Tree<A>)
+"#,
+    );
+    assert_eq!(typed.instances.len(), 9, "{:#?}", typed.instances);
+    for instance in &typed.instances {
+        assert!(matches!(
+            &instance.implementation,
+            TypedInstanceImplementation::DerivedStructural { .. }
+        ));
+        if instance.trait_name != "Eq" {
+            assert_eq!(instance.constraints[0].name, "Eq");
+        }
+    }
+}
+
+#[test]
+fn derives_eq_for_nested_standard_payloads() {
+    for payload in [
+        "Array<A>",
+        "List<A>",
+        "Maybe<A>",
+        "Either<String, A>",
+        "Array<List<Maybe<Either<String, A>>>>",
+    ] {
+        let source = format!("struct Nested<A> deriving Eq {{ value: {payload} }}\n");
+        let typed = type_module("artifact/derived-nested/main.ssrg", &source);
+        assert_eq!(
+            typed.instances.len(),
+            1,
+            "{payload}: {:?}",
+            crate::semantic_diagnostics("artifact/derived-nested/main.ssrg", &source)
+        );
+    }
+}
+
+#[test]
+fn structural_deriving_does_not_constrain_nested_phantom_parameters() {
+    let typed = type_module("artifact/derived-phantom/main.ssrg", "type Phantom<A> deriving Eq = | Phantom\nstruct Outer<A> deriving Eq { value: Phantom<A> }\n");
+    assert_eq!(typed.instances.len(), 2);
+    assert!(typed
+        .instances
+        .iter()
+        .all(|instance| instance.constraints.is_empty()));
+}
+
+#[test]
+fn structural_deriving_accepts_conditional_explicit_eq_evidence() {
+    let source = "struct Box<A> deriving Hash { value: A }\ninstance<A> Eq<Box<A>> where Show<A> { fn eq left: Box<A> -> right: Box<A> -> Bool = show left.value == show right.value }\n";
+    let typed = type_module("artifact/derived-custom-eq/main.ssrg", source);
+    assert!(
+        typed
+            .instances
+            .iter()
+            .any(|instance| instance.trait_name == "Hash"),
+        "{:?}",
+        crate::semantic_diagnostics("artifact/derived-custom-eq/main.ssrg", source)
+    );
+}
+
+#[test]
+fn structural_deriving_composes_nested_generic_nominal_evidence() {
+    let source = "struct Detail<A> deriving Eq, Ord, Hash { value: A }\nstruct Outer<A> deriving Eq, Ord, Hash { nested: Detail<A> }\n";
+    let typed = type_module("artifact/derived-nested-generic/main.ssrg", source);
+    assert_eq!(
+        typed.instances.len(),
+        6,
+        "{:?}",
+        crate::semantic_diagnostics("artifact/derived-nested-generic/main.ssrg", source)
+    );
+}

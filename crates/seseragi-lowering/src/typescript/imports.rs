@@ -89,7 +89,8 @@ fn rewrite_instance_imports(
                 rewrite_dictionary_reference(&mut field.dictionary, renames);
             }
         }
-        TypeScriptInstanceImplementation::DerivedJson { variants, .. } => {
+        TypeScriptInstanceImplementation::DerivedStructural { variants, .. }
+        | TypeScriptInstanceImplementation::DerivedJson { variants, .. } => {
             for payload in variants
                 .iter_mut()
                 .filter_map(|variant| variant.payload.as_mut())
@@ -97,7 +98,8 @@ fn rewrite_instance_imports(
                 rewrite_dictionary_reference(&mut payload.dictionary, renames);
             }
         }
-        TypeScriptInstanceImplementation::DerivedStructJson { fields, .. } => {
+        TypeScriptInstanceImplementation::DerivedStructStructural { fields, .. }
+        | TypeScriptInstanceImplementation::DerivedStructJson { fields, .. } => {
             for field in fields {
                 rewrite_dictionary_reference(&mut field.dictionary, renames);
             }

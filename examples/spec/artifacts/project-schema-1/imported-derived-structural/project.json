@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/imported-derived-structural::domain",
+    "fixture/imported-derived-structural::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/imported-derived-structural::domain",
+      "source": "src/domain.ssrg",
+      "output": "dist/imported-derived-structural/domain.js",
+      "artifacts": "artifacts/domain",
+      "imports": []
+    },
+    {
+      "id": "fixture/imported-derived-structural::main",
+      "source": "src/main.ssrg",
+      "output": "dist/imported-derived-structural/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./domain",
+          "module": "fixture/imported-derived-structural::domain"
+        }
+      ]
+    }
+  ]
+}

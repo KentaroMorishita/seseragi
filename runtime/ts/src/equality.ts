@@ -1,6 +1,13 @@
 import type { List, NonEmptyList } from "./list"
 import type { Ord } from "./sequence"
-import { Equal, Greater, Less, type Ordering } from "./sum"
+import {
+  type Either,
+  Equal,
+  Greater,
+  Less,
+  type Maybe,
+  type Ordering,
+} from "./sum"
 
 export type Eq<Value> = Readonly<{
   eq: (left: Value) => (right: Value) => boolean
@@ -123,7 +130,7 @@ export const nonEmptyListEq = <Value>(
   })
 
 export const tupleEq = <Value extends readonly unknown[]>(
-  ...elements: ReadonlyArray<Eq<unknown>>
+  ...elements: { readonly [Index in keyof Value]: Eq<Value[Index]> }
 ): Eq<Value> =>
   Object.freeze({
     eq:
@@ -171,3 +178,44 @@ export const recordEq = <Value extends object>(
       },
   })
 }
+
+export const maybeEq = <Value>(element: Eq<Value>): Eq<Maybe<Value>> =>
+  Object.freeze({
+    eq:
+      (left: Maybe<Value>) =>
+      (right: Maybe<Value>): boolean =>
+        left.tag === "Nothing"
+          ? right.tag === "Nothing"
+          : right.tag === "Just" && element.eq(left.value)(right.value),
+  })
+
+export const eitherEq = <Error, Value>(
+  error: Eq<Error>,
+  element: Eq<Value>
+): Eq<Either<Error, Value>> =>
+  Object.freeze({
+    eq:
+      (left: Either<Error, Value>) =>
+      (right: Either<Error, Value>): boolean =>
+        left.tag === "Left"
+          ? right.tag === "Left" && error.eq(left.value)(right.value)
+          : right.tag === "Right" && element.eq(left.value)(right.value),
+  })
+
+export const tupleOrd = <Value extends readonly unknown[]>(
+  ...elements: {
+    readonly [Index in keyof Value]: Ord<Value[Index]> & Eq<Value[Index]>
+  }
+): Ord<Value> & Eq<Value> =>
+  Object.freeze({
+    ...tupleEq<Value>(...elements),
+    compare:
+      (left: Value) =>
+      (right: Value): Ordering => {
+        for (let index = 0; index < elements.length; index += 1) {
+          const order = elements[index]!.compare(left[index])(right[index])
+          if (order.tag !== "Equal") return order
+        }
+        return Equal
+      },
+  })

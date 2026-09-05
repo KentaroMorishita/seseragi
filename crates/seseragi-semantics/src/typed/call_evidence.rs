@@ -411,10 +411,25 @@ pub(crate) fn select_derived_instance_evidence(
         .iter()
         .cloned()
         .enumerate()
-        .map(|(index, constraint)| ScopedCallEvidence {
-            trait_identity: trait_identity.to_owned(),
-            constraint,
-            index,
+        .flat_map(|(index, constraint)| {
+            let trait_identity = format!("std/prelude::{}", constraint.name);
+            let inherited = direct_supertrait_constraints_for_identity(
+                &trait_identity,
+                &constraint.arguments,
+                resolution,
+            )
+            .into_iter()
+            .map(move |required| ScopedCallEvidence {
+                trait_identity: required.trait_identity,
+                constraint: required.constraint,
+                index,
+            });
+            std::iter::once(ScopedCallEvidence {
+                trait_identity,
+                constraint,
+                index,
+            })
+            .chain(inherited)
         })
         .collect::<Vec<_>>();
     select_resolved_evidence(constraint, trait_identity, resolution, &scoped)
@@ -693,7 +708,7 @@ fn structural_standard_requirements(
 ) -> Option<Vec<TypedConstraint>> {
     if !matches!(
         trait_name,
-        "Eq" | "Show" | "Debug" | "JsonEncode" | "JsonDecode"
+        "Eq" | "Ord" | "Hash" | "Show" | "Debug" | "JsonEncode" | "JsonDecode"
     ) {
         return None;
     }

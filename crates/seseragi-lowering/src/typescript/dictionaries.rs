@@ -98,6 +98,8 @@ fn structural_dictionary_arguments(
         "std/tuple::Show"
         | "std/tuple::Debug"
         | "std/tuple::Eq"
+        | "std/tuple::Ord"
+        | "std/tuple::Hash"
         | "std/tuple::JsonEncode"
         | "std/tuple::JsonDecode" => {
             let [crate::CoreType::Tuple { elements }] = type_arguments else {

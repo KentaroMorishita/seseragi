@@ -557,9 +557,24 @@ impl SemanticTypeCatalog {
                 ))
             })
             .collect::<BTreeMap<_, _>>();
+        // Imported owner IDs must be known before local field/payload types
+        // are keyed, so their nested arguments retain resolved parameter IDs.
         let owners = declarations
             .values()
             .map(|(owner, ..)| *owner)
+            .chain(
+                resolved
+                    .imports
+                    .iter()
+                    .filter(|import| {
+                        import.export.namespace == "type"
+                            && matches!(
+                                import.export.declaration_kind.as_deref(),
+                                Some("type" | "newtype")
+                            )
+                    })
+                    .map(|import| import.symbol),
+            )
             .collect::<BTreeSet<_>>();
         let struct_declarations = resolved
             .declarations
@@ -608,6 +623,16 @@ impl SemanticTypeCatalog {
         let struct_owners = struct_declarations
             .iter()
             .map(|(owner, ..)| *owner)
+            .chain(
+                resolved
+                    .imports
+                    .iter()
+                    .filter(|import| {
+                        import.export.namespace == "type"
+                            && import.export.declaration_kind.as_deref() == Some("struct")
+                    })
+                    .map(|import| import.symbol),
+            )
             .collect::<BTreeSet<_>>();
 
         let mut catalog = Self {

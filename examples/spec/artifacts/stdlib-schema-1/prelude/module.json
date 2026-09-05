@@ -3167,6 +3167,41 @@
     {
       "trait": "Eq",
       "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "Maybe",
+      "typeConstructorCanonical": "std/prelude::Maybe",
+      "typeConstructorArity": 1,
+      "identity": "std/maybe::Eq",
+      "constraints": [
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "Either",
+      "typeConstructorCanonical": "std/prelude::Either",
+      "typeConstructorArity": 2,
+      "identity": "std/either::Eq",
+      "constraints": [
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Eq",
+          "traitCanonical": "std/prelude::Eq",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
       "typeConstructor": "Array",
       "typeConstructorCanonical": "std/prelude::Array",
       "typeConstructorArity": 1,
@@ -5109,6 +5144,14 @@
       },
       {
         "trait": "Eq",
+        "head": "Either",
+        "identity": "std/either::Eq",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
         "head": "Float",
         "status": "intentionally-unavailable",
         "classification": "unavailable",
@@ -5150,6 +5193,14 @@
         "trait": "Eq",
         "head": "Map",
         "identity": "std/map::Eq",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
+        "head": "Maybe",
+        "identity": "std/maybe::Eq",
         "status": "specified-and-implemented",
         "classification": "conditional",
         "spec": "9.3 / 9.4"
@@ -5481,6 +5532,14 @@
         "status": "specified-and-implemented",
         "classification": "dictionary",
         "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Hash",
+        "head": "Tuple<...>",
+        "identity": "std/tuple::Hash",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "9.4"
       },
       {
         "trait": "Hash",
@@ -6097,6 +6156,14 @@
         "status": "specified-and-implemented",
         "classification": "dictionary",
         "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Ord",
+        "head": "Tuple<...>",
+        "identity": "std/tuple::Ord",
+        "status": "specified-and-implemented",
+        "classification": "structural",
+        "spec": "9.4"
       },
       {
         "trait": "Ord",

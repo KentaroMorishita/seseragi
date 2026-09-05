@@ -76,6 +76,8 @@ struct StandardInstanceAuditSpec {
 const STRUCTURAL_INSTANCES: &[StandardInstanceAuditSpec] = &[
     audit_spec("Eq", "Tuple<...>", "9.3", None),
     audit_spec("Eq", "closed record", "9.3", None),
+    audit_spec("Ord", "Tuple<...>", "9.4", None),
+    audit_spec("Hash", "Tuple<...>", "9.4", None),
     audit_spec("Show", "Tuple<...>", "9.11", None),
     audit_spec("Show", "closed record", "9.11", None),
     audit_spec("Debug", "Tuple<...>", "9.11", None),
@@ -292,6 +294,8 @@ fn standard_instance_audit() -> StandardInstanceAuditSurface {
     let structural_identities = [
         "std/tuple::Eq",
         "std/record::Eq",
+        "std/tuple::Ord",
+        "std/tuple::Hash",
         "std/tuple::Show",
         "std/record::Show",
         "std/tuple::Debug",
@@ -462,9 +466,11 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 278);
+        assert_eq!(surface.instances.len(), 280);
         assert_eq!(surface.builtin_instances.len(), 44);
         for identity in [
+            "std/maybe::Eq",
+            "std/either::Eq",
             "std/int::Hash",
             "std/bool::Hash",
             "std/char::Hash",
@@ -501,7 +507,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 278 + 44 + 10);
+        assert_eq!(implemented.len(), 280 + 44 + 12);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()

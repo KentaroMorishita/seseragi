@@ -1,0 +1,47 @@
+{
+  "version": 3,
+  "file": "dist/imported-derived-structural/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-derived-structural::domain"
+  ],
+  "sourcesContent": [
+    "pub newtype UserId deriving Eq, Ord, Hash = Int\npub struct Profile<A> deriving Eq, Ord, Hash { id: UserId, value: A }\npub type Tree<A> deriving Eq, Ord, Hash = | Leaf A | Branch (Tree<A>, Tree<A>)\npub type Phase deriving Eq, Ord, Hash = | Zebra Int | Alpha Int | Empty\npub struct Nested<A> deriving Eq { values: Array<List<Maybe<Either<String, A>>>> }\npub struct Reordered deriving Eq, Ord, Hash { z: Int, a: Int }\npub type Phantom<A> deriving Eq, Ord, Hash = | Phantom\n"
+  ],
+  "names": [
+    "UserId",
+    "UserId",
+    "Tree",
+    "Leaf",
+    "Branch",
+    "Phase",
+    "Zebra",
+    "Alpha",
+    "Empty",
+    "Phantom",
+    "Phantom",
+    "Profile",
+    "Nested",
+    "Reordered",
+    "__ssrg$instance$Eq$0",
+    "__ssrg$instance$Ord$1",
+    "__ssrg$instance$Hash$2",
+    "__ssrg$instance$Eq$3",
+    "__ssrg$instance$Ord$4",
+    "__ssrg$instance$Hash$5",
+    "__ssrg$instance$Eq$6",
+    "__ssrg$instance$Ord$7",
+    "__ssrg$instance$Hash$8",
+    "__ssrg$instance$Eq$9",
+    "__ssrg$instance$Ord$10",
+    "__ssrg$instance$Hash$11",
+    "__ssrg$instance$Eq$12",
+    "__ssrg$instance$Eq$13",
+    "__ssrg$instance$Ord$14",
+    "__ssrg$instance$Hash$15",
+    "__ssrg$instance$Eq$16",
+    "__ssrg$instance$Ord$17",
+    "__ssrg$instance$Hash$18"
+  ],
+  "mappings": ";;;;;;AAAAA;;AAAYC;AAEZC;;;AAA4CC;AAASC;AACrDC;;;;AAA0CC;AAAYC;AAAYC;AAGlEC;;AAA+CC;;AAL/CC;;;;;;AAGAC;;;;;AACAC;;;;;AALAC;AAAAC;AAAAC;AACAC;AAAAC;AAAAC;AACAC;AAAAC;AAAAC;AACAC;AAAAC;AAAAC;AACAC;AACAC;AAAAC;AAAAC;AACAC;AAAAC;AAAAC"
+}

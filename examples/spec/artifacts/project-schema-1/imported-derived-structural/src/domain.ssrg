@@ -1,0 +1,7 @@
+pub newtype UserId deriving Eq, Ord, Hash = Int
+pub struct Profile<A> deriving Eq, Ord, Hash { id: UserId, value: A }
+pub type Tree<A> deriving Eq, Ord, Hash = | Leaf A | Branch (Tree<A>, Tree<A>)
+pub type Phase deriving Eq, Ord, Hash = | Zebra Int | Alpha Int | Empty
+pub struct Nested<A> deriving Eq { values: Array<List<Maybe<Either<String, A>>>> }
+pub struct Reordered deriving Eq, Ord, Hash { z: Int, a: Int }
+pub type Phantom<A> deriving Eq, Ord, Hash = | Phantom
