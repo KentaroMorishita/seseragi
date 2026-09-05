@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/foreign-string-scalars@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/foreign-string-scalars@0.0.0#workspace:."
+name = "fixture/foreign-string-scalars"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:13053e583d0a483820f68896467da0764f4c674f72bb94e5f154e790f0b26568"
+content_digest = "sha256:45f8e8d89ae2792d45391bcc3fb156d5d3834855a1e30bf74967c2858a736768"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/foreign-string-scalars@0.0.0#workspace:."
+declaration = "src/main.ssrg#107-414"
+specifier = "../host/strings.mjs"
+exact_identity = "workspace:host/strings.mjs"
+declaration_digest = "sha256:de325f1dfbc5544828ccc2d8cad0fc7765a05f01533060be4f918da6ac431dc0"
+content_digest = "sha256:367d129e305fcd7fc55379c9528f5c2f3485f9275486e294557b76355dae675e"

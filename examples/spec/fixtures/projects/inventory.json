@@ -29,6 +29,7 @@
     "effect-match": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "foreign-failure-phases": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "foreign-pure-load": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
+    "foreign-string-scalars": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "foreign-task-load": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "foreign-task-single-flight": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "foreign-web-load": { "availability": "current", "phase": "run", "runners": ["cli-build"], "evidence": ["crates/seseragi-cli/tests/build.rs"] },

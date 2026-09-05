@@ -195,6 +195,10 @@ Js.Callback<Args, Result>
 
 CharはUnicode scalar一個を表すJavaScript stringへ写像し、入力時にscalar数が一個であることと
 unpaired surrogateを含まないことを検査します。TypeScriptの`string`からCharを自動推論しません。
+通常の`String`はUnicode scalar列として、unpaired high/low surrogateをcodec境界の両方向で拒否します。
+valid surrogate pair、NUL、BOM、空文字列を含む有効な文字列は正規化・置換せず保持します。
+collection/recordやcallback/taskの内側でも同じ検査を行います。検査前のraw carrierである
+`Js.String`はhost stringをそのまま保持し、通常の`String`とは区別します。
 `Int` はsafe integer範囲のhost `number`へ写像します。foreign入力は`typeof value === "number"`、finite、
 integral、`Number.isSafeInteger`の順に検査し、hostの`-0`をSeseragiの`0`へ正規化します。出力もsafe integer
 であることを検査して通常の`number`を返します。`Float`もhost型は`number`ですが、Intとの選択はbindingの

@@ -1,0 +1,29 @@
+import * as effects from "std/effect"
+import * as text from "std/text"
+import * as bytes from "std/bytes"
+
+foreign "typescript" from "../host/strings.mjs" {
+  pure fn valid -> String
+  task fn invalidHigh -> String
+  task fn invalidLow -> String
+  task fn nested -> Array<{ text: String }>
+  task fn callback f: (String -> String) -> String
+  pure fn raw -> Js.String
+  pure fn inspectRaw value: Js.String -> Int
+}
+
+pub effect fn main = do {
+  println $ show (text.lengthScalars (valid ()))
+  println $ show (bytes.length (text.encodeUtf8 (valid ())))
+  println $ show (inspectRaw (raw ()))
+  high <- invalidHigh () |> effects.recover (\_ -> effects.succeed "high rejected")
+  low <- invalidLow () |> effects.recover (\_ -> effects.succeed "low rejected")
+  values <- nested ()
+    |> effects.recover (\_ -> effects.succeed [{ text: "nested rejected" }])
+  called <- callback (\value -> value)
+    |> effects.recover (\_ -> effects.succeed "callback rejected")
+  println high
+  println low
+  println $ show values
+  println called
+}
