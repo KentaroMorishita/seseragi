@@ -1,0 +1,4 @@
+pub fn keepArray<A> values: Array<A> -> Array<A> = values
+pub fn keepList<A> values: List<A> -> List<A> = values
+pub effect fn echoArray<A> values: Array<A> -> Array<A> = succeed values
+pub effect fn echoList<A> values: List<A> -> List<A> = succeed values

@@ -366,6 +366,55 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: "42", debug: "()" })
   })
 
+  test("preserves concrete inline polymorphic payloads across project modules", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/inline-polymorphic-inference/",
+      import.meta.url
+    )
+    const request: ProjectRequest = {
+      schema: 1,
+      manifest: await Bun.file(new URL("seseragi.toml", fixture)).text(),
+      files: await Promise.all(
+        ["domain.ssrg", "main.ssrg"].map(async (path) => ({
+          path,
+          source: await Bun.file(new URL(`src/${path}`, fixture)).text(),
+        }))
+      ),
+    }
+    const analysis = await analyzeProject(request)
+    const compiled = await compileProject(request)
+    expect(analysis.status).toBe("success")
+    expect(compiled.status).toBe("success")
+    if (analysis.status !== "success" || compiled.status !== "success") return
+    const document = analysis.documents.find(
+      ({ path }) => path === "main.ssrg"
+    )?.document
+    for (const [name, type] of [
+      ["inlineArray", "Array<Int>"],
+      ["inlineList", "List<Int>"],
+      ["arrayValue", "Array<Int>"],
+      ["listValue", "List<Int>"],
+      ["shuffled", "Array<Int>"],
+    ]) {
+      expect(
+        document?.symbols.find((symbol) => symbol.name === name)?.typeName
+      ).toBe(type)
+    }
+    if (compiled.entry.contract === undefined)
+      throw new Error("missing execution entry")
+    const result = await executeGeneratedProject(
+      compiled.modules.map(({ path, generated }) => ({
+        path,
+        typescript: generated.typescript,
+      })),
+      compiled.entry.path,
+      compiled.entry.contract
+    )
+    expect(result.stdout).toBe(
+      (await Bun.file(new URL("expected.stdout", fixture)).text()).trimEnd()
+    )
+  })
+
   test("analyzes, compiles, and executes the portable std parity package", async () => {
     const fixture = new URL(
       "../../../examples/spec/fixtures/projects/std-parity-portable/",

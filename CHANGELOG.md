@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.58.0] - 2026-09-05
+
+### Fixed
+
+- Refine inferred inline collection elements against polymorphic call
+  expectations, so Array and List literals and comprehensions retain their
+  concrete element types through pure and effectful calls, `do` bindings,
+  module boundaries, and generated Playground analysis.
+
 ## [0.57.0] - 2026-09-05
 
 ### Added
