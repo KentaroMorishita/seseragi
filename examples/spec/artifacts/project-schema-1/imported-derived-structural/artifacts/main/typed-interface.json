@@ -1,0 +1,1194 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-derived-structural::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-derived-structural::domain",
+      "origin": {
+        "start": 0,
+        "end": 142
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "UserId",
+          "symbol": "fixture/imported-derived-structural::domain::UserId"
+        },
+        {
+          "namespace": "value",
+          "name": "UserId",
+          "symbol": "fixture/imported-derived-structural::domain::UserId"
+        },
+        {
+          "namespace": "type",
+          "name": "Profile",
+          "symbol": "fixture/imported-derived-structural::domain::Profile"
+        },
+        {
+          "namespace": "type",
+          "name": "Tree",
+          "symbol": "fixture/imported-derived-structural::domain::Tree"
+        },
+        {
+          "namespace": "value",
+          "name": "Leaf",
+          "symbol": "fixture/imported-derived-structural::domain::Leaf"
+        },
+        {
+          "namespace": "value",
+          "name": "Branch",
+          "symbol": "fixture/imported-derived-structural::domain::Branch"
+        },
+        {
+          "namespace": "type",
+          "name": "Phase",
+          "symbol": "fixture/imported-derived-structural::domain::Phase"
+        },
+        {
+          "namespace": "value",
+          "name": "Zebra",
+          "symbol": "fixture/imported-derived-structural::domain::Zebra"
+        },
+        {
+          "namespace": "value",
+          "name": "Alpha",
+          "symbol": "fixture/imported-derived-structural::domain::Alpha"
+        },
+        {
+          "namespace": "value",
+          "name": "Empty",
+          "symbol": "fixture/imported-derived-structural::domain::Empty"
+        },
+        {
+          "namespace": "type",
+          "name": "Nested",
+          "symbol": "fixture/imported-derived-structural::domain::Nested"
+        },
+        {
+          "namespace": "type",
+          "name": "Reordered",
+          "symbol": "fixture/imported-derived-structural::domain::Reordered"
+        },
+        {
+          "namespace": "type",
+          "name": "Phantom",
+          "symbol": "fixture/imported-derived-structural::domain::Phantom"
+        },
+        {
+          "namespace": "value",
+          "name": "Phantom",
+          "symbol": "fixture/imported-derived-structural::domain::Phantom"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-derived-structural::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 208,
+        "end": 1690
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Eq<fixture/imported-derived-structural::main::Local<$0>>",
+      "providerModule": "fixture/imported-derived-structural::main",
+      "traitIdentity": "Eq",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::main::Local<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::main::Local<$0>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Local",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 144,
+        "end": 206
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::main::Local<$0>>",
+      "providerModule": "fixture/imported-derived-structural::main",
+      "traitIdentity": "Ord",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::main::Local<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::main::Local<$0>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Local",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Local",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 144,
+        "end": 206
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::main::Local<$0>>",
+      "providerModule": "fixture/imported-derived-structural::main",
+      "traitIdentity": "Hash",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::main::Local<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::main::Local<$0>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Hash",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Local",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Local",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Hash",
+          "traitIdentity": "std/prelude::Hash",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "Profile",
+              "canonical": "fixture/imported-derived-structural::domain::Profile",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Profile",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 144,
+        "end": 206
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Nested<$0>>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Eq",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Nested<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Nested<$0>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Nested",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 269,
+        "end": 351
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Phantom<$0>>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Eq",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Phantom<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phantom<$0>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Phantom",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 415,
+        "end": 469
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Phase>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Eq",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Phase"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phase",
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Phase",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 197,
+        "end": 268
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Profile<$0>>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Eq",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Profile<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Profile<$0>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Profile",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 48,
+        "end": 117
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Reordered>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Eq",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Reordered"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Reordered",
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Reordered",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 352,
+        "end": 414
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Tree<$0>>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Eq",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Tree<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Tree<$0>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Tree",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 118,
+        "end": 196
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::UserId>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Eq",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::UserId"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::UserId",
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Phantom<$0>>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Hash",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Phantom<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phantom<$0>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Hash",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Phantom",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Phantom",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 415,
+        "end": 469
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Phase>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Hash",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Phase"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phase",
+      "trait": "Hash",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Hash",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Phase",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Phase",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 197,
+        "end": 268
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Profile<$0>>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Hash",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Profile<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Profile<$0>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Hash",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Profile",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Hash",
+          "traitIdentity": "std/prelude::Hash",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 48,
+        "end": 117
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Reordered>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Hash",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Reordered"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Reordered",
+      "trait": "Hash",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Hash",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Reordered",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Reordered",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 352,
+        "end": 414
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Tree<$0>>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Hash",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Tree<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Tree<$0>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Hash",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Tree",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Tree",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Hash",
+          "traitIdentity": "std/prelude::Hash",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 118,
+        "end": 196
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::UserId>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Hash",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::UserId"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::UserId",
+      "trait": "Hash",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Hash",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "UserId",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Phantom<$0>>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Ord",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Phantom<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phantom<$0>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Phantom",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Phantom",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 415,
+        "end": 469
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Phase>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Ord",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Phase"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phase",
+      "trait": "Ord",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Phase",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Phase",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 197,
+        "end": 268
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Profile<$0>>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Ord",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Profile<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Profile<$0>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Profile",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 48,
+        "end": 117
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Reordered>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Ord",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Reordered"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Reordered",
+      "trait": "Ord",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Reordered",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Reordered",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 352,
+        "end": 414
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Tree<$0>>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Ord",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::Tree<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Tree<$0>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Tree",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Tree",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 118,
+        "end": 196
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::UserId>",
+      "providerModule": "fixture/imported-derived-structural::domain",
+      "traitIdentity": "Ord",
+      "argumentIdentities": [
+        "fixture/imported-derived-structural::domain::UserId"
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::UserId",
+      "trait": "Ord",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "UserId",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    }
+  ]
+}

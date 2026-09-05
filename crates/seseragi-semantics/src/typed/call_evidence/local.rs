@@ -328,7 +328,10 @@ fn match_derived_display(
 ) -> Option<TypedInstanceEvidence> {
     if !matches!(
         (trait_identity, constraint.name.as_str()),
-        ("std/prelude::Show", "Show")
+        ("std/prelude::Eq", "Eq")
+            | ("std/prelude::Ord", "Ord")
+            | ("std/prelude::Hash", "Hash")
+            | ("std/prelude::Show", "Show")
             | ("std/prelude::Debug", "Debug")
             | ("std/prelude::JsonEncode", "JsonEncode")
             | ("std/prelude::JsonDecode", "JsonDecode")
@@ -384,8 +387,11 @@ fn match_derived_display(
         .zip(arguments)
         .map(|(parameter, argument)| (parameter.name.clone(), argument.clone()))
         .collect::<BTreeMap<_, _>>();
-    let requirements =
-        super::super::instances::derived_display_requirements(declaration, &constraint.name);
+    let requirements = super::super::instances::derived_display_requirements(
+        declaration,
+        &constraint.name,
+        resolution,
+    );
     let evidence_arguments = requirements
         .into_iter()
         .map(|template| {
@@ -399,7 +405,7 @@ fn match_derived_display(
             };
             let evidence = super::select_resolved_evidence_with_stack(
                 &required,
-                trait_identity,
+                &format!("std/prelude::{}", required.name),
                 resolution,
                 scoped,
                 stack,

@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-derived-structural::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.list",
+      "core.unit",
+      "effect.core.flatMap",
+      "core.int",
+      "effect.console.println",
+      "core.bool.show",
+      "core.string",
+      "core.bool",
+      "core.int.eq-dictionary",
+      "core.int.hash-dictionary",
+      "core.int.ord-dictionary",
+      "core.maybe",
+      "core.either",
+      "core.list.from-array",
+      "core.maybe.just",
+      "core.either.right"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "Eq<fixture/imported-derived-structural::main::Local<$0>>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Local",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::main::Local<$0>",
+      "dictionaryExport": "__ssrg$instance$Eq$0"
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::main::Local<$0>>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Local",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::main::Local<$0>",
+      "dictionaryExport": "__ssrg$instance$Ord$1"
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::main::Local<$0>>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Local",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::main::Local<$0>",
+      "dictionaryExport": "__ssrg$instance$Hash$2"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-derived-structural/main.ts",
+    "sourceMap": "dist/imported-derived-structural/main.ts.map"
+  }
+}

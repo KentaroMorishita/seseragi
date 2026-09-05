@@ -845,12 +845,56 @@
       "import": { "module": "@seseragi/runtime/equality", "export": "arrayEq" }
     },
     {
+      "id": "core.maybe.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "conditional Eq<Maybe<A>> dictionary factory",
+      "boundary": "standard Eq<Maybe<A>> where Eq<A>",
+      "instanceIdentity": "std/maybe::Eq",
+      "import": {
+        "module": "@seseragi/runtime/equality",
+        "export": "maybeEq"
+      }
+    },
+    {
+      "id": "core.either.eq-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "conditional Eq<Either<E, A>> dictionary factory",
+      "boundary": "standard Eq<Either<E, A>> where Eq<E>, Eq<A>",
+      "instanceIdentity": "std/either::Eq",
+      "import": {
+        "module": "@seseragi/runtime/equality",
+        "export": "eitherEq"
+      }
+    },
+    {
       "id": "core.list.eq-dictionary",
       "kind": "runtime-binding",
       "typescript": "conditional Eq<List<A>> dictionary factory",
       "boundary": "standard Eq<List<A>> where Eq<A>",
       "instanceIdentity": "std/list::Eq",
       "import": { "module": "@seseragi/runtime/equality", "export": "listEq" }
+    },
+    {
+      "id": "core.tuple.ord-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "conditional Ord<Tuple> dictionary factory",
+      "boundary": "structural tuple Ord with ordered element evidence",
+      "instanceIdentity": "std/tuple::Ord",
+      "import": {
+        "module": "@seseragi/runtime/equality",
+        "export": "tupleOrd"
+      }
+    },
+    {
+      "id": "core.tuple.hash-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "conditional Hash<Tuple> dictionary factory",
+      "boundary": "structural tuple Hash with ordered element evidence",
+      "instanceIdentity": "std/tuple::Hash",
+      "import": {
+        "module": "@seseragi/runtime/hash",
+        "export": "tupleHash"
+      }
     },
     {
       "id": "core.tuple.eq-dictionary",

@@ -60,9 +60,169 @@ fn render_instance(instance: &TypeScriptInstance, display_type_local: Option<&st
         TypeScriptInstanceImplementation::DerivedStructJson { fields, .. } => {
             render_derived_json_struct_instance(instance, fields)
         }
+        TypeScriptInstanceImplementation::DerivedStructural {
+            variants,
+            transparent_newtype,
+            ..
+        } => render_structural_instance(instance, Some((variants, *transparent_newtype)), &[]),
+        TypeScriptInstanceImplementation::DerivedStructStructural { fields, .. } => {
+            render_structural_instance(instance, None, fields)
+        }
         TypeScriptInstanceImplementation::UserDefined { methods } => {
             render_user_defined_instance(instance, methods)
         }
+    }
+}
+
+fn render_structural_instance(
+    instance: &TypeScriptInstance,
+    adt: Option<(&[TypeScriptDerivedShowVariant], bool)>,
+    fields: &[TypeScriptDerivedShowField],
+) -> String {
+    let head = render_instance_head(instance);
+    let method = match instance.trait_name.as_str() {
+        "Eq" => "eq",
+        "Ord" => "compare",
+        "Hash" => "hash",
+        _ => unreachable!(),
+    };
+    let result = match method {
+        "eq" => "boolean",
+        "compare" => "{ readonly tag: \"Less\" | \"Equal\" | \"Greater\" }",
+        _ => "number",
+    };
+    let body = if let Some((variants, transparent)) = adt {
+        let mut body = String::new();
+        if method == "eq" {
+            body.push_str("if (left.tag !== right.tag) return false; ");
+        }
+        if method == "compare" && !transparent {
+            let tags = render_string_array(variants.iter().map(|variant| variant.tag.as_str()));
+            body.push_str(&format!("if (left.tag !== right.tag) return {{ tag: {tags}.indexOf(left.tag) < {tags}.indexOf(right.tag) ? \"Less\" : \"Greater\" }}; "));
+        }
+        body.push_str("switch (left.tag) { ");
+        for (index, variant) in variants.iter().enumerate() {
+            body.push_str(&format!("case {:?}: {{ ", variant.tag));
+            if method != "hash" {
+                body.push_str(&format!(
+                    "if (right.tag !== {:?}) throw new Error(\"invalid derived comparison\"); ",
+                    variant.tag
+                ));
+            }
+            let members = variant
+                .payload
+                .as_ref()
+                .map(|payload| {
+                    vec![(
+                        "left.value".to_owned(),
+                        "right.value".to_owned(),
+                        &payload.dictionary,
+                    )]
+                })
+                .unwrap_or_default();
+            body.push_str(&structural_body(
+                method,
+                &members,
+                if transparent { None } else { Some(index) },
+            ));
+            body.push_str(" } ");
+        }
+        body.push_str("} throw new Error(\"invalid derived value\");");
+        body
+    } else {
+        let members = fields
+            .iter()
+            .map(|field| {
+                (
+                    format!("left[{:?}]", field.name),
+                    format!("right[{:?}]", field.name),
+                    &field.dictionary,
+                )
+            })
+            .collect::<Vec<_>>();
+        structural_body(method, &members, Some(0))
+    };
+    let function = if method == "hash" {
+        format!("(left: {head}): {result} => {{ {body} }}")
+    } else {
+        format!("(left: {head}) => (right: {head}): {result} => {{ {body} }}")
+    };
+    let inherited = if instance.supertrait_count > 0 {
+        format!("...{}, ", crate::typescript::evidence_parameter_name(0))
+    } else {
+        String::new()
+    };
+    let dictionary = format!("{{ {inherited}{method}: {function} }}");
+    let annotation = render_structural_constraint_type(&instance.trait_name, &head);
+    if instance.type_parameters.is_empty() && instance.constraints.is_empty() {
+        format!(
+            "export const {}: {annotation} = {dictionary};",
+            instance.dictionary_export
+        )
+    } else {
+        let generics = super::render_arrow_type_parameters(&instance.type_parameters);
+        let evidence = instance
+            .constraints
+            .iter()
+            .enumerate()
+            .map(|(index, _)| format!("__ssrg$input${index}: {}", super::ERASED_EVIDENCE_TYPE))
+            .collect::<Vec<_>>()
+            .join(", ");
+        let bindings = instance
+            .constraints
+            .iter()
+            .enumerate()
+            .map(|(index, constraint)| {
+                let dictionary_type = render_structural_constraint_type(
+                    &constraint.name,
+                    &render_typescript_type(&constraint.arguments[0]),
+                );
+                format!(
+                    "const {} = __ssrg$input${index} as {dictionary_type};",
+                    crate::typescript::evidence_parameter_name(index)
+                )
+            })
+            .collect::<Vec<_>>()
+            .join(" ");
+        format!(
+            "export const {} = {generics}({evidence}): {annotation} => {{ {bindings} return {dictionary}; }};",
+            instance.dictionary_export
+        )
+    }
+}
+
+fn render_structural_constraint_type(trait_name: &str, head: &str) -> String {
+    let eq = format!("eq: (left: {head}) => (right: {head}) => boolean");
+    match trait_name {
+        "Eq" => format!("{{ {eq} }}"),
+        "Ord" => format!("{{ {eq}; compare: (left: {head}) => (right: {head}) => {{ readonly tag: \"Less\" | \"Equal\" | \"Greater\" }} }}"),
+        "Hash" => format!("{{ hash: (value: {head}) => number }}"),
+        _ => unreachable!("structural deriving only uses standard structural constraints"),
+    }
+}
+
+fn structural_body(
+    method: &str,
+    members: &[(String, String, &TypeScriptShowDictionaryReference)],
+    seed: Option<usize>,
+) -> String {
+    let calls = members
+        .iter()
+        .map(|(left, right, dictionary)| {
+            let dictionary = render_dictionary_reference(dictionary);
+            if method == "hash" {
+                format!("{dictionary}.hash({left})")
+            } else {
+                format!("{dictionary}.{method}({left})({right})")
+            }
+        })
+        .collect::<Vec<_>>();
+    match method {
+        "eq" => format!("return {};", if calls.is_empty() { "true".to_owned() } else { calls.join(" && ") }),
+        "compare" => format!("{} return {{ tag: \"Equal\" }};", calls.iter().enumerate().map(|(index, call)| format!("const order{index} = {call}; if (order{index}.tag !== \"Equal\") return order{index};")).collect::<Vec<_>>().join(" ")),
+        "hash" if seed.is_none() => format!("return {};", calls[0]),
+        "hash" => format!("let state = {}; {} return state | 0;", seed.unwrap(), calls.iter().map(|call| format!("state = Math.imul(state ^ ({call}), 16777619);")).collect::<Vec<_>>().join(" ")),
+        _ => unreachable!(),
     }
 }
 

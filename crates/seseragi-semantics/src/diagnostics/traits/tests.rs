@@ -449,3 +449,32 @@ fn instance_target(module: &str, provider_module: &str, type_identity: &str) -> 
         }],
     })
 }
+
+#[test]
+fn structural_deriving_requires_payload_evidence_and_nominal_eq() {
+    for source in [
+        "struct Bad deriving Eq { value: Float }\n",
+        "struct Bad deriving Ord { value: Int }\n",
+        "struct Bad deriving Hash { value: Int }\n",
+        "type Bad deriving Eq = | Callback (Int -> Int)\n",
+        "struct Outer deriving Eq { nested: Bad }\nstruct Bad deriving Eq { value: Float }\n",
+    ] {
+        let artifact =
+            semantic_diagnostics("artifact/derived-structural-negative/main.ssrg", source);
+        assert!(
+            artifact
+                .diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic.code == "SES-T0201"),
+            "{source}\n{artifact:#?}"
+        );
+    }
+    let artifact = semantic_diagnostics("artifact/derived-structural-duplicate/main.ssrg", "type Badge deriving Eq = | Active\ninstance Eq<Badge> { fn eq left: Badge -> right: Badge -> Bool = True }\n");
+    assert!(
+        artifact
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "SES-T0202"),
+        "{artifact:#?}"
+    );
+}

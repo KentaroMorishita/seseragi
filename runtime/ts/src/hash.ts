@@ -174,3 +174,20 @@ export const hashIndex =
 export function resetProcessHashSeedForTest(): void {
   cachedProcessSeed = undefined
 }
+
+/** Ordered structural hash, using each tuple position's selected dictionary. */
+export const tupleHash = <Value extends readonly unknown[]>(
+  ...elements: { readonly [Index in keyof Value]: Hash<Value[Index]> }
+): Hash<Value> =>
+  Object.freeze({
+    hash: (value: Value): number => {
+      let state = FNV_OFFSET
+      for (let index = 0; index < elements.length; index += 1) {
+        state = Math.imul(
+          state ^ foldInt(elements[index]!.hash(value[index])),
+          FNV_PRIME
+        )
+      }
+      return finishHash(state)
+    },
+  })

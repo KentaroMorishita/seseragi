@@ -2066,6 +2066,20 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     },
     PreludeStandardInstance {
         trait_name: "Eq",
+        type_name: "Maybe",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/maybe::Eq",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "Either",
+        type_canonical: None,
+        type_arity: 2,
+        identity: "std/either::Eq",
+    },
+    PreludeStandardInstance {
+        trait_name: "Eq",
         type_name: "Array",
         type_canonical: None,
         type_arity: 1,
@@ -3263,6 +3277,16 @@ pub(crate) fn standard_instance_constraint_specs(
             trait_name: "Debug",
             type_argument_index: 0,
         }];
+    const EQ_EITHER: &[PreludeStandardInstanceConstraint] = &[
+        PreludeStandardInstanceConstraint {
+            trait_name: "Eq",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "Eq",
+            type_argument_index: 1,
+        },
+    ];
     const SHOW_EITHER: &[PreludeStandardInstanceConstraint] = &[
         PreludeStandardInstanceConstraint {
             trait_name: "Show",
@@ -3398,7 +3422,8 @@ pub(crate) fn standard_instance_constraint_specs(
         "std/map::Debug" => DEBUG_EITHER,
         "std/set::Show" => SHOW_ELEMENT,
         "std/set::Debug" => DEBUG_ELEMENT,
-        "std/array::Eq" | "std/list::Eq" | "std/non-empty-list::Eq" => EQ_ELEMENT,
+        "std/array::Eq" | "std/list::Eq" | "std/non-empty-list::Eq" | "std/maybe::Eq" => EQ_ELEMENT,
+        "std/either::Eq" => EQ_EITHER,
         "std/non-empty-list::Ord" => ORD_ELEMENT,
         "std/non-empty-list::Hash" => HASH_ELEMENT,
         "std/array::Show"
@@ -3735,6 +3760,8 @@ pub(crate) fn structural_standard_instance_identity(
 ) -> Option<&'static str> {
     match (trait_identity, type_ref) {
         ("std/prelude::Eq", TypedType::Tuple { .. }) => Some("std/tuple::Eq"),
+        ("std/prelude::Ord", TypedType::Tuple { .. }) => Some("std/tuple::Ord"),
+        ("std/prelude::Hash", TypedType::Tuple { .. }) => Some("std/tuple::Hash"),
         ("std/prelude::Eq", TypedType::Record { closed: true, .. }) => Some("std/record::Eq"),
         ("std/prelude::Show", TypedType::Tuple { .. }) => Some("std/tuple::Show"),
         ("std/prelude::Debug", TypedType::Tuple { .. }) => Some("std/tuple::Debug"),

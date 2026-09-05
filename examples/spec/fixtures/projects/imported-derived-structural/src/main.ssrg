@@ -1,0 +1,53 @@
+import {
+  UserId,
+  Profile,
+  Tree,
+  Leaf,
+  Branch,
+  Phase,
+  Zebra,
+  Alpha,
+  Empty,
+  Nested,
+  Reordered,
+  Phantom
+} from "./domain"
+
+struct Local<A> deriving Eq, Ord, Hash { wrapped: Profile<A> }
+
+pub effect fn main = do {
+  let one = UserId 1
+  let two = UserId 2
+  println $ show (one == UserId 1)
+  println $ show (one < two)
+  println $ show (hash one == hash 1)
+  let a = Profile { id: one, value: 3 }
+  let b = Profile { id: two, value: 0 }
+  println $ show (a < b)
+  println $ show (a == Profile { id: one, value: 3 })
+  println $ show (hash a == hash (Profile { id: one, value: 3 }))
+  let tree: Tree<Int> = Branch (Leaf 1, Leaf 2)
+  println $ show (tree == Branch (Leaf 1, Leaf 2))
+  println $ show (tree<Branch (Leaf 1, Leaf 3))
+  println $ show (hash tree == hash (Branch (Leaf 1, Leaf 2)))
+  println $ show (Zebra 99<Alpha 0)
+  println $ show (Alpha 0<Empty)
+  let nested: Nested<Int> = Nested { values: [`[Just (Right 1)]] }
+  let nestedAgain: Nested<Int> = Nested { values: [`[Just (Right 1)]] }
+  println $ show (nested == nestedAgain)
+  println $ show (Reordered { z: 0, a: 9 }<Reordered { z: 1, a: 0 })
+  let phantom: Phantom<Float> = Phantom
+  println $ show (phantom == phantom)
+  println $ show (hash phantom == hash phantom)
+  let local: Local<Int> = Local { wrapped: a }
+  let localSame: Local<Int> = Local { wrapped: a }
+  let localOther: Local<Int> = Local { wrapped: b }
+  println $ show (local == localSame)
+  println $ show (local < localOther)
+  println $ show (hash local == hash localSame)
+  println $ show (one == two)
+  println $ show (one> two)
+  println $ show (a == b)
+  println $ show (tree == Leaf 1)
+  println $ show (Zebra 99 == Alpha 99)
+}
