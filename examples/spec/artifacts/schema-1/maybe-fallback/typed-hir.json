@@ -1,0 +1,965 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/maybe-fallback",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/maybe-fallback::resolve",
+      "visibility": "private",
+      "origin": {
+        "start": 0,
+        "end": 69
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 14,
+            "end": 19
+          }
+        },
+        {
+          "kind": "named",
+          "name": "fallback",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 33,
+            "end": 41
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "??",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 52,
+            "end": 57
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "fallback",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 61,
+            "end": 69
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 52,
+          "end": 69
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/maybe-fallback::fail",
+      "visibility": "private",
+      "origin": {
+        "start": 70,
+        "end": 103
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 78,
+            "end": 82
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "/",
+        "left": {
+          "kind": "integer",
+          "value": "1",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 98,
+            "end": 99
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "0",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 102,
+            "end": 103
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Div",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Div"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 98,
+          "end": 103
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/maybe-fallback::cached",
+          "name": "cached",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 108,
+            "end": 114
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 2,
+        "name": "cached",
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 108,
+          "end": 114
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 104,
+        "end": 139
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "variable",
+        "name": "std/prelude::Nothing",
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 132,
+          "end": 139
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/maybe-fallback::requested",
+          "name": "requested",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 144,
+            "end": 153
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 3,
+        "name": "requested",
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 144,
+          "end": 153
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 140,
+        "end": 185
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Just",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "request",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 176,
+              "end": 185
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 171,
+          "end": 185
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/maybe-fallback::main",
+      "visibility": "public",
+      "origin": {
+        "start": 186,
+        "end": 367
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "binary",
+                  "operator": "??",
+                  "left": {
+                    "kind": "variable",
+                    "name": "cached",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 224,
+                      "end": 230
+                    }
+                  },
+                  "right": {
+                    "kind": "binary",
+                    "operator": "??",
+                    "left": {
+                      "kind": "variable",
+                      "name": "requested",
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 234,
+                        "end": 243
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": "anonymous",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 247,
+                        "end": 258
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 234,
+                      "end": 258
+                    }
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 224,
+                    "end": 258
+                  }
+                }
+              ],
+              "origin": {
+                "start": 214,
+                "end": 258
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "binary",
+                      "operator": "??",
+                      "left": {
+                        "kind": "call",
+                        "callee": "std/prelude::Just",
+                        "arguments": [
+                          {
+                            "kind": "integer",
+                            "value": "7",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 282,
+                              "end": 283
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 277,
+                          "end": 283
+                        }
+                      },
+                      "right": {
+                        "kind": "call",
+                        "callee": "artifact/maybe-fallback::fail",
+                        "arguments": [
+                          {
+                            "kind": "unit",
+                            "type": {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 292,
+                              "end": 294
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 287,
+                          "end": 294
+                        }
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 277,
+                        "end": 294
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 271,
+                    "end": 295
+                  }
+                }
+              ],
+              "origin": {
+                "start": 261,
+                "end": 295
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "binary",
+                      "operator": "??",
+                      "left": {
+                        "kind": "variable",
+                        "name": "std/prelude::Nothing",
+                        "type": {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 314,
+                          "end": 321
+                        }
+                      },
+                      "right": {
+                        "kind": "integer",
+                        "value": "8",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 325,
+                          "end": 326
+                        }
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 314,
+                        "end": 326
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 308,
+                    "end": 327
+                  }
+                }
+              ],
+              "origin": {
+                "start": 298,
+                "end": 327
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/maybe-fallback::resolve",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Just",
+                      "arguments": [
+                        {
+                          "kind": "integer",
+                          "value": "9",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 360,
+                            "end": 361
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 355,
+                        "end": 361
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "value": "0",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 363,
+                        "end": 364
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 346,
+                    "end": 364
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 340,
+                "end": 365
+              }
+            }
+          ],
+          "origin": {
+            "start": 330,
+            "end": 365
+          }
+        },
+        "origin": {
+          "start": 207,
+          "end": 367
+        }
+      }
+    }
+  ]
+}

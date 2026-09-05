@@ -1,0 +1,10 @@
+fn resolve<A> value: Maybe<A> -> fallback: A -> A = value ?? fallback
+fn fail unit: Unit -> Int = 1 / 0
+let cached: Maybe<String> = Nothing
+let requested: Maybe<String> = Just "request"
+pub effect fn main = do {
+  println $ cached ?? requested ?? "anonymous"
+  println $ show (Just 7 ?? fail ())
+  println $ show (Nothing ?? 8)
+  println $ show (resolve (Just 9) 0)
+}

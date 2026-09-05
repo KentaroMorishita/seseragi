@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.argument-type-mismatch",
+      "message": "Argument type does not match the parameter type",
+      "primary": {
+        "start": 14,
+        "end": 15
+      },
+      "related": [
+        {
+          "message": "argument 1 expected Maybe<Int>, received Int",
+          "primary": {
+            "start": 0,
+            "end": 20
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "argument 1 expected Maybe<Int>, received Int",
+          "primary": {
+            "start": 0,
+            "end": 20
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "Maybe<Int>",
+      "actualType": "Int",
+      "typeDifference": {
+        "expectedType": "Maybe<Int>",
+        "actualType": "Int",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Maybe<Int>, actual Int",
+            "expectedType": "Maybe<Int>",
+            "actualType": "Int"
+          }
+        ]
+      }
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.argument-type-mismatch",
+      "message": "Argument type does not match the parameter type",
+      "primary": {
+        "start": 49,
+        "end": 53
+      },
+      "related": [
+        {
+          "message": "argument 2 expected Int, received Bool",
+          "primary": {
+            "start": 21,
+            "end": 53
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "argument 2 expected Int, received Bool",
+          "primary": {
+            "start": 21,
+            "end": 53
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "Int",
+      "actualType": "Bool",
+      "typeDifference": {
+        "expectedType": "Int",
+        "actualType": "Bool",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Int, actual Bool",
+            "expectedType": "Int",
+            "actualType": "Bool"
+          }
+        ]
+      }
+    }
+  ]
+}

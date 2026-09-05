@@ -1,0 +1,1152 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/maybe-fallback",
+  "bindings": [
+    {
+      "symbol": "artifact/maybe-fallback::cached",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 104,
+        "end": 139
+      },
+      "value": {
+        "kind": "variable",
+        "name": "std/prelude::Nothing",
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 132,
+          "end": 139
+        }
+      }
+    },
+    {
+      "symbol": "artifact/maybe-fallback::requested",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 140,
+        "end": 185
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Just",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "request",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 176,
+              "end": 185
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 171,
+          "end": 185
+        }
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/maybe-fallback::resolve",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 69
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "fallback",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 52,
+            "end": 57
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Just",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 52,
+                  "end": 69
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "$ssrg$fallbackValue",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 52,
+                  "end": 69
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "$ssrg$fallbackValue",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 52,
+                "end": 69
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 52,
+              "end": 69
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "variable",
+              "name": "fallback",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 61,
+                "end": 69
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 52,
+              "end": 69
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 52,
+          "end": 69
+        }
+      }
+    },
+    {
+      "symbol": "artifact/maybe-fallback::fail",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 70,
+        "end": 103
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "/",
+        "left": {
+          "kind": "integer",
+          "value": "1",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 98,
+            "end": 99
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "0",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 102,
+            "end": 103
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Div",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Div"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 98,
+          "end": 103
+        }
+      }
+    },
+    {
+      "symbol": "artifact/maybe-fallback::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 186,
+        "end": 367
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "decision",
+                  "scrutinee": {
+                    "kind": "variable",
+                    "name": "cached",
+                    "type": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 224,
+                      "end": 230
+                    }
+                  },
+                  "scrutineeType": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "branches": [
+                    {
+                      "tests": [
+                        {
+                          "kind": "constructor",
+                          "path": [],
+                          "constructor": "std/prelude::Just",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 224,
+                            "end": 258
+                          }
+                        }
+                      ],
+                      "bindings": [
+                        {
+                          "name": "$ssrg$fallbackValue",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "path": [
+                            {
+                              "kind": "adt-payload"
+                            }
+                          ],
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 224,
+                            "end": 258
+                          }
+                        }
+                      ],
+                      "value": {
+                        "kind": "variable",
+                        "name": "$ssrg$fallbackValue",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 224,
+                          "end": 258
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 224,
+                        "end": 258
+                      }
+                    },
+                    {
+                      "tests": [],
+                      "value": {
+                        "kind": "decision",
+                        "scrutinee": {
+                          "kind": "variable",
+                          "name": "requested",
+                          "type": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 234,
+                            "end": 243
+                          }
+                        },
+                        "scrutineeType": {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "branches": [
+                          {
+                            "tests": [
+                              {
+                                "kind": "constructor",
+                                "path": [],
+                                "constructor": "std/prelude::Just",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 234,
+                                  "end": 258
+                                }
+                              }
+                            ],
+                            "bindings": [
+                              {
+                                "name": "$ssrg$fallbackValue",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "path": [
+                                  {
+                                    "kind": "adt-payload"
+                                  }
+                                ],
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 234,
+                                  "end": 258
+                                }
+                              }
+                            ],
+                            "value": {
+                              "kind": "variable",
+                              "name": "$ssrg$fallbackValue",
+                              "type": {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 234,
+                                "end": 258
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 234,
+                              "end": 258
+                            }
+                          },
+                          {
+                            "tests": [],
+                            "value": {
+                              "kind": "string",
+                              "value": "anonymous",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 247,
+                                "end": 258
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 234,
+                              "end": 258
+                            }
+                          }
+                        ],
+                        "exhaustive": true,
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 234,
+                          "end": 258
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 224,
+                        "end": 258
+                      }
+                    }
+                  ],
+                  "exhaustive": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 224,
+                    "end": 258
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 214,
+                "end": 258
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "decision",
+                      "scrutinee": {
+                        "kind": "call",
+                        "callee": "std/prelude::Just",
+                        "arguments": [
+                          {
+                            "kind": "integer",
+                            "value": "7",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 282,
+                              "end": 283
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 277,
+                          "end": 283
+                        }
+                      },
+                      "scrutineeType": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "branches": [
+                        {
+                          "tests": [
+                            {
+                              "kind": "constructor",
+                              "path": [],
+                              "constructor": "std/prelude::Just",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 277,
+                                "end": 294
+                              }
+                            }
+                          ],
+                          "bindings": [
+                            {
+                              "name": "$ssrg$fallbackValue",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "path": [
+                                {
+                                  "kind": "adt-payload"
+                                }
+                              ],
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 277,
+                                "end": 294
+                              }
+                            }
+                          ],
+                          "value": {
+                            "kind": "variable",
+                            "name": "$ssrg$fallbackValue",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 277,
+                              "end": 294
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 277,
+                            "end": 294
+                          }
+                        },
+                        {
+                          "tests": [],
+                          "value": {
+                            "kind": "call",
+                            "callee": "artifact/maybe-fallback::fail",
+                            "arguments": [
+                              {
+                                "kind": "unit",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 292,
+                                  "end": 294
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 287,
+                              "end": 294
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 277,
+                            "end": 294
+                          }
+                        }
+                      ],
+                      "exhaustive": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 277,
+                        "end": 294
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 271,
+                    "end": 295
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 261,
+                "end": 295
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "decision",
+                      "scrutinee": {
+                        "kind": "variable",
+                        "name": "std/prelude::Nothing",
+                        "type": {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 314,
+                          "end": 321
+                        }
+                      },
+                      "scrutineeType": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "branches": [
+                        {
+                          "tests": [
+                            {
+                              "kind": "constructor",
+                              "path": [],
+                              "constructor": "std/prelude::Just",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 314,
+                                "end": 326
+                              }
+                            }
+                          ],
+                          "bindings": [
+                            {
+                              "name": "$ssrg$fallbackValue",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "path": [
+                                {
+                                  "kind": "adt-payload"
+                                }
+                              ],
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 314,
+                                "end": 326
+                              }
+                            }
+                          ],
+                          "value": {
+                            "kind": "variable",
+                            "name": "$ssrg$fallbackValue",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 314,
+                              "end": 326
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 314,
+                            "end": 326
+                          }
+                        },
+                        {
+                          "tests": [],
+                          "value": {
+                            "kind": "integer",
+                            "value": "8",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 325,
+                              "end": 326
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 314,
+                            "end": 326
+                          }
+                        }
+                      ],
+                      "exhaustive": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 314,
+                        "end": 326
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 308,
+                    "end": 327
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 298,
+                "end": 327
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/maybe-fallback::resolve",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Just",
+                      "arguments": [
+                        {
+                          "kind": "integer",
+                          "value": "9",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 360,
+                            "end": 361
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 355,
+                        "end": 361
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "value": "0",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 363,
+                        "end": 364
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 346,
+                    "end": 364
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 340,
+                "end": 365
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 330,
+            "end": 365
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 207,
+          "end": 367
+        }
+      }
+    }
+  ]
+}
