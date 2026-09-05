@@ -20,9 +20,9 @@ pub(crate) fn function_body_issue(
     let body = body?;
     let expected = typed_type_from_type_ref(return_type);
     let actual = inferred_type_from_expr(body);
+    // Equal display types must not override incompatible nominal identities.
     if typed_type_contains_hole(&expected)
         || typed_type_contains_hole(&actual)
-        || expected == actual
         || semantically_compatible
     {
         return None;
