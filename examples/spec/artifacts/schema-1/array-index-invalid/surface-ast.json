@@ -1,0 +1,217 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "let",
+      "visibility": "public",
+      "pattern": {
+        "kind": "name",
+        "name": "wrongReceiver",
+        "nameSpan": {
+          "start": 8,
+          "end": 21
+        },
+        "span": {
+          "start": 8,
+          "end": 21
+        }
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "index",
+        "receiver": {
+          "kind": "integer",
+          "raw": "1",
+          "span": {
+            "start": 24,
+            "end": 25
+          }
+        },
+        "index": {
+          "kind": "integer",
+          "raw": "0",
+          "span": {
+            "start": 26,
+            "end": 27
+          }
+        },
+        "span": {
+          "start": 24,
+          "end": 28
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 28
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "pattern": {
+        "kind": "name",
+        "name": "wrongIndex",
+        "nameSpan": {
+          "start": 37,
+          "end": 47
+        },
+        "span": {
+          "start": 37,
+          "end": 47
+        }
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "index",
+        "receiver": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 51,
+                "end": 52
+              }
+            }
+          ],
+          "span": {
+            "start": 50,
+            "end": 53
+          }
+        },
+        "index": {
+          "kind": "boolean",
+          "value": true,
+          "span": {
+            "start": 54,
+            "end": 58
+          }
+        },
+        "span": {
+          "start": 50,
+          "end": 59
+        }
+      },
+      "span": {
+        "start": 29,
+        "end": 59
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "pattern": {
+        "kind": "name",
+        "name": "list",
+        "nameSpan": {
+          "start": 68,
+          "end": 72
+        },
+        "span": {
+          "start": 68,
+          "end": 72
+        }
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "index",
+        "receiver": {
+          "kind": "list",
+          "elements": [
+            {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 77,
+                "end": 78
+              }
+            }
+          ],
+          "span": {
+            "start": 75,
+            "end": 79
+          }
+        },
+        "index": {
+          "kind": "integer",
+          "raw": "0",
+          "span": {
+            "start": 80,
+            "end": 81
+          }
+        },
+        "span": {
+          "start": 75,
+          "end": 82
+        }
+      },
+      "span": {
+        "start": 60,
+        "end": 82
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "pattern": {
+        "kind": "name",
+        "name": "tuple",
+        "nameSpan": {
+          "start": 91,
+          "end": 96
+        },
+        "span": {
+          "start": 91,
+          "end": 96
+        }
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "index",
+        "receiver": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 100,
+                "end": 101
+              }
+            },
+            {
+              "kind": "integer",
+              "raw": "2",
+              "span": {
+                "start": 103,
+                "end": 104
+              }
+            }
+          ],
+          "span": {
+            "start": 99,
+            "end": 105
+          }
+        },
+        "index": {
+          "kind": "integer",
+          "raw": "0",
+          "span": {
+            "start": 106,
+            "end": 107
+          }
+        },
+        "span": {
+          "start": 99,
+          "end": 108
+        }
+      },
+      "span": {
+        "start": 83,
+        "end": 108
+      }
+    }
+  ]
+}

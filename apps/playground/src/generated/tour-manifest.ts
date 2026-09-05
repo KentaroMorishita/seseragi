@@ -3422,32 +3422,33 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "prerequisite": "Array literalとArray typeを書けるようになりました。",
       "walkthrough": [
         {
-          "heading": "長さを読み、patternで先頭を取り出す",
-          "body": "`arrays.length`は要素数を返します。`[head, ...tail]`は先頭と残りを安全に分解します。",
+          "heading": "添字からMaybeを受け取る",
+          "body": "`values[1]`は0から数えた2番目の要素をJustで返します。負の添字や範囲外はNothingです。`arrays.length`は要素数です。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
+            "startLine": 4,
+            "endLine": 8
           }
         }
       ],
       "introduced": [
         {
-          "kind": "api",
-          "name": "Array access",
-          "body": "`length`で要素数を読み、Array patternで要素を安全に分解できます。"
+          "kind": "syntax",
+          "name": "array[index]",
+          "body": "ArrayのInt添字アクセスはMaybeを返します。Listは添字アクセスを持ちません。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceのArrayを増やし、lengthとheadの出力を変えてください。",
+        "instruction": "配列を4要素に増やすとvalues[3]がどう変わるか実行して確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Patternの要素型を取り違える",
-        "body": "失敗例はIntのheadへString annotationを付けます。Arrayの要素型を確認してください。"
+        "heading": "添字はInt",
+        "body": "Stringの添字は使えません。0から数えるIntを指定します。"
       },
       "recap": [
-        "lengthはArray全体を最後の引数に取る。",
-        "Array patternはheadとtailへ分解できる。"
+        "Arrayの添字は0から始まり、結果はMaybeになる。",
+        "負の添字と範囲外はNothing。",
+        "Listの要素は次のlessonでpatternから読む。"
       ],
       "next": {
         "lessonId": "list-values",

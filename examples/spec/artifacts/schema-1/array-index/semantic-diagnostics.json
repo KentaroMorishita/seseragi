@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 475,
+        "end": 479
+      },
+      "related": [
+        {
+          "message": "no Show<A> instance matches the inferred call arguments",
+          "primary": {
+            "start": 188,
+            "end": 516
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Show<A> instance matches the inferred call arguments",
+          "primary": {
+            "start": 188,
+            "end": 516
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 494,
+        "end": 504
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 188,
+            "end": 516
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 188,
+            "end": 516
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}
