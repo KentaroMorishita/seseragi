@@ -1,6 +1,6 @@
 import {
-  providerRuntimeAbi,
   type ProviderResult,
+  providerRuntimeAbi,
 } from "@seseragi/runtime/provider"
 import {
   defineProviderPackage,
@@ -26,7 +26,9 @@ export function createRandomProvider(
   const next = (): bigint => nextOutput(current())
   const sampleIndex = (length: number): number => {
     if (!Number.isSafeInteger(length) || length <= 0) {
-      throw new TypeError("Random sample length must be a positive safe integer")
+      throw new TypeError(
+        "Random sample length must be a positive safe integer"
+      )
     }
     return Number(sampleWidth(BigInt(length), next))
   }
@@ -35,6 +37,11 @@ export function createRandomProvider(
     provider: "seseragi/runtime#random",
     service: "std/random::Random",
     targets: ["bun-process", "browser"],
+    // Browser modules may be cached across runs; RNG state belongs to the
+    // provider loader lifetime, not to the imported module's lifetime.
+    async shutdown() {
+      state = undefined
+    },
     operations: {
       async algorithmId() {
         return success(ALGORITHM_ID)
@@ -97,7 +104,8 @@ export function createRandomProvider(
       },
       async shuffleIndices(value) {
         const length = safeInt(value)
-        if (length < 0) throw new TypeError("Random shuffle length must be non-negative")
+        if (length < 0)
+          throw new TypeError("Random shuffle length must be non-negative")
         const indices = Array.from({ length }, (_, index) => index)
         for (let index = indices.length - 1; index > 0; index -= 1) {
           const swap = sampleIndex(index + 1)
