@@ -21,6 +21,7 @@
         "std/float",
         "std/array",
         "std/collection",
+        "std/iterator",
         "std/maybe",
         "std/either",
         "std/validation",
@@ -598,6 +599,16 @@
       "interfaceFingerprint": "fnv1a64:09454cd809cab08d",
       "implementation": "lowering-runtime",
       "route": "filesystem-provider-project"
+    },
+    {
+      "specifier": "std/iterator",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:10003d3a8345d5bb",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
     },
     {
       "specifier": "std/json",

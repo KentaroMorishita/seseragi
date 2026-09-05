@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.57.0] - 2026-09-05
+
+### Added
+
+- Expose the existing persistent `Iterator<A>` identity through `std/iterator`,
+  including lazy `unfold` and persistent `next`, across compiler, runtime,
+  Reference, LSP, WASM, Playground, and conformance execution.
+- Reuse the canonical `Iterable<Iterator<A>, A>` instance for Array, List,
+  Range, and custom iterables without adding `Reducible<Iterator>` or a second
+  iterator runtime.
+
 ## [0.56.0] - 2026-09-05
 
 ### Added
