@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.56.0] - 2026-09-05
+
+### Added
+
+- Generate nominal `Eq`, `Ord`, and `Hash` dictionaries for derived structs,
+  ADTs, and newtypes, including generic, nested, and imported evidence across
+  native CLI, TypeScript, WASM, LSP, and Playground execution.
+- Preserve structural equality and hash consistency, source-order ADT ordering,
+  and newtype delegation; require canonical Eq evidence for Ord and Hash.
+
 ## [0.55.0] - 2026-09-05
 
 ### Changed
