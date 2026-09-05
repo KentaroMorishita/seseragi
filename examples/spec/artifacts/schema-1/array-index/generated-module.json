@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "module": "artifact/array-index",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.int",
+      "core.maybe",
+      "core.array.index",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.show",
+      "core.maybe.show",
+      "core.string",
+      "core.int.subtract",
+      "core.bool.show",
+      "core.int.eq-dictionary",
+      "core.maybe.eq-dictionary",
+      "core.bool",
+      "core.array.get"
+    ]
+  },
+  "exports": [
+    "pick",
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

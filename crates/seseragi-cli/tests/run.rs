@@ -417,6 +417,64 @@ fn runs_imported_derived_json_codecs() {
 }
 
 #[test]
+fn array_index_evaluates_receiver_and_offset_once_in_source_order() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/foreign-pure-load"),
+    );
+    fs::create_dir_all(package.join("host")).unwrap();
+    fs::write(
+        package.join("host/order.mjs"),
+        r#"
+const events = [];
+export function values() { events.push("receiver"); return [10, 20]; }
+export function offset() { events.push("index"); return 1; }
+export function trace() { return events.join(","); }
+"#,
+    )
+    .unwrap();
+    fs::write(
+        package.join("src/main.ssrg"),
+        r#"
+foreign "typescript" from "../host/order.mjs" {
+  pure fn values unit: Unit -> Array<Int>
+  pure fn offset unit: Unit -> Int
+  pure fn trace unit: Unit -> String
+}
+let selected = (values ())[offset ()]
+pub effect fn main = do {
+  println $ show selected
+  println (trace ())
+}
+"#,
+    )
+    .unwrap();
+    let updated = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args(["lock", "update"])
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        updated.status.success(),
+        "{}",
+        String::from_utf8_lossy(&updated.stderr)
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        "Just 20\nreceiver,index\n"
+    );
+}
+
+#[test]
 fn runs_array_index() {
     let package =
         LockedProject::copy(&repository_root().join("examples/spec/fixtures/projects/array-index"));
