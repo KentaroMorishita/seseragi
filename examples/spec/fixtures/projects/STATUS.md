@@ -3,7 +3,7 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (59)
+## Current product-route fixtures (60)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -30,6 +30,7 @@
 | `file-multipart-browser-e2e` | `run` | `cli-build` | `apps/playground/tests/file-multipart-browser.test.ts` |
 | `file-target-mismatch` | `diagnostic` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `filesystem-temporary-cleanup` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `effect-match` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `foreign-failure-phases` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-pure-load` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-task-load` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |

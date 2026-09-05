@@ -1,6 +1,8 @@
 use crate::typed::pure_issues::MatchIssue;
 use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
-use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
+use crate::typed::type_ref::{
+    application_argument_type_from_expr, inferred_type_from_expr, typed_type_contains_hole,
+};
 use crate::{TypedExpr, TypedMatchArm, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr, SurfaceMatchArm};
 
@@ -18,6 +20,16 @@ pub(super) fn type_match(
     arms: &[SurfaceMatchArm],
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    type_match_with(scrutinee, arms, span, context, type_surface_expression)
+}
+
+pub(crate) fn type_match_with(
+    scrutinee: &SurfaceExpr,
+    arms: &[SurfaceMatchArm],
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+    mut type_body: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
     let scrutinee_context = context.without_expected();
     let scrutinee = type_surface_expression(scrutinee, &scrutinee_context);
@@ -55,11 +67,15 @@ pub(super) fn type_match(
             }
         }
 
-        let body = type_surface_expression(&arm.body, &arm_context);
-        let body_type = inferred_type_from_expr(&body.value);
+        let body = type_body(&arm.body, &arm_context);
+        let body_type = application_argument_type_from_expr(&body.value);
         if !typed_type_contains_hole(&body_type) {
-            if let Some((expected_type, expected_span)) = &result_type {
-                if body_type != *expected_type {
+            if let Some((expected_type, expected_span)) = &mut result_type {
+                if let Some(joined) =
+                    crate::typed::effect::join_branch_types(expected_type, &body_type)
+                {
+                    *expected_type = joined;
+                } else {
                     issues.push(MatchIssue::BranchTypeMismatch {
                         expected_branch: *expected_span,
                         actual_branch: arm.body.span(),
@@ -130,6 +146,11 @@ pub(super) fn type_match(
         SemanticTypeKey::Invalid
     } else {
         result_key.unwrap_or(SemanticTypeKey::Invalid)
+    };
+    let semantic_type = if crate::typed::type_ref::effect_from_value_type(&type_ref).is_some() {
+        context.semantic_value_from_typed_type(&type_ref).key
+    } else {
+        semantic_type
     };
     let exhaustive = coverage_proves_total && issues.is_empty();
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
