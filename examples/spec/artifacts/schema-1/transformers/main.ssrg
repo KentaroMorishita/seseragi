@@ -1,0 +1,94 @@
+import * as eff from "std/effect"
+import * as mt from "std/transformer/maybe"
+import * as rt from "std/transformer/reader"
+import * as et from "std/transformer/either"
+import * as st from "std/transformer/state"
+import * as wt from "std/transformer/writer"
+
+pub fn bump<F<_>> value: F<Int> -> F<Int> where Functor<F> =
+  map (\n: Int -> n + 1) value
+
+pub fn optional<M<_>> value: Int -> mt.MaybeT<M, Int> where Monad<M> =
+  mt.fromMaybe (Just value)
+
+pub fn environment<M<_>> -> rt.ReaderT<Int, M, Int> where Monad<M> = rt.ask ()
+
+pub effect fn mark value: Int -> Int with console: Console fails ConsoleError = do {
+  println `base:${value}`
+  eff.succeed value
+}
+
+pub struct Log { text: String }
+instance Semigroup<Log> {
+  fn append left: Log -> right: Log -> Log = Log { text: `${left.text}${right.text}` }
+}
+instance Monoid<Log> {
+  fn empty unit: Unit -> Log = Log { text: "" }
+}
+
+let some: mt.MaybeT<Maybe, Int> = optional 3
+let mapped: mt.MaybeT<Maybe, Int> = bump some
+let either: et.EitherT<String, Maybe, Int> = et.fromEither (Right 5)
+let reader: rt.ReaderT<Int, Maybe, Int> = environment ()
+let local: rt.ReaderT<Int, Maybe, Int> = rt.local (\n: Int -> n + 10) reader
+let state: st.StateT<Int, Maybe, Int> = st.get ()
+let writer: wt.WriterT<String, Maybe, Unit> = wt.tell "hello"
+let runState: st.StateT<Int, Maybe, Int> -> Maybe<(Int, Int)> = st.run 7
+
+let doSome: mt.MaybeT<Maybe, Int> = do {
+  n <- some
+  pure (n + 10)
+}
+let applied: mt.MaybeT<Maybe, Int> = (pure (\n: Int -> n + 2)) <*> some
+let bound: mt.MaybeT<Maybe, Int> = some >>= (\n: Int -> optional (n + 3))
+let stateStep: st.StateT<Int, Maybe, Unit> = st.modify (\n: Int -> n + 1)
+let stateFlow: st.StateT<Int, Maybe, Int> = do {
+  stateStep
+  st.get ()
+}
+let first: wt.WriterT<String, Maybe, Unit> = wt.tell "first-"
+let second: wt.WriterT<String, Maybe, Unit> = wt.tell "second"
+let written: wt.WriterT<String, Maybe, Int> = do {
+  first
+  second
+  pure 9
+}
+let nested: mt.MaybeT<st.StateT<Int, Maybe, _>, Int> = mt.fromMaybe (Just 2)
+let cold: mt.MaybeT<Effect<{ console: Console }, ConsoleError, _>, Int> =
+  mt.lift (mark 4)
+let coldMapped: mt.MaybeT<Effect<{ console: Console }, ConsoleError, _>, Int> =
+  (\n: Int -> n + 1)
+  <$> cold
+
+let customFirst: wt.WriterT<Log, Maybe, Unit> = wt.tell (Log { text: "a" })
+let customSecond: wt.WriterT<Log, Maybe, Unit> = wt.tell (Log { text: "b" })
+let custom: wt.WriterT<Log, Maybe, Int> = do {
+  customFirst
+  customSecond
+  pure 1
+}
+let customText = match wt.run custom {
+  Just (_, output) -> output.text
+  Nothing -> "missing"
+}
+
+pub effect fn main = do {
+  println $ show (mt.run mapped)
+  println $ show (et.run either)
+  println $ show (rt.run 2 local)
+  println $ show (rt.run 2 reader)
+  println $ show (runState state)
+  println $ show (wt.run writer)
+  println $ show (mt.run doSome)
+  println $ show (mt.run applied)
+  println $ show (mt.run bound)
+  println $ show (st.run 7 stateFlow)
+  println $ show (wt.run (wt.listen written))
+  println $ show (st.run 0 (mt.run nested))
+  println customText
+  println "before"
+  n <- mt.run coldMapped
+  println $ show n
+  m <- mt.run coldMapped
+  println $ show m
+}

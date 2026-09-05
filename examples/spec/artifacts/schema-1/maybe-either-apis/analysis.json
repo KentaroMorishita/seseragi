@@ -20427,6 +20427,21 @@
       "constraints": []
     },
     {
+      "identity": "std/transformer/either::EitherT",
+      "name": "EitherT",
+      "module": "std/transformer/either",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "EitherT<_, _, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "M",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/child-process::EmptyExecutableName",
       "name": "EmptyExecutableName",
       "module": "std/child-process",
@@ -21911,6 +21926,20 @@
       "constraints": []
     },
     {
+      "identity": "std/transformer/maybe::MaybeT",
+      "name": "MaybeT",
+      "module": "std/transformer/maybe",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "MaybeT<_, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "M",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::Method",
       "name": "Method",
       "module": "std/http",
@@ -22600,6 +22629,21 @@
       "constraints": []
     },
     {
+      "identity": "std/transformer/reader::ReaderT",
+      "name": "ReaderT",
+      "module": "std/transformer/reader",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "ReaderT<_, _, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "M",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/ref::Ref",
       "name": "Ref",
       "module": "std/ref",
@@ -22909,6 +22953,21 @@
       "signature": "SseUnexpectedStatus arg1: Int -> SseParseError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/transformer/state::StateT",
+      "name": "StateT",
+      "module": "std/transformer/state",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "StateT<_, _, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "S",
+        "M",
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -23499,6 +23558,21 @@
       "constraints": []
     },
     {
+      "identity": "std/transformer/writer::WriterT",
+      "name": "WriterT",
+      "module": "std/transformer/writer",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "WriterT<_, _, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "W",
+        "M",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/time::ZonedDateTime",
       "name": "ZonedDateTime",
       "module": "std/time",
@@ -23649,6 +23723,39 @@
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
+    },
+    {
+      "identity": "std/transformer/reader::ask",
+      "name": "ask",
+      "module": "std/transformer/reader",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "ask<R, M<_>> arg1: Unit -> ReaderT<R, M<_>, R> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "M"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
+    },
+    {
+      "identity": "std/transformer/reader::asks",
+      "name": "asks",
+      "module": "std/transformer/reader",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "asks<R, M<_>, A> arg1: (R -> A) -> ReaderT<R, M<_>, A> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "M",
+        "A"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
     },
     {
       "identity": "std/text/grapheme::at",
@@ -24924,6 +25031,23 @@
       "constraints": []
     },
     {
+      "identity": "std/transformer/either::fromEither",
+      "name": "fromEither",
+      "module": "std/transformer/either",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromEither<E, M<_>, A> arg1: Either<E, A> -> EitherT<E, M<_>, A> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "M",
+        "A"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
+    },
+    {
       "identity": "std/map::fromEntries",
       "name": "fromEntries",
       "module": "std/map",
@@ -24992,6 +25116,22 @@
       "constraints": []
     },
     {
+      "identity": "std/transformer/maybe::fromMaybe",
+      "name": "fromMaybe",
+      "module": "std/transformer/maybe",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromMaybe<M<_>, A> arg1: Maybe<A> -> MaybeT<M<_>, A> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "M",
+        "A"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
+    },
+    {
       "identity": "std/text/unicode::fullCaseFold",
       "name": "fullCaseFold",
       "module": "std/text/unicode",
@@ -25053,6 +25193,22 @@
         "A"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/transformer/state::get",
+      "name": "get",
+      "module": "std/transformer/state",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "get<S, M<_>> arg1: Unit -> StateT<S, M<_>, S> where Monad<M<_>>",
+      "description": "Returns the indexed element, or Nothing when the index is invalid.",
+      "typeParameters": [
+        "S",
+        "M"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
     },
     {
       "identity": "std/web/storage::get",
@@ -25471,6 +25627,91 @@
       "constraints": []
     },
     {
+      "identity": "std/transformer/either::lift",
+      "name": "lift",
+      "module": "std/transformer/either",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "lift<E, M<_>, A> arg1: M<A> -> EitherT<E, M<_>, A> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "M",
+        "A"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
+    },
+    {
+      "identity": "std/transformer/maybe::lift",
+      "name": "lift",
+      "module": "std/transformer/maybe",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "lift<M<_>, A> arg1: M<A> -> MaybeT<M<_>, A> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "M",
+        "A"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
+    },
+    {
+      "identity": "std/transformer/reader::lift",
+      "name": "lift",
+      "module": "std/transformer/reader",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "lift<R, M<_>, A> arg1: M<A> -> ReaderT<R, M<_>, A> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "M",
+        "A"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
+    },
+    {
+      "identity": "std/transformer/state::lift",
+      "name": "lift",
+      "module": "std/transformer/state",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "lift<S, M<_>, A> arg1: M<A> -> StateT<S, M<_>, A> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "S",
+        "M",
+        "A"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
+    },
+    {
+      "identity": "std/transformer/writer::lift",
+      "name": "lift",
+      "module": "std/transformer/writer",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "lift<W, M<_>, A> arg1: M<A> -> WriterT<W, M<_>, A> where Monad<M<_>>, Monoid<W>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "W",
+        "M",
+        "A"
+      ],
+      "constraints": [
+        "Monad<M<_>>",
+        "Monoid<W>"
+      ]
+    },
+    {
       "identity": "std/stdin::lineLimit",
       "name": "lineLimit",
       "module": "std/stdin",
@@ -25517,6 +25758,24 @@
       "constraints": []
     },
     {
+      "identity": "std/transformer/writer::listen",
+      "name": "listen",
+      "module": "std/transformer/writer",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "listen<W, M<_>, A> arg1: WriterT<W, M<_>, A> -> WriterT<W, M<_>, (A, W)> where Monad<M<_>>, Monoid<W>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "W",
+        "M",
+        "A"
+      ],
+      "constraints": [
+        "Monad<M<_>>",
+        "Monoid<W>"
+      ]
+    },
+    {
       "identity": "std/websocket/server::listen",
       "name": "listen",
       "module": "std/websocket/server",
@@ -25539,6 +25798,23 @@
       "description": "Constructs or computes with standard time values.",
       "typeParameters": [],
       "constraints": []
+    },
+    {
+      "identity": "std/transformer/reader::local",
+      "name": "local",
+      "module": "std/transformer/reader",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "local<R, M<_>, A> arg1: (R -> R) -> arg2: ReaderT<R, M<_>, A> -> ReaderT<R, M<_>, A> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "M",
+        "A"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
     },
     {
       "identity": "std/time::localDate",
@@ -25837,6 +26113,22 @@
         "B"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/transformer/state::modify",
+      "name": "modify",
+      "module": "std/transformer/state",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "modify<S, M<_>> arg1: (S -> S) -> StateT<S, M<_>, Unit> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "S",
+        "M"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
     },
     {
       "identity": "std/fs::move",
@@ -26227,6 +26519,22 @@
       "description": "The standard PUT Method value.",
       "typeParameters": [],
       "constraints": []
+    },
+    {
+      "identity": "std/transformer/state::put",
+      "name": "put",
+      "module": "std/transformer/state",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "put<S, M<_>> arg1: S -> StateT<S, M<_>, Unit> where Monad<M<_>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "S",
+        "M"
+      ],
+      "constraints": [
+        "Monad<M<_>>"
+      ]
     },
     {
       "identity": "std/web/navigation::queryEntries",
@@ -26706,6 +27014,80 @@
       "signature": "responseStatus arg1: Response -> Status",
       "description": "Reads the validated status of a small response.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/transformer/either::run",
+      "name": "run",
+      "module": "std/transformer/either",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "run<E, M<_>, A> arg1: EitherT<E, M<_>, A> -> M<Either<E, A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "M",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/transformer/maybe::run",
+      "name": "run",
+      "module": "std/transformer/maybe",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "run<M<_>, A> arg1: MaybeT<M<_>, A> -> M<Maybe<A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "M",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/transformer/reader::run",
+      "name": "run",
+      "module": "std/transformer/reader",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "run<R, M<_>, A> arg1: R -> arg2: ReaderT<R, M<_>, A> -> M<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "M",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/transformer/state::run",
+      "name": "run",
+      "module": "std/transformer/state",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "run<S, M<_>, A> arg1: S -> arg2: StateT<S, M<_>, A> -> M<(A, S)>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "S",
+        "M",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/transformer/writer::run",
+      "name": "run",
+      "module": "std/transformer/writer",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "run<W, M<_>, A> arg1: WriterT<W, M<_>, A> -> M<(A, W)>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "W",
+        "M",
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -27242,6 +27624,23 @@
         "A"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/transformer/writer::tell",
+      "name": "tell",
+      "module": "std/transformer/writer",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "tell<W, M<_>> arg1: W -> WriterT<W, M<_>, Unit> where Monad<M<_>>, Monoid<W>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "W",
+        "M"
+      ],
+      "constraints": [
+        "Monad<M<_>>",
+        "Monoid<W>"
+      ]
     },
     {
       "identity": "std/child-process::terminationGrace",

@@ -184,6 +184,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/collection.ts"),
     ),
     (
+        "src/transformer.ts",
+        include_str!("../../../runtime/ts/src/transformer.ts"),
+    ),
+    (
         "src/traversable.ts",
         include_str!("../../../runtime/ts/src/traversable.ts"),
     ),

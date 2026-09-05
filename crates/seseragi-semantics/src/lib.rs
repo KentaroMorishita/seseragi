@@ -19,7 +19,8 @@ pub use effect_ops::{known_effect_operation_by_semantic, KnownEffectOperation};
 pub use model::*;
 pub use prelude::{
     special_standard_instance_by_identity, special_standard_instances,
-    standard_equality_instance_by_identity, standard_prelude_surface, PreludeSpecialInstance,
+    standard_equality_instance_by_identity, standard_prelude_surface,
+    type_constructor_arity as prelude_type_constructor_arity, PreludeSpecialInstance,
     PreludeSpecialInstanceDispatch, StandardEqualityInstance, StandardModuleSurface,
 };
 pub use query::{

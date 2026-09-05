@@ -411,7 +411,10 @@ fn apply_type_arguments(substitution: &TypedType, arguments: Vec<TypedType>) -> 
     }
 }
 
-fn fill_constructor_holes(existing: &[TypedType], arguments: Vec<TypedType>) -> Vec<TypedType> {
+pub(crate) fn fill_constructor_holes(
+    existing: &[TypedType],
+    arguments: Vec<TypedType>,
+) -> Vec<TypedType> {
     let mut arguments = arguments.into_iter();
     let mut applied = existing
         .iter()

@@ -4,6 +4,7 @@
   "module": "fixture/imported-unicode::operations",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "NormalizationForm",
       "canonical": "std/text/unicode::NormalizationForm",
       "provider": {
@@ -12,6 +13,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "text.TextSliceError",
       "canonical": "std/text::TextSliceError",
       "provider": {
@@ -20,6 +22,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "graphemes.GraphemeSliceError",
       "canonical": "std/text/grapheme::GraphemeSliceError",
       "provider": {

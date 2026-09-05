@@ -93,6 +93,7 @@ fn provider_candidates(provider: &ModuleInterface) -> BTreeMap<String, Vec<Exter
         push_candidate(
             &mut candidates,
             ExternalTypeBinding {
+                arity: Some(export.scheme.type_parameters.len() as u32),
                 spelling: export.name.clone(),
                 canonical: export.symbol.clone(),
                 provider: Some(ExternalTypeProvider {
@@ -111,6 +112,7 @@ fn provider_candidates(provider: &ModuleInterface) -> BTreeMap<String, Vec<Exter
             push_candidate(
                 &mut candidates,
                 ExternalTypeBinding {
+                    arity: None,
                     spelling: import
                         .local_name
                         .clone()
@@ -158,6 +160,11 @@ fn collect_bindings(
             arguments,
         } => {
             let binding = ExternalTypeBinding {
+                arity: candidates
+                    .values()
+                    .flatten()
+                    .find(|binding| binding.canonical == *canonical)
+                    .and_then(|binding| binding.arity),
                 spelling: name.clone(),
                 canonical: canonical.clone(),
                 provider: Some(ExternalTypeProvider {

@@ -538,6 +538,7 @@ fn canonical_semantic_value(
         SemanticTypeKey::Other => canonical_other_type(&value.type_ref, resolution),
         SemanticTypeKey::Invalid
         | SemanticTypeKey::TypeParameter(_)
+        | SemanticTypeKey::Application { .. }
         | SemanticTypeKey::SchemeParameter(_) => None,
     }
 }

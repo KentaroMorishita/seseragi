@@ -417,6 +417,28 @@ fn runs_imported_derived_json_codecs() {
 }
 
 #[test]
+fn runs_transformers() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/transformers"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn runs_monoid_wrappers() {
     let package = LockedProject::copy(
         &repository_root().join("examples/spec/fixtures/projects/monoid-wrappers"),

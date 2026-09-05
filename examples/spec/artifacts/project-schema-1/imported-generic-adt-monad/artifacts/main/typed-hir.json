@@ -5,6 +5,7 @@
   "module": "fixture/imported-generic-adt-monad::main",
   "externalTypeBindings": [
     {
+      "arity": 1,
       "spelling": "Box",
       "canonical": "fixture/imported-generic-adt-monad::domain::Box",
       "provider": {
@@ -13,6 +14,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Profile",
       "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
       "provider": {

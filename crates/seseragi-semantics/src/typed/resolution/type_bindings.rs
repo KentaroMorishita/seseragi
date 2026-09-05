@@ -22,6 +22,7 @@ pub(super) fn collect_external_type_bindings(
             continue;
         }
         let binding = ExternalTypeBinding {
+            arity: None,
             spelling: reference.spelling.clone(),
             canonical: canonical.clone(),
             provider: None,
@@ -53,6 +54,7 @@ pub(super) fn collect_external_type_bindings(
             continue;
         }
         let binding = ExternalTypeBinding {
+            arity: Some(import.export.scheme.type_parameters.len() as u32),
             spelling: import.local_name.clone(),
             canonical: import.export.symbol.clone(),
             provider: Some(ExternalTypeProvider {

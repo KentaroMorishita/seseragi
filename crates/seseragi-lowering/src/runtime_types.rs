@@ -8,6 +8,36 @@ pub(crate) struct RuntimeTypeImport {
 
 const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
     RuntimeTypeImport {
+        canonical: "std/transformer/maybe::MaybeT",
+        runtime_feature: "core.transformer.maybe.type",
+        module: "@seseragi/runtime/transformer",
+        export_name: "MaybeT",
+    },
+    RuntimeTypeImport {
+        canonical: "std/transformer/either::EitherT",
+        runtime_feature: "core.transformer.either.type",
+        module: "@seseragi/runtime/transformer",
+        export_name: "EitherT",
+    },
+    RuntimeTypeImport {
+        canonical: "std/transformer/reader::ReaderT",
+        runtime_feature: "core.transformer.reader.type",
+        module: "@seseragi/runtime/transformer",
+        export_name: "ReaderT",
+    },
+    RuntimeTypeImport {
+        canonical: "std/transformer/state::StateT",
+        runtime_feature: "core.transformer.state.type",
+        module: "@seseragi/runtime/transformer",
+        export_name: "StateT",
+    },
+    RuntimeTypeImport {
+        canonical: "std/transformer/writer::WriterT",
+        runtime_feature: "core.transformer.writer.type",
+        module: "@seseragi/runtime/transformer",
+        export_name: "WriterT",
+    },
+    RuntimeTypeImport {
         canonical: "std/prelude::Product",
         runtime_feature: "core.product.type",
         module: "@seseragi/runtime/sum",

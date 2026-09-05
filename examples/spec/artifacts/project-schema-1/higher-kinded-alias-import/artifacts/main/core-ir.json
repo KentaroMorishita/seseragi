@@ -4,6 +4,7 @@
   "module": "fixture/higher-kinded-alias-import::main",
   "externalTypeBindings": [
     {
+      "arity": 1,
       "spelling": "Box",
       "canonical": "fixture/higher-kinded-alias-import::domain::Box",
       "provider": {
@@ -12,6 +13,7 @@
       }
     },
     {
+      "arity": 3,
       "spelling": "StateT",
       "canonical": "fixture/higher-kinded-alias-import::domain::StateT",
       "provider": {

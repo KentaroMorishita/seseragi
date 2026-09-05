@@ -5,6 +5,7 @@
   "module": "fixture/imported-newtype::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "UserId",
       "canonical": "fixture/imported-newtype::domain::UserId",
       "provider": {

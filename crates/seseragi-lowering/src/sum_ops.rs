@@ -15,6 +15,7 @@ macro_rules! sum_operation {
         (
             concat!("std/", $module, "::", $name),
             RuntimeCollectionOperation {
+                result_erased: false,
                 runtime_feature: concat!("core.", $module, ".", $feature),
                 local_name: concat!("_ssrg_", $module, "_", $name),
                 module: $runtime,

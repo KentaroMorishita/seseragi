@@ -5,6 +5,7 @@
   "module": "fixture/imported-effect-failure::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "InputError",
       "canonical": "fixture/imported-effect-failure::input::InputError",
       "provider": {

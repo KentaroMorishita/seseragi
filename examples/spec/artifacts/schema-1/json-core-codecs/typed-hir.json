@@ -9,6 +9,7 @@
       "canonical": "std/prelude::ConsoleError"
     },
     {
+      "arity": 0,
       "spelling": "json.JsonReadError",
       "canonical": "std/json::JsonReadError",
       "provider": {

@@ -8,6 +8,7 @@
       "canonical": "std/prelude::List"
     },
     {
+      "arity": 2,
       "spelling": "Validation",
       "canonical": "std/validation::Validation",
       "provider": {
@@ -16,6 +17,15 @@
       }
     },
     {
+      "spelling": "nonEmpty.NonEmptyList",
+      "canonical": "std/non-empty-list::NonEmptyList",
+      "provider": {
+        "module": "std/non-empty-list",
+        "export": "NonEmptyList"
+      }
+    },
+    {
+      "arity": 1,
       "spelling": "nonEmpty.NonEmptyList",
       "canonical": "std/non-empty-list::NonEmptyList",
       "provider": {

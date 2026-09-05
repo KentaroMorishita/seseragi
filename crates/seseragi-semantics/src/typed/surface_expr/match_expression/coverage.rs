@@ -132,6 +132,7 @@ fn witnesses(
             },
         ),
         SemanticTypeKey::TypeParameter(_)
+        | SemanticTypeKey::Application { .. }
         | SemanticTypeKey::SchemeParameter(_)
         | SemanticTypeKey::NamedGeneric { .. }
         | SemanticTypeKey::ExternalNominal { .. } => Some(vec![Witness {

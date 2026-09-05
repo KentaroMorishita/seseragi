@@ -4,6 +4,7 @@ use seseragi_semantics::ExternalTypeBinding;
 #[test]
 fn resolves_only_canonical_runtime_binding() {
     let bindings = vec![ExternalTypeBinding {
+        arity: None,
         spelling: "StdinError".to_owned(),
         canonical: "std/prelude::StdinError".to_owned(),
         provider: None,
@@ -19,6 +20,7 @@ fn resolves_only_canonical_runtime_binding() {
 #[test]
 fn rejects_local_shadow_and_ambiguous_bindings() {
     let local = vec![ExternalTypeBinding {
+        arity: None,
         spelling: "StdinError".to_owned(),
         canonical: "artifact/domain::StdinError".to_owned(),
         provider: None,
@@ -27,11 +29,13 @@ fn rejects_local_shadow_and_ambiguous_bindings() {
 
     let ambiguous = vec![
         ExternalTypeBinding {
+            arity: None,
             spelling: "StdinError".to_owned(),
             canonical: "std/prelude::StdinError".to_owned(),
             provider: None,
         },
         ExternalTypeBinding {
+            arity: None,
             spelling: "StdinError".to_owned(),
             canonical: "artifact/domain::StdinError".to_owned(),
             provider: None,

@@ -42,6 +42,87 @@ fn substitute_semantic_type_parameters(
     value: &SemanticValueType,
     substitutions: &BTreeMap<TypeParameterKey, SemanticValueType>,
 ) -> SemanticValueType {
+    if let SemanticTypeKey::Application {
+        constructor,
+        arguments,
+    } = &value.key
+    {
+        let constructor = substitute_semantic_type_parameters(constructor, substitutions);
+        let arguments = arguments
+            .iter()
+            .map(|argument| substitute_semantic_type_parameters(argument, substitutions))
+            .collect::<Vec<_>>();
+        let mut type_ref = constructor.type_ref.clone();
+        match &mut type_ref {
+            TypedType::Named {
+                arguments: existing,
+                ..
+            }
+            | TypedType::ExternalNamed {
+                arguments: existing,
+                ..
+            } => {
+                *existing = super::fill_constructor_holes(
+                    existing,
+                    arguments
+                        .iter()
+                        .map(|argument| argument.type_ref.clone())
+                        .collect(),
+                )
+            }
+            _ => return value.clone(),
+        }
+        let key = match constructor.key.clone() {
+            SemanticTypeKey::Adt {
+                owner,
+                arguments: mut existing,
+            } => {
+                existing = fill_semantic_constructor_holes(existing, arguments);
+                SemanticTypeKey::Adt {
+                    owner,
+                    arguments: existing,
+                }
+            }
+            SemanticTypeKey::Struct {
+                owner,
+                arguments: mut existing,
+            } => {
+                existing = fill_semantic_constructor_holes(existing, arguments);
+                SemanticTypeKey::Struct {
+                    owner,
+                    arguments: existing,
+                }
+            }
+            SemanticTypeKey::ExternalNominal {
+                canonical,
+                arguments: mut existing,
+            } => {
+                existing = fill_semantic_constructor_holes(existing, arguments);
+                SemanticTypeKey::ExternalNominal {
+                    canonical,
+                    arguments: existing,
+                }
+            }
+            SemanticTypeKey::NamedGeneric {
+                name,
+                arguments: mut existing,
+            } => {
+                existing = fill_semantic_constructor_holes(existing, arguments);
+                SemanticTypeKey::NamedGeneric {
+                    name,
+                    arguments: existing,
+                }
+            }
+            SemanticTypeKey::TypeParameter(_) | SemanticTypeKey::SchemeParameter(_) => {
+                SemanticTypeKey::Application {
+                    constructor: Box::new(constructor),
+                    arguments,
+                }
+            }
+            _ => SemanticTypeKey::Other,
+        };
+        return SemanticValueType { type_ref, key };
+    }
     let parameter = match &value.key {
         SemanticTypeKey::TypeParameter(parameter) => Some(TypeParameterKey::Resolved(*parameter)),
         SemanticTypeKey::SchemeParameter(parameter) => {
@@ -279,6 +360,79 @@ fn collect_substitutions(
     substitutions: &mut BTreeMap<TypeParameterKey, SemanticValueType>,
 ) {
     match (template, &actual.key) {
+        (
+            SemanticTypeKey::Application {
+                constructor,
+                arguments: templates,
+            },
+            _,
+        ) => {
+            let (mut head, types) = match &actual.type_ref {
+                TypedType::Named { name, arguments } => (
+                    TypedType::Named {
+                        name: name.clone(),
+                        arguments: vec![],
+                    },
+                    arguments,
+                ),
+                TypedType::ExternalNamed {
+                    name,
+                    canonical,
+                    arguments,
+                } => (
+                    TypedType::ExternalNamed {
+                        name: name.clone(),
+                        canonical: canonical.clone(),
+                        arguments: vec![],
+                    },
+                    arguments,
+                ),
+                _ => return,
+            };
+            let Some(prefix) = types.len().checked_sub(templates.len()) else {
+                return;
+            };
+            match &mut head {
+                TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
+                    *arguments = types[..prefix].to_vec()
+                }
+                _ => unreachable!(),
+            }
+            let keys = match &actual.key {
+                SemanticTypeKey::Adt { arguments, .. }
+                | SemanticTypeKey::Struct { arguments, .. }
+                | SemanticTypeKey::ExternalNominal { arguments, .. }
+                | SemanticTypeKey::NamedGeneric { arguments, .. } => Some(arguments),
+                _ => None,
+            };
+            let mut head_key = actual.key.clone();
+            match &mut head_key {
+                SemanticTypeKey::Adt { arguments, .. }
+                | SemanticTypeKey::Struct { arguments, .. }
+                | SemanticTypeKey::ExternalNominal { arguments, .. }
+                | SemanticTypeKey::NamedGeneric { arguments, .. } => arguments.truncate(prefix),
+                _ => head_key = SemanticTypeKey::Other,
+            }
+            collect_substitutions(
+                &constructor.key,
+                &SemanticValueType {
+                    type_ref: head,
+                    key: head_key,
+                },
+                substitutions,
+            );
+            for (offset, template) in templates.iter().enumerate() {
+                let index = prefix + offset;
+                let argument = keys
+                    .and_then(|keys| keys.get(index))
+                    .cloned()
+                    .unwrap_or_else(|| SemanticValueType {
+                        type_ref: types[index].clone(),
+                        key: SemanticTypeKey::Other,
+                    });
+                collect_substitutions(&template.key, &argument, substitutions);
+            }
+        }
         (SemanticTypeKey::TypeParameter(parameter), _) => {
             substitutions
                 .entry(TypeParameterKey::Resolved(*parameter))
@@ -364,4 +518,23 @@ fn collect_substitutions(
         }
         _ => {}
     }
+}
+
+fn fill_semantic_constructor_holes(
+    existing: Vec<SemanticValueType>,
+    arguments: Vec<SemanticValueType>,
+) -> Vec<SemanticValueType> {
+    let mut incoming = arguments.into_iter();
+    let mut result = existing
+        .into_iter()
+        .map(|value| {
+            if matches!(value.type_ref, TypedType::Hole) {
+                incoming.next().unwrap_or(value)
+            } else {
+                value
+            }
+        })
+        .collect::<Vec<_>>();
+    result.extend(incoming);
+    result
 }

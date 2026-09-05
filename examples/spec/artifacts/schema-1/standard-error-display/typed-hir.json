@@ -5,6 +5,7 @@
   "module": "artifact/standard-error-display",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "html.HtmlBuildError",
       "canonical": "std/web/html::HtmlBuildError",
       "provider": {
@@ -13,6 +14,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "dom.DomError",
       "canonical": "std/web/dom::DomError",
       "provider": {
@@ -21,6 +23,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "dom.DomRuntimeError",
       "canonical": "std/web/dom::DomRuntimeError",
       "provider": {

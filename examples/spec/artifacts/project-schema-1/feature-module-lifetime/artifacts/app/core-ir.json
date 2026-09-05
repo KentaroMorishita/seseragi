@@ -24,6 +24,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "MutableSignal",
       "canonical": "std/signal::MutableSignal",
       "provider": {
@@ -32,6 +33,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Style",
       "canonical": "std/web/html::Style",
       "provider": {
@@ -40,6 +42,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Attribute",
       "canonical": "std/web/html::Attribute",
       "provider": {
@@ -48,6 +51,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "KeyboardEvent",
       "canonical": "std/web/html::KeyboardEvent",
       "provider": {
@@ -56,6 +60,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "EventAction",
       "canonical": "std/web/html::EventAction",
       "provider": {
@@ -64,6 +69,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "MouseEvent",
       "canonical": "std/web/html::MouseEvent",
       "provider": {
@@ -72,6 +78,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "PointerEvent",
       "canonical": "std/web/html::PointerEvent",
       "provider": {
@@ -80,6 +87,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "ScrollEvent",
       "canonical": "std/web/html::ScrollEvent",
       "provider": {
@@ -88,6 +96,25 @@
       }
     },
     {
+      "arity": 1,
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    },
+    {
+      "arity": 1,
+      "spelling": "Signal",
+      "canonical": "std/signal::Signal",
+      "provider": {
+        "module": "std/signal",
+        "export": "Signal"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "dom.Dom",
       "canonical": "std/web/dom::Dom",
       "provider": {
@@ -96,6 +123,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "dom.DomError",
       "canonical": "std/web/dom::DomError",
       "provider": {
@@ -104,6 +132,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "DomTarget",
       "canonical": "std/web/dom::DomTarget",
       "provider": {
@@ -112,6 +141,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "DomOptions",
       "canonical": "std/web/dom::DomOptions",
       "provider": {
@@ -120,6 +150,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "dom.DomRuntimeError",
       "canonical": "std/web/dom::DomRuntimeError",
       "provider": {

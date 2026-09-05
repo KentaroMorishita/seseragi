@@ -1070,6 +1070,246 @@
   ],
   "instances": [
     {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "MaybeT",
+      "typeConstructorCanonical": "std/transformer/maybe::MaybeT",
+      "typeConstructorArity": 2,
+      "identity": "std/transformer/maybe::Functor",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "MaybeT",
+      "typeConstructorCanonical": "std/transformer/maybe::MaybeT",
+      "typeConstructorArity": 2,
+      "identity": "std/transformer/maybe::Applicative",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "MaybeT",
+      "typeConstructorCanonical": "std/transformer/maybe::MaybeT",
+      "typeConstructorArity": 2,
+      "identity": "std/transformer/maybe::Monad",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "EitherT",
+      "typeConstructorCanonical": "std/transformer/either::EitherT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/either::Functor",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "EitherT",
+      "typeConstructorCanonical": "std/transformer/either::EitherT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/either::Applicative",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "EitherT",
+      "typeConstructorCanonical": "std/transformer/either::EitherT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/either::Monad",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "ReaderT",
+      "typeConstructorCanonical": "std/transformer/reader::ReaderT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/reader::Functor",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "ReaderT",
+      "typeConstructorCanonical": "std/transformer/reader::ReaderT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/reader::Applicative",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "ReaderT",
+      "typeConstructorCanonical": "std/transformer/reader::ReaderT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/reader::Monad",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "StateT",
+      "typeConstructorCanonical": "std/transformer/state::StateT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/state::Functor",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "StateT",
+      "typeConstructorCanonical": "std/transformer/state::StateT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/state::Applicative",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "StateT",
+      "typeConstructorCanonical": "std/transformer/state::StateT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/state::Monad",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "WriterT",
+      "typeConstructorCanonical": "std/transformer/writer::WriterT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/writer::Functor",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        },
+        {
+          "trait": "Monoid",
+          "traitCanonical": "std/prelude::Monoid",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "WriterT",
+      "typeConstructorCanonical": "std/transformer/writer::WriterT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/writer::Applicative",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        },
+        {
+          "trait": "Monoid",
+          "traitCanonical": "std/prelude::Monoid",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "WriterT",
+      "typeConstructorCanonical": "std/transformer/writer::WriterT",
+      "typeConstructorArity": 3,
+      "identity": "std/transformer/writer::Monad",
+      "constraints": [
+        {
+          "trait": "Monad",
+          "traitCanonical": "std/prelude::Monad",
+          "typeArgumentIndex": 1
+        },
+        {
+          "trait": "Monoid",
+          "traitCanonical": "std/prelude::Monoid",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
       "trait": "Monoid",
       "traitCanonical": "std/prelude::Monoid",
       "typeConstructor": "Product",
@@ -4332,10 +4572,11 @@
       },
       {
         "trait": "Applicative",
-        "head": "EitherT<E, M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "EitherT",
+        "identity": "std/transformer/either::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Applicative",
@@ -4355,10 +4596,11 @@
       },
       {
         "trait": "Applicative",
-        "head": "MaybeT<M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "MaybeT",
+        "identity": "std/transformer/maybe::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Applicative",
@@ -4370,10 +4612,11 @@
       },
       {
         "trait": "Applicative",
-        "head": "ReaderT<R, M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "ReaderT",
+        "identity": "std/transformer/reader::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Applicative",
@@ -4385,10 +4628,11 @@
       },
       {
         "trait": "Applicative",
-        "head": "StateT<S, M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "StateT",
+        "identity": "std/transformer/state::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Applicative",
@@ -4408,10 +4652,11 @@
       },
       {
         "trait": "Applicative",
-        "head": "WriterT<W, M, _> where Monad<M>, Monoid<W>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "WriterT",
+        "identity": "std/transformer/writer::Applicative",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Debug",
@@ -5460,10 +5705,11 @@
       },
       {
         "trait": "Functor",
-        "head": "EitherT<E, M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "EitherT",
+        "identity": "std/transformer/either::Functor",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Functor",
@@ -5491,10 +5737,11 @@
       },
       {
         "trait": "Functor",
-        "head": "MaybeT<M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "MaybeT",
+        "identity": "std/transformer/maybe::Functor",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Functor",
@@ -5506,10 +5753,11 @@
       },
       {
         "trait": "Functor",
-        "head": "ReaderT<R, M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "ReaderT",
+        "identity": "std/transformer/reader::Functor",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Functor",
@@ -5528,10 +5776,11 @@
       },
       {
         "trait": "Functor",
-        "head": "StateT<S, M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "StateT",
+        "identity": "std/transformer/state::Functor",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Functor",
@@ -5551,10 +5800,11 @@
       },
       {
         "trait": "Functor",
-        "head": "WriterT<W, M, _> where Monad<M>, Monoid<W>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "WriterT",
+        "identity": "std/transformer/writer::Functor",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Hash",
@@ -5969,10 +6219,11 @@
       },
       {
         "trait": "Monad",
-        "head": "EitherT<E, M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "EitherT",
+        "identity": "std/transformer/either::Monad",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Monad",
@@ -5992,10 +6243,11 @@
       },
       {
         "trait": "Monad",
-        "head": "MaybeT<M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "MaybeT",
+        "identity": "std/transformer/maybe::Monad",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Monad",
@@ -6007,10 +6259,11 @@
       },
       {
         "trait": "Monad",
-        "head": "ReaderT<R, M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "ReaderT",
+        "identity": "std/transformer/reader::Monad",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Monad",
@@ -6021,10 +6274,11 @@
       },
       {
         "trait": "Monad",
-        "head": "StateT<S, M, _> where Monad<M>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "StateT",
+        "identity": "std/transformer/state::Monad",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Monad",
@@ -6043,10 +6297,11 @@
       },
       {
         "trait": "Monad",
-        "head": "WriterT<W, M, _> where Monad<M>, Monoid<W>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
-        "spec": "9.9"
+        "head": "WriterT",
+        "identity": "std/transformer/writer::Monad",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.7"
       },
       {
         "trait": "Monoid",

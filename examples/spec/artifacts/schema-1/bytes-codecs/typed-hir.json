@@ -9,6 +9,7 @@
       "canonical": "std/prelude::ConsoleError"
     },
     {
+      "arity": 0,
       "spelling": "base64.Base64DecodeError",
       "canonical": "std/bytes/base64::Base64DecodeError",
       "provider": {
@@ -17,11 +18,21 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "hex.HexDecodeError",
       "canonical": "std/bytes/hex::HexDecodeError",
       "provider": {
         "module": "std/bytes/hex",
         "export": "HexDecodeError"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "bytes.Bytes",
+      "canonical": "std/bytes::Bytes",
+      "provider": {
+        "module": "std/bytes",
+        "export": "Bytes"
       }
     },
     {
@@ -33,6 +44,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "bytes.ByteError",
       "canonical": "std/bytes::ByteError",
       "provider": {

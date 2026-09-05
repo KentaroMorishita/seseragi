@@ -4,6 +4,24 @@
   "languageVersion": "0.1.0",
   "routes": [
     {
+      "id": "transformer-project",
+      "evidence": "examples/spec/fixtures/projects/transformers",
+      "products": [
+        "cli-build",
+        "cli-run",
+        "lsp-project",
+        "wasm-project",
+        "playground-execution"
+      ],
+      "modules": [
+        "std/transformer/maybe",
+        "std/transformer/either",
+        "std/transformer/reader",
+        "std/transformer/state",
+        "std/transformer/writer"
+      ]
+    },
+    {
       "id": "portable-project",
       "evidence": "examples/spec/fixtures/projects/std-parity-portable",
       "products": [
@@ -609,6 +627,56 @@
       "interfaceFingerprint": "fnv1a64:10003d3a8345d5bb",
       "implementation": "lowering-runtime",
       "route": "portable-project"
+    },
+    {
+      "specifier": "std/transformer/maybe",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:93e508df86b5d3d7",
+      "implementation": "lowering-runtime",
+      "route": "transformer-project"
+    },
+    {
+      "specifier": "std/transformer/either",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:50811ce0bdfee7a7",
+      "implementation": "lowering-runtime",
+      "route": "transformer-project"
+    },
+    {
+      "specifier": "std/transformer/reader",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:420772bdb25071e9",
+      "implementation": "lowering-runtime",
+      "route": "transformer-project"
+    },
+    {
+      "specifier": "std/transformer/state",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:0e0efb15d73e9a48",
+      "implementation": "lowering-runtime",
+      "route": "transformer-project"
+    },
+    {
+      "specifier": "std/transformer/writer",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:ddf77a098133b22c",
+      "implementation": "lowering-runtime",
+      "route": "transformer-project"
     },
     {
       "specifier": "std/json",

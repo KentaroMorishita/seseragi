@@ -5,6 +5,7 @@
   "module": "fixture/imported-iterable-comprehension::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "Countdown",
       "canonical": "fixture/imported-iterable-comprehension::domain::Countdown",
       "provider": {

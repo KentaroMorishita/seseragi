@@ -68234,6 +68234,1868 @@
       }
     },
     {
+      "specifier": "std/transformer/maybe",
+      "identity": "std/transformer/maybe",
+      "status": "available",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/transformer/maybe",
+        "source": "std/transformer/maybe.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/transformer/maybe::MaybeT",
+            "namespace": "type",
+            "name": "MaybeT",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "MaybeT",
+                "arity": 2
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "run",
+                  "type": {
+                    "kind": "named",
+                    "name": "M",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/transformer/maybe::run",
+            "namespace": "value",
+            "name": "run",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "MaybeT",
+                  "canonical": "std/transformer/maybe::MaybeT",
+                  "providerModule": "std/transformer/maybe",
+                  "providerExport": "MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/maybe::fromMaybe",
+            "namespace": "value",
+            "name": "fromMaybe",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "MaybeT",
+                  "canonical": "std/transformer/maybe::MaybeT",
+                  "providerModule": "std/transformer/maybe",
+                  "providerExport": "MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/maybe::lift",
+            "namespace": "value",
+            "name": "lift",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "MaybeT",
+                  "canonical": "std/transformer/maybe::MaybeT",
+                  "providerModule": "std/transformer/maybe",
+                  "providerExport": "MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
+      "specifier": "std/transformer/either",
+      "identity": "std/transformer/either",
+      "status": "available",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/transformer/either",
+        "source": "std/transformer/either.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/transformer/either::EitherT",
+            "namespace": "type",
+            "name": "EitherT",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "EitherT",
+                "arity": 3
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "run",
+                  "type": {
+                    "kind": "named",
+                    "name": "M",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/transformer/either::run",
+            "namespace": "value",
+            "name": "run",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "EitherT",
+                  "canonical": "std/transformer/either::EitherT",
+                  "providerModule": "std/transformer/either",
+                  "providerExport": "EitherT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/either::fromEither",
+            "namespace": "value",
+            "name": "fromEither",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "EitherT",
+                  "canonical": "std/transformer/either::EitherT",
+                  "providerModule": "std/transformer/either",
+                  "providerExport": "EitherT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/either::lift",
+            "namespace": "value",
+            "name": "lift",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "E",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "EitherT",
+                  "canonical": "std/transformer/either::EitherT",
+                  "providerModule": "std/transformer/either",
+                  "providerExport": "EitherT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
+      "specifier": "std/transformer/reader",
+      "identity": "std/transformer/reader",
+      "status": "available",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/transformer/reader",
+        "source": "std/transformer/reader.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/transformer/reader::ReaderT",
+            "namespace": "type",
+            "name": "ReaderT",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ReaderT",
+                "arity": 3
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "run",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/transformer/reader::run",
+            "namespace": "value",
+            "name": "run",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "R",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "ReaderT",
+                    "canonical": "std/transformer/reader::ReaderT",
+                    "providerModule": "std/transformer/reader",
+                    "providerExport": "ReaderT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "M",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "M",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/reader::ask",
+            "namespace": "value",
+            "name": "ask",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                {
+                  "name": "M",
+                  "arity": 1
+                }
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ReaderT",
+                  "canonical": "std/transformer/reader::ReaderT",
+                  "providerModule": "std/transformer/reader",
+                  "providerExport": "ReaderT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/reader::asks",
+            "namespace": "value",
+            "name": "asks",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "R",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ReaderT",
+                  "canonical": "std/transformer/reader::ReaderT",
+                  "providerModule": "std/transformer/reader",
+                  "providerExport": "ReaderT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/reader::local",
+            "namespace": "value",
+            "name": "local",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "R",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "R",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "ReaderT",
+                    "canonical": "std/transformer/reader::ReaderT",
+                    "providerModule": "std/transformer/reader",
+                    "providerExport": "ReaderT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "M",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "external-named",
+                    "name": "ReaderT",
+                    "canonical": "std/transformer/reader::ReaderT",
+                    "providerModule": "std/transformer/reader",
+                    "providerExport": "ReaderT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "M",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/reader::lift",
+            "namespace": "value",
+            "name": "lift",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ReaderT",
+                  "canonical": "std/transformer/reader::ReaderT",
+                  "providerModule": "std/transformer/reader",
+                  "providerExport": "ReaderT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
+      "specifier": "std/transformer/state",
+      "identity": "std/transformer/state",
+      "status": "available",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/transformer/state",
+        "source": "std/transformer/state.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/transformer/state::StateT",
+            "namespace": "type",
+            "name": "StateT",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "S",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "StateT",
+                "arity": 3
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "run",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "S",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "S",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/transformer/state::run",
+            "namespace": "value",
+            "name": "run",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "S",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "StateT",
+                    "canonical": "std/transformer/state::StateT",
+                    "providerModule": "std/transformer/state",
+                    "providerExport": "StateT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "S",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "M",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "M",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "S",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/state::get",
+            "namespace": "value",
+            "name": "get",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "S",
+                {
+                  "name": "M",
+                  "arity": 1
+                }
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StateT",
+                  "canonical": "std/transformer/state::StateT",
+                  "providerModule": "std/transformer/state",
+                  "providerExport": "StateT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "S",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "S",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/state::put",
+            "namespace": "value",
+            "name": "put",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "S",
+                {
+                  "name": "M",
+                  "arity": 1
+                }
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StateT",
+                  "canonical": "std/transformer/state::StateT",
+                  "providerModule": "std/transformer/state",
+                  "providerExport": "StateT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "S",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/state::modify",
+            "namespace": "value",
+            "name": "modify",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "S",
+                {
+                  "name": "M",
+                  "arity": 1
+                }
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "S",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "S",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StateT",
+                  "canonical": "std/transformer/state::StateT",
+                  "providerModule": "std/transformer/state",
+                  "providerExport": "StateT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "S",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/state::lift",
+            "namespace": "value",
+            "name": "lift",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "S",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StateT",
+                  "canonical": "std/transformer/state::StateT",
+                  "providerModule": "std/transformer/state",
+                  "providerExport": "StateT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "S",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
+      "specifier": "std/transformer/writer",
+      "identity": "std/transformer/writer",
+      "status": "available",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/transformer/writer",
+        "source": "std/transformer/writer.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/transformer/writer::WriterT",
+            "namespace": "type",
+            "name": "WriterT",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "W",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "WriterT",
+                "arity": 3
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "run",
+                  "type": {
+                    "kind": "named",
+                    "name": "M",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "W",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/transformer/writer::run",
+            "namespace": "value",
+            "name": "run",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "W",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "WriterT",
+                  "canonical": "std/transformer/writer::WriterT",
+                  "providerModule": "std/transformer/writer",
+                  "providerExport": "WriterT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "W",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "W",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/writer::tell",
+            "namespace": "value",
+            "name": "tell",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "W",
+                {
+                  "name": "M",
+                  "arity": 1
+                }
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Monoid",
+                  "traitIdentity": "std/prelude::Monoid",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "W",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "W",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "WriterT",
+                  "canonical": "std/transformer/writer::WriterT",
+                  "providerModule": "std/transformer/writer",
+                  "providerExport": "WriterT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "W",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/writer::listen",
+            "namespace": "value",
+            "name": "listen",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "W",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Monoid",
+                  "traitIdentity": "std/prelude::Monoid",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "W",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "WriterT",
+                  "canonical": "std/transformer/writer::WriterT",
+                  "providerModule": "std/transformer/writer",
+                  "providerExport": "WriterT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "W",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "WriterT",
+                  "canonical": "std/transformer/writer::WriterT",
+                  "providerModule": "std/transformer/writer",
+                  "providerExport": "WriterT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "W",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "W",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/transformer/writer::lift",
+            "namespace": "value",
+            "name": "lift",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "W",
+                {
+                  "name": "M",
+                  "arity": 1
+                },
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Monad",
+                  "traitIdentity": "std/prelude::Monad",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Monoid",
+                  "traitIdentity": "std/prelude::Monoid",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "W",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "WriterT",
+                  "canonical": "std/transformer/writer::WriterT",
+                  "providerModule": "std/transformer/writer",
+                  "providerExport": "WriterT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "W",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "M",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
       "specifier": "std/json",
       "identity": "std/json",
       "status": "available",
@@ -83671,51 +85533,6 @@
         "operators": [],
         "instances": []
       }
-    },
-    {
-      "specifier": "std/transformer/either",
-      "identity": "std/transformer/either",
-      "status": "contract-only",
-      "targets": [
-        "process",
-        "browser"
-      ]
-    },
-    {
-      "specifier": "std/transformer/maybe",
-      "identity": "std/transformer/maybe",
-      "status": "contract-only",
-      "targets": [
-        "process",
-        "browser"
-      ]
-    },
-    {
-      "specifier": "std/transformer/reader",
-      "identity": "std/transformer/reader",
-      "status": "contract-only",
-      "targets": [
-        "process",
-        "browser"
-      ]
-    },
-    {
-      "specifier": "std/transformer/state",
-      "identity": "std/transformer/state",
-      "status": "contract-only",
-      "targets": [
-        "process",
-        "browser"
-      ]
-    },
-    {
-      "specifier": "std/transformer/writer",
-      "identity": "std/transformer/writer",
-      "status": "contract-only",
-      "targets": [
-        "process",
-        "browser"
-      ]
     },
     {
       "specifier": "std/validation",

@@ -4,6 +4,7 @@
   "module": "fixture/imported-struct::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "Player",
       "canonical": "fixture/imported-struct::domain::Player",
       "provider": {

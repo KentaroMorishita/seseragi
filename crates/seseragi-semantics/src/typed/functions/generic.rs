@@ -199,11 +199,37 @@ pub(crate) fn infer_type_parameters(
             .iter()
             .find(|type_parameter| type_parameter.arity > 0 && type_parameter.name == *name)
         {
+            // A higher-kinded parameter may occur unapplied inside another
+            // nominal type (Wrapper<M, A>), not only as M<A>. Its argument is
+            // already kind-checked at the nominal boundary; preserve the whole
+            // constructor, including any fixed arguments of a partial head.
+            if arguments.is_empty()
+                && matches!(
+                    argument,
+                    TypedType::Named { .. } | TypedType::ExternalNamed { .. }
+                )
+            {
+                substitutions
+                    .entry(name.clone())
+                    .and_modify(|existing| {
+                        if typed_type_contains_hole(existing) {
+                            *existing = argument.clone();
+                        }
+                    })
+                    .or_insert_with(|| argument.clone());
+            }
             if arguments.len() == constructor_parameter.arity as usize {
                 if let Some((constructor, applied_arguments)) =
                     split_constructor_application(argument, arguments.len())
                 {
-                    substitutions.entry(name.clone()).or_insert(constructor);
+                    substitutions
+                        .entry(name.clone())
+                        .and_modify(|existing| {
+                            if typed_type_contains_hole(existing) {
+                                *existing = constructor.clone();
+                            }
+                        })
+                        .or_insert(constructor);
                     for (parameter, argument) in arguments.iter().zip(applied_arguments) {
                         infer_type_parameters(parameter, argument, type_parameters, substitutions);
                     }
@@ -437,8 +463,8 @@ pub(crate) fn substitute_type_parameters(
                     name: constructor,
                     arguments: existing,
                 }) => {
-                    let mut applied = existing.clone();
-                    applied.extend(arguments);
+                    let applied =
+                        crate::typed::semantic_types::fill_constructor_holes(existing, arguments);
                     TypedType::Named {
                         name: constructor.clone(),
                         arguments: applied,
@@ -449,8 +475,8 @@ pub(crate) fn substitute_type_parameters(
                     canonical,
                     arguments: existing,
                 }) => {
-                    let mut applied = existing.clone();
-                    applied.extend(arguments);
+                    let applied =
+                        crate::typed::semantic_types::fill_constructor_holes(existing, arguments);
                     TypedType::ExternalNamed {
                         name: constructor.clone(),
                         canonical: canonical.clone(),

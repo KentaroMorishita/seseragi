@@ -5,6 +5,7 @@
   "module": "fixture/imported-trait-instance-contract::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "Prefix",
       "canonical": "fixture/imported-trait-instance-contract::contract::Prefix",
       "provider": {

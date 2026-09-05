@@ -1,0 +1,24 @@
+import * as eff from "std/effect"
+import * as mt from "std/transformer/maybe"
+import * as rt from "std/transformer/reader"
+
+pub fn bump<F<_>> value: F<Int> -> F<Int> where Functor<F> =
+  map (\n: Int -> n + 1) value
+
+pub fn optional<M<_>> value: Int -> mt.MaybeT<M, Int> where Monad<M> =
+  mt.fromMaybe (Just value)
+
+pub fn environment<M<_>> -> rt.ReaderT<Int, M, Int> where Monad<M> = rt.ask ()
+
+pub effect fn mark value: Int -> Int with console: Console fails ConsoleError = do {
+  println `base:${value}`
+  eff.succeed value
+}
+
+pub struct Log { text: String }
+instance Semigroup<Log> {
+  fn append left: Log -> right: Log -> Log = Log { text: `${left.text}${right.text}` }
+}
+instance Monoid<Log> {
+  fn empty unit: Unit -> Log = Log { text: "" }
+}

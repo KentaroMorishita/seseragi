@@ -5,6 +5,7 @@
   "module": "fixture/type-alias-modules::main",
   "externalTypeBindings": [
     {
+      "arity": 1,
       "spelling": "Pair",
       "canonical": "fixture/type-alias-modules::domain::Pair",
       "provider": {
@@ -13,6 +14,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "domain.Pair",
       "canonical": "fixture/type-alias-modules::domain::Pair",
       "provider": {

@@ -90,12 +90,13 @@ import * as module85 from "../../../../runtime/ts/src/test.ts"
 import * as module86 from "../../../../runtime/ts/src/text.ts"
 import * as module87 from "../../../../runtime/ts/src/time.ts"
 import * as module88 from "../../../../runtime/ts/src/timezone-rules.js"
-import * as module89 from "../../../../runtime/ts/src/unicode.ts"
-import * as module90 from "../../../../runtime/ts/src/unicode-version.ts"
-import * as module91 from "../../../../runtime/ts/src/validation.ts"
-import * as module92 from "../../../../runtime/ts/src/web-file.ts"
-import * as module93 from "../../../../runtime/ts/src/websocket.ts"
-import * as module94 from "../../../../runtime/ts/src/websocket-host-provider.ts"
+import * as module89 from "../../../../runtime/ts/src/transformer.ts"
+import * as module90 from "../../../../runtime/ts/src/unicode.ts"
+import * as module91 from "../../../../runtime/ts/src/unicode-version.ts"
+import * as module92 from "../../../../runtime/ts/src/validation.ts"
+import * as module93 from "../../../../runtime/ts/src/web-file.ts"
+import * as module94 from "../../../../runtime/ts/src/websocket.ts"
+import * as module95 from "../../../../runtime/ts/src/websocket-host-provider.ts"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": module8,
@@ -182,12 +183,13 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/text": module86,
   "@seseragi/runtime/time": module87,
   "@seseragi/runtime/timezone-rules": module88,
-  "@seseragi/runtime/unicode": module89,
-  "@seseragi/runtime/unicode-version": module90,
-  "@seseragi/runtime/validation": module91,
-  "@seseragi/runtime/web-file": module92,
-  "@seseragi/runtime/websocket": module93,
-  "@seseragi/runtime/websocket-host-provider": module94,
+  "@seseragi/runtime/transformer": module89,
+  "@seseragi/runtime/unicode": module90,
+  "@seseragi/runtime/unicode-version": module91,
+  "@seseragi/runtime/validation": module92,
+  "@seseragi/runtime/web-file": module93,
+  "@seseragi/runtime/websocket": module94,
+  "@seseragi/runtime/websocket-host-provider": module95,
   "seseragi/runtime-browser/clock": module0,
   "seseragi/runtime-browser/entropy": module1,
   "seseragi/runtime-browser/http-client": module2,

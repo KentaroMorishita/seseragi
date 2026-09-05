@@ -196,6 +196,18 @@ impl ImportedTypeContext {
                         self.semantic_value(argument, module, type_parameters, bindings)
                     })
                     .collect::<Option<Vec<_>>>()?;
+                if type_parameters.contains(name) {
+                    return Some(SemanticTypeKey::Application {
+                        constructor: Box::new(SemanticValueType {
+                            type_ref: TypedType::Named {
+                                name: name.clone(),
+                                arguments: vec![],
+                            },
+                            key: SemanticTypeKey::SchemeParameter(name.clone()),
+                        }),
+                        arguments,
+                    });
+                }
                 if let Some(binding) = bindings.iter().find(|binding| binding.spelling == *name) {
                     return Some(self.canonical_owners.get(&binding.canonical).map_or_else(
                         || SemanticTypeKey::ExternalNominal {

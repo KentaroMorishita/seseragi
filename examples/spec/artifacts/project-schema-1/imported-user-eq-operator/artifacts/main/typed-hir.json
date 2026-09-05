@@ -5,6 +5,7 @@
   "module": "fixture/imported-user-eq-operator::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "Status",
       "canonical": "fixture/imported-user-eq-operator::domain::Status",
       "provider": {

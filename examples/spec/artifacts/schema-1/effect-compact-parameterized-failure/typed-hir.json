@@ -5,6 +5,7 @@
   "module": "artifact/effect-compact-parameterized-failure",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "Style",
       "canonical": "std/web/html::Style",
       "provider": {
@@ -13,6 +14,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Attribute",
       "canonical": "std/web/html::Attribute",
       "provider": {
@@ -21,6 +23,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "KeyboardEvent",
       "canonical": "std/web/html::KeyboardEvent",
       "provider": {
@@ -29,6 +32,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "EventAction",
       "canonical": "std/web/html::EventAction",
       "provider": {
@@ -37,6 +41,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "MouseEvent",
       "canonical": "std/web/html::MouseEvent",
       "provider": {
@@ -45,6 +50,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "PointerEvent",
       "canonical": "std/web/html::PointerEvent",
       "provider": {
@@ -53,6 +59,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "ScrollEvent",
       "canonical": "std/web/html::ScrollEvent",
       "provider": {
@@ -61,11 +68,39 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "html.Html",
       "canonical": "std/web/html::Html",
       "provider": {
         "module": "std/web/html",
         "export": "Html"
+      }
+    },
+    {
+      "arity": 1,
+      "spelling": "Signal",
+      "canonical": "std/signal::Signal",
+      "provider": {
+        "module": "std/signal",
+        "export": "Signal"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "DomOptions",
+      "canonical": "std/web/dom::DomOptions",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomOptions"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "dom.DomTarget",
+      "canonical": "std/web/dom::DomTarget",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomTarget"
       }
     },
     {
@@ -77,22 +112,15 @@
       }
     },
     {
-      "spelling": "DomOptions",
-      "canonical": "std/web/dom::DomOptions",
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
       "provider": {
-        "module": "std/web/dom",
-        "export": "DomOptions"
+        "module": "std/web/html",
+        "export": "Html"
       }
     },
     {
-      "spelling": "dom.DomTarget",
-      "canonical": "std/web/dom::DomTarget",
-      "provider": {
-        "module": "std/web/dom",
-        "export": "DomTarget"
-      }
-    },
-    {
+      "arity": 0,
       "spelling": "Dom",
       "canonical": "std/web/dom::Dom",
       "provider": {
@@ -101,6 +129,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "dom.DomRuntimeError",
       "canonical": "std/web/dom::DomRuntimeError",
       "provider": {

@@ -9,6 +9,7 @@
       "canonical": "std/prelude::ConsoleError"
     },
     {
+      "arity": 1,
       "spelling": "MutableSignal",
       "canonical": "std/signal::MutableSignal",
       "provider": {
@@ -17,6 +18,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "Signal",
       "canonical": "std/signal::Signal",
       "provider": {
@@ -25,6 +27,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Subscription",
       "canonical": "std/signal::Subscription",
       "provider": {

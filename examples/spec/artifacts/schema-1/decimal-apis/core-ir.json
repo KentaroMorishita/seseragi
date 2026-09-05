@@ -8,6 +8,7 @@
       "canonical": "std/prelude::ConsoleError"
     },
     {
+      "arity": 0,
       "spelling": "decimals.DecimalParseError",
       "canonical": "std/decimal::DecimalParseError",
       "provider": {
@@ -16,11 +17,30 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "DecimalArithmeticError",
       "canonical": "std/decimal::DecimalArithmeticError",
       "provider": {
         "module": "std/decimal",
         "export": "DecimalArithmeticError"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "RoundingMode",
+      "canonical": "std/number::RoundingMode",
+      "provider": {
+        "module": "std/number",
+        "export": "RoundingMode"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "Decimal",
+      "canonical": "std/decimal::Decimal",
+      "provider": {
+        "module": "std/decimal",
+        "export": "Decimal"
       }
     },
     {
@@ -32,14 +52,7 @@
       }
     },
     {
-      "spelling": "Decimal",
-      "canonical": "std/decimal::Decimal",
-      "provider": {
-        "module": "std/decimal",
-        "export": "Decimal"
-      }
-    },
-    {
+      "arity": 0,
       "spelling": "decimals.DecimalContextError",
       "canonical": "std/decimal::DecimalContextError",
       "provider": {
@@ -48,6 +61,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "DecimalContext",
       "canonical": "std/decimal::DecimalContext",
       "provider": {
@@ -56,6 +70,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "json.JsonReadError",
       "canonical": "std/json::JsonReadError",
       "provider": {
@@ -64,6 +79,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "DecimalConversionError",
       "canonical": "std/decimal::DecimalConversionError",
       "provider": {

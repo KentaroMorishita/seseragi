@@ -5,6 +5,7 @@
   "module": "fixture/transitive-instance-dispatch::facade",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "Badge",
       "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
       "provider": {

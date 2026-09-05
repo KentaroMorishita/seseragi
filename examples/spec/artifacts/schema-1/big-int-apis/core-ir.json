@@ -8,6 +8,7 @@
       "canonical": "std/prelude::ConsoleError"
     },
     {
+      "arity": 0,
       "spelling": "bigints.BigIntDivisionError",
       "canonical": "std/big-int::BigIntDivisionError",
       "provider": {
@@ -16,6 +17,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "bigints.BigIntPowerError",
       "canonical": "std/big-int::BigIntPowerError",
       "provider": {
@@ -24,6 +26,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "BigInt",
       "canonical": "std/big-int::BigInt",
       "provider": {
@@ -32,6 +35,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "bigints.BigIntParseError",
       "canonical": "std/big-int::BigIntParseError",
       "provider": {
@@ -40,6 +44,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "bigints.BigIntConversionError",
       "canonical": "std/big-int::BigIntConversionError",
       "provider": {

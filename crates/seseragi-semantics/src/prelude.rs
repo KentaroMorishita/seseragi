@@ -455,6 +455,111 @@ const fn method(
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "MaybeT",
+        type_canonical: Some("std/transformer/maybe::MaybeT"),
+        type_arity: 2,
+        identity: "std/transformer/maybe::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "MaybeT",
+        type_canonical: Some("std/transformer/maybe::MaybeT"),
+        type_arity: 2,
+        identity: "std/transformer/maybe::Applicative",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monad",
+        type_name: "MaybeT",
+        type_canonical: Some("std/transformer/maybe::MaybeT"),
+        type_arity: 2,
+        identity: "std/transformer/maybe::Monad",
+    },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "EitherT",
+        type_canonical: Some("std/transformer/either::EitherT"),
+        type_arity: 3,
+        identity: "std/transformer/either::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "EitherT",
+        type_canonical: Some("std/transformer/either::EitherT"),
+        type_arity: 3,
+        identity: "std/transformer/either::Applicative",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monad",
+        type_name: "EitherT",
+        type_canonical: Some("std/transformer/either::EitherT"),
+        type_arity: 3,
+        identity: "std/transformer/either::Monad",
+    },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "ReaderT",
+        type_canonical: Some("std/transformer/reader::ReaderT"),
+        type_arity: 3,
+        identity: "std/transformer/reader::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "ReaderT",
+        type_canonical: Some("std/transformer/reader::ReaderT"),
+        type_arity: 3,
+        identity: "std/transformer/reader::Applicative",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monad",
+        type_name: "ReaderT",
+        type_canonical: Some("std/transformer/reader::ReaderT"),
+        type_arity: 3,
+        identity: "std/transformer/reader::Monad",
+    },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "StateT",
+        type_canonical: Some("std/transformer/state::StateT"),
+        type_arity: 3,
+        identity: "std/transformer/state::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "StateT",
+        type_canonical: Some("std/transformer/state::StateT"),
+        type_arity: 3,
+        identity: "std/transformer/state::Applicative",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monad",
+        type_name: "StateT",
+        type_canonical: Some("std/transformer/state::StateT"),
+        type_arity: 3,
+        identity: "std/transformer/state::Monad",
+    },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "WriterT",
+        type_canonical: Some("std/transformer/writer::WriterT"),
+        type_arity: 3,
+        identity: "std/transformer/writer::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "WriterT",
+        type_canonical: Some("std/transformer/writer::WriterT"),
+        type_arity: 3,
+        identity: "std/transformer/writer::Applicative",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monad",
+        type_name: "WriterT",
+        type_canonical: Some("std/transformer/writer::WriterT"),
+        type_arity: 3,
+        identity: "std/transformer/writer::Monad",
+    },
+    PreludeStandardInstance {
         trait_name: "Monoid",
         type_name: "Product",
         type_canonical: None,
@@ -3013,7 +3118,7 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
     }
 }
 
-pub(crate) fn type_constructor_arity(spelling: &str) -> Option<u32> {
+pub fn type_constructor_arity(spelling: &str) -> Option<u32> {
     if let Some(sum_type) = sum_type_for_symbol(SymbolNamespace::Type, spelling) {
         return Some(sum_type.type_parameters.len() as u32);
     }
@@ -3455,6 +3560,42 @@ pub(crate) fn standard_instance_constraint_specs(
             type_argument_indices: &[0],
         }];
     match identity {
+        "std/transformer/maybe::Functor"
+        | "std/transformer/maybe::Applicative"
+        | "std/transformer/maybe::Monad" => &[PreludeStandardInstanceConstraint {
+            trait_name: "Monad",
+            type_argument_indices: &[0],
+        }],
+        "std/transformer/either::Functor"
+        | "std/transformer/either::Applicative"
+        | "std/transformer/either::Monad" => &[PreludeStandardInstanceConstraint {
+            trait_name: "Monad",
+            type_argument_indices: &[1],
+        }],
+        "std/transformer/reader::Functor"
+        | "std/transformer/reader::Applicative"
+        | "std/transformer/reader::Monad" => &[PreludeStandardInstanceConstraint {
+            trait_name: "Monad",
+            type_argument_indices: &[1],
+        }],
+        "std/transformer/state::Functor"
+        | "std/transformer/state::Applicative"
+        | "std/transformer/state::Monad" => &[PreludeStandardInstanceConstraint {
+            trait_name: "Monad",
+            type_argument_indices: &[1],
+        }],
+        "std/transformer/writer::Functor"
+        | "std/transformer/writer::Applicative"
+        | "std/transformer/writer::Monad" => &[
+            PreludeStandardInstanceConstraint {
+                trait_name: "Monad",
+                type_argument_indices: &[1],
+            },
+            PreludeStandardInstanceConstraint {
+                trait_name: "Monoid",
+                type_argument_indices: &[0],
+            },
+        ],
         "std/product::Semigroup" => &[PreludeStandardInstanceConstraint {
             trait_name: "Mul",
             type_argument_indices: &[0, 0, 0],
@@ -3886,20 +4027,31 @@ fn standard_instance_canonical_head(
 }
 
 fn standard_instance_head(instance: &PreludeStandardInstance, type_ref: &TypedType) -> Option<u32> {
-    match type_ref {
+    let arguments = match type_ref {
         TypedType::Named { name, arguments }
-            if instance.type_canonical.is_none() && instance.type_name == name =>
+            if instance.type_canonical.is_none()
+                && instance.type_name == name
+                && type_constructor_arity(name) == Some(instance.type_arity) =>
         {
-            (type_constructor_arity(name) == Some(instance.type_arity))
-                .then_some(arguments.len() as u32)
+            arguments
         }
         TypedType::ExternalNamed {
             canonical,
             arguments,
             ..
-        } if instance.type_canonical == Some(canonical.as_str()) => Some(arguments.len() as u32),
-        _ => None,
-    }
+        } if instance.type_canonical == Some(canonical.as_str()) => arguments,
+        _ => return None,
+    };
+    let supplied = arguments
+        .iter()
+        .position(|argument| matches!(argument, TypedType::Hole))
+        .unwrap_or(arguments.len());
+    // Canonical instances fix a prefix of the constructor. A hole before a
+    // fixed argument changes that constructor and cannot borrow this instance.
+    arguments[supplied..]
+        .iter()
+        .all(|argument| matches!(argument, TypedType::Hole))
+        .then_some(supplied as u32)
 }
 
 fn last_type_argument(type_ref: &TypedType) -> Option<&TypedType> {

@@ -12,6 +12,7 @@ use crate::runtime_types::runtime_type_import_for_surface;
 pub(super) struct TypeScriptTypeContext {
     imported_names: Arc<BTreeMap<String, String>>,
     constructors: BTreeSet<String>,
+    arities: BTreeMap<String, u32>,
 }
 
 impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
@@ -19,11 +20,40 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
         Self {
             imported_names: Arc::new(imported_names),
             constructors: BTreeSet::new(),
+            arities: BTreeMap::new(),
         }
     }
 }
 
 impl TypeScriptTypeContext {
+    pub(super) fn with_module(mut self, module: &crate::CoreModule) -> Self {
+        for binding in &module.external_type_bindings {
+            if let Some(arity) = binding.arity {
+                self.arities.insert(binding.canonical.clone(), arity);
+            }
+        }
+        for (name, count) in module
+            .adts
+            .iter()
+            .map(|item| (&item.name, item.type_parameters.len()))
+            .chain(
+                module
+                    .structs
+                    .iter()
+                    .map(|item| (&item.name, item.type_parameters.len())),
+            )
+            .chain(
+                module
+                    .aliases
+                    .iter()
+                    .map(|item| (&item.name, item.type_parameters.len())),
+            )
+        {
+            self.arities.insert(name.clone(), count as u32);
+        }
+        self
+    }
+
     pub(super) fn get(&self, canonical: &str) -> Option<&String> {
         self.imported_names.get(canonical)
     }
@@ -107,6 +137,16 @@ pub(super) fn type_ref_from_core_type_with_erasure(
     type_constructor_parameters: &[String],
 ) -> TypeScriptType {
     match type_ref {
+        // A source constructor is a kind, not a TypeScript value type. Erase
+        // unsaturated heads wherever they occur, including nested nominal
+        // arguments and dictionary instantiation, using declaration metadata.
+        CoreType::Named { name, arguments }
+            if imported_types.arities.get(name).copied()
+                .or_else(|| seseragi_semantics::prelude_type_constructor_arity(name))
+                .is_some_and(|arity| arguments.len() < arity as usize) => TypeScriptType::Unknown,
+        CoreType::ExternalNamed { canonical, arguments, .. }
+            if imported_types.arities.get(canonical)
+                .is_some_and(|arity| arguments.len() < *arity as usize) => TypeScriptType::Unknown,
         CoreType::Named { name, arguments }
             if !arguments.is_empty()
                 && (imported_types.constructors.contains(name) || type_constructor_parameters

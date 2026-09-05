@@ -77,9 +77,7 @@
       "trait": "Functor",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Box",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "origin": {
@@ -194,9 +192,7 @@
       "trait": "Applicative",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Box",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "constraints": [
@@ -205,9 +201,7 @@
           "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Functor)",
           "arguments": [
             {
-              "kind": "reference",
-              "name": "Box",
-              "arguments": []
+              "kind": "unknown"
             }
           ]
         }
@@ -430,9 +424,7 @@
       "trait": "Monad",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Box",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "constraints": [
@@ -441,9 +433,7 @@
           "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
           "arguments": [
             {
-              "kind": "reference",
-              "name": "Box",
-              "arguments": []
+              "kind": "unknown"
             }
           ]
         }

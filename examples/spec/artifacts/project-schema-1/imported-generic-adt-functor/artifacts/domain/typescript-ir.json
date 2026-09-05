@@ -42,9 +42,7 @@
       "trait": "Functor",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Box",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "origin": {
