@@ -9975,6 +9975,19 @@
       ]
     },
     {
+      "identity": "std/prelude::??",
+      "name": "??",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "Maybe<A> ?? A -> A",
+      "description": "Maybe fallback. Precedence 0, right-associative. Evaluates the left once; evaluates the fallback only for Nothing. Syntax only: no operator section or overload.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/path::AbsoluteChildPath",
       "name": "AbsoluteChildPath",
       "module": "std/path",

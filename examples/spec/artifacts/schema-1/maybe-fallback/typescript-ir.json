@@ -1,0 +1,541 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/maybe-fallback",
+  "runtimeRequirements": [
+    "core.maybe.nothing",
+    "core.maybe",
+    "core.string",
+    "core.maybe.just",
+    "core.adt",
+    "core.unit",
+    "core.int",
+    "core.int.divide",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.int.show"
+  ],
+  "imports": [
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "core.int.divide",
+      "local": "_ssrg_int_divide"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "cached",
+      "type": {
+        "kind": "maybe",
+        "element": {
+          "kind": "string"
+        }
+      },
+      "initializer": {
+        "kind": "runtime-reference",
+        "name": "_ssrg_maybe_Nothing"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 104,
+        "end": 139
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "requested",
+      "type": {
+        "kind": "maybe",
+        "element": {
+          "kind": "string"
+        }
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_maybe_Just",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "request"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 140,
+        "end": 185
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "resolve",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: A }",
+          "implicit": false
+        },
+        {
+          "name": "fallback",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "$ssrg$fallbackValue",
+                "type": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "$ssrg$fallbackValue"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "identifier",
+              "name": "fallback"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 69
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "fail",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int_divide",
+        "arguments": [
+          {
+            "kind": "number",
+            "value": "1"
+          },
+          {
+            "kind": "number",
+            "value": "0"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 70,
+        "end": 103
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "decision",
+                  "scrutinee": {
+                    "kind": "identifier",
+                    "name": "cached"
+                  },
+                  "scrutineeType": {
+                    "kind": "maybe",
+                    "element": {
+                      "kind": "string"
+                    }
+                  },
+                  "branches": [
+                    {
+                      "tests": [
+                        {
+                          "kind": "tag-equals",
+                          "path": [],
+                          "tag": "Just"
+                        }
+                      ],
+                      "bindings": [
+                        {
+                          "name": "$ssrg$fallbackValue",
+                          "type": {
+                            "kind": "string"
+                          },
+                          "path": [
+                            {
+                              "kind": "adt-payload"
+                            }
+                          ]
+                        }
+                      ],
+                      "value": {
+                        "kind": "identifier",
+                        "name": "$ssrg$fallbackValue"
+                      }
+                    },
+                    {
+                      "tests": [],
+                      "value": {
+                        "kind": "decision",
+                        "scrutinee": {
+                          "kind": "identifier",
+                          "name": "requested"
+                        },
+                        "scrutineeType": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "string"
+                          }
+                        },
+                        "branches": [
+                          {
+                            "tests": [
+                              {
+                                "kind": "tag-equals",
+                                "path": [],
+                                "tag": "Just"
+                              }
+                            ],
+                            "bindings": [
+                              {
+                                "name": "$ssrg$fallbackValue",
+                                "type": {
+                                  "kind": "string"
+                                },
+                                "path": [
+                                  {
+                                    "kind": "adt-payload"
+                                  }
+                                ]
+                              }
+                            ],
+                            "value": {
+                              "kind": "identifier",
+                              "name": "$ssrg$fallbackValue"
+                            }
+                          },
+                          {
+                            "tests": [],
+                            "value": {
+                              "kind": "string",
+                              "value": "anonymous"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "string"
+                        }
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "decision",
+                        "scrutinee": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybe_Just",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "7"
+                            }
+                          ]
+                        },
+                        "scrutineeType": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
+                          }
+                        },
+                        "branches": [
+                          {
+                            "tests": [
+                              {
+                                "kind": "tag-equals",
+                                "path": [],
+                                "tag": "Just"
+                              }
+                            ],
+                            "bindings": [
+                              {
+                                "name": "$ssrg$fallbackValue",
+                                "type": {
+                                  "kind": "number"
+                                },
+                                "path": [
+                                  {
+                                    "kind": "adt-payload"
+                                  }
+                                ]
+                              }
+                            ],
+                            "value": {
+                              "kind": "identifier",
+                              "name": "$ssrg$fallbackValue"
+                            }
+                          },
+                          {
+                            "tests": [],
+                            "value": {
+                              "kind": "call",
+                              "callee": "fail",
+                              "arguments": [
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "number"
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "decision",
+                        "scrutinee": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_maybe_Nothing"
+                        },
+                        "scrutineeType": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
+                          }
+                        },
+                        "branches": [
+                          {
+                            "tests": [
+                              {
+                                "kind": "tag-equals",
+                                "path": [],
+                                "tag": "Just"
+                              }
+                            ],
+                            "bindings": [
+                              {
+                                "name": "$ssrg$fallbackValue",
+                                "type": {
+                                  "kind": "number"
+                                },
+                                "path": [
+                                  {
+                                    "kind": "adt-payload"
+                                  }
+                                ]
+                              }
+                            ],
+                            "value": {
+                              "kind": "identifier",
+                              "name": "$ssrg$fallbackValue"
+                            }
+                          },
+                          {
+                            "tests": [],
+                            "value": {
+                              "kind": "number",
+                              "value": "8"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "number"
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "resolve",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_maybe_Just",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "9"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "number",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 186,
+        "end": 367
+      }
+    }
+  ]
+}

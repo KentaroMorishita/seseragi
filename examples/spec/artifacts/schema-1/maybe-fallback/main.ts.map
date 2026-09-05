@@ -1,0 +1,39 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/maybe-fallback"
+  ],
+  "sourcesContent": [
+    "fn resolve<A> value: Maybe<A> -> fallback: A -> A = value ?? fallback\nfn fail unit: Unit -> Int = 1 / 0\nlet cached: Maybe<String> = Nothing\nlet requested: Maybe<String> = Just \"request\"\npub effect fn main = do {\n  println $ cached ?? requested ?? \"anonymous\"\n  println $ show (Just 7 ?? fail ())\n  println $ show (Nothing ?? 8)\n  println $ show (resolve (Just 9) 0)\n}\n"
+  ],
+  "names": [
+    "resolve",
+    "$ssrg$fallbackValue",
+    "fail",
+    "divide",
+    "main",
+    "println",
+    "$ssrg$fallbackValue",
+    "$ssrg$fallbackValue",
+    "println",
+    "intShow",
+    "Just",
+    "$ssrg$fallbackValue",
+    "fail",
+    "println",
+    "intShow",
+    "Nothing",
+    "$ssrg$fallbackValue",
+    "println",
+    "intShow",
+    "resolve",
+    "Just",
+    "cached",
+    "Nothing",
+    "requested",
+    "Just"
+  ],
+  "mappings": ";;;;;;;;AAAAA;AACAE;AAGAE;AAFAiB;AACAE"
+}

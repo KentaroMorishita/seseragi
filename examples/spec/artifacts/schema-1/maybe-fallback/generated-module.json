@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "artifact/maybe-fallback",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.maybe.nothing",
+      "core.maybe",
+      "core.string",
+      "core.maybe.just",
+      "core.adt",
+      "core.unit",
+      "core.int",
+      "core.int.divide",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}
