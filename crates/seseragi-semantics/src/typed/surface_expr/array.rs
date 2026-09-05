@@ -183,37 +183,50 @@ pub(super) fn type_index(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    let expected = context
-        .expected()
-        .and_then(|expected| match &expected.type_ref {
-            TypedType::Named { name, arguments } if name == "Maybe" && arguments.len() == 1 => {
-                Some(context.semantic_value_from_typed_type(&TypedType::Named {
-                    name: "Array".to_owned(),
-                    arguments: arguments.clone(),
-                }))
-            }
-            _ => None,
-        });
+    let expected_element = context.expected().and_then(|expected| match &expected.key {
+        SemanticTypeKey::NamedGeneric { name, arguments }
+            if name == "Maybe" && arguments.len() == 1 =>
+        {
+            Some(arguments[0].clone())
+        }
+        SemanticTypeKey::Adt { owner, arguments }
+            if arguments.len() == 1
+                && context.resolution.resolved().symbols.iter().any(|symbol| {
+                    symbol.id == *owner && symbol.canonical.as_deref() == Some("std/prelude::Maybe")
+                }) =>
+        {
+            Some(arguments[0].clone())
+        }
+        _ => None,
+    });
+    let expected = expected_element.map(|element| SemanticValueType {
+        type_ref: TypedType::Named {
+            name: "Array".to_owned(),
+            arguments: vec![element.type_ref.clone()],
+        },
+        key: SemanticTypeKey::NamedGeneric {
+            name: "Array".to_owned(),
+            arguments: vec![element],
+        },
+    });
     let values = type_surface_expression(receiver, &context.with_expected(expected));
     let offset = type_surface_expression(
         index,
-        &context.with_expected(Some(context.semantic_value_from_typed_type(
-            &TypedType::Named {
+        &context.with_expected(Some(SemanticValueType {
+            type_ref: TypedType::Named {
                 name: "Int".to_owned(),
                 arguments: vec![],
             },
-        ))),
+            key: SemanticTypeKey::Other,
+        })),
     );
     let receiver_type = inferred_type_from_expr(&values.value);
     let index_type = inferred_type_from_expr(&offset.value);
-    let element = match &receiver_type {
-        TypedType::Named { name, arguments } if name == "Array" && arguments.len() == 1 => {
-            match &values.semantic_type {
-                SemanticTypeKey::NamedGeneric { arguments, .. } if arguments.len() == 1 => {
-                    Some(arguments[0].clone())
-                }
-                _ => Some(context.semantic_value_from_typed_type(&arguments[0])),
-            }
+    let element = match &values.semantic_type {
+        SemanticTypeKey::NamedGeneric { name, arguments }
+            if name == "Array" && arguments.len() == 1 =>
+        {
+            Some(arguments[0].clone())
         }
         _ => None,
     };
@@ -222,11 +235,12 @@ pub(super) fn type_index(
             receiver: receiver.span(),
             actual: receiver_type,
         })
-    } else if index_type
+    } else if (index_type
         != (TypedType::Named {
             name: "Int".to_owned(),
             arguments: vec![],
         })
+        || offset.semantic_type != SemanticTypeKey::Other)
         && offset.semantic_type != SemanticTypeKey::Invalid
     {
         Some(ArrayIssue::InvalidIndexType {
