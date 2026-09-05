@@ -22,6 +22,7 @@ mod block;
 mod comprehension;
 mod conditional;
 pub(crate) mod effectful_for;
+mod expected;
 pub(crate) mod lambda;
 mod match_expression;
 mod monad_do;
