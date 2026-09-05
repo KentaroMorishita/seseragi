@@ -215,3 +215,55 @@ fn named_type_is(type_ref: &TypedType, expected_name: &str) -> bool {
 fn lower_first(value: &str) -> String {
     seseragi_syntax::unicode::lowercase_first(value)
 }
+
+/// Join lazy Effect branch contracts without inventing a union failure type.
+/// Ordinary values retain the existing exact branch-type contract.
+pub(super) fn join_branch_types(left: &TypedType, right: &TypedType) -> Option<TypedType> {
+    if left == right {
+        return Some(left.clone());
+    }
+    let left_effect = effect_from_value_type(left)?;
+    let right_effect = effect_from_value_type(right)?;
+    let join_channel = |left: &TypedType, right: &TypedType| {
+        if left == right || named_type_is(right, "Never") {
+            Some(left.clone())
+        } else if named_type_is(left, "Never") {
+            Some(right.clone())
+        } else {
+            None
+        }
+    };
+    let failure = join_channel(&left_effect.failure, &right_effect.failure)?;
+    let success = join_channel(&left_effect.success, &right_effect.success)?;
+    let (
+        TypedType::Record {
+            closed: true,
+            mut fields,
+        },
+        TypedType::Record {
+            closed: true,
+            fields: other,
+        },
+    ) = (left_effect.environment, right_effect.environment)
+    else {
+        return None;
+    };
+    for field in other {
+        if let Some(existing) = fields.iter().find(|existing| existing.name == field.name) {
+            if existing != &field {
+                return None;
+            }
+        } else {
+            fields.push(field);
+        }
+    }
+    fields.sort_by(|left, right| left.name.cmp(&right.name));
+    Some(super::type_ref::effect_value_type(&TypedEffect {
+        environment: TypedType::Record {
+            closed: true,
+            fields,
+        },
+        failure,
+        success,
+    }))
+}

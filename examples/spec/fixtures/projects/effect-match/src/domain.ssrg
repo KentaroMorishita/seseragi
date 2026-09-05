@@ -1,0 +1,20 @@
+import * as effects from "std/effect"
+
+pub type Box<A> = | Box A
+pub effect fn display<A> value: Box<A>
+  -> Unit
+with Console
+fails ConsoleError
+where Show<A> =
+  match value {
+    Box item -> if True then { let text = show item
+      println text } else println "unused"
+  }
+pub effect fn choose value: Maybe<Int> = match value {
+  Just item -> effects.succeed (item + 1)
+  Nothing -> effects.fail "missing"
+}
+pub effect fn observe value: Maybe<Int> = match value {
+  Just item -> println $ show item
+  Nothing -> println "nothing"
+}

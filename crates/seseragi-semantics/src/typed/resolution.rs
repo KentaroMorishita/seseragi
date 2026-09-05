@@ -110,7 +110,8 @@ impl<'a> TypedResolution<'a> {
         let typed_parameters = super::functions::typed_parameters_from_surface(parameters, self);
         let analysis =
             super::effect_body::analyze_effect_body(body, &typed_parameters, self, Vec::new());
-        if !analysis.call_issues.is_empty()
+        if !analysis.conditional_issues.is_empty()
+            || !analysis.call_issues.is_empty()
             || !analysis.array_issues.is_empty()
             || !analysis.record_issues.is_empty()
             || !analysis.range_issues.is_empty()
