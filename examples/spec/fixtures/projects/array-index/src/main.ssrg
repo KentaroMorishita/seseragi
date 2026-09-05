@@ -1,0 +1,17 @@
+import { pick } from "./domain"
+import * as arrays from "std/array"
+let values = [10, 20, 30]
+let empty: Array<Int> = []
+let read = pick values
+pub effect fn main = do {
+  println $ show values[0]
+  println $ show values[1]
+  println $ show values[2]
+  println $ show values[-1]
+  println $ show values[3]
+  println $ show values[99]
+  println $ show empty[0]
+  println $ show (read 1)
+  println $ show (pick [7, 8] 1)
+  println $ show (values[1] == arrays.get 1 values)
+}

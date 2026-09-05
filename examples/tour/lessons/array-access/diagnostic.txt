@@ -1,6 +1,3 @@
-examples/tour/lessons/array-access/diagnostic.ssrg:6:29: error[SES-T0101]: Array element type mismatch
-  | pub effect fn main = first [1, 2] |> println
-  |                             ^ element 1 expected String, received Int
-  = expected: String
-  = actual: Int
-  = diff: expected String, actual Int
+examples/tour/lessons/array-access/diagnostic.ssrg:2:37: error[SES-T0101]: Array index not int
+  | pub effect fn main = println values["first"]
+  |                                     ^^^^^^^ array index must be Int, received String

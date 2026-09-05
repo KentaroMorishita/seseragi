@@ -1,8 +1,8 @@
 import * as arrays from "std/array"
+let values = [10, 20, 30]
 
-fn describe values: Array<Int> -> String = match values {
-  [] -> "empty"
-  [head, ...tail] -> `head: ${head} / length: ${arrays.length values}`
+pub effect fn main = do {
+  println $ show (arrays.length values)
+  println $ show values[1]
+  println $ show values[3]
 }
-
-pub effect fn main = describe [10, 20, 30] |> println

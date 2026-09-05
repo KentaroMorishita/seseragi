@@ -16,6 +16,21 @@ pub(super) fn collect_array_diagnostic(
 
 pub(super) fn array_diagnostic(issue: &ArrayIssue, declaration: ByteSpan) -> Diagnostic {
     let (message_key, primary, message, type_difference) = match issue {
+        ArrayIssue::InvalidIndexReceiver { receiver, actual } => (
+            "array.index-receiver-not-array".to_owned(),
+            *receiver,
+            format!(
+                "index access requires Array<A>, received {}",
+                type_label(actual)
+            ),
+            None,
+        ),
+        ArrayIssue::InvalidIndexType { index, actual } => (
+            "array.index-not-int".to_owned(),
+            *index,
+            format!("array index must be Int, received {}", type_label(actual)),
+            None,
+        ),
         ArrayIssue::EmptyWithoutExpectedType {
             collection,
             literal,

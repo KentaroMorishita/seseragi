@@ -70,6 +70,29 @@ impl ExpressionParser<'_> {
                 break;
             }
 
+            // Adjacency distinguishes indexing from applying a function to an Array.
+            if self.kind_at_cursor() == Some(TokenKind::PunctuationSquareLeft)
+                && self.tokens[self.cursor].start == left.span().end
+            {
+                const INDEX_BP: u8 = 90;
+                if INDEX_BP < min_bp {
+                    break;
+                }
+                self.cursor += 1;
+                let index = self.parse_expr_bp(0, &[TokenKind::PunctuationSquareRight])?;
+                let close = self.consume(TokenKind::PunctuationSquareRight)?;
+                let span = ByteSpan {
+                    start: left.span().start,
+                    end: close.end,
+                };
+                left = SurfaceExpr::Index {
+                    receiver: Box::new(left),
+                    index: Box::new(index),
+                    span,
+                };
+                continue;
+            }
+
             if self.kind_at_cursor() == Some(TokenKind::PunctuationDot) {
                 const MEMBER_BP: u8 = 90;
                 if MEMBER_BP < min_bp {

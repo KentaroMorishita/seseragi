@@ -43,7 +43,12 @@ pub(super) fn resolve_expression(
                 resolve_type_ref(resolver, scope, argument);
             }
         }
-        SurfaceExpr::Application {
+        SurfaceExpr::Index {
+            receiver: function,
+            index: argument,
+            ..
+        }
+        | SurfaceExpr::Application {
             function, argument, ..
         } => {
             resolve_expression(resolver, scope, function);

@@ -371,6 +371,7 @@ describe("Playground project compiler boundary", () => {
     "effect-until",
     "monoid-wrappers",
     "transformers",
+    "array-index",
   ]) {
     test(`executes ${fixtureName} across named and namespace imports`, async () => {
       const fixture = new URL(

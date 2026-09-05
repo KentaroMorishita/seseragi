@@ -290,6 +290,11 @@ export function isEmpty<A>(values: ReadonlyArray<A>): boolean {
   return values.length === 0
 }
 
+// Receiver-first syntax ABI; safe bounds semantics remain owned by get.
+export function index<A>(values: ReadonlyArray<A>, offset: number) {
+  return get(offset, values)
+}
+
 export function get<A>(index: number, values: ReadonlyArray<A>) {
   if (index < 0 || index >= values.length) return Nothing
   return Just(values[index] as A)

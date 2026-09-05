@@ -6,6 +6,16 @@
   "targetFamily": "typescript",
   "features": [
     {
+      "id": "core.array.index",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Array postfix safe access; receiver then Int index evaluated once; delegates bounds to get",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "index"
+      }
+    },
+    {
       "id": "core.transformer.maybe.type",
       "kind": "value-representation",
       "typescript": "readonly nominal struct with run field; base HKT application erased",
