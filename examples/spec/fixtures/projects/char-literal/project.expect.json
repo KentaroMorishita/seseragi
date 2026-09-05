@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "phase": "run",
+  "spec": [
+    "1.2",
+    "1.2.1"
+  ],
+  "lock": "generate",
+  "stdout": "瀬\n[a, λ, 瀬]\nJust '\n(\\, \u0000)\na:λ\n(1, 2, 0)\n",
+  "kind": "project"
+}

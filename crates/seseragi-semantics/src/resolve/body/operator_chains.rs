@@ -328,6 +328,7 @@ fn normalize_expression(
         | SurfaceExpr::Integer { .. }
         | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
+        | SurfaceExpr::Char { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. }
         | SurfaceExpr::Error { .. } => {}

@@ -96,6 +96,13 @@ fn scalar_witnesses(patterns: &[&CoveragePattern]) -> Vec<Witness> {
 fn literal_label(literal: &LiteralPattern) -> String {
     match literal {
         LiteralPattern::Integer(value) => value.clone(),
+        LiteralPattern::Char(value) => format!(
+            "'{}'",
+            value
+                .chars()
+                .flat_map(char::escape_default)
+                .collect::<String>()
+        ),
         LiteralPattern::String(value) => format!("{value:?}"),
         LiteralPattern::Boolean(value) => if *value { "True" } else { "False" }.to_owned(),
     }

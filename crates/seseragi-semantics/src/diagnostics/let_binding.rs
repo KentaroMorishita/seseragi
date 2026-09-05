@@ -74,7 +74,9 @@ pub(super) fn collect_let_binding_diagnostics(
 
     let expected_value = resolution.semantic_value_from_type_ref(annotation);
     let expected = expected_value.type_ref.clone();
-    let actual_value = resolution.semantic_value_from_typed_type(&actual);
+    let mut actual_value = resolution.semantic_value_from_typed_type(&actual);
+    // The expression owns its identity; resolving its display name can pick a local shadow.
+    actual_value.key = analysis.semantic_type.clone();
     if typed_type_contains_hole(&expected)
         || typed_type_contains_hole(&actual)
         || semantic_values_are_compatible(&expected_value, &actual_value)

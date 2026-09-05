@@ -126,6 +126,7 @@ fn collect_intrinsic_issues(
         | TypedExpr::Integer { .. }
         | TypedExpr::Float { .. }
         | TypedExpr::String { .. }
+        | TypedExpr::Char { .. }
         | TypedExpr::Template { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. }

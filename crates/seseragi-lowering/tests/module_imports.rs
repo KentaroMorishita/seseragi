@@ -110,7 +110,7 @@ fn lowers_an_imported_top_level_value_to_a_runtime_binding() {
     assert!(
         generated
             .typescript
-            .contains("export const result: unknown = importedAnswer"),
+            .contains("export const result: number = importedAnswer"),
         "{}",
         generated.typescript
     );

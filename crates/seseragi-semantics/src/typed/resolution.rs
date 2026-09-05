@@ -950,6 +950,7 @@ fn collect_local_callables(
         | SurfaceExpr::Integer { .. }
         | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
+        | SurfaceExpr::Char { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. }
         | SurfaceExpr::Error { .. } => {}

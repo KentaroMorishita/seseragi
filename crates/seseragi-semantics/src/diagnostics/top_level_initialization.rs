@@ -308,6 +308,7 @@ impl<'graph, 'source, 'diagnostics> DependencyWalker<'graph, 'source, 'diagnosti
             | SurfaceExpr::Integer { .. }
             | SurfaceExpr::Float { .. }
             | SurfaceExpr::String { .. }
+            | SurfaceExpr::Char { .. }
             | SurfaceExpr::Boolean { .. }
             | SurfaceExpr::Error { .. } => {}
             SurfaceExpr::Name { span, .. } => self.walk_name(*span, root_call),

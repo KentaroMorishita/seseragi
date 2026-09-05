@@ -203,6 +203,7 @@ impl CompletionCollector<'_> {
             | TypedExpr::Integer { .. }
             | TypedExpr::Float { .. }
             | TypedExpr::String { .. }
+            | TypedExpr::Char { .. }
             | TypedExpr::Boolean { .. }
             | TypedExpr::Variable { .. } => {}
         }

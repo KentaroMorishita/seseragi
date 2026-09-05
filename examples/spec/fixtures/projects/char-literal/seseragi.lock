@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/char-literal@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/char-literal@0.0.0#workspace:."
+name = "fixture/char-literal"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:d4c02c131df81a7fd2ad84c38c75de020c83f38515478287a67237aa3990b0c0"
+content_digest = "sha256:acdc92108c2925a6be8408de6477feef2c481bbc9b101704998ae9627595bd17"
+dependencies = []

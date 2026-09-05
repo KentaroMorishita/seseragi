@@ -228,7 +228,7 @@ fn lower_pattern(
                 origin: source_span(source, origin),
             });
         }
-        TypedPattern::String { value, origin, .. } => {
+        TypedPattern::String { value, origin, .. } | TypedPattern::Char { value, origin, .. } => {
             tests.push(CoreDecisionTest::String {
                 path: path.clone(),
                 value,
@@ -343,6 +343,7 @@ fn typed_pattern_type(pattern: &TypedPattern) -> TypedType {
     match pattern {
         TypedPattern::Integer { type_ref, .. }
         | TypedPattern::String { type_ref, .. }
+        | TypedPattern::Char { type_ref, .. }
         | TypedPattern::Boolean { type_ref, .. }
         | TypedPattern::Wildcard { type_ref, .. }
         | TypedPattern::Binding { type_ref, .. }
@@ -359,6 +360,7 @@ fn typed_pattern_origin(pattern: &TypedPattern) -> ByteSpan {
     match pattern {
         TypedPattern::Integer { origin, .. }
         | TypedPattern::String { origin, .. }
+        | TypedPattern::Char { origin, .. }
         | TypedPattern::Boolean { origin, .. }
         | TypedPattern::Wildcard { origin, .. }
         | TypedPattern::Binding { origin, .. }
@@ -377,6 +379,7 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
         | TypedExpr::Integer { type_ref, .. }
         | TypedExpr::Float { type_ref, .. }
         | TypedExpr::String { type_ref, .. }
+        | TypedExpr::Char { type_ref, .. }
         | TypedExpr::Template { type_ref, .. }
         | TypedExpr::Boolean { type_ref, .. }
         | TypedExpr::Variable { type_ref, .. }

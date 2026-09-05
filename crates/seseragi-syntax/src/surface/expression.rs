@@ -335,6 +335,10 @@ impl ExpressionParser<'_> {
                 raw: token.raw.clone(),
                 span: token_span(token),
             }),
+            TokenKind::LiteralChar => Some(SurfaceExpr::Char {
+                raw: token.raw.clone(),
+                span: token_span(token),
+            }),
             TokenKind::LiteralString => Some(SurfaceExpr::String {
                 raw: token.raw.clone(),
                 span: token_span(token),
@@ -500,6 +504,7 @@ impl ExpressionParser<'_> {
             Some(
                 TokenKind::LiteralInteger
                     | TokenKind::LiteralFloat
+                    | TokenKind::LiteralChar
                     | TokenKind::LiteralString
                     | TokenKind::LiteralTemplate
                     | TokenKind::LiteralBoolean

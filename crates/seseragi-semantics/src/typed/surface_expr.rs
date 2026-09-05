@@ -510,6 +510,11 @@ pub(super) fn type_surface_expression(
             type_ref: named_type("Float"),
             origin: *span,
         }),
+        SurfaceExpr::Char { raw, span } => SurfaceExpressionAnalysis::valid(TypedExpr::Char {
+            value: seseragi_syntax::decode_char_literal(raw).unwrap_or_default(),
+            type_ref: named_type("Char"),
+            origin: *span,
+        }),
         SurfaceExpr::String { raw, span } => SurfaceExpressionAnalysis::valid(TypedExpr::String {
             value: unquote_string(raw),
             type_ref: named_type("String"),
@@ -760,6 +765,7 @@ fn recovery_hole_origin(expression: &TypedExpr) -> Option<ByteSpan> {
         | TypedExpr::Integer { .. }
         | TypedExpr::Float { .. }
         | TypedExpr::String { .. }
+        | TypedExpr::Char { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. } => None,
     }

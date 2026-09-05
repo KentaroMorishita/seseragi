@@ -90,6 +90,9 @@ impl Diagnostic {
             "literal.invalid-escape" => {
                 "Literal contains an invalid or unsupported escape sequence".to_owned()
             }
+            "literal.char-scalar-count" => {
+                "Char literal must contain exactly one Unicode scalar value".to_owned()
+            }
             "literal.int-outside-range" => {
                 "Integer literal is outside the Int safe range".to_owned()
             }
@@ -447,8 +450,19 @@ fn template_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
         .filter(|token| token.kind == TokenKind::LiteralTemplate)
     {
         for chunk in scan_template(&token.raw).chunks {
-            let TemplateChunk::Text(range) = chunk else {
-                continue;
+            let range = match chunk {
+                TemplateChunk::Text(range) => range,
+                TemplateChunk::Interpolation { expression, .. } => {
+                    let mut nested = lex("template-interpolation", &token.raw[expression.clone()]);
+                    let offset = token.start + expression.start;
+                    for token in &mut nested.tokens {
+                        token.start += offset;
+                        token.end += offset;
+                    }
+                    diagnostics.extend(literal_diagnostics(&nested.tokens));
+                    diagnostics.extend(template_literal_diagnostics(&nested.tokens));
+                    continue;
+                }
             };
             let Err(error) = decode_template_text(&token.raw[range.clone()]) else {
                 continue;
@@ -499,10 +513,53 @@ fn string_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
         .collect()
 }
 
+fn char_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
+    tokens
+        .iter()
+        .filter(|token| token.kind == TokenKind::LiteralChar)
+        .filter_map(|token| {
+            let (code, key, range) = if token.raw.len() < 2
+                || !token.raw.ends_with('\'')
+                || token.raw[..token.raw.len() - 1]
+                    .bytes()
+                    .rev()
+                    .take_while(|byte| *byte == b'\\')
+                    .count()
+                    % 2
+                    == 1
+            {
+                ("SES-P0001", "parser.error", 0..token.raw.len())
+            } else {
+                match crate::decode_char_literal(&token.raw) {
+                    Err(error) => ("SES-P0201", "literal.invalid-escape", error.range),
+                    Ok(value) if value.chars().count() != 1 => {
+                        ("SES-P0202", "literal.char-scalar-count", 0..token.raw.len())
+                    }
+                    Ok(_) => return None,
+                }
+            };
+            Some(Diagnostic {
+                type_difference: None,
+                id: String::new(),
+                code: code.to_owned(),
+                severity: DiagnosticSeverity::Error,
+                message_key: key.to_owned(),
+                primary: ByteRange {
+                    start: token.start + range.start,
+                    end: token.start + range.end,
+                },
+                related: Vec::new(),
+                fixes: Vec::new(),
+            })
+        })
+        .collect()
+}
+
 fn literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
     let mut diagnostics = integer_literal_diagnostics(tokens);
     diagnostics.extend(float_literal_diagnostics(tokens));
     diagnostics.extend(string_literal_diagnostics(tokens));
+    diagnostics.extend(char_literal_diagnostics(tokens));
     diagnostics
 }
 
@@ -887,6 +944,7 @@ fn message_key_for_code(code: &str) -> &str {
     match code {
         "SES-P0001" => "parser.expected-expression",
         "SES-P0201" => "literal.invalid-escape",
+        "SES-P0202" => "literal.char-scalar-count",
         "SES-P0203" => "literal.int-outside-range",
         _ => "parser.error",
     }

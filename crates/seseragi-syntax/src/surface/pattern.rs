@@ -111,6 +111,10 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
             raw: tokens[first].raw.clone(),
             span,
         },
+        TokenKind::LiteralChar => SurfacePattern::Char {
+            raw: tokens[first].raw.clone(),
+            span,
+        },
         TokenKind::LiteralString => SurfacePattern::String {
             raw: tokens[first].raw.clone(),
             span,

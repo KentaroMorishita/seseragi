@@ -30,7 +30,7 @@ pub use interface::{
     InterfaceType, ModuleHeader, ModuleHeaderName, ModuleInterface, UnlinkedModuleInterface,
 };
 pub use lexer::{is_custom_operator_candidate, lex};
-pub use literal::{decode_string_literal, LiteralDecodeError};
+pub use literal::{decode_char_literal, decode_string_literal, LiteralDecodeError};
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};
 pub use standard_operator::{
     declarable_standard_operator, impl_operator_instances, operator_section_policy,

@@ -469,6 +469,10 @@ pub enum SurfaceExpr {
         raw: String,
         span: ByteSpan,
     },
+    Char {
+        raw: String,
+        span: ByteSpan,
+    },
     String {
         raw: String,
         span: ByteSpan,
@@ -612,6 +616,7 @@ impl SurfaceExpr {
             | Self::Integer { span, .. }
             | Self::Float { span, .. }
             | Self::String { span, .. }
+            | Self::Char { span, .. }
             | Self::Template { span, .. }
             | Self::Boolean { span, .. }
             | Self::Name { span, .. }
@@ -784,6 +789,10 @@ pub enum SurfacePattern {
         raw: String,
         span: ByteSpan,
     },
+    Char {
+        raw: String,
+        span: ByteSpan,
+    },
     String {
         raw: String,
         span: ByteSpan,
@@ -843,6 +852,7 @@ impl SurfacePattern {
         match self {
             Self::Integer { span, .. }
             | Self::String { span, .. }
+            | Self::Char { span, .. }
             | Self::Boolean { span, .. }
             | Self::Name { span, .. }
             | Self::Wildcard { span }
@@ -895,6 +905,7 @@ impl SurfacePattern {
             }
             Self::Integer { .. }
             | Self::String { .. }
+            | Self::Char { .. }
             | Self::Boolean { .. }
             | Self::Wildcard { .. }
             | Self::Error { .. } => {}

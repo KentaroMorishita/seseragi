@@ -279,6 +279,12 @@ pub enum CorePattern {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    Char {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     String {
         value: String,
         #[serde(rename = "type")]
@@ -366,6 +372,10 @@ pub enum CoreExpr {
         origin: SourceSpan,
     },
     Float64 {
+        value: String,
+        origin: SourceSpan,
+    },
+    Char {
         value: String,
         origin: SourceSpan,
     },

@@ -165,3 +165,12 @@ describe("Seseragi syntax classification", () => {
     ).toBe(source)
   })
 })
+
+test("highlights Char literals without consuming identifier apostrophes", () => {
+  const tokens = highlightedTokens("let account' = '瀬'\nlet result = classify '\\u{03BB}'")
+  expect(tokens).toEqual(expect.arrayContaining([
+    { text: "account'", classes: "tok-variableName" },
+    { text: "'瀬'", classes: "tok-string" },
+    { text: "'\\u{03BB}'", classes: "tok-string" },
+  ]))
+})

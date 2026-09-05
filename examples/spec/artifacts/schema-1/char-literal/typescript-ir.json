@@ -1,0 +1,409 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/char-literal",
+  "runtimeRequirements": [
+    "core.string",
+    "core.maybe",
+    "core.char",
+    "core.maybe.just",
+    "core.char.show",
+    "core.tuple.show",
+    "core.maybe.show",
+    "core.array.show",
+    "core.int"
+  ],
+  "imports": [
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "core.char.show",
+      "local": "_ssrg_show_charShow"
+    },
+    {
+      "feature": "core.tuple.show",
+      "local": "_ssrg_show_tupleShow"
+    },
+    {
+      "feature": "core.maybe.show",
+      "local": "_ssrg_show_maybeShow"
+    },
+    {
+      "feature": "core.array.show",
+      "local": "_ssrg_show_arrayShow"
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "account$prime",
+      "type": {
+        "kind": "string"
+      },
+      "initializer": {
+        "kind": "string",
+        "value": "瀬"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 79,
+        "end": 99
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "escaped",
+      "type": {
+        "kind": "string"
+      },
+      "initializer": {
+        "kind": "string",
+        "value": "λ"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 183,
+        "end": 213
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "nested",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "maybe",
+          "element": {
+            "kind": "string"
+          }
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_maybe_Just",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "a"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_maybe_Just",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "escaped"
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "string"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 214,
+        "end": 271
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "tuple",
+      "type": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "string"
+          },
+          {
+            "kind": "string"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "identity",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "account$prime"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "character",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "'"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 272,
+        "end": 333
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "result",
+      "type": {
+        "kind": "string"
+      },
+      "initializer": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_show_tupleShow",
+                  "typeArguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "string"
+                        },
+                        {
+                          "kind": "string"
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_charShow"
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_charShow"
+                    }
+                  ]
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "tuple"
+                  }
+                ]
+              },
+              "right": {
+                "kind": "string",
+                "value": ", "
+              }
+            },
+            "right": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "_ssrg_show_arrayShow",
+                "typeArguments": [
+                  {
+                    "kind": "maybe",
+                    "element": {
+                      "kind": "string"
+                    }
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_show_maybeShow",
+                    "typeArguments": [
+                      {
+                        "kind": "string"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_charShow"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "nested"
+                }
+              ]
+            }
+          },
+          "right": {
+            "kind": "string",
+            "value": ", "
+          }
+        },
+        "right": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_charShow"
+          },
+          "method": "show",
+          "arguments": [
+            {
+              "kind": "string",
+              "value": "λ"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 334,
+        "end": 381
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "identity",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1,
+        "end": 37
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "character",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 38,
+        "end": 78
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "classify",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "string"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "a"
+              }
+            ],
+            "value": {
+              "kind": "number",
+              "value": "1"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [],
+                "value": "λ"
+              }
+            ],
+            "value": {
+              "kind": "number",
+              "value": "2"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "number",
+              "value": "0"
+            }
+          }
+        ],
+        "type": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 100,
+        "end": 182
+      }
+    }
+  ]
+}

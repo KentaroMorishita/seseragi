@@ -1,0 +1,12 @@
+import { initial, identity, classify } from "./domain"
+let account' = 'a'
+let values: Array<Char> = [account', '\u{03BB}', initial]
+let wrapped: Maybe<Char> = Just (identity '\'')
+pub effect fn main = do {
+  println `${initial}`
+  println $ show values
+  println $ show wrapped
+  println $ show (identity '\\', identity '\0')
+  println `${account'}:${'λ'}`
+  println $ show (classify 'a', classify 'λ', classify '瀬')
+}

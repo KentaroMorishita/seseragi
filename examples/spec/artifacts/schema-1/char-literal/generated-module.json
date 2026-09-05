@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "module": "artifact/char-literal",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.string",
+      "core.maybe",
+      "core.char",
+      "core.maybe.just",
+      "core.char.show",
+      "core.tuple.show",
+      "core.maybe.show",
+      "core.array.show",
+      "core.int"
+    ]
+  },
+  "exports": [
+    "result"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

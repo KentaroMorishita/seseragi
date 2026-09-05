@@ -1,0 +1,9 @@
+
+fn identity<A> value: A -> A = value
+fn character value: Char -> Char = value
+let account' = '瀬'
+fn classify value: Char -> Int = match value { 'a' -> 1; '\u{03BB}' -> 2; _ -> 0 }
+let escaped: Char = '\u{03BB}'
+let nested: Array<Maybe<Char>> = [Just 'a', Just escaped]
+let tuple: (Char, Char) = (identity account', character '\'')
+pub let result = `${tuple}, ${nested}, ${'λ'}`

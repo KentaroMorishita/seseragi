@@ -207,6 +207,7 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
         | CoreExpr::Integer { .. }
         | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
+        | CoreExpr::Char { .. }
         | CoreExpr::Boolean { .. }
         | CoreExpr::Variable { .. } => {}
     }
@@ -242,6 +243,7 @@ fn collect_pattern_names(pattern: &CorePattern, names: &mut BTreeSet<String>) {
         }
         CorePattern::Integer { .. }
         | CorePattern::String { .. }
+        | CorePattern::Char { .. }
         | CorePattern::Boolean { .. }
         | CorePattern::Wildcard { .. }
         | CorePattern::Invalid { .. } => {}
