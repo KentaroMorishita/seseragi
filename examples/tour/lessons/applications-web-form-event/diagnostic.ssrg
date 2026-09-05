@@ -1,7 +1,7 @@
 import * as html from "std/web/html"
 
 type Action =
-  | Changed Bool
+  | Changed String
 
-fn invalid event: html.ChangeEvent -> Action = Changed event.checked
+fn invalid event: html.ChangeEvent -> Action = Changed event.value
 let input: html.Html<Action> = html.input { onInput: invalid }

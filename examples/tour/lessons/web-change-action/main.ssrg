@@ -2,8 +2,12 @@ import * as html from "std/web/html"
 
 type Action =
   | CheckedChanged Bool
+  | IgnoredChange
 
-fn checkedAction event: html.ChangeEvent -> Action = CheckedChanged event.checked
+fn checkedAction event: html.ChangeEvent -> Action = match event.checked {
+  Just checked -> CheckedChanged checked
+  Nothing -> IgnoredChange
+}
 
 let field: html.Html<Action> = html.input {
   id: "pinned",
