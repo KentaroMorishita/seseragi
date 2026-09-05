@@ -708,6 +708,8 @@ describe("HTML browser runtime", () => {
     })
     expect(Object.isFrozen(inputAction.snapshot)).toBe(true)
     expect(Object.isFrozen(changeAction.snapshot)).toBe(true)
+    if (changeAction.tag !== "Change")
+      throw new Error("expected Change snapshot")
     expect(Object.isFrozen(changeAction.snapshot.checked)).toBe(true)
     expect(valueReads).toBe(2)
     expect(checkedReads).toBe(1)
