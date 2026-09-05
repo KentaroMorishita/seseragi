@@ -1,0 +1,2008 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-derived-structural::domain",
+  "runtimeRequirements": [
+    "core.list",
+    "core.adt",
+    "core.int",
+    "core.int.eq-dictionary",
+    "core.int.ord-dictionary",
+    "core.int.hash-dictionary",
+    "core.tuple.eq-dictionary",
+    "core.tuple.ord-dictionary",
+    "core.tuple.hash-dictionary",
+    "core.string.eq-dictionary",
+    "core.either.eq-dictionary",
+    "core.maybe.eq-dictionary",
+    "core.list.eq-dictionary",
+    "core.array.eq-dictionary"
+  ],
+  "imports": [
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
+    },
+    {
+      "feature": "core.int.hash-dictionary",
+      "local": "_ssrg_int_hash_dictionary"
+    },
+    {
+      "feature": "core.tuple.eq-dictionary",
+      "local": "_ssrg_tuple_eq_dictionary"
+    },
+    {
+      "feature": "core.tuple.ord-dictionary",
+      "local": "_ssrg_tuple_ord_dictionary"
+    },
+    {
+      "feature": "core.tuple.hash-dictionary",
+      "local": "_ssrg_tuple_hash_dictionary"
+    },
+    {
+      "feature": "core.string.eq-dictionary",
+      "local": "_ssrg_string_eq_dictionary"
+    },
+    {
+      "feature": "core.either.eq-dictionary",
+      "local": "_ssrg_either_eq_dictionary"
+    },
+    {
+      "feature": "core.maybe.eq-dictionary",
+      "local": "_ssrg_maybe_eq_dictionary"
+    },
+    {
+      "feature": "core.list.eq-dictionary",
+      "local": "_ssrg_list_eq_dictionary"
+    },
+    {
+      "feature": "core.array.eq-dictionary",
+      "local": "_ssrg_array_eq_dictionary"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "UserId",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "UserId",
+          "tag": "UserId",
+          "payload": {
+            "kind": "number"
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "exported": true,
+      "name": "Tree",
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Leaf",
+          "tag": "Leaf",
+          "payload": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 162,
+            "end": 166
+          }
+        },
+        {
+          "exported": true,
+          "name": "Branch",
+          "tag": "Branch",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "reference",
+                "name": "Tree",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              {
+                "kind": "reference",
+                "name": "Tree",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 171,
+            "end": 177
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 118,
+        "end": 196
+      }
+    },
+    {
+      "exported": true,
+      "name": "Phase",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Zebra",
+          "tag": "Zebra",
+          "payload": {
+            "kind": "number"
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 239,
+            "end": 244
+          }
+        },
+        {
+          "exported": true,
+          "name": "Alpha",
+          "tag": "Alpha",
+          "payload": {
+            "kind": "number"
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 251,
+            "end": 256
+          }
+        },
+        {
+          "exported": true,
+          "name": "Empty",
+          "tag": "Empty",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 263,
+            "end": 268
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 197,
+        "end": 268
+      }
+    },
+    {
+      "exported": true,
+      "name": "Phantom",
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Phantom",
+          "tag": "Phantom",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 462,
+            "end": 469
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 415,
+        "end": 469
+      }
+    }
+  ],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Profile",
+      "brand": "__ssrg$brand$Profile",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "UserId",
+            "arguments": []
+          }
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 48,
+        "end": 117
+      }
+    },
+    {
+      "exported": true,
+      "name": "Nested",
+      "brand": "__ssrg$brand$Nested",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "values",
+          "optional": false,
+          "type": {
+            "kind": "array",
+            "element": {
+              "kind": "list",
+              "element": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "either",
+                  "error": {
+                    "kind": "string"
+                  },
+                  "value": {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 269,
+        "end": 351
+      }
+    },
+    {
+      "exported": true,
+      "name": "Reordered",
+      "brand": "__ssrg$brand$Reordered",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "z",
+          "optional": false,
+          "type": {
+            "kind": "number"
+          }
+        },
+        {
+          "name": "a",
+          "optional": false,
+          "type": {
+            "kind": "number"
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 352,
+        "end": 414
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::UserId>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::UserId",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 47
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$0",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "UserId",
+        "variants": [
+          {
+            "name": "UserId",
+            "tag": "UserId",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::Eq",
+                "feature": "core.int.eq-dictionary",
+                "local": "_ssrg_int_eq_dictionary"
+              }
+            }
+          }
+        ],
+        "transparentNewtype": true
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::UserId>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::UserId",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "UserId",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 47
+      },
+      "dictionaryExport": "__ssrg$instance$Ord$1",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "UserId",
+        "variants": [
+          {
+            "name": "UserId",
+            "tag": "UserId",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::Ord",
+                "feature": "core.int.ord-dictionary",
+                "local": "_ssrg_int_ord_dictionary"
+              }
+            }
+          }
+        ],
+        "transparentNewtype": true
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::UserId>",
+      "trait": "Hash",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::UserId",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "UserId",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 47
+      },
+      "dictionaryExport": "__ssrg$instance$Hash$2",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "UserId",
+        "variants": [
+          {
+            "name": "UserId",
+            "tag": "UserId",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::Hash",
+                "feature": "core.int.hash-dictionary",
+                "local": "_ssrg_int_hash_dictionary"
+              }
+            }
+          }
+        ],
+        "transparentNewtype": true
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Profile<$0>>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Profile<$0>",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 48,
+        "end": 117
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$3",
+      "implementation": {
+        "kind": "derived-struct-structural",
+        "structName": "Profile",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "kind": "reference",
+              "name": "UserId",
+              "arguments": []
+            },
+            "dictionary": {
+              "kind": "local",
+              "identity": "Eq<fixture/imported-derived-structural::domain::UserId>",
+              "dictionaryExport": "__ssrg$instance$Eq$0"
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            },
+            "dictionary": {
+              "kind": "expression",
+              "expression": {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Profile<$0>>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Profile<$0>",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Profile",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 48,
+        "end": 117
+      },
+      "dictionaryExport": "__ssrg$instance$Ord$4",
+      "implementation": {
+        "kind": "derived-struct-structural",
+        "structName": "Profile",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "kind": "reference",
+              "name": "UserId",
+              "arguments": []
+            },
+            "dictionary": {
+              "kind": "expression",
+              "expression": {
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Ord$1",
+                "typeArguments": [],
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Eq$0"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            },
+            "dictionary": {
+              "kind": "expression",
+              "expression": {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$1"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Profile<$0>>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Profile<$0>",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Profile",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Hash",
+          "traitIdentity": "std/prelude::Hash",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 48,
+        "end": 117
+      },
+      "dictionaryExport": "__ssrg$instance$Hash$5",
+      "implementation": {
+        "kind": "derived-struct-structural",
+        "structName": "Profile",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "kind": "reference",
+              "name": "UserId",
+              "arguments": []
+            },
+            "dictionary": {
+              "kind": "expression",
+              "expression": {
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Hash$2",
+                "typeArguments": [],
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Eq$0"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            },
+            "dictionary": {
+              "kind": "expression",
+              "expression": {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$1"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Tree<$0>>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Tree<$0>",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 118,
+        "end": 196
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$6",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "Tree",
+        "variants": [
+          {
+            "name": "Leaf",
+            "tag": "Leaf",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                }
+              }
+            }
+          },
+          {
+            "name": "Branch",
+            "tag": "Branch",
+            "payload": {
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "reference",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_tuple_eq_dictionary",
+                  "typeArguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "reference",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Eq$6",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Eq$6",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Tree<$0>>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Tree<$0>",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Tree",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 118,
+        "end": 196
+      },
+      "dictionaryExport": "__ssrg$instance$Ord$7",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "Tree",
+        "variants": [
+          {
+            "name": "Leaf",
+            "tag": "Leaf",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$1"
+                }
+              }
+            }
+          },
+          {
+            "name": "Branch",
+            "tag": "Branch",
+            "payload": {
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "reference",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_tuple_ord_dictionary",
+                  "typeArguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "reference",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Ord$7",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$1"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Ord$7",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$1"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Tree<$0>>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Tree<$0>",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Tree",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Hash",
+          "traitIdentity": "std/prelude::Hash",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 118,
+        "end": 196
+      },
+      "dictionaryExport": "__ssrg$instance$Hash$8",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "Tree",
+        "variants": [
+          {
+            "name": "Leaf",
+            "tag": "Leaf",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$1"
+                }
+              }
+            }
+          },
+          {
+            "name": "Branch",
+            "tag": "Branch",
+            "payload": {
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "reference",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_tuple_hash_dictionary",
+                  "typeArguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "reference",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Hash$8",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$1"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Hash$8",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$1"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Phase>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phase",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phase",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 197,
+        "end": 268
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$9",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "Phase",
+        "variants": [
+          {
+            "name": "Zebra",
+            "tag": "Zebra",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::Eq",
+                "feature": "core.int.eq-dictionary",
+                "local": "_ssrg_int_eq_dictionary"
+              }
+            }
+          },
+          {
+            "name": "Alpha",
+            "tag": "Alpha",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::Eq",
+                "feature": "core.int.eq-dictionary",
+                "local": "_ssrg_int_eq_dictionary"
+              }
+            }
+          },
+          {
+            "name": "Empty",
+            "tag": "Empty"
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Phase>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phase",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phase",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Phase",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 197,
+        "end": 268
+      },
+      "dictionaryExport": "__ssrg$instance$Ord$10",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "Phase",
+        "variants": [
+          {
+            "name": "Zebra",
+            "tag": "Zebra",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::Ord",
+                "feature": "core.int.ord-dictionary",
+                "local": "_ssrg_int_ord_dictionary"
+              }
+            }
+          },
+          {
+            "name": "Alpha",
+            "tag": "Alpha",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::Ord",
+                "feature": "core.int.ord-dictionary",
+                "local": "_ssrg_int_ord_dictionary"
+              }
+            }
+          },
+          {
+            "name": "Empty",
+            "tag": "Empty"
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Phase>",
+      "trait": "Hash",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phase",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phase",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Phase",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 197,
+        "end": 268
+      },
+      "dictionaryExport": "__ssrg$instance$Hash$11",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "Phase",
+        "variants": [
+          {
+            "name": "Zebra",
+            "tag": "Zebra",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::Hash",
+                "feature": "core.int.hash-dictionary",
+                "local": "_ssrg_int_hash_dictionary"
+              }
+            }
+          },
+          {
+            "name": "Alpha",
+            "tag": "Alpha",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::Hash",
+                "feature": "core.int.hash-dictionary",
+                "local": "_ssrg_int_hash_dictionary"
+              }
+            }
+          },
+          {
+            "name": "Empty",
+            "tag": "Empty"
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Nested<$0>>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Nested",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Nested<$0>",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 269,
+        "end": 351
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$12",
+      "implementation": {
+        "kind": "derived-struct-structural",
+        "structName": "Nested",
+        "fields": [
+          {
+            "name": "values",
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "list",
+                "element": {
+                  "kind": "maybe",
+                  "element": {
+                    "kind": "either",
+                    "error": {
+                      "kind": "string"
+                    },
+                    "value": {
+                      "kind": "reference",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            },
+            "dictionary": {
+              "kind": "expression",
+              "expression": {
+                "kind": "type-application-call",
+                "callee": "_ssrg_array_eq_dictionary",
+                "typeArguments": [
+                  {
+                    "kind": "list",
+                    "element": {
+                      "kind": "maybe",
+                      "element": {
+                        "kind": "either",
+                        "error": {
+                          "kind": "string"
+                        },
+                        "value": {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      }
+                    }
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_list_eq_dictionary",
+                    "typeArguments": [
+                      {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "either",
+                          "error": {
+                            "kind": "string"
+                          },
+                          "value": {
+                            "kind": "reference",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        }
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_maybe_eq_dictionary",
+                        "typeArguments": [
+                          {
+                            "kind": "either",
+                            "error": {
+                              "kind": "string"
+                            },
+                            "value": {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "type-application-call",
+                            "callee": "_ssrg_either_eq_dictionary",
+                            "typeArguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "reference",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "arguments": [
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_string_eq_dictionary"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "__ssrg$evidence$0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Reordered>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Reordered",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Reordered",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 352,
+        "end": 414
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$13",
+      "implementation": {
+        "kind": "derived-struct-structural",
+        "structName": "Reordered",
+        "fields": [
+          {
+            "name": "z",
+            "type": {
+              "kind": "number"
+            },
+            "dictionary": {
+              "kind": "runtime",
+              "identity": "std/int::Eq",
+              "feature": "core.int.eq-dictionary",
+              "local": "_ssrg_int_eq_dictionary"
+            }
+          },
+          {
+            "name": "a",
+            "type": {
+              "kind": "number"
+            },
+            "dictionary": {
+              "kind": "runtime",
+              "identity": "std/int::Eq",
+              "feature": "core.int.eq-dictionary",
+              "local": "_ssrg_int_eq_dictionary"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Reordered>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Reordered",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Reordered",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Reordered",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 352,
+        "end": 414
+      },
+      "dictionaryExport": "__ssrg$instance$Ord$14",
+      "implementation": {
+        "kind": "derived-struct-structural",
+        "structName": "Reordered",
+        "fields": [
+          {
+            "name": "z",
+            "type": {
+              "kind": "number"
+            },
+            "dictionary": {
+              "kind": "runtime",
+              "identity": "std/int::Ord",
+              "feature": "core.int.ord-dictionary",
+              "local": "_ssrg_int_ord_dictionary"
+            }
+          },
+          {
+            "name": "a",
+            "type": {
+              "kind": "number"
+            },
+            "dictionary": {
+              "kind": "runtime",
+              "identity": "std/int::Ord",
+              "feature": "core.int.ord-dictionary",
+              "local": "_ssrg_int_ord_dictionary"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Reordered>",
+      "trait": "Hash",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Reordered",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Reordered",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Reordered",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 352,
+        "end": 414
+      },
+      "dictionaryExport": "__ssrg$instance$Hash$15",
+      "implementation": {
+        "kind": "derived-struct-structural",
+        "structName": "Reordered",
+        "fields": [
+          {
+            "name": "z",
+            "type": {
+              "kind": "number"
+            },
+            "dictionary": {
+              "kind": "runtime",
+              "identity": "std/int::Hash",
+              "feature": "core.int.hash-dictionary",
+              "local": "_ssrg_int_hash_dictionary"
+            }
+          },
+          {
+            "name": "a",
+            "type": {
+              "kind": "number"
+            },
+            "dictionary": {
+              "kind": "runtime",
+              "identity": "std/int::Hash",
+              "feature": "core.int.hash-dictionary",
+              "local": "_ssrg_int_hash_dictionary"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Phantom<$0>>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phantom",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phantom<$0>",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 415,
+        "end": 469
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$16",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "Phantom",
+        "variants": [
+          {
+            "name": "Phantom",
+            "tag": "Phantom"
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Phantom<$0>>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phantom",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phantom<$0>",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Phantom",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 415,
+        "end": 469
+      },
+      "dictionaryExport": "__ssrg$instance$Ord$17",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "Phantom",
+        "variants": [
+          {
+            "name": "Phantom",
+            "tag": "Phantom"
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Phantom<$0>>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phantom",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phantom<$0>",
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Phantom",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 415,
+        "end": 469
+      },
+      "dictionaryExport": "__ssrg$instance$Hash$18",
+      "implementation": {
+        "kind": "derived-structural",
+        "adtName": "Phantom",
+        "variants": [
+          {
+            "name": "Phantom",
+            "tag": "Phantom"
+          }
+        ]
+      }
+    }
+  ]
+}

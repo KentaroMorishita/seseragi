@@ -94,6 +94,16 @@ pub enum TypeScriptInstanceImplementation {
         struct_name: String,
         fields: Vec<TypeScriptDerivedShowField>,
     },
+    DerivedStructural {
+        adt_name: String,
+        variants: Vec<TypeScriptDerivedShowVariant>,
+        #[serde(default, skip_serializing_if = "super::is_false")]
+        transparent_newtype: bool,
+    },
+    DerivedStructStructural {
+        struct_name: String,
+        fields: Vec<TypeScriptDerivedShowField>,
+    },
     UserDefined {
         methods: Vec<TypeScriptInstanceMethod>,
     },
@@ -386,7 +396,20 @@ fn lower_instance(
             adt_symbol,
             payload_evidence,
             transparent_newtype,
-        } => lower_derived_json_instance(
+        } => lower_derived_value_instance(
+            instance,
+            adt_symbol,
+            payload_evidence,
+            *transparent_newtype,
+            context,
+            runtime_requirements,
+            imports,
+        ),
+        CoreInstanceImplementation::DerivedStructural {
+            adt_symbol,
+            payload_evidence,
+            transparent_newtype,
+        } => lower_derived_value_instance(
             instance,
             adt_symbol,
             payload_evidence,
@@ -435,7 +458,7 @@ fn lower_instance(
     }
 }
 
-fn lower_derived_json_instance(
+fn lower_derived_value_instance(
     instance: &CoreInstance,
     adt_symbol: &str,
     payload_evidence: &[crate::CoreShowPayloadEvidence],
@@ -444,6 +467,10 @@ fn lower_derived_json_instance(
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
 ) -> TypeScriptInstanceImplementation {
+    let is_json = matches!(
+        instance.implementation,
+        CoreInstanceImplementation::DerivedJson { .. }
+    );
     if let Some(adt) = context.adts.iter().find(|adt| adt.symbol == adt_symbol) {
         let variants = adt
             .variants
@@ -455,7 +482,7 @@ fn lower_derived_json_instance(
                     let evidence = payload_evidence
                         .iter()
                         .find(|evidence| evidence.variant_symbol == variant.symbol)
-                        .expect("selected DerivedJson payload must retain typed evidence");
+                        .expect("selected derived payload must retain typed evidence");
                     TypeScriptDerivedShowPayload {
                         type_ref: type_ref_from_core_type(payload, context.imported_type_names),
                         dictionary: resolve_show_dictionary(
@@ -471,27 +498,37 @@ fn lower_derived_json_instance(
                 }),
             })
             .collect();
-        push_derived_json_helper(
-            &instance.trait_name,
-            if transparent_newtype {
-                "newtype"
-            } else {
-                "adt"
-            },
-            runtime_requirements,
-            imports,
-        );
-        TypeScriptInstanceImplementation::DerivedJson {
-            adt_name: local_name(&adt.symbol),
-            variants,
-            transparent_newtype,
+        if is_json {
+            push_derived_json_helper(
+                &instance.trait_name,
+                if transparent_newtype {
+                    "newtype"
+                } else {
+                    "adt"
+                },
+                runtime_requirements,
+                imports,
+            );
+        }
+        if is_json {
+            TypeScriptInstanceImplementation::DerivedJson {
+                adt_name: local_name(&adt.symbol),
+                variants,
+                transparent_newtype,
+            }
+        } else {
+            TypeScriptInstanceImplementation::DerivedStructural {
+                adt_name: local_name(&adt.symbol),
+                variants,
+                transparent_newtype,
+            }
         }
     } else {
         let structure = context
             .structs
             .iter()
             .find(|structure| structure.symbol == adt_symbol)
-            .expect("selected DerivedJson instance must reference a lowered nominal type");
+            .expect("selected derived instance must reference a lowered nominal type");
         let fields = structure
             .fields
             .iter()
@@ -499,7 +536,7 @@ fn lower_derived_json_instance(
                 let evidence = payload_evidence
                     .iter()
                     .find(|evidence| evidence.variant_symbol == field.name)
-                    .expect("selected DerivedJson field must retain typed evidence");
+                    .expect("selected derived field must retain typed evidence");
                 TypeScriptDerivedShowField {
                     name: field.name.clone(),
                     type_ref: type_ref_from_core_type(&field.type_ref, context.imported_type_names),
@@ -515,15 +552,24 @@ fn lower_derived_json_instance(
                 }
             })
             .collect();
-        push_derived_json_helper(
-            &instance.trait_name,
-            "struct",
-            runtime_requirements,
-            imports,
-        );
-        TypeScriptInstanceImplementation::DerivedStructJson {
-            struct_name: local_name(&structure.symbol),
-            fields,
+        if is_json {
+            push_derived_json_helper(
+                &instance.trait_name,
+                "struct",
+                runtime_requirements,
+                imports,
+            );
+        }
+        if is_json {
+            TypeScriptInstanceImplementation::DerivedStructJson {
+                struct_name: local_name(&structure.symbol),
+                fields,
+            }
+        } else {
+            TypeScriptInstanceImplementation::DerivedStructStructural {
+                struct_name: local_name(&structure.symbol),
+                fields,
+            }
         }
     }
 }

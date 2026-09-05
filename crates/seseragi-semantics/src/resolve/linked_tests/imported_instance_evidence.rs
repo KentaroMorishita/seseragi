@@ -267,3 +267,33 @@ fn deduplicates_instance_evidence_reached_through_repeated_dependency_edges() {
     let resolved = resolve_linked_module(linked, main_source);
     assert_eq!(resolved.dependency_instances.len(), 1);
 }
+
+#[test]
+fn preserves_imported_phantom_constraints_in_structural_deriving() {
+    let domain = "pub type Phantom<A> deriving Eq = | Phantom\n";
+    let source = "import { Phantom as Remote } from \"./domain\"\npub struct Outer<A> deriving Eq { value: Remote<A> }\npub fn same left: Outer<Float> -> right: Outer<Float> -> Bool = left == right\n";
+    let linked = linked_program(source, [("./domain", "fixture/phantom::domain", domain)]);
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", source),
+        linked,
+        source,
+    )
+    .unwrap();
+    assert!(analyzed.typed_hir.instances[0].constraints.is_empty());
+}
+
+#[test]
+fn substitutes_local_struct_parameters_inside_imported_nominal_fields() {
+    let domain = "pub struct Box<A> { value: A }\n";
+    let source = "import { Box } from \"./domain\"\nstruct Outer<A> { nested: Box<A> }\npub fn wrap value: Box<Int> -> Outer<Int> = Outer { nested: value }\nlet boxed: Box<Int> = Box { value: 1 }\nlet wrapped: Outer<Int> = Outer { nested: boxed }\n";
+    let linked = linked_program(
+        source,
+        [("./domain", "fixture/nested-fields::domain", domain)],
+    );
+    analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", source),
+        linked,
+        source,
+    )
+    .unwrap();
+}

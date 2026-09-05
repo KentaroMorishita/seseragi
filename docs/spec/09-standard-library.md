@@ -74,6 +74,10 @@ Array/List間の変換は `std/array` の `toList` と `std/list` の `toArray` 
 暗黙には呼び出されません。comprehension、literal、patternの意味は3.8と3.9に従います。
 
 tuple、record、Array、Listには、全要素がEqを満たす場合の構造的なEq instanceを提供します。
+`Maybe<A>` と `Either<E, A>` にもpayloadのEqを要求する標準Eq instanceを提供し、
+constructor identityを比較してから同じconstructorのpayloadを比較します。
+tupleのOrdは各要素のOrdを要求する左から右の辞書式順序、Hashは各要素のHashを
+要求する同じ位置順の合成です。nominal derivingのtuple payloadにもこの証拠を使います。
 nominalなstruct、ADT、newtypeのEqは、型を定義したmoduleが明示的なimplまたはderivingでinstanceを
 与えます。
 

@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/imported-derived-structural@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/imported-derived-structural@0.0.0#workspace:."
+name = "fixture/imported-derived-structural"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:fd015c472100d395c0b2294c1d04ff4e49bcd8dedd323288a7a94384e941021e"
+content_digest = "sha256:0afd0fd10fe7a983302fd54a7911261662c96572524091d9d15fbf3a4be5fbf1"
+dependencies = []

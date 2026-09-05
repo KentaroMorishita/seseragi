@@ -317,6 +317,11 @@ pub enum TypedInstanceImplementation {
         payload_evidence: Vec<TypedShowPayloadEvidence>,
         transparent_newtype: bool,
     },
+    DerivedStructural {
+        adt_symbol: String,
+        payload_evidence: Vec<TypedShowPayloadEvidence>,
+        transparent_newtype: bool,
+    },
     UserDefined {
         methods: Vec<TypedInstanceMethod>,
     },

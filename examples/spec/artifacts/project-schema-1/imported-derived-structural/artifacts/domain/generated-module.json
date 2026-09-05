@@ -1,0 +1,378 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-derived-structural::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.list",
+      "core.adt",
+      "core.int",
+      "core.int.eq-dictionary",
+      "core.int.ord-dictionary",
+      "core.int.hash-dictionary",
+      "core.tuple.eq-dictionary",
+      "core.tuple.ord-dictionary",
+      "core.tuple.hash-dictionary",
+      "core.string.eq-dictionary",
+      "core.either.eq-dictionary",
+      "core.maybe.eq-dictionary",
+      "core.list.eq-dictionary",
+      "core.array.eq-dictionary"
+    ]
+  },
+  "exports": [
+    "UserId",
+    "Leaf",
+    "Branch",
+    "Zebra",
+    "Alpha",
+    "Empty",
+    "Phantom"
+  ],
+  "instances": [
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::UserId>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::UserId",
+      "dictionaryExport": "__ssrg$instance$Eq$0"
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::UserId>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::UserId",
+      "dictionaryExport": "__ssrg$instance$Ord$1"
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::UserId>",
+      "trait": "Hash",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::UserId",
+      "dictionaryExport": "__ssrg$instance$Hash$2"
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Profile<$0>>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Profile<$0>",
+      "dictionaryExport": "__ssrg$instance$Eq$3"
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Profile<$0>>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Profile<$0>",
+      "dictionaryExport": "__ssrg$instance$Ord$4"
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Profile<$0>>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Profile<$0>",
+      "dictionaryExport": "__ssrg$instance$Hash$5"
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Tree<$0>>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Tree<$0>",
+      "dictionaryExport": "__ssrg$instance$Eq$6"
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Tree<$0>>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Tree<$0>",
+      "dictionaryExport": "__ssrg$instance$Ord$7"
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Tree<$0>>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Tree<$0>",
+      "dictionaryExport": "__ssrg$instance$Hash$8"
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Phase>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phase",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phase",
+      "dictionaryExport": "__ssrg$instance$Eq$9"
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Phase>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phase",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phase",
+      "dictionaryExport": "__ssrg$instance$Ord$10"
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Phase>",
+      "trait": "Hash",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phase",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phase",
+      "dictionaryExport": "__ssrg$instance$Hash$11"
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Nested<$0>>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Nested",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Nested<$0>",
+      "dictionaryExport": "__ssrg$instance$Eq$12"
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Reordered>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Reordered",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Reordered",
+      "dictionaryExport": "__ssrg$instance$Eq$13"
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Reordered>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Reordered",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Reordered",
+      "dictionaryExport": "__ssrg$instance$Ord$14"
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Reordered>",
+      "trait": "Hash",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Reordered",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Reordered",
+      "dictionaryExport": "__ssrg$instance$Hash$15"
+    },
+    {
+      "identity": "Eq<fixture/imported-derived-structural::domain::Phantom<$0>>",
+      "trait": "Eq",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phantom",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phantom<$0>",
+      "dictionaryExport": "__ssrg$instance$Eq$16"
+    },
+    {
+      "identity": "Ord<fixture/imported-derived-structural::domain::Phantom<$0>>",
+      "trait": "Ord",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phantom",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phantom<$0>",
+      "dictionaryExport": "__ssrg$instance$Ord$17"
+    },
+    {
+      "identity": "Hash<fixture/imported-derived-structural::domain::Phantom<$0>>",
+      "trait": "Hash",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Phantom",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-structural::domain::Phantom<$0>",
+      "dictionaryExport": "__ssrg$instance$Hash$18"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-derived-structural/domain.ts",
+    "sourceMap": "dist/imported-derived-structural/domain.ts.map"
+  }
+}
