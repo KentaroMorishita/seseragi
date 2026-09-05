@@ -91,7 +91,9 @@ const STRUCTURAL_INSTANCES: &[StandardInstanceAuditSpec] = &[
 // This is the specification-side half of the audit. Implemented rows are
 // projected directly from the canonical registries above, while missing rows
 // stay explicit until their queue issue connects the real instance and removes
-// the corresponding entry here.
+// the corresponding entry here. Every missing row must name a positive local
+// tracking issue; implemented/structural/unavailable rows carry no stale issue.
+// This contract is checked during projection, without contacting GitHub.
 const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[];
 
 const UNAVAILABLE_INSTANCES: &[StandardInstanceAuditSpec] = &[
@@ -214,6 +216,12 @@ fn implemented_instance_spec(trait_name: &str) -> &'static str {
 }
 
 fn standard_instance_audit() -> StandardInstanceAuditSurface {
+    standard_instance_audit_with_missing(MISSING_INSTANCES)
+}
+
+fn standard_instance_audit_with_missing(
+    missing: &[StandardInstanceAuditSpec],
+) -> StandardInstanceAuditSurface {
     let mut matrix = Vec::new();
     matrix.extend(STANDARD_INSTANCES.iter().map(|instance| {
         let conditional = !standard_instance_constraint_specs(instance.identity).is_empty();
@@ -276,19 +284,15 @@ fn standard_instance_audit() -> StandardInstanceAuditSurface {
             tracking_issue: None,
         },
     ));
-    matrix.extend(
-        MISSING_INSTANCES
-            .iter()
-            .map(|spec| StandardInstanceAuditRow {
-                trait_name: spec.trait_name,
-                head: spec.head.to_owned(),
-                identity: None,
-                status: StandardInstanceAuditStatus::SpecifiedButImplementationMissing,
-                classification: StandardInstanceAuditClassification::Missing,
-                spec: spec.spec,
-                tracking_issue: spec.tracking_issue,
-            }),
-    );
+    matrix.extend(missing.iter().map(|spec| StandardInstanceAuditRow {
+        trait_name: spec.trait_name,
+        head: spec.head.to_owned(),
+        identity: None,
+        status: StandardInstanceAuditStatus::SpecifiedButImplementationMissing,
+        classification: StandardInstanceAuditClassification::Missing,
+        spec: spec.spec,
+        tracking_issue: spec.tracking_issue,
+    }));
     matrix.extend(
         UNAVAILABLE_INSTANCES
             .iter()
@@ -302,6 +306,7 @@ fn standard_instance_audit() -> StandardInstanceAuditSurface {
                 tracking_issue: None,
             }),
     );
+    validate_audit_tracking(&matrix).expect("invalid canonical standard instance tracking");
     matrix.sort_by(|left, right| {
         left.trait_name
             .cmp(right.trait_name)
@@ -316,6 +321,25 @@ fn standard_instance_audit() -> StandardInstanceAuditSurface {
         ],
         matrix,
     }
+}
+
+fn validate_audit_tracking(matrix: &[StandardInstanceAuditRow]) -> Result<(), String> {
+    for row in matrix {
+        let valid = match row.status {
+            StandardInstanceAuditStatus::SpecifiedButImplementationMissing => {
+                row.tracking_issue.is_some_and(|issue| issue > 0)
+            }
+            StandardInstanceAuditStatus::SpecifiedAndImplemented
+            | StandardInstanceAuditStatus::IntentionallyUnavailable => row.tracking_issue.is_none(),
+        };
+        if !valid {
+            return Err(format!(
+                "{}<{}> ({:?}): missing instances require a positive tracking issue; other rows must not retain tracking metadata",
+                row.trait_name, row.head, row.status
+            ));
+        }
+    }
+    Ok(())
 }
 
 pub fn standard_prelude_surface() -> StandardModuleSurface {
@@ -415,6 +439,61 @@ pub fn standard_prelude_surface() -> StandardModuleSurface {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn untracked_missing_instances_fail_the_canonical_projection() {
+        for issue in [None, Some(0)] {
+            let missing = [audit_spec("Functor", "SyntheticFuture", "9.7", issue)];
+            assert!(
+                std::panic::catch_unwind(|| standard_instance_audit_with_missing(&missing))
+                    .is_err()
+            );
+        }
+    }
+
+    #[test]
+    fn tracked_missing_instances_are_projected_and_removed_without_stale_metadata() {
+        let missing = [audit_spec("Functor", "SyntheticFuture", "9.7", Some(507))];
+        let audit = standard_instance_audit_with_missing(&missing);
+        let json = serde_json::to_value(&audit).unwrap();
+        let row = json["matrix"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|row| row["head"] == "SyntheticFuture")
+            .unwrap();
+        assert_eq!(row["trackingIssue"], 507);
+        assert_eq!(row["status"], "specified-but-implementation-missing");
+        let completed = standard_instance_audit_with_missing(&[]);
+        assert!(completed
+            .matrix
+            .iter()
+            .all(|row| row.tracking_issue.is_none()));
+        assert!(!serde_json::to_string(&completed)
+            .unwrap()
+            .contains("trackingIssue"));
+    }
+
+    #[test]
+    fn implemented_structural_and_unavailable_rows_need_no_tracking_issue() {
+        let audit = standard_instance_audit();
+        assert_eq!(validate_audit_tracking(&audit.matrix), Ok(()));
+        for classification in [
+            StandardInstanceAuditClassification::Dictionary,
+            StandardInstanceAuditClassification::Structural,
+            StandardInstanceAuditClassification::Unavailable,
+        ] {
+            let row = audit
+                .matrix
+                .iter()
+                .find(|row| row.classification == classification)
+                .unwrap();
+            assert_eq!(row.tracking_issue, None);
+            let mut stale = row.clone();
+            stale.tracking_issue = Some(507);
+            assert!(validate_audit_tracking(&[stale]).is_err());
+        }
+    }
 
     #[test]
     fn exposes_registered_traits_methods_instances_and_coherence() {
