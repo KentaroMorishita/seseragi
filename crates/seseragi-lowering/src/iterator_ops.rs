@@ -43,8 +43,8 @@ pub(crate) fn runtime_iterator_operation(
     callee: &str,
 ) -> Option<&'static RuntimeIteratorOperation> {
     match callee {
-        "std/prelude::unfold" => Some(&ITERATOR_UNFOLD),
-        "std/prelude::next" => Some(&ITERATOR_NEXT),
+        "std/prelude::unfold" | "std/iterator::unfold" => Some(&ITERATOR_UNFOLD),
+        "std/prelude::next" | "std/iterator::next" => Some(&ITERATOR_NEXT),
         _ => None,
     }
 }
@@ -87,6 +87,12 @@ mod tests {
             runtime_iterator_operation("std/prelude::next").map(|operation| operation.export_name),
             Some("next")
         );
+        for name in ["unfold", "next"] {
+            assert_eq!(
+                runtime_iterator_operation(&format!("std/iterator::{name}")),
+                runtime_iterator_operation(&format!("std/prelude::{name}"))
+            );
+        }
         assert!(runtime_iterator_operation("user::next").is_none());
     }
 }

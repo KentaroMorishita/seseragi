@@ -45,8 +45,8 @@ impl<'a> InterfaceTypes<'a> {
                 let provider = self
                     .bindings
                     .iter()
-                    .find(|binding| binding.canonical == *canonical)
-                    .and_then(|binding| binding.provider.as_ref())
+                    .filter(|binding| binding.canonical == *canonical)
+                    .find_map(|binding| binding.provider.as_ref())
                     .expect("external typed nominal has provider provenance");
                 InterfaceType::ExternalNamed {
                     name: name.clone(),

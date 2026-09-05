@@ -661,6 +661,10 @@ fn unfold<S, A>
 fn next<A> iterator: Iterator<A> -> Maybe<(A, Iterator<A>)>
 ```
 
+`import * as iterator from "std/iterator"` で利用する `iterator.Iterator<A>` は、preludeの
+`Iterator<A>` と同じcanonical typeです。`iterator.unfold` / `iterator.next` は既存のIterable /
+comprehensionと同じruntimeを利用します。
+
 Iteratorはstandard opaque typeでありpersistentです。同じiteratorへ `next` を複数回適用すると
 同じ結果を返し、元のiteratorを消費・変更しません。`Just (value, rest)` は次の値と残り、
 `Nothing` は終了です。`unfold` はstepを即座に呼ばず、各 `next` 呼び出しがstepを一度呼びます。

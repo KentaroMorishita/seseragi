@@ -338,7 +338,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         PROCESS_TARGET,
         &["std/http/bun::BunHttpServer"]
     ),
-    contract_module!("std/iterator", PORTABLE_TARGETS),
+    available_module!("std/iterator", iterator_interface, PORTABLE_TARGETS),
     available_module!("std/json", json_interface, PORTABLE_TARGETS),
     available_module!(
         "std/log",
@@ -7222,6 +7222,61 @@ fn validation_interface() -> ModuleInterface {
     standard_interface(module, exports)
 }
 
+fn iterator_interface() -> ModuleInterface {
+    let module = "std/iterator";
+    let iterator = external_type(
+        "Iterator",
+        "std/prelude::Iterator",
+        "std/prelude",
+        "Iterator",
+        vec![named("A")],
+    );
+    standard_interface(
+        module,
+        vec![
+            canonical_type_export(
+                module,
+                "Iterator",
+                "std/prelude::Iterator",
+                1,
+                "opaque-type",
+            ),
+            function_export(
+                module,
+                "unfold",
+                ["S", "A"],
+                Vec::new(),
+                vec![
+                    function_type(
+                        vec![named("S")],
+                        named_with(
+                            "Maybe",
+                            vec![InterfaceType::Tuple {
+                                elements: vec![named("A"), named("S")],
+                            }],
+                        ),
+                    ),
+                    named("S"),
+                ],
+                iterator.clone(),
+            ),
+            function_export(
+                module,
+                "next",
+                ["A"],
+                Vec::new(),
+                vec![iterator.clone()],
+                named_with(
+                    "Maybe",
+                    vec![InterfaceType::Tuple {
+                        elements: vec![named("A"), iterator],
+                    }],
+                ),
+            ),
+        ],
+    )
+}
+
 fn maybe_interface() -> ModuleInterface {
     let module = "std/maybe";
     let maybe = named_with("Maybe", vec![named("A")]);
@@ -9629,6 +9684,27 @@ fn optional(name: &str, type_ref: InterfaceType) -> InterfaceRecordField {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn iterator_module_exposes_the_existing_canonical_type_without_instances() {
+        let target = standard_module_target("std/iterator").unwrap();
+        let interface = target.interface();
+        assert_eq!(interface.exports.len(), 3);
+        let iterator = interface
+            .exports
+            .iter()
+            .find(|export| export.name == "Iterator")
+            .unwrap();
+        assert_eq!(iterator.symbol, "std/prelude::Iterator");
+        assert_eq!(iterator.scheme.type_parameters.len(), 1);
+        assert!(interface.instances.is_empty());
+        for name in ["unfold", "next"] {
+            assert!(interface
+                .exports
+                .iter()
+                .any(|export| export.name == name && export.namespace == "value"));
+        }
+    }
 
     #[test]
     fn validation_interface_owns_its_type_constructors_and_specific_operations() {

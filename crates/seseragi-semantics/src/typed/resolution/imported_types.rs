@@ -31,6 +31,7 @@ impl ImportedTypeContext {
             .iter()
             .filter(|import| {
                 import.export.namespace == "type"
+                    && !crate::prelude::is_external_nominal_type(&import.export.symbol)
                     && matches!(
                         import.export.declaration_kind.as_deref(),
                         Some("type" | "opaque-type" | "newtype" | "struct" | "opaque-struct")
@@ -52,7 +53,10 @@ impl ImportedTypeContext {
         let canonical_owners = resolved
             .imports
             .iter()
-            .filter(|import| import.export.namespace == "type")
+            .filter(|import| {
+                import.export.namespace == "type"
+                    && !crate::prelude::is_external_nominal_type(&import.export.symbol)
+            })
             .map(|import| (import.export.symbol.clone(), import.symbol))
             .collect();
         let struct_owners = resolved

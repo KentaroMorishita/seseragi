@@ -16,6 +16,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/float",
     "std/array",
     "std/collection",
+    "std/iterator",
     "std/maybe",
     "std/either",
     "std/validation",

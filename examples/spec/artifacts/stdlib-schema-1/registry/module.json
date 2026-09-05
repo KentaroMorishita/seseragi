@@ -67887,11 +67887,179 @@
     {
       "specifier": "std/iterator",
       "identity": "std/iterator",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/iterator",
+        "source": "std/iterator.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/prelude::Iterator",
+            "namespace": "type",
+            "name": "Iterator",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "T0"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Iterator",
+                "arity": 1
+              }
+            }
+          },
+          {
+            "symbol": "std/iterator::unfold",
+            "namespace": "value",
+            "name": "unfold",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "S",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "S",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "S",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "S",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "external-named",
+                    "name": "Iterator",
+                    "canonical": "std/prelude::Iterator",
+                    "providerModule": "std/prelude",
+                    "providerExport": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/iterator::next",
+            "namespace": "value",
+            "name": "next",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Iterator",
+                  "canonical": "std/prelude::Iterator",
+                  "providerModule": "std/prelude",
+                  "providerExport": "Iterator",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "external-named",
+                          "name": "Iterator",
+                          "canonical": "std/prelude::Iterator",
+                          "providerModule": "std/prelude",
+                          "providerExport": "Iterator",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/json",
