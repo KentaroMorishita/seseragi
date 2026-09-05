@@ -3,10 +3,11 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (64)
+## Current product-route fixtures (65)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
+| `array-index` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `child-process-captured` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `cli-build-nested` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs` |
 | `doc-tests` | `tooling` | `cli-doc` | `crates/seseragi-cli/tests/doc.rs` |

@@ -176,6 +176,17 @@ const LIST_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperat
 };
 
 const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
+    (
+        "builtin::array-index",
+        RuntimeCollectionOperation {
+            result_erased: false,
+            runtime_feature: "core.array.index",
+            local_name: "_ssrg_array_index",
+            module: "@seseragi/runtime/array",
+            export_name: "index",
+            source_arity: 2,
+        },
+    ),
     sequence_operation!("collection", "Next", "reduce-step.next", 1),
     sequence_operation!("collection", "Done", "reduce-step.done", 1),
     sequence_operation!("collection", "reduceUntil", "reduce-until", 3),

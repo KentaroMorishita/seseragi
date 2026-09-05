@@ -524,6 +524,11 @@ pub(super) fn type_surface_expression(
             })
         }
         SurfaceExpr::Name { name, span, .. } => type_name(name, *span, context),
+        SurfaceExpr::Index {
+            receiver,
+            index,
+            span,
+        } => array::type_index(receiver, index, *span, context),
         SurfaceExpr::Member {
             receiver,
             field,

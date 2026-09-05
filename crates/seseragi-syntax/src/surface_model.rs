@@ -487,6 +487,11 @@ pub enum SurfaceExpr {
         type_arguments: Option<Vec<TypeRef>>,
         span: ByteSpan,
     },
+    Index {
+        receiver: Box<SurfaceExpr>,
+        index: Box<SurfaceExpr>,
+        span: ByteSpan,
+    },
     Member {
         receiver: Box<SurfaceExpr>,
         field: String,
@@ -611,6 +616,7 @@ impl SurfaceExpr {
             | Self::Boolean { span, .. }
             | Self::Name { span, .. }
             | Self::Member { span, .. }
+            | Self::Index { span, .. }
             | Self::Application { span, .. }
             | Self::Prefix { span, .. }
             | Self::Assignment { span, .. }

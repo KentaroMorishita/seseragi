@@ -1074,6 +1074,24 @@ fn render_flat(indices: &[usize], tokens: &[Token], angles: &HashSet<usize>) -> 
 fn needs_space(previous: usize, current: usize, tokens: &[Token], angles: &HashSet<usize>) -> bool {
     let left = &tokens[previous];
     let right = &tokens[current];
+    if right.kind == TokenKind::PunctuationSquareLeft
+        && left.end == right.start
+        && matches!(
+            left.kind,
+            TokenKind::IdentifierLower
+                | TokenKind::IdentifierUpper
+                | TokenKind::LiteralBoolean
+                | TokenKind::LiteralFloat
+                | TokenKind::LiteralInteger
+                | TokenKind::LiteralString
+                | TokenKind::LiteralTemplate
+                | TokenKind::PunctuationParenRight
+                | TokenKind::PunctuationSquareRight
+                | TokenKind::PunctuationBraceRight
+        )
+    {
+        return false;
+    }
     if is_operator(left.kind) && is_operator(right.kind) && left.end == right.start {
         return false;
     }

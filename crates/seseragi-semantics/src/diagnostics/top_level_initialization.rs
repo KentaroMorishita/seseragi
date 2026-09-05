@@ -380,6 +380,12 @@ impl<'graph, 'source, 'diagnostics> DependencyWalker<'graph, 'source, 'diagnosti
                 }
                 self.walk_expr(element, root_call);
             }
+            SurfaceExpr::Index {
+                receiver, index, ..
+            } => {
+                self.walk_expr(receiver, root_call);
+                self.walk_expr(index, root_call);
+            }
             SurfaceExpr::Binary {
                 operator_span,
                 left,

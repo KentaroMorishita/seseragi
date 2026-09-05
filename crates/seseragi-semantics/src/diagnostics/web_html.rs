@@ -81,6 +81,11 @@ fn visit_expression(
             value: argument,
             ..
         }
+        | SurfaceExpr::Index {
+            receiver: function,
+            index: argument,
+            ..
+        }
         | SurfaceExpr::Binary {
             left: function,
             right: argument,

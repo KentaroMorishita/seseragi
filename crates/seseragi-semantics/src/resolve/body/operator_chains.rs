@@ -262,7 +262,12 @@ fn normalize_expression(
                 }
             }
         }
-        SurfaceExpr::Binary { left, right, .. } => {
+        SurfaceExpr::Index {
+            receiver: left,
+            index: right,
+            ..
+        }
+        | SurfaceExpr::Binary { left, right, .. } => {
             normalize_expression(left, custom, issues);
             normalize_expression(right, custom, issues);
         }

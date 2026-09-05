@@ -861,7 +861,12 @@ fn collect_local_callables(
             collect_local_callables(function, resolved, semantic_types, callables);
             collect_local_callables(argument, resolved, semantic_types, callables);
         }
-        SurfaceExpr::Assignment { target, value, .. }
+        SurfaceExpr::Index {
+            receiver: target,
+            index: value,
+            ..
+        }
+        | SurfaceExpr::Assignment { target, value, .. }
         | SurfaceExpr::Binary {
             left: target,
             right: value,
