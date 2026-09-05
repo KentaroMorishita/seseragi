@@ -1,0 +1,31 @@
+import { keepArray, keepList, echoArray, echoList } from "./domain"
+import * as arrays from "std/array"
+import * as random from "std/random"
+
+let bound = [n | n <- 1 ..= 3]
+let inlineArray = keepArray [n | n <- 1 ..= 3]
+let inlineList = keepList `[n | n <- 1 ..= 3]
+let conditional = keepArray (if True then [n | n <- 1 ..= 3] else [1, 2, 3])
+let matched = keepList (match True {
+    True -> `[n | n <- 1 ..= 3]
+    False -> `[1, 2, 3]
+    }
+)
+let blockValue = keepArray {
+  let values = [n | n <- 1 ..= 3]
+  values
+}
+
+pub effect fn main = do {
+  arrayValue <- echoArray [n | n <- 1 ..= 3]
+  listValue <- echoList `[n | n <- 1 ..= 3]
+  shuffled <- random.shuffle [n | n <- 1 ..= 3]
+  println $ show inlineArray
+  println $ show inlineList
+  println $ show conditional
+  println $ show matched
+  println $ show blockValue
+  println $ show (arrayValue == bound)
+  println $ show listValue
+  println $ show (arrays.sort shuffled)
+}

@@ -164,7 +164,9 @@ fn type_comprehension(
         type_ref: inferred_element.clone(),
         key: element_analysis.semantic_type.clone(),
     };
-    let expected_element = expected_element.unwrap_or_else(|| actual_element.clone());
+    let expected_element = expected_element
+        .map(|expected| super::expected::refine_expected_type(expected, &actual_element, context))
+        .unwrap_or_else(|| actual_element.clone());
     let array_issue =
         (!semantic_values_are_compatible(&expected_element, &actual_element)).then(|| {
             ArrayIssue::ElementTypeMismatch {
