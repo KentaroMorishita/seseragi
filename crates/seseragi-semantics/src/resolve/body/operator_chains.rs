@@ -539,6 +539,7 @@ fn builtin_operator_spec(spelling: &str) -> Option<OperatorSpec> {
     let (rank, associativity, meaning) = match spelling {
         "$" => (-4, Associativity::Right, OperatorMeaning::Apply),
         "|>" => (-2, Associativity::Left, OperatorMeaning::Pipeline),
+        "??" => (0, Associativity::Right, OperatorMeaning::Binary),
         "||" => (2, Associativity::Left, OperatorMeaning::Binary),
         "&&" => (4, Associativity::Left, OperatorMeaning::Binary),
         "==" | "!=" | "<" | "<=" | ">" | ">=" => (6, Associativity::None, OperatorMeaning::Binary),

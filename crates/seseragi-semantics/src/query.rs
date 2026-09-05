@@ -1172,6 +1172,16 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
         });
     }
 
+    items.push(AnalysisReferenceItem {
+        identity: "std/prelude::??".to_owned(),
+        name: "??".to_owned(), module: "std/prelude".to_owned(),
+        category: "Operators".to_owned(), kind: "operator".to_owned(),
+        signature: Some("Maybe<A> ?? A -> A".to_owned()),
+        multiline_signature: Some("Maybe<A> ?? A -> A".to_owned()),
+        description: "Maybe fallback. Precedence 0, right-associative. Evaluates the left once; evaluates the fallback only for Nothing. Syntax only: no operator section or overload.".to_owned(),
+        type_parameters: vec!["A".to_owned()], constraints: vec![],
+    });
+
     let trait_items = items
         .iter()
         .filter(|item| item.category == "Traits")
