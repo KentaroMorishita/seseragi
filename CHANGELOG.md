@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.59.0] - 2026-09-05
+
+### Fixed
+
+- Erase lexically scoped higher-kinded TypeScript parameters consistently in
+  generated match bodies, bindings, lambdas, and local functions while
+  preserving ordinary nominal generic types.
+
 ## [0.58.0] - 2026-09-05
 
 ### Fixed
