@@ -258,6 +258,22 @@ pub(super) fn type_index(
         name: "Maybe".to_owned(),
         arguments: vec![element.type_ref.clone()],
     };
+    let result_key = context
+        .resolution
+        .resolved()
+        .symbols
+        .iter()
+        .find(|symbol| symbol.canonical.as_deref() == Some("std/prelude::Maybe"))
+        .map_or_else(
+            || SemanticTypeKey::NamedGeneric {
+                name: "Maybe".to_owned(),
+                arguments: vec![element.clone()],
+            },
+            |symbol| SemanticTypeKey::Adt {
+                owner: symbol.id,
+                arguments: vec![element.clone()],
+            },
+        );
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Call {
             // Internal syntax intrinsic, not an additional standard module export.
@@ -274,10 +290,7 @@ pub(super) fn type_index(
         if issue.is_some() {
             SemanticTypeKey::Invalid
         } else {
-            SemanticTypeKey::NamedGeneric {
-                name: "Maybe".to_owned(),
-                arguments: vec![element],
-            }
+            result_key
         },
     );
     result.array_issue = issue;
