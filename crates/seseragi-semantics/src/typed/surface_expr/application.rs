@@ -10,8 +10,7 @@ use crate::typed::functions::{
 };
 use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{
-    semantic_values_are_compatible, substitute_remaining_scheme_parameters, SemanticTypeKey,
-    SemanticValueType,
+    semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
 };
 use crate::typed::type_ref::{application_argument_type_from_expr, typed_type_contains_hole};
 
@@ -485,14 +484,16 @@ fn refine_collection_parameters(
     if substitutions.is_empty() {
         return;
     }
+    // Collection evidence refines the source scheme, while expected-result
+    // inference may already have attached an ADT key to a still-generic type.
+    // Substitute the source type once and recover its matching scoped key;
+    // rebuilding a type from that stale key can apply the ADT arguments twice.
     for parameter in &mut application.parameters {
-        *parameter = substitute_remaining_scheme_parameters(parameter, &substitutions);
-        parameter.type_ref = substitute_type_parameters(&parameter.type_ref, &substitutions);
+        let refined = substitute_type_parameters(&parameter.type_ref, &substitutions);
+        *parameter = context.semantic_value_from_typed_type(&refined);
     }
-    application.result =
-        substitute_remaining_scheme_parameters(&application.result, &substitutions);
-    application.result.type_ref =
-        substitute_type_parameters(&application.result.type_ref, &substitutions);
+    let refined = substitute_type_parameters(&application.result.type_ref, &substitutions);
+    application.result = context.semantic_value_from_typed_type(&refined);
     for constraint in &mut application.constraints {
         for argument in &mut constraint.arguments {
             *argument = substitute_type_parameters(argument, &substitutions);

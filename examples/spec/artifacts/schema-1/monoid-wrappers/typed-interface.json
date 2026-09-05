@@ -1,0 +1,392 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/monoid-wrappers",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/monoid-wrappers::Tally",
+      "namespace": "type",
+      "name": "Tally",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 0,
+        "end": 31
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Tally",
+          "arity": 0
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "artifact/monoid-wrappers::Ordered",
+      "namespace": "type",
+      "name": "Ordered",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 248,
+        "end": 284
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Ordered",
+          "arity": 0
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "artifact/monoid-wrappers::mergeAll",
+      "namespace": "value",
+      "name": "mergeAll",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 514,
+        "end": 600
+      },
+      "scheme": {
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Reducible",
+            "traitIdentity": "std/prelude::Reducible",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "C",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          {
+            "name": "Monoid",
+            "traitIdentity": "std/prelude::Monoid",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/monoid-wrappers::unwrapSum",
+      "namespace": "value",
+      "name": "unwrapSum",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 601,
+        "end": 668
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Sum",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/monoid-wrappers::unwrapProduct",
+      "namespace": "value",
+      "name": "unwrapProduct",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 669,
+        "end": 748
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Product",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/monoid-wrappers::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 750,
+        "end": 1493
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Zero<artifact/monoid-wrappers::Tally>",
+      "providerModule": "artifact/monoid-wrappers",
+      "traitIdentity": "std/prelude::Zero",
+      "argumentIdentities": [
+        "artifact/monoid-wrappers::Tally"
+      ],
+      "trait": "Zero",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Zero",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Tally",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 32,
+        "end": 109
+      }
+    },
+    {
+      "identity": "std/prelude::Add<artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally>",
+      "providerModule": "artifact/monoid-wrappers",
+      "traitIdentity": "std/prelude::Add",
+      "argumentIdentities": [
+        "artifact/monoid-wrappers::Tally",
+        "artifact/monoid-wrappers::Tally",
+        "artifact/monoid-wrappers::Tally"
+      ],
+      "trait": "Add",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Add",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Tally",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Tally",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Tally",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 110,
+        "end": 247
+      }
+    },
+    {
+      "identity": "std/prelude::One<artifact/monoid-wrappers::Ordered>",
+      "providerModule": "artifact/monoid-wrappers",
+      "traitIdentity": "std/prelude::One",
+      "argumentIdentities": [
+        "artifact/monoid-wrappers::Ordered"
+      ],
+      "trait": "One",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "One",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Ordered",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 285,
+        "end": 365
+      }
+    },
+    {
+      "identity": "std/prelude::Mul<artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered>",
+      "providerModule": "artifact/monoid-wrappers",
+      "traitIdentity": "std/prelude::Mul",
+      "argumentIdentities": [
+        "artifact/monoid-wrappers::Ordered",
+        "artifact/monoid-wrappers::Ordered",
+        "artifact/monoid-wrappers::Ordered"
+      ],
+      "trait": "Mul",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Mul",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Ordered",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Ordered",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Ordered",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 366,
+        "end": 513
+      }
+    }
+  ]
+}

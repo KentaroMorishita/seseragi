@@ -1932,3 +1932,27 @@ fn binary_exposes_effect_until_iterable_and_control_contract() {
         "{hover}"
     );
 }
+
+#[test]
+fn binary_exposes_canonical_monoid_wrapper_result() {
+    let workspace = TempWorkspace::new();
+    let source = "pub let total = combine [Sum 1, Sum 2]\n";
+    workspace.write("main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":main_uri},"position":{"line":0,"character":8}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(hover.contains("Sum") && hover.contains("Int"), "{hover}");
+}

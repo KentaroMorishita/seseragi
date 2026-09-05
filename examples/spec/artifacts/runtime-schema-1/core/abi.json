@@ -5,6 +5,90 @@
   "unicodeVersion": "17.0.0",
   "targetFamily": "typescript",
   "features": [
+    {
+      "id": "core.sum.type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged Sum<A>",
+      "boundary": "nominal arithmetic composition wrapper",
+      "typeIdentity": "std/prelude::Sum",
+      "typeImport": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Sum"
+      },
+      "import": null
+    },
+    {
+      "id": "core.sum.constructor",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "std/prelude::Sum constructor",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Sum"
+      }
+    },
+    {
+      "id": "core.sum.semigroup",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional homogeneous arithmetic dictionary",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "sumSemigroup"
+      }
+    },
+    {
+      "id": "core.sum.monoid",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional identity and homogeneous arithmetic dictionary",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "sumMonoid"
+      }
+    },
+    {
+      "id": "core.product.type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged Product<A>",
+      "boundary": "nominal arithmetic composition wrapper",
+      "typeIdentity": "std/prelude::Product",
+      "typeImport": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Product"
+      },
+      "import": null
+    },
+    {
+      "id": "core.product.constructor",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "std/prelude::Product constructor",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Product"
+      }
+    },
+    {
+      "id": "core.product.semigroup",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional homogeneous arithmetic dictionary",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "productSemigroup"
+      }
+    },
+    {
+      "id": "core.product.monoid",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional identity and homogeneous arithmetic dictionary",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "productMonoid"
+      }
+    },
 {"id":"core.unicode-version","kind":"runtime-helper","typescript":"function","boundary":"Every generated module checks its Unicode data version before source initialization","import":{"module":"@seseragi/runtime/unicode-version","export":"assertUnicodeVersion"}},
 {"id":"core.text.invalid-scalar-range","kind":"runtime-helper","typescript":"function","boundary":"std/text::InvalidScalarRange; pinned Unicode semantics, no implicit normalization","import":{"module":"@seseragi/runtime/text","export":"InvalidScalarRange"}},
 {"id":"core.text.is-empty","kind":"runtime-helper","typescript":"function","boundary":"std/text::isEmpty; pinned Unicode semantics, no implicit normalization","import":{"module":"@seseragi/runtime/text","export":"isEmpty"}},

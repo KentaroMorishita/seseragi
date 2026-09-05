@@ -1,0 +1,3572 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/monoid-wrappers",
+  "instances": [
+    {
+      "identity": "std/prelude::Zero<artifact/monoid-wrappers::Tally>",
+      "traitIdentity": "std/prelude::Zero",
+      "trait": "Zero",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Tally",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/monoid-wrappers::Tally"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 32,
+        "end": 109
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "zero",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Tally",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "unit",
+                "type": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 65,
+                  "end": 69
+                }
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "unary",
+                    "operator": "-",
+                    "operand": {
+                      "kind": "integer",
+                      "value": "1",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 104,
+                        "end": 105
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 102,
+                      "end": 105
+                    }
+                  },
+                  "origin": {
+                    "start": 95,
+                    "end": 105
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Tally",
+                "arguments": []
+              },
+              "origin": {
+                "start": 87,
+                "end": 107
+              }
+            },
+            "origin": {
+              "start": 57,
+              "end": 107
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Add<artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally>",
+      "traitIdentity": "std/prelude::Add",
+      "trait": "Add",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Tally",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Tally",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Tally",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/monoid-wrappers::Tally",
+        "artifact/monoid-wrappers::Tally",
+        "artifact/monoid-wrappers::Tally"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 110,
+        "end": 247
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "add",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Tally",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "Tally",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 155,
+                  "end": 159
+                }
+              },
+              {
+                "kind": "named",
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "Tally",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 170,
+                  "end": 175
+                }
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "variable",
+                          "name": "left",
+                          "type": {
+                            "kind": "named",
+                            "name": "Tally",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 213,
+                            "end": 217
+                          }
+                        },
+                        "field": "value",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 213,
+                          "end": 223
+                        }
+                      },
+                      "right": {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "variable",
+                          "name": "right",
+                          "type": {
+                            "kind": "named",
+                            "name": "Tally",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 226,
+                            "end": 231
+                          }
+                        },
+                        "field": "value",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 226,
+                          "end": 237
+                        }
+                      },
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Add",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/int::Add"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 213,
+                        "end": 237
+                      }
+                    },
+                    "right": {
+                      "kind": "integer",
+                      "value": "1",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 240,
+                        "end": 241
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Add",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Add"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 213,
+                      "end": 241
+                    }
+                  },
+                  "origin": {
+                    "start": 206,
+                    "end": 241
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Tally",
+                "arguments": []
+              },
+              "origin": {
+                "start": 194,
+                "end": 245
+              }
+            },
+            "origin": {
+              "start": 148,
+              "end": 245
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::One<artifact/monoid-wrappers::Ordered>",
+      "traitIdentity": "std/prelude::One",
+      "trait": "One",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Ordered",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/monoid-wrappers::Ordered"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 285,
+        "end": 365
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "one",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Ordered",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "unit",
+                "type": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 318,
+                  "end": 322
+                }
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "string",
+                    "value": "",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 359,
+                      "end": 361
+                    }
+                  },
+                  "origin": {
+                    "start": 352,
+                    "end": 361
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Ordered",
+                "arguments": []
+              },
+              "origin": {
+                "start": 342,
+                "end": 363
+              }
+            },
+            "origin": {
+              "start": 311,
+              "end": 363
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Mul<artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered>",
+      "traitIdentity": "std/prelude::Mul",
+      "trait": "Mul",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Ordered",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Ordered",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Ordered",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/monoid-wrappers::Ordered",
+        "artifact/monoid-wrappers::Ordered",
+        "artifact/monoid-wrappers::Ordered"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 366,
+        "end": 513
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "mul",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Ordered",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "Ordered",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 417,
+                  "end": 421
+                }
+              },
+              {
+                "kind": "named",
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "Ordered",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 434,
+                  "end": 439
+                }
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "field-access",
+                      "receiver": {
+                        "kind": "variable",
+                        "name": "left",
+                        "type": {
+                          "kind": "named",
+                          "name": "Ordered",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 483,
+                          "end": 487
+                        }
+                      },
+                      "field": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 483,
+                        "end": 493
+                      }
+                    },
+                    "right": {
+                      "kind": "field-access",
+                      "receiver": {
+                        "kind": "variable",
+                        "name": "right",
+                        "type": {
+                          "kind": "named",
+                          "name": "Ordered",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 496,
+                          "end": 501
+                        }
+                      },
+                      "field": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 496,
+                        "end": 507
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Add",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/string::Add"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 483,
+                      "end": 507
+                    }
+                  },
+                  "origin": {
+                    "start": 476,
+                    "end": 507
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Ordered",
+                "arguments": []
+              },
+              "origin": {
+                "start": 462,
+                "end": 511
+              }
+            },
+            "origin": {
+              "start": 410,
+              "end": 511
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "struct",
+      "symbol": "artifact/monoid-wrappers::Tally",
+      "name": "Tally",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 19,
+            "end": 24
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 31
+      }
+    },
+    {
+      "kind": "struct",
+      "symbol": "artifact/monoid-wrappers::Ordered",
+      "name": "Ordered",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 269,
+            "end": 274
+          }
+        }
+      ],
+      "origin": {
+        "start": 248,
+        "end": 284
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/monoid-wrappers::mergeAll",
+      "visibility": "public",
+      "origin": {
+        "start": 514,
+        "end": 600
+      },
+      "scheme": {
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Reducible",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "C",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          {
+            "name": "Monoid",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "constraintIdentities": [
+          "std/prelude::Reducible",
+          "std/prelude::Monoid"
+        ],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          },
+          "origin": {
+            "start": 536,
+            "end": 542
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::combine",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            "origin": {
+              "start": 594,
+              "end": 600
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          },
+          {
+            "constraint": {
+              "name": "Monoid",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 1
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 586,
+          "end": 600
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/monoid-wrappers::unwrapSum",
+      "visibility": "public",
+      "origin": {
+        "start": 601,
+        "end": 668
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Sum",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 621,
+            "end": 626
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Sum",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 648,
+            "end": 653
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Sum",
+              "argument": {
+                "kind": "binding",
+                "symbol": 31,
+                "name": "n",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 660,
+                  "end": 661
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Sum",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 656,
+                "end": 661
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "n",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 665,
+                "end": 666
+              }
+            },
+            "origin": {
+              "start": 656,
+              "end": 666
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 642,
+          "end": 668
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/monoid-wrappers::unwrapProduct",
+      "visibility": "public",
+      "origin": {
+        "start": 669,
+        "end": 748
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Product",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 693,
+            "end": 698
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Product",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 724,
+            "end": 729
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Product",
+              "argument": {
+                "kind": "binding",
+                "symbol": 37,
+                "name": "n",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 740,
+                  "end": 741
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Product",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 732,
+                "end": 741
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "n",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 745,
+                "end": 746
+              }
+            },
+            "origin": {
+              "start": 732,
+              "end": 746
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 718,
+          "end": 748
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/monoid-wrappers::main",
+      "visibility": "public",
+      "origin": {
+        "start": 750,
+        "end": 1493
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/monoid-wrappers::unwrapSum",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/monoid-wrappers::mergeAll",
+                          "arguments": [
+                            {
+                              "kind": "array",
+                              "elements": [
+                                {
+                                  "kind": "call",
+                                  "callee": "std/prelude::Sum",
+                                  "arguments": [
+                                    {
+                                      "kind": "integer",
+                                      "value": "1",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "start": 821,
+                                        "end": 822
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "start": 817,
+                                    "end": 822
+                                  }
+                                },
+                                {
+                                  "kind": "call",
+                                  "callee": "std/prelude::Sum",
+                                  "arguments": [
+                                    {
+                                      "kind": "integer",
+                                      "value": "2",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "start": 828,
+                                        "end": 829
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "start": 824,
+                                    "end": 829
+                                  }
+                                },
+                                {
+                                  "kind": "call",
+                                  "callee": "std/prelude::Sum",
+                                  "arguments": [
+                                    {
+                                      "kind": "integer",
+                                      "value": "3",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "start": 835,
+                                        "end": 836
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "start": 831,
+                                    "end": 836
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "start": 816,
+                                "end": 837
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Reducible",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Array",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Sum",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/array::Reducible"
+                              }
+                            },
+                            {
+                              "constraint": {
+                                "name": "Monoid",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/sum::Monoid",
+                                "typeArguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ],
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Zero",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/int::Zero"
+                                    }
+                                  },
+                                  {
+                                    "constraint": {
+                                      "name": "Add",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/int::Add"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 807,
+                            "end": 837
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 795,
+                        "end": 837
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 788,
+                    "end": 837
+                  }
+                }
+              ],
+              "origin": {
+                "start": 778,
+                "end": 837
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/monoid-wrappers::unwrapProduct",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/monoid-wrappers::mergeAll",
+                          "arguments": [
+                            {
+                              "kind": "list",
+                              "elements": [
+                                {
+                                  "kind": "call",
+                                  "callee": "std/prelude::Product",
+                                  "arguments": [
+                                    {
+                                      "kind": "integer",
+                                      "value": "2",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "start": 892,
+                                        "end": 893
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "start": 884,
+                                    "end": 893
+                                  }
+                                },
+                                {
+                                  "kind": "call",
+                                  "callee": "std/prelude::Product",
+                                  "arguments": [
+                                    {
+                                      "kind": "integer",
+                                      "value": "3",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "start": 903,
+                                        "end": 904
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "start": 895,
+                                    "end": 904
+                                  }
+                                },
+                                {
+                                  "kind": "call",
+                                  "callee": "std/prelude::Product",
+                                  "arguments": [
+                                    {
+                                      "kind": "integer",
+                                      "value": "4",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "start": 914,
+                                        "end": 915
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "start": 906,
+                                    "end": 915
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "start": 882,
+                                "end": 916
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Reducible",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Product",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/list::Reducible"
+                              }
+                            },
+                            {
+                              "constraint": {
+                                "name": "Monoid",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/product::Monoid",
+                                "typeArguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ],
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "One",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/int::One"
+                                    }
+                                  },
+                                  {
+                                    "constraint": {
+                                      "name": "Mul",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/int::Mul"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 873,
+                            "end": 916
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 857,
+                        "end": 916
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 850,
+                    "end": 916
+                  }
+                }
+              ],
+              "origin": {
+                "start": 840,
+                "end": 916
+              }
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 42,
+              "name": "emptySum",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Sum",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 923,
+                "end": 931
+              }
+            },
+            "value": {
+              "kind": "array",
+              "elements": [],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Sum",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 951,
+                "end": 953
+              }
+            },
+            "origin": {
+              "start": 919,
+              "end": 953
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 43,
+              "name": "emptyProduct",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Product",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 960,
+                "end": 972
+              }
+            },
+            "value": {
+              "kind": "array",
+              "elements": [],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Product",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 996,
+                "end": 998
+              }
+            },
+            "origin": {
+              "start": 956,
+              "end": 998
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/monoid-wrappers::unwrapSum",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/monoid-wrappers::mergeAll",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "emptySum",
+                              "type": {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "start": 1039,
+                                "end": 1047
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Reducible",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Array",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Sum",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/array::Reducible"
+                              }
+                            },
+                            {
+                              "constraint": {
+                                "name": "Monoid",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/sum::Monoid",
+                                "typeArguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ],
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "Zero",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/int::Zero"
+                                    }
+                                  },
+                                  {
+                                    "constraint": {
+                                      "name": "Add",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/int::Add"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1030,
+                            "end": 1047
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1018,
+                        "end": 1047
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1011,
+                    "end": 1047
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1001,
+                "end": 1047
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/monoid-wrappers::unwrapProduct",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/monoid-wrappers::mergeAll",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "emptyProduct",
+                              "type": {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "start": 1092,
+                                "end": 1104
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Reducible",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Array",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Product",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/array::Reducible"
+                              }
+                            },
+                            {
+                              "constraint": {
+                                "name": "Monoid",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Product",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/product::Monoid",
+                                "typeArguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ],
+                                "evidenceArguments": [
+                                  {
+                                    "constraint": {
+                                      "name": "One",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/int::One"
+                                    }
+                                  },
+                                  {
+                                    "constraint": {
+                                      "name": "Mul",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/int::Mul"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1083,
+                            "end": 1104
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1067,
+                        "end": 1104
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1060,
+                    "end": 1104
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1050,
+                "end": 1104
+              }
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 44,
+              "name": "custom",
+              "type": {
+                "kind": "named",
+                "name": "Tally",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1111,
+                "end": 1117
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/monoid-wrappers::unwrapSum",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/monoid-wrappers::mergeAll",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Sum",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "value",
+                                  "value": {
+                                    "kind": "integer",
+                                    "value": "1",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 1162,
+                                      "end": 1163
+                                    }
+                                  },
+                                  "origin": {
+                                    "start": 1155,
+                                    "end": 1163
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1147,
+                                "end": 1165
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1142,
+                            "end": 1166
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Sum",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "value",
+                                  "value": {
+                                    "kind": "integer",
+                                    "value": "2",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 1188,
+                                      "end": 1189
+                                    }
+                                  },
+                                  "origin": {
+                                    "start": 1181,
+                                    "end": 1189
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1173,
+                                "end": 1191
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1168,
+                            "end": 1192
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1141,
+                        "end": 1193
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Reducible",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Sum",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Tally",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/array::Reducible"
+                      }
+                    },
+                    {
+                      "constraint": {
+                        "name": "Monoid",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/sum::Monoid",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Tally",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Zero",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Tally",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "local",
+                              "identity": "std/prelude::Zero<artifact/monoid-wrappers::Tally>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Add",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Tally",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Tally",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Tally",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "local",
+                              "identity": "std/prelude::Add<artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Sum",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Tally",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1132,
+                    "end": 1193
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Tally",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1120,
+                "end": 1193
+              }
+            },
+            "origin": {
+              "start": 1107,
+              "end": 1193
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "field-access",
+                      "receiver": {
+                        "kind": "variable",
+                        "name": "custom",
+                        "type": {
+                          "kind": "named",
+                          "name": "Tally",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1211,
+                          "end": 1217
+                        }
+                      },
+                      "field": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1211,
+                        "end": 1223
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1206,
+                    "end": 1223
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1196,
+                "end": 1223
+              }
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 45,
+              "name": "ordered",
+              "type": {
+                "kind": "named",
+                "name": "Ordered",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1230,
+                "end": 1237
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/monoid-wrappers::unwrapProduct",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/monoid-wrappers::mergeAll",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Product",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "value",
+                                  "value": {
+                                    "kind": "string",
+                                    "value": "first",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 1303,
+                                      "end": 1310
+                                    }
+                                  },
+                                  "origin": {
+                                    "start": 1296,
+                                    "end": 1310
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1286,
+                                "end": 1312
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1277,
+                            "end": 1313
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Product",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "value",
+                                  "value": {
+                                    "kind": "string",
+                                    "value": "-second",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 1347,
+                                      "end": 1356
+                                    }
+                                  },
+                                  "origin": {
+                                    "start": 1340,
+                                    "end": 1356
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1330,
+                                "end": 1358
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1321,
+                            "end": 1359
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1269,
+                        "end": 1365
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Reducible",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Product",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Ordered",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/array::Reducible"
+                      }
+                    },
+                    {
+                      "constraint": {
+                        "name": "Monoid",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/product::Monoid",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Ordered",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "One",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Ordered",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "local",
+                              "identity": "std/prelude::One<artifact/monoid-wrappers::Ordered>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Mul",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Ordered",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Ordered",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Ordered",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "local",
+                              "identity": "std/prelude::Mul<artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Product",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Ordered",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1260,
+                    "end": 1365
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Ordered",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1240,
+                "end": 1365
+              }
+            },
+            "origin": {
+              "start": 1226,
+              "end": 1365
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "ordered",
+                    "type": {
+                      "kind": "named",
+                      "name": "Ordered",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1376,
+                      "end": 1383
+                    }
+                  },
+                  "field": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1376,
+                    "end": 1389
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1368,
+                "end": 1389
+              }
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 48,
+              "name": "partial",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Sum",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Sum",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "start": 1396,
+                "end": 1403
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Semigroup::append",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Sum",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "10",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1440,
+                        "end": 1442
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Sum",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1436,
+                    "end": 1442
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Semigroup",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Sum",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/sum::Semigroup",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Add",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Add"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Semigroup",
+                "method": "append"
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Sum",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Sum",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "start": 1428,
+                "end": 1443
+              }
+            },
+            "origin": {
+              "start": 1392,
+              "end": 1443
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/monoid-wrappers::unwrapSum",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "partial",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Sum",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "20",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1488,
+                                "end": 1490
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1484,
+                            "end": 1490
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Sum",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1475,
+                        "end": 1491
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1463,
+                    "end": 1491
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1456,
+                "end": 1491
+              }
+            }
+          ],
+          "origin": {
+            "start": 1446,
+            "end": 1491
+          }
+        },
+        "origin": {
+          "start": 771,
+          "end": 1493
+        }
+      }
+    }
+  ]
+}

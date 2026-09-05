@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/monoid-wrappers@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/monoid-wrappers@0.0.0#workspace:."
+name = "fixture/monoid-wrappers"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:5e38f78f2481969a24733ca938f3c967ed2305590cef73bcf3bb0c521143fdbe"
+content_digest = "sha256:1927046bc054f56a7d4845d17d10e6f39e8c497edc3f857d6260326604f0b8d3"
+dependencies = []

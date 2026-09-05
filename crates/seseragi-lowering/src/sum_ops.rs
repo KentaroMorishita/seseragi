@@ -123,6 +123,22 @@ pub(crate) struct RuntimeSumConstructor {
 
 const RUNTIME_SUM_CONSTRUCTORS: &[RuntimeSumConstructor] = &[
     RuntimeSumConstructor {
+        semantic_name: "std/prelude::Product",
+        runtime_feature: "core.product.constructor",
+        local_name: "_ssrg_product_Product",
+        module: "@seseragi/runtime/sum",
+        export_name: "Product",
+        source_map_name: "Product",
+    },
+    RuntimeSumConstructor {
+        semantic_name: "std/prelude::Sum",
+        runtime_feature: "core.sum.constructor",
+        local_name: "_ssrg_sum_Sum",
+        module: "@seseragi/runtime/sum",
+        export_name: "Sum",
+        source_map_name: "Sum",
+    },
+    RuntimeSumConstructor {
         semantic_name: "std/prelude::Nothing",
         runtime_feature: "core.maybe.nothing",
         local_name: "_ssrg_maybe_Nothing",

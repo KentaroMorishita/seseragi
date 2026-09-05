@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "module": "artifact/monoid-wrappers",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.sum.type",
+      "core.product.type",
+      "core.unit",
+      "core.int",
+      "core.int.subtract",
+      "core.int.add",
+      "core.string",
+      "core.string.add-dictionary",
+      "core.collection.combine",
+      "core.adt",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.show",
+      "core.array.reducible",
+      "core.int.zero-dictionary",
+      "core.int.add-dictionary",
+      "core.sum.monoid",
+      "core.sum.constructor",
+      "core.list.reducible",
+      "core.int.one-dictionary",
+      "core.int.mul-dictionary",
+      "core.product.monoid",
+      "core.list",
+      "core.list.from-array",
+      "core.product.constructor",
+      "core.sum.semigroup"
+    ]
+  },
+  "exports": [
+    "mergeAll",
+    "unwrapSum",
+    "unwrapProduct",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Zero<artifact/monoid-wrappers::Tally>",
+      "trait": "Zero",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tally",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Zero$0"
+    },
+    {
+      "identity": "std/prelude::Add<artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally>",
+      "trait": "Add",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tally",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Tally",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Tally",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Add$1"
+    },
+    {
+      "identity": "std/prelude::One<artifact/monoid-wrappers::Ordered>",
+      "trait": "One",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Ordered",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$One$2"
+    },
+    {
+      "identity": "std/prelude::Mul<artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered>",
+      "trait": "Mul",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Ordered",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Ordered",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Ordered",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Mul$3"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

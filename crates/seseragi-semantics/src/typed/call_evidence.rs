@@ -301,12 +301,12 @@ pub(crate) fn select_function_call_evidence(
                 // Standard operations such as `reduce` do not resolve through
                 // a source trait method, but their constraint can still be
                 // satisfied by evidence supplied by a generic caller or by a
-                // user instance. Prefer that materializable dictionary and
-                // retain the dedicated standard operation ABI as the fallback.
+                // user instance. Contextual selection already includes the
+                // standard ABI fallback and rejects shadowed nominal heads.
+                // Retrying without scope would bypass that rejection.
                 None => {
                     let trait_identity = format!("std/prelude::{}", constraint.name);
                     select_resolved_evidence(&constraint, &trait_identity, resolution, scoped)
-                        .or_else(|| select_standard_instance(None, &constraint))
                 }
             }
             .ok_or_else(|| {
