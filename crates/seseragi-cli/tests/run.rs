@@ -1916,3 +1916,24 @@ fn runs_char_literal_lesson_02() {
         "answer: 42, initial: 瀬, million: 1000000\n"
     );
 }
+
+#[test]
+fn runs_maybe_fallback() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/maybe-fallback"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+}

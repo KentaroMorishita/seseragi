@@ -306,6 +306,9 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref,
             origin,
         } => {
+            if operator == "??" {
+                return super::decision::lower_fallback(source, *left, *right, type_ref, origin);
+            }
             let origin = source_span(source, origin);
             let type_ref = lower_typed_type(type_ref);
             if matches!(operator.as_str(), "&&" | "||") {

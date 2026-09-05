@@ -408,3 +408,54 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
 
 #[cfg(test)]
 mod tests;
+
+/// Reuse the decision backend so the scrutinee is evaluated once and fallback stays lazy.
+pub(super) fn lower_fallback(
+    source: &str,
+    left: TypedExpr,
+    right: TypedExpr,
+    result_type: TypedType,
+    span: ByteSpan,
+) -> CoreExpr {
+    let scrutinee_type = lower_typed_type(typed_expr_type(&left));
+    let type_ref = lower_typed_type(result_type);
+    let origin = source_span(source, span);
+    let name = "$ssrg$fallbackValue".to_owned();
+    CoreExpr::Decision {
+        scrutinee: Box::new(lower_expr(source, left)),
+        scrutinee_type,
+        exhaustive: true,
+        branches: vec![
+            CoreDecisionBranch {
+                tests: vec![CoreDecisionTest::Constructor {
+                    path: vec![],
+                    constructor: "std/prelude::Just".to_owned(),
+                    origin: origin.clone(),
+                }],
+                bindings: vec![CoreDecisionBinding {
+                    name: name.clone(),
+                    type_ref: type_ref.clone(),
+                    path: vec![CoreDecisionProjection::AdtPayload],
+                    origin: origin.clone(),
+                }],
+                guard: None,
+                value: CoreExpr::Variable {
+                    name,
+                    evidence: vec![],
+                    type_ref: type_ref.clone(),
+                    origin: origin.clone(),
+                },
+                origin: origin.clone(),
+            },
+            CoreDecisionBranch {
+                tests: vec![],
+                bindings: vec![],
+                guard: None,
+                value: lower_expr(source, right),
+                origin: origin.clone(),
+            },
+        ],
+        type_ref,
+        origin,
+    }
+}

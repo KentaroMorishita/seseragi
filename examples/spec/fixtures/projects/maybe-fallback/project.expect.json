@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "phase": "run",
+  "spec": [
+    "1.7",
+    "5.2"
+  ],
+  "lock": "generate",
+  "stdout": "(1, 20, 3, ())\nrequest\n7\n1,2,20,3\n",
+  "kind": "project"
+}

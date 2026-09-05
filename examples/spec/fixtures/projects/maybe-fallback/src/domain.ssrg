@@ -1,0 +1,1 @@
+pub fn resolve<A> value: Maybe<A> -> fallback: A -> A = value ?? fallback

@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/maybe-fallback@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/maybe-fallback@0.0.0#workspace:."
+name = "fixture/maybe-fallback"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:358cbd91cd26811fb22e221acf9e7d583cb03d7a80d253a8fc6d633a7259cdbb"
+content_digest = "sha256:465d7d1c8e66ed09fbb0dce75b1e13813ca591ef3cce8c57d915732fdb63c61f"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/maybe-fallback@0.0.0#workspace:."
+declaration = "src/main.ssrg#35-196"
+specifier = "../host/probe.mjs"
+exact_identity = "workspace:host/probe.mjs"
+declaration_digest = "sha256:574804a2b892374ccd3b6c39754ac452047580be44bf2bc73c52bb776eec0ef8"
+content_digest = "sha256:8ac208640ec493d3b1ad96cf77a3416c5049206e601b9652e058990b100cf481"
