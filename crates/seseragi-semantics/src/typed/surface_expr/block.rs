@@ -13,13 +13,25 @@ use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{
     semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
 };
-use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
+use crate::typed::type_ref::{
+    application_argument_type_from_expr, inferred_type_from_expr, typed_type_contains_hole,
+};
 
 pub(super) fn type_block(
     items: &[SurfaceBlockItem],
     result: &SurfaceExpr,
     origin: ByteSpan,
     base_context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    type_block_with(items, result, origin, base_context, type_surface_expression)
+}
+
+pub(crate) fn type_block_with(
+    items: &[SurfaceBlockItem],
+    result: &SurfaceExpr,
+    origin: ByteSpan,
+    base_context: &PureExpressionContext<'_>,
+    mut type_body: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
     let mut locals = BTreeMap::<SymbolId, SemanticValueType>::new();
     let mut statements = Vec::new();
@@ -45,7 +57,7 @@ pub(super) fn type_block(
                     type_ref.as_ref(),
                     value,
                     &context,
-                    type_surface_expression,
+                    &mut type_body,
                 );
                 merged.pure_call_issue = merged.pure_call_issue.take().or(binding.mismatch);
                 if binding.pattern.is_refutable() {
@@ -159,13 +171,13 @@ pub(super) fn type_block(
         }
     }
 
-    let result_analysis = type_surface_expression(
+    let result_analysis = type_body(
         result,
         &base_context
             .with_locals(locals)
             .with_expected(base_context.expected().cloned()),
     );
-    let type_ref = inferred_type_from_expr(&result_analysis.value);
+    let type_ref = application_argument_type_from_expr(&result_analysis.value);
     let semantic_type = result_analysis.semantic_type.clone();
     let result_value = result_analysis.value.clone();
     merged.merge_issues_from(result_analysis);

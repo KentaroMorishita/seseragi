@@ -417,6 +417,69 @@ fn runs_imported_derived_json_codecs() {
 }
 
 #[test]
+fn runs_effect_match() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/effect-match"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+
+    let artifact = package.root.join("artifact");
+    let built = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&package)
+        .arg("--out-dir")
+        .arg(&artifact)
+        .output()
+        .unwrap();
+    assert!(
+        built.status.success(),
+        "{}",
+        String::from_utf8_lossy(&built.stderr)
+    );
+    fs::write(
+        artifact.join("lifecycle.ts"),
+        include_str!("fixtures/effect-match-lifecycle.ts"),
+    )
+    .unwrap();
+    let lifecycle = Command::new("bun")
+        .arg("run")
+        .arg("lifecycle.ts")
+        .current_dir(&artifact)
+        .output()
+        .unwrap();
+    assert!(
+        lifecycle.status.success(),
+        "{}",
+        String::from_utf8_lossy(&lifecycle.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&lifecycle.stdout),
+        "coldness, failure, cancellation: ok\n"
+    );
+    assert!(
+        lifecycle.stderr.is_empty(),
+        "{}",
+        String::from_utf8_lossy(&lifecycle.stderr)
+    );
+}
+
+#[test]
 fn runs_hkt_erasure() {
     let package =
         LockedProject::copy(&repository_root().join("examples/spec/fixtures/projects/hkt-erasure"));

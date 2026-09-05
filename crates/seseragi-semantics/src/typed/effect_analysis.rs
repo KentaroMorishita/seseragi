@@ -93,6 +93,7 @@ pub(crate) enum EffectFunctionIssue {
         primary: ByteSpan,
         actual: TypedType,
     },
+    Conditional(super::pure_issues::ConditionalIssue),
     Call(PureCallIssue),
     Array(ArrayIssue),
     Record(RecordIssue),
@@ -128,6 +129,13 @@ pub(crate) fn analyze_effect_function(
         analyze_effect_body(surface_body, &typed_parameters, resolution, scoped_evidence);
     let typed_body = body_analysis.value;
 
+    if !body_analysis.conditional_issues.is_empty() {
+        return body_analysis
+            .conditional_issues
+            .into_iter()
+            .map(EffectFunctionIssue::Conditional)
+            .collect();
+    }
     if !body_analysis.array_issues.is_empty() {
         return body_analysis
             .array_issues

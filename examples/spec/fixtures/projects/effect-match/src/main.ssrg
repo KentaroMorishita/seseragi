@@ -1,0 +1,26 @@
+import { Box, display, choose, observe } from "./domain"
+import * as domain from "./domain"
+import * as effects from "std/effect"
+
+type Parcel = | Parcel Int
+
+pub effect fn main = do {
+  let value: Maybe<Int> = Just 1
+  match value {
+    Just item -> println $ show item
+    Nothing -> println "nothing"
+  }
+  display (Box 2)
+  match (domain.Box 3) { domain.Box item -> println $ show item }
+  match (Parcel 4) { Parcel item -> println $ show item }
+  let either: Either<String, Int> = Right 5
+  match either {
+    Left error -> println error
+    Right item -> if item == 5 then println $ show item else println "bad"
+  }
+  selected <- choose (Just 5) |> effects.recover (\_ -> effects.succeed 0)
+  println $ show selected
+  recovered <- choose Nothing |> effects.recover (\_ -> effects.succeed 7)
+  println $ show recovered
+  observe Nothing
+}

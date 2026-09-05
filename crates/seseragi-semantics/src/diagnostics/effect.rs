@@ -266,6 +266,17 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             )],
             fixes: Vec::new(),
         },
+        EffectFunctionIssue::Conditional(issue) => {
+            let mut diagnostics = Vec::new();
+            super::conditional::collect_conditional_diagnostics(
+                Some(&issue),
+                function,
+                &mut diagnostics,
+            );
+            diagnostics
+                .pop()
+                .expect("conditional issue produces one diagnostic")
+        }
         EffectFunctionIssue::Call(issue) => super::pure_call::call_diagnostic(issue, function),
         EffectFunctionIssue::Array(issue) => super::array::array_diagnostic(&issue, function),
         EffectFunctionIssue::Record(issue) => super::record::record_diagnostic(&issue, function),

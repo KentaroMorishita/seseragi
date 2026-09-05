@@ -6,7 +6,9 @@ use crate::{
 use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr};
 use std::collections::BTreeMap;
 
-use super::pure_issues::{ArrayIssue, MatchIssue, PureCallIssue, RangeIssue, RecordIssue};
+use super::pure_issues::{
+    ArrayIssue, ConditionalIssue, MatchIssue, PureCallIssue, RangeIssue, RecordIssue,
+};
 use super::surface_expr::{
     analyze_resolved_expression, application, ensure_recovery_hole_issue, named_type,
     PureExpressionContext, SurfaceExpressionAnalysis,
@@ -23,6 +25,7 @@ use operation_contract::operation_effect;
 
 pub(crate) struct EffectBodyAnalysis {
     pub(crate) value: TypedExpr,
+    pub(crate) conditional_issues: Vec<ConditionalIssue>,
     pub(crate) call_issues: Vec<PureCallIssue>,
     pub(crate) array_issues: Vec<ArrayIssue>,
     pub(crate) record_issues: Vec<RecordIssue>,
@@ -31,6 +34,7 @@ pub(crate) struct EffectBodyAnalysis {
 }
 
 pub(super) struct EffectBodyIssues<'a> {
+    pub(super) conditionals: &'a mut Vec<ConditionalIssue>,
     pub(super) calls: &'a mut Vec<PureCallIssue>,
     pub(super) arrays: &'a mut Vec<ArrayIssue>,
     pub(super) records: &'a mut Vec<RecordIssue>,
@@ -46,6 +50,7 @@ pub(crate) fn analyze_effect_body(
 ) -> EffectBodyAnalysis {
     let context = PureExpressionContext::new(parameters, resolution)
         .with_evidence_parameters(evidence_parameters);
+    let mut conditional_issues = Vec::new();
     let mut call_issues = Vec::new();
     let mut array_issues = Vec::new();
     let mut record_issues = Vec::new();
@@ -56,6 +61,7 @@ pub(crate) fn analyze_effect_body(
         &context,
         resolution,
         &mut EffectBodyIssues {
+            conditionals: &mut conditional_issues,
             calls: &mut call_issues,
             arrays: &mut array_issues,
             records: &mut record_issues,
@@ -64,7 +70,8 @@ pub(crate) fn analyze_effect_body(
         },
     );
     let mut final_analysis = SurfaceExpressionAnalysis::valid(value);
-    if call_issues.is_empty()
+    if conditional_issues.is_empty()
+        && call_issues.is_empty()
         && array_issues.is_empty()
         && record_issues.is_empty()
         && range_issues.is_empty()
@@ -77,6 +84,7 @@ pub(crate) fn analyze_effect_body(
     }
     EffectBodyAnalysis {
         value: final_analysis.value,
+        conditional_issues,
         call_issues,
         array_issues,
         record_issues,
@@ -147,6 +155,55 @@ fn type_effect_expression(
                 SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
             },
         );
+        return finish_expression_analysis(analysis, issues);
+    }
+
+    let mut type_branch = |body: &SurfaceExpr, branch_context: &PureExpressionContext<'_>| {
+        let value = type_effect_expression(body, branch_context, resolution, issues);
+        let semantic_type = branch_context
+            .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
+            .key;
+        SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+    };
+    let branch_analysis = match expression {
+        SurfaceExpr::Match {
+            scrutinee,
+            arms,
+            span,
+        } => Some(super::surface_expr::match_expression::type_match_with(
+            scrutinee,
+            arms,
+            *span,
+            context,
+            &mut type_branch,
+        )),
+        SurfaceExpr::If {
+            condition,
+            then_branch,
+            else_branch,
+            span,
+        } => Some(super::surface_expr::conditional::type_if_with(
+            condition,
+            then_branch,
+            else_branch,
+            *span,
+            context,
+            &mut type_branch,
+        )),
+        SurfaceExpr::Block {
+            items,
+            result,
+            span,
+        } => Some(super::surface_expr::block::type_block_with(
+            items,
+            result,
+            *span,
+            context,
+            &mut type_branch,
+        )),
+        _ => None,
+    };
+    if let Some(analysis) = branch_analysis {
         return finish_expression_analysis(analysis, issues);
     }
 
@@ -380,6 +437,9 @@ fn finish_expression_analysis(
     analysis: SurfaceExpressionAnalysis,
     issues: &mut EffectBodyIssues<'_>,
 ) -> TypedExpr {
+    if let Some(issue) = analysis.conditional_issue {
+        issues.conditionals.push(issue);
+    }
     if let Some(issue) = analysis.array_issue {
         issues.arrays.push(issue);
     }

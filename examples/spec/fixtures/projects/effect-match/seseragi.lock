@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/effect-match@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/effect-match@0.0.0#workspace:."
+name = "fixture/effect-match"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:0109f31eb901a48bc85216e549ef9fe11a0527f4c3d13f5ba7e5fe064325560e"
+content_digest = "sha256:1de771de2156d19df7ab1f579ca501fedb1c06e7ddb04e177dd638f36df374d2"
+dependencies = []
