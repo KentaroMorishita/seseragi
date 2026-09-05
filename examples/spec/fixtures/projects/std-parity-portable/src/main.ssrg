@@ -1,3 +1,4 @@
+import * as iterator from "std/iterator"
 import * as arrays from "std/array"
 import * as collections from "std/collection"
 import * as bytes from "std/bytes"
@@ -97,6 +98,35 @@ let decimalSummary = match decimals.context 2 numbers.HalfEven {
     }
 }
 
+type Countdown =
+  | Countdown Int
+
+fn iteratorStep n: Int -> Maybe<(Int, Int)> = if n > 0 then Just (n, n - 1) else Nothing
+
+instance Iterable<Countdown, Int> {
+  fn iterate values: Countdown -> Iterator<Int> =
+    match values { Countdown n -> iterator.unfold iteratorStep n }
+}
+
+fn first<C> values: C -> Maybe<Int> where Iterable<C, Int> =
+  match iterator.next (iterate values) {
+    Nothing -> Nothing
+    Just (value, _) -> Just value
+  }
+
+let finiteIterator: iterator.Iterator<Int> = iterator.unfold iteratorStep 3
+let iteratorComprehension = [n * 2 | n <- finiteIterator]
+fn infiniteStep n: Int -> Maybe<(Int, Int)> = Just (n, n + 1)
+let infiniteIterator = iterator.unfold infiniteStep 1
+let boundedTotal = collections.reduceUntil 0 (
+  \total: Int -> \n: Int -> if n == 3 then
+    collections.Done (total + n)
+  else
+    collections.Next (total + n)
+) infiniteIterator
+
+let iteratorListHead = first `[2, 3]
+
 pub effect fn main = do {
   println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText} / map: ${json.encodeString ordered} / set: ${sum unique} / grouped: ${maps.values grouped} / sorted: ${sorted} / size: ${invalidSize} / maybe: ${maybeResult} / either: ${eitherResult} / validation: ${validationResult}`
   println `unicode: ${unicodeSummary}`
@@ -104,4 +134,5 @@ pub effect fn main = do {
   println `codecs: ${hex.encode encoded} / ${base64.encode encoded} / ${base64.encodeUrl encoded} / ${decodedHex} / ${decodedBase64} / ${decodedBase64Url} / ${invalidHex} / ${invalidBase64}`
   println `big-int: ${bigIntSummary}`
   println `decimal: ${decimalSummary}`
+  println `iterator: ${first [1, 2]} / ${iteratorListHead} / ${first (3..=4)} / ${first (Countdown 4)} / ${first finiteIterator} / ${first finiteIterator} / ${iteratorComprehension} / ${boundedTotal}`
 }

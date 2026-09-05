@@ -1078,6 +1078,14 @@ fn semantic_key_from_expanded_type(
 }
 
 fn named_generic_key(name: &str, arguments: Vec<SemanticValueType>) -> SemanticTypeKey {
+    // Prelude callables produce the unqualified spelling; public module aliases
+    // carry an external name. Both refer to the same opaque iterator identity.
+    if name == "Iterator" {
+        return SemanticTypeKey::ExternalNominal {
+            canonical: "std/prelude::Iterator".to_owned(),
+            arguments,
+        };
+    }
     if arguments.is_empty() {
         SemanticTypeKey::Other
     } else {

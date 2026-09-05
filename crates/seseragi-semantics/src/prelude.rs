@@ -3721,7 +3721,13 @@ fn collection_type_arguments<'a>(
             canonical: actual,
             arguments,
             ..
-        } if canonical == Some(actual.as_str()) => Some(arguments),
+        } if canonical
+            .map(str::to_owned)
+            .unwrap_or_else(|| format!("std/prelude::{constructor}"))
+            == *actual =>
+        {
+            Some(arguments)
+        }
         _ => None,
     }
 }

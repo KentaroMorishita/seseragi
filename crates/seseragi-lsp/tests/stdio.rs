@@ -1567,6 +1567,12 @@ fn binary_exposes_portable_standard_metadata_from_the_parity_package() {
     let completion_position = LineIndex::new(&source)
         .try_locate_encoded(completion, PositionEncoding::Utf16)
         .unwrap();
+    let iterator_position = LineIndex::new(&source)
+        .try_locate_encoded(
+            source.find("iterator.next").unwrap() + "iterator.".len(),
+            PositionEncoding::Utf16,
+        )
+        .unwrap();
     let root_uri = file_uri(&package);
     let main_uri = file_uri(&main_path);
     let input = [
@@ -1595,6 +1601,12 @@ fn binary_exposes_portable_standard_metadata_from_the_parity_package() {
                 "line": completion_position.line, "character": completion_position.character
             }}
         }),
+        json!({
+            "jsonrpc": "2.0", "id": 5, "method": "textDocument/hover",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": iterator_position.line, "character": iterator_position.character
+            }}
+        }),
         json!({"jsonrpc": "2.0", "id": 4, "method": "shutdown"}),
         json!({"jsonrpc": "2.0", "method": "exit"}),
     ];
@@ -1609,6 +1621,14 @@ fn binary_exposes_portable_standard_metadata_from_the_parity_package() {
         .unwrap();
     assert!(hover.contains("filter"), "{hover}");
     assert!(hover.contains("std/array::filter"), "{hover}");
+    let iterator_hover = response(&messages, 5)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(
+        iterator_hover.contains("std/iterator::next"),
+        "{iterator_hover}"
+    );
+    assert!(iterator_hover.contains("Iterator"), "{iterator_hover}");
     let completions = response(&messages, 3)["result"].as_array().unwrap();
     let length = completions
         .iter()

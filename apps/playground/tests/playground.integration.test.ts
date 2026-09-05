@@ -386,6 +386,7 @@ describe("Playground project compiler boundary", () => {
       analysis.documents[0]?.document.standardLibrary
         .filter(({ module }) =>
           [
+            "std/iterator",
             "std/array",
             "std/bytes",
             "std/float",
@@ -406,6 +407,8 @@ describe("Playground project compiler boundary", () => {
         .map(({ identity }) => identity)
     ).toEqual(
       expect.arrayContaining([
+        "std/iterator::unfold",
+        "std/iterator::next",
         "std/array::filter",
         "std/array::length",
         "std/array::toList",

@@ -11686,6 +11686,19 @@
       "constraints": []
     },
     {
+      "identity": "std/prelude::Iterator",
+      "name": "Iterator",
+      "module": "std/iterator",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Iterator<_>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/child-process::KillChild",
       "name": "KillChild",
       "module": "std/child-process",
@@ -15958,6 +15971,19 @@
       "constraints": []
     },
     {
+      "identity": "std/iterator::next",
+      "name": "next",
+      "module": "std/iterator",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "next<A> arg1: Iterator<A> -> Maybe<(A, Iterator<A>)>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/random::nextBool",
       "name": "nextBool",
       "module": "std/random",
@@ -17500,6 +17526,20 @@
       "signature": "unbounded<A> arg1: Unit -> Effect<{}, Never, Queue<A>>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/iterator::unfold",
+      "name": "unfold",
+      "module": "std/iterator",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "unfold<S, A> arg1: (S -> Maybe<(A, S)>) -> arg2: S -> Iterator<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "S",
         "A"
       ],
       "constraints": []
