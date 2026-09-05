@@ -6,10 +6,10 @@ import { InvalidTagName as _ssrg_html_InvalidTagName, type HtmlBuildError as Htm
 import { type DomError as DomError, type DomRuntimeError as DomRuntimeError } from "@seseragi/runtime/dom"
 $ssrg$assertUnicodeVersion("17.0.0")
 
-export const showDomError = (value: DomError) => _ssrg_show_domErrorShow["show"](value)
-export const debugDomError = (value: DomError) => _ssrg_debug_domErrorDebug["debug"](value)
-export const showDomRuntimeError = (value: DomRuntimeError<string>) => _ssrg_show_domRuntimeErrorShow<string>(_ssrg_show_stringShow)["show"](value)
-export const debugDomRuntimeError = (value: DomRuntimeError<string>) => _ssrg_debug_domRuntimeErrorDebug<string>(_ssrg_debug_stringDebug)["debug"](value)
-export const showHtmlBuildError = (value: HtmlBuildError) => _ssrg_show_htmlBuildErrorShow["show"](value)
-export const debugHtmlBuildError = (value: HtmlBuildError) => _ssrg_debug_htmlBuildErrorDebug["debug"](value)
-export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println(_ssrg_show_htmlBuildErrorShow["show"](_ssrg_html_InvalidTagName("1bad"))), () => _ssrg_console_println(_ssrg_debug_htmlBuildErrorDebug["debug"](_ssrg_html_InvalidTagName("1bad"))))
+export const showDomError = (value: DomError) => ((_ssrg_show_domErrorShow["show"](value)) as string)
+export const debugDomError = (value: DomError) => ((_ssrg_debug_domErrorDebug["debug"](value)) as string)
+export const showDomRuntimeError = (value: DomRuntimeError<string>) => ((_ssrg_show_domRuntimeErrorShow<string>(_ssrg_show_stringShow)["show"](value)) as string)
+export const debugDomRuntimeError = (value: DomRuntimeError<string>) => ((_ssrg_debug_domRuntimeErrorDebug<string>(_ssrg_debug_stringDebug)["debug"](value)) as string)
+export const showHtmlBuildError = (value: HtmlBuildError) => ((_ssrg_show_htmlBuildErrorShow["show"](value)) as string)
+export const debugHtmlBuildError = (value: HtmlBuildError) => ((_ssrg_debug_htmlBuildErrorDebug["debug"](value)) as string)
+export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_show_htmlBuildErrorShow["show"](_ssrg_html_InvalidTagName("1bad"))) as string)), () => _ssrg_console_println(((_ssrg_debug_htmlBuildErrorDebug["debug"](_ssrg_html_InvalidTagName("1bad"))) as string)))

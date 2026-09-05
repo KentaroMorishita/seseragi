@@ -471,22 +471,31 @@
             "value": ", "
           },
           {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_array_functor"
-            },
-            "method": "map",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "renderTodo"
+            "kind": "checked-result",
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_array_functor"
               },
-              {
-                "kind": "identifier",
-                "name": "values"
+              "method": "map",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "renderTodo"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "values"
+                }
+              ]
+            },
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "string"
               }
-            ]
+            }
           }
         ]
       },

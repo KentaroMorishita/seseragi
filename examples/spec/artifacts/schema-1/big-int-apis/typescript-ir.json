@@ -419,18 +419,24 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_bigIntParseErrorShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_bigIntParseErrorShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "error"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           },
           {
@@ -525,18 +531,24 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_bigIntDivisionErrorShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_bigIntDivisionErrorShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "error"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           },
           {
@@ -639,18 +651,24 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_bigIntPowerErrorShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_bigIntPowerErrorShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "error"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           },
           {
@@ -751,18 +769,24 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_bigIntConversionErrorShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_bigIntConversionErrorShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "error"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           },
           {
@@ -787,18 +811,24 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_intShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "value"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           }
         ],
@@ -831,22 +861,28 @@
       "body": {
         "kind": "decision",
         "scrutinee": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_bigIntOrd"
-          },
-          "method": "compare",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "left"
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_bigIntOrd"
             },
-            {
-              "kind": "identifier",
-              "name": "right"
-            }
-          ]
+            "method": "compare",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "left"
+              },
+              {
+                "kind": "identifier",
+                "name": "right"
+              }
+            ]
+          },
+          "type": {
+            "kind": "ordering"
+          }
         },
         "scrutineeType": {
           "kind": "ordering"
@@ -1646,46 +1682,52 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "type-application-call",
-                              "callee": "_ssrg_show_eitherShow",
-                              "typeArguments": [
-                                {
-                                  "kind": "reference",
-                                  "name": "BigIntParseError",
-                                  "arguments": []
-                                },
-                                {
-                                  "kind": "reference",
-                                  "name": "BigInt",
-                                  "arguments": []
-                                }
-                              ],
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "_ssrg_show_eitherShow",
+                                "typeArguments": [
+                                  {
+                                    "kind": "reference",
+                                    "name": "BigIntParseError",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "reference",
+                                    "name": "BigInt",
+                                    "arguments": []
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_bigIntParseErrorShow"
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_bigIntShow"
+                                  }
+                                ]
+                              },
+                              "method": "show",
                               "arguments": [
                                 {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_bigIntParseErrorShow"
-                                },
-                                {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_bigIntShow"
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_bigInt_parse",
+                                  "arguments": [
+                                    {
+                                      "kind": "string",
+                                      "value": ""
+                                    }
+                                  ]
                                 }
                               ]
                             },
-                            "method": "show",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_bigInt_parse",
-                                "arguments": [
-                                  {
-                                    "kind": "string",
-                                    "value": ""
-                                  }
-                                ]
-                              }
-                            ]
+                            "type": {
+                              "kind": "string"
+                            }
                           }
                         ]
                       }
@@ -1704,46 +1746,52 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "type-application-call",
-                          "callee": "_ssrg_show_eitherShow",
-                          "typeArguments": [
-                            {
-                              "kind": "reference",
-                              "name": "BigIntParseError",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "reference",
-                              "name": "BigInt",
-                              "arguments": []
-                            }
-                          ],
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "type-application-call",
+                            "callee": "_ssrg_show_eitherShow",
+                            "typeArguments": [
+                              {
+                                "kind": "reference",
+                                "name": "BigIntParseError",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "reference",
+                                "name": "BigInt",
+                                "arguments": []
+                              }
+                            ],
+                            "arguments": [
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_bigIntParseErrorShow"
+                              },
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_bigIntShow"
+                              }
+                            ]
+                          },
+                          "method": "show",
                           "arguments": [
                             {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_bigIntParseErrorShow"
-                            },
-                            {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_bigIntShow"
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_bigInt_parse",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "01"
+                                }
+                              ]
                             }
                           ]
                         },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_bigInt_parse",
-                            "arguments": [
-                              {
-                                "kind": "string",
-                                "value": "01"
-                              }
-                            ]
-                          }
-                        ]
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -1762,46 +1810,52 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_eitherShow",
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "BigIntParseError",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "reference",
-                          "name": "BigInt",
-                          "arguments": []
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_eitherShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "BigIntParseError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "reference",
+                            "name": "BigInt",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_bigIntParseErrorShow"
+                          },
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_bigIntShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_bigIntParseErrorShow"
-                        },
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_bigIntShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_bigInt_parse",
+                          "arguments": [
+                            {
+                              "kind": "string",
+                              "value": "12é"
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_bigInt_parse",
-                        "arguments": [
-                          {
-                            "kind": "string",
-                            "value": "12é"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -1894,18 +1948,24 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_bigIntShow"
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_bigIntShow"
+                          },
+                          "method": "show",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "huge"
+                            }
+                          ]
                         },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "huge"
-                          }
-                        ]
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -1924,18 +1984,24 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_bigIntDebug"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_bigIntDebug"
+                      },
+                      "method": "debug",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "huge"
+                        }
+                      ]
                     },
-                    "method": "debug",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "huge"
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -2052,32 +2118,44 @@
                             "method": "eq",
                             "arguments": [
                               {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_bigIntHash"
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_bigIntHash"
+                                  },
+                                  "method": "hash",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "huge"
+                                    }
+                                  ]
                                 },
-                                "method": "hash",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "huge"
-                                  }
-                                ]
+                                "type": {
+                                  "kind": "number"
+                                }
                               },
                               {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_bigIntHash"
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_bigIntHash"
+                                  },
+                                  "method": "hash",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "same"
+                                    }
+                                  ]
                                 },
-                                "method": "hash",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "same"
-                                  }
-                                ]
+                                "type": {
+                                  "kind": "number"
+                                }
                               }
                             ]
                           }
@@ -2102,17 +2180,25 @@
                         "callee": "_ssrg_bigInt_format",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_bigIntZero"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_bigIntZero"
+                              },
+                              "method": "zero",
+                              "arguments": [
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
                             },
-                            "method": "zero",
-                            "arguments": [
-                              {
-                                "kind": "undefined"
-                              }
-                            ]
+                            "type": {
+                              "kind": "reference",
+                              "name": "BigInt",
+                              "arguments": []
+                            }
                           }
                         ]
                       }
@@ -2137,17 +2223,25 @@
                     "callee": "_ssrg_bigInt_format",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_bigIntOne"
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_bigIntOne"
+                          },
+                          "method": "one",
+                          "arguments": [
+                            {
+                              "kind": "undefined"
+                            }
+                          ]
                         },
-                        "method": "one",
-                        "arguments": [
-                          {
-                            "kind": "undefined"
-                          }
-                        ]
+                        "type": {
+                          "kind": "reference",
+                          "name": "BigInt",
+                          "arguments": []
+                        }
                       }
                     ]
                   }

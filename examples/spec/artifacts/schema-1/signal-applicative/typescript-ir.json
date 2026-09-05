@@ -231,36 +231,48 @@
               ]
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_signal_functor"
-              },
-              "method": "map",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "value: number",
-                  "body": {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_int_multiply",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "value"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "2"
-                      }
-                    ]
-                  }
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_signal_functor"
                 },
-                {
-                  "kind": "identifier",
-                  "name": "values"
-                }
-              ]
+                "method": "map",
+                "arguments": [
+                  {
+                    "kind": "lambda",
+                    "parameter": "value: number",
+                    "body": {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_multiply",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "2"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "values"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Signal",
+                "arguments": [
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -329,22 +341,34 @@
               ]
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_signal_applicative"
-              },
-              "method": "apply",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "functions"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_signal_applicative"
                 },
-                {
-                  "kind": "identifier",
-                  "name": "doubled"
-                }
-              ]
+                "method": "apply",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "functions"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "doubled"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Signal",
+                "arguments": [
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
             },
             "origin": {
               "source": "main.ssrg",

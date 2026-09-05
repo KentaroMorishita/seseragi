@@ -276,63 +276,69 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_debug_arrayDebug",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_arrayDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_floatDebug"
+                        }
+                      ]
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_floatDebug"
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "call",
+                            "callee": "ratio",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "3.0"
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "call",
+                            "callee": "ratio",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "7.0"
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "call",
+                            "callee": "ratio",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "1.0"
+                              }
+                            ]
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "number"
+                        }
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "array",
-                      "elements": [
-                        {
-                          "kind": "call",
-                          "callee": "ratio",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "3.0"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "call",
-                          "callee": "ratio",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "7.0"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "call",
-                          "callee": "ratio",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "1.0"
-                            }
-                          ]
-                        }
-                      ],
-                      "elementType": {
-                        "kind": "number"
-                      }
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -344,61 +350,67 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_debug_arrayDebug",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_arrayDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_floatDebug"
+                        }
+                      ]
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_floatDebug"
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "call",
+                            "callee": "averageDifference",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "9.0"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "1.0"
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "call",
+                            "callee": "averageDifference",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "2.0"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "6.0"
+                              }
+                            ]
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "number"
+                        }
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "array",
-                      "elements": [
-                        {
-                          "kind": "call",
-                          "callee": "averageDifference",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "9.0"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "1.0"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "call",
-                          "callee": "averageDifference",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "2.0"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "6.0"
-                            }
-                          ]
-                        }
-                      ],
-                      "elementType": {
-                        "kind": "number"
-                      }
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -409,18 +421,24 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_debug_floatDebug"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_debug_floatDebug"
+                },
+                "method": "debug",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "groupedThroughPipeline"
+                  }
+                ]
               },
-              "method": "debug",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "groupedThroughPipeline"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }

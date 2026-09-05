@@ -281,44 +281,50 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_eitherShow",
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "TextSliceError",
-                        "arguments": []
-                      },
-                      {
-                        "kind": "string"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_eitherShow",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "TextSliceError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "string"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_textSliceErrorShow"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_textSliceErrorShow"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_stringShow"
+                        "kind": "call",
+                        "callee": "slice",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "source"
+                          }
+                        ]
                       }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "call",
-                      "callee": "slice",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "source"
-                        }
-                      ]
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -330,44 +336,50 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_eitherShow",
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "GraphemeSliceError",
-                        "arguments": []
-                      },
-                      {
-                        "kind": "string"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_eitherShow",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "GraphemeSliceError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "string"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_graphemeSliceErrorShow"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_graphemeSliceErrorShow"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_stringShow"
+                        "kind": "call",
+                        "callee": "ops_graphemeSlice",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "source"
+                          }
+                        ]
                       }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "call",
-                      "callee": "ops_graphemeSlice",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "source"
-                        }
-                      ]
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -440,28 +452,37 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_maybe_functor"
-                        },
-                        "method": "map",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "ops_point"
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_maybe_functor"
                           },
-                          {
-                            "kind": "call",
-                            "callee": "ops_character",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "128077"
-                              }
-                            ]
+                          "method": "map",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "ops_point"
+                            },
+                            {
+                              "kind": "call",
+                              "callee": "ops_character",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "128077"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
                           }
-                        ]
+                        }
                       }
                     ]
                   }

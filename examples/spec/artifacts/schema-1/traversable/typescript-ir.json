@@ -237,62 +237,74 @@
               }
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_array_traversable"
-              },
-              "method": "traverse",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "value: number",
-                  "body": {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_maybe_Just",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_int_add",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "value"
-                          },
-                          {
-                            "kind": "number",
-                            "value": "1"
-                          }
-                        ]
-                      }
-                    ]
-                  }
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_traversable"
                 },
-                {
-                  "kind": "array",
-                  "elements": [
-                    {
-                      "kind": "number",
-                      "value": "1"
-                    },
-                    {
-                      "kind": "number",
-                      "value": "2"
-                    },
-                    {
-                      "kind": "number",
-                      "value": "3"
+                "method": "traverse",
+                "arguments": [
+                  {
+                    "kind": "lambda",
+                    "parameter": "value: number",
+                    "body": {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_maybe_Just",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int_add",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "value"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "1"
+                            }
+                          ]
+                        }
+                      ]
                     }
-                  ],
-                  "elementType": {
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "number",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "number",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "number",
+                        "value": "3"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "number"
+                    }
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_maybe_applicative"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "array",
+                  "element": {
                     "kind": "number"
                   }
-                },
-                {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_maybe_applicative"
                 }
-              ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -316,44 +328,59 @@
               }
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_list_traversable"
-              },
-              "method": "traverse",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "checked"
-                },
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_list_from_array",
-                  "arguments": [
-                    {
-                      "kind": "array",
-                      "elements": [
-                        {
-                          "kind": "number",
-                          "value": "1"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "2"
-                        }
-                      ],
-                      "elementType": {
-                        "kind": "number"
-                      }
-                    }
-                  ]
-                },
-                {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
                   "kind": "runtime-reference",
-                  "name": "_ssrg_either_applicative"
+                  "name": "_ssrg_list_traversable"
+                },
+                "method": "traverse",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "checked"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "number",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "number",
+                            "value": "2"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "number"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_either_applicative"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "either",
+                "error": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "list",
+                  "element": {
+                    "kind": "number"
+                  }
                 }
-              ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -377,48 +404,63 @@
               }
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_list_traversable"
-              },
-              "method": "traverse",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "checked"
-                },
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_list_from_array",
-                  "arguments": [
-                    {
-                      "kind": "array",
-                      "elements": [
-                        {
-                          "kind": "number",
-                          "value": "1"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "3"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "4"
-                        }
-                      ],
-                      "elementType": {
-                        "kind": "number"
-                      }
-                    }
-                  ]
-                },
-                {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
                   "kind": "runtime-reference",
-                  "name": "_ssrg_either_applicative"
+                  "name": "_ssrg_list_traversable"
+                },
+                "method": "traverse",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "checked"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "number",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "number",
+                            "value": "3"
+                          },
+                          {
+                            "kind": "number",
+                            "value": "4"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "number"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_either_applicative"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "either",
+                "error": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "list",
+                  "element": {
+                    "kind": "number"
+                  }
                 }
-              ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -442,74 +484,89 @@
               }
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_non_empty_list_traversable"
-              },
-              "method": "traverse",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "value: number",
-                  "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_non_empty_list_traversable"
+                },
+                "method": "traverse",
+                "arguments": [
+                  {
+                    "kind": "lambda",
+                    "parameter": "value: number",
+                    "body": {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_maybe_Just",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int_add",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "value"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "1"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_maybe_Just",
+                    "callee": "_ssrg_non_empty_list_cons",
                     "arguments": [
                       {
+                        "kind": "number",
+                        "value": "1"
+                      },
+                      {
                         "kind": "runtime-call",
-                        "callee": "_ssrg_int_add",
+                        "callee": "_ssrg_list_from_array",
                         "arguments": [
                           {
-                            "kind": "identifier",
-                            "name": "value"
-                          },
-                          {
-                            "kind": "number",
-                            "value": "1"
+                            "kind": "array",
+                            "elements": [
+                              {
+                                "kind": "number",
+                                "value": "2"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "3"
+                              }
+                            ],
+                            "elementType": {
+                              "kind": "number"
+                            }
                           }
                         ]
                       }
                     ]
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_maybe_applicative"
                   }
-                },
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_non_empty_list_cons",
+                ]
+              },
+              "type": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "NonEmptyList",
                   "arguments": [
                     {
-                      "kind": "number",
-                      "value": "1"
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_list_from_array",
-                      "arguments": [
-                        {
-                          "kind": "array",
-                          "elements": [
-                            {
-                              "kind": "number",
-                              "value": "2"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "3"
-                            }
-                          ],
-                          "elementType": {
-                            "kind": "number"
-                          }
-                        }
-                      ]
+                      "kind": "number"
                     }
                   ]
-                },
-                {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_maybe_applicative"
                 }
-              ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -524,43 +581,49 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_maybeShow",
-                    "typeArguments": [
-                      {
-                        "kind": "array",
-                        "element": {
-                          "kind": "number"
-                        }
-                      }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "type-application-call",
-                        "callee": "_ssrg_show_arrayShow",
-                        "typeArguments": [
-                          {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "array",
+                          "element": {
                             "kind": "number"
                           }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_show_intShow"
-                          }
-                        ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_arrayShow",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "array"
                       }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "array"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -572,50 +635,56 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_eitherShow",
-                    "typeArguments": [
-                      {
-                        "kind": "string"
-                      },
-                      {
-                        "kind": "list",
-                        "element": {
-                          "kind": "number"
-                        }
-                      }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_stringShow"
-                      },
-                      {
-                        "kind": "type-application-call",
-                        "callee": "_ssrg_show_listShow",
-                        "typeArguments": [
-                          {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_eitherShow",
+                      "typeArguments": [
+                        {
+                          "kind": "string"
+                        },
+                        {
+                          "kind": "list",
+                          "element": {
                             "kind": "number"
                           }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_show_intShow"
-                          }
-                        ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        },
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_listShow",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "list"
                       }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "list"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -627,50 +696,56 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_eitherShow",
-                    "typeArguments": [
-                      {
-                        "kind": "string"
-                      },
-                      {
-                        "kind": "list",
-                        "element": {
-                          "kind": "number"
-                        }
-                      }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_stringShow"
-                      },
-                      {
-                        "kind": "type-application-call",
-                        "callee": "_ssrg_show_listShow",
-                        "typeArguments": [
-                          {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_eitherShow",
+                      "typeArguments": [
+                        {
+                          "kind": "string"
+                        },
+                        {
+                          "kind": "list",
+                          "element": {
                             "kind": "number"
                           }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_show_intShow"
-                          }
-                        ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        },
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_listShow",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "failed"
                       }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "failed"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -681,46 +756,52 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "type-application-call",
-                "callee": "_ssrg_show_maybeShow",
-                "typeArguments": [
-                  {
-                    "kind": "reference",
-                    "name": "NonEmptyList",
-                    "arguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ]
-                  }
-                ],
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_show_maybeShow",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "NonEmptyList",
+                      "arguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_nonEmptyListShow",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "method": "show",
                 "arguments": [
                   {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_nonEmptyListShow",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
-                      }
-                    ]
+                    "kind": "identifier",
+                    "name": "nonempty"
                   }
                 ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "nonempty"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }

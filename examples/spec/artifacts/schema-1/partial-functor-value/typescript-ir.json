@@ -322,18 +322,36 @@
                 "callee": "applyMapper",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "identifier",
-                      "name": "__ssrg$instance$Functor$0"
-                    },
-                    "method": "map",
-                    "arguments": [
-                      {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
                         "kind": "identifier",
-                        "name": "increment"
+                        "name": "__ssrg$instance$Functor$0"
+                      },
+                      "method": "map",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "increment"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
+                        }
+                      },
+                      "result": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
+                        }
                       }
-                    ]
+                    }
                   },
                   {
                     "kind": "runtime-call",

@@ -831,94 +831,44 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Eq$0_1"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
                           "kind": "identifier",
-                          "name": "one"
+                          "name": "__ssrg$instance$Eq$0_1"
                         },
-                        {
-                          "kind": "call",
-                          "callee": "UserId",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "1"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "binary",
-                      "operator": "===",
-                      "left": {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Ord$1_1",
-                            "typeArguments": [],
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "one"
+                          },
+                          {
+                            "kind": "call",
+                            "callee": "UserId",
                             "arguments": [
                               {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Eq$0_1"
+                                "kind": "number",
+                                "value": "1"
                               }
                             ]
-                          },
-                          "method": "compare",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "one"
-                            },
-                            {
-                              "kind": "identifier",
-                              "name": "two"
-                            }
-                          ]
-                        },
-                        "field": "tag"
-                      },
-                      "right": {
-                        "kind": "string",
-                        "value": "Less"
+                          }
+                        ]
                       }
-                    }
-                  ]
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -930,59 +880,139 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_int_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Hash$2_1",
-                            "typeArguments": [],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "===",
+                        "left": {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Ord$1_1",
+                              "typeArguments": [],
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Eq$0_1"
+                                }
+                              ]
+                            },
+                            "method": "compare",
                             "arguments": [
                               {
                                 "kind": "identifier",
-                                "name": "__ssrg$instance$Eq$0_1"
+                                "name": "one"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "two"
                               }
                             ]
                           },
-                          "method": "hash",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "one"
-                            }
-                          ]
+                          "field": "tag"
                         },
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_int_hash_dictionary"
-                          },
-                          "method": "hash",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "1"
-                            }
-                          ]
+                        "right": {
+                          "kind": "string",
+                          "value": "Less"
                         }
-                      ]
-                    }
-                  ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_eq_dictionary"
+                        },
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Hash$2_1",
+                                "typeArguments": [],
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$instance$Eq$0_1"
+                                  }
+                                ]
+                              },
+                              "method": "hash",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "one"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
+                          },
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_int_hash_dictionary"
+                              },
+                              "method": "hash",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "1"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1090,279 +1120,309 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "binary",
-                      "operator": "===",
-                      "left": {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Ord$4",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$3",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_ord_dictionary"
-                              }
-                            ]
-                          },
-                          "method": "compare",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "a"
-                            },
-                            {
-                              "kind": "identifier",
-                              "name": "b"
-                            }
-                          ]
-                        },
-                        "field": "tag"
-                      },
-                      "right": {
-                        "kind": "string",
-                        "value": "Less"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Eq$3",
-                        "typeArguments": [
-                          {
-                            "kind": "number"
-                          }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_int_eq_dictionary"
-                          }
-                        ]
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "a"
-                        },
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "id",
-                              "value": {
-                                "kind": "identifier",
-                                "name": "one"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "value",
-                              "value": {
-                                "kind": "number",
-                                "value": "3"
-                              }
-                            }
-                          ],
-                          "assertedType": {
-                            "kind": "reference",
-                            "name": "Profile",
-                            "arguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ]
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_int_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Hash$5",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$3",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_hash_dictionary"
-                              }
-                            ]
-                          },
-                          "method": "hash",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "a"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Hash$5",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$3",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_hash_dictionary"
-                              }
-                            ]
-                          },
-                          "method": "hash",
-                          "arguments": [
-                            {
-                              "kind": "record",
-                              "items": [
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "===",
+                        "left": {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Ord$4",
+                              "typeArguments": [
                                 {
-                                  "kind": "field",
-                                  "name": "id",
-                                  "value": {
-                                    "kind": "identifier",
-                                    "name": "one"
-                                  }
-                                },
-                                {
-                                  "kind": "field",
-                                  "name": "value",
-                                  "value": {
-                                    "kind": "number",
-                                    "value": "3"
-                                  }
+                                  "kind": "number"
                                 }
                               ],
-                              "assertedType": {
-                                "kind": "reference",
-                                "name": "Profile",
-                                "arguments": [
+                              "arguments": [
+                                {
+                                  "kind": "type-application-call",
+                                  "callee": "__ssrg$instance$Eq$3",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ],
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_eq_dictionary"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_int_ord_dictionary"
+                                }
+                              ]
+                            },
+                            "method": "compare",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "a"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "b"
+                              }
+                            ]
+                          },
+                          "field": "tag"
+                        },
+                        "right": {
+                          "kind": "string",
+                          "value": "Less"
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Eq$3",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_int_eq_dictionary"
+                            }
+                          ]
+                        },
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "a"
+                          },
+                          {
+                            "kind": "record",
+                            "items": [
+                              {
+                                "kind": "field",
+                                "name": "id",
+                                "value": {
+                                  "kind": "identifier",
+                                  "name": "one"
+                                }
+                              },
+                              {
+                                "kind": "field",
+                                "name": "value",
+                                "value": {
+                                  "kind": "number",
+                                  "value": "3"
+                                }
+                              }
+                            ],
+                            "assertedType": {
+                              "kind": "reference",
+                              "name": "Profile",
+                              "arguments": [
+                                {
+                                  "kind": "number"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_eq_dictionary"
+                        },
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Hash$5",
+                                "typeArguments": [
                                   {
                                     "kind": "number"
                                   }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Eq$3",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_int_eq_dictionary"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_int_hash_dictionary"
+                                  }
                                 ]
-                              }
+                              },
+                              "method": "hash",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "a"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
                             }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
+                          },
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Hash$5",
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Eq$3",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_int_eq_dictionary"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_int_hash_dictionary"
+                                  }
+                                ]
+                              },
+                              "method": "hash",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "items": [
+                                    {
+                                      "kind": "field",
+                                      "name": "id",
+                                      "value": {
+                                        "kind": "identifier",
+                                        "name": "one"
+                                      }
+                                    },
+                                    {
+                                      "kind": "field",
+                                      "name": "value",
+                                      "value": {
+                                        "kind": "number",
+                                        "value": "3"
+                                      }
+                                    }
+                                  ],
+                                  "assertedType": {
+                                    "kind": "reference",
+                                    "name": "Profile",
+                                    "arguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1423,172 +1483,338 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Eq$6",
-                        "typeArguments": [
-                          {
-                            "kind": "number"
-                          }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_int_eq_dictionary"
-                          }
-                        ]
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "tree"
-                        },
-                        {
-                          "kind": "call",
-                          "callee": "Branch",
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Eq$6",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
                           "arguments": [
                             {
-                              "kind": "tuple",
-                              "elements": [
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_int_eq_dictionary"
+                            }
+                          ]
+                        },
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "tree"
+                          },
+                          {
+                            "kind": "call",
+                            "callee": "Branch",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "call",
+                                    "callee": "Leaf",
+                                    "arguments": [
+                                      {
+                                        "kind": "number",
+                                        "value": "1"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "call",
+                                    "callee": "Leaf",
+                                    "arguments": [
+                                      {
+                                        "kind": "number",
+                                        "value": "2"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "===",
+                        "left": {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Ord$7",
+                              "typeArguments": [
                                 {
-                                  "kind": "call",
-                                  "callee": "Leaf",
+                                  "kind": "number"
+                                }
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "type-application-call",
+                                  "callee": "__ssrg$instance$Eq$6",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ],
                                   "arguments": [
                                     {
-                                      "kind": "number",
-                                      "value": "1"
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_eq_dictionary"
                                     }
                                   ]
                                 },
                                 {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_int_ord_dictionary"
+                                }
+                              ]
+                            },
+                            "method": "compare",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "tree"
+                              },
+                              {
+                                "kind": "call",
+                                "callee": "Branch",
+                                "arguments": [
+                                  {
+                                    "kind": "tuple",
+                                    "elements": [
+                                      {
+                                        "kind": "call",
+                                        "callee": "Leaf",
+                                        "arguments": [
+                                          {
+                                            "kind": "number",
+                                            "value": "1"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "kind": "call",
+                                        "callee": "Leaf",
+                                        "arguments": [
+                                          {
+                                            "kind": "number",
+                                            "value": "3"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "field": "tag"
+                        },
+                        "right": {
+                          "kind": "string",
+                          "value": "Less"
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_eq_dictionary"
+                        },
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Hash$8",
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Eq$6",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_int_eq_dictionary"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_int_hash_dictionary"
+                                  }
+                                ]
+                              },
+                              "method": "hash",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "tree"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
+                          },
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Hash$8",
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Eq$6",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_int_eq_dictionary"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_int_hash_dictionary"
+                                  }
+                                ]
+                              },
+                              "method": "hash",
+                              "arguments": [
+                                {
                                   "kind": "call",
-                                  "callee": "Leaf",
+                                  "callee": "Branch",
                                   "arguments": [
                                     {
-                                      "kind": "number",
-                                      "value": "2"
+                                      "kind": "tuple",
+                                      "elements": [
+                                        {
+                                          "kind": "call",
+                                          "callee": "Leaf",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "1"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "kind": "call",
+                                          "callee": "Leaf",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "2"
+                                            }
+                                          ]
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
                               ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "binary",
-                      "operator": "===",
-                      "left": {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Ord$7",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$6",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_ord_dictionary"
-                              }
-                            ]
-                          },
-                          "method": "compare",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "tree"
                             },
-                            {
-                              "kind": "call",
-                              "callee": "Branch",
-                              "arguments": [
-                                {
-                                  "kind": "tuple",
-                                  "elements": [
-                                    {
-                                      "kind": "call",
-                                      "callee": "Leaf",
-                                      "arguments": [
-                                        {
-                                          "kind": "number",
-                                          "value": "1"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "kind": "call",
-                                      "callee": "Leaf",
-                                      "arguments": [
-                                        {
-                                          "kind": "number",
-                                          "value": "3"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
+                            "type": {
+                              "kind": "number"
                             }
-                          ]
-                        },
-                        "field": "tag"
-                      },
-                      "right": {
-                        "kind": "string",
-                        "value": "Less"
+                          }
+                        ]
                       }
-                    }
-                  ]
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1600,131 +1826,69 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_int_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Hash$8",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$6",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_hash_dictionary"
-                              }
-                            ]
-                          },
-                          "method": "hash",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "tree"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Hash$8",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$6",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_hash_dictionary"
-                              }
-                            ]
-                          },
-                          "method": "hash",
-                          "arguments": [
-                            {
-                              "kind": "call",
-                              "callee": "Branch",
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "===",
+                        "left": {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Ord$10",
+                              "typeArguments": [],
                               "arguments": [
                                 {
-                                  "kind": "tuple",
-                                  "elements": [
-                                    {
-                                      "kind": "call",
-                                      "callee": "Leaf",
-                                      "arguments": [
-                                        {
-                                          "kind": "number",
-                                          "value": "1"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "kind": "call",
-                                      "callee": "Leaf",
-                                      "arguments": [
-                                        {
-                                          "kind": "number",
-                                          "value": "2"
-                                        }
-                                      ]
-                                    }
-                                  ]
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Eq$9"
                                 }
                               ]
-                            }
-                          ]
+                            },
+                            "method": "compare",
+                            "arguments": [
+                              {
+                                "kind": "call",
+                                "callee": "Zebra",
+                                "arguments": [
+                                  {
+                                    "kind": "number",
+                                    "value": "99"
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "call",
+                                "callee": "Alpha",
+                                "arguments": [
+                                  {
+                                    "kind": "number",
+                                    "value": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "field": "tag"
+                        },
+                        "right": {
+                          "kind": "string",
+                          "value": "Less"
                         }
-                      ]
-                    }
-                  ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1736,125 +1900,63 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "binary",
-                      "operator": "===",
-                      "left": {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Ord$10",
-                            "typeArguments": [],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "===",
+                        "left": {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Ord$10",
+                              "typeArguments": [],
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Eq$9"
+                                }
+                              ]
+                            },
+                            "method": "compare",
                             "arguments": [
+                              {
+                                "kind": "call",
+                                "callee": "Alpha",
+                                "arguments": [
+                                  {
+                                    "kind": "number",
+                                    "value": "0"
+                                  }
+                                ]
+                              },
                               {
                                 "kind": "identifier",
-                                "name": "__ssrg$instance$Eq$9"
+                                "name": "Empty"
                               }
                             ]
                           },
-                          "method": "compare",
-                          "arguments": [
-                            {
-                              "kind": "call",
-                              "callee": "Zebra",
-                              "arguments": [
-                                {
-                                  "kind": "number",
-                                  "value": "99"
-                                }
-                              ]
-                            },
-                            {
-                              "kind": "call",
-                              "callee": "Alpha",
-                              "arguments": [
-                                {
-                                  "kind": "number",
-                                  "value": "0"
-                                }
-                              ]
-                            }
-                          ]
+                          "field": "tag"
                         },
-                        "field": "tag"
-                      },
-                      "right": {
-                        "kind": "string",
-                        "value": "Less"
+                        "right": {
+                          "kind": "string",
+                          "value": "Less"
+                        }
                       }
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
+                    ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "binary",
-                      "operator": "===",
-                      "left": {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Ord$10",
-                            "typeArguments": [],
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Eq$9"
-                              }
-                            ]
-                          },
-                          "method": "compare",
-                          "arguments": [
-                            {
-                              "kind": "call",
-                              "callee": "Alpha",
-                              "arguments": [
-                                {
-                                  "kind": "number",
-                                  "value": "0"
-                                }
-                              ]
-                            },
-                            {
-                              "kind": "identifier",
-                              "name": "Empty"
-                            }
-                          ]
-                        },
-                        "field": "tag"
-                      },
-                      "right": {
-                        "kind": "string",
-                        "value": "Less"
-                      }
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2056,43 +2158,49 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Eq$12",
-                        "typeArguments": [
-                          {
-                            "kind": "number"
-                          }
-                        ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Eq$12",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_int_eq_dictionary"
+                            }
+                          ]
+                        },
+                        "method": "eq",
                         "arguments": [
                           {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_int_eq_dictionary"
+                            "kind": "identifier",
+                            "name": "nested"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "nestedAgain"
                           }
                         ]
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "nested"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "nestedAgain"
-                        }
-                      ]
-                    }
-                  ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2104,95 +2212,101 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "binary",
-                      "operator": "===",
-                      "left": {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Ord$14",
-                            "typeArguments": [],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "===",
+                        "left": {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Ord$14",
+                              "typeArguments": [],
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Eq$13"
+                                }
+                              ]
+                            },
+                            "method": "compare",
                             "arguments": [
                               {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Eq$13"
+                                "kind": "record",
+                                "items": [
+                                  {
+                                    "kind": "field",
+                                    "name": "z",
+                                    "value": {
+                                      "kind": "number",
+                                      "value": "0"
+                                    }
+                                  },
+                                  {
+                                    "kind": "field",
+                                    "name": "a",
+                                    "value": {
+                                      "kind": "number",
+                                      "value": "9"
+                                    }
+                                  }
+                                ],
+                                "assertedType": {
+                                  "kind": "reference",
+                                  "name": "Reordered",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "kind": "record",
+                                "items": [
+                                  {
+                                    "kind": "field",
+                                    "name": "z",
+                                    "value": {
+                                      "kind": "number",
+                                      "value": "1"
+                                    }
+                                  },
+                                  {
+                                    "kind": "field",
+                                    "name": "a",
+                                    "value": {
+                                      "kind": "number",
+                                      "value": "0"
+                                    }
+                                  }
+                                ],
+                                "assertedType": {
+                                  "kind": "reference",
+                                  "name": "Reordered",
+                                  "arguments": []
+                                }
                               }
                             ]
                           },
-                          "method": "compare",
-                          "arguments": [
-                            {
-                              "kind": "record",
-                              "items": [
-                                {
-                                  "kind": "field",
-                                  "name": "z",
-                                  "value": {
-                                    "kind": "number",
-                                    "value": "0"
-                                  }
-                                },
-                                {
-                                  "kind": "field",
-                                  "name": "a",
-                                  "value": {
-                                    "kind": "number",
-                                    "value": "9"
-                                  }
-                                }
-                              ],
-                              "assertedType": {
-                                "kind": "reference",
-                                "name": "Reordered",
-                                "arguments": []
-                              }
-                            },
-                            {
-                              "kind": "record",
-                              "items": [
-                                {
-                                  "kind": "field",
-                                  "name": "z",
-                                  "value": {
-                                    "kind": "number",
-                                    "value": "1"
-                                  }
-                                },
-                                {
-                                  "kind": "field",
-                                  "name": "a",
-                                  "value": {
-                                    "kind": "number",
-                                    "value": "0"
-                                  }
-                                }
-                              ],
-                              "assertedType": {
-                                "kind": "reference",
-                                "name": "Reordered",
-                                "arguments": []
-                              }
-                            }
-                          ]
+                          "field": "tag"
                         },
-                        "field": "tag"
-                      },
-                      "right": {
-                        "kind": "string",
-                        "value": "Less"
+                        "right": {
+                          "kind": "string",
+                          "value": "Less"
+                        }
                       }
-                    }
-                  ]
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2226,38 +2340,44 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Eq$16",
-                        "typeArguments": [
-                          {
-                            "kind": "number"
-                          }
-                        ],
-                        "arguments": []
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "phantom"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Eq$16",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": []
                         },
-                        {
-                          "kind": "identifier",
-                          "name": "phantom"
-                        }
-                      ]
-                    }
-                  ]
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "phantom"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "phantom"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2269,86 +2389,104 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_int_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Hash$18",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$16",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": []
-                              }
-                            ]
-                          },
-                          "method": "hash",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "phantom"
-                            }
-                          ]
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_eq_dictionary"
                         },
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Hash$18",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
                                 "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$16",
+                                "callee": "__ssrg$instance$Hash$18",
                                 "typeArguments": [
                                   {
                                     "kind": "number"
                                   }
                                 ],
-                                "arguments": []
-                              }
-                            ]
-                          },
-                          "method": "hash",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "phantom"
+                                "arguments": [
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Eq$16",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "method": "hash",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "phantom"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
                             }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
+                          },
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Hash$18",
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Eq$16",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "method": "hash",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "phantom"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2480,118 +2618,49 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Eq$0",
-                        "typeArguments": [
-                          {
-                            "kind": "number"
-                          }
-                        ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Eq$0",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_int_eq_dictionary"
+                            }
+                          ]
+                        },
+                        "method": "eq",
                         "arguments": [
                           {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_int_eq_dictionary"
+                            "kind": "identifier",
+                            "name": "local"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "localSame"
                           }
                         ]
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "local"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "localSame"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "binary",
-                      "operator": "===",
-                      "left": {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Ord$1",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$0",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_ord_dictionary"
-                              }
-                            ]
-                          },
-                          "method": "compare",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "local"
-                            },
-                            {
-                              "kind": "identifier",
-                              "name": "localOther"
-                            }
-                          ]
-                        },
-                        "field": "tag"
-                      },
-                      "right": {
-                        "kind": "string",
-                        "value": "Less"
                       }
-                    }
-                  ]
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2603,227 +2672,76 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_int_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Hash$2",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$0",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_hash_dictionary"
-                              },
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$3",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          "method": "hash",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "local"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Hash$2",
-                            "typeArguments": [
-                              {
-                                "kind": "number"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$0",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_hash_dictionary"
-                              },
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Eq$3",
-                                "typeArguments": [
-                                  {
-                                    "kind": "number"
-                                  }
-                                ],
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          "method": "hash",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "localSame"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Eq$0_1"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "one"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "two"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "binary",
-                      "operator": "===",
-                      "left": {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Ord$1_1",
-                            "typeArguments": [],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "===",
+                        "left": {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Ord$1",
+                              "typeArguments": [
+                                {
+                                  "kind": "number"
+                                }
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "type-application-call",
+                                  "callee": "__ssrg$instance$Eq$0",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ],
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_eq_dictionary"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_int_ord_dictionary"
+                                }
+                              ]
+                            },
+                            "method": "compare",
                             "arguments": [
                               {
                                 "kind": "identifier",
-                                "name": "__ssrg$instance$Eq$0_1"
+                                "name": "local"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "localOther"
                               }
                             ]
                           },
-                          "method": "compare",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "one"
-                            },
-                            {
-                              "kind": "identifier",
-                              "name": "two"
-                            }
-                          ]
+                          "field": "tag"
                         },
-                        "field": "tag"
-                      },
-                      "right": {
-                        "kind": "string",
-                        "value": "Greater"
+                        "right": {
+                          "kind": "string",
+                          "value": "Less"
+                        }
                       }
-                    }
-                  ]
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2835,43 +2753,257 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Eq$3",
-                        "typeArguments": [
-                          {
-                            "kind": "number"
-                          }
-                        ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_eq_dictionary"
+                        },
+                        "method": "eq",
                         "arguments": [
                           {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_int_eq_dictionary"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Hash$2",
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Eq$0",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_int_eq_dictionary"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_int_hash_dictionary"
+                                  },
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Eq$3",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_int_eq_dictionary"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "method": "hash",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "local"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
+                          },
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Hash$2",
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Eq$0",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_int_eq_dictionary"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_int_hash_dictionary"
+                                  },
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Eq$3",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_int_eq_dictionary"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "method": "hash",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "localSame"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
                           }
                         ]
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
                           "kind": "identifier",
-                          "name": "a"
+                          "name": "__ssrg$instance$Eq$0_1"
                         },
-                        {
-                          "kind": "identifier",
-                          "name": "b"
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "one"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "two"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "===",
+                        "left": {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Ord$1_1",
+                              "typeArguments": [],
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Eq$0_1"
+                                }
+                              ]
+                            },
+                            "method": "compare",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "one"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "two"
+                              }
+                            ]
+                          },
+                          "field": "tag"
+                        },
+                        "right": {
+                          "kind": "string",
+                          "value": "Greater"
                         }
-                      ]
-                    }
-                  ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2883,49 +3015,109 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Eq$6",
-                        "typeArguments": [
-                          {
-                            "kind": "number"
-                          }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_int_eq_dictionary"
-                          }
-                        ]
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "tree"
-                        },
-                        {
-                          "kind": "call",
-                          "callee": "Leaf",
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Eq$3",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
                           "arguments": [
                             {
-                              "kind": "number",
-                              "value": "1"
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_int_eq_dictionary"
                             }
                           ]
-                        }
-                      ]
-                    }
-                  ]
+                        },
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "a"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "b"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Eq$6",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_int_eq_dictionary"
+                            }
+                          ]
+                        },
+                        "method": "eq",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "tree"
+                          },
+                          {
+                            "kind": "call",
+                            "callee": "Leaf",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "1"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2936,44 +3128,50 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_boolShow"
-              },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Eq$9"
-                  },
-                  "method": "eq",
-                  "arguments": [
-                    {
-                      "kind": "call",
-                      "callee": "Zebra",
-                      "arguments": [
-                        {
-                          "kind": "number",
-                          "value": "99"
-                        }
-                      ]
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_boolShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Eq$9"
                     },
-                    {
-                      "kind": "call",
-                      "callee": "Alpha",
-                      "arguments": [
-                        {
-                          "kind": "number",
-                          "value": "99"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "Zebra",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "99"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "call",
+                        "callee": "Alpha",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "99"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }

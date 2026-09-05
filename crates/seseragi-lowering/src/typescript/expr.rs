@@ -23,6 +23,7 @@ use crate::stream_ops::runtime_stream_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::text_ops::runtime_text_operation;
 use crate::trait_method_ops::{runtime_trait_method_operation, RuntimeTraitMethodOperation};
+use crate::typescript::types::TypeScriptTypeContext;
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
     CoreExpr, CoreMonadDoStatement, CoreRecordValueItem, CoreStatement, CoreTemplatePart, CoreType,
@@ -48,7 +49,7 @@ use comprehension::lower_array_comprehension;
 pub(super) fn lower_core_expr_to_typescript(
     expr: CoreExpr,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
     match expr {
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
@@ -415,10 +416,16 @@ pub(super) fn lower_core_expr_to_typescript(
                     local_dictionary_expression(&selected.evidence, imported_values, imported_types)
                         .expect("trait method constraint requires materialized evidence")
                 }));
-                TypeScriptExpr::DictionaryCall {
-                    dictionary: Box::new(selected),
-                    method: dispatch.method,
-                    arguments,
+                // Dictionary methods can erase higher-kinded results. Restore
+                // the instantiated result already proved by source evidence,
+                // just as for ordinary constrained calls below.
+                TypeScriptExpr::CheckedResult {
+                    value: Box::new(TypeScriptExpr::DictionaryCall {
+                        dictionary: Box::new(selected),
+                        method: dispatch.method,
+                        arguments,
+                    }),
+                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
                 }
             } else if let Some(operation) =
                 runtime_collection_for_each_operation(&callee, &evidence)
@@ -1145,7 +1152,7 @@ fn lower_abi_trait_method_call(
 fn lower_template(
     parts: Vec<CoreTemplatePart>,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
     parts
         .into_iter()
@@ -1190,7 +1197,7 @@ fn lower_constrained_call(
     evidence: Vec<TypeScriptExpr>,
     deferred_parameters: Vec<CoreType>,
     deferred_type_constructor_parameters: Vec<String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
     if deferred_parameters.is_empty() {
         arguments.extend(evidence);
@@ -1241,7 +1248,7 @@ fn lower_uncurried_runtime_call(
     callee: String,
     mut arguments: Vec<TypeScriptExpr>,
     result_type: &CoreType,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
     parameter_scope: &str,
     type_arguments: Vec<super::TypeScriptType>,
     remaining_parameters: Option<usize>,
@@ -1360,7 +1367,7 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
 fn lower_core_expressions(
     expressions: Vec<CoreExpr>,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> Vec<TypeScriptExpr> {
     expressions
         .into_iter()
@@ -1377,7 +1384,7 @@ fn lower_binary(
     evidence: Vec<crate::CoreCallEvidence>,
     type_ref: CoreType,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
     let left = lower_core_expr_to_typescript(left, imported_values, imported_types);
     let right = lower_core_expr_to_typescript(right, imported_values, imported_types);
@@ -1486,7 +1493,7 @@ fn comparison_result(
 fn checked_operator_reference(
     value: TypeScriptExpr,
     type_ref: &CoreType,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
     TypeScriptExpr::CheckedResult {
         value: Box::new(value),
@@ -1522,7 +1529,7 @@ fn curried_dictionary_method_reference(dictionary: TypeScriptExpr, method: &str)
 fn equality_reference_from_evidence(
     evidence: &[crate::CoreCallEvidence],
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> Option<TypeScriptExpr> {
     let [selected] = evidence else {
         return None;
@@ -1629,7 +1636,7 @@ fn lower_effect_operation(
     operation: String,
     arguments: Vec<CoreExpr>,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
     let runtime_operation = runtime_effect_operation(&operation);
     let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
@@ -1647,7 +1654,7 @@ fn lower_effect_operation(
 fn lower_core_statement_to_typescript(
     statement: CoreStatement,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptStatement {
     match statement {
         CoreStatement::Effect { value } => TypeScriptStatement::Effect {
@@ -1683,6 +1690,8 @@ fn lower_core_statement_to_typescript(
             body,
             origin,
         } => {
+            let scoped_types = imported_types.with_parameters(&type_parameters);
+            let imported_types = &scoped_types;
             let type_constructor_parameters = type_parameters
                 .iter()
                 .filter(|parameter| parameter.is_constructor())
@@ -1723,7 +1732,7 @@ fn lower_core_statement_to_typescript(
 fn lower_monad_do_statement(
     statement: CoreMonadDoStatement,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptStatement {
     match statement {
         CoreMonadDoStatement::Expression { value } => TypeScriptStatement::Effect {

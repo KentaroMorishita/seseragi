@@ -5,7 +5,7 @@ import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 $ssrg$assertUnicodeVersion("17.0.0")
 
 export const __ssrg$instance$Difference$0 = { "difference": (left: number) => (right: number) => _ssrg_int_subtract(left, right) } as const;
-const __ssrg$operator$3c5e3e = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0["difference"](left)(right)
+const __ssrg$operator$3c5e3e = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ((__ssrg$evidence$0["difference"](left)(right)) as A)
 const applyPair = (step: (argument: number) => (argument: number) => number) => (left: number) => (right: number) => step(left)(right)
 const applyOne = (step: (argument: number) => number) => (value: number) => step(value)
 const subtractFromTen = (right: number) => applyOne((((__ssrg$partial$0: number) => __ssrg$operator$3c5e3e(10)(__ssrg$partial$0)(__ssrg$instance$Difference$0)) as (argument: number) => number))(right)

@@ -774,42 +774,51 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "__ssrg$instance$Monad$2",
-          "typeArguments": [],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$Monad$2",
+            "typeArguments": [],
+            "arguments": [
+              {
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Applicative$1",
+                "typeArguments": [],
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Functor$0"
+                  }
+                ]
+              }
+            ]
+          },
+          "method": "flatMap",
           "arguments": [
             {
-              "kind": "type-application-call",
-              "callee": "__ssrg$instance$Applicative$1",
-              "typeArguments": [],
+              "kind": "identifier",
+              "name": "stepB"
+            },
+            {
+              "kind": "call",
+              "callee": "stepA",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "__ssrg$instance$Functor$0"
+                  "name": "value"
                 }
               ]
             }
           ]
         },
-        "method": "flatMap",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "stepB"
-          },
-          {
-            "kind": "call",
-            "callee": "stepA",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "value"
-              }
-            ]
+        "type": {
+          "kind": "maybe",
+          "element": {
+            "kind": "number"
           }
-        ]
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -1085,28 +1094,37 @@
                       "value": "Functor identity"
                     },
                     {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Functor$0"
-                      },
-                      "method": "map",
-                      "arguments": [
-                        {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
                           "kind": "identifier",
-                          "name": "identityInt"
+                          "name": "__ssrg$instance$Functor$0"
                         },
-                        {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_maybe_Just",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "21"
-                            }
-                          ]
+                        "method": "map",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "identityInt"
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_maybe_Just",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "21"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
                         }
-                      ]
+                      }
                     },
                     {
                       "kind": "runtime-call",
@@ -1138,66 +1156,93 @@
                       "value": "Functor composition"
                     },
                     {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Functor$0"
-                      },
-                      "method": "map",
-                      "arguments": [
-                        {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
                           "kind": "identifier",
-                          "name": "incrementThenDouble"
+                          "name": "__ssrg$instance$Functor$0"
                         },
-                        {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_maybe_Just",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "20"
-                            }
-                          ]
+                        "method": "map",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "incrementThenDouble"
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_maybe_Just",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "20"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
                         }
-                      ]
+                      }
                     },
                     {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Functor$0"
-                      },
-                      "method": "map",
-                      "arguments": [
-                        {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
                           "kind": "identifier",
-                          "name": "double"
+                          "name": "__ssrg$instance$Functor$0"
                         },
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
+                        "method": "map",
+                        "arguments": [
+                          {
                             "kind": "identifier",
-                            "name": "__ssrg$instance$Functor$0"
+                            "name": "double"
                           },
-                          "method": "map",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "increment"
-                            },
-                            {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_maybe_Just",
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "identifier",
+                                "name": "__ssrg$instance$Functor$0"
+                              },
+                              "method": "map",
                               "arguments": [
                                 {
-                                  "kind": "number",
-                                  "value": "20"
+                                  "kind": "identifier",
+                                  "name": "increment"
+                                },
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_maybe_Just",
+                                  "arguments": [
+                                    {
+                                      "kind": "number",
+                                      "value": "20"
+                                    }
+                                  ]
                                 }
                               ]
+                            },
+                            "type": {
+                              "kind": "maybe",
+                              "element": {
+                                "kind": "number"
+                              }
                             }
-                          ]
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
                         }
-                      ]
+                      }
                     }
                   ]
                 }
@@ -1219,52 +1264,76 @@
                       "value": "Applicative identity"
                     },
                     {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Applicative$1",
-                        "typeArguments": [],
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "__ssrg$instance$Functor$0"
-                          }
-                        ]
-                      },
-                      "method": "apply",
-                      "arguments": [
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Applicative$1",
-                            "typeArguments": [],
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Functor$0"
-                              }
-                            ]
-                          },
-                          "method": "pure",
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Applicative$1",
+                          "typeArguments": [],
                           "arguments": [
                             {
                               "kind": "identifier",
-                              "name": "identityInt"
+                              "name": "__ssrg$instance$Functor$0"
                             }
                           ]
                         },
-                        {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_maybe_Just",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "21"
+                        "method": "apply",
+                        "arguments": [
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Applicative$1",
+                                "typeArguments": [],
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$instance$Functor$0"
+                                  }
+                                ]
+                              },
+                              "method": "pure",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "identityInt"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "maybe",
+                              "element": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "number"
+                                }
+                              }
                             }
-                          ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_maybe_Just",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "21"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
                         }
-                      ]
+                      }
                     },
                     {
                       "kind": "runtime-call",
@@ -1296,84 +1365,126 @@
                       "value": "Applicative homomorphism"
                     },
                     {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Applicative$1",
-                        "typeArguments": [],
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "__ssrg$instance$Functor$0"
-                          }
-                        ]
-                      },
-                      "method": "apply",
-                      "arguments": [
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Applicative$1",
-                            "typeArguments": [],
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Functor$0"
-                              }
-                            ]
-                          },
-                          "method": "pure",
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Applicative$1",
+                          "typeArguments": [],
                           "arguments": [
                             {
                               "kind": "identifier",
-                              "name": "increment"
+                              "name": "__ssrg$instance$Functor$0"
                             }
                           ]
                         },
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Applicative$1",
-                            "typeArguments": [],
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Functor$0"
-                              }
-                            ]
-                          },
-                          "method": "pure",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "41"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Applicative$1",
-                        "typeArguments": [],
+                        "method": "apply",
                         "arguments": [
                           {
-                            "kind": "identifier",
-                            "name": "__ssrg$instance$Functor$0"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Applicative$1",
+                                "typeArguments": [],
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$instance$Functor$0"
+                                  }
+                                ]
+                              },
+                              "method": "pure",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "increment"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "maybe",
+                              "element": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "number"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Applicative$1",
+                                "typeArguments": [],
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$instance$Functor$0"
+                                  }
+                                ]
+                              },
+                              "method": "pure",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "41"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "maybe",
+                              "element": {
+                                "kind": "number"
+                              }
+                            }
                           }
                         ]
                       },
-                      "method": "pure",
-                      "arguments": [
-                        {
-                          "kind": "number",
-                          "value": "42"
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
                         }
-                      ]
+                      }
+                    },
+                    {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Applicative$1",
+                          "typeArguments": [],
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "__ssrg$instance$Functor$0"
+                            }
+                          ]
+                        },
+                        "method": "pure",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "42"
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
+                        }
+                      }
                     }
                   ]
                 }
@@ -1395,53 +1506,71 @@
                       "value": "Monad left identity"
                     },
                     {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Monad$2",
-                        "typeArguments": [],
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Monad$2",
+                          "typeArguments": [],
+                          "arguments": [
+                            {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Applicative$1",
+                              "typeArguments": [],
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Functor$0"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "method": "flatMap",
                         "arguments": [
                           {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Applicative$1",
-                            "typeArguments": [],
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Functor$0"
+                            "kind": "identifier",
+                            "name": "stepA"
+                          },
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Applicative$1",
+                                "typeArguments": [],
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$instance$Functor$0"
+                                  }
+                                ]
+                              },
+                              "method": "pure",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "40"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "maybe",
+                              "element": {
+                                "kind": "number"
                               }
-                            ]
+                            }
                           }
                         ]
                       },
-                      "method": "flatMap",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "stepA"
-                        },
-                        {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Applicative$1",
-                            "typeArguments": [],
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Functor$0"
-                              }
-                            ]
-                          },
-                          "method": "pure",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "40"
-                            }
-                          ]
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
                         }
-                      ]
+                      }
                     },
                     {
                       "kind": "call",
@@ -1473,42 +1602,51 @@
                       "value": "Monad right identity"
                     },
                     {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Monad$2",
-                        "typeArguments": [],
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Monad$2",
+                          "typeArguments": [],
+                          "arguments": [
+                            {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Applicative$1",
+                              "typeArguments": [],
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Functor$0"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "method": "flatMap",
                         "arguments": [
                           {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Applicative$1",
-                            "typeArguments": [],
+                            "kind": "identifier",
+                            "name": "wrapMaybe"
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_maybe_Just",
                             "arguments": [
                               {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Functor$0"
+                                "kind": "number",
+                                "value": "41"
                               }
                             ]
                           }
                         ]
                       },
-                      "method": "flatMap",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "wrapMaybe"
-                        },
-                        {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_maybe_Just",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "41"
-                            }
-                          ]
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "number"
                         }
-                      ]
+                      }
                     },
                     {
                       "kind": "runtime-call",
@@ -1539,108 +1677,135 @@
                   "value": "Monad associativity"
                 },
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "__ssrg$instance$Monad$2",
-                    "typeArguments": [],
-                    "arguments": [
-                      {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Applicative$1",
-                        "typeArguments": [],
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "__ssrg$instance$Functor$0"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "method": "flatMap",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "stepB"
-                    },
-                    {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Monad$2",
-                        "typeArguments": [],
-                        "arguments": [
-                          {
-                            "kind": "type-application-call",
-                            "callee": "__ssrg$instance$Applicative$1",
-                            "typeArguments": [],
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Functor$0"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "method": "flatMap",
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Monad$2",
+                      "typeArguments": [],
                       "arguments": [
                         {
-                          "kind": "identifier",
-                          "name": "stepA"
-                        },
-                        {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_maybe_Just",
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Applicative$1",
+                          "typeArguments": [],
                           "arguments": [
                             {
-                              "kind": "number",
-                              "value": "40"
+                              "kind": "identifier",
+                              "name": "__ssrg$instance$Functor$0"
                             }
                           ]
                         }
                       ]
-                    }
-                  ]
-                },
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "__ssrg$instance$Monad$2",
-                    "typeArguments": [],
+                    },
+                    "method": "flatMap",
                     "arguments": [
                       {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Applicative$1",
-                        "typeArguments": [],
+                        "kind": "identifier",
+                        "name": "stepB"
+                      },
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "type-application-call",
+                            "callee": "__ssrg$instance$Monad$2",
+                            "typeArguments": [],
+                            "arguments": [
+                              {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Applicative$1",
+                                "typeArguments": [],
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$instance$Functor$0"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "method": "flatMap",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "stepA"
+                            },
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_maybe_Just",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "40"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "maybe",
+                    "element": {
+                      "kind": "number"
+                    }
+                  }
+                },
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Monad$2",
+                      "typeArguments": [],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Applicative$1",
+                          "typeArguments": [],
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "__ssrg$instance$Functor$0"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "flatMap",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "stepAB"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_maybe_Just",
                         "arguments": [
                           {
-                            "kind": "identifier",
-                            "name": "__ssrg$instance$Functor$0"
+                            "kind": "number",
+                            "value": "40"
                           }
                         ]
                       }
                     ]
                   },
-                  "method": "flatMap",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "stepAB"
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_maybe_Just",
-                      "arguments": [
-                        {
-                          "kind": "number",
-                          "value": "40"
-                        }
-                      ]
+                  "type": {
+                    "kind": "maybe",
+                    "element": {
+                      "kind": "number"
                     }
-                  ]
+                  }
                 }
               ]
             }

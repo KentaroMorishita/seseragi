@@ -547,22 +547,28 @@
       "body": {
         "kind": "decision",
         "scrutinee": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_decimalOrd"
-          },
-          "method": "compare",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "left"
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_decimalOrd"
             },
-            {
-              "kind": "identifier",
-              "name": "right"
-            }
-          ]
+            "method": "compare",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "left"
+              },
+              {
+                "kind": "identifier",
+                "name": "right"
+              }
+            ]
+          },
+          "type": {
+            "kind": "ordering"
+          }
         },
         "scrutineeType": {
           "kind": "ordering"
@@ -773,18 +779,24 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_decimalContextErrorShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_decimalContextErrorShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "error"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           },
           {
@@ -811,24 +823,30 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_intShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_decimal_precision",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_decimal_precision",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "value"
-                    }
-                  ]
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           }
         ],
@@ -854,17 +872,25 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_decimalZero"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_decimalZero"
+          },
+          "method": "zero",
+          "arguments": [
+            {
+              "kind": "undefined"
+            }
+          ]
         },
-        "method": "zero",
-        "arguments": [
-          {
-            "kind": "undefined"
-          }
-        ]
+        "type": {
+          "kind": "reference",
+          "name": "Decimal",
+          "arguments": []
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -884,17 +910,25 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_decimalOne"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_decimalOne"
+          },
+          "method": "one",
+          "arguments": [
+            {
+              "kind": "undefined"
+            }
+          ]
         },
-        "method": "one",
-        "arguments": [
-          {
-            "kind": "undefined"
-          }
-        ]
+        "type": {
+          "kind": "reference",
+          "name": "Decimal",
+          "arguments": []
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -1031,18 +1065,24 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_decimalShow"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_decimalShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        }
+                      ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "value"
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -1433,46 +1473,52 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "type-application-call",
-                              "callee": "_ssrg_show_eitherShow",
-                              "typeArguments": [
-                                {
-                                  "kind": "reference",
-                                  "name": "DecimalParseError",
-                                  "arguments": []
-                                },
-                                {
-                                  "kind": "reference",
-                                  "name": "Decimal",
-                                  "arguments": []
-                                }
-                              ],
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "_ssrg_show_eitherShow",
+                                "typeArguments": [
+                                  {
+                                    "kind": "reference",
+                                    "name": "DecimalParseError",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "reference",
+                                    "name": "Decimal",
+                                    "arguments": []
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalParseErrorShow"
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalShow"
+                                  }
+                                ]
+                              },
+                              "method": "show",
                               "arguments": [
                                 {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalParseErrorShow"
-                                },
-                                {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalShow"
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_decimal_parse",
+                                  "arguments": [
+                                    {
+                                      "kind": "string",
+                                      "value": "-0.000"
+                                    }
+                                  ]
                                 }
                               ]
                             },
-                            "method": "show",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_decimal_parse",
-                                "arguments": [
-                                  {
-                                    "kind": "string",
-                                    "value": "-0.000"
-                                  }
-                                ]
-                              }
-                            ]
+                            "type": {
+                              "kind": "string"
+                            }
                           }
                         ]
                       }
@@ -1491,46 +1537,52 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "type-application-call",
-                          "callee": "_ssrg_show_eitherShow",
-                          "typeArguments": [
-                            {
-                              "kind": "reference",
-                              "name": "DecimalParseError",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "reference",
-                              "name": "Decimal",
-                              "arguments": []
-                            }
-                          ],
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "type-application-call",
+                            "callee": "_ssrg_show_eitherShow",
+                            "typeArguments": [
+                              {
+                                "kind": "reference",
+                                "name": "DecimalParseError",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "reference",
+                                "name": "Decimal",
+                                "arguments": []
+                              }
+                            ],
+                            "arguments": [
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalParseErrorShow"
+                              },
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalShow"
+                              }
+                            ]
+                          },
+                          "method": "show",
                           "arguments": [
                             {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalParseErrorShow"
-                            },
-                            {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalShow"
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_decimal_parse",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "+12.3400"
+                                }
+                              ]
                             }
                           ]
                         },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_decimal_parse",
-                            "arguments": [
-                              {
-                                "kind": "string",
-                                "value": "+12.3400"
-                              }
-                            ]
-                          }
-                        ]
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -1549,46 +1601,52 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_eitherShow",
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "DecimalParseError",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "reference",
-                          "name": "Decimal",
-                          "arguments": []
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_eitherShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "DecimalParseError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "reference",
+                            "name": "Decimal",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalParseErrorShow"
+                          },
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalParseErrorShow"
-                        },
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_decimal_parse",
+                          "arguments": [
+                            {
+                              "kind": "string",
+                              "value": "1.25e3"
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_decimal_parse",
-                        "arguments": [
-                          {
-                            "kind": "string",
-                            "value": "1.25e3"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -1621,32 +1679,38 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalShow"
-                            },
-                            "method": "show",
-                            "arguments": [
-                              {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalAdd"
-                                },
-                                "method": "add",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "tenth"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalShow"
+                              },
+                              "method": "show",
+                              "arguments": [
+                                {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalAdd"
                                   },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "fifth"
-                                  }
-                                ]
-                              }
-                            ]
+                                  "method": "add",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "tenth"
+                                    },
+                                    {
+                                      "kind": "identifier",
+                                      "name": "fifth"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "string"
+                            }
                           }
                         ]
                       }
@@ -1665,56 +1729,62 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalShow"
-                        },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalMul"
-                            },
-                            "method": "mul",
-                            "arguments": [
-                              {
-                                "kind": "call",
-                                "callee": "requireDecimal",
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_decimal_parse",
-                                    "arguments": [
-                                      {
-                                        "kind": "string",
-                                        "value": "12.5"
-                                      }
-                                    ]
-                                  }
-                                ]
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalShow"
+                          },
+                          "method": "show",
+                          "arguments": [
+                            {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalMul"
                               },
-                              {
-                                "kind": "call",
-                                "callee": "requireDecimal",
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_decimal_parse",
-                                    "arguments": [
-                                      {
-                                        "kind": "string",
-                                        "value": "0.08"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
+                              "method": "mul",
+                              "arguments": [
+                                {
+                                  "kind": "call",
+                                  "callee": "requireDecimal",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_decimal_parse",
+                                      "arguments": [
+                                        {
+                                          "kind": "string",
+                                          "value": "12.5"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "call",
+                                  "callee": "requireDecimal",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_decimal_parse",
+                                      "arguments": [
+                                        {
+                                          "kind": "string",
+                                          "value": "0.08"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -1733,50 +1803,56 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_decimalShow"
-                    },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalSub"
-                        },
-                        "method": "sub",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_decimal_fromInt",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "1000"
-                              }
-                            ]
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_decimalShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalSub"
                           },
-                          {
-                            "kind": "call",
-                            "callee": "requireDecimal",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_decimal_parse",
-                                "arguments": [
-                                  {
-                                    "kind": "string",
-                                    "value": "0.001"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                          "method": "sub",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_decimal_fromInt",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "1000"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "call",
+                              "callee": "requireDecimal",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_decimal_parse",
+                                  "arguments": [
+                                    {
+                                      "kind": "string",
+                                      "value": "0.001"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -1809,50 +1885,56 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "type-application-call",
-                              "callee": "_ssrg_show_eitherShow",
-                              "typeArguments": [
-                                {
-                                  "kind": "reference",
-                                  "name": "DecimalArithmeticError",
-                                  "arguments": []
-                                },
-                                {
-                                  "kind": "reference",
-                                  "name": "Decimal",
-                                  "arguments": []
-                                }
-                              ],
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "_ssrg_show_eitherShow",
+                                "typeArguments": [
+                                  {
+                                    "kind": "reference",
+                                    "name": "DecimalArithmeticError",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "reference",
+                                    "name": "Decimal",
+                                    "arguments": []
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalArithmeticErrorShow"
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalShow"
+                                  }
+                                ]
+                              },
+                              "method": "show",
                               "arguments": [
                                 {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalArithmeticErrorShow"
-                                },
-                                {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalShow"
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_decimal_divideExact",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "eight"
+                                    },
+                                    {
+                                      "kind": "identifier",
+                                      "name": "unitDecimal"
+                                    }
+                                  ]
                                 }
                               ]
                             },
-                            "method": "show",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_decimal_divideExact",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "eight"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "unitDecimal"
-                                  }
-                                ]
-                              }
-                            ]
+                            "type": {
+                              "kind": "string"
+                            }
                           }
                         ]
                       }
@@ -1871,50 +1953,56 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "type-application-call",
-                          "callee": "_ssrg_show_eitherShow",
-                          "typeArguments": [
-                            {
-                              "kind": "reference",
-                              "name": "DecimalArithmeticError",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "reference",
-                              "name": "Decimal",
-                              "arguments": []
-                            }
-                          ],
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "type-application-call",
+                            "callee": "_ssrg_show_eitherShow",
+                            "typeArguments": [
+                              {
+                                "kind": "reference",
+                                "name": "DecimalArithmeticError",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "reference",
+                                "name": "Decimal",
+                                "arguments": []
+                              }
+                            ],
+                            "arguments": [
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalArithmeticErrorShow"
+                              },
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalShow"
+                              }
+                            ]
+                          },
+                          "method": "show",
                           "arguments": [
                             {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalArithmeticErrorShow"
-                            },
-                            {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalShow"
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_decimal_divideExact",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "three"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "unitDecimal"
+                                }
+                              ]
                             }
                           ]
                         },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_decimal_divideExact",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "three"
-                              },
-                              {
-                                "kind": "identifier",
-                                "name": "unitDecimal"
-                              }
-                            ]
-                          }
-                        ]
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -1933,56 +2021,62 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_eitherShow",
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "DecimalArithmeticError",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "reference",
-                          "name": "Decimal",
-                          "arguments": []
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_eitherShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "DecimalArithmeticError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "reference",
+                            "name": "Decimal",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalArithmeticErrorShow"
+                          },
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalArithmeticErrorShow"
-                        },
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_decimal_divideExact",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_decimal_fromInt",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "0"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "unitDecimal"
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_decimal_divideExact",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_decimal_fromInt",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "0"
-                              }
-                            ]
-                          },
-                          {
-                            "kind": "identifier",
-                            "name": "unitDecimal"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -2015,54 +2109,60 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "type-application-call",
-                              "callee": "_ssrg_show_eitherShow",
-                              "typeArguments": [
-                                {
-                                  "kind": "reference",
-                                  "name": "DecimalArithmeticError",
-                                  "arguments": []
-                                },
-                                {
-                                  "kind": "reference",
-                                  "name": "Decimal",
-                                  "arguments": []
-                                }
-                              ],
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "_ssrg_show_eitherShow",
+                                "typeArguments": [
+                                  {
+                                    "kind": "reference",
+                                    "name": "DecimalArithmeticError",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "reference",
+                                    "name": "Decimal",
+                                    "arguments": []
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalArithmeticErrorShow"
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalShow"
+                                  }
+                                ]
+                              },
+                              "method": "show",
                               "arguments": [
                                 {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalArithmeticErrorShow"
-                                },
-                                {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalShow"
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_decimal_divide",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "ctx2Even"
+                                    },
+                                    {
+                                      "kind": "identifier",
+                                      "name": "eight"
+                                    },
+                                    {
+                                      "kind": "identifier",
+                                      "name": "unitDecimal"
+                                    }
+                                  ]
                                 }
                               ]
                             },
-                            "method": "show",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_decimal_divide",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "ctx2Even"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "eight"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "unitDecimal"
-                                  }
-                                ]
-                              }
-                            ]
+                            "type": {
+                              "kind": "string"
+                            }
                           }
                         ]
                       }
@@ -2081,54 +2181,60 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "type-application-call",
-                          "callee": "_ssrg_show_eitherShow",
-                          "typeArguments": [
-                            {
-                              "kind": "reference",
-                              "name": "DecimalArithmeticError",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "reference",
-                              "name": "Decimal",
-                              "arguments": []
-                            }
-                          ],
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "type-application-call",
+                            "callee": "_ssrg_show_eitherShow",
+                            "typeArguments": [
+                              {
+                                "kind": "reference",
+                                "name": "DecimalArithmeticError",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "reference",
+                                "name": "Decimal",
+                                "arguments": []
+                              }
+                            ],
+                            "arguments": [
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalArithmeticErrorShow"
+                              },
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalShow"
+                              }
+                            ]
+                          },
+                          "method": "show",
                           "arguments": [
                             {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalArithmeticErrorShow"
-                            },
-                            {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalShow"
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_decimal_divide",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "ctx2Up"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "eight"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "unitDecimal"
+                                }
+                              ]
                             }
                           ]
                         },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_decimal_divide",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "ctx2Up"
-                              },
-                              {
-                                "kind": "identifier",
-                                "name": "eight"
-                              },
-                              {
-                                "kind": "identifier",
-                                "name": "unitDecimal"
-                              }
-                            ]
-                          }
-                        ]
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -2147,60 +2253,66 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_eitherShow",
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "DecimalArithmeticError",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "reference",
-                          "name": "Decimal",
-                          "arguments": []
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_eitherShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "DecimalArithmeticError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "reference",
+                            "name": "Decimal",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalArithmeticErrorShow"
+                          },
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalArithmeticErrorShow"
-                        },
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_decimal_divide",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "ctx3"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "three"
+                            },
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_decimal_fromInt",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "2"
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_decimal_divide",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "ctx3"
-                          },
-                          {
-                            "kind": "identifier",
-                            "name": "three"
-                          },
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_decimal_fromInt",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "2"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -2239,48 +2351,54 @@
                             "method": "show",
                             "arguments": [
                               {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalShow"
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalShow"
+                                  },
+                                  "method": "show",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_decimal_quantize",
+                                      "arguments": [
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_int_subtract",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "0"
+                                            },
+                                            {
+                                              "kind": "number",
+                                              "value": "2"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "kind": "runtime-reference",
+                                          "name": "_ssrg_number_HalfEven"
+                                        },
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_decimal_fromInt",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "1250"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
                                 },
-                                "method": "show",
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_decimal_quantize",
-                                    "arguments": [
-                                      {
-                                        "kind": "runtime-call",
-                                        "callee": "_ssrg_int_subtract",
-                                        "arguments": [
-                                          {
-                                            "kind": "number",
-                                            "value": "0"
-                                          },
-                                          {
-                                            "kind": "number",
-                                            "value": "2"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "kind": "runtime-reference",
-                                        "name": "_ssrg_number_HalfEven"
-                                      },
-                                      {
-                                        "kind": "runtime-call",
-                                        "callee": "_ssrg_decimal_fromInt",
-                                        "arguments": [
-                                          {
-                                            "kind": "number",
-                                            "value": "1250"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
+                                "type": {
+                                  "kind": "string"
+                                }
                               }
                             ]
                           }
@@ -2299,48 +2417,54 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalShow"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalShow"
+                              },
+                              "method": "show",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_decimal_quantize",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_int_subtract",
+                                      "arguments": [
+                                        {
+                                          "kind": "number",
+                                          "value": "0"
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "2"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_number_HalfUp"
+                                    },
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_decimal_fromInt",
+                                      "arguments": [
+                                        {
+                                          "kind": "number",
+                                          "value": "1250"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
                             },
-                            "method": "show",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_decimal_quantize",
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_int_subtract",
-                                    "arguments": [
-                                      {
-                                        "kind": "number",
-                                        "value": "0"
-                                      },
-                                      {
-                                        "kind": "number",
-                                        "value": "2"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_number_HalfUp"
-                                  },
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_decimal_fromInt",
-                                    "arguments": [
-                                      {
-                                        "kind": "number",
-                                        "value": "1250"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
+                            "type": {
+                              "kind": "string"
+                            }
                           }
                         ]
                       }
@@ -2359,44 +2483,50 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalShow"
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalShow"
+                          },
+                          "method": "show",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_decimal_quantize",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "0"
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_number_AwayFromZero"
+                                },
+                                {
+                                  "kind": "call",
+                                  "callee": "requireDecimal",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_decimal_parse",
+                                      "arguments": [
+                                        {
+                                          "kind": "string",
+                                          "value": "-2.5"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
                         },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_decimal_quantize",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "0"
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_number_AwayFromZero"
-                              },
-                              {
-                                "kind": "call",
-                                "callee": "requireDecimal",
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_decimal_parse",
-                                    "arguments": [
-                                      {
-                                        "kind": "string",
-                                        "value": "-2.5"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -2415,44 +2545,50 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_decimalShow"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_decimalShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_decimal_quantize",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_number_Ceiling"
+                            },
+                            {
+                              "kind": "call",
+                              "callee": "requireDecimal",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_decimal_parse",
+                                  "arguments": [
+                                    {
+                                      "kind": "string",
+                                      "value": "-2.5"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_decimal_quantize",
-                        "arguments": [
-                          {
-                            "kind": "number",
-                            "value": "0"
-                          },
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_number_Ceiling"
-                          },
-                          {
-                            "kind": "call",
-                            "callee": "requireDecimal",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_decimal_parse",
-                                "arguments": [
-                                  {
-                                    "kind": "string",
-                                    "value": "-2.5"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -2497,50 +2633,56 @@
                                 "method": "show",
                                 "arguments": [
                                   {
-                                    "kind": "dictionary-call",
-                                    "dictionary": {
-                                      "kind": "type-application-call",
-                                      "callee": "_ssrg_show_eitherShow",
-                                      "typeArguments": [
-                                        {
-                                          "kind": "reference",
-                                          "name": "DecimalConversionError",
-                                          "arguments": []
-                                        },
-                                        {
-                                          "kind": "number"
-                                        }
-                                      ],
+                                    "kind": "checked-result",
+                                    "value": {
+                                      "kind": "dictionary-call",
+                                      "dictionary": {
+                                        "kind": "type-application-call",
+                                        "callee": "_ssrg_show_eitherShow",
+                                        "typeArguments": [
+                                          {
+                                            "kind": "reference",
+                                            "name": "DecimalConversionError",
+                                            "arguments": []
+                                          },
+                                          {
+                                            "kind": "number"
+                                          }
+                                        ],
+                                        "arguments": [
+                                          {
+                                            "kind": "runtime-reference",
+                                            "name": "_ssrg_decimalConversionErrorShow"
+                                          },
+                                          {
+                                            "kind": "runtime-reference",
+                                            "name": "_ssrg_show_intShow"
+                                          }
+                                        ]
+                                      },
+                                      "method": "show",
                                       "arguments": [
                                         {
-                                          "kind": "runtime-reference",
-                                          "name": "_ssrg_decimalConversionErrorShow"
-                                        },
-                                        {
-                                          "kind": "runtime-reference",
-                                          "name": "_ssrg_show_intShow"
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_decimal_toIntExact",
+                                          "arguments": [
+                                            {
+                                              "kind": "runtime-call",
+                                              "callee": "_ssrg_decimal_fromInt",
+                                              "arguments": [
+                                                {
+                                                  "kind": "number",
+                                                  "value": "42"
+                                                }
+                                              ]
+                                            }
+                                          ]
                                         }
                                       ]
                                     },
-                                    "method": "show",
-                                    "arguments": [
-                                      {
-                                        "kind": "runtime-call",
-                                        "callee": "_ssrg_decimal_toIntExact",
-                                        "arguments": [
-                                          {
-                                            "kind": "runtime-call",
-                                            "callee": "_ssrg_decimal_fromInt",
-                                            "arguments": [
-                                              {
-                                                "kind": "number",
-                                                "value": "42"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      }
-                                    ]
+                                    "type": {
+                                      "kind": "string"
+                                    }
                                   }
                                 ]
                               }
@@ -2559,44 +2701,50 @@
                             "method": "show",
                             "arguments": [
                               {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_show_eitherShow",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "reference",
-                                      "name": "DecimalConversionError",
-                                      "arguments": []
-                                    },
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "type-application-call",
+                                    "callee": "_ssrg_show_eitherShow",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "reference",
+                                        "name": "DecimalConversionError",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ],
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_decimalConversionErrorShow"
+                                      },
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_show_intShow"
+                                      }
+                                    ]
+                                  },
+                                  "method": "show",
                                   "arguments": [
                                     {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_decimalConversionErrorShow"
-                                    },
-                                    {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_show_intShow"
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_decimal_toIntExact",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "tenth"
+                                        }
+                                      ]
                                     }
                                   ]
                                 },
-                                "method": "show",
-                                "arguments": [
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_decimal_toIntExact",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "tenth"
-                                      }
-                                    ]
-                                  }
-                                ]
+                                "type": {
+                                  "kind": "string"
+                                }
                               }
                             ]
                           }
@@ -2615,56 +2763,62 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "type-application-call",
-                              "callee": "_ssrg_show_eitherShow",
-                              "typeArguments": [
-                                {
-                                  "kind": "reference",
-                                  "name": "DecimalConversionError",
-                                  "arguments": []
-                                },
-                                {
-                                  "kind": "number"
-                                }
-                              ],
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "_ssrg_show_eitherShow",
+                                "typeArguments": [
+                                  {
+                                    "kind": "reference",
+                                    "name": "DecimalConversionError",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "number"
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalConversionErrorShow"
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_show_intShow"
+                                  }
+                                ]
+                              },
+                              "method": "show",
                               "arguments": [
                                 {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalConversionErrorShow"
-                                },
-                                {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_show_intShow"
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_decimal_toIntExact",
+                                  "arguments": [
+                                    {
+                                      "kind": "call",
+                                      "callee": "requireDecimal",
+                                      "arguments": [
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_decimal_parse",
+                                          "arguments": [
+                                            {
+                                              "kind": "string",
+                                              "value": "9007199254740992"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
                                 }
                               ]
                             },
-                            "method": "show",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_decimal_toIntExact",
-                                "arguments": [
-                                  {
-                                    "kind": "call",
-                                    "callee": "requireDecimal",
-                                    "arguments": [
-                                      {
-                                        "kind": "runtime-call",
-                                        "callee": "_ssrg_decimal_parse",
-                                        "arguments": [
-                                          {
-                                            "kind": "string",
-                                            "value": "9007199254740992"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
+                            "type": {
+                              "kind": "string"
+                            }
                           }
                         ]
                       }
@@ -2683,50 +2837,56 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "type-application-call",
-                          "callee": "_ssrg_show_eitherShow",
-                          "typeArguments": [
-                            {
-                              "kind": "reference",
-                              "name": "DecimalConversionError",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "reference",
-                              "name": "Decimal",
-                              "arguments": []
-                            }
-                          ],
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "type-application-call",
+                            "callee": "_ssrg_show_eitherShow",
+                            "typeArguments": [
+                              {
+                                "kind": "reference",
+                                "name": "DecimalConversionError",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "reference",
+                                "name": "Decimal",
+                                "arguments": []
+                              }
+                            ],
+                            "arguments": [
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalConversionErrorShow"
+                              },
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalShow"
+                              }
+                            ]
+                          },
+                          "method": "show",
                           "arguments": [
                             {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalConversionErrorShow"
-                            },
-                            {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalShow"
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_decimal_fromFloat",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "ctx17"
+                                },
+                                {
+                                  "kind": "number",
+                                  "value": "0.1"
+                                }
+                              ]
                             }
                           ]
                         },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_decimal_fromFloat",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "ctx17"
-                              },
-                              {
-                                "kind": "number",
-                                "value": "0.1"
-                              }
-                            ]
-                          }
-                        ]
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -2745,44 +2905,50 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_eitherShow",
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "DecimalConversionError",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "number"
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_eitherShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "DecimalConversionError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "number"
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalConversionErrorShow"
+                          },
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_show_floatShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalConversionErrorShow"
-                        },
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_show_floatShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_decimal_toFloat",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "tenth"
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_decimal_toFloat",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "tenth"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -2815,46 +2981,52 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "type-application-call",
-                              "callee": "_ssrg_show_eitherShow",
-                              "typeArguments": [
-                                {
-                                  "kind": "reference",
-                                  "name": "DecimalParseError",
-                                  "arguments": []
-                                },
-                                {
-                                  "kind": "reference",
-                                  "name": "Decimal",
-                                  "arguments": []
-                                }
-                              ],
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "_ssrg_show_eitherShow",
+                                "typeArguments": [
+                                  {
+                                    "kind": "reference",
+                                    "name": "DecimalParseError",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "reference",
+                                    "name": "Decimal",
+                                    "arguments": []
+                                  }
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalParseErrorShow"
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalShow"
+                                  }
+                                ]
+                              },
+                              "method": "show",
                               "arguments": [
                                 {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalParseErrorShow"
-                                },
-                                {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalShow"
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_decimal_parse",
+                                  "arguments": [
+                                    {
+                                      "kind": "string",
+                                      "value": ""
+                                    }
+                                  ]
                                 }
                               ]
                             },
-                            "method": "show",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_decimal_parse",
-                                "arguments": [
-                                  {
-                                    "kind": "string",
-                                    "value": ""
-                                  }
-                                ]
-                              }
-                            ]
+                            "type": {
+                              "kind": "string"
+                            }
                           }
                         ]
                       }
@@ -2873,46 +3045,52 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "type-application-call",
-                          "callee": "_ssrg_show_eitherShow",
-                          "typeArguments": [
-                            {
-                              "kind": "reference",
-                              "name": "DecimalParseError",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "reference",
-                              "name": "Decimal",
-                              "arguments": []
-                            }
-                          ],
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "type-application-call",
+                            "callee": "_ssrg_show_eitherShow",
+                            "typeArguments": [
+                              {
+                                "kind": "reference",
+                                "name": "DecimalParseError",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "reference",
+                                "name": "Decimal",
+                                "arguments": []
+                              }
+                            ],
+                            "arguments": [
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalParseErrorShow"
+                              },
+                              {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_decimalShow"
+                              }
+                            ]
+                          },
+                          "method": "show",
                           "arguments": [
                             {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalParseErrorShow"
-                            },
-                            {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_decimalShow"
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_decimal_parse",
+                              "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": "01"
+                                }
+                              ]
                             }
                           ]
                         },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_decimal_parse",
-                            "arguments": [
-                              {
-                                "kind": "string",
-                                "value": "01"
-                              }
-                            ]
-                          }
-                        ]
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -2931,46 +3109,52 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_eitherShow",
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "DecimalParseError",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "reference",
-                          "name": "Decimal",
-                          "arguments": []
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_eitherShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "DecimalParseError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "reference",
+                            "name": "Decimal",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalParseErrorShow"
+                          },
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalParseErrorShow"
-                        },
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_decimal_parse",
+                          "arguments": [
+                            {
+                              "kind": "string",
+                              "value": "1.2猫"
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_decimal_parse",
-                        "arguments": [
-                          {
-                            "kind": "string",
-                            "value": "1.2猫"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -3105,18 +3289,24 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalShow"
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalShow"
+                          },
+                          "method": "show",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "huge"
+                            }
+                          ]
                         },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "huge"
-                          }
-                        ]
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -3135,18 +3325,24 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_decimalDebug"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_decimalDebug"
+                      },
+                      "method": "debug",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "huge"
+                        }
+                      ]
                     },
-                    "method": "debug",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "huge"
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }
@@ -3263,32 +3459,44 @@
                             "method": "eq",
                             "arguments": [
                               {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalHash"
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalHash"
+                                  },
+                                  "method": "hash",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "huge"
+                                    }
+                                  ]
                                 },
-                                "method": "hash",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "huge"
-                                  }
-                                ]
+                                "type": {
+                                  "kind": "number"
+                                }
                               },
                               {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_decimalHash"
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_decimalHash"
+                                  },
+                                  "method": "hash",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "same"
+                                    }
+                                  ]
                                 },
-                                "method": "hash",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "same"
-                                  }
-                                ]
+                                "type": {
+                                  "kind": "number"
+                                }
                               }
                             ]
                           }
@@ -3309,23 +3517,29 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_decimalShow"
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_decimalShow"
+                          },
+                          "method": "show",
+                          "arguments": [
+                            {
+                              "kind": "call",
+                              "callee": "zeroDecimal",
+                              "arguments": [
+                                {
+                                  "kind": "undefined"
+                                }
+                              ]
+                            }
+                          ]
                         },
-                        "method": "show",
-                        "arguments": [
-                          {
-                            "kind": "call",
-                            "callee": "zeroDecimal",
-                            "arguments": [
-                              {
-                                "kind": "undefined"
-                              }
-                            ]
-                          }
-                        ]
+                        "type": {
+                          "kind": "string"
+                        }
                       }
                     ]
                   }
@@ -3344,23 +3558,29 @@
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_decimalShow"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_decimalShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "oneDecimal",
+                          "arguments": [
+                            {
+                              "kind": "undefined"
+                            }
+                          ]
+                        }
+                      ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "call",
-                        "callee": "oneDecimal",
-                        "arguments": [
-                          {
-                            "kind": "undefined"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 ]
               }

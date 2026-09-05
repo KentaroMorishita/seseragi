@@ -1,3 +1,4 @@
+use crate::typescript::types::TypeScriptTypeContext;
 use std::collections::BTreeMap;
 
 use crate::{
@@ -12,7 +13,7 @@ use super::TypeScriptExpr;
 pub(super) fn local_dictionary_expression(
     evidence: &CoreInstanceEvidence,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> Option<TypeScriptExpr> {
     if let CoreInstanceEvidence::Parameter { index } = evidence {
         return Some(TypeScriptExpr::Identifier {
@@ -163,8 +164,8 @@ mod tests {
                 type_arguments: Vec::new(),
                 evidence_arguments: Vec::new(),
             },
-            &BTreeMap::new(),
-            &BTreeMap::new(),
+            &Default::default(),
+            &Default::default(),
         );
 
         assert_eq!(
@@ -183,8 +184,8 @@ mod tests {
                 type_arguments: Vec::new(),
                 evidence_arguments: Vec::new(),
             },
-            &BTreeMap::new(),
-            &BTreeMap::new(),
+            &Default::default(),
+            &Default::default(),
         );
 
         assert_eq!(
@@ -220,8 +221,8 @@ mod tests {
                     },
                 }],
             },
-            &BTreeMap::new(),
-            &BTreeMap::new(),
+            &Default::default(),
+            &Default::default(),
         );
 
         assert_eq!(
@@ -257,8 +258,8 @@ mod tests {
                     evidence: CoreInstanceEvidence::Parameter { index: 0 },
                 }],
             },
-            &BTreeMap::new(),
-            &BTreeMap::new(),
+            &Default::default(),
+            &Default::default(),
         );
 
         assert!(matches!(
@@ -335,8 +336,8 @@ mod tests {
                     },
                 ],
             },
-            &BTreeMap::new(),
-            &BTreeMap::new(),
+            &Default::default(),
+            &Default::default(),
         );
 
         assert!(matches!(
@@ -381,8 +382,8 @@ mod tests {
                 type_arguments: Vec::new(),
                 evidence_arguments: Vec::new(),
             },
-            &BTreeMap::new(),
-            &BTreeMap::new(),
+            &Default::default(),
+            &Default::default(),
         );
 
         assert_eq!(
@@ -401,8 +402,8 @@ mod tests {
                 type_arguments: Vec::new(),
                 evidence_arguments: Vec::new(),
             },
-            &BTreeMap::new(),
-            &BTreeMap::new(),
+            &Default::default(),
+            &Default::default(),
         );
 
         assert_eq!(

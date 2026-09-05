@@ -21,7 +21,7 @@ use types::lower_external_type_imports;
 pub(super) struct LoweredModuleImports {
     pub(super) imports: Vec<TypeScriptSourceImport>,
     pub(super) value_names: BTreeMap<String, String>,
-    pub(super) type_names: BTreeMap<String, String>,
+    pub(super) type_names: super::types::TypeScriptTypeContext,
     pub(super) instance_names: BTreeMap<(String, String), String>,
 }
 
@@ -174,7 +174,7 @@ pub(super) fn lower_module_imports(
     Ok(LoweredModuleImports {
         imports,
         value_names,
-        type_names,
+        type_names: type_names.into(),
         instance_names,
     })
 }

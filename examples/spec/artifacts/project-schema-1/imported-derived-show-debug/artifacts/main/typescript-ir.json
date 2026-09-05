@@ -103,31 +103,37 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "__ssrg$instance$Show$2",
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "Code",
-              "arguments": []
-            }
-          ],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$Show$2",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "Code",
+                "arguments": []
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Show$0"
+              }
+            ]
+          },
+          "method": "show",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "__ssrg$instance$Show$0"
+              "name": "value"
             }
           ]
         },
-        "method": "show",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -147,31 +153,37 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "__ssrg$instance$Debug$3",
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "Code",
-              "arguments": []
-            }
-          ],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$Debug$3",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "Code",
+                "arguments": []
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Debug$1"
+              }
+            ]
+          },
+          "method": "debug",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "__ssrg$instance$Debug$1"
+              "name": "value"
             }
           ]
         },
-        "method": "debug",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",

@@ -115,18 +115,37 @@
         ]
       },
       "initializer": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_effect_applicative"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_effect_applicative"
+          },
+          "method": "pure",
+          "arguments": [
+            {
+              "kind": "number",
+              "value": "41"
+            }
+          ]
         },
-        "method": "pure",
-        "arguments": [
-          {
-            "kind": "number",
-            "value": "41"
-          }
-        ]
+        "type": {
+          "kind": "reference",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "fields": []
+            },
+            {
+              "kind": "never"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -161,18 +180,43 @@
         ]
       },
       "initializer": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_effect_applicative"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_effect_applicative"
+          },
+          "method": "pure",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "increment"
+            }
+          ]
         },
-        "method": "pure",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "increment"
-          }
-        ]
+        "type": {
+          "kind": "reference",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "fields": []
+            },
+            {
+              "kind": "never"
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "number"
+              }
+            }
+          ]
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -210,28 +254,47 @@
         "kind": "lambda",
         "parameter": "value: number",
         "body": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_effect_applicative"
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_effect_applicative"
+            },
+            "method": "pure",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_add",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "10"
+                  }
+                ]
+              }
+            ]
           },
-          "method": "pure",
-          "arguments": [
-            {
-              "kind": "runtime-call",
-              "callee": "_ssrg_int_add",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "value"
-                },
-                {
-                  "kind": "number",
-                  "value": "10"
-                }
-              ]
-            }
-          ]
+          "type": {
+            "kind": "reference",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "fields": []
+              },
+              {
+                "kind": "never"
+              },
+              {
+                "kind": "number"
+              }
+            ]
+          }
         }
       },
       "origin": {
@@ -261,22 +324,41 @@
         ]
       },
       "initializer": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_effect_functor"
-        },
-        "method": "map",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "increment"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_effect_functor"
           },
-          {
-            "kind": "identifier",
-            "name": "source"
-          }
-        ]
+          "method": "map",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "increment"
+            },
+            {
+              "kind": "identifier",
+              "name": "source"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "fields": []
+            },
+            {
+              "kind": "never"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -305,22 +387,41 @@
         ]
       },
       "initializer": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_effect_applicative"
-        },
-        "method": "apply",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "liftedIncrement"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_effect_applicative"
           },
-          {
-            "kind": "identifier",
-            "name": "source"
-          }
-        ]
+          "method": "apply",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "liftedIncrement"
+            },
+            {
+              "kind": "identifier",
+              "name": "source"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "fields": []
+            },
+            {
+              "kind": "never"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -349,22 +450,41 @@
         ]
       },
       "initializer": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_effect_monad"
-        },
-        "method": "flatMap",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "plusTen"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_effect_monad"
           },
-          {
-            "kind": "identifier",
-            "name": "source"
-          }
-        ]
+          "method": "flatMap",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "plusTen"
+            },
+            {
+              "kind": "identifier",
+              "name": "source"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "fields": []
+            },
+            {
+              "kind": "never"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
       },
       "origin": {
         "source": "main.ssrg",

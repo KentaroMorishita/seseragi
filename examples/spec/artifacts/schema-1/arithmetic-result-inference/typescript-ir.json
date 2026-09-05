@@ -475,75 +475,24 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_debug_intDebug"
-                  },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "difference"
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_debug_intDebug"
-                  },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "annotated"
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_debug_arrayDebug",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_debug_intDebug"
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_intDebug"
+                        "kind": "identifier",
+                        "name": "difference"
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "arithmeticMatrix"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -555,29 +504,24 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_debug_arrayDebug",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_debug_intDebug"
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_floatDebug"
+                        "kind": "identifier",
+                        "name": "annotated"
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "floatArithmeticMatrix"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -589,34 +533,120 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_debug_intDebug"
-                  },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "call",
-                      "callee": "acceptInt",
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_arrayDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
                       "arguments": [
                         {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_int_subtract",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "10"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "3"
-                            }
-                          ]
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_intDebug"
                         }
                       ]
-                    }
-                  ]
+                    },
+                    "method": "debug",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "arithmeticMatrix"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_arrayDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_floatDebug"
+                        }
+                      ]
+                    },
+                    "method": "debug",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "floatArithmeticMatrix"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_debug_intDebug"
+                    },
+                    "method": "debug",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "acceptInt",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_int_subtract",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "10"
+                              },
+                              {
+                                "kind": "number",
+                                "value": "3"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -627,18 +657,24 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_debug_stringDebug"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_debug_stringDebug"
+                },
+                "method": "debug",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "joined"
+                  }
+                ]
               },
-              "method": "debug",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "joined"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }

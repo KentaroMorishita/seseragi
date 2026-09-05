@@ -592,28 +592,37 @@
           }
         ],
         "result": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_maybe_applicative"
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_applicative"
+            },
+            "method": "pure",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_add",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "a"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "b"
+                  }
+                ]
+              }
+            ]
           },
-          "method": "pure",
-          "arguments": [
-            {
-              "kind": "runtime-call",
-              "callee": "_ssrg_int_add",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "a"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "b"
-                }
-              ]
+          "type": {
+            "kind": "maybe",
+            "element": {
+              "kind": "number"
             }
-          ]
+          }
         }
       },
       "origin": {
@@ -851,29 +860,35 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_debug_maybeDebug",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_maybeDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_intDebug"
+                        }
+                      ]
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_intDebug"
+                        "kind": "identifier",
+                        "name": "success"
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "success"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -885,29 +900,35 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_debug_maybeDebug",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_maybeDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_intDebug"
+                        }
+                      ]
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_intDebug"
+                        "kind": "identifier",
+                        "name": "stopped"
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "stopped"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -919,29 +940,35 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_debug_maybeDebug",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_maybeDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_intDebug"
+                        }
+                      ]
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_intDebug"
+                        "kind": "identifier",
+                        "name": "wrapped"
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "wrapped"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -953,36 +980,42 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_debug_eitherDebug",
-                    "typeArguments": [
-                      {
-                        "kind": "string"
-                      },
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_eitherDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "string"
+                        },
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_stringDebug"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_intDebug"
+                        }
+                      ]
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_stringDebug"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_intDebug"
+                        "kind": "identifier",
+                        "name": "eitherValue"
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "eitherValue"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -994,29 +1027,35 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_debug_arrayDebug",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_arrayDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_intDebug"
+                        }
+                      ]
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_intDebug"
+                        "kind": "identifier",
+                        "name": "arrayValue"
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "arrayValue"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1028,29 +1067,35 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_debug_listDebug",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_listDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_intDebug"
+                        }
+                      ]
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_intDebug"
+                        "kind": "identifier",
+                        "name": "listValue"
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "listValue"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1062,29 +1107,35 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "__ssrg$instance$Debug$0",
-                    "typeArguments": [
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Debug$0",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_intDebug"
+                        }
+                      ]
+                    },
+                    "method": "debug",
                     "arguments": [
                       {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_debug_intDebug"
+                        "kind": "identifier",
+                        "name": "packetValue"
                       }
                     ]
                   },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "packetValue"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1095,29 +1146,35 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "type-application-call",
-                "callee": "__ssrg$instance$Debug$1",
-                "typeArguments": [
-                  {
-                    "kind": "number"
-                  }
-                ],
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Debug$1",
+                  "typeArguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_debug_intDebug"
+                    }
+                  ]
+                },
+                "method": "debug",
                 "arguments": [
                   {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_debug_intDebug"
+                    "kind": "identifier",
+                    "name": "boxValue"
                   }
                 ]
               },
-              "method": "debug",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "boxValue"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }

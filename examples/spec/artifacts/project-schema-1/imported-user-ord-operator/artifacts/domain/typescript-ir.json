@@ -158,30 +158,36 @@
               }
             ],
             "body": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_ord_dictionary"
-              },
-              "method": "compare",
-              "arguments": [
-                {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "right"
-                  },
-                  "field": "value"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_int_ord_dictionary"
                 },
-                {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "left"
+                "method": "compare",
+                "arguments": [
+                  {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "right"
+                    },
+                    "field": "value"
                   },
-                  "field": "value"
-                }
-              ]
+                  {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "left"
+                    },
+                    "field": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "ordering"
+              }
             },
             "origin": {
               "source": "domain.ssrg",

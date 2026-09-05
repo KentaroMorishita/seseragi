@@ -82,24 +82,30 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "__ssrg$instance$Tag$0",
-          "typeArguments": [
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$Tag$0",
+            "typeArguments": [
+              {
+                "kind": "number"
+              }
+            ],
+            "arguments": []
+          },
+          "method": "tag",
+          "arguments": [
             {
-              "kind": "number"
+              "kind": "identifier",
+              "name": "value"
             }
-          ],
-          "arguments": []
+          ]
         },
-        "method": "tag",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",

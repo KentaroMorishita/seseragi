@@ -11,7 +11,7 @@ export const scalarSlice = (value: string) => takeScalars(value)
 export const graphemeSlice = (value: string) => takeGraphemes(value)
 export const character = (value: number) => _ssrg_char_fromCodePoint(value)
 export const point = (value: string) => _ssrg_char_codePoint(value)
-export const inspectError = (value: TextSliceError) => _ssrg_textSliceErrorDebug["debug"](value)
+export const inspectError = (value: TextSliceError) => ((_ssrg_textSliceErrorDebug["debug"](value)) as string)
 const canonicalize: (argument: string) => string = (__ssrg$text_bytes$partial$0: string) => _ssrg_unicode_normalize(_ssrg_unicode_NFC, __ssrg$text_bytes$partial$0);
 const takeScalars: (argument: string) => { readonly tag: "Left"; readonly value: TextSliceError } | { readonly tag: "Right"; readonly value: string } = (__ssrg$text_bytes$partial$0: string) => _ssrg_text_sliceScalars(1, 3, __ssrg$text_bytes$partial$0);
 const takeGraphemes: (argument: string) => { readonly tag: "Left"; readonly value: GraphemeSliceError } | { readonly tag: "Right"; readonly value: string } = (__ssrg$text_bytes$partial$0: string) => _ssrg_grapheme_slice(1, 3, __ssrg$text_bytes$partial$0);

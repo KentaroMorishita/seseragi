@@ -475,12 +475,22 @@ fn resolves_type_class_operator_sections_to_the_lexical_trait_identity() {
     .expect("operator section should use the same lexical Monad as infix syntax");
 
     assert!(compiled.diagnostics.diagnostics.is_empty());
-    assert!(compiled.generated.typescript.contains(
-        "export const viaInfix = (value: Box<number>) => __ssrg$instance$Monad$0[\"flatMap\"](next)(value)"
-    ));
-    assert!(compiled.generated.typescript.contains(
-        "export const viaSection = (value: Box<number>) => __ssrg$instance$Monad$0[\"flatMap\"](next)(value)"
-    ));
+    for name in ["viaInfix", "viaSection"] {
+        let declaration = compiled
+            .generated
+            .typescript
+            .lines()
+            .find(|line| {
+                line.starts_with(&format!("export const {name} = (value: Box<number>) => "))
+            })
+            .expect("both operator forms retain the concrete Box parameter");
+        // HKT result restoration can wrap the call in a type assertion. The
+        // contract here is lexical dictionary selection and argument order.
+        assert!(
+            declaration.contains("__ssrg$instance$Monad$0[\"flatMap\"](next)(value)"),
+            "{declaration}"
+        );
+    }
 }
 
 #[test]

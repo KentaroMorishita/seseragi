@@ -282,22 +282,28 @@
       "body": {
         "kind": "decision",
         "scrutinee": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "identifier",
-            "name": "__ssrg$evidence$0"
-          },
-          "method": "compare",
-          "arguments": [
-            {
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
               "kind": "identifier",
-              "name": "left"
+              "name": "__ssrg$evidence$0"
             },
-            {
-              "kind": "identifier",
-              "name": "right"
-            }
-          ]
+            "method": "compare",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "left"
+              },
+              {
+                "kind": "identifier",
+                "name": "right"
+              }
+            ]
+          },
+          "type": {
+            "kind": "ordering"
+          }
         },
         "scrutineeType": {
           "kind": "ordering"
@@ -362,18 +368,24 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "debug",
-        "arguments": [
-          {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
             "kind": "identifier",
-            "name": "value"
-          }
-        ]
+            "name": "__ssrg$evidence$0"
+          },
+          "method": "debug",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -648,41 +660,47 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_maybeShow",
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "RegexMatch",
-                          "arguments": []
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_maybeShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "RegexMatch",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_regexMatchShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_regexMatchShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_find",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "👍 é́-aa"
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_find",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "👍 é́-aa"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -717,41 +735,47 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_maybeShow",
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "RegexMatch",
-                          "arguments": []
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_maybeShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "RegexMatch",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_regexMatchShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_regexMatchShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_find",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "xaa"
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_find",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "xaa"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -786,41 +810,47 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_maybeShow",
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "RegexMatch",
-                          "arguments": []
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_maybeShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "RegexMatch",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_regexMatchShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_regexMatchShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_find",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "xaaaaa"
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_find",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "xaaaaa"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -855,28 +885,34 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_boolShow"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_boolShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_isMatch",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "漢́٣_"
+                            }
+                          ]
+                        }
+                      ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_isMatch",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "漢́٣_"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -911,28 +947,34 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_boolShow"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_boolShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_isMatch",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "٣"
+                            }
+                          ]
+                        }
+                      ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_isMatch",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "٣"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -967,28 +1009,34 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_boolShow"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_boolShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_isMatch",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "٣"
+                            }
+                          ]
+                        }
+                      ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_isMatch",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "٣"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -1115,41 +1163,47 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_arrayShow",
-                      "typeArguments": [
-                        {
-                          "kind": "reference",
-                          "name": "RegexMatch",
-                          "arguments": []
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_arrayShow",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "RegexMatch",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_regexMatchShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_regexMatchShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_findAll",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "a👍"
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_findAll",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "a👍"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -1184,39 +1238,45 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_show_arrayShow",
-                      "typeArguments": [
-                        {
-                          "kind": "string"
-                        }
-                      ],
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_arrayShow",
+                        "typeArguments": [
+                          {
+                            "kind": "string"
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_show_stringShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
                       "arguments": [
                         {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_show_stringShow"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_split",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "a👍"
+                            }
+                          ]
                         }
                       ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_split",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "a👍"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -1385,28 +1445,34 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_boolShow"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_boolShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_isMatch",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "a.b[c]"
+                            }
+                          ]
+                        }
+                      ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_isMatch",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "a.b[c]"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -1523,28 +1589,34 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_boolShow"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_boolShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_isMatch",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "aςσ"
+                            }
+                          ]
+                        }
+                      ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_isMatch",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "aςσ"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -1631,28 +1703,34 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_boolShow"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_boolShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_isMatch",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "a\r\nb\n"
+                            }
+                          ]
+                        }
+                      ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_isMatch",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "a\r\nb\n"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {
@@ -1739,28 +1817,34 @@
                   "kind": "lambda",
                   "parameter": "pattern: Regex",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_boolShow"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_boolShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_regex_isMatch",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "pattern"
+                            },
+                            {
+                              "kind": "string",
+                              "value": "\n"
+                            }
+                          ]
+                        }
+                      ]
                     },
-                    "method": "show",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_regex_isMatch",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "pattern"
-                          },
-                          {
-                            "kind": "string",
-                            "value": "\n"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 },
                 {

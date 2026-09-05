@@ -1,5 +1,6 @@
 use crate::collection_ops::runtime_iterable_operation;
 use crate::iterator_ops::runtime_iterator_comprehension_operation;
+use crate::typescript::types::TypeScriptTypeContext;
 use crate::{CoreComprehensionClause, CoreExpr, CorePattern};
 use std::collections::BTreeMap;
 
@@ -14,7 +15,7 @@ pub(super) fn lower_array_comprehension(
     element: CoreExpr,
     clauses: Vec<CoreComprehensionClause>,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
     depth: usize,
 ) -> TypeScriptExpr {
     let mut clauses = clauses.into_iter();

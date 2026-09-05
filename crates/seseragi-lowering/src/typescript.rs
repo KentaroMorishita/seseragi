@@ -1,3 +1,4 @@
+use crate::typescript::types::TypeScriptTypeContext;
 use crate::{CoreForeignMember, CoreForeignModule, CoreModule, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_syntax::{TypeParameter, Visibility};
@@ -883,6 +884,9 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
         .functions
         .into_iter()
         .map(|function| {
+            let scoped_types = module_imports
+                .type_names
+                .with_parameters(&function.type_parameters);
             let type_constructor_parameters = function
                 .type_parameters
                 .iter()
@@ -899,11 +903,8 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
                 "__ssrg$foreign$function".to_owned(),
                 module_value_name(&module.module, &function.symbol),
             );
-            let body = lower_core_expr_to_typescript(
-                function.body,
-                &function_value_names,
-                &module_imports.type_names,
-            );
+            let body =
+                lower_core_expr_to_typescript(function.body, &function_value_names, &scoped_types);
             TypeScriptFunction::ConstFunction {
                 exported: function.visibility == Visibility::Public,
                 is_async: typescript_expr_contains_await(&body),
@@ -919,9 +920,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
                         arguments: constraint
                             .arguments
                             .iter()
-                            .map(|argument| {
-                                types::type_ref_from_core_type(argument, &module_imports.type_names)
-                            })
+                            .map(|argument| types::type_ref_from_core_type(argument, &scoped_types))
                             .collect(),
                     })
                     .collect(),
@@ -931,7 +930,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
                     .map(|parameter| {
                         lower_core_parameter_to_typescript(
                             parameter,
-                            &module_imports.type_names,
+                            &scoped_types,
                             &type_constructor_parameters,
                         )
                     })
@@ -965,7 +964,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
 fn lower_foreign_namespace(
     member: &CoreForeignMember,
     module: &str,
-    type_names: &BTreeMap<String, String>,
+    type_names: &TypeScriptTypeContext,
     foreign_opaque_names: &std::collections::BTreeSet<String>,
     top_level: bool,
 ) -> Option<TypeScriptForeignNamespace> {

@@ -109,28 +109,40 @@
           }
         ],
         "result": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_either_applicative"
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_either_applicative"
+            },
+            "method": "pure",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_add",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "first"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "second"
+                  }
+                ]
+              }
+            ]
           },
-          "method": "pure",
-          "arguments": [
-            {
-              "kind": "runtime-call",
-              "callee": "_ssrg_int_add",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "first"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "second"
-                }
-              ]
+          "type": {
+            "kind": "either",
+            "error": {
+              "kind": "string"
+            },
+            "value": {
+              "kind": "number"
             }
-          ]
+          }
         }
       },
       "origin": {
@@ -156,64 +168,100 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_either_monad"
-        },
-        "method": "flatMap",
-        "arguments": [
-          {
-            "kind": "lambda",
-            "parameter": "first: number",
-            "body": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_either_monad"
-              },
-              "method": "flatMap",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "second: number",
-                  "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_either_applicative"
-                    },
-                    "method": "pure",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_int_add",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "first"
-                          },
-                          {
-                            "kind": "identifier",
-                            "name": "second"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                },
-                {
-                  "kind": "identifier",
-                  "name": "right"
-                }
-              ]
-            }
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_either_monad"
           },
-          {
-            "kind": "identifier",
-            "name": "left"
+          "method": "flatMap",
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": "first: number",
+              "body": {
+                "kind": "checked-result",
+                "value": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_either_monad"
+                  },
+                  "method": "flatMap",
+                  "arguments": [
+                    {
+                      "kind": "lambda",
+                      "parameter": "second: number",
+                      "body": {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_either_applicative"
+                          },
+                          "method": "pure",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_int_add",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "first"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "second"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "either",
+                          "error": {
+                            "kind": "string"
+                          },
+                          "value": {
+                            "kind": "number"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "right"
+                    }
+                  ]
+                },
+                "type": {
+                  "kind": "either",
+                  "error": {
+                    "kind": "string"
+                  },
+                  "value": {
+                    "kind": "number"
+                  }
+                }
+              }
+            },
+            {
+              "kind": "identifier",
+              "name": "left"
+            }
+          ]
+        },
+        "type": {
+          "kind": "either",
+          "error": {
+            "kind": "string"
+          },
+          "value": {
+            "kind": "number"
           }
-        ]
+        }
       },
       "origin": {
         "source": "main.ssrg",

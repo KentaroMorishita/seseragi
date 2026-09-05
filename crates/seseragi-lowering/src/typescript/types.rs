@@ -1,13 +1,48 @@
 use crate::{CoreExpr, CoreParameter, CoreType};
-use std::collections::BTreeMap;
+use seseragi_syntax::TypeParameter;
+use std::collections::{BTreeMap, BTreeSet};
+use std::sync::Arc;
 
 use super::names::{local_name, safe_identifier};
 use super::{TypeScriptParameter, TypeScriptType};
 use crate::runtime_types::runtime_type_import_for_surface;
 
+/// Import names and lexical type-constructor scope used only for TypeScript annotations.
+#[derive(Clone, Debug, Default)]
+pub(super) struct TypeScriptTypeContext {
+    imported_names: Arc<BTreeMap<String, String>>,
+    constructors: BTreeSet<String>,
+}
+
+impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
+    fn from(imported_names: BTreeMap<String, String>) -> Self {
+        Self {
+            imported_names: Arc::new(imported_names),
+            constructors: BTreeSet::new(),
+        }
+    }
+}
+
+impl TypeScriptTypeContext {
+    pub(super) fn get(&self, canonical: &str) -> Option<&String> {
+        self.imported_names.get(canonical)
+    }
+
+    pub(super) fn with_parameters(&self, parameters: &[TypeParameter]) -> Self {
+        let mut scoped = self.clone();
+        for parameter in parameters {
+            scoped.constructors.remove(&parameter.name);
+            if parameter.is_constructor() {
+                scoped.constructors.insert(parameter.name.clone());
+            }
+        }
+        scoped
+    }
+}
+
 pub(super) fn type_ref_from_core_expr(
     expr: &CoreExpr,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptType {
     match expr {
         CoreExpr::Unit { .. } => TypeScriptType::Undefined,
@@ -41,7 +76,7 @@ pub(super) fn type_ref_from_core_expr(
 
 pub(super) fn lower_core_parameter_to_typescript(
     parameter: CoreParameter,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
     type_constructor_parameters: &[String],
 ) -> TypeScriptParameter {
     TypeScriptParameter {
@@ -61,22 +96,22 @@ pub(super) fn lower_core_parameter_to_typescript(
 
 pub(super) fn type_ref_from_core_type(
     type_ref: &CoreType,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptType {
     type_ref_from_core_type_with_erasure(type_ref, imported_types, &[])
 }
 
 pub(super) fn type_ref_from_core_type_with_erasure(
     type_ref: &CoreType,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
     type_constructor_parameters: &[String],
 ) -> TypeScriptType {
     match type_ref {
         CoreType::Named { name, arguments }
             if !arguments.is_empty()
-                && type_constructor_parameters
+                && (imported_types.constructors.contains(name) || type_constructor_parameters
                     .iter()
-                    .any(|parameter| parameter == name) =>
+                    .any(|parameter| parameter == name)) =>
         {
             TypeScriptType::Unknown
         }

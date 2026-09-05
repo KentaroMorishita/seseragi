@@ -285,41 +285,47 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_show_tupleShow",
-          "typeArguments": [
-            {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "number"
-                },
-                {
-                  "kind": "string"
-                }
-              ]
-            }
-          ],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_show_tupleShow",
+            "typeArguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "string"
+                  }
+                ]
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_stringShow"
+              }
+            ]
+          },
+          "method": "show",
           "arguments": [
             {
-              "kind": "runtime-reference",
-              "name": "_ssrg_show_intShow"
-            },
-            {
-              "kind": "runtime-reference",
-              "name": "_ssrg_show_stringShow"
+              "kind": "identifier",
+              "name": "value"
             }
           ]
         },
-        "method": "show",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -339,75 +345,81 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_debug_recordDebug",
-          "typeArguments": [
-            {
-              "kind": "record",
-              "fields": [
-                {
-                  "name": "zeta",
-                  "optional": true,
-                  "type": {
-                    "kind": "string"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_debug_recordDebug",
+            "typeArguments": [
+              {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "zeta",
+                    "optional": true,
+                    "type": {
+                      "kind": "string"
+                    }
+                  },
+                  {
+                    "name": "alpha",
+                    "optional": false,
+                    "type": {
+                      "kind": "number"
+                    }
                   }
-                },
-                {
-                  "name": "alpha",
-                  "optional": false,
-                  "type": {
-                    "kind": "number"
+                ]
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "alpha"
+                  },
+                  {
+                    "kind": "string",
+                    "value": "zeta"
                   }
-                }
-              ]
-            }
-          ],
+                ]
+              },
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "boolean",
+                    "value": false
+                  },
+                  {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_debug_intDebug"
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_debug_stringDebug"
+              }
+            ]
+          },
+          "method": "debug",
           "arguments": [
             {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "string",
-                  "value": "alpha"
-                },
-                {
-                  "kind": "string",
-                  "value": "zeta"
-                }
-              ]
-            },
-            {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "boolean",
-                  "value": false
-                },
-                {
-                  "kind": "boolean",
-                  "value": true
-                }
-              ]
-            },
-            {
-              "kind": "runtime-reference",
-              "name": "_ssrg_debug_intDebug"
-            },
-            {
-              "kind": "runtime-reference",
-              "name": "_ssrg_debug_stringDebug"
+              "kind": "identifier",
+              "name": "value"
             }
           ]
         },
-        "method": "debug",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -427,139 +439,145 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_debug_recordDebug",
-          "typeArguments": [
-            {
-              "kind": "record",
-              "fields": [
-                {
-                  "name": "ranges",
-                  "optional": false,
-                  "type": {
-                    "kind": "array",
-                    "element": {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "range"
-                        },
-                        {
-                          "kind": "boolean"
-                        }
-                      ]
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_debug_recordDebug",
+            "typeArguments": [
+              {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "ranges",
+                    "optional": false,
+                    "type": {
+                      "kind": "array",
+                      "element": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "range"
+                          },
+                          {
+                            "kind": "boolean"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "name": "label",
+                    "optional": true,
+                    "type": {
+                      "kind": "string"
                     }
                   }
-                },
-                {
-                  "name": "label",
-                  "optional": true,
-                  "type": {
-                    "kind": "string"
+                ]
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "label"
+                  },
+                  {
+                    "kind": "string",
+                    "value": "ranges"
                   }
-                }
-              ]
-            }
-          ],
+                ]
+              },
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "boolean",
+                    "value": true
+                  },
+                  {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_debug_stringDebug"
+              },
+              {
+                "kind": "type-application-call",
+                "callee": "_ssrg_debug_arrayDebug",
+                "typeArguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "range"
+                      },
+                      {
+                        "kind": "boolean"
+                      }
+                    ]
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_tupleDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "range"
+                          },
+                          {
+                            "kind": "boolean"
+                          }
+                        ]
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_debug_rangeDebug",
+                        "typeArguments": [
+                          {
+                            "kind": "number"
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_debug_intDebug"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_boolDebug"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "method": "debug",
           "arguments": [
             {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "string",
-                  "value": "label"
-                },
-                {
-                  "kind": "string",
-                  "value": "ranges"
-                }
-              ]
-            },
-            {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "boolean",
-                  "value": true
-                },
-                {
-                  "kind": "boolean",
-                  "value": false
-                }
-              ]
-            },
-            {
-              "kind": "runtime-reference",
-              "name": "_ssrg_debug_stringDebug"
-            },
-            {
-              "kind": "type-application-call",
-              "callee": "_ssrg_debug_arrayDebug",
-              "typeArguments": [
-                {
-                  "kind": "tuple",
-                  "elements": [
-                    {
-                      "kind": "range"
-                    },
-                    {
-                      "kind": "boolean"
-                    }
-                  ]
-                }
-              ],
-              "arguments": [
-                {
-                  "kind": "type-application-call",
-                  "callee": "_ssrg_debug_tupleDebug",
-                  "typeArguments": [
-                    {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "range"
-                        },
-                        {
-                          "kind": "boolean"
-                        }
-                      ]
-                    }
-                  ],
-                  "arguments": [
-                    {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_debug_rangeDebug",
-                      "typeArguments": [
-                        {
-                          "kind": "number"
-                        }
-                      ],
-                      "arguments": [
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_debug_intDebug"
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_debug_boolDebug"
-                    }
-                  ]
-                }
-              ]
+              "kind": "identifier",
+              "name": "value"
             }
           ]
         },
-        "method": "debug",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -595,94 +613,100 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_show_tupleShow",
-          "typeArguments": [
-            {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "reference",
-                  "name": "A",
-                  "arguments": []
-                },
-                {
-                  "kind": "record",
-                  "fields": [
-                    {
-                      "name": "item",
-                      "optional": false,
-                      "type": {
-                        "kind": "reference",
-                        "name": "A",
-                        "arguments": []
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_show_tupleShow",
+            "typeArguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "record",
+                    "fields": [
+                      {
+                        "name": "item",
+                        "optional": false,
+                        "type": {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
                       }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
+                    ]
+                  }
+                ]
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              },
+              {
+                "kind": "type-application-call",
+                "callee": "_ssrg_show_recordShow",
+                "typeArguments": [
+                  {
+                    "kind": "record",
+                    "fields": [
+                      {
+                        "name": "item",
+                        "optional": false,
+                        "type": {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "string",
+                        "value": "item"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$evidence$0"
+                  }
+                ]
+              }
+            ]
+          },
+          "method": "show",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "__ssrg$evidence$0"
-            },
-            {
-              "kind": "type-application-call",
-              "callee": "_ssrg_show_recordShow",
-              "typeArguments": [
-                {
-                  "kind": "record",
-                  "fields": [
-                    {
-                      "name": "item",
-                      "optional": false,
-                      "type": {
-                        "kind": "reference",
-                        "name": "A",
-                        "arguments": []
-                      }
-                    }
-                  ]
-                }
-              ],
-              "arguments": [
-                {
-                  "kind": "tuple",
-                  "elements": [
-                    {
-                      "kind": "string",
-                      "value": "item"
-                    }
-                  ]
-                },
-                {
-                  "kind": "tuple",
-                  "elements": [
-                    {
-                      "kind": "boolean",
-                      "value": false
-                    }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "__ssrg$evidence$0"
-                }
-              ]
+              "name": "value"
             }
           ]
         },
-        "method": "show",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -702,58 +726,64 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_debug_recordDebug",
-          "typeArguments": [
-            {
-              "kind": "record",
-              "fields": [
-                {
-                  "name": "badge",
-                  "optional": false,
-                  "type": {
-                    "kind": "reference",
-                    "name": "Badge",
-                    "arguments": []
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_debug_recordDebug",
+            "typeArguments": [
+              {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "badge",
+                    "optional": false,
+                    "type": {
+                      "kind": "reference",
+                      "name": "Badge",
+                      "arguments": []
+                    }
                   }
-                }
-              ]
-            }
-          ],
+                ]
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "badge"
+                  }
+                ]
+              },
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                ]
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Debug$1"
+              }
+            ]
+          },
+          "method": "debug",
           "arguments": [
             {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "string",
-                  "value": "badge"
-                }
-              ]
-            },
-            {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "boolean",
-                  "value": false
-                }
-              ]
-            },
-            {
               "kind": "identifier",
-              "name": "__ssrg$instance$Debug$1"
+              "name": "value"
             }
           ]
         },
-        "method": "debug",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",

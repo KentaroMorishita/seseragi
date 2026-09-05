@@ -296,44 +296,53 @@
                       "callee": "total",
                       "arguments": [
                         {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_list_functor"
-                          },
-                          "method": "map",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "increment"
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_list_functor"
                             },
-                            {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_list_from_array",
-                              "arguments": [
-                                {
-                                  "kind": "array",
-                                  "elements": [
-                                    {
-                                      "kind": "number",
-                                      "value": "1"
-                                    },
-                                    {
-                                      "kind": "number",
-                                      "value": "2"
-                                    },
-                                    {
-                                      "kind": "number",
-                                      "value": "3"
+                            "method": "map",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "increment"
+                              },
+                              {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_list_from_array",
+                                "arguments": [
+                                  {
+                                    "kind": "array",
+                                    "elements": [
+                                      {
+                                        "kind": "number",
+                                        "value": "1"
+                                      },
+                                      {
+                                        "kind": "number",
+                                        "value": "2"
+                                      },
+                                      {
+                                        "kind": "number",
+                                        "value": "3"
+                                      }
+                                    ],
+                                    "elementType": {
+                                      "kind": "number"
                                     }
-                                  ],
-                                  "elementType": {
-                                    "kind": "number"
                                   }
-                                }
-                              ]
+                                ]
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "list",
+                            "element": {
+                              "kind": "number"
                             }
-                          ]
+                          }
                         }
                       ]
                     }
@@ -361,50 +370,74 @@
                       "callee": "total",
                       "arguments": [
                         {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_list_applicative"
-                          },
-                          "method": "apply",
-                          "arguments": [
-                            {
-                              "kind": "dictionary-call",
-                              "dictionary": {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_list_applicative"
-                              },
-                              "method": "pure",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "increment"
-                                }
-                              ]
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_list_applicative"
                             },
-                            {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_list_from_array",
-                              "arguments": [
-                                {
-                                  "kind": "array",
-                                  "elements": [
+                            "method": "apply",
+                            "arguments": [
+                              {
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_list_applicative"
+                                  },
+                                  "method": "pure",
+                                  "arguments": [
                                     {
-                                      "kind": "number",
-                                      "value": "40"
-                                    },
-                                    {
-                                      "kind": "number",
-                                      "value": "41"
+                                      "kind": "identifier",
+                                      "name": "increment"
                                     }
-                                  ],
-                                  "elementType": {
-                                    "kind": "number"
+                                  ]
+                                },
+                                "type": {
+                                  "kind": "list",
+                                  "element": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "number"
+                                    },
+                                    "result": {
+                                      "kind": "number"
+                                    }
                                   }
                                 }
-                              ]
+                              },
+                              {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_list_from_array",
+                                "arguments": [
+                                  {
+                                    "kind": "array",
+                                    "elements": [
+                                      {
+                                        "kind": "number",
+                                        "value": "40"
+                                      },
+                                      {
+                                        "kind": "number",
+                                        "value": "41"
+                                      }
+                                    ],
+                                    "elementType": {
+                                      "kind": "number"
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "list",
+                            "element": {
+                              "kind": "number"
                             }
-                          ]
+                          }
                         }
                       ]
                     }
@@ -431,40 +464,49 @@
                   "callee": "total",
                   "arguments": [
                     {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_list_monad"
-                      },
-                      "method": "flatMap",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "expand"
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_list_monad"
                         },
-                        {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_list_from_array",
-                          "arguments": [
-                            {
-                              "kind": "array",
-                              "elements": [
-                                {
-                                  "kind": "number",
-                                  "value": "1"
-                                },
-                                {
-                                  "kind": "number",
-                                  "value": "2"
+                        "method": "flatMap",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "expand"
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_list_from_array",
+                            "arguments": [
+                              {
+                                "kind": "array",
+                                "elements": [
+                                  {
+                                    "kind": "number",
+                                    "value": "1"
+                                  },
+                                  {
+                                    "kind": "number",
+                                    "value": "2"
+                                  }
+                                ],
+                                "elementType": {
+                                  "kind": "number"
                                 }
-                              ],
-                              "elementType": {
-                                "kind": "number"
                               }
-                            }
-                          ]
+                            ]
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "list",
+                        "element": {
+                          "kind": "number"
                         }
-                      ]
+                      }
                     }
                   ]
                 }

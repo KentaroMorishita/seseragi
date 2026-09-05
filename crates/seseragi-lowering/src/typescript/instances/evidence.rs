@@ -1,3 +1,4 @@
+use crate::typescript::types::TypeScriptTypeContext;
 use std::collections::BTreeMap;
 
 use crate::prelude_ops::runtime_prelude_dictionary_for_identity;
@@ -13,7 +14,7 @@ pub(super) fn resolve_show_dictionary(
     dictionary_exports: &BTreeMap<&str, String>,
     imported_instance_names: &BTreeMap<(String, String), String>,
     expression_value_names: &BTreeMap<String, String>,
-    imported_type_names: &BTreeMap<String, String>,
+    imported_type_names: &TypeScriptTypeContext,
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
 ) -> TypeScriptShowDictionaryReference {
