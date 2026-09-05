@@ -1,5 +1,11 @@
 import { describe, expect, test } from "bun:test"
 import {
+  applyDomEventResolution,
+  BROWSER_DOM_EVENT_BINDINGS,
+  createDomEventBindings,
+} from "../../../runtime/ts/src/browser/dom"
+import { createImeInputCoordinator } from "../../../runtime/ts/src/browser/ime-input"
+import {
   a,
   article,
   aside,
@@ -23,6 +29,7 @@ import {
   div,
   domEventPreventsDefault,
   em,
+  type FileChangeEvent,
   fieldset,
   footer,
   form,
@@ -38,7 +45,6 @@ import {
   html as htmlTag,
   IgnoreEvent,
   type InputEvent,
-  type FileChangeEvent,
   img,
   input,
   type KeyboardEvent,
@@ -81,12 +87,6 @@ import {
   type WebUrl,
 } from "../../../runtime/ts/src/html"
 import { name as fileName } from "../../../runtime/ts/src/web-file"
-import {
-  applyDomEventResolution,
-  BROWSER_DOM_EVENT_BINDINGS,
-  createDomEventBindings,
-} from "../../../runtime/ts/src/browser/dom"
-import { createImeInputCoordinator } from "../../../runtime/ts/src/browser/ime-input"
 
 function webUrl(value: string): WebUrl {
   const parsed = parseWebUrl(value)
@@ -671,6 +671,8 @@ describe("HTML browser runtime", () => {
     let valueReads = 0
     let checkedReads = 0
     const target = {
+      tagName: "INPUT",
+      type: "checkbox",
       get value() {
         valueReads += 1
         return "current"
@@ -702,12 +704,74 @@ describe("HTML browser runtime", () => {
     })
     expect(changeAction).toEqual({
       tag: "Change",
-      snapshot: { value: "current", checked: true },
+      snapshot: { value: "current", checked: { tag: "Just", value: true } },
     })
     expect(Object.isFrozen(inputAction.snapshot)).toBe(true)
     expect(Object.isFrozen(changeAction.snapshot)).toBe(true)
+    expect(Object.isFrozen(changeAction.snapshot.checked)).toBe(true)
     expect(valueReads).toBe(2)
     expect(checkedReads).toBe(1)
+  })
+
+  test("change snapshots read checked only for checkbox and radio", () => {
+    const rendered = renderForDom(
+      input<ChangeEvent>({ onChange: (event: ChangeEvent) => event })
+    )
+    const handler = rendered.eventHandlers.get("0")!
+    for (const [tagName, type] of [
+      ["INPUT", "text"],
+      ["INPUT", "number"],
+      ["TEXTAREA", "textarea"],
+      ["SELECT", "select-one"],
+    ]) {
+      let reads = 0
+      const snapshot = messageFromDomEvent(handler, {
+        tagName,
+        type,
+        get value() {
+          reads++
+          return "selected"
+        },
+        get checked() {
+          throw new Error("value control checked must not be read")
+        },
+      })
+      expect(snapshot).toEqual({
+        value: "selected",
+        checked: { tag: "Nothing" },
+      })
+      expect(reads).toBe(1)
+      expect(Object.isFrozen(snapshot)).toBe(true)
+    }
+    for (const type of ["checkbox", "radio"]) {
+      for (const checked of [true, false]) {
+        let valueReads = 0
+        let checkedReads = 0
+        expect(
+          messageFromDomEvent(handler, {
+            tagName: "INPUT",
+            type,
+            get value() {
+              valueReads++
+              return "choice"
+            },
+            get checked() {
+              checkedReads++
+              return checked
+            },
+          })
+        ).toEqual({ value: "choice", checked: { tag: "Just", value: checked } })
+        expect([valueReads, checkedReads]).toEqual([1, 1])
+      }
+    }
+    for (const target of [
+      { tagName: "INPUT", type: "checkbox", value: "x" },
+      { tagName: "INPUT", type: "radio", value: "x", checked: "false" },
+      { tagName: "SELECT" },
+      { value: "x" },
+      { tagName: "DIV", value: "x" },
+    ])
+      expect(() => messageFromDomEvent(handler, target)).toThrow(TypeError)
   })
 
   test("snapshots opaque file handles without exposing the native event", () => {

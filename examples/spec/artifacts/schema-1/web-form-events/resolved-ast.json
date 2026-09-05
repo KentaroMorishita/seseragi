@@ -79,11 +79,22 @@
             "start": 102,
             "end": 113
           }
+        },
+        {
+          "name": "Unchanged",
+          "nameSpan": {
+            "start": 118,
+            "end": 127
+          },
+          "span": {
+            "start": 116,
+            "end": 127
+          }
         }
       ],
       "span": {
         "start": 38,
-        "end": 113
+        "end": 127
       }
     },
     {
@@ -91,22 +102,22 @@
       "visibility": "private",
       "name": "draftAction",
       "nameSpan": {
-        "start": 118,
-        "end": 129
+        "start": 132,
+        "end": 143
       },
       "parameters": [
         {
           "name": "event",
           "nameSpan": {
-            "start": 130,
-            "end": 135
+            "start": 144,
+            "end": 149
           },
           "type": {
             "kind": "named",
             "name": "html.InputEvent",
             "span": {
-              "start": 137,
-              "end": 152
+              "start": 151,
+              "end": 166
             }
           }
         }
@@ -115,8 +126,8 @@
         "kind": "named",
         "name": "Action",
         "span": {
-          "start": 156,
-          "end": 162
+          "start": 170,
+          "end": 176
         }
       },
       "body": {
@@ -125,8 +136,8 @@
           "kind": "name",
           "name": "DraftChanged",
           "span": {
-            "start": 167,
-            "end": 179
+            "start": 179,
+            "end": 191
           }
         },
         "argument": {
@@ -135,28 +146,28 @@
             "kind": "name",
             "name": "event",
             "span": {
-              "start": 180,
-              "end": 185
+              "start": 192,
+              "end": 197
             }
           },
           "field": "value",
           "fieldSpan": {
-            "start": 186,
-            "end": 191
+            "start": 198,
+            "end": 203
           },
           "span": {
-            "start": 180,
-            "end": 191
+            "start": 192,
+            "end": 203
           }
         },
         "span": {
-          "start": 167,
-          "end": 191
+          "start": 179,
+          "end": 203
         }
       },
       "span": {
-        "start": 115,
-        "end": 191
+        "start": 129,
+        "end": 203
       }
     },
     {
@@ -164,22 +175,22 @@
       "visibility": "private",
       "name": "checkedAction",
       "nameSpan": {
-        "start": 196,
-        "end": 209
+        "start": 208,
+        "end": 221
       },
       "parameters": [
         {
           "name": "event",
           "nameSpan": {
-            "start": 210,
-            "end": 215
+            "start": 222,
+            "end": 227
           },
           "type": {
             "kind": "named",
             "name": "html.ChangeEvent",
             "span": {
-              "start": 217,
-              "end": 233
+              "start": 229,
+              "end": 245
             }
           }
         }
@@ -188,48 +199,121 @@
         "kind": "named",
         "name": "Action",
         "span": {
-          "start": 237,
-          "end": 243
+          "start": 249,
+          "end": 255
         }
       },
       "body": {
-        "kind": "application",
-        "function": {
-          "kind": "name",
-          "name": "CheckedChanged",
-          "span": {
-            "start": 248,
-            "end": 262
-          }
-        },
-        "argument": {
+        "kind": "match",
+        "scrutinee": {
           "kind": "member",
           "receiver": {
             "kind": "name",
             "name": "event",
             "span": {
-              "start": 263,
-              "end": 268
+              "start": 264,
+              "end": 269
             }
           },
           "field": "checked",
           "fieldSpan": {
-            "start": 269,
-            "end": 276
+            "start": 270,
+            "end": 277
           },
           "span": {
-            "start": 263,
-            "end": 276
+            "start": 264,
+            "end": 277
           }
         },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Just",
+              "nameSpan": {
+                "start": 282,
+                "end": 286
+              },
+              "argument": {
+                "kind": "name",
+                "name": "checked",
+                "nameSpan": {
+                  "start": 287,
+                  "end": 294
+                },
+                "span": {
+                  "start": 287,
+                  "end": 294
+                }
+              },
+              "span": {
+                "start": 282,
+                "end": 294
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "CheckedChanged",
+                "span": {
+                  "start": 298,
+                  "end": 312
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "checked",
+                "span": {
+                  "start": 313,
+                  "end": 320
+                }
+              },
+              "span": {
+                "start": 298,
+                "end": 320
+              }
+            },
+            "span": {
+              "start": 282,
+              "end": 320
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Nothing",
+              "nameSpan": {
+                "start": 323,
+                "end": 330
+              },
+              "span": {
+                "start": 323,
+                "end": 330
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Unchanged",
+              "span": {
+                "start": 334,
+                "end": 343
+              }
+            },
+            "span": {
+              "start": 323,
+              "end": 343
+            }
+          }
+        ],
         "span": {
-          "start": 248,
-          "end": 276
+          "start": 258,
+          "end": 345
         }
       },
       "span": {
-        "start": 193,
-        "end": 276
+        "start": 205,
+        "end": 345
       }
     },
     {
@@ -237,37 +321,37 @@
       "visibility": "public",
       "name": "view",
       "nameSpan": {
-        "start": 285,
-        "end": 289
+        "start": 354,
+        "end": 358
       },
       "parameters": [
         {
           "name": "draft",
           "nameSpan": {
-            "start": 290,
-            "end": 295
+            "start": 359,
+            "end": 364
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 297,
-              "end": 303
+              "start": 366,
+              "end": 372
             }
           }
         },
         {
           "name": "checked",
           "nameSpan": {
-            "start": 307,
-            "end": 314
+            "start": 376,
+            "end": 383
           },
           "type": {
             "kind": "named",
             "name": "Bool",
             "span": {
-              "start": 316,
-              "end": 320
+              "start": 385,
+              "end": 389
             }
           }
         }
@@ -280,14 +364,14 @@
             "kind": "named",
             "name": "Action",
             "span": {
-              "start": 334,
-              "end": 340
+              "start": 403,
+              "end": 409
             }
           }
         ],
         "span": {
-          "start": 324,
-          "end": 341
+          "start": 393,
+          "end": 410
         }
       },
       "body": {
@@ -298,18 +382,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 346,
-              "end": 350
+              "start": 413,
+              "end": 417
             }
           },
           "field": "form",
           "fieldSpan": {
-            "start": 351,
-            "end": 355
+            "start": 418,
+            "end": 422
           },
           "span": {
-            "start": 346,
-            "end": 355
+            "start": 413,
+            "end": 422
           }
         },
         "argument": {
@@ -319,28 +403,28 @@
               "kind": "field",
               "name": "onSubmit",
               "nameSpan": {
-                "start": 362,
-                "end": 370
+                "start": 427,
+                "end": 435
               },
               "value": {
                 "kind": "name",
                 "name": "Submitted",
                 "span": {
-                  "start": 372,
-                  "end": 381
+                  "start": 437,
+                  "end": 446
                 }
               },
               "span": {
-                "start": 362,
-                "end": 381
+                "start": 427,
+                "end": 446
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 387,
-                "end": 395
+                "start": 450,
+                "end": 458
               },
               "value": {
                 "kind": "array",
@@ -353,18 +437,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 405,
-                          "end": 409
+                          "start": 466,
+                          "end": 470
                         }
                       },
                       "field": "label",
                       "fieldSpan": {
-                        "start": 410,
-                        "end": 415
+                        "start": 471,
+                        "end": 476
                       },
                       "span": {
-                        "start": 405,
-                        "end": 415
+                        "start": 466,
+                        "end": 476
                       }
                     },
                     "argument": {
@@ -374,83 +458,7 @@
                           "kind": "field",
                           "name": "htmlFor",
                           "nameSpan": {
-                            "start": 418,
-                            "end": 425
-                          },
-                          "value": {
-                            "kind": "string",
-                            "raw": "\"draft\"",
-                            "span": {
-                              "start": 427,
-                              "end": 434
-                            }
-                          },
-                          "span": {
-                            "start": 418,
-                            "end": 434
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "children",
-                          "nameSpan": {
-                            "start": 436,
-                            "end": 444
-                          },
-                          "value": {
-                            "kind": "string",
-                            "raw": "\"Draft\"",
-                            "span": {
-                              "start": 446,
-                              "end": 453
-                            }
-                          },
-                          "span": {
-                            "start": 436,
-                            "end": 453
-                          }
-                        }
-                      ],
-                      "span": {
-                        "start": 416,
-                        "end": 455
-                      }
-                    },
-                    "span": {
-                      "start": 405,
-                      "end": 455
-                    }
-                  },
-                  {
-                    "kind": "application",
-                    "function": {
-                      "kind": "member",
-                      "receiver": {
-                        "kind": "name",
-                        "name": "html",
-                        "span": {
-                          "start": 463,
-                          "end": 467
-                        }
-                      },
-                      "field": "input",
-                      "fieldSpan": {
-                        "start": 468,
-                        "end": 473
-                      },
-                      "span": {
-                        "start": 463,
-                        "end": 473
-                      }
-                    },
-                    "argument": {
-                      "kind": "record",
-                      "items": [
-                        {
-                          "kind": "field",
-                          "name": "id",
-                          "nameSpan": {
-                            "start": 484,
+                            "start": 479,
                             "end": 486
                           },
                           "value": {
@@ -462,139 +470,39 @@
                             }
                           },
                           "span": {
-                            "start": 484,
+                            "start": 479,
                             "end": 495
                           }
                         },
                         {
                           "kind": "field",
-                          "name": "name",
+                          "name": "children",
                           "nameSpan": {
-                            "start": 505,
-                            "end": 509
+                            "start": 497,
+                            "end": 505
                           },
                           "value": {
                             "kind": "string",
-                            "raw": "\"draft\"",
+                            "raw": "\"Draft\"",
                             "span": {
-                              "start": 511,
-                              "end": 518
+                              "start": 507,
+                              "end": 514
                             }
                           },
                           "span": {
-                            "start": 505,
-                            "end": 518
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "value",
-                          "nameSpan": {
-                            "start": 528,
-                            "end": 533
-                          },
-                          "value": {
-                            "kind": "name",
-                            "name": "draft",
-                            "span": {
-                              "start": 535,
-                              "end": 540
-                            }
-                          },
-                          "span": {
-                            "start": 528,
-                            "end": 540
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "required",
-                          "nameSpan": {
-                            "start": 550,
-                            "end": 558
-                          },
-                          "value": {
-                            "kind": "boolean",
-                            "value": true,
-                            "span": {
-                              "start": 560,
-                              "end": 564
-                            }
-                          },
-                          "span": {
-                            "start": 550,
-                            "end": 564
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "placeholder",
-                          "nameSpan": {
-                            "start": 574,
-                            "end": 585
-                          },
-                          "value": {
-                            "kind": "string",
-                            "raw": "\"Type a task\"",
-                            "span": {
-                              "start": 587,
-                              "end": 600
-                            }
-                          },
-                          "span": {
-                            "start": 574,
-                            "end": 600
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "inputType",
-                          "nameSpan": {
-                            "start": 610,
-                            "end": 619
-                          },
-                          "value": {
-                            "kind": "string",
-                            "raw": "\"text\"",
-                            "span": {
-                              "start": 621,
-                              "end": 627
-                            }
-                          },
-                          "span": {
-                            "start": 610,
-                            "end": 627
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "onInput",
-                          "nameSpan": {
-                            "start": 637,
-                            "end": 644
-                          },
-                          "value": {
-                            "kind": "name",
-                            "name": "draftAction",
-                            "span": {
-                              "start": 646,
-                              "end": 657
-                            }
-                          },
-                          "span": {
-                            "start": 637,
-                            "end": 657
+                            "start": 497,
+                            "end": 514
                           }
                         }
                       ],
                       "span": {
-                        "start": 474,
-                        "end": 665
+                        "start": 477,
+                        "end": 516
                       }
                     },
                     "span": {
-                      "start": 463,
-                      "end": 665
+                      "start": 466,
+                      "end": 516
                     }
                   },
                   {
@@ -605,18 +513,263 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 673,
-                          "end": 677
+                          "start": 522,
+                          "end": 526
+                        }
+                      },
+                      "field": "input",
+                      "fieldSpan": {
+                        "start": 527,
+                        "end": 532
+                      },
+                      "span": {
+                        "start": 522,
+                        "end": 532
+                      }
+                    },
+                    "argument": {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "id",
+                          "nameSpan": {
+                            "start": 541,
+                            "end": 543
+                          },
+                          "value": {
+                            "kind": "string",
+                            "raw": "\"draft\"",
+                            "span": {
+                              "start": 545,
+                              "end": 552
+                            }
+                          },
+                          "span": {
+                            "start": 541,
+                            "end": 552
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "name",
+                          "nameSpan": {
+                            "start": 560,
+                            "end": 564
+                          },
+                          "value": {
+                            "kind": "string",
+                            "raw": "\"draft\"",
+                            "span": {
+                              "start": 566,
+                              "end": 573
+                            }
+                          },
+                          "span": {
+                            "start": 560,
+                            "end": 573
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "value",
+                          "nameSpan": {
+                            "start": 581,
+                            "end": 586
+                          },
+                          "value": {
+                            "kind": "name",
+                            "name": "draft",
+                            "span": {
+                              "start": 588,
+                              "end": 593
+                            }
+                          },
+                          "span": {
+                            "start": 581,
+                            "end": 593
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "required",
+                          "nameSpan": {
+                            "start": 601,
+                            "end": 609
+                          },
+                          "value": {
+                            "kind": "boolean",
+                            "value": true,
+                            "span": {
+                              "start": 611,
+                              "end": 615
+                            }
+                          },
+                          "span": {
+                            "start": 601,
+                            "end": 615
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "placeholder",
+                          "nameSpan": {
+                            "start": 623,
+                            "end": 634
+                          },
+                          "value": {
+                            "kind": "string",
+                            "raw": "\"Type a task\"",
+                            "span": {
+                              "start": 636,
+                              "end": 649
+                            }
+                          },
+                          "span": {
+                            "start": 623,
+                            "end": 649
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "inputType",
+                          "nameSpan": {
+                            "start": 657,
+                            "end": 666
+                          },
+                          "value": {
+                            "kind": "string",
+                            "raw": "\"text\"",
+                            "span": {
+                              "start": 668,
+                              "end": 674
+                            }
+                          },
+                          "span": {
+                            "start": 657,
+                            "end": 674
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "onInput",
+                          "nameSpan": {
+                            "start": 682,
+                            "end": 689
+                          },
+                          "value": {
+                            "kind": "name",
+                            "name": "draftAction",
+                            "span": {
+                              "start": 691,
+                              "end": 702
+                            }
+                          },
+                          "span": {
+                            "start": 682,
+                            "end": 702
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "onChange",
+                          "nameSpan": {
+                            "start": 710,
+                            "end": 718
+                          },
+                          "value": {
+                            "kind": "lambda",
+                            "parameter": {
+                              "name": "event",
+                              "nameSpan": {
+                                "start": 721,
+                                "end": 726
+                              },
+                              "type": {
+                                "kind": "named",
+                                "name": "html.ChangeEvent",
+                                "span": {
+                                  "start": 728,
+                                  "end": 744
+                                }
+                              }
+                            },
+                            "body": {
+                              "kind": "application",
+                              "function": {
+                                "kind": "name",
+                                "name": "DraftChanged",
+                                "span": {
+                                  "start": 748,
+                                  "end": 760
+                                }
+                              },
+                              "argument": {
+                                "kind": "member",
+                                "receiver": {
+                                  "kind": "name",
+                                  "name": "event",
+                                  "span": {
+                                    "start": 761,
+                                    "end": 766
+                                  }
+                                },
+                                "field": "value",
+                                "fieldSpan": {
+                                  "start": 767,
+                                  "end": 772
+                                },
+                                "span": {
+                                  "start": 761,
+                                  "end": 772
+                                }
+                              },
+                              "span": {
+                                "start": 748,
+                                "end": 772
+                              }
+                            },
+                            "span": {
+                              "start": 720,
+                              "end": 772
+                            }
+                          },
+                          "span": {
+                            "start": 710,
+                            "end": 772
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 533,
+                        "end": 778
+                      }
+                    },
+                    "span": {
+                      "start": 522,
+                      "end": 778
+                    }
+                  },
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "html",
+                        "span": {
+                          "start": 784,
+                          "end": 788
                         }
                       },
                       "field": "textarea",
                       "fieldSpan": {
-                        "start": 678,
-                        "end": 686
+                        "start": 789,
+                        "end": 797
                       },
                       "span": {
-                        "start": 673,
-                        "end": 686
+                        "start": 784,
+                        "end": 797
                       }
                     },
                     "argument": {
@@ -626,71 +779,140 @@
                           "kind": "field",
                           "name": "name",
                           "nameSpan": {
-                            "start": 697,
-                            "end": 701
+                            "start": 806,
+                            "end": 810
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"notes\"",
                             "span": {
-                              "start": 703,
-                              "end": 710
+                              "start": 812,
+                              "end": 819
                             }
                           },
                           "span": {
-                            "start": 697,
-                            "end": 710
+                            "start": 806,
+                            "end": 819
                           }
                         },
                         {
                           "kind": "field",
                           "name": "value",
                           "nameSpan": {
-                            "start": 720,
-                            "end": 725
+                            "start": 827,
+                            "end": 832
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"\"",
                             "span": {
-                              "start": 727,
-                              "end": 729
+                              "start": 834,
+                              "end": 836
                             }
                           },
                           "span": {
-                            "start": 720,
-                            "end": 729
+                            "start": 827,
+                            "end": 836
                           }
                         },
                         {
                           "kind": "field",
                           "name": "onInput",
                           "nameSpan": {
-                            "start": 739,
-                            "end": 746
+                            "start": 844,
+                            "end": 851
                           },
                           "value": {
                             "kind": "name",
                             "name": "draftAction",
                             "span": {
-                              "start": 748,
-                              "end": 759
+                              "start": 853,
+                              "end": 864
                             }
                           },
                           "span": {
-                            "start": 739,
-                            "end": 759
+                            "start": 844,
+                            "end": 864
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "onChange",
+                          "nameSpan": {
+                            "start": 872,
+                            "end": 880
+                          },
+                          "value": {
+                            "kind": "lambda",
+                            "parameter": {
+                              "name": "event",
+                              "nameSpan": {
+                                "start": 883,
+                                "end": 888
+                              },
+                              "type": {
+                                "kind": "named",
+                                "name": "html.ChangeEvent",
+                                "span": {
+                                  "start": 890,
+                                  "end": 906
+                                }
+                              }
+                            },
+                            "body": {
+                              "kind": "application",
+                              "function": {
+                                "kind": "name",
+                                "name": "DraftChanged",
+                                "span": {
+                                  "start": 910,
+                                  "end": 922
+                                }
+                              },
+                              "argument": {
+                                "kind": "member",
+                                "receiver": {
+                                  "kind": "name",
+                                  "name": "event",
+                                  "span": {
+                                    "start": 923,
+                                    "end": 928
+                                  }
+                                },
+                                "field": "value",
+                                "fieldSpan": {
+                                  "start": 929,
+                                  "end": 934
+                                },
+                                "span": {
+                                  "start": 923,
+                                  "end": 934
+                                }
+                              },
+                              "span": {
+                                "start": 910,
+                                "end": 934
+                              }
+                            },
+                            "span": {
+                              "start": 882,
+                              "end": 934
+                            }
+                          },
+                          "span": {
+                            "start": 872,
+                            "end": 934
                           }
                         }
                       ],
                       "span": {
-                        "start": 687,
-                        "end": 767
+                        "start": 798,
+                        "end": 940
                       }
                     },
                     "span": {
-                      "start": 673,
-                      "end": 767
+                      "start": 784,
+                      "end": 940
                     }
                   },
                   {
@@ -701,18 +923,211 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 775,
-                          "end": 779
+                          "start": 946,
+                          "end": 950
+                        }
+                      },
+                      "field": "select",
+                      "fieldSpan": {
+                        "start": 951,
+                        "end": 957
+                      },
+                      "span": {
+                        "start": 946,
+                        "end": 957
+                      }
+                    },
+                    "argument": {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "onChange",
+                          "nameSpan": {
+                            "start": 966,
+                            "end": 974
+                          },
+                          "value": {
+                            "kind": "lambda",
+                            "parameter": {
+                              "name": "event",
+                              "nameSpan": {
+                                "start": 977,
+                                "end": 982
+                              },
+                              "type": {
+                                "kind": "named",
+                                "name": "html.ChangeEvent",
+                                "span": {
+                                  "start": 984,
+                                  "end": 1000
+                                }
+                              }
+                            },
+                            "body": {
+                              "kind": "application",
+                              "function": {
+                                "kind": "name",
+                                "name": "DraftChanged",
+                                "span": {
+                                  "start": 1004,
+                                  "end": 1016
+                                }
+                              },
+                              "argument": {
+                                "kind": "member",
+                                "receiver": {
+                                  "kind": "name",
+                                  "name": "event",
+                                  "span": {
+                                    "start": 1017,
+                                    "end": 1022
+                                  }
+                                },
+                                "field": "value",
+                                "fieldSpan": {
+                                  "start": 1023,
+                                  "end": 1028
+                                },
+                                "span": {
+                                  "start": 1017,
+                                  "end": 1028
+                                }
+                              },
+                              "span": {
+                                "start": 1004,
+                                "end": 1028
+                              }
+                            },
+                            "span": {
+                              "start": 976,
+                              "end": 1028
+                            }
+                          },
+                          "span": {
+                            "start": 966,
+                            "end": 1028
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "children",
+                          "nameSpan": {
+                            "start": 1036,
+                            "end": 1044
+                          },
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "html",
+                                "span": {
+                                  "start": 1046,
+                                  "end": 1050
+                                }
+                              },
+                              "field": "option",
+                              "fieldSpan": {
+                                "start": 1051,
+                                "end": 1057
+                              },
+                              "span": {
+                                "start": 1046,
+                                "end": 1057
+                              }
+                            },
+                            "argument": {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "value",
+                                  "nameSpan": {
+                                    "start": 1060,
+                                    "end": 1065
+                                  },
+                                  "value": {
+                                    "kind": "string",
+                                    "raw": "\"choice\"",
+                                    "span": {
+                                      "start": 1067,
+                                      "end": 1075
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 1060,
+                                    "end": 1075
+                                  }
+                                },
+                                {
+                                  "kind": "field",
+                                  "name": "children",
+                                  "nameSpan": {
+                                    "start": 1077,
+                                    "end": 1085
+                                  },
+                                  "value": {
+                                    "kind": "string",
+                                    "raw": "\"Choice\"",
+                                    "span": {
+                                      "start": 1087,
+                                      "end": 1095
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 1077,
+                                    "end": 1095
+                                  }
+                                }
+                              ],
+                              "span": {
+                                "start": 1058,
+                                "end": 1097
+                              }
+                            },
+                            "span": {
+                              "start": 1046,
+                              "end": 1097
+                            }
+                          },
+                          "span": {
+                            "start": 1036,
+                            "end": 1097
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 958,
+                        "end": 1103
+                      }
+                    },
+                    "span": {
+                      "start": 946,
+                      "end": 1103
+                    }
+                  },
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "html",
+                        "span": {
+                          "start": 1109,
+                          "end": 1113
                         }
                       },
                       "field": "input",
                       "fieldSpan": {
-                        "start": 780,
-                        "end": 785
+                        "start": 1114,
+                        "end": 1119
                       },
                       "span": {
-                        "start": 775,
-                        "end": 785
+                        "start": 1109,
+                        "end": 1119
                       }
                     },
                     "argument": {
@@ -722,71 +1137,71 @@
                           "kind": "field",
                           "name": "checked",
                           "nameSpan": {
-                            "start": 796,
-                            "end": 803
+                            "start": 1122,
+                            "end": 1129
                           },
                           "value": {
                             "kind": "name",
                             "name": "checked",
                             "span": {
-                              "start": 796,
-                              "end": 803
+                              "start": 1122,
+                              "end": 1129
                             }
                           },
                           "span": {
-                            "start": 796,
-                            "end": 803
+                            "start": 1122,
+                            "end": 1129
                           }
                         },
                         {
                           "kind": "field",
                           "name": "inputType",
                           "nameSpan": {
-                            "start": 813,
-                            "end": 822
+                            "start": 1131,
+                            "end": 1140
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"checkbox\"",
                             "span": {
-                              "start": 824,
-                              "end": 834
+                              "start": 1142,
+                              "end": 1152
                             }
                           },
                           "span": {
-                            "start": 813,
-                            "end": 834
+                            "start": 1131,
+                            "end": 1152
                           }
                         },
                         {
                           "kind": "field",
                           "name": "onChange",
                           "nameSpan": {
-                            "start": 844,
-                            "end": 852
+                            "start": 1154,
+                            "end": 1162
                           },
                           "value": {
                             "kind": "name",
                             "name": "checkedAction",
                             "span": {
-                              "start": 854,
-                              "end": 867
+                              "start": 1164,
+                              "end": 1177
                             }
                           },
                           "span": {
-                            "start": 844,
-                            "end": 867
+                            "start": 1154,
+                            "end": 1177
                           }
                         }
                       ],
                       "span": {
-                        "start": 786,
-                        "end": 875
+                        "start": 1120,
+                        "end": 1179
                       }
                     },
                     "span": {
-                      "start": 775,
-                      "end": 875
+                      "start": 1109,
+                      "end": 1179
                     }
                   },
                   {
@@ -797,18 +1212,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 883,
-                          "end": 887
+                          "start": 1185,
+                          "end": 1189
                         }
                       },
                       "field": "button",
                       "fieldSpan": {
-                        "start": 888,
-                        "end": 894
+                        "start": 1190,
+                        "end": 1196
                       },
                       "span": {
-                        "start": 883,
-                        "end": 894
+                        "start": 1185,
+                        "end": 1196
                       }
                     },
                     "argument": {
@@ -818,118 +1233,118 @@
                           "kind": "field",
                           "name": "buttonType",
                           "nameSpan": {
-                            "start": 905,
-                            "end": 915
+                            "start": 1199,
+                            "end": 1209
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"submit\"",
                             "span": {
-                              "start": 917,
-                              "end": 925
+                              "start": 1211,
+                              "end": 1219
                             }
                           },
                           "span": {
-                            "start": 905,
-                            "end": 925
+                            "start": 1199,
+                            "end": 1219
                           }
                         },
                         {
                           "kind": "field",
                           "name": "disabled",
                           "nameSpan": {
-                            "start": 935,
-                            "end": 943
+                            "start": 1221,
+                            "end": 1229
                           },
                           "value": {
                             "kind": "binary",
                             "operator": "==",
                             "operatorSpan": {
-                              "start": 951,
-                              "end": 953
+                              "start": 1237,
+                              "end": 1239
                             },
                             "left": {
                               "kind": "name",
                               "name": "draft",
                               "span": {
-                                "start": 945,
-                                "end": 950
+                                "start": 1231,
+                                "end": 1236
                               }
                             },
                             "right": {
                               "kind": "string",
                               "raw": "\"\"",
                               "span": {
-                                "start": 954,
-                                "end": 956
+                                "start": 1240,
+                                "end": 1242
                               }
                             },
                             "span": {
-                              "start": 945,
-                              "end": 956
+                              "start": 1231,
+                              "end": 1242
                             }
                           },
                           "span": {
-                            "start": 935,
-                            "end": 956
+                            "start": 1221,
+                            "end": 1242
                           }
                         },
                         {
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 966,
-                            "end": 974
+                            "start": 1244,
+                            "end": 1252
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"Add\"",
                             "span": {
-                              "start": 976,
-                              "end": 981
+                              "start": 1254,
+                              "end": 1259
                             }
                           },
                           "span": {
-                            "start": 966,
-                            "end": 981
+                            "start": 1244,
+                            "end": 1259
                           }
                         }
                       ],
                       "span": {
-                        "start": 895,
-                        "end": 989
+                        "start": 1197,
+                        "end": 1261
                       }
                     },
                     "span": {
-                      "start": 883,
-                      "end": 989
+                      "start": 1185,
+                      "end": 1261
                     }
                   }
                 ],
                 "span": {
-                  "start": 397,
-                  "end": 995
+                  "start": 460,
+                  "end": 1265
                 }
               },
               "span": {
-                "start": 387,
-                "end": 995
+                "start": 450,
+                "end": 1265
               }
             }
           ],
           "span": {
-            "start": 356,
-            "end": 999
+            "start": 423,
+            "end": 1267
           }
         },
         "span": {
-          "start": 346,
-          "end": 999
+          "start": 413,
+          "end": 1267
         }
       },
       "span": {
-        "start": 278,
-        "end": 999
+        "start": 347,
+        "end": 1267
       }
     }
   ],
@@ -939,7 +1354,7 @@
       "kind": "module",
       "origin": {
         "start": 38,
-        "end": 999
+        "end": 1267
       }
     },
     {
@@ -948,7 +1363,7 @@
       "kind": "declaration",
       "origin": {
         "start": 38,
-        "end": 113
+        "end": 127
       }
     },
     {
@@ -956,8 +1371,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 115,
-        "end": 191
+        "start": 129,
+        "end": 203
       }
     },
     {
@@ -965,17 +1380,71 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 193,
-        "end": 276
+        "start": 205,
+        "end": 345
       }
     },
     {
       "id": 4,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 282,
+        "end": 320
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 323,
+        "end": 343
+      }
+    },
+    {
+      "id": 7,
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 278,
-        "end": 999
+        "start": 347,
+        "end": 1267
+      }
+    },
+    {
+      "id": 8,
+      "parent": 7,
+      "kind": "lambda",
+      "origin": {
+        "start": 720,
+        "end": 772
+      }
+    },
+    {
+      "id": 9,
+      "parent": 7,
+      "kind": "lambda",
+      "origin": {
+        "start": 882,
+        "end": 934
+      }
+    },
+    {
+      "id": 10,
+      "parent": 7,
+      "kind": "lambda",
+      "origin": {
+        "start": 976,
+        "end": 1028
       }
     }
   ],
@@ -1030,42 +1499,54 @@
     },
     {
       "id": 4,
+      "spelling": "Unchanged",
+      "canonical": "artifact/web-form-events::Unchanged",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 118,
+        "end": 127
+      }
+    },
+    {
+      "id": 5,
       "spelling": "draftAction",
       "canonical": "artifact/web-form-events::draftAction",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 118,
-        "end": 129
+        "start": 132,
+        "end": 143
       }
     },
     {
-      "id": 5,
+      "id": 6,
       "spelling": "checkedAction",
       "canonical": "artifact/web-form-events::checkedAction",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 196,
-        "end": 209
+        "start": 208,
+        "end": 221
       }
     },
     {
-      "id": 6,
+      "id": 7,
       "spelling": "view",
       "canonical": "artifact/web-form-events::view",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 285,
-        "end": 289
+        "start": 354,
+        "end": 358
       }
     },
     {
-      "id": 7,
+      "id": 8,
       "spelling": "html",
       "canonical": "artifact/web-form-events/std/web/html::*",
       "namespace": "module",
@@ -1077,7 +1558,7 @@
       }
     },
     {
-      "id": 8,
+      "id": 9,
       "spelling": "String",
       "canonical": "std/prelude::String",
       "namespace": "type",
@@ -1089,7 +1570,7 @@
       }
     },
     {
-      "id": 9,
+      "id": 10,
       "spelling": "Bool",
       "canonical": "std/prelude::Bool",
       "namespace": "type",
@@ -1101,51 +1582,143 @@
       }
     },
     {
-      "id": 10,
+      "id": 11,
       "spelling": "event",
       "namespace": "value",
       "kind": "parameter",
       "scope": 2,
       "origin": {
-        "start": 130,
-        "end": 135
+        "start": 144,
+        "end": 149
       }
     },
     {
-      "id": 11,
+      "id": 12,
       "spelling": "event",
       "namespace": "value",
       "kind": "parameter",
       "scope": 3,
       "origin": {
-        "start": 210,
-        "end": 215
-      }
-    },
-    {
-      "id": 12,
-      "spelling": "draft",
-      "namespace": "value",
-      "kind": "parameter",
-      "scope": 4,
-      "origin": {
-        "start": 290,
-        "end": 295
+        "start": 222,
+        "end": 227
       }
     },
     {
       "id": 13,
-      "spelling": "checked",
-      "namespace": "value",
-      "kind": "parameter",
-      "scope": 4,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
       "origin": {
-        "start": 307,
-        "end": 314
+        "start": 0,
+        "end": 0
       }
     },
     {
       "id": 14,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "checked",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 4,
+      "origin": {
+        "start": 287,
+        "end": 294
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "draft",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 7,
+      "origin": {
+        "start": 359,
+        "end": 364
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "checked",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 7,
+      "origin": {
+        "start": 376,
+        "end": 383
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "event",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 8,
+      "origin": {
+        "start": 721,
+        "end": 726
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "event",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 9,
+      "origin": {
+        "start": 883,
+        "end": 888
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "event",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 10,
+      "origin": {
+        "start": 977,
+        "end": 982
+      }
+    },
+    {
+      "id": 23,
       "spelling": "==",
       "canonical": "std/prelude::==",
       "namespace": "operator",
@@ -1161,7 +1734,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 8,
+      "target": 9,
       "origin": {
         "start": 69,
         "end": 75
@@ -1170,7 +1743,7 @@
     {
       "spelling": "Bool",
       "namespace": "type",
-      "target": 9,
+      "target": 10,
       "origin": {
         "start": 95,
         "end": 99
@@ -1180,8 +1753,8 @@
       "spelling": "html.InputEvent",
       "namespace": "type",
       "origin": {
-        "start": 137,
-        "end": 152
+        "start": 151,
+        "end": 166
       }
     },
     {
@@ -1189,8 +1762,8 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 156,
-        "end": 162
+        "start": 170,
+        "end": 176
       }
     },
     {
@@ -1198,43 +1771,8 @@
       "namespace": "value",
       "target": 1,
       "origin": {
-        "start": 167,
-        "end": 179
-      }
-    },
-    {
-      "spelling": "event",
-      "namespace": "value",
-      "target": 10,
-      "origin": {
-        "start": 180,
-        "end": 185
-      }
-    },
-    {
-      "spelling": "html.ChangeEvent",
-      "namespace": "type",
-      "origin": {
-        "start": 217,
-        "end": 233
-      }
-    },
-    {
-      "spelling": "Action",
-      "namespace": "type",
-      "target": 0,
-      "origin": {
-        "start": 237,
-        "end": 243
-      }
-    },
-    {
-      "spelling": "CheckedChanged",
-      "namespace": "value",
-      "target": 2,
-      "origin": {
-        "start": 248,
-        "end": 262
+        "start": 179,
+        "end": 191
       }
     },
     {
@@ -1242,34 +1780,16 @@
       "namespace": "value",
       "target": 11,
       "origin": {
-        "start": 263,
-        "end": 268
+        "start": 192,
+        "end": 197
       }
     },
     {
-      "spelling": "String",
-      "namespace": "type",
-      "target": 8,
-      "origin": {
-        "start": 297,
-        "end": 303
-      }
-    },
-    {
-      "spelling": "Bool",
-      "namespace": "type",
-      "target": 9,
-      "origin": {
-        "start": 316,
-        "end": 320
-      }
-    },
-    {
-      "spelling": "html.Html",
+      "spelling": "html.ChangeEvent",
       "namespace": "type",
       "origin": {
-        "start": 324,
-        "end": 341
+        "start": 229,
+        "end": 245
       }
     },
     {
@@ -1277,16 +1797,105 @@
       "namespace": "type",
       "target": 0,
       "origin": {
+        "start": 249,
+        "end": 255
+      }
+    },
+    {
+      "spelling": "event",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 264,
+        "end": 269
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 282,
+        "end": 286
+      }
+    },
+    {
+      "spelling": "CheckedChanged",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 298,
+        "end": 312
+      }
+    },
+    {
+      "spelling": "checked",
+      "namespace": "value",
+      "target": 17,
+      "origin": {
+        "start": 313,
+        "end": 320
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 323,
+        "end": 330
+      }
+    },
+    {
+      "spelling": "Unchanged",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
         "start": 334,
-        "end": 340
+        "end": 343
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 366,
+        "end": 372
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 385,
+        "end": 389
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "namespace": "type",
+      "origin": {
+        "start": 393,
+        "end": 410
+      }
+    },
+    {
+      "spelling": "Action",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 403,
+        "end": 409
       }
     },
     {
       "spelling": "html.form",
       "namespace": "value",
       "origin": {
-        "start": 346,
-        "end": 355
+        "start": 413,
+        "end": 422
       }
     },
     {
@@ -1294,111 +1903,205 @@
       "namespace": "value",
       "target": 3,
       "origin": {
-        "start": 372,
-        "end": 381
+        "start": 437,
+        "end": 446
       }
     },
     {
       "spelling": "html.label",
       "namespace": "value",
       "origin": {
-        "start": 405,
-        "end": 415
+        "start": 466,
+        "end": 476
       }
     },
     {
       "spelling": "html.input",
       "namespace": "value",
       "origin": {
-        "start": 463,
-        "end": 473
+        "start": 522,
+        "end": 532
       }
     },
     {
       "spelling": "draft",
       "namespace": "value",
-      "target": 12,
+      "target": 18,
       "origin": {
-        "start": 535,
-        "end": 540
+        "start": 588,
+        "end": 593
       }
     },
     {
       "spelling": "draftAction",
       "namespace": "value",
-      "target": 4,
+      "target": 5,
       "origin": {
-        "start": 646,
-        "end": 657
+        "start": 691,
+        "end": 702
+      }
+    },
+    {
+      "spelling": "html.ChangeEvent",
+      "namespace": "type",
+      "origin": {
+        "start": 728,
+        "end": 744
+      }
+    },
+    {
+      "spelling": "DraftChanged",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 748,
+        "end": 760
+      }
+    },
+    {
+      "spelling": "event",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 761,
+        "end": 766
       }
     },
     {
       "spelling": "html.textarea",
       "namespace": "value",
       "origin": {
-        "start": 673,
-        "end": 686
+        "start": 784,
+        "end": 797
       }
     },
     {
       "spelling": "draftAction",
       "namespace": "value",
-      "target": 4,
+      "target": 5,
       "origin": {
-        "start": 748,
-        "end": 759
+        "start": 853,
+        "end": 864
+      }
+    },
+    {
+      "spelling": "html.ChangeEvent",
+      "namespace": "type",
+      "origin": {
+        "start": 890,
+        "end": 906
+      }
+    },
+    {
+      "spelling": "DraftChanged",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 910,
+        "end": 922
+      }
+    },
+    {
+      "spelling": "event",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 923,
+        "end": 928
+      }
+    },
+    {
+      "spelling": "html.select",
+      "namespace": "value",
+      "origin": {
+        "start": 946,
+        "end": 957
+      }
+    },
+    {
+      "spelling": "html.ChangeEvent",
+      "namespace": "type",
+      "origin": {
+        "start": 984,
+        "end": 1000
+      }
+    },
+    {
+      "spelling": "DraftChanged",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 1004,
+        "end": 1016
+      }
+    },
+    {
+      "spelling": "event",
+      "namespace": "value",
+      "target": 22,
+      "origin": {
+        "start": 1017,
+        "end": 1022
+      }
+    },
+    {
+      "spelling": "html.option",
+      "namespace": "value",
+      "origin": {
+        "start": 1046,
+        "end": 1057
       }
     },
     {
       "spelling": "html.input",
       "namespace": "value",
       "origin": {
-        "start": 775,
-        "end": 785
+        "start": 1109,
+        "end": 1119
       }
     },
     {
       "spelling": "checked",
       "namespace": "value",
-      "target": 13,
+      "target": 19,
       "origin": {
-        "start": 796,
-        "end": 803
+        "start": 1122,
+        "end": 1129
       }
     },
     {
       "spelling": "checkedAction",
       "namespace": "value",
-      "target": 5,
+      "target": 6,
       "origin": {
-        "start": 854,
-        "end": 867
+        "start": 1164,
+        "end": 1177
       }
     },
     {
       "spelling": "html.button",
       "namespace": "value",
       "origin": {
-        "start": 883,
-        "end": 894
+        "start": 1185,
+        "end": 1196
       }
     },
     {
       "spelling": "draft",
       "namespace": "value",
-      "target": 12,
+      "target": 18,
       "origin": {
-        "start": 945,
-        "end": 950
+        "start": 1231,
+        "end": 1236
       }
     },
     {
       "spelling": "==",
       "namespace": "operator",
-      "target": 14,
+      "target": 23,
       "origin": {
-        "start": 951,
-        "end": 953
+        "start": 1237,
+        "end": 1239
       }
     }
   ],
@@ -1407,72 +2110,112 @@
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 137,
-        "end": 152
+        "start": 151,
+        "end": 166
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 217,
-        "end": 233
+        "start": 229,
+        "end": 245
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 324,
-        "end": 341
+        "start": 393,
+        "end": 410
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 346,
-        "end": 355
+        "start": 413,
+        "end": 422
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 405,
-        "end": 415
+        "start": 466,
+        "end": 476
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 463,
-        "end": 473
+        "start": 522,
+        "end": 532
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 673,
-        "end": 686
+        "start": 728,
+        "end": 744
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 775,
-        "end": 785
+        "start": 784,
+        "end": 797
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 883,
-        "end": 894
+        "start": 890,
+        "end": 906
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 946,
+        "end": 957
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 984,
+        "end": 1000
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 1046,
+        "end": 1057
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 1109,
+        "end": 1119
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 1185,
+        "end": 1196
       }
     }
   ]

@@ -9,10 +9,13 @@
     "core.adt",
     "core.string",
     "core.bool",
+    "core.maybe",
     "web.html.form",
     "web.html.label",
     "web.html.input",
     "web.html.textarea",
+    "web.html.select",
+    "web.html.option",
     "web.html.button",
     "core.string.eq-dictionary"
   ],
@@ -32,6 +35,14 @@
     {
       "feature": "web.html.textarea",
       "local": "_ssrg_html_textarea"
+    },
+    {
+      "feature": "web.html.select",
+      "local": "_ssrg_html_select"
+    },
+    {
+      "feature": "web.html.option",
+      "local": "_ssrg_html_option"
     },
     {
       "feature": "web.html.button",
@@ -97,12 +108,22 @@
             "start": 104,
             "end": 113
           }
+        },
+        {
+          "exported": false,
+          "name": "Unchanged",
+          "tag": "Unchanged",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 118,
+            "end": 127
+          }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 38,
-        "end": 113
+        "end": 127
       }
     }
   ],
@@ -134,8 +155,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 115,
-        "end": 191
+        "start": 129,
+        "end": 203
       }
     },
     {
@@ -150,23 +171,72 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "CheckedChanged",
-        "arguments": [
-          {
-            "kind": "field-access",
-            "receiver": {
-              "kind": "identifier",
-              "name": "event"
-            },
-            "field": "checked"
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "identifier",
+            "name": "event"
+          },
+          "field": "checked"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "boolean"
           }
-        ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "checked",
+                "type": {
+                  "kind": "boolean"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "CheckedChanged",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "checked"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "identifier",
+              "name": "Unchanged"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "Action",
+          "arguments": []
+        }
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 193,
-        "end": 276
+        "start": 205,
+        "end": 345
       }
     },
     {
@@ -295,6 +365,28 @@
                                 "kind": "identifier",
                                 "name": "draftAction"
                               }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onChange",
+                              "value": {
+                                "kind": "lambda",
+                                "parameter": "event: ChangeEvent",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "DraftChanged",
+                                  "arguments": [
+                                    {
+                                      "kind": "field-access",
+                                      "receiver": {
+                                        "kind": "identifier",
+                                        "name": "event"
+                                      },
+                                      "field": "value"
+                                    }
+                                  ]
+                                }
+                              }
                             }
                           ]
                         }
@@ -329,6 +421,92 @@
                               "value": {
                                 "kind": "identifier",
                                 "name": "draftAction"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onChange",
+                              "value": {
+                                "kind": "lambda",
+                                "parameter": "event: ChangeEvent",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "DraftChanged",
+                                  "arguments": [
+                                    {
+                                      "kind": "field-access",
+                                      "receiver": {
+                                        "kind": "identifier",
+                                        "name": "event"
+                                      },
+                                      "field": "value"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_select",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onChange",
+                              "value": {
+                                "kind": "lambda",
+                                "parameter": "event: ChangeEvent",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "DraftChanged",
+                                  "arguments": [
+                                    {
+                                      "kind": "field-access",
+                                      "receiver": {
+                                        "kind": "identifier",
+                                        "name": "event"
+                                      },
+                                      "field": "value"
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_html_option",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "value",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "choice"
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "children",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "Choice"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
                               }
                             }
                           ]
@@ -439,8 +617,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 278,
-        "end": 999
+        "start": 347,
+        "end": 1267
       }
     }
   ]

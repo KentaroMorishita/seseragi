@@ -4,41 +4,40 @@ type Action =
   | DraftChanged String
   | CheckedChanged Bool
   | Submitted
+  | Unchanged
 
-fn draftAction event: html.InputEvent -> Action =
-  DraftChanged event.value
+fn draftAction event: html.InputEvent -> Action = DraftChanged event.value
 
-fn checkedAction event: html.ChangeEvent -> Action =
-  CheckedChanged event.checked
+fn checkedAction event: html.ChangeEvent -> Action = match event.checked {
+  Just checked -> CheckedChanged checked
+  Nothing -> Unchanged
+}
 
-pub fn view draft: String -> checked: Bool -> html.Html<Action> =
-  html.form {
-    onSubmit: Submitted,
-    children: [
-      html.label { htmlFor: "draft", children: "Draft" },
-      html.input {
-        id: "draft",
-        name: "draft",
-        value: draft,
-        required: True,
-        placeholder: "Type a task",
-        inputType: "text",
-        onInput: draftAction
-      },
-      html.textarea {
-        name: "notes",
-        value: "",
-        onInput: draftAction
-      },
-      html.input {
-        checked,
-        inputType: "checkbox",
-        onChange: checkedAction
-      },
-      html.button {
-        buttonType: "submit",
-        disabled: draft == "",
-        children: "Add"
-      }
-    ]
-  }
+pub fn view draft: String -> checked: Bool -> html.Html<Action> = html.form {
+  onSubmit: Submitted,
+  children: [
+    html.label { htmlFor: "draft", children: "Draft" },
+    html.input {
+      id: "draft",
+      name: "draft",
+      value: draft,
+      required: True,
+      placeholder: "Type a task",
+      inputType: "text",
+      onInput: draftAction,
+      onChange: \event: html.ChangeEvent -> DraftChanged event.value
+    },
+    html.textarea {
+      name: "notes",
+      value: "",
+      onInput: draftAction,
+      onChange: \event: html.ChangeEvent -> DraftChanged event.value
+    },
+    html.select {
+      onChange: \event: html.ChangeEvent -> DraftChanged event.value,
+      children: html.option { value: "choice", children: "Choice" }
+    },
+    html.input { checked, inputType: "checkbox", onChange: checkedAction },
+    html.button { buttonType: "submit", disabled: draft == "", children: "Add" }
+  ]
+}

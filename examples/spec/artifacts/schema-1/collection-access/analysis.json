@@ -8202,7 +8202,7 @@
       "category": "HTML",
       "kind": "opaque-struct",
       "signature": "ChangeEvent",
-      "description": "Immutable form-control snapshot containing value and checked state.",
+      "description": "Immutable form-control snapshot containing value and optional checked state: Just for checkbox/radio, Nothing for value controls.",
       "typeParameters": [],
       "constraints": []
     },

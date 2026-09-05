@@ -1942,7 +1942,7 @@ fn standard_description(identity: &str) -> Option<&'static str> {
             "Immutable text-input snapshot containing only the current String value."
         }
         "std/web/html::ChangeEvent" => {
-            "Immutable form-control snapshot containing value and checked state."
+            "Immutable form-control snapshot containing value and optional checked state: Just for checkbox/radio, Nothing for value controls."
         }
         "std/web/html::KeyboardEvent" => {
             "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys."

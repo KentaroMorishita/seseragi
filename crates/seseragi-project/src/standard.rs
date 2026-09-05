@@ -8583,7 +8583,7 @@ fn web_html_interface() -> ModuleInterface {
             "ChangeEvent",
             [
                 required("value", named("String")),
-                required("checked", named("Bool")),
+                required("checked", named_with("Maybe", vec![named("Bool")])),
             ],
         ),
         record_type_export(

@@ -1,4 +1,4 @@
-import { type Either, Left, Right } from "./sum"
+import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 import { type File, wrapFile } from "./web-file"
 
 const HTML_NODE = Symbol("seseragi.html")
@@ -43,10 +43,10 @@ export type InputEvent = Readonly<{
   readonly value: string
 }>
 
-/** Immutable change snapshot shared by text and checked controls. */
+/** Immutable change snapshot; checked is present only for checkbox/radio. */
 export type ChangeEvent = Readonly<{
   readonly value: string
-  readonly checked: boolean
+  readonly checked: Maybe<boolean>
 }>
 
 /** Immutable file-input snapshot. It retains only opaque File handles. */
@@ -965,7 +965,7 @@ export function resolveDomEvent<Action>(
         handler.map(
           Object.freeze({
             value: eventTargetString("value", target),
-            checked: eventTargetBoolean("checked", target),
+            checked: changeCheckedSnapshot(target),
           })
         )
       )
@@ -974,6 +974,20 @@ export function resolveDomEvent<Action>(
         handler.map(Object.freeze({ files: eventTargetFiles(target) }))
       )
   }
+}
+
+function changeCheckedSnapshot(target: unknown): Maybe<boolean> {
+  const tag = eventTargetString("tagName", target).toLowerCase()
+  if (tag === "input") {
+    const type = eventTargetString("type", target).toLowerCase()
+    return type === "checkbox" || type === "radio"
+      ? Object.freeze(Just(eventTargetBoolean("checked", target)))
+      : Nothing
+  }
+  if (tag === "select" || tag === "textarea") return Nothing
+  throw new TypeError(
+    "DOM change event target must be input, select, or textarea"
+  )
 }
 
 function eventTargetFiles(target: unknown): ReadonlyArray<File> {
