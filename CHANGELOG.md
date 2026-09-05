@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.60.0] - 2026-09-05
+
+### Fixed
+
+- Preserve ADT match payload bindings, trait evidence, and Effect contracts in
+  `do`-block match arms, including pure-to-Effect calls, failure channels, and
+  imported constructors.
+
 ## [0.59.0] - 2026-09-05
 
 ### Fixed
