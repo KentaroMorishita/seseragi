@@ -1,6 +1,6 @@
+use crate::typescript::types::TypeScriptTypeContext;
 use crate::CoreAdt;
 use seseragi_syntax::Visibility;
-use std::collections::BTreeMap;
 
 use super::names::local_name;
 use super::runtime::collect_type_runtime_requirement;
@@ -9,7 +9,7 @@ use super::{push_unique, TypeScriptAdt, TypeScriptAdtVariant};
 
 pub(super) fn lower_core_adt_to_typescript(
     adt: CoreAdt,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
     runtime_requirements: &mut Vec<String>,
 ) -> TypeScriptAdt {
     push_unique(runtime_requirements, "core.adt");

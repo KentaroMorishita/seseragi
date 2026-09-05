@@ -93,18 +93,24 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_show_domErrorShow"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_domErrorShow"
+          },
+          "method": "show",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
         },
-        "method": "show",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -124,18 +130,24 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_debug_domErrorDebug"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_debug_domErrorDebug"
+          },
+          "method": "debug",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
         },
-        "method": "debug",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -155,29 +167,35 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_show_domRuntimeErrorShow",
-          "typeArguments": [
-            {
-              "kind": "string"
-            }
-          ],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_show_domRuntimeErrorShow",
+            "typeArguments": [
+              {
+                "kind": "string"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_stringShow"
+              }
+            ]
+          },
+          "method": "show",
           "arguments": [
             {
-              "kind": "runtime-reference",
-              "name": "_ssrg_show_stringShow"
+              "kind": "identifier",
+              "name": "value"
             }
           ]
         },
-        "method": "show",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -197,29 +215,35 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_debug_domRuntimeErrorDebug",
-          "typeArguments": [
-            {
-              "kind": "string"
-            }
-          ],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_debug_domRuntimeErrorDebug",
+            "typeArguments": [
+              {
+                "kind": "string"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_debug_stringDebug"
+              }
+            ]
+          },
+          "method": "debug",
           "arguments": [
             {
-              "kind": "runtime-reference",
-              "name": "_ssrg_debug_stringDebug"
+              "kind": "identifier",
+              "name": "value"
             }
           ]
         },
-        "method": "debug",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -239,18 +263,24 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_show_htmlBuildErrorShow"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_htmlBuildErrorShow"
+          },
+          "method": "show",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
         },
-        "method": "show",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -270,18 +300,24 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_debug_htmlBuildErrorDebug"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_debug_htmlBuildErrorDebug"
+          },
+          "method": "debug",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
         },
-        "method": "debug",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -310,24 +346,30 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_htmlBuildErrorShow"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_htmlBuildErrorShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_html_InvalidTagName",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": "1bad"
+                          }
+                        ]
+                      }
+                    ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_InvalidTagName",
-                      "arguments": [
-                        {
-                          "kind": "string",
-                          "value": "1bad"
-                        }
-                      ]
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -338,24 +380,30 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_debug_htmlBuildErrorDebug"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_debug_htmlBuildErrorDebug"
+                },
+                "method": "debug",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_html_InvalidTagName",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "1bad"
+                      }
+                    ]
+                  }
+                ]
               },
-              "method": "debug",
-              "arguments": [
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_html_InvalidTagName",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "1bad"
-                    }
-                  ]
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }

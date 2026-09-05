@@ -733,18 +733,24 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "same"
+                      }
+                    ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "same"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -756,37 +762,43 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_listShow",
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Problem",
-                        "arguments": []
-                      }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Show$0"
-                      }
-                    ]
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "call",
-                      "callee": "ops_errors",
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_listShow",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "Problem",
+                          "arguments": []
+                        }
+                      ],
                       "arguments": [
                         {
                           "kind": "identifier",
-                          "name": "result"
+                          "name": "__ssrg$instance$Show$0"
                         }
                       ]
-                    }
-                  ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "ops_errors",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "result"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -880,57 +892,63 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "type-application-call",
-                "callee": "_ssrg_show_eitherShow",
-                "typeArguments": [
-                  {
-                    "kind": "reference",
-                    "name": "NonEmptyList",
-                    "arguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Problem",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "number"
-                  }
-                ],
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_show_eitherShow",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "NonEmptyList",
+                      "arguments": [
+                        {
+                          "kind": "reference",
+                          "name": "Problem",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "number"
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_nonEmptyListShow",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "Problem",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$instance$Show$0"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    }
+                  ]
+                },
+                "method": "show",
                 "arguments": [
                   {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_nonEmptyListShow",
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Problem",
-                        "arguments": []
-                      }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Show$0"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_intShow"
+                    "kind": "identifier",
+                    "name": "converted"
                   }
                 ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "converted"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }

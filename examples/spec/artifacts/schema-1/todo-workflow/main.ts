@@ -18,6 +18,6 @@ const removeTodo = (id: number) => (values: ReadonlyArray<Todo>) => _ssrg_array_
 const isUrgent = (todo: Todo) => (todo)["urgent"]
 const urgentTodos = (values: ReadonlyArray<Todo>) => _ssrg_array_filter(isUrgent, values)
 const renderTodo = (todo: Todo) => _ssrg_show_intShow["show"]((todo)["id"]) + ": " + _ssrg_show_stringShow["show"]((todo)["title"])
-const renderTodos = (values: ReadonlyArray<Todo>) => _ssrg_collection_join(_ssrg_array_reducible, ", ", _ssrg_array_functor["map"](renderTodo)(values))
+const renderTodos = (values: ReadonlyArray<Todo>) => _ssrg_collection_join(_ssrg_array_reducible, ", ", ((_ssrg_array_functor["map"](renderTodo)(values)) as ReadonlyArray<string>))
 export const todoWorkflow = (unit: undefined) => (() => { const afterAdd: ReadonlyArray<Todo> = addTodo((({ "id": 3, "title": "Review docs", "urgent": true } as const) as unknown as Todo))(initialTodos); return (() => { const afterRemove: ReadonlyArray<Todo> = removeTodo(2)(afterAdd); return (() => { const urgentOnly: ReadonlyArray<Todo> = urgentTodos(afterRemove); return ["after add: " + _ssrg_show_stringShow["show"](renderTodos(afterAdd)), "after delete: " + _ssrg_show_stringShow["show"](renderTodos(afterRemove)), "urgent: " + _ssrg_show_stringShow["show"](renderTodos(urgentOnly))]; })(); })(); })()
 const initialTodos: ReadonlyArray<Todo> = [(({ "id": 1, "title": "Write notes", "urgent": false } as const) as unknown as Todo), (({ "id": 2, "title": "Ship release", "urgent": true } as const) as unknown as Todo)];

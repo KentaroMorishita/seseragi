@@ -327,18 +327,24 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_htmlBuildErrorShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_htmlBuildErrorShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "error"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           },
           {
@@ -451,18 +457,24 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_htmlBuildErrorShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_htmlBuildErrorShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "error"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           },
           {
@@ -608,18 +620,24 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_htmlBuildErrorShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_htmlBuildErrorShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "error"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           },
           {

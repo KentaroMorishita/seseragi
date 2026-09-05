@@ -19,7 +19,7 @@ pub fn label value: Badge -> String = describe value
 
     assert!(
         bundle.typescript.contains(
-            "export const describe = <T,>(value: T) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0[\"ready\"](value)"
+            "export const describe = <T,>(value: T) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ((__ssrg$evidence$0[\"ready\"](value)) as string)"
         ),
         "{}",
         bundle.typescript
@@ -60,7 +60,7 @@ pub fn answer value: Maybe<Int> -> Maybe<Int> =
     assert!(
         bundle
             .typescript
-            .contains("applyMapper(__ssrg$instance$Functor$0[\"map\"](increment))(value)"),
+            .contains("applyMapper(((__ssrg$instance$Functor$0[\"map\"](increment)) as (argument: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }))(value)"),
         "{}",
         bundle.typescript
     );

@@ -13,11 +13,11 @@ const combinedListValues = (unit: undefined) => ((combineValues([_ssrg_list_from
 const combinedList = (unit: undefined) => _ssrg_collection_join(_ssrg_list_reducible, "|", combinedListValues(undefined))
 const emptyStrings = (unit: undefined) => [] as ReadonlyArray<string>
 const combinedEmpty = (unit: undefined) => ((combineValues(emptyStrings(undefined))(_ssrg_array_reducible)(_ssrg_string_monoid)) as string)
-const appendWithMonoid = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0["append"](left)(right)
+const appendWithMonoid = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ((__ssrg$evidence$0["append"](left)(right)) as A)
 const combinedViaSupertrait = (unit: undefined) => ((appendWithMonoid("super")("trait")(_ssrg_string_monoid)) as string)
-const appendedString = (unit: undefined) => _ssrg_string_semigroup["append"]("semi")("group")
-const appendedArrayValues = (unit: undefined) => _ssrg_array_semigroup["append"](["array"])(["append"])
+const appendedString = (unit: undefined) => ((_ssrg_string_semigroup["append"]("semi")("group")) as string)
+const appendedArrayValues = (unit: undefined) => ((_ssrg_array_semigroup["append"](["array"])(["append"])) as ReadonlyArray<string>)
 const appendedArray = (unit: undefined) => _ssrg_collection_join(_ssrg_array_reducible, "|", appendedArrayValues(undefined))
-const appendedListValues = (unit: undefined) => _ssrg_list_semigroup["append"](_ssrg_list_from_array(["list"]))(_ssrg_list_from_array(["append"]))
+const appendedListValues = (unit: undefined) => ((_ssrg_list_semigroup["append"](_ssrg_list_from_array(["list"]))(_ssrg_list_from_array(["append"]))) as List<string>)
 const appendedList = (unit: undefined) => _ssrg_collection_join(_ssrg_list_reducible, "|", appendedListValues(undefined))
 export const collectionCombineResults = (unit: undefined) => [combinedString(undefined), combinedArray(undefined), combinedList(undefined), combinedEmpty(undefined), combinedViaSupertrait(undefined), appendedString(undefined), appendedArray(undefined), appendedList(undefined)]

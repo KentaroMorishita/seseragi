@@ -185,18 +185,24 @@
                     }
                   ],
                   "value": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "identifier",
-                      "name": "__ssrg$evidence$0"
-                    },
-                    "method": "ready",
-                    "arguments": [
-                      {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
                         "kind": "identifier",
-                        "name": "item"
-                      }
-                    ]
+                        "name": "__ssrg$evidence$0"
+                      },
+                      "method": "ready",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "item"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 }
               ],
@@ -227,31 +233,37 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "__ssrg$instance$Render$1",
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "Badge",
-              "arguments": []
-            }
-          ],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$Render$1",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "Badge",
+                "arguments": []
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Ready$0"
+              }
+            ]
+          },
+          "method": "render",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "__ssrg$instance$Ready$0"
+              "name": "value"
             }
           ]
         },
-        "method": "render",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",

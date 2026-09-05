@@ -1,0 +1,59 @@
+pub type Box<A> = | Box A
+
+instance Functor<Box> {
+  fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> = match value {
+    Box item -> Box (f item)
+  }
+}
+instance Applicative<Box> {
+  fn pure<A> value: A -> Box<A> = Box value
+
+  fn apply<A, B> wrapped: Box<A -> B> -> value: Box<A> -> Box<B> =
+    match (wrapped, value) {
+    (Box f, Box item) -> Box (f item)
+  }
+}
+instance Monad<Box> {
+  fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> = match value {
+    Box item -> f item
+  }
+}
+instance Traversable<Box> {
+  fn traverse<G<_>, A, B> f: (A -> G<B>)
+    -> value: Box<A>
+    -> G<Box<B>>
+  where Applicative<G> =
+    match value {
+    Box item -> map Box (f item)
+  }
+}
+
+pub fn throughApplicative<F<_>, A> f: (A -> A)
+  -> value: F<A>
+  -> F<A>
+where Applicative<F> =
+  {
+    let mapped = map f value
+    match True {
+      True -> if True then mapped else value
+      False -> value
+    }
+  }
+
+pub fn throughMonad<M<_>, A, B> f: (A -> M<B>) -> value: M<A> -> M<B> where Monad<M> = {
+  let bound = flatMap f value
+  let identity: M<B> -> M<B> = \item -> item
+  identity bound
+}
+
+pub fn unbox<A> value: Box<A> -> A = match value { Box item -> item }
+
+pub fn retain<F<_>, A> value: F<A> -> F<A> where Functor<F> = {
+  let retained: F<A> = value
+  fn local item: F<A> -> F<A> = match True {
+    True -> if True then item else retained
+    False -> retained
+  }
+  let identity: F<A> -> F<A> = \item -> item
+  identity (local retained)
+}

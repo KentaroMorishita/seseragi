@@ -207,7 +207,7 @@ pub fn label value: Badge -> String = render value
     let bundle = emit_typescript_module(typescript, source);
 
     assert!(bundle.typescript.contains(
-        "export const label = (value: Badge) => __ssrg$instance$Render$0[\"render\"](value)"
+        "export const label = (value: Badge) => ((__ssrg$instance$Render$0[\"render\"](value)) as string)"
     ));
 }
 
@@ -227,7 +227,7 @@ pub fn label value: Maybe<Int> -> String = tag value
         "export const __ssrg$instance$Tag$0 = <T,>() => ({ \"tag\": (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }) => \"maybe\" }) as const;"
     ), "{}", bundle.typescript);
     assert!(bundle.typescript.contains(
-        "export const label = (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }) => __ssrg$instance$Tag$0<number>()[\"tag\"](value)"
+        "export const label = (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }) => ((__ssrg$instance$Tag$0<number>()[\"tag\"](value)) as string)"
     ), "{}", bundle.typescript);
 }
 
@@ -356,7 +356,7 @@ pub fn status value: Badge -> String = render value
 
     assert!(
         bundle.typescript.contains(
-            "\"render\": (value: Badge) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0[\"label\"](value)"
+            "\"render\": (value: Badge) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => ((__ssrg$evidence$0[\"label\"](value)) as string)"
         ),
         "{}",
         bundle.typescript

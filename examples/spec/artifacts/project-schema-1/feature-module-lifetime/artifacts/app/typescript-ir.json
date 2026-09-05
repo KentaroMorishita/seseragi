@@ -1308,22 +1308,18 @@
               ]
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_signal_applicative"
-              },
-              "method": "apply",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_signal_applicative"
-                  },
-                  "method": "apply",
-                  "arguments": [
-                    {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_signal_applicative"
+                },
+                "method": "apply",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
                       "kind": "dictionary-call",
                       "dictionary": {
                         "kind": "runtime-reference",
@@ -1332,68 +1328,346 @@
                       "method": "apply",
                       "arguments": [
                         {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_signal_functor"
-                          },
-                          "method": "map",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "page"
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_signal_applicative"
                             },
-                            {
-                              "kind": "identifier",
-                              "name": "layoutView"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "panel"
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_signal_switchMap",
-                      "arguments": [
-                        {
-                          "kind": "lambda",
-                          "parameter": "current: LayoutState",
-                          "body": {
-                            "kind": "call",
-                            "callee": "selectFirst",
+                            "method": "apply",
                             "arguments": [
                               {
-                                "kind": "identifier",
-                                "name": "first"
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_signal_functor"
+                                  },
+                                  "method": "map",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "page"
+                                    },
+                                    {
+                                      "kind": "identifier",
+                                      "name": "layoutView"
+                                    }
+                                  ]
+                                },
+                                "type": {
+                                  "kind": "reference",
+                                  "name": "Signal",
+                                  "arguments": [
+                                    {
+                                      "kind": "function",
+                                      "parameter": {
+                                        "kind": "reference",
+                                        "name": "Html",
+                                        "arguments": [
+                                          {
+                                            "kind": "reference",
+                                            "name": "Effect",
+                                            "arguments": [
+                                              {
+                                                "kind": "record",
+                                                "fields": []
+                                              },
+                                              {
+                                                "kind": "never"
+                                              },
+                                              {
+                                                "kind": "undefined"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      "result": {
+                                        "kind": "function",
+                                        "parameter": {
+                                          "kind": "reference",
+                                          "name": "Html",
+                                          "arguments": [
+                                            {
+                                              "kind": "reference",
+                                              "name": "Effect",
+                                              "arguments": [
+                                                {
+                                                  "kind": "record",
+                                                  "fields": []
+                                                },
+                                                {
+                                                  "kind": "never"
+                                                },
+                                                {
+                                                  "kind": "undefined"
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        "result": {
+                                          "kind": "function",
+                                          "parameter": {
+                                            "kind": "reference",
+                                            "name": "Html",
+                                            "arguments": [
+                                              {
+                                                "kind": "reference",
+                                                "name": "Effect",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "record",
+                                                    "fields": []
+                                                  },
+                                                  {
+                                                    "kind": "never"
+                                                  },
+                                                  {
+                                                    "kind": "undefined"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          "result": {
+                                            "kind": "reference",
+                                            "name": "Html",
+                                            "arguments": [
+                                              {
+                                                "kind": "reference",
+                                                "name": "Effect",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "record",
+                                                    "fields": []
+                                                  },
+                                                  {
+                                                    "kind": "never"
+                                                  },
+                                                  {
+                                                    "kind": "undefined"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
                               },
                               {
                                 "kind": "identifier",
-                                "name": "replacement"
-                              },
+                                "name": "panel"
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "reference",
+                            "name": "Signal",
+                            "arguments": [
                               {
-                                "kind": "identifier",
-                                "name": "current"
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "reference",
+                                  "name": "Html",
+                                  "arguments": [
+                                    {
+                                      "kind": "reference",
+                                      "name": "Effect",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "fields": []
+                                        },
+                                        {
+                                          "kind": "never"
+                                        },
+                                        {
+                                          "kind": "undefined"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "reference",
+                                    "name": "Html",
+                                    "arguments": [
+                                      {
+                                        "kind": "reference",
+                                        "name": "Effect",
+                                        "arguments": [
+                                          {
+                                            "kind": "record",
+                                            "fields": []
+                                          },
+                                          {
+                                            "kind": "never"
+                                          },
+                                          {
+                                            "kind": "undefined"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "result": {
+                                    "kind": "reference",
+                                    "name": "Html",
+                                    "arguments": [
+                                      {
+                                        "kind": "reference",
+                                        "name": "Effect",
+                                        "arguments": [
+                                          {
+                                            "kind": "record",
+                                            "fields": []
+                                          },
+                                          {
+                                            "kind": "never"
+                                          },
+                                          {
+                                            "kind": "undefined"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                }
                               }
                             ]
                           }
                         },
                         {
-                          "kind": "identifier",
-                          "name": "layout"
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_signal_switchMap",
+                          "arguments": [
+                            {
+                              "kind": "lambda",
+                              "parameter": "current: LayoutState",
+                              "body": {
+                                "kind": "call",
+                                "callee": "selectFirst",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "first"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "replacement"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "current"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "layout"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "reference",
+                      "name": "Signal",
+                      "arguments": [
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "reference",
+                            "name": "Html",
+                            "arguments": [
+                              {
+                                "kind": "reference",
+                                "name": "Effect",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "fields": []
+                                  },
+                                  {
+                                    "kind": "never"
+                                  },
+                                  {
+                                    "kind": "undefined"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "result": {
+                            "kind": "reference",
+                            "name": "Html",
+                            "arguments": [
+                              {
+                                "kind": "reference",
+                                "name": "Effect",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "fields": []
+                                  },
+                                  {
+                                    "kind": "never"
+                                  },
+                                  {
+                                    "kind": "undefined"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
                         }
                       ]
                     }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "second"
-                }
-              ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "second"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Signal",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "fields": []
+                          },
+                          {
+                            "kind": "never"
+                          },
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
             },
             "origin": {
               "source": "app.ssrg",

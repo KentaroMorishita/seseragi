@@ -1293,31 +1293,37 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "__ssrg$instance$Show$2",
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "UserId",
-                        "arguments": []
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Show$2",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "UserId",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$instance$Show$0"
+                        }
+                      ]
+                    },
+                    "method": "show",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "__ssrg$instance$Show$0"
+                        "name": "packet"
                       }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "packet"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1329,102 +1335,120 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "__ssrg$instance$Debug$5",
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "Packet",
-                        "arguments": [
-                          {
-                            "kind": "reference",
-                            "name": "UserId",
-                            "arguments": []
-                          }
-                        ]
-                      }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Debug$3",
-                        "typeArguments": [
-                          {
-                            "kind": "reference",
-                            "name": "UserId",
-                            "arguments": []
-                          }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "__ssrg$instance$Debug$1"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "envelope"
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Debug$6"
-                  },
-                  "method": "debug",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "stats"
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "effect",
-            "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_console_println",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "identifier",
-                    "name": "__ssrg$instance$Show$0"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "call",
-                      "callee": "UserId",
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Debug$5",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "Packet",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "UserId",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
                       "arguments": [
                         {
-                          "kind": "number",
-                          "value": "42"
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Debug$3",
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "UserId",
+                              "arguments": []
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "__ssrg$instance$Debug$1"
+                            }
+                          ]
                         }
                       ]
-                    }
-                  ]
+                    },
+                    "method": "debug",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "envelope"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Debug$6"
+                    },
+                    "method": "debug",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "stats"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Show$0"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "UserId",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "42"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1435,29 +1459,35 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "type-application-call",
-                "callee": "__ssrg$instance$Show$2",
-                "typeArguments": [
-                  {
-                    "kind": "number"
-                  }
-                ],
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Show$2",
+                  "typeArguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    }
+                  ]
+                },
+                "method": "show",
                 "arguments": [
                   {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_intShow"
+                    "kind": "identifier",
+                    "name": "empty"
                   }
                 ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "empty"
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }

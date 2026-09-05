@@ -1551,148 +1551,154 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_tupleShow",
-                    "typeArguments": [
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_tupleShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "number"
+                            },
+                            {
+                              "kind": "number"
+                            }
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
                       {
                         "kind": "tuple",
                         "elements": [
                           {
-                            "kind": "number"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "call",
+                              "callee": "beforeNegative",
+                              "arguments": [
+                                {
+                                  "kind": "array",
+                                  "elements": [
+                                    {
+                                      "kind": "number",
+                                      "value": "1"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "2"
+                                    },
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_int_subtract",
+                                      "arguments": [
+                                        {
+                                          "kind": "number",
+                                          "value": "0"
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "1"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "100"
+                                    }
+                                  ],
+                                  "elementType": {
+                                    "kind": "number"
+                                  }
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_array_iterable"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
                           },
                           {
-                            "kind": "number"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "call",
+                              "callee": "beforeNegative",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_list_from_array",
+                                  "arguments": [
+                                    {
+                                      "kind": "array",
+                                      "elements": [
+                                        {
+                                          "kind": "number",
+                                          "value": "1"
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "2"
+                                        },
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_int_subtract",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "0"
+                                            },
+                                            {
+                                              "kind": "number",
+                                              "value": "1"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "kind": "number",
+                                          "value": "100"
+                                        }
+                                      ],
+                                      "elementType": {
+                                        "kind": "number"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_list_iterable"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
                           }
                         ]
                       }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
-                      }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "checked-result",
-                          "value": {
-                            "kind": "call",
-                            "callee": "beforeNegative",
-                            "arguments": [
-                              {
-                                "kind": "array",
-                                "elements": [
-                                  {
-                                    "kind": "number",
-                                    "value": "1"
-                                  },
-                                  {
-                                    "kind": "number",
-                                    "value": "2"
-                                  },
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_int_subtract",
-                                    "arguments": [
-                                      {
-                                        "kind": "number",
-                                        "value": "0"
-                                      },
-                                      {
-                                        "kind": "number",
-                                        "value": "1"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "kind": "number",
-                                    "value": "100"
-                                  }
-                                ],
-                                "elementType": {
-                                  "kind": "number"
-                                }
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_array_iterable"
-                              }
-                            ]
-                          },
-                          "type": {
-                            "kind": "number"
-                          }
-                        },
-                        {
-                          "kind": "checked-result",
-                          "value": {
-                            "kind": "call",
-                            "callee": "beforeNegative",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_list_from_array",
-                                "arguments": [
-                                  {
-                                    "kind": "array",
-                                    "elements": [
-                                      {
-                                        "kind": "number",
-                                        "value": "1"
-                                      },
-                                      {
-                                        "kind": "number",
-                                        "value": "2"
-                                      },
-                                      {
-                                        "kind": "runtime-call",
-                                        "callee": "_ssrg_int_subtract",
-                                        "arguments": [
-                                          {
-                                            "kind": "number",
-                                            "value": "0"
-                                          },
-                                          {
-                                            "kind": "number",
-                                            "value": "1"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "kind": "number",
-                                        "value": "100"
-                                      }
-                                    ],
-                                    "elementType": {
-                                      "kind": "number"
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_list_iterable"
-                              }
-                            ]
-                          },
-                          "type": {
-                            "kind": "number"
-                          }
-                        }
-                      ]
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1704,138 +1710,144 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_tupleShow",
-                    "typeArguments": [
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_tupleShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "number"
+                            },
+                            {
+                              "kind": "number"
+                            },
+                            {
+                              "kind": "number"
+                            }
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
                       {
                         "kind": "tuple",
                         "elements": [
                           {
-                            "kind": "number"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "call",
+                              "callee": "firstThree",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_range_inclusive",
+                                  "arguments": [
+                                    {
+                                      "kind": "number",
+                                      "value": "1"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "100"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_range_iterable"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
                           },
                           {
-                            "kind": "number"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "call",
+                              "callee": "firstThree",
+                              "arguments": [
+                                {
+                                  "kind": "call",
+                                  "callee": "Countdown",
+                                  "arguments": [
+                                    {
+                                      "kind": "number",
+                                      "value": "100"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Iterable$0"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
                           },
                           {
-                            "kind": "number"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "call",
+                              "callee": "reducible",
+                              "arguments": [
+                                {
+                                  "kind": "call",
+                                  "callee": "Countdown",
+                                  "arguments": [
+                                    {
+                                      "kind": "number",
+                                      "value": "100"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "type-application-call",
+                                  "callee": "__ssrg$instance$Reducible$1",
+                                  "typeArguments": [],
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "__ssrg$instance$Iterable$0"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
                           }
                         ]
                       }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
-                      }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "checked-result",
-                          "value": {
-                            "kind": "call",
-                            "callee": "firstThree",
-                            "arguments": [
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_range_inclusive",
-                                "arguments": [
-                                  {
-                                    "kind": "number",
-                                    "value": "1"
-                                  },
-                                  {
-                                    "kind": "number",
-                                    "value": "100"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_range_iterable"
-                              }
-                            ]
-                          },
-                          "type": {
-                            "kind": "number"
-                          }
-                        },
-                        {
-                          "kind": "checked-result",
-                          "value": {
-                            "kind": "call",
-                            "callee": "firstThree",
-                            "arguments": [
-                              {
-                                "kind": "call",
-                                "callee": "Countdown",
-                                "arguments": [
-                                  {
-                                    "kind": "number",
-                                    "value": "100"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Iterable$0"
-                              }
-                            ]
-                          },
-                          "type": {
-                            "kind": "number"
-                          }
-                        },
-                        {
-                          "kind": "checked-result",
-                          "value": {
-                            "kind": "call",
-                            "callee": "reducible",
-                            "arguments": [
-                              {
-                                "kind": "call",
-                                "callee": "Countdown",
-                                "arguments": [
-                                  {
-                                    "kind": "number",
-                                    "value": "100"
-                                  }
-                                ]
-                              },
-                              {
-                                "kind": "type-application-call",
-                                "callee": "__ssrg$instance$Reducible$1",
-                                "typeArguments": [],
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "__ssrg$instance$Iterable$0"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          "type": {
-                            "kind": "number"
-                          }
-                        }
-                      ]
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -1972,50 +1984,56 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_tupleShow",
-                    "typeArguments": [
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_tupleShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "number"
+                            },
+                            {
+                              "kind": "number"
+                            }
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
                       {
                         "kind": "tuple",
                         "elements": [
                           {
-                            "kind": "number"
+                            "kind": "identifier",
+                            "name": "customResult"
                           },
                           {
-                            "kind": "number"
+                            "kind": "identifier",
+                            "name": "iteratorResult"
                           }
                         ]
                       }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
-                      }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "identifier",
-                          "name": "customResult"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "iteratorResult"
-                        }
-                      ]
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2051,50 +2069,56 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_intShow"
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_collection_reduceUntil",
-                      "arguments": [
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_array_iterable"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "42"
-                        },
-                        {
-                          "kind": "lambda",
-                          "parameter": "acc: number",
-                          "body": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_collection_reduceUntil",
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_array_iterable"
+                          },
+                          {
+                            "kind": "number",
+                            "value": "42"
+                          },
+                          {
                             "kind": "lambda",
-                            "parameter": "value: number",
+                            "parameter": "acc: number",
                             "body": {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_collection_Done",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "value"
-                                }
-                              ]
+                              "kind": "lambda",
+                              "parameter": "value: number",
+                              "body": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_collection_Done",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "value"
+                                  }
+                                ]
+                              }
                             }
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "empty"
                           }
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "empty"
-                        }
-                      ]
-                    }
-                  ]
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2235,298 +2259,252 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_tupleShow",
-                    "typeArguments": [
-                      {
-                        "kind": "tuple",
-                        "elements": [
-                          {
-                            "kind": "number"
-                          },
-                          {
-                            "kind": "string"
-                          }
-                        ]
-                      }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_stringShow"
-                      }
-                    ]
-                  },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "checked-result",
-                      "value": {
-                        "kind": "call",
-                        "callee": "generic",
-                        "arguments": [
-                          {
-                            "kind": "tuple",
-                            "elements": [
-                              {
-                                "kind": "number",
-                                "value": "0"
-                              },
-                              {
-                                "kind": "string",
-                                "value": ""
-                              }
-                            ]
-                          },
-                          {
-                            "kind": "lambda",
-                            "parameter": "acc: readonly [number, string]",
-                            "body": {
-                              "kind": "lambda",
-                              "parameter": "value: string",
-                              "body": {
-                                "kind": "decision",
-                                "scrutinee": {
-                                  "kind": "identifier",
-                                  "name": "acc"
-                                },
-                                "scrutineeType": {
-                                  "kind": "tuple",
-                                  "elements": [
-                                    {
-                                      "kind": "number"
-                                    },
-                                    {
-                                      "kind": "string"
-                                    }
-                                  ]
-                                },
-                                "branches": [
-                                  {
-                                    "tests": [],
-                                    "bindings": [
-                                      {
-                                        "name": "count",
-                                        "type": {
-                                          "kind": "number"
-                                        },
-                                        "path": [
-                                          {
-                                            "kind": "tuple-element",
-                                            "index": 0
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "name": "text",
-                                        "type": {
-                                          "kind": "string"
-                                        },
-                                        "path": [
-                                          {
-                                            "kind": "tuple-element",
-                                            "index": 1
-                                          }
-                                        ]
-                                      }
-                                    ],
-                                    "value": {
-                                      "kind": "conditional",
-                                      "condition": {
-                                        "kind": "dictionary-call",
-                                        "dictionary": {
-                                          "kind": "runtime-reference",
-                                          "name": "_ssrg_int_eq_dictionary"
-                                        },
-                                        "method": "eq",
-                                        "arguments": [
-                                          {
-                                            "kind": "identifier",
-                                            "name": "count"
-                                          },
-                                          {
-                                            "kind": "number",
-                                            "value": "2"
-                                          }
-                                        ]
-                                      },
-                                      "thenBranch": {
-                                        "kind": "runtime-call",
-                                        "callee": "_ssrg_collection_Done",
-                                        "arguments": [
-                                          {
-                                            "kind": "identifier",
-                                            "name": "acc"
-                                          }
-                                        ]
-                                      },
-                                      "elseBranch": {
-                                        "kind": "runtime-call",
-                                        "callee": "_ssrg_collection_Next",
-                                        "arguments": [
-                                          {
-                                            "kind": "tuple",
-                                            "elements": [
-                                              {
-                                                "kind": "runtime-call",
-                                                "callee": "_ssrg_int_add",
-                                                "arguments": [
-                                                  {
-                                                    "kind": "identifier",
-                                                    "name": "count"
-                                                  },
-                                                  {
-                                                    "kind": "number",
-                                                    "value": "1"
-                                                  }
-                                                ]
-                                              },
-                                              {
-                                                "kind": "dictionary-call",
-                                                "dictionary": {
-                                                  "kind": "runtime-reference",
-                                                  "name": "_ssrg_string_add_dictionary"
-                                                },
-                                                "method": "add",
-                                                "arguments": [
-                                                  {
-                                                    "kind": "identifier",
-                                                    "name": "text"
-                                                  },
-                                                  {
-                                                    "kind": "identifier",
-                                                    "name": "value"
-                                                  }
-                                                ]
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      }
-                                    }
-                                  }
-                                ],
-                                "type": {
-                                  "kind": "reference",
-                                  "name": "ReduceStep",
-                                  "arguments": [
-                                    {
-                                      "kind": "tuple",
-                                      "elements": [
-                                        {
-                                          "kind": "number"
-                                        },
-                                        {
-                                          "kind": "string"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "kind": "array",
-                            "elements": [
-                              {
-                                "kind": "string",
-                                "value": "a"
-                              },
-                              {
-                                "kind": "string",
-                                "value": "b"
-                              },
-                              {
-                                "kind": "string",
-                                "value": "c"
-                              },
-                              {
-                                "kind": "string",
-                                "value": "d"
-                              }
-                            ],
-                            "elementType": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_tupleShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "number"
+                            },
+                            {
                               "kind": "string"
                             }
-                          },
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_array_iterable"
-                          }
-                        ],
-                        "checkedCalleeType": {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "tuple",
-                            "elements": [
-                              {
-                                "kind": "number"
-                              },
-                              {
-                                "kind": "string"
-                              }
-                            ]
-                          },
-                          "result": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "tuple",
-                                "elements": [
-                                  {
-                                    "kind": "number"
-                                  },
-                                  {
-                                    "kind": "string"
-                                  }
-                                ]
-                              },
-                              "result": {
-                                "kind": "function",
-                                "parameter": {
-                                  "kind": "string"
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "call",
+                          "callee": "generic",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "number",
+                                  "value": "0"
                                 },
-                                "result": {
-                                  "kind": "reference",
-                                  "name": "ReduceStep",
-                                  "arguments": [
+                                {
+                                  "kind": "string",
+                                  "value": ""
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "lambda",
+                              "parameter": "acc: readonly [number, string]",
+                              "body": {
+                                "kind": "lambda",
+                                "parameter": "value: string",
+                                "body": {
+                                  "kind": "decision",
+                                  "scrutinee": {
+                                    "kind": "identifier",
+                                    "name": "acc"
+                                  },
+                                  "scrutineeType": {
+                                    "kind": "tuple",
+                                    "elements": [
+                                      {
+                                        "kind": "number"
+                                      },
+                                      {
+                                        "kind": "string"
+                                      }
+                                    ]
+                                  },
+                                  "branches": [
                                     {
-                                      "kind": "tuple",
-                                      "elements": [
+                                      "tests": [],
+                                      "bindings": [
                                         {
-                                          "kind": "number"
+                                          "name": "count",
+                                          "type": {
+                                            "kind": "number"
+                                          },
+                                          "path": [
+                                            {
+                                              "kind": "tuple-element",
+                                              "index": 0
+                                            }
+                                          ]
                                         },
                                         {
-                                          "kind": "string"
+                                          "name": "text",
+                                          "type": {
+                                            "kind": "string"
+                                          },
+                                          "path": [
+                                            {
+                                              "kind": "tuple-element",
+                                              "index": 1
+                                            }
+                                          ]
                                         }
-                                      ]
+                                      ],
+                                      "value": {
+                                        "kind": "conditional",
+                                        "condition": {
+                                          "kind": "dictionary-call",
+                                          "dictionary": {
+                                            "kind": "runtime-reference",
+                                            "name": "_ssrg_int_eq_dictionary"
+                                          },
+                                          "method": "eq",
+                                          "arguments": [
+                                            {
+                                              "kind": "identifier",
+                                              "name": "count"
+                                            },
+                                            {
+                                              "kind": "number",
+                                              "value": "2"
+                                            }
+                                          ]
+                                        },
+                                        "thenBranch": {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_collection_Done",
+                                          "arguments": [
+                                            {
+                                              "kind": "identifier",
+                                              "name": "acc"
+                                            }
+                                          ]
+                                        },
+                                        "elseBranch": {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_collection_Next",
+                                          "arguments": [
+                                            {
+                                              "kind": "tuple",
+                                              "elements": [
+                                                {
+                                                  "kind": "runtime-call",
+                                                  "callee": "_ssrg_int_add",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "count"
+                                                    },
+                                                    {
+                                                      "kind": "number",
+                                                      "value": "1"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "kind": "dictionary-call",
+                                                  "dictionary": {
+                                                    "kind": "runtime-reference",
+                                                    "name": "_ssrg_string_add_dictionary"
+                                                  },
+                                                  "method": "add",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "text"
+                                                    },
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "value"
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      }
                                     }
-                                  ]
+                                  ],
+                                  "type": {
+                                    "kind": "reference",
+                                    "name": "ReduceStep",
+                                    "arguments": [
+                                      {
+                                        "kind": "tuple",
+                                        "elements": [
+                                          {
+                                            "kind": "number"
+                                          },
+                                          {
+                                            "kind": "string"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
                                 }
                               }
+                            },
+                            {
+                              "kind": "array",
+                              "elements": [
+                                {
+                                  "kind": "string",
+                                  "value": "a"
+                                },
+                                {
+                                  "kind": "string",
+                                  "value": "b"
+                                },
+                                {
+                                  "kind": "string",
+                                  "value": "c"
+                                },
+                                {
+                                  "kind": "string",
+                                  "value": "d"
+                                }
+                              ],
+                              "elementType": {
+                                "kind": "string"
+                              }
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_array_iterable"
+                            }
+                          ],
+                          "checkedCalleeType": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "number"
+                                },
+                                {
+                                  "kind": "string"
+                                }
+                              ]
                             },
                             "result": {
                               "kind": "function",
                               "parameter": {
-                                "kind": "array",
-                                "element": {
-                                  "kind": "string"
-                                }
-                              },
-                              "result": {
                                 "kind": "function",
                                 "parameter": {
-                                  "kind": "unknown"
-                                },
-                                "result": {
                                   "kind": "tuple",
                                   "elements": [
                                     {
@@ -2536,25 +2514,77 @@
                                       "kind": "string"
                                     }
                                   ]
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "string"
+                                  },
+                                  "result": {
+                                    "kind": "reference",
+                                    "name": "ReduceStep",
+                                    "arguments": [
+                                      {
+                                        "kind": "tuple",
+                                        "elements": [
+                                          {
+                                            "kind": "number"
+                                          },
+                                          {
+                                            "kind": "string"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              "result": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "array",
+                                  "element": {
+                                    "kind": "string"
+                                  }
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "unknown"
+                                  },
+                                  "result": {
+                                    "kind": "tuple",
+                                    "elements": [
+                                      {
+                                        "kind": "number"
+                                      },
+                                      {
+                                        "kind": "string"
+                                      }
+                                    ]
+                                  }
                                 }
                               }
                             }
                           }
+                        },
+                        "type": {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "number"
+                            },
+                            {
+                              "kind": "string"
+                            }
+                          ]
                         }
-                      },
-                      "type": {
-                        "kind": "tuple",
-                        "elements": [
-                          {
-                            "kind": "number"
-                          },
-                          {
-                            "kind": "string"
-                          }
-                        ]
                       }
-                    }
-                  ]
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2566,74 +2596,80 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_tupleShow",
-                    "typeArguments": [
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_tupleShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "number"
+                            },
+                            {
+                              "kind": "string"
+                            }
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
                       {
                         "kind": "tuple",
                         "elements": [
                           {
-                            "kind": "number"
+                            "kind": "call",
+                            "callee": "unwrap",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_collection_Next",
+                                "arguments": [
+                                  {
+                                    "kind": "number",
+                                    "value": "7"
+                                  }
+                                ]
+                              }
+                            ]
                           },
                           {
-                            "kind": "string"
+                            "kind": "call",
+                            "callee": "unwrap",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_collection_Done",
+                                "arguments": [
+                                  {
+                                    "kind": "string",
+                                    "value": "done"
+                                  }
+                                ]
+                              }
+                            ]
                           }
                         ]
                       }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_stringShow"
-                      }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "call",
-                          "callee": "unwrap",
-                          "arguments": [
-                            {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_collection_Next",
-                              "arguments": [
-                                {
-                                  "kind": "number",
-                                  "value": "7"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "call",
-                          "callee": "unwrap",
-                          "arguments": [
-                            {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_collection_Done",
-                              "arguments": [
-                                {
-                                  "kind": "string",
-                                  "value": "done"
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2644,60 +2680,66 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "type-application-call",
-                "callee": "_ssrg_show_tupleShow",
-                "typeArguments": [
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_show_tupleShow",
+                  "typeArguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "number"
+                        },
+                        {
+                          "kind": "number"
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    }
+                  ]
+                },
+                "method": "show",
+                "arguments": [
                   {
                     "kind": "tuple",
                     "elements": [
                       {
-                        "kind": "number"
+                        "kind": "call",
+                        "callee": "partial",
+                        "arguments": [
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
                       },
                       {
-                        "kind": "number"
+                        "kind": "call",
+                        "callee": "callable",
+                        "arguments": [
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
                       }
                     ]
                   }
-                ],
-                "arguments": [
-                  {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_intShow"
-                  },
-                  {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_intShow"
-                  }
                 ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "tuple",
-                  "elements": [
-                    {
-                      "kind": "call",
-                      "callee": "partial",
-                      "arguments": [
-                        {
-                          "kind": "undefined"
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "call",
-                      "callee": "callable",
-                      "arguments": [
-                        {
-                          "kind": "undefined"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }

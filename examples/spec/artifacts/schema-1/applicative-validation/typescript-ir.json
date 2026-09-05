@@ -1230,64 +1230,39 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "__ssrg$instance$Applicative$1",
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "FormError",
-              "arguments": []
-            }
-          ],
-          "arguments": [
-            {
-              "kind": "type-application-call",
-              "callee": "__ssrg$instance$Functor$0",
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "FormError",
-                  "arguments": []
-                }
-              ],
-              "arguments": []
-            }
-          ]
-        },
-        "method": "apply",
-        "arguments": [
-          {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "type-application-call",
-              "callee": "__ssrg$instance$Applicative$1",
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "FormError",
-                  "arguments": []
-                }
-              ],
-              "arguments": [
-                {
-                  "kind": "type-application-call",
-                  "callee": "__ssrg$instance$Functor$0",
-                  "typeArguments": [
-                    {
-                      "kind": "reference",
-                      "name": "FormError",
-                      "arguments": []
-                    }
-                  ],
-                  "arguments": []
-                }
-              ]
-            },
-            "method": "apply",
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$Applicative$1",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "FormError",
+                "arguments": []
+              }
+            ],
             "arguments": [
               {
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Functor$0",
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "FormError",
+                    "arguments": []
+                  }
+                ],
+                "arguments": []
+              }
+            ]
+          },
+          "method": "apply",
+          "arguments": [
+            {
+              "kind": "checked-result",
+              "value": {
                 "kind": "dictionary-call",
                 "dictionary": {
                   "kind": "type-application-call",
@@ -1314,37 +1289,137 @@
                     }
                   ]
                 },
-                "method": "pure",
+                "method": "apply",
                 "arguments": [
                   {
-                    "kind": "identifier",
-                    "name": "makeUser"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "__ssrg$instance$Applicative$1",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "FormError",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "type-application-call",
+                            "callee": "__ssrg$instance$Functor$0",
+                            "typeArguments": [
+                              {
+                                "kind": "reference",
+                                "name": "FormError",
+                                "arguments": []
+                              }
+                            ],
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "method": "pure",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "makeUser"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "reference",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "reference",
+                          "name": "FormError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "string"
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "number"
+                            },
+                            "result": {
+                              "kind": "reference",
+                              "name": "User",
+                              "arguments": []
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "validateName",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "name"
+                      }
+                    ]
                   }
                 ]
               },
-              {
-                "kind": "call",
-                "callee": "validateName",
+              "type": {
+                "kind": "reference",
+                "name": "Validation",
                 "arguments": [
                   {
-                    "kind": "identifier",
-                    "name": "name"
+                    "kind": "reference",
+                    "name": "FormError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "number"
+                    },
+                    "result": {
+                      "kind": "reference",
+                      "name": "User",
+                      "arguments": []
+                    }
                   }
                 ]
               }
-            ]
-          },
-          {
-            "kind": "call",
-            "callee": "validateAge",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "age"
-              }
-            ]
-          }
-        ]
+            },
+            {
+              "kind": "call",
+              "callee": "validateAge",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "age"
+                }
+              ]
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "User",
+              "arguments": []
+            }
+          ]
+        }
       },
       "origin": {
         "source": "main.ssrg",

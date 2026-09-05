@@ -2566,48 +2566,57 @@
           }
         ],
         "result": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_maybe_applicative"
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_applicative"
+            },
+            "method": "pure",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_multiply",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int_add",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_int_add",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "left"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "right"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "offset"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "scale"
+                  }
+                ]
+              }
+            ]
           },
-          "method": "pure",
-          "arguments": [
-            {
-              "kind": "runtime-call",
-              "callee": "_ssrg_int_multiply",
-              "arguments": [
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_int_add",
-                  "arguments": [
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_int_add",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "left"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "right"
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "offset"
-                    }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "scale"
-                }
-              ]
+          "type": {
+            "kind": "maybe",
+            "element": {
+              "kind": "number"
             }
-          ]
+          }
         }
       },
       "origin": {
@@ -4271,41 +4280,52 @@
                   "callee": "renderMaybeProfile",
                   "arguments": [
                     {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_maybe_functor"
-                      },
-                      "method": "map",
-                      "arguments": [
-                        {
-                          "kind": "lambda",
-                          "parameter": "missing: string",
-                          "body": {
-                            "kind": "call",
-                            "callee": "Profile",
-                            "arguments": [
-                              {
-                                "kind": "tuple",
-                                "elements": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "missing"
-                                  },
-                                  {
-                                    "kind": "number",
-                                    "value": "0"
-                                  }
-                                ]
-                              }
-                            ]
-                          }
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_maybe_functor"
                         },
-                        {
-                          "kind": "identifier",
-                          "name": "missingName"
+                        "method": "map",
+                        "arguments": [
+                          {
+                            "kind": "lambda",
+                            "parameter": "missing: string",
+                            "body": {
+                              "kind": "call",
+                              "callee": "Profile",
+                              "arguments": [
+                                {
+                                  "kind": "tuple",
+                                  "elements": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "missing"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "0"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "missingName"
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "maybe",
+                        "element": {
+                          "kind": "reference",
+                          "name": "Profile",
+                          "arguments": []
                         }
-                      ]
+                      }
                     }
                   ]
                 }

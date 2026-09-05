@@ -768,18 +768,24 @@
                   "kind": "array",
                   "elements": [
                     {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Show$2"
-                      },
-                      "method": "show",
-                      "arguments": [
-                        {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
                           "kind": "identifier",
-                          "name": "user"
-                        }
-                      ]
+                          "name": "__ssrg$instance$Show$2"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "user"
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "string"
+                      }
                     }
                   ],
                   "elementType": {
@@ -819,42 +825,57 @@
               }
             ],
             "value": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_list_functor"
-              },
-              "method": "map",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "error: FormError",
-                  "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "identifier",
-                      "name": "__ssrg$instance$Show$0"
-                    },
-                    "method": "show",
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_list_functor"
+                },
+                "method": "map",
+                "arguments": [
+                  {
+                    "kind": "lambda",
+                    "parameter": "error: FormError",
+                    "body": {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "identifier",
+                          "name": "__ssrg$instance$Show$0"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "error"
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "string"
+                      }
+                    }
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_non_empty_list_toList",
                     "arguments": [
                       {
                         "kind": "identifier",
-                        "name": "error"
+                        "name": "errors"
                       }
                     ]
                   }
-                },
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_non_empty_list_toList",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "errors"
-                    }
-                  ]
+                ]
+              },
+              "type": {
+                "kind": "list",
+                "element": {
+                  "kind": "string"
                 }
-              ]
+              }
             }
           }
         ],
@@ -1064,58 +1085,133 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_validation_applicative"
-        },
-        "method": "apply",
-        "arguments": [
-          {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_validation_applicative"
-            },
-            "method": "apply",
-            "arguments": [
-              {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_validation_applicative"
+          },
+          "method": "apply",
+          "arguments": [
+            {
+              "kind": "checked-result",
+              "value": {
                 "kind": "dictionary-call",
                 "dictionary": {
                   "kind": "runtime-reference",
                   "name": "_ssrg_validation_applicative"
                 },
-                "method": "pure",
+                "method": "apply",
                 "arguments": [
                   {
-                    "kind": "identifier",
-                    "name": "makeUser"
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_validation_applicative"
+                      },
+                      "method": "pure",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "makeUser"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "reference",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "reference",
+                          "name": "FormError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "string"
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "number"
+                            },
+                            "result": {
+                              "kind": "reference",
+                              "name": "User",
+                              "arguments": []
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "validateName",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "name"
+                      }
+                    ]
                   }
                 ]
               },
-              {
-                "kind": "call",
-                "callee": "validateName",
+              "type": {
+                "kind": "reference",
+                "name": "Validation",
                 "arguments": [
                   {
-                    "kind": "identifier",
-                    "name": "name"
+                    "kind": "reference",
+                    "name": "FormError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "number"
+                    },
+                    "result": {
+                      "kind": "reference",
+                      "name": "User",
+                      "arguments": []
+                    }
                   }
                 ]
               }
-            ]
-          },
-          {
-            "kind": "call",
-            "callee": "validateAge",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "age"
-              }
-            ]
-          }
-        ]
+            },
+            {
+              "kind": "call",
+              "callee": "validateAge",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "age"
+                }
+              ]
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "User",
+              "arguments": []
+            }
+          ]
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -1253,40 +1349,46 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_show_validationShow",
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "E",
-              "arguments": []
-            },
-            {
-              "kind": "reference",
-              "name": "A",
-              "arguments": []
-            }
-          ],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_show_validationShow",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$1"
+              }
+            ]
+          },
+          "method": "show",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "__ssrg$evidence$0"
-            },
-            {
-              "kind": "identifier",
-              "name": "__ssrg$evidence$1"
+              "name": "value"
             }
           ]
         },
-        "method": "show",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -1334,40 +1436,46 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_debug_validationDebug",
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "E",
-              "arguments": []
-            },
-            {
-              "kind": "reference",
-              "name": "A",
-              "arguments": []
-            }
-          ],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_debug_validationDebug",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$1"
+              }
+            ]
+          },
+          "method": "debug",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "__ssrg$evidence$0"
-            },
-            {
-              "kind": "identifier",
-              "name": "__ssrg$evidence$1"
+              "name": "value"
             }
           ]
         },
-        "method": "debug",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -1915,18 +2023,24 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_show_boolShow"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_boolShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "same"
+                      }
+                    ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "same"
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2088,36 +2202,51 @@
               ]
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_validation_functor"
-              },
-              "method": "map",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "n: number",
-                  "body": {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_int_add",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "n"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "1"
-                      }
-                    ]
-                  }
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_validation_functor"
                 },
-                {
-                  "kind": "identifier",
-                  "name": "good"
-                }
-              ]
+                "method": "map",
+                "arguments": [
+                  {
+                    "kind": "lambda",
+                    "parameter": "n: number",
+                    "body": {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_add",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "n"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "good"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "string"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -2141,36 +2270,51 @@
               ]
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_validation_functor"
-              },
-              "method": "map",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "n: number",
-                  "body": {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_int_add",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "n"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "1"
-                      }
-                    ]
-                  }
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_validation_functor"
                 },
-                {
-                  "kind": "identifier",
-                  "name": "bad"
-                }
-              ]
+                "method": "map",
+                "arguments": [
+                  {
+                    "kind": "lambda",
+                    "parameter": "n: number",
+                    "body": {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_add",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "n"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "1"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "bad"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "string"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -2194,64 +2338,127 @@
               ]
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_validation_applicative"
-              },
-              "method": "apply",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_validation_applicative"
-                  },
-                  "method": "apply",
-                  "arguments": [
-                    {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_validation_applicative"
+                },
+                "method": "apply",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
                       "kind": "dictionary-call",
                       "dictionary": {
                         "kind": "runtime-reference",
                         "name": "_ssrg_validation_applicative"
                       },
-                      "method": "pure",
+                      "method": "apply",
                       "arguments": [
                         {
-                          "kind": "lambda",
-                          "parameter": "a: number",
-                          "body": {
-                            "kind": "lambda",
-                            "parameter": "b: number",
-                            "body": {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_int_add",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "a"
-                                },
-                                {
-                                  "kind": "identifier",
-                                  "name": "b"
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_validation_applicative"
+                            },
+                            "method": "pure",
+                            "arguments": [
+                              {
+                                "kind": "lambda",
+                                "parameter": "a: number",
+                                "body": {
+                                  "kind": "lambda",
+                                  "parameter": "b: number",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_int_add",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "a"
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "b"
+                                      }
+                                    ]
+                                  }
                                 }
-                              ]
-                            }
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "reference",
+                            "name": "Validation",
+                            "arguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "number"
+                                  },
+                                  "result": {
+                                    "kind": "number"
+                                  }
+                                }
+                              }
+                            ]
                           }
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "bad"
                         }
                       ]
                     },
-                    {
-                      "kind": "identifier",
-                      "name": "bad"
+                    "type": {
+                      "kind": "reference",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "string"
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "number"
+                          },
+                          "result": {
+                            "kind": "number"
+                          }
+                        }
+                      ]
                     }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "many"
-                }
-              ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "many"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "string"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -2275,64 +2482,127 @@
               ]
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_validation_applicative"
-              },
-              "method": "apply",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_validation_applicative"
-                  },
-                  "method": "apply",
-                  "arguments": [
-                    {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_validation_applicative"
+                },
+                "method": "apply",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
                       "kind": "dictionary-call",
                       "dictionary": {
                         "kind": "runtime-reference",
                         "name": "_ssrg_validation_applicative"
                       },
-                      "method": "pure",
+                      "method": "apply",
                       "arguments": [
                         {
-                          "kind": "lambda",
-                          "parameter": "a: number",
-                          "body": {
-                            "kind": "lambda",
-                            "parameter": "b: number",
-                            "body": {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_int_add",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "a"
-                                },
-                                {
-                                  "kind": "identifier",
-                                  "name": "b"
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_validation_applicative"
+                            },
+                            "method": "pure",
+                            "arguments": [
+                              {
+                                "kind": "lambda",
+                                "parameter": "a: number",
+                                "body": {
+                                  "kind": "lambda",
+                                  "parameter": "b: number",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_int_add",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "a"
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "b"
+                                      }
+                                    ]
+                                  }
                                 }
-                              ]
-                            }
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "reference",
+                            "name": "Validation",
+                            "arguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "number"
+                                  },
+                                  "result": {
+                                    "kind": "number"
+                                  }
+                                }
+                              }
+                            ]
                           }
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "good"
                         }
                       ]
                     },
-                    {
-                      "kind": "identifier",
-                      "name": "good"
+                    "type": {
+                      "kind": "reference",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "string"
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "number"
+                          },
+                          "result": {
+                            "kind": "number"
+                          }
+                        }
+                      ]
                     }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "bad"
-                }
-              ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "bad"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "string"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -2356,64 +2626,127 @@
               ]
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_validation_applicative"
-              },
-              "method": "apply",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_validation_applicative"
-                  },
-                  "method": "apply",
-                  "arguments": [
-                    {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_validation_applicative"
+                },
+                "method": "apply",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
                       "kind": "dictionary-call",
                       "dictionary": {
                         "kind": "runtime-reference",
                         "name": "_ssrg_validation_applicative"
                       },
-                      "method": "pure",
+                      "method": "apply",
                       "arguments": [
                         {
-                          "kind": "lambda",
-                          "parameter": "a: number",
-                          "body": {
-                            "kind": "lambda",
-                            "parameter": "b: number",
-                            "body": {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_int_add",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "a"
-                                },
-                                {
-                                  "kind": "identifier",
-                                  "name": "b"
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_validation_applicative"
+                            },
+                            "method": "pure",
+                            "arguments": [
+                              {
+                                "kind": "lambda",
+                                "parameter": "a: number",
+                                "body": {
+                                  "kind": "lambda",
+                                  "parameter": "b: number",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_int_add",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "a"
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "b"
+                                      }
+                                    ]
+                                  }
                                 }
-                              ]
-                            }
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "reference",
+                            "name": "Validation",
+                            "arguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "number"
+                                  },
+                                  "result": {
+                                    "kind": "number"
+                                  }
+                                }
+                              }
+                            ]
                           }
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "bad"
                         }
                       ]
                     },
-                    {
-                      "kind": "identifier",
-                      "name": "bad"
+                    "type": {
+                      "kind": "reference",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "string"
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "number"
+                          },
+                          "result": {
+                            "kind": "number"
+                          }
+                        }
+                      ]
                     }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "good"
-                }
-              ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "good"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "string"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -2437,64 +2770,127 @@
               ]
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_validation_applicative"
-              },
-              "method": "apply",
-              "arguments": [
-                {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_validation_applicative"
-                  },
-                  "method": "apply",
-                  "arguments": [
-                    {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_validation_applicative"
+                },
+                "method": "apply",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
                       "kind": "dictionary-call",
                       "dictionary": {
                         "kind": "runtime-reference",
                         "name": "_ssrg_validation_applicative"
                       },
-                      "method": "pure",
+                      "method": "apply",
                       "arguments": [
                         {
-                          "kind": "lambda",
-                          "parameter": "a: number",
-                          "body": {
-                            "kind": "lambda",
-                            "parameter": "b: number",
-                            "body": {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_int_add",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "a"
-                                },
-                                {
-                                  "kind": "identifier",
-                                  "name": "b"
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_validation_applicative"
+                            },
+                            "method": "pure",
+                            "arguments": [
+                              {
+                                "kind": "lambda",
+                                "parameter": "a: number",
+                                "body": {
+                                  "kind": "lambda",
+                                  "parameter": "b: number",
+                                  "body": {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_int_add",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "a"
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "b"
+                                      }
+                                    ]
+                                  }
                                 }
-                              ]
-                            }
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "reference",
+                            "name": "Validation",
+                            "arguments": [
+                              {
+                                "kind": "string"
+                              },
+                              {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "number"
+                                  },
+                                  "result": {
+                                    "kind": "number"
+                                  }
+                                }
+                              }
+                            ]
                           }
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "good"
                         }
                       ]
                     },
-                    {
-                      "kind": "identifier",
-                      "name": "good"
+                    "type": {
+                      "kind": "reference",
+                      "name": "Validation",
+                      "arguments": [
+                        {
+                          "kind": "string"
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "number"
+                          },
+                          "result": {
+                            "kind": "number"
+                          }
+                        }
+                      ]
                     }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "good"
-                }
-              ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "good"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Validation",
+                "arguments": [
+                  {
+                    "kind": "string"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -2803,156 +3199,162 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_tupleShow",
-                    "typeArguments": [
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_tupleShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "either",
+                              "error": {
+                                "kind": "reference",
+                                "name": "NonEmptyList",
+                                "arguments": [
+                                  {
+                                    "kind": "string"
+                                  }
+                                ]
+                              },
+                              "value": {
+                                "kind": "number"
+                              }
+                            },
+                            {
+                              "kind": "either",
+                              "error": {
+                                "kind": "reference",
+                                "name": "NonEmptyList",
+                                "arguments": [
+                                  {
+                                    "kind": "string"
+                                  }
+                                ]
+                              },
+                              "value": {
+                                "kind": "number"
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_eitherShow",
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "NonEmptyList",
+                              "arguments": [
+                                {
+                                  "kind": "string"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "type-application-call",
+                              "callee": "_ssrg_show_nonEmptyListShow",
+                              "typeArguments": [
+                                {
+                                  "kind": "string"
+                                }
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_stringShow"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_eitherShow",
+                          "typeArguments": [
+                            {
+                              "kind": "reference",
+                              "name": "NonEmptyList",
+                              "arguments": [
+                                {
+                                  "kind": "string"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "type-application-call",
+                              "callee": "_ssrg_show_nonEmptyListShow",
+                              "typeArguments": [
+                                {
+                                  "kind": "string"
+                                }
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_stringShow"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
                       {
                         "kind": "tuple",
                         "elements": [
                           {
-                            "kind": "either",
-                            "error": {
-                              "kind": "reference",
-                              "name": "NonEmptyList",
-                              "arguments": [
-                                {
-                                  "kind": "string"
-                                }
-                              ]
-                            },
-                            "value": {
-                              "kind": "number"
-                            }
-                          },
-                          {
-                            "kind": "either",
-                            "error": {
-                              "kind": "reference",
-                              "name": "NonEmptyList",
-                              "arguments": [
-                                {
-                                  "kind": "string"
-                                }
-                              ]
-                            },
-                            "value": {
-                              "kind": "number"
-                            }
-                          }
-                        ]
-                      }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "type-application-call",
-                        "callee": "_ssrg_show_eitherShow",
-                        "typeArguments": [
-                          {
-                            "kind": "reference",
-                            "name": "NonEmptyList",
+                            "kind": "call",
+                            "callee": "convertString",
                             "arguments": [
                               {
-                                "kind": "string"
+                                "kind": "identifier",
+                                "name": "left"
                               }
                             ]
                           },
                           {
-                            "kind": "number"
-                          }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "type-application-call",
-                            "callee": "_ssrg_show_nonEmptyListShow",
-                            "typeArguments": [
-                              {
-                                "kind": "string"
-                              }
-                            ],
+                            "kind": "call",
+                            "callee": "convertString",
                             "arguments": [
                               {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_show_stringShow"
+                                "kind": "identifier",
+                                "name": "right"
                               }
                             ]
-                          },
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_show_intShow"
-                          }
-                        ]
-                      },
-                      {
-                        "kind": "type-application-call",
-                        "callee": "_ssrg_show_eitherShow",
-                        "typeArguments": [
-                          {
-                            "kind": "reference",
-                            "name": "NonEmptyList",
-                            "arguments": [
-                              {
-                                "kind": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "kind": "number"
-                          }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "type-application-call",
-                            "callee": "_ssrg_show_nonEmptyListShow",
-                            "typeArguments": [
-                              {
-                                "kind": "string"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_show_stringShow"
-                              }
-                            ]
-                          },
-                          {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_show_intShow"
                           }
                         ]
                       }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "call",
-                          "callee": "convertString",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "left"
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "call",
-                          "callee": "convertString",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "right"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -2964,59 +3366,65 @@
               "callee": "_ssrg_console_println",
               "arguments": [
                 {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_eitherShow",
-                    "typeArguments": [
-                      {
-                        "kind": "reference",
-                        "name": "NonEmptyList",
-                        "arguments": [
-                          {
-                            "kind": "string"
-                          }
-                        ]
-                      },
-                      {
-                        "kind": "number"
-                      }
-                    ],
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_eitherShow",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "NonEmptyList",
+                          "arguments": [
+                            {
+                              "kind": "string"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_nonEmptyListShow",
+                          "typeArguments": [
+                            {
+                              "kind": "string"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_stringShow"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
                     "arguments": [
                       {
-                        "kind": "type-application-call",
-                        "callee": "_ssrg_show_nonEmptyListShow",
-                        "typeArguments": [
-                          {
-                            "kind": "string"
-                          }
-                        ],
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_validation_toEither",
                         "arguments": [
                           {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_show_stringShow"
+                            "kind": "identifier",
+                            "name": "bad"
                           }
                         ]
-                      },
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_intShow"
                       }
                     ]
                   },
-                  "method": "show",
-                  "arguments": [
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_validation_toEither",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "bad"
-                        }
-                      ]
-                    }
-                  ]
+                  "type": {
+                    "kind": "string"
+                  }
                 }
               ]
             }
@@ -3027,23 +3435,29 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_show_intShow"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "callable",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                ]
               },
-              "method": "show",
-              "arguments": [
-                {
-                  "kind": "call",
-                  "callee": "callable",
-                  "arguments": [
-                    {
-                      "kind": "undefined"
-                    }
-                  ]
-                }
-              ]
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }

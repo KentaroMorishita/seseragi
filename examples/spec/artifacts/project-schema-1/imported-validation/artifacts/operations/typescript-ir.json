@@ -757,46 +757,127 @@
           }
         ],
         "result": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_validation_applicative"
-          },
-          "method": "apply",
-          "arguments": [
-            {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_validation_applicative"
-              },
-              "method": "apply",
-              "arguments": [
-                {
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_validation_applicative"
+            },
+            "method": "apply",
+            "arguments": [
+              {
+                "kind": "checked-result",
+                "value": {
                   "kind": "dictionary-call",
                   "dictionary": {
                     "kind": "runtime-reference",
                     "name": "_ssrg_validation_applicative"
                   },
-                  "method": "pure",
+                  "method": "apply",
                   "arguments": [
                     {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_validation_applicative"
+                        },
+                        "method": "pure",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "f"
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "reference",
+                        "name": "Validation",
+                        "arguments": [
+                          {
+                            "kind": "reference",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "reference",
+                                "name": "B",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "reference",
+                                "name": "C",
+                                "arguments": []
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
                       "kind": "identifier",
-                      "name": "f"
+                      "name": "left"
                     }
                   ]
                 },
-                {
-                  "kind": "identifier",
-                  "name": "left"
+                "type": {
+                  "kind": "reference",
+                  "name": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "reference",
+                        "name": "C",
+                        "arguments": []
+                      }
+                    }
+                  ]
                 }
-              ]
-            },
-            {
-              "kind": "identifier",
-              "name": "right"
-            }
-          ]
+              },
+              {
+                "kind": "identifier",
+                "name": "right"
+              }
+            ]
+          },
+          "type": {
+            "kind": "reference",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "reference",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "reference",
+                "name": "C",
+                "arguments": []
+              }
+            ]
+          }
         }
       },
       "origin": {
@@ -935,40 +1016,46 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_show_validationShow",
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "E",
-              "arguments": []
-            },
-            {
-              "kind": "reference",
-              "name": "A",
-              "arguments": []
-            }
-          ],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_show_validationShow",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$1"
+              }
+            ]
+          },
+          "method": "show",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "__ssrg$evidence$0"
-            },
-            {
-              "kind": "identifier",
-              "name": "__ssrg$evidence$1"
+              "name": "value"
             }
           ]
         },
-        "method": "show",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "operations.ssrg",
@@ -1016,40 +1103,46 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_debug_validationDebug",
-          "typeArguments": [
-            {
-              "kind": "reference",
-              "name": "E",
-              "arguments": []
-            },
-            {
-              "kind": "reference",
-              "name": "A",
-              "arguments": []
-            }
-          ],
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_debug_validationDebug",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "E",
+                "arguments": []
+              },
+              {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$1"
+              }
+            ]
+          },
+          "method": "debug",
           "arguments": [
             {
               "kind": "identifier",
-              "name": "__ssrg$evidence$0"
-            },
-            {
-              "kind": "identifier",
-              "name": "__ssrg$evidence$1"
+              "name": "value"
             }
           ]
         },
-        "method": "debug",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "operations.ssrg",

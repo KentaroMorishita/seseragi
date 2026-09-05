@@ -1,3 +1,4 @@
+use crate::typescript::types::TypeScriptTypeContext;
 use crate::{
     CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr,
     CorePattern, CoreType,
@@ -21,7 +22,7 @@ pub(super) struct TypeScriptPatternDecision {
 
 pub(super) fn lower_core_pattern_decision(
     pattern: CorePattern,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptPatternDecision {
     let scrutinee_type = type_ref_from_core_type(&core_pattern_type(&pattern), imported_types);
     let mut tests = Vec::new();
@@ -46,7 +47,7 @@ pub(super) fn lower_core_decision(
     branches: Vec<CoreDecisionBranch>,
     type_ref: CoreType,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
     TypeScriptExpr::Decision {
         scrutinee: Box::new(lower_core_expr_to_typescript(
@@ -66,7 +67,7 @@ pub(super) fn lower_core_decision(
 fn lower_branch(
     branch: CoreDecisionBranch,
     imported_values: &BTreeMap<String, String>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptDecisionBranch {
     TypeScriptDecisionBranch {
         tests: branch.tests.into_iter().map(lower_test).collect(),
@@ -84,7 +85,7 @@ fn lower_branch(
 
 fn lower_binding(
     binding: CoreDecisionBinding,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptDecisionBinding {
     TypeScriptDecisionBinding {
         name: safe_identifier(&binding.name),
@@ -182,7 +183,7 @@ fn lower_pattern(
     path: &mut Vec<TypeScriptDecisionProjection>,
     tests: &mut Vec<TypeScriptDecisionTest>,
     bindings: &mut Vec<TypeScriptDecisionBinding>,
-    imported_types: &BTreeMap<String, String>,
+    imported_types: &TypeScriptTypeContext,
 ) {
     match pattern {
         CorePattern::Integer { value, .. } => tests.push(TypeScriptDecisionTest::NumberEquals {

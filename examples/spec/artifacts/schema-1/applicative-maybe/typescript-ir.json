@@ -430,22 +430,28 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "map",
-        "arguments": [
-          {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
             "kind": "identifier",
-            "name": "f"
+            "name": "__ssrg$evidence$0"
           },
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+          "method": "map",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "f"
+            },
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "type": {
+          "kind": "unknown"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -491,22 +497,28 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "apply",
-        "arguments": [
-          {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
             "kind": "identifier",
-            "name": "wrapped"
+            "name": "__ssrg$evidence$0"
           },
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+          "method": "apply",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "wrapped"
+            },
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "type": {
+          "kind": "unknown"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -546,18 +558,24 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "pure",
-        "arguments": [
-          {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
             "kind": "identifier",
-            "name": "value"
-          }
-        ]
+            "name": "__ssrg$evidence$0"
+          },
+          "method": "pure",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "type": {
+          "kind": "unknown"
+        }
       },
       "origin": {
         "source": "main.ssrg",

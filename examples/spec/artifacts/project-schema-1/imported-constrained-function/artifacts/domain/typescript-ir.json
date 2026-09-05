@@ -34,18 +34,24 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "ready",
-        "arguments": [
-          {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
             "kind": "identifier",
-            "name": "value"
-          }
-        ]
+            "name": "__ssrg$evidence$0"
+          },
+          "method": "ready",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "domain.ssrg",

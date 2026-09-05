@@ -672,22 +672,28 @@
       "body": {
         "kind": "decision",
         "scrutinee": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "identifier",
-            "name": "__ssrg$evidence$0"
-          },
-          "method": "compare",
-          "arguments": [
-            {
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
               "kind": "identifier",
-              "name": "a"
+              "name": "__ssrg$evidence$0"
             },
-            {
-              "kind": "identifier",
-              "name": "b"
-            }
-          ]
+            "method": "compare",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "a"
+              },
+              {
+                "kind": "identifier",
+                "name": "b"
+              }
+            ]
+          },
+          "type": {
+            "kind": "ordering"
+          }
         },
         "scrutineeType": {
           "kind": "ordering"
@@ -765,18 +771,24 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "debug",
-        "arguments": [
-          {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
             "kind": "identifier",
-            "name": "value"
-          }
-        ]
+            "name": "__ssrg$evidence$0"
+          },
+          "method": "debug",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -1891,32 +1903,41 @@
                             "method": "show",
                             "arguments": [
                               {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_maybe_functor"
-                                },
-                                "method": "map",
-                                "arguments": [
-                                  {
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
                                     "kind": "runtime-reference",
-                                    "name": "_ssrg_unicode_simpleCaseFold"
+                                    "name": "_ssrg_maybe_functor"
                                   },
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_text_scalarAt",
-                                    "arguments": [
-                                      {
-                                        "kind": "number",
-                                        "value": "0"
-                                      },
-                                      {
-                                        "kind": "string",
-                                        "value": "Σ"
-                                      }
-                                    ]
+                                  "method": "map",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_unicode_simpleCaseFold"
+                                    },
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_text_scalarAt",
+                                      "arguments": [
+                                        {
+                                          "kind": "number",
+                                          "value": "0"
+                                        },
+                                        {
+                                          "kind": "string",
+                                          "value": "Σ"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "type": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "string"
                                   }
-                                ]
+                                }
                               }
                             ]
                           }
@@ -2110,32 +2131,43 @@
                                         "method": "show",
                                         "arguments": [
                                           {
-                                            "kind": "dictionary-call",
-                                            "dictionary": {
-                                              "kind": "runtime-reference",
-                                              "name": "_ssrg_maybe_functor"
-                                            },
-                                            "method": "map",
-                                            "arguments": [
-                                              {
+                                            "kind": "checked-result",
+                                            "value": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
                                                 "kind": "runtime-reference",
-                                                "name": "_ssrg_unicode_generalCategory"
+                                                "name": "_ssrg_maybe_functor"
                                               },
-                                              {
-                                                "kind": "runtime-call",
-                                                "callee": "_ssrg_text_scalarAt",
-                                                "arguments": [
-                                                  {
-                                                    "kind": "number",
-                                                    "value": "0"
-                                                  },
-                                                  {
-                                                    "kind": "string",
-                                                    "value": "A"
-                                                  }
-                                                ]
+                                              "method": "map",
+                                              "arguments": [
+                                                {
+                                                  "kind": "runtime-reference",
+                                                  "name": "_ssrg_unicode_generalCategory"
+                                                },
+                                                {
+                                                  "kind": "runtime-call",
+                                                  "callee": "_ssrg_text_scalarAt",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "number",
+                                                      "value": "0"
+                                                    },
+                                                    {
+                                                      "kind": "string",
+                                                      "value": "A"
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            "type": {
+                                              "kind": "maybe",
+                                              "element": {
+                                                "kind": "reference",
+                                                "name": "UnicodeGeneralCategory",
+                                                "arguments": []
                                               }
-                                            ]
+                                            }
                                           }
                                         ]
                                       }
@@ -2165,32 +2197,41 @@
                                     "method": "show",
                                     "arguments": [
                                       {
-                                        "kind": "dictionary-call",
-                                        "dictionary": {
-                                          "kind": "runtime-reference",
-                                          "name": "_ssrg_maybe_functor"
-                                        },
-                                        "method": "map",
-                                        "arguments": [
-                                          {
+                                        "kind": "checked-result",
+                                        "value": {
+                                          "kind": "dictionary-call",
+                                          "dictionary": {
                                             "kind": "runtime-reference",
-                                            "name": "_ssrg_unicode_isAlphabetic"
+                                            "name": "_ssrg_maybe_functor"
                                           },
-                                          {
-                                            "kind": "runtime-call",
-                                            "callee": "_ssrg_text_scalarAt",
-                                            "arguments": [
-                                              {
-                                                "kind": "number",
-                                                "value": "0"
-                                              },
-                                              {
-                                                "kind": "string",
-                                                "value": "ͅ"
-                                              }
-                                            ]
+                                          "method": "map",
+                                          "arguments": [
+                                            {
+                                              "kind": "runtime-reference",
+                                              "name": "_ssrg_unicode_isAlphabetic"
+                                            },
+                                            {
+                                              "kind": "runtime-call",
+                                              "callee": "_ssrg_text_scalarAt",
+                                              "arguments": [
+                                                {
+                                                  "kind": "number",
+                                                  "value": "0"
+                                                },
+                                                {
+                                                  "kind": "string",
+                                                  "value": "ͅ"
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        "type": {
+                                          "kind": "maybe",
+                                          "element": {
+                                            "kind": "boolean"
                                           }
-                                        ]
+                                        }
                                       }
                                     ]
                                   }
@@ -2220,32 +2261,41 @@
                                 "method": "show",
                                 "arguments": [
                                   {
-                                    "kind": "dictionary-call",
-                                    "dictionary": {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_maybe_functor"
-                                    },
-                                    "method": "map",
-                                    "arguments": [
-                                      {
+                                    "kind": "checked-result",
+                                    "value": {
+                                      "kind": "dictionary-call",
+                                      "dictionary": {
                                         "kind": "runtime-reference",
-                                        "name": "_ssrg_unicode_isWhitespace"
+                                        "name": "_ssrg_maybe_functor"
                                       },
-                                      {
-                                        "kind": "runtime-call",
-                                        "callee": "_ssrg_text_scalarAt",
-                                        "arguments": [
-                                          {
-                                            "kind": "number",
-                                            "value": "0"
-                                          },
-                                          {
-                                            "kind": "string",
-                                            "value": ""
-                                          }
-                                        ]
+                                      "method": "map",
+                                      "arguments": [
+                                        {
+                                          "kind": "runtime-reference",
+                                          "name": "_ssrg_unicode_isWhitespace"
+                                        },
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_text_scalarAt",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "0"
+                                            },
+                                            {
+                                              "kind": "string",
+                                              "value": ""
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "kind": "maybe",
+                                      "element": {
+                                        "kind": "boolean"
                                       }
-                                    ]
+                                    }
                                   }
                                 ]
                               }
@@ -2275,32 +2325,41 @@
                             "method": "show",
                             "arguments": [
                               {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_maybe_functor"
-                                },
-                                "method": "map",
-                                "arguments": [
-                                  {
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
                                     "kind": "runtime-reference",
-                                    "name": "_ssrg_unicode_isWhitespace"
+                                    "name": "_ssrg_maybe_functor"
                                   },
-                                  {
-                                    "kind": "runtime-call",
-                                    "callee": "_ssrg_text_scalarAt",
-                                    "arguments": [
-                                      {
-                                        "kind": "number",
-                                        "value": "0"
-                                      },
-                                      {
-                                        "kind": "string",
-                                        "value": "﻿"
-                                      }
-                                    ]
+                                  "method": "map",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_unicode_isWhitespace"
+                                    },
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_text_scalarAt",
+                                      "arguments": [
+                                        {
+                                          "kind": "number",
+                                          "value": "0"
+                                        },
+                                        {
+                                          "kind": "string",
+                                          "value": "﻿"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "type": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "boolean"
                                   }
-                                ]
+                                }
                               }
                             ]
                           }
@@ -2330,32 +2389,41 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_maybe_functor"
-                            },
-                            "method": "map",
-                            "arguments": [
-                              {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
                                 "kind": "runtime-reference",
-                                "name": "_ssrg_unicode_isDecimalDigit"
+                                "name": "_ssrg_maybe_functor"
                               },
-                              {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_text_scalarAt",
-                                "arguments": [
-                                  {
-                                    "kind": "number",
-                                    "value": "0"
-                                  },
-                                  {
-                                    "kind": "string",
-                                    "value": "٣"
-                                  }
-                                ]
+                              "method": "map",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_unicode_isDecimalDigit"
+                                },
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_text_scalarAt",
+                                  "arguments": [
+                                    {
+                                      "kind": "number",
+                                      "value": "0"
+                                    },
+                                    {
+                                      "kind": "string",
+                                      "value": "٣"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "maybe",
+                              "element": {
+                                "kind": "boolean"
                               }
-                            ]
+                            }
                           }
                         ]
                       }
@@ -2385,32 +2453,41 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_maybe_functor"
-                        },
-                        "method": "map",
-                        "arguments": [
-                          {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
                             "kind": "runtime-reference",
-                            "name": "_ssrg_unicode_isMark"
+                            "name": "_ssrg_maybe_functor"
                           },
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_text_scalarAt",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "0"
-                              },
-                              {
-                                "kind": "string",
-                                "value": "́"
-                              }
-                            ]
+                          "method": "map",
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_unicode_isMark"
+                            },
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_text_scalarAt",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "0"
+                                },
+                                {
+                                  "kind": "string",
+                                  "value": "́"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "boolean"
                           }
-                        ]
+                        }
                       }
                     ]
                   }
@@ -2469,32 +2546,41 @@
                                 "method": "show",
                                 "arguments": [
                                   {
-                                    "kind": "dictionary-call",
-                                    "dictionary": {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_maybe_functor"
-                                    },
-                                    "method": "map",
-                                    "arguments": [
-                                      {
+                                    "kind": "checked-result",
+                                    "value": {
+                                      "kind": "dictionary-call",
+                                      "dictionary": {
                                         "kind": "runtime-reference",
-                                        "name": "_ssrg_char_codePoint"
+                                        "name": "_ssrg_maybe_functor"
                                       },
-                                      {
-                                        "kind": "runtime-call",
-                                        "callee": "_ssrg_text_scalarAt",
-                                        "arguments": [
-                                          {
-                                            "kind": "number",
-                                            "value": "1"
-                                          },
-                                          {
-                                            "kind": "identifier",
-                                            "name": "source"
-                                          }
-                                        ]
+                                      "method": "map",
+                                      "arguments": [
+                                        {
+                                          "kind": "runtime-reference",
+                                          "name": "_ssrg_char_codePoint"
+                                        },
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_text_scalarAt",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "1"
+                                            },
+                                            {
+                                              "kind": "identifier",
+                                              "name": "source"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "kind": "maybe",
+                                      "element": {
+                                        "kind": "number"
                                       }
-                                    ]
+                                    }
                                   }
                                 ]
                               }
@@ -2598,32 +2684,41 @@
                     "method": "show",
                     "arguments": [
                       {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_maybe_functor"
-                        },
-                        "method": "map",
-                        "arguments": [
-                          {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
                             "kind": "runtime-reference",
-                            "name": "_ssrg_char_toString"
+                            "name": "_ssrg_maybe_functor"
                           },
-                          {
-                            "kind": "runtime-call",
-                            "callee": "_ssrg_text_scalarAt",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "1"
-                              },
-                              {
-                                "kind": "identifier",
-                                "name": "source"
-                              }
-                            ]
+                          "method": "map",
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_char_toString"
+                            },
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_text_scalarAt",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "1"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "source"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "string"
                           }
-                        ]
+                        }
                       }
                     ]
                   }

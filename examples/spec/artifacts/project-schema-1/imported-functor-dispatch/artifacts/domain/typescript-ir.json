@@ -213,22 +213,28 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "map",
-        "arguments": [
-          {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
             "kind": "identifier",
-            "name": "increment"
+            "name": "__ssrg$evidence$0"
           },
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+          "method": "map",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "increment"
+            },
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "type": {
+          "kind": "unknown"
+        }
       },
       "origin": {
         "source": "domain.ssrg",

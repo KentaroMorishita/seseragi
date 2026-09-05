@@ -1,3 +1,4 @@
+use crate::typescript::types::TypeScriptTypeContext;
 use std::collections::BTreeMap;
 
 use crate::{
@@ -182,7 +183,7 @@ pub(super) fn lower_core_instances_to_typescript(
     structs: &[CoreStruct],
     imported_instance_names: &BTreeMap<(String, String), String>,
     imported_value_names: &BTreeMap<String, String>,
-    imported_type_names: &BTreeMap<String, String>,
+    imported_type_names: &TypeScriptTypeContext,
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
     type_imports: &mut Vec<TypeScriptTypeImport>,
@@ -299,13 +300,14 @@ pub(super) fn lower_core_instances_to_typescript(
         .collect()
 }
 
+#[derive(Clone, Copy)]
 struct InstanceLoweringContext<'a> {
     adts: &'a [CoreAdt],
     structs: &'a [CoreStruct],
     dictionary_exports: &'a BTreeMap<&'a str, String>,
     imported_instance_names: &'a BTreeMap<(String, String), String>,
     imported_value_names: &'a BTreeMap<String, String>,
-    imported_type_names: &'a BTreeMap<String, String>,
+    imported_type_names: &'a TypeScriptTypeContext,
 }
 
 fn lower_instance(
@@ -315,6 +317,13 @@ fn lower_instance(
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
 ) -> TypeScriptInstance {
+    let scoped_types = context
+        .imported_type_names
+        .with_parameters(&instance.type_parameters);
+    let context = &InstanceLoweringContext {
+        imported_type_names: &scoped_types,
+        ..*context
+    };
     let implementation = match &instance.implementation {
         CoreInstanceImplementation::DerivedShow {
             adt_symbol,
@@ -597,6 +606,9 @@ fn lower_method(
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
 ) -> TypeScriptInstanceMethod {
+    let scoped_types = context
+        .imported_type_names
+        .with_parameters(&method.type_parameters);
     let type_constructor_parameters = method
         .type_parameters
         .iter()
@@ -611,7 +623,7 @@ fn lower_method(
     let body = lower_core_expr_to_typescript(
         method.body.clone(),
         context.imported_value_names,
-        context.imported_type_names,
+        &scoped_types,
     );
     TypeScriptInstanceMethod {
         name: method.name.clone(),
@@ -625,7 +637,7 @@ fn lower_method(
                 arguments: constraint
                     .arguments
                     .iter()
-                    .map(|argument| type_ref_from_core_type(argument, context.imported_type_names))
+                    .map(|argument| type_ref_from_core_type(argument, &scoped_types))
                     .collect(),
             })
             .collect(),
@@ -637,7 +649,7 @@ fn lower_method(
             .map(|parameter| {
                 lower_core_parameter_to_typescript(
                     parameter,
-                    context.imported_type_names,
+                    &scoped_types,
                     &type_constructor_parameters,
                 )
             })

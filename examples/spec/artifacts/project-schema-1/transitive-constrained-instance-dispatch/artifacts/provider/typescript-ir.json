@@ -147,18 +147,24 @@
                     }
                   ],
                   "value": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "identifier",
-                      "name": "__ssrg$evidence$0"
-                    },
-                    "method": "ready",
-                    "arguments": [
-                      {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
                         "kind": "identifier",
-                        "name": "item"
-                      }
-                    ]
+                        "name": "__ssrg$evidence$0"
+                      },
+                      "method": "ready",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "item"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
                   }
                 }
               ],
@@ -205,18 +211,24 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "inspect",
-        "arguments": [
-          {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
             "kind": "identifier",
-            "name": "value"
-          }
-        ]
+            "name": "__ssrg$evidence$0"
+          },
+          "method": "inspect",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "provider.ssrg",

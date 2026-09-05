@@ -12,13 +12,13 @@ export type Snapshot = {
   readonly "inverted": boolean;
   readonly [__ssrg$brand$Snapshot]: true;
 };
-export const __ssrg$instance$Render$0 = { "render": (value: number) => _ssrg_show_intShow["show"](value) } as const;
+export const __ssrg$instance$Render$0 = { "render": (value: number) => ((_ssrg_show_intShow["show"](value)) as string) } as const;
 export const negateInt = (value: number) => _ssrg_int_subtract(0, value)
 export const negateFloat = (value: number) => -(value)
 export const invert = (value: boolean) => !(value)
 const identity = <A,>(value: A) => value
 const __ssrg$operator$3c7e3e = (left: number) => (right: number) => _ssrg_int_subtract(left, right)
-export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println("first"), () => _ssrg_effect_flatMap(_ssrg_console_println(_ssrg_debug_intDebug["debug"](identity(_ssrg_int_subtract(0, 1)))), () => _ssrg_effect_flatMap(_ssrg_console_println(_ssrg_show_intShow["show"](_ssrg_int_subtract(0, 1))), () => _ssrg_effect_flatMap(_ssrg_console_println(__ssrg$instance$Render$0["render"](_ssrg_int_subtract(0, 2))), () => _ssrg_effect_flatMap(_ssrg_console_println(_ssrg_show_floatShow["show"](-(2.5))), () => _ssrg_effect_flatMap(_ssrg_console_println(_ssrg_debug_boolDebug["debug"](!(true))), () => _ssrg_effect_flatMap(_ssrg_console_println(_ssrg_debug_intDebug["debug"](_ssrg_int_subtract(0, 3))), () => _ssrg_effect_flatMap(_ssrg_console_println(_ssrg_debug_arrayDebug<number>(_ssrg_debug_intDebug)["debug"]([_ssrg_int_subtract(0, 4), _ssrg_int_subtract(0, 5)])), () => _ssrg_console_println(_ssrg_debug_intDebug["debug"](__ssrg$operator$3c7e3e(_ssrg_int_subtract(0, 5))(2)))))))))))
+export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println("first"), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_intDebug["debug"](identity(_ssrg_int_subtract(0, 1)))) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_show_intShow["show"](_ssrg_int_subtract(0, 1))) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((__ssrg$instance$Render$0["render"](_ssrg_int_subtract(0, 2))) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_show_floatShow["show"](-(2.5))) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_boolDebug["debug"](!(true))) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_intDebug["debug"](_ssrg_int_subtract(0, 3))) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_arrayDebug<number>(_ssrg_debug_intDebug)["debug"]([_ssrg_int_subtract(0, 4), _ssrg_int_subtract(0, 5)])) as string)), () => _ssrg_console_println(((_ssrg_debug_intDebug["debug"](__ssrg$operator$3c7e3e(_ssrg_int_subtract(0, 5))(2))) as string))))))))))
 export const negative: number = _ssrg_int_subtract(0, 2);
 export const negativeZero: number = -(0.0);
 export const inverted: boolean = !(true);

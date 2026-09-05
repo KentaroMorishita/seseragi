@@ -545,22 +545,30 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "append",
-        "arguments": [
-          {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
             "kind": "identifier",
-            "name": "left"
+            "name": "__ssrg$evidence$0"
           },
-          {
-            "kind": "identifier",
-            "name": "right"
-          }
-        ]
+          "method": "append",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "left"
+            },
+            {
+              "kind": "identifier",
+              "name": "right"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "A",
+          "arguments": []
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -621,22 +629,28 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_string_semigroup"
-        },
-        "method": "append",
-        "arguments": [
-          {
-            "kind": "string",
-            "value": "semi"
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_semigroup"
           },
-          {
-            "kind": "string",
-            "value": "group"
-          }
-        ]
+          "method": "append",
+          "arguments": [
+            {
+              "kind": "string",
+              "value": "semi"
+            },
+            {
+              "kind": "string",
+              "value": "group"
+            }
+          ]
+        },
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -656,38 +670,47 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_array_semigroup"
-        },
-        "method": "append",
-        "arguments": [
-          {
-            "kind": "array",
-            "elements": [
-              {
-                "kind": "string",
-                "value": "array"
-              }
-            ],
-            "elementType": {
-              "kind": "string"
-            }
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_semigroup"
           },
-          {
-            "kind": "array",
-            "elements": [
-              {
-                "kind": "string",
-                "value": "append"
+          "method": "append",
+          "arguments": [
+            {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "string",
+                  "value": "array"
+                }
+              ],
+              "elementType": {
+                "kind": "string"
               }
-            ],
-            "elementType": {
-              "kind": "string"
+            },
+            {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "string",
+                  "value": "append"
+                }
+              ],
+              "elementType": {
+                "kind": "string"
+              }
             }
+          ]
+        },
+        "type": {
+          "kind": "array",
+          "element": {
+            "kind": "string"
           }
-        ]
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -747,50 +770,59 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "runtime-reference",
-          "name": "_ssrg_list_semigroup"
-        },
-        "method": "append",
-        "arguments": [
-          {
-            "kind": "runtime-call",
-            "callee": "_ssrg_list_from_array",
-            "arguments": [
-              {
-                "kind": "array",
-                "elements": [
-                  {
-                    "kind": "string",
-                    "value": "list"
-                  }
-                ],
-                "elementType": {
-                  "kind": "string"
-                }
-              }
-            ]
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_list_semigroup"
           },
-          {
-            "kind": "runtime-call",
-            "callee": "_ssrg_list_from_array",
-            "arguments": [
-              {
-                "kind": "array",
-                "elements": [
-                  {
-                    "kind": "string",
-                    "value": "append"
+          "method": "append",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_list_from_array",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "string",
+                      "value": "list"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "string"
                   }
-                ],
-                "elementType": {
-                  "kind": "string"
                 }
-              }
-            ]
+              ]
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_list_from_array",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "string",
+                      "value": "append"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "type": {
+          "kind": "list",
+          "element": {
+            "kind": "string"
           }
-        ]
+        }
       },
       "origin": {
         "source": "main.ssrg",

@@ -122,18 +122,24 @@
               }
             ],
             "body": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "identifier",
-                "name": "__ssrg$evidence$0"
-              },
-              "method": "label",
-              "arguments": [
-                {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
                   "kind": "identifier",
-                  "name": "value"
-                }
-              ]
+                  "name": "__ssrg$evidence$0"
+                },
+                "method": "label",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -162,22 +168,28 @@
         "callee": "_ssrg_console_println",
         "arguments": [
           {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "identifier",
-              "name": "__ssrg$instance$Render$1"
-            },
-            "method": "render",
-            "arguments": [
-              {
+            "kind": "checked-result",
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
                 "kind": "identifier",
-                "name": "Active"
+                "name": "__ssrg$instance$Render$1"
               },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$instance$Labeled$0"
-              }
-            ]
+              "method": "render",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Active"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Labeled$0"
+                }
+              ]
+            },
+            "type": {
+              "kind": "string"
+            }
           }
         ]
       },

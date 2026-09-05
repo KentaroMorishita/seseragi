@@ -466,22 +466,31 @@
               }
             },
             "initializer": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_array_functor"
-              },
-              "method": "map",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "renderSale"
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_functor"
                 },
-                {
-                  "kind": "identifier",
-                  "name": "completedSales"
+                "method": "map",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "renderSale"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "completedSales"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "array",
+                "element": {
+                  "kind": "string"
                 }
-              ]
+              }
             },
             "origin": {
               "source": "main.ssrg",

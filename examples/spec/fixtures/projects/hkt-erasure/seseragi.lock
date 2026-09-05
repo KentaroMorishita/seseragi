@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/hkt-erasure@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/hkt-erasure@0.0.0#workspace:."
+name = "fixture/hkt-erasure"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:e33fc3292accf35b4e5c4276a086f8f812c9491024f9ed7463fbbbf51a21dffb"
+content_digest = "sha256:211a2bb5004c0409719d1dc5a2b4b1cdc3c64cee3176214a9e6cdc4204c14a80"
+dependencies = []

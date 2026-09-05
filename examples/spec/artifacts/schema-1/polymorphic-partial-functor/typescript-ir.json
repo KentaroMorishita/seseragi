@@ -196,22 +196,28 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "map",
-        "arguments": [
-          {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
             "kind": "identifier",
-            "name": "f"
+            "name": "__ssrg$evidence$0"
           },
-          {
-            "kind": "identifier",
-            "name": "value"
-          }
-        ]
+          "method": "map",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "f"
+            },
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "type": {
+          "kind": "unknown"
+        }
       },
       "origin": {
         "source": "main.ssrg",

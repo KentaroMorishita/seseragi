@@ -1,0 +1,12 @@
+import { Box, throughApplicative, throughMonad, unbox, retain } from "./domain"
+
+let traversed: Maybe<Box<Int>> = traverse (\n: Int -> Just (n + 1)) (Box 1)
+let applied = throughApplicative (\n: Int -> n + 2) (Box 2)
+let bound = throughMonad (\n: Int -> Box (n + 3)) (Box 3)
+
+pub effect fn main = do {
+  println $ show (match traversed { Just (Box n) -> n
+      Nothing -> 0 })
+  println $ show (unbox applied)
+  println $ show (unbox (retain bound))
+}
