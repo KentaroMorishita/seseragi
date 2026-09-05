@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.0] - 2026-09-05
+
+### Fixed
+
+- Reject unpaired UTF-16 surrogates at the TypeScript foreign `String` codec
+  boundary while preserving valid Unicode scalar strings byte-for-byte.
+
 ## [0.60.0] - 2026-09-05
 
 ### Fixed
