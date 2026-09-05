@@ -39,6 +39,7 @@ pub(super) fn register_module_pattern(resolver: &mut Resolver, pattern: &Surface
         }
         SurfacePattern::Integer { .. }
         | SurfacePattern::String { .. }
+        | SurfacePattern::Char { .. }
         | SurfacePattern::Boolean { .. }
         | SurfacePattern::Wildcard { .. }
         | SurfacePattern::Error { .. } => {}
@@ -94,6 +95,7 @@ pub(super) fn resolve_pattern_references(
         }
         SurfacePattern::Integer { .. }
         | SurfacePattern::String { .. }
+        | SurfacePattern::Char { .. }
         | SurfacePattern::Boolean { .. }
         | SurfacePattern::Name { .. }
         | SurfacePattern::Wildcard { .. }
@@ -163,6 +165,7 @@ fn resolve_pattern_with(
         }
         SurfacePattern::Integer { .. }
         | SurfacePattern::String { .. }
+        | SurfacePattern::Char { .. }
         | SurfacePattern::Boolean { .. }
         | SurfacePattern::Wildcard { .. }
         | SurfacePattern::Error { .. } => {}

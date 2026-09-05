@@ -844,6 +844,7 @@ fn ends_application_atom(kind: TokenKind) -> bool {
             | TokenKind::LiteralBoolean
             | TokenKind::LiteralFloat
             | TokenKind::LiteralInteger
+            | TokenKind::LiteralChar
             | TokenKind::LiteralString
             | TokenKind::LiteralTemplate
             | TokenKind::PunctuationBraceRight
@@ -860,6 +861,7 @@ fn starts_application_atom(token: &Token) -> bool {
             | TokenKind::LiteralBoolean
             | TokenKind::LiteralFloat
             | TokenKind::LiteralInteger
+            | TokenKind::LiteralChar
             | TokenKind::LiteralString
             | TokenKind::LiteralTemplate
             | TokenKind::OperatorLambda
@@ -1083,6 +1085,7 @@ fn needs_space(previous: usize, current: usize, tokens: &[Token], angles: &HashS
                 | TokenKind::LiteralBoolean
                 | TokenKind::LiteralFloat
                 | TokenKind::LiteralInteger
+                | TokenKind::LiteralChar
                 | TokenKind::LiteralString
                 | TokenKind::LiteralTemplate
                 | TokenKind::PunctuationParenRight

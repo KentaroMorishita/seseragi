@@ -78,7 +78,7 @@ pub(super) fn type_ref_from_core_expr(
         CoreExpr::Unit { .. } => TypeScriptType::Undefined,
         CoreExpr::Integer { .. } => TypeScriptType::Number,
         CoreExpr::Float64 { .. } => TypeScriptType::Number,
-        CoreExpr::String { .. } => TypeScriptType::String,
+        CoreExpr::String { .. } | CoreExpr::Char { .. } => TypeScriptType::String,
         CoreExpr::Template { .. } => TypeScriptType::String,
         CoreExpr::Boolean { .. } => TypeScriptType::Boolean,
         CoreExpr::Variable { type_ref, .. }

@@ -55,7 +55,9 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
         CoreExpr::Integer { value, .. } => TypeScriptExpr::Number { value },
         CoreExpr::Float64 { value, .. } => TypeScriptExpr::Number { value },
-        CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
+        CoreExpr::String { value, .. } | CoreExpr::Char { value, .. } => {
+            TypeScriptExpr::String { value }
+        }
         CoreExpr::Template { parts, .. } => lower_template(parts, imported_values, imported_types),
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
         CoreExpr::Variable {

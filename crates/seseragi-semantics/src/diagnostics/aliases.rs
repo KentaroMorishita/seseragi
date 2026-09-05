@@ -837,6 +837,7 @@ fn walk_expression_types(expression: &SurfaceExpr, visit: &mut impl FnMut(&TypeR
         | SurfaceExpr::Integer { .. }
         | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
+        | SurfaceExpr::Char { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. }
         | SurfaceExpr::Error { .. } => {}

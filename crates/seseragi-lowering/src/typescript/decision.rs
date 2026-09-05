@@ -166,6 +166,7 @@ fn core_pattern_type(pattern: &CorePattern) -> CoreType {
     match pattern {
         CorePattern::Integer { type_ref, .. }
         | CorePattern::String { type_ref, .. }
+        | CorePattern::Char { type_ref, .. }
         | CorePattern::Boolean { type_ref, .. }
         | CorePattern::Binding { type_ref, .. }
         | CorePattern::Wildcard { type_ref, .. }
@@ -190,10 +191,12 @@ fn lower_pattern(
             path: path.clone(),
             value,
         }),
-        CorePattern::String { value, .. } => tests.push(TypeScriptDecisionTest::StringEquals {
-            path: path.clone(),
-            value,
-        }),
+        CorePattern::String { value, .. } | CorePattern::Char { value, .. } => {
+            tests.push(TypeScriptDecisionTest::StringEquals {
+                path: path.clone(),
+                value,
+            })
+        }
         CorePattern::Boolean { value, .. } => {
             tests.push(TypeScriptDecisionTest::BooleanEquals {
                 path: path.clone(),

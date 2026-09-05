@@ -83,6 +83,28 @@ mod tests {
     }
 
     #[test]
+    fn preserves_char_literal_spelling_and_apostrophe_application() {
+        let source = r"let account'='瀬'
+pub let result=(account','\u{03BB}','\'','\\')
+";
+        for width in [20, 88] {
+            let formatted = format_with_width(source, width);
+            assert_eq!(
+                format_with_width(&formatted.text, width).text,
+                formatted.text
+            );
+            for spelling in ["account'", "'瀬'", r"'\u{03BB}'", r"'\''", r"'\\'"] {
+                assert!(formatted.text.contains(spelling), "{}", formatted.text);
+            }
+            assert!(
+                seseragi_syntax::parse_diagnostics("char.ssrg", &formatted.text)
+                    .diagnostics
+                    .is_empty()
+            );
+        }
+    }
+
+    #[test]
     fn keeps_index_adjacency_distinct_from_array_application() {
         let source = "let values=[1,2,3]\nlet selected=values[ 1 ]\nlet applied=read [1,2]\nlet nested=([values])[0]\n";
         for width in [20, 88] {

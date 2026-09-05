@@ -2268,6 +2268,7 @@ fn walk_expression(expression: &TypedExpr, visit: &mut impl FnMut(&TypedExpr)) {
         | TypedExpr::Integer { .. }
         | TypedExpr::Float { .. }
         | TypedExpr::String { .. }
+        | TypedExpr::Char { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. } => {}
     }
@@ -2344,6 +2345,7 @@ fn walk_pattern(pattern: &TypedPattern, visit: &mut impl FnMut(&TypedPattern)) {
         }
         TypedPattern::Integer { .. }
         | TypedPattern::String { .. }
+        | TypedPattern::Char { .. }
         | TypedPattern::Boolean { .. }
         | TypedPattern::Wildcard { .. }
         | TypedPattern::Binding { .. }
@@ -2358,6 +2360,7 @@ fn expression_origin(expression: &TypedExpr) -> ByteSpan {
         | TypedExpr::Integer { origin, .. }
         | TypedExpr::Float { origin, .. }
         | TypedExpr::String { origin, .. }
+        | TypedExpr::Char { origin, .. }
         | TypedExpr::Template { origin, .. }
         | TypedExpr::Boolean { origin, .. }
         | TypedExpr::Variable { origin, .. }
@@ -2389,6 +2392,7 @@ fn expression_type(expression: &TypedExpr) -> Option<TypedType> {
         | TypedExpr::Integer { type_ref, .. }
         | TypedExpr::Float { type_ref, .. }
         | TypedExpr::String { type_ref, .. }
+        | TypedExpr::Char { type_ref, .. }
         | TypedExpr::Template { type_ref, .. }
         | TypedExpr::Boolean { type_ref, .. }
         | TypedExpr::Variable { type_ref, .. }
@@ -2421,6 +2425,9 @@ fn pattern_type(pattern: &TypedPattern) -> Option<(ByteSpan, &TypedType)> {
             type_ref, origin, ..
         }
         | TypedPattern::String {
+            type_ref, origin, ..
+        }
+        | TypedPattern::Char {
             type_ref, origin, ..
         }
         | TypedPattern::Boolean {

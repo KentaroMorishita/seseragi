@@ -1,0 +1,4 @@
+let empty = ''
+let multiple = 'ab'
+let combining = 'e\u{0301}'
+let surrogate = '\u{D800}'

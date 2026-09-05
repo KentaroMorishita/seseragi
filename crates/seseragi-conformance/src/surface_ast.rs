@@ -76,7 +76,7 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
     require_span(expression, path)?;
 
     match kind {
-        "unit" | "integer" | "float" | "string" | "boolean" | "name" => Ok(()),
+        "unit" | "integer" | "float" | "char" | "string" | "boolean" | "name" => Ok(()),
         "tuple" => validate_expression_array(expression, "elements", path, 2),
         "array" | "list" => validate_expression_array(expression, "elements", path, 0),
         "member" => validate_child(expression, "receiver", path),
@@ -404,7 +404,7 @@ fn validate_pattern(pattern: &Value, path: &str) -> Result<(), String> {
     }
     require_span(pattern, path)?;
     match kind {
-        "integer" | "string" | "boolean" | "name" | "wildcard" => Ok(()),
+        "integer" | "char" | "string" | "boolean" | "name" | "wildcard" => Ok(()),
         "constructor" => match pattern.get("argument") {
             Some(argument) => validate_pattern(argument, &format!("{path}.argument")),
             None => Ok(()),

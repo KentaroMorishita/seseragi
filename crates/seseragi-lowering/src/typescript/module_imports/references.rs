@@ -146,6 +146,7 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
         | CoreExpr::Integer { .. }
         | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
+        | CoreExpr::Char { .. }
         | CoreExpr::Boolean { .. } => {}
     }
 }
@@ -434,6 +435,7 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
         | CoreExpr::Integer { .. }
         | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
+        | CoreExpr::Char { .. }
         | CoreExpr::Boolean { .. } => {}
     }
 }
@@ -442,6 +444,7 @@ fn collect_pattern_type_names(pattern: &CorePattern, references: &mut Referenced
     match pattern {
         CorePattern::Integer { type_ref, .. }
         | CorePattern::String { type_ref, .. }
+        | CorePattern::Char { type_ref, .. }
         | CorePattern::Boolean { type_ref, .. }
         | CorePattern::Binding { type_ref, .. }
         | CorePattern::Wildcard { type_ref, .. } => collect_type_names(type_ref, references),

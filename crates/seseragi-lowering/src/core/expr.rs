@@ -129,6 +129,10 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             value,
             origin: source_span(source, origin),
         },
+        TypedExpr::Char { value, origin, .. } => CoreExpr::Char {
+            value,
+            origin: source_span(source, origin),
+        },
         TypedExpr::String { value, origin, .. } => CoreExpr::String {
             value,
             origin: source_span(source, origin),
@@ -495,6 +499,15 @@ fn lower_pattern(source: &str, pattern: TypedPattern) -> CorePattern {
             type_ref,
             origin,
         } => CorePattern::Integer {
+            value,
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedPattern::Char {
+            value,
+            type_ref,
+            origin,
+        } => CorePattern::Char {
             value,
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),

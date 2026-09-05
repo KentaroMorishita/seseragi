@@ -69,6 +69,7 @@ impl Lexer<'_> {
                     self.scan_operator_run()
                 }
                 '>' => self.bump_fixed(TokenKind::OperatorComparison, start, char),
+                '\'' => self.scan_quoted(TokenKind::LiteralChar, '\''),
                 '"' => self.scan_quoted(TokenKind::LiteralString, '"'),
                 '`' if self.starts_with("`[") => {
                     self.bump_fixed_raw(TokenKind::PunctuationListLeft, start, "`[")

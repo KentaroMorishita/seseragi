@@ -1,0 +1,3 @@
+pub let initial: Char = '瀬'
+pub fn identity value: Char -> Char = value
+pub fn classify value: Char -> Int = match value { 'a' -> 1; '\u{03BB}' -> 2; _ -> 0 }

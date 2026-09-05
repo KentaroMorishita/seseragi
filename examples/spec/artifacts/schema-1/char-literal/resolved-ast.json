@@ -1,0 +1,1092 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/char-literal",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "identity",
+      "nameSpan": {
+        "start": 4,
+        "end": 12
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 16,
+            "end": 21
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 23,
+              "end": 24
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "A",
+        "span": {
+          "start": 28,
+          "end": 29
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "value",
+        "span": {
+          "start": 32,
+          "end": 37
+        }
+      },
+      "span": {
+        "start": 1,
+        "end": 37
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "character",
+      "nameSpan": {
+        "start": 41,
+        "end": 50
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 51,
+            "end": 56
+          },
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "span": {
+              "start": 58,
+              "end": 62
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Char",
+        "span": {
+          "start": 66,
+          "end": 70
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "value",
+        "span": {
+          "start": 73,
+          "end": 78
+        }
+      },
+      "span": {
+        "start": 38,
+        "end": 78
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "pattern": {
+        "kind": "name",
+        "name": "account'",
+        "nameSpan": {
+          "start": 83,
+          "end": 91
+        },
+        "span": {
+          "start": 83,
+          "end": 91
+        }
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "char",
+        "raw": "'瀬'",
+        "span": {
+          "start": 94,
+          "end": 99
+        }
+      },
+      "span": {
+        "start": 79,
+        "end": 99
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "classify",
+      "nameSpan": {
+        "start": 103,
+        "end": 111
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 112,
+            "end": 117
+          },
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "span": {
+              "start": 119,
+              "end": 123
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 127,
+          "end": 130
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 139,
+            "end": 144
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "char",
+              "raw": "'a'",
+              "span": {
+                "start": 147,
+                "end": 150
+              }
+            },
+            "body": {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 154,
+                "end": 155
+              }
+            },
+            "span": {
+              "start": 147,
+              "end": 155
+            }
+          },
+          {
+            "pattern": {
+              "kind": "char",
+              "raw": "'\\u{03BB}'",
+              "span": {
+                "start": 157,
+                "end": 167
+              }
+            },
+            "body": {
+              "kind": "integer",
+              "raw": "2",
+              "span": {
+                "start": 171,
+                "end": 172
+              }
+            },
+            "span": {
+              "start": 157,
+              "end": 172
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 174,
+                "end": 175
+              }
+            },
+            "body": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 179,
+                "end": 180
+              }
+            },
+            "span": {
+              "start": 174,
+              "end": 180
+            }
+          }
+        ],
+        "span": {
+          "start": 133,
+          "end": 182
+        }
+      },
+      "span": {
+        "start": 100,
+        "end": 182
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "pattern": {
+        "kind": "name",
+        "name": "escaped",
+        "nameSpan": {
+          "start": 187,
+          "end": 194
+        },
+        "span": {
+          "start": 187,
+          "end": 194
+        }
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Char",
+        "span": {
+          "start": 196,
+          "end": 200
+        }
+      },
+      "body": {
+        "kind": "char",
+        "raw": "'\\u{03BB}'",
+        "span": {
+          "start": 203,
+          "end": 213
+        }
+      },
+      "span": {
+        "start": 183,
+        "end": 213
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "pattern": {
+        "kind": "name",
+        "name": "nested",
+        "nameSpan": {
+          "start": 218,
+          "end": 224
+        },
+        "span": {
+          "start": 218,
+          "end": 224
+        }
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Char",
+                "span": {
+                  "start": 238,
+                  "end": 242
+                }
+              }
+            ],
+            "span": {
+              "start": 232,
+              "end": 243
+            }
+          }
+        ],
+        "span": {
+          "start": 226,
+          "end": 244
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "Just",
+              "span": {
+                "start": 248,
+                "end": 252
+              }
+            },
+            "argument": {
+              "kind": "char",
+              "raw": "'a'",
+              "span": {
+                "start": 253,
+                "end": 256
+              }
+            },
+            "span": {
+              "start": 248,
+              "end": 256
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "Just",
+              "span": {
+                "start": 258,
+                "end": 262
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "escaped",
+              "span": {
+                "start": 263,
+                "end": 270
+              }
+            },
+            "span": {
+              "start": 258,
+              "end": 270
+            }
+          }
+        ],
+        "span": {
+          "start": 247,
+          "end": 271
+        }
+      },
+      "span": {
+        "start": 214,
+        "end": 271
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "pattern": {
+        "kind": "name",
+        "name": "tuple",
+        "nameSpan": {
+          "start": 276,
+          "end": 281
+        },
+        "span": {
+          "start": 276,
+          "end": 281
+        }
+      },
+      "typeRef": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "named",
+            "name": "Char",
+            "span": {
+              "start": 284,
+              "end": 288
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Char",
+            "span": {
+              "start": 290,
+              "end": 294
+            }
+          }
+        ],
+        "span": {
+          "start": 283,
+          "end": 295
+        }
+      },
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "identity",
+              "span": {
+                "start": 299,
+                "end": 307
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "account'",
+              "span": {
+                "start": 308,
+                "end": 316
+              }
+            },
+            "span": {
+              "start": 299,
+              "end": 316
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "character",
+              "span": {
+                "start": 318,
+                "end": 327
+              }
+            },
+            "argument": {
+              "kind": "char",
+              "raw": "'\\''",
+              "span": {
+                "start": 328,
+                "end": 332
+              }
+            },
+            "span": {
+              "start": 318,
+              "end": 332
+            }
+          }
+        ],
+        "span": {
+          "start": 298,
+          "end": 333
+        }
+      },
+      "span": {
+        "start": 272,
+        "end": 333
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "pattern": {
+        "kind": "name",
+        "name": "result",
+        "nameSpan": {
+          "start": 342,
+          "end": 348
+        },
+        "span": {
+          "start": 342,
+          "end": 348
+        }
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "tuple",
+              "span": {
+                "start": 354,
+                "end": 359
+              }
+            },
+            "span": {
+              "start": 352,
+              "end": 360
+            }
+          },
+          {
+            "kind": "text",
+            "value": ", ",
+            "span": {
+              "start": 360,
+              "end": 362
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "nested",
+              "span": {
+                "start": 364,
+                "end": 370
+              }
+            },
+            "span": {
+              "start": 362,
+              "end": 371
+            }
+          },
+          {
+            "kind": "text",
+            "value": ", ",
+            "span": {
+              "start": 371,
+              "end": 373
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "char",
+              "raw": "'λ'",
+              "span": {
+                "start": 375,
+                "end": 379
+              }
+            },
+            "span": {
+              "start": 373,
+              "end": 380
+            }
+          }
+        ],
+        "span": {
+          "start": 351,
+          "end": 381
+        }
+      },
+      "span": {
+        "start": 334,
+        "end": 381
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 1,
+        "end": 381
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 1,
+        "end": 37
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 38,
+        "end": 78
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 100,
+        "end": 182
+      }
+    },
+    {
+      "id": 4,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 147,
+        "end": 155
+      }
+    },
+    {
+      "id": 5,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 157,
+        "end": 172
+      }
+    },
+    {
+      "id": 6,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 174,
+        "end": 180
+      }
+    },
+    {
+      "id": 7,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "identity",
+      "canonical": "artifact/char-literal::identity",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 4,
+        "end": 12
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "character",
+      "canonical": "artifact/char-literal::character",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 41,
+        "end": 50
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "account'",
+      "canonical": "artifact/char-literal::account'",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 83,
+        "end": 91
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "classify",
+      "canonical": "artifact/char-literal::classify",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 103,
+        "end": 111
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "escaped",
+      "canonical": "artifact/char-literal::escaped",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 187,
+        "end": 194
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "nested",
+      "canonical": "artifact/char-literal::nested",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 218,
+        "end": 224
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "tuple",
+      "canonical": "artifact/char-literal::tuple",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 276,
+        "end": 281
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "result",
+      "canonical": "artifact/char-literal::result",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 342,
+        "end": 348
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 1,
+        "end": 37
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 16,
+        "end": 21
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "Char",
+      "canonical": "std/prelude::Char",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 51,
+        "end": 56
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 112,
+        "end": 117
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 7,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 23,
+        "end": 24
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 28,
+        "end": 29
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 32,
+        "end": 37
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 58,
+        "end": 62
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 66,
+        "end": 70
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 73,
+        "end": 78
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 119,
+        "end": 123
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 13,
+      "origin": {
+        "start": 127,
+        "end": 130
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 139,
+        "end": 144
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 196,
+        "end": 200
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 226,
+        "end": 244
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 232,
+        "end": 243
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 238,
+        "end": 242
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 248,
+        "end": 252
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 258,
+        "end": 262
+      }
+    },
+    {
+      "spelling": "escaped",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 263,
+        "end": 270
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 284,
+        "end": 288
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 290,
+        "end": 294
+      }
+    },
+    {
+      "spelling": "identity",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 299,
+        "end": 307
+      }
+    },
+    {
+      "spelling": "account'",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 308,
+        "end": 316
+      }
+    },
+    {
+      "spelling": "character",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 318,
+        "end": 327
+      }
+    },
+    {
+      "spelling": "tuple",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 354,
+        "end": 359
+      }
+    },
+    {
+      "spelling": "nested",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 364,
+        "end": 370
+      }
+    }
+  ],
+  "issues": []
+}

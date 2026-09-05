@@ -1,0 +1,1052 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/char-literal",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/char-literal::identity",
+      "visibility": "private",
+      "origin": {
+        "start": 1,
+        "end": 37
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 16,
+            "end": 21
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 32,
+          "end": 37
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/char-literal::character",
+      "visibility": "private",
+      "origin": {
+        "start": 38,
+        "end": 78
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "arguments": []
+          },
+          "origin": {
+            "start": 51,
+            "end": 56
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        },
+        "origin": {
+          "start": 73,
+          "end": 78
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/char-literal::account'",
+          "name": "account'",
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "arguments": []
+          },
+          "origin": {
+            "start": 83,
+            "end": 91
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 2,
+        "name": "account'",
+        "type": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        },
+        "origin": {
+          "start": 83,
+          "end": 91
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 79,
+        "end": 99
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "char",
+        "value": "瀬",
+        "type": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        },
+        "origin": {
+          "start": 94,
+          "end": 99
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/char-literal::classify",
+      "visibility": "private",
+      "origin": {
+        "start": 100,
+        "end": 182
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "arguments": []
+          },
+          "origin": {
+            "start": 112,
+            "end": 117
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "arguments": []
+          },
+          "origin": {
+            "start": 139,
+            "end": 144
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "char",
+              "value": "a",
+              "type": {
+                "kind": "named",
+                "name": "Char",
+                "arguments": []
+              },
+              "origin": {
+                "start": 147,
+                "end": 150
+              }
+            },
+            "body": {
+              "kind": "integer",
+              "value": "1",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 154,
+                "end": 155
+              }
+            },
+            "origin": {
+              "start": 147,
+              "end": 155
+            }
+          },
+          {
+            "pattern": {
+              "kind": "char",
+              "value": "λ",
+              "type": {
+                "kind": "named",
+                "name": "Char",
+                "arguments": []
+              },
+              "origin": {
+                "start": 157,
+                "end": 167
+              }
+            },
+            "body": {
+              "kind": "integer",
+              "value": "2",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 171,
+                "end": 172
+              }
+            },
+            "origin": {
+              "start": 157,
+              "end": 172
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "type": {
+                "kind": "named",
+                "name": "Char",
+                "arguments": []
+              },
+              "origin": {
+                "start": 174,
+                "end": 175
+              }
+            },
+            "body": {
+              "kind": "integer",
+              "value": "0",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 179,
+                "end": 180
+              }
+            },
+            "origin": {
+              "start": 174,
+              "end": 180
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 133,
+          "end": 182
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/char-literal::escaped",
+          "name": "escaped",
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "arguments": []
+          },
+          "origin": {
+            "start": 187,
+            "end": 194
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 4,
+        "name": "escaped",
+        "type": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        },
+        "origin": {
+          "start": 187,
+          "end": 194
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 183,
+        "end": 213
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "char",
+        "value": "λ",
+        "type": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        },
+        "origin": {
+          "start": 203,
+          "end": 213
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/char-literal::nested",
+          "name": "nested",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Char",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 218,
+            "end": 224
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 5,
+        "name": "nested",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 218,
+          "end": 224
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 214,
+        "end": 271
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "std/prelude::Just",
+            "arguments": [
+              {
+                "kind": "char",
+                "value": "a",
+                "type": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 253,
+                  "end": 256
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 248,
+              "end": 256
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "std/prelude::Just",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "escaped",
+                "type": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 263,
+                  "end": 270
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 258,
+              "end": 270
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 247,
+          "end": 271
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/char-literal::tuple",
+          "name": "tuple",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Char",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Char",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 276,
+            "end": 281
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 6,
+        "name": "tuple",
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Char",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Char",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 276,
+          "end": 281
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 272,
+        "end": 333
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Char",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Char",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "artifact/char-literal::identity",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "account'",
+                "type": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 308,
+                  "end": 316
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Char",
+              "arguments": []
+            },
+            "origin": {
+              "start": 299,
+              "end": 316
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/char-literal::character",
+            "arguments": [
+              {
+                "kind": "char",
+                "value": "'",
+                "type": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 328,
+                  "end": 332
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Char",
+              "arguments": []
+            },
+            "origin": {
+              "start": 318,
+              "end": 332
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Char",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Char",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 298,
+          "end": 333
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/char-literal::result",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 342,
+            "end": 348
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 7,
+        "name": "result",
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 342,
+          "end": 348
+        }
+      },
+      "visibility": "public",
+      "origin": {
+        "start": 334,
+        "end": 381
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "tuple",
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Char",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Char",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 354,
+                "end": 359
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/tuple::Show",
+                "typeArguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "evidenceArguments": [
+                  {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Char",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Char>"
+                    }
+                  },
+                  {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Char",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Char>"
+                    }
+                  }
+                ]
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "start": 352,
+              "end": 360
+            }
+          },
+          {
+            "kind": "text",
+            "value": ", ",
+            "origin": {
+              "start": 360,
+              "end": 362
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "nested",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 364,
+                "end": 370
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Char",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/array::Show",
+                "typeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "evidenceArguments": [
+                  {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Char",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/maybe::Show",
+                      "typeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "Char",
+                          "arguments": []
+                        }
+                      ],
+                      "evidenceArguments": [
+                        {
+                          "constraint": {
+                            "name": "Show",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Char",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "Show<std/prelude::Char>"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "start": 362,
+              "end": 371
+            }
+          },
+          {
+            "kind": "text",
+            "value": ", ",
+            "origin": {
+              "start": 371,
+              "end": 373
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "char",
+              "value": "λ",
+              "type": {
+                "kind": "named",
+                "name": "Char",
+                "arguments": []
+              },
+              "origin": {
+                "start": 375,
+                "end": 379
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Char",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::Char>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "start": 373,
+              "end": 380
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 351,
+          "end": 381
+        }
+      }
+    }
+  ]
+}

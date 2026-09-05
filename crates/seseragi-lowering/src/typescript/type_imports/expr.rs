@@ -15,6 +15,7 @@ pub(super) fn collect_expr_type_imports(
         | CoreExpr::Integer { .. }
         | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
+        | CoreExpr::Char { .. }
         | CoreExpr::Boolean { .. } => {}
         CoreExpr::Template { parts, .. } => {
             for part in parts {
@@ -250,6 +251,7 @@ fn collect_pattern_type_imports(
     match pattern {
         CorePattern::Integer { .. }
         | CorePattern::String { .. }
+        | CorePattern::Char { .. }
         | CorePattern::Boolean { .. }
         | CorePattern::Wildcard { .. }
         | CorePattern::Invalid { .. } => {}

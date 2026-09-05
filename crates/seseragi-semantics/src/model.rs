@@ -501,6 +501,12 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Char {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     String {
         value: String,
         #[serde(rename = "type")]
@@ -728,6 +734,12 @@ pub struct TypedMatchArm {
 )]
 pub enum TypedPattern {
     Integer {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    Char {
         value: String,
         #[serde(rename = "type")]
         type_ref: TypedType,

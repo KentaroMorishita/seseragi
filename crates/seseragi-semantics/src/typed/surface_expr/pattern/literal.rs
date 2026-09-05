@@ -9,6 +9,7 @@ use super::{invalid, CoveragePattern, PatternAnalysis};
 pub(in crate::typed::surface_expr) enum LiteralPattern {
     Integer(String),
     String(String),
+    Char(String),
     Boolean(bool),
 }
 
@@ -44,6 +45,31 @@ pub(super) fn type_string_pattern(
         },
         LiteralPattern::String(value),
         "String",
+        span,
+        expected,
+    )
+}
+
+pub(super) fn type_char_pattern(
+    raw: &str,
+    span: ByteSpan,
+    expected: &SemanticValueType,
+) -> PatternAnalysis {
+    if !matches!(
+        expected.key,
+        crate::typed::semantic_types::SemanticTypeKey::Other
+    ) {
+        return invalid(span, "Char literal pattern requires the builtin Char type");
+    }
+    let value = seseragi_syntax::decode_char_literal(raw).unwrap_or_default();
+    type_literal_pattern(
+        TypedPattern::Char {
+            value: value.clone(),
+            type_ref: expected.type_ref.clone(),
+            origin: span,
+        },
+        LiteralPattern::Char(value),
+        "Char",
         span,
         expected,
     )
