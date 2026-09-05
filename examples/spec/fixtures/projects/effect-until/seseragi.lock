@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/effect-until@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/effect-until@0.0.0#workspace:."
+name = "fixture/effect-until"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:a0620d7cedd9f054d7a92a91d609550e23ed317e2d9646801d7373f8bee41932"
+content_digest = "sha256:46f42dce914d94773a2d32e79e5c07b4cc217d07b7fae31b5fa95b34acfc5271"
+dependencies = []

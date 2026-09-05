@@ -1,5 +1,6 @@
-import { createDuration, type Duration } from "./clock-value"
 import { defectWithSuppressed } from "./cleanup-defect"
+import { createDuration, type Duration } from "./clock-value"
+import type { Iterable, RuntimeDictionary } from "./collection"
 import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 
 export type Unit = undefined
@@ -946,6 +947,37 @@ async function traverseParallelValues<Environment, Failure, Element, Success>(
   }
 }
 
+/** Explicit normal-success control for sequential Effect traversal. */
+export type LoopControl = Readonly<{ tag: "Continue" } | { tag: "Break" }>
+export const Continue: LoopControl = Object.freeze({ tag: "Continue" })
+export const Break: LoopControl = Object.freeze({ tag: "Break" })
+
+export function forEachUntil<Collection, Environment, Failure, Element>(
+  action: (value: Element) => Effect<Environment, Failure, LoopControl>,
+  values: Collection,
+  dictionary: RuntimeDictionary
+): Effect<Environment, Failure, Unit> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    throwIfCancelled(activeContext)
+    const iterable = dictionary as Iterable<Collection, Element>
+    let iterator = iterable.iterate(values)
+    while (true) {
+      throwIfCancelled(activeContext)
+      const step = iterator.next()
+      if (step.tag === "Nothing") return undefined
+      const [value, rest] = step.value
+      throwIfCancelled(activeContext)
+      const control = await awaitWithCancellation(
+        action(value)(environment, activeContext),
+        activeContext
+      )
+      if (control.tag === "Break") return undefined
+      iterator = rest
+    }
+  }
+}
+
 export function forEachParallel<Collection, Environment, Failure, Element>(
   concurrency: Parallelism,
   action: (value: Element) => Effect<Environment, Failure, Unit>,
@@ -1212,6 +1244,7 @@ export async function run<Environment, Failure, Success>(
     throw new TypeError("Effect execution context is unavailable")
   }
   try {
+    throwIfCancelled(activeContext)
     return {
       kind: "success",
       value: await awaitWithCancellation(
@@ -1246,7 +1279,6 @@ function awaitWithCancellation<Success>(
   value: Promise<Success> | Success,
   context: EffectContext
 ): Promise<Success> {
-  throwIfCancelled(context)
   return new Promise((resolve, reject) => {
     let settled = false
     const finish = (settle: () => void): void => {
@@ -1267,6 +1299,9 @@ function awaitWithCancellation<Success>(
       },
       (error: unknown) => finish(() => reject(error))
     )
+    // Observe an already-cancelled context only after consuming rejection
+    // from the value, which may have cancelled synchronously during creation.
+    if (context.signal.aborted) abort()
   })
 }
 

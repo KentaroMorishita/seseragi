@@ -1838,6 +1838,8 @@ fn standard_description(identity: &str) -> Option<&'static str> {
             "Renders a value through its Show instance and writes it through Console."
         }
         "std/prelude::readLine" => "Reads one optional line through Stdin.",
+        "std/effect::LoopControl" => "Normal-success control for sequential Effect traversal: Continue or Break.",
+        "std/effect::forEachUntil" => "Runs cold actions sequentially in Iterable order, stopping successfully at Break without pulling the next element.",
         "std/effect::succeed" => "Creates an Effect that succeeds with a value.",
         "std/effect::fail" => "Creates an Effect that fails with a typed error.",
         "std/effect::mapError" => {

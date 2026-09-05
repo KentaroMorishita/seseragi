@@ -1076,6 +1076,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "FiberExit",
     },
     RuntimeTypeImport {
+        canonical: "std/effect::LoopControl",
+        runtime_feature: "effect.iterable.control-type",
+        module: "@seseragi/runtime/effect",
+        export_name: "LoopControl",
+    },
+    RuntimeTypeImport {
         canonical: "std/effect::Parallelism",
         runtime_feature: "effect.parallelism.type",
         module: "@seseragi/runtime/effect",

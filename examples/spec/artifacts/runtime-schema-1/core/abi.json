@@ -4254,6 +4254,48 @@
       "import": null
     },
     {
+      "id": "effect.iterable.control-type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged LoopControl",
+      "boundary": "normal-success sequential traversal control",
+      "typeIdentity": "std/effect::LoopControl",
+      "typeImport": {
+        "module": "@seseragi/runtime/effect",
+        "export": "LoopControl"
+      },
+      "import": null
+    },
+    {
+      "id": "effect.iterable.continue",
+      "kind": "runtime-binding",
+      "typescript": "tagged value",
+      "boundary": "continue sequential Effect traversal",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "Continue"
+      }
+    },
+    {
+      "id": "effect.iterable.break",
+      "kind": "runtime-binding",
+      "typescript": "tagged value",
+      "boundary": "stop sequential Effect traversal with Unit success",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "Break"
+      }
+    },
+    {
+      "id": "effect.iterable.for-each-until",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold sequential Iterable traversal with explicit Break and unchanged Effect lifecycle",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "forEachUntil"
+      }
+    },
+    {
       "id": "effect.parallelism.type",
       "kind": "value-representation",
       "typescript": "branded readonly Parallelism",

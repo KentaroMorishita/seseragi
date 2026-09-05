@@ -2557,6 +2557,24 @@ fn effect_interface() -> ModuleInterface {
         named_with("FiberExit", vec![failure, success])
     };
     let mut exports = vec![
+        opaque_adt_type_export(module, "LoopControl", []),
+        constructor_export(module, "LoopControl", "Continue", [], None),
+        constructor_export(module, "LoopControl", "Break", [], None),
+        effect_function_export(
+            module,
+            "forEachUntil",
+            ["C", "R", "E", "A"],
+            vec![InterfaceConstraint {
+                name: "Iterable".to_owned(),
+                trait_identity: Some("std/prelude::Iterable".to_owned()),
+                arguments: vec![named("C"), named("A")],
+            }],
+            vec![
+                function_type(vec![named("A")], source(named("LoopControl"))),
+                named("C"),
+            ],
+            source(named("Unit")),
+        ),
         type_export(module, "Fiber", 2, "opaque-type"),
         opaque_adt_type_export(module, "FiberExit", ["E", "A"]),
         constructor_export(

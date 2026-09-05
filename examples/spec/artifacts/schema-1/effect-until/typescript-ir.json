@@ -1,0 +1,341 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-until",
+  "runtimeRequirements": [
+    "core.collection.reduce-step",
+    "effect.core.type",
+    "effect.iterable.control-type",
+    "core.array.iterable",
+    "core.collection.reduce-until",
+    "core.int",
+    "core.int.ord-dictionary",
+    "core.bool",
+    "core.collection.reduce-step.done",
+    "core.collection.reduce-step.next",
+    "core.int.add",
+    "core.int.subtract",
+    "effect.iterable.for-each-until",
+    "core.unit",
+    "effect.core.succeed",
+    "core.int.eq-dictionary",
+    "effect.iterable.break",
+    "effect.iterable.continue"
+  ],
+  "imports": [
+    {
+      "feature": "core.array.iterable",
+      "local": "_ssrg_array_iterable"
+    },
+    {
+      "feature": "core.collection.reduce-until",
+      "local": "_ssrg_collection_reduceUntil"
+    },
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
+    },
+    {
+      "feature": "core.collection.reduce-step.done",
+      "local": "_ssrg_collection_Done"
+    },
+    {
+      "feature": "core.collection.reduce-step.next",
+      "local": "_ssrg_collection_Next"
+    },
+    {
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
+    },
+    {
+      "feature": "effect.iterable.for-each-until",
+      "local": "_ssrg_effect_forEachUntil"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
+    {
+      "feature": "effect.iterable.break",
+      "local": "_ssrg_effect_Break"
+    },
+    {
+      "feature": "effect.iterable.continue",
+      "local": "_ssrg_effect_Continue"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.collection.reduce-step",
+      "local": "ReduceStep"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "effect.iterable.control-type",
+      "local": "LoopControl"
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "totalBeforeNegative",
+      "type": {
+        "kind": "number"
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_reduceUntil",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_iterable"
+          },
+          {
+            "kind": "number",
+            "value": "0"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "total: number",
+            "body": {
+              "kind": "lambda",
+              "parameter": "value: number",
+              "body": {
+                "kind": "conditional",
+                "condition": {
+                  "kind": "binary",
+                  "operator": "===",
+                  "left": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_int_ord_dictionary"
+                      },
+                      "method": "compare",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "0"
+                        }
+                      ]
+                    },
+                    "field": "tag"
+                  },
+                  "right": {
+                    "kind": "string",
+                    "value": "Less"
+                  }
+                },
+                "thenBranch": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_collection_Done",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "total"
+                    }
+                  ]
+                },
+                "elseBranch": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_collection_Next",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_add",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "total"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "number",
+                "value": "1"
+              },
+              {
+                "kind": "number",
+                "value": "2"
+              },
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_subtract",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "0"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "kind": "number",
+                "value": "100"
+              }
+            ],
+            "elementType": {
+              "kind": "number"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 85,
+        "end": 288
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "stopped",
+      "type": {
+        "kind": "reference",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "fields": []
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_effect_forEachUntil",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "stopAtThree"
+          },
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "number",
+                "value": "1"
+              },
+              {
+                "kind": "number",
+                "value": "2"
+              },
+              {
+                "kind": "number",
+                "value": "3"
+              },
+              {
+                "kind": "number",
+                "value": "4"
+              }
+            ],
+            "elementType": {
+              "kind": "number"
+            }
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_iterable"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 448,
+        "end": 507
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "stopAtThree",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "number",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_effect_succeed",
+        "arguments": [
+          {
+            "kind": "conditional",
+            "condition": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_eq_dictionary"
+              },
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "number",
+                  "value": "3"
+                }
+              ]
+            },
+            "thenBranch": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_effect_Break"
+            },
+            "elseBranch": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_effect_Continue"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 290,
+        "end": 446
+      }
+    }
+  ]
+}

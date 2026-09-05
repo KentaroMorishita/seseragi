@@ -4503,6 +4503,28 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::Break",
+      "name": "Break",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "LoopControl",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::Continue",
+      "name": "Continue",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "LoopControl",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::Fiber",
       "name": "Fiber",
       "module": "std/effect",
@@ -4570,6 +4592,17 @@
         "E",
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::LoopControl",
+      "name": "LoopControl",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "LoopControl",
+      "description": "Normal-success control for sequential Effect traversal: Continue or Break.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -4780,6 +4813,24 @@
       ],
       "constraints": [
         "Reducible<C, A>"
+      ]
+    },
+    {
+      "identity": "std/effect::forEachUntil",
+      "name": "forEachUntil",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "forEachUntil<C, R, E, A> arg1: (A -> Effect<R, E, LoopControl>) -> arg2: C -> Effect<R, E, Unit> where Iterable<C, A>",
+      "description": "Runs cold actions sequentially in Iterable order, stopping successfully at Break without pulling the next element.",
+      "typeParameters": [
+        "C",
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
       ]
     },
     {

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "module": "artifact/effect-until",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.collection.reduce-step",
+      "effect.core.type",
+      "effect.iterable.control-type",
+      "core.array.iterable",
+      "core.collection.reduce-until",
+      "core.int",
+      "core.int.ord-dictionary",
+      "core.bool",
+      "core.collection.reduce-step.done",
+      "core.collection.reduce-step.next",
+      "core.int.add",
+      "core.int.subtract",
+      "effect.iterable.for-each-until",
+      "core.unit",
+      "effect.core.succeed",
+      "core.int.eq-dictionary",
+      "effect.iterable.break",
+      "effect.iterable.continue"
+    ]
+  },
+  "exports": [],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}
