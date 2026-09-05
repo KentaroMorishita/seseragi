@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "run",
+  "spec": ["2.1", "7.6", "7.7"],
+  "lock": "generate",
+  "stdout": "expected.stdout"
+}

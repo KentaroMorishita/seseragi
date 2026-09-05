@@ -480,6 +480,30 @@ fn runs_effect_match() {
 }
 
 #[test]
+fn runs_foreign_string_scalars() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/foreign-string-scalars"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn runs_hkt_erasure() {
     let package =
         LockedProject::copy(&repository_root().join("examples/spec/fixtures/projects/hkt-erasure"));

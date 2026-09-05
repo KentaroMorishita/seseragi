@@ -18,6 +18,25 @@ const providers = (await Bun.file(
 ).json()) as RuntimePackage
 
 describe("canonical Playground runtime registry", () => {
+  test("uses the canonical scalar-validating foreign String codec", () => {
+    const foreign = runtimeModules[
+      "@seseragi/runtime/foreign"
+    ] as typeof import("../../../runtime/ts/src/foreign")
+    const read = (value: string, codec: "string" | "js-string") =>
+      foreign.invokeForeignPure(
+        { read: () => value },
+        "read",
+        "function",
+        [],
+        [],
+        codec
+      )
+    expect(() => read("\ud800", "string")).toThrow("Unicode scalar string")
+    expect(() => read("\udc00", "string")).toThrow("Unicode scalar string")
+    expect(read("😀𠮷\0\ufeff", "string")).toBe("😀𠮷\0\ufeff")
+    expect(read("\ud800", "js-string")).toBe("\ud800")
+  })
+
   test("projects every browser-capable package export without a second list", async () => {
     const entries = await loadBrowserRuntimeEntries()
     assertBrowserRuntimeCoverage(entries, runtimeModules)

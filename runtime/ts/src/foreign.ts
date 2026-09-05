@@ -603,6 +603,12 @@ function convertValue(
   }
   if (codec === "string") {
     if (typeof value !== "string") invalid(path, "string")
+    for (const scalar of value) {
+      const codePoint = scalar.codePointAt(0)!
+      if (codePoint >= 0xd800 && codePoint <= 0xdfff) {
+        invalid(path, "Unicode scalar string")
+      }
+    }
     return value
   }
   if (codec === "char") {
