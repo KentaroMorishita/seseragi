@@ -1,0 +1,61 @@
+name: Ops Issue Intake Role Migration
+
+on:
+  push:
+    branches:
+      - ops/issue-intake-contract-20260906
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo
+
+            const labels = [
+              ['role: candidate', 'd4c5f9', 'Observed gap/proposal with no execution slot yet; must not be implemented until promoted to work-item'],
+              ['role: subtask', 'bfdadc', 'Work owned by a queued parent work-item; no independent queue position'],
+            ]
+            for (const [name, color, description] of labels) {
+              try {
+                await github.rest.issues.getLabel({ owner, repo, name })
+                await github.rest.issues.updateLabel({ owner, repo, name, new_name: name, color, description })
+              } catch (error) {
+                if (error.status !== 404) throw error
+                await github.rest.issues.createLabel({ owner, repo, name, color, description })
+              }
+            }
+
+            async function replaceRole(number, newRole) {
+              const { data: issue } = await github.rest.issues.get({ owner, repo, issue_number: number })
+              const names = (issue.labels || []).map(l => typeof l === 'string' ? l : l.name)
+              const next = names.filter(name => !name.startsWith('role: '))
+              next.push(newRole)
+              await github.rest.issues.setLabels({ owner, repo, issue_number: number, labels: next })
+              return issue
+            }
+
+            for (const number of [369, 534, 537, 545]) {
+              const issue = await replaceRole(number, 'role: candidate')
+              if (!(issue.body || '').startsWith('> [!NOTE]\n> **O01 candidate**')) {
+                const banner = '> [!NOTE]\n> **O01 candidate** — 現在 #291 Impl queue に実行位置を持たない。`role: candidate` の間は実装開始しない。実行対象へ昇格するときは `role: work-item` 変更と #291 queue挿入を同じ更新で行う。\n> Operating contract: #512 / Orchestration root: #549 / Impl queue: #291\n\n'
+                await github.rest.issues.update({ owner, repo, issue_number: number, body: banner + (issue.body || '') })
+              }
+            }
+
+            {
+              const issue = await replaceRole(538, 'role: subtask')
+              if (!(issue.body || '').startsWith('> [!NOTE]\n> **O01 subtask**')) {
+                const banner = '> [!NOTE]\n> **O01 subtask** — queued parent work-item **#502** に従属し、独立queue position / Promotion entryを持たない。#502が順序・Promotion・releaseを所有する。独立作業へ拡大する場合だけwork-itemへ昇格して#291へ挿入する。\n> Parent work-item: #502\n> Operating contract: #512 / Orchestration root: #549 / Impl queue: #291\n\n'
+                await github.rest.issues.update({ owner, repo, issue_number: 538, body: banner + (issue.body || '') })
+              }
+            }
+
+            await replaceRole(548, 'role: control')
+            core.info('Reclassified candidates/subtask/shared infrastructure')
