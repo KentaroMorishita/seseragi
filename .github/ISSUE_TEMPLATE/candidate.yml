@@ -1,0 +1,83 @@
+name: Orchestration candidate
+description: 実在Gap/提案だが、まだImpl queueの実行位置を確定していない候補
+title: ""
+labels:
+  - "role: candidate"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **candidateは実装開始対象ではありません。**
+        #559 → #512 → 対象Oxx rootを確認し、実行順を確定した時点でwork-itemへ昇格してください。
+
+  - type: dropdown
+    id: orchestration
+    attributes:
+      label: Orchestration
+      options:
+        - O01
+        - O02
+        - O03
+        - O04
+        - O05
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - compiler
+        - runtime
+        - tooling
+        - testing
+        - docs
+        - spec
+    validations:
+      required: true
+
+  - type: input
+    id: root
+    attributes:
+      label: Orchestration root
+      placeholder: "#549"
+    validations:
+      required: true
+
+  - type: input
+    id: impl_queue
+    attributes:
+      label: Impl queue
+      description: 所属先のImpl queue。candidateの間はこのqueueへentryを追加しません。
+      placeholder: "#291"
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence / Design question
+      description: 再現/evidence、または明確に検討すべきdesign question。推測だけの候補はIssue化しません。
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: 想定Scope
+      description: 現時点で分かる責務境界。実装方法を先に固定する必要はありません。
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contract
+    attributes:
+      label: Operating contract
+      options:
+        - label: "#512 を読み、現時点ではqueue位置を確定していないcandidateであることを確認した"
+          required: true
+        - label: "candidateの間は実装/Promotionを開始しない"
+          required: true
+        - label: "昇格時はwork-item relabelとImpl queue挿入を同じ更新で行う"
+          required: true
