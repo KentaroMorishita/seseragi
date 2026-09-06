@@ -4,12 +4,8 @@ import { spawnSync } from "node:child_process"
 
 export const repositoryRoot = path.resolve(import.meta.dir, "..")
 
-interface FixtureInventoryEntry {
-  availability: "current" | "contract-only"
-}
-
 interface FixtureInventory {
-  fixtures: Record<string, FixtureInventoryEntry>
+  fixtures: Record<string, unknown>
 }
 
 export async function providerFixtureDirectories(
@@ -21,8 +17,7 @@ export async function providerFixtureDirectories(
   ) as FixtureInventory
 
   const selected: string[] = []
-  for (const [name, metadata] of Object.entries(inventory.fixtures)) {
-    if (metadata.availability !== "current") continue
+  for (const name of Object.keys(inventory.fixtures)) {
     const directory = path.join(projectsRoot, name)
     let lock: string
     try {
