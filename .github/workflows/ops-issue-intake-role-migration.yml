@@ -19,8 +19,8 @@ jobs:
             const { owner, repo } = context.repo
 
             const labels = [
-              ['role: candidate', 'd4c5f9', 'Observed gap/proposal with no execution slot yet; must not be implemented until promoted to work-item'],
-              ['role: subtask', 'bfdadc', 'Work owned by a queued parent work-item; no independent queue position'],
+              ['role: candidate', 'd4c5f9', 'Observed gap/proposal not scheduled in an Impl queue yet'],
+              ['role: subtask', 'bfdadc', 'Work owned by a queued parent work-item; no independent queue slot'],
             ]
             for (const [name, color, description] of labels) {
               try {
