@@ -40,6 +40,10 @@ permissions:
 jobs:
   test:
     name: shared extension and LSP tests
+    # Promotion's exact full gate already covers extension behavior and the LSP.
+    # Release builds verified platform artifacts after merge, so do not duplicate
+    # this lane on immutable promote/* PRs.
+    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'promote/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -64,6 +68,9 @@ jobs:
 
   package:
     name: ${{ matrix.target }}
+    # The canonical release workflow packages/smoke-tests the same four targets
+    # before publish. Promotion PRs should not run that matrix twice.
+    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'promote/')
     strategy:
       fail-fast: false
       matrix:
@@ -101,6 +108,7 @@ jobs:
 
   migration:
     name: legacy migration stub
+    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'promote/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
