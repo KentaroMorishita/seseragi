@@ -250,6 +250,10 @@ jobs:
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "candidate_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      - name: Install Playwright Chromium used by full gate
+        working-directory: apps/playground
+        run: bunx playwright install chromium
+
       - name: Run exact repository full gate
         run: bun run check
 
