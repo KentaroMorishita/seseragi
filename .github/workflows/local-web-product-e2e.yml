@@ -55,6 +55,10 @@ permissions:
 
 jobs:
   product-e2e:
+    # Promotion PRs already passed the exact repository full gate, and the
+    # canonical release workflow reruns this journey against downloaded release
+    # artifacts before publish. Do not pay for the same product E2E twice.
+    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'promote/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
