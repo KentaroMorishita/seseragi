@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   patch:
-    if: github.event.head_commit.message != 'ops: apply #548 provider lock refresh'
+    if: "${{ github.event.head_commit.message != 'ops: apply #548 provider lock refresh' }}"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v7
