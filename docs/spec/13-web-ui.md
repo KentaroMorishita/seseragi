@@ -369,7 +369,7 @@ opaque struct InputEvent {
 
 opaque struct ChangeEvent {
   value: String,
-  checked: Bool
+  checked: Maybe<Bool>
 }
 
 opaque struct FileChangeEvent {
@@ -378,7 +378,10 @@ opaque struct FileChangeEvent {
 ```
 
 `onInput`はtext inputとtextareaの現在valueを一度だけ読み、`InputEvent`をmapperへ渡します。`onChange`は同じ時点の
-valueとcheckedを一度ずつ読み、`ChangeEvent`をmapperへ渡します。公開snapshotはbrowser固有のevent objectや
+valueを一度読み、checkbox/radioだけcheckedを一度読んで`Just checked`を格納します。
+text/number等のinput、textarea、selectではcheckedを読まず`Nothing`を格納し、`ChangeEvent`をmapperへ渡します。
+checkbox/radioのcheckedが欠落・非Boolの場合はdefectであり、FalseやNothingへ置換しません。
+既存の`event.checked`をBoolとして使うhandlerは、`Just checked` / `Nothing`をmatchして移行します。公開snapshotはbrowser固有のevent objectや
 `isComposing`を露出せず、iOS Safariを含む通常のbubbleする`input` / `change` eventを同じcontractで処理します。
 
 file inputの`onFileChange`はnative `change`を受けた時点の`FileList`をsource順に一度だけ読み、immutableな

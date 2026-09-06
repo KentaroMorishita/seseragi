@@ -95,14 +95,27 @@
     },
     {
       "id": 4,
+      "identity": "artifact/web-form-events::Unchanged",
+      "name": "Unchanged",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 118,
+        "end": 127
+      },
+      "typeName": "Action"
+    },
+    {
+      "id": 5,
       "identity": "artifact/web-form-events::draftAction",
       "name": "draftAction",
       "module": "artifact/web-form-events",
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 118,
-        "end": 129
+        "start": 132,
+        "end": 143
       },
       "typeName": "html.InputEvent -> Action",
       "callable": {
@@ -123,15 +136,15 @@
       }
     },
     {
-      "id": 5,
+      "id": 6,
       "identity": "artifact/web-form-events::checkedAction",
       "name": "checkedAction",
       "module": "artifact/web-form-events",
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 196,
-        "end": 209
+        "start": 208,
+        "end": 221
       },
       "typeName": "html.ChangeEvent -> Action",
       "callable": {
@@ -152,15 +165,15 @@
       }
     },
     {
-      "id": 6,
+      "id": 7,
       "identity": "artifact/web-form-events::view",
       "name": "view",
       "module": "artifact/web-form-events",
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 285,
-        "end": 289
+        "start": 354,
+        "end": 358
       },
       "typeName": "String -> Bool -> html.Html<Action>",
       "callable": {
@@ -185,7 +198,7 @@
       }
     },
     {
-      "id": 7,
+      "id": 8,
       "identity": "std/web/html::*",
       "name": "html",
       "module": "std/web/html",
@@ -197,7 +210,7 @@
       }
     },
     {
-      "id": 8,
+      "id": 9,
       "identity": "std/web/html::Html::T0",
       "name": "T0",
       "module": "std/web/html",
@@ -209,7 +222,7 @@
       }
     },
     {
-      "id": 9,
+      "id": 10,
       "identity": "std/web/html::Html",
       "name": "Html",
       "module": "std/web/html",
@@ -221,7 +234,7 @@
       }
     },
     {
-      "id": 10,
+      "id": 11,
       "identity": "std/web/html::Style",
       "name": "Style",
       "module": "std/web/html",
@@ -233,7 +246,7 @@
       }
     },
     {
-      "id": 11,
+      "id": 12,
       "identity": "std/web/html::Tag",
       "name": "Tag",
       "module": "std/web/html",
@@ -246,7 +259,7 @@
       "description": "Validated opaque name for a custom HTML element."
     },
     {
-      "id": 12,
+      "id": 13,
       "identity": "std/web/html::Attribute",
       "name": "Attribute",
       "module": "std/web/html",
@@ -259,7 +272,7 @@
       "description": "Validated opaque custom HTML attribute name and value."
     },
     {
-      "id": 13,
+      "id": 14,
       "identity": "std/web/html::WebUrl",
       "name": "WebUrl",
       "module": "std/web/html",
@@ -272,7 +285,7 @@
       "description": "Validated opaque URL for security-sensitive HTML attributes."
     },
     {
-      "id": 14,
+      "id": 15,
       "identity": "std/web/html::InputEvent",
       "name": "InputEvent",
       "module": "std/web/html",
@@ -285,7 +298,7 @@
       "description": "Immutable text-input snapshot containing only the current String value."
     },
     {
-      "id": 15,
+      "id": 16,
       "identity": "std/web/html::ChangeEvent",
       "name": "ChangeEvent",
       "module": "std/web/html",
@@ -295,10 +308,10 @@
         "start": 12,
         "end": 16
       },
-      "description": "Immutable form-control snapshot containing value and checked state."
+      "description": "Immutable form-control snapshot containing value and optional checked state: Just for checkbox/radio, Nothing for value controls."
     },
     {
-      "id": 16,
+      "id": 17,
       "identity": "std/web/html::FileChangeEvent",
       "name": "FileChangeEvent",
       "module": "std/web/html",
@@ -310,7 +323,7 @@
       }
     },
     {
-      "id": 17,
+      "id": 18,
       "identity": "std/web/html::KeyboardEvent",
       "name": "KeyboardEvent",
       "module": "std/web/html",
@@ -323,7 +336,7 @@
       "description": "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys."
     },
     {
-      "id": 18,
+      "id": 19,
       "identity": "std/web/html::MouseEvent",
       "name": "MouseEvent",
       "module": "std/web/html",
@@ -336,7 +349,7 @@
       "description": "Immutable mouse snapshot containing button, coordinates, and modifier keys."
     },
     {
-      "id": 19,
+      "id": 20,
       "identity": "std/web/html::PointerEvent",
       "name": "PointerEvent",
       "module": "std/web/html",
@@ -349,7 +362,7 @@
       "description": "Immutable pointer snapshot distinguishing mouse, touch, and pen input."
     },
     {
-      "id": 20,
+      "id": 21,
       "identity": "std/web/html::ScrollEvent",
       "name": "ScrollEvent",
       "module": "std/web/html",
@@ -362,7 +375,7 @@
       "description": "Immutable scroll snapshot containing the current element offsets."
     },
     {
-      "id": 21,
+      "id": 22,
       "identity": "std/web/html::EventAction::Action",
       "name": "Action",
       "module": "std/web/html",
@@ -374,7 +387,7 @@
       }
     },
     {
-      "id": 22,
+      "id": 23,
       "identity": "std/web/html::EventAction",
       "name": "EventAction",
       "module": "std/web/html",
@@ -387,7 +400,7 @@
       "description": "Explicit event outcome describing dispatch, default prevention, and propagation control."
     },
     {
-      "id": 23,
+      "id": 24,
       "identity": "std/web/html::IgnoreEvent",
       "name": "IgnoreEvent",
       "module": "std/web/html",
@@ -400,7 +413,7 @@
       "description": "Ignores an event without dispatch or browser control."
     },
     {
-      "id": 24,
+      "id": 25,
       "identity": "std/web/html::Dispatch",
       "name": "Dispatch",
       "module": "std/web/html",
@@ -432,7 +445,7 @@
       "description": "Dispatches an Action without controlling the browser event."
     },
     {
-      "id": 25,
+      "id": 26,
       "identity": "std/web/html::DispatchPreventDefault",
       "name": "DispatchPreventDefault",
       "module": "std/web/html",
@@ -464,7 +477,7 @@
       "description": "Prevents the browser default before dispatching an Action."
     },
     {
-      "id": 26,
+      "id": 27,
       "identity": "std/web/html::DispatchStopPropagation",
       "name": "DispatchStopPropagation",
       "module": "std/web/html",
@@ -496,7 +509,7 @@
       "description": "Stops event propagation before dispatching an Action."
     },
     {
-      "id": 27,
+      "id": 28,
       "identity": "std/web/html::DispatchPreventDefaultAndStop",
       "name": "DispatchPreventDefaultAndStop",
       "module": "std/web/html",
@@ -528,7 +541,7 @@
       "description": "Prevents the browser default and stops propagation before dispatching an Action."
     },
     {
-      "id": 28,
+      "id": 29,
       "identity": "std/web/html::HtmlBuildError",
       "name": "HtmlBuildError",
       "module": "std/web/html",
@@ -541,7 +554,7 @@
       "description": "Describes a rejected custom HTML value or unsafe Web URL."
     },
     {
-      "id": 29,
+      "id": 30,
       "identity": "std/web/html::InvalidTagName",
       "name": "InvalidTagName",
       "module": "std/web/html",
@@ -571,7 +584,7 @@
       "description": "Reports a rejected custom-element name."
     },
     {
-      "id": 30,
+      "id": 31,
       "identity": "std/web/html::InvalidAttributeName",
       "name": "InvalidAttributeName",
       "module": "std/web/html",
@@ -601,7 +614,7 @@
       "description": "Reports an invalid custom attribute spelling."
     },
     {
-      "id": 31,
+      "id": 32,
       "identity": "std/web/html::ReservedAttributeName",
       "name": "ReservedAttributeName",
       "module": "std/web/html",
@@ -631,7 +644,7 @@
       "description": "Reports a custom attribute that collides with typed or runtime-owned props."
     },
     {
-      "id": 32,
+      "id": 33,
       "identity": "std/web/html::UnsafeWebUrlScheme",
       "name": "UnsafeWebUrlScheme",
       "module": "std/web/html",
@@ -661,7 +674,7 @@
       "description": "Reports a URL rejected for its scheme, credentials, or control characters."
     },
     {
-      "id": 33,
+      "id": 34,
       "identity": "std/prelude::String",
       "name": "String",
       "module": "std/prelude",
@@ -673,7 +686,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 35,
       "identity": "std/prelude::Bool",
       "name": "Bool",
       "module": "std/prelude",
@@ -685,19 +698,6 @@
       }
     },
     {
-      "id": 35,
-      "identity": "artifact/web-form-events::local(35)",
-      "name": "event",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 130,
-        "end": 135
-      },
-      "typeName": "html.InputEvent"
-    },
-    {
       "id": 36,
       "identity": "artifact/web-form-events::local(36)",
       "name": "event",
@@ -705,39 +705,116 @@
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 210,
-        "end": 215
+        "start": 144,
+        "end": 149
       },
-      "typeName": "html.ChangeEvent"
+      "typeName": "html.InputEvent"
     },
     {
       "id": 37,
       "identity": "artifact/web-form-events::local(37)",
+      "name": "event",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 222,
+        "end": 227
+      },
+      "typeName": "html.ChangeEvent"
+    },
+    {
+      "id": 38,
+      "identity": "std/prelude::Maybe",
+      "name": "Maybe",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Represents an optional value as Nothing or Just."
+    },
+    {
+      "id": 39,
+      "identity": "std/prelude::Maybe::A",
+      "name": "A",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 40,
+      "identity": "std/prelude::Nothing",
+      "name": "Nothing",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Constructs an empty Maybe value."
+    },
+    {
+      "id": 41,
+      "identity": "std/prelude::Just",
+      "name": "Just",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Constructs a present Maybe value."
+    },
+    {
+      "id": 42,
+      "identity": "artifact/web-form-events::local(42)",
+      "name": "checked",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 287,
+        "end": 294
+      },
+      "typeName": "Bool"
+    },
+    {
+      "id": 43,
+      "identity": "artifact/web-form-events::local(43)",
       "name": "draft",
       "module": "artifact/web-form-events",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 290,
-        "end": 295
+        "start": 359,
+        "end": 364
       },
       "typeName": "String"
     },
     {
-      "id": 38,
-      "identity": "artifact/web-form-events::local(38)",
+      "id": 44,
+      "identity": "artifact/web-form-events::local(44)",
       "name": "checked",
       "module": "artifact/web-form-events",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 307,
-        "end": 314
+        "start": 376,
+        "end": 383
       },
       "typeName": "Bool"
     },
     {
-      "id": 39,
+      "id": 45,
       "identity": "std/web/html::form",
       "name": "form",
       "module": "std/web/html",
@@ -772,7 +849,7 @@
       "description": "Creates a typed form whose onSubmit message prevents native page reload."
     },
     {
-      "id": 40,
+      "id": 46,
       "identity": "std/web/html::label",
       "name": "label",
       "module": "std/web/html",
@@ -807,7 +884,7 @@
       "description": "Creates a label connected through the htmlFor prop."
     },
     {
-      "id": 41,
+      "id": 47,
       "identity": "std/web/html::input",
       "name": "input",
       "module": "std/web/html",
@@ -839,7 +916,20 @@
       "description": "Creates a controlled input with typed input and change event snapshots."
     },
     {
-      "id": 42,
+      "id": 48,
+      "identity": "artifact/web-form-events::local(48)",
+      "name": "event",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 721,
+        "end": 726
+      },
+      "typeName": "html.ChangeEvent"
+    },
+    {
+      "id": 49,
       "identity": "std/web/html::textarea",
       "name": "textarea",
       "module": "std/web/html",
@@ -871,7 +961,103 @@
       "description": "Creates a controlled textarea with typed input and change snapshots."
     },
     {
-      "id": 43,
+      "id": 50,
+      "identity": "artifact/web-form-events::local(50)",
+      "name": "event",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 883,
+        "end": 888
+      },
+      "typeName": "html.ChangeEvent"
+    },
+    {
+      "id": 51,
+      "identity": "std/web/html::select",
+      "name": "select",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: (ChangeEvent -> Action), children: C } -> Html<Action>",
+      "callable": {
+        "identity": "std/web/html::select",
+        "name": "select",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: (ChangeEvent -> Action), children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "select<Action, C> arg1: { id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: (ChangeEvent -> Action), children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      },
+      "description": "Creates a typed selection control using the shared change snapshot."
+    },
+    {
+      "id": 52,
+      "identity": "artifact/web-form-events::local(52)",
+      "name": "event",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 977,
+        "end": 982
+      },
+      "typeName": "html.ChangeEvent"
+    },
+    {
+      "id": 53,
+      "identity": "std/web/html::option",
+      "name": "option",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, selected?: Bool, disabled?: Bool, children: C } -> Html<Action>",
+      "callable": {
+        "identity": "std/web/html::option",
+        "name": "option",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, selected?: Bool, disabled?: Bool, children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "option<Action, C> arg1: { id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, selected?: Bool, disabled?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      },
+      "description": "Creates an option for a typed selection control."
+    },
+    {
+      "id": 54,
       "identity": "std/web/html::button",
       "name": "button",
       "module": "std/web/html",
@@ -905,7 +1091,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 55,
       "identity": "std/prelude::==",
       "name": "==",
       "module": "std/prelude",
@@ -949,254 +1135,394 @@
     {
       "range": {
         "start": 118,
-        "end": 129
+        "end": 127
       },
       "symbol": 4
     },
     {
       "range": {
-        "start": 196,
-        "end": 209
+        "start": 132,
+        "end": 143
       },
       "symbol": 5
     },
     {
       "range": {
-        "start": 285,
-        "end": 289
+        "start": 208,
+        "end": 221
       },
       "symbol": 6
+    },
+    {
+      "range": {
+        "start": 354,
+        "end": 358
+      },
+      "symbol": 7
     },
     {
       "range": {
         "start": 12,
         "end": 16
       },
-      "symbol": 7
+      "symbol": 8
     },
     {
       "range": {
-        "start": 130,
-        "end": 135
-      },
-      "symbol": 35
-    },
-    {
-      "range": {
-        "start": 210,
-        "end": 215
+        "start": 144,
+        "end": 149
       },
       "symbol": 36
     },
     {
       "range": {
-        "start": 290,
-        "end": 295
+        "start": 222,
+        "end": 227
       },
       "symbol": 37
     },
     {
       "range": {
-        "start": 307,
-        "end": 314
+        "start": 287,
+        "end": 294
       },
-      "symbol": 38
+      "symbol": 42
+    },
+    {
+      "range": {
+        "start": 359,
+        "end": 364
+      },
+      "symbol": 43
+    },
+    {
+      "range": {
+        "start": 376,
+        "end": 383
+      },
+      "symbol": 44
+    },
+    {
+      "range": {
+        "start": 721,
+        "end": 726
+      },
+      "symbol": 48
+    },
+    {
+      "range": {
+        "start": 883,
+        "end": 888
+      },
+      "symbol": 50
+    },
+    {
+      "range": {
+        "start": 977,
+        "end": 982
+      },
+      "symbol": 52
     },
     {
       "range": {
         "start": 69,
         "end": 75
       },
-      "symbol": 33
+      "symbol": 34
     },
     {
       "range": {
         "start": 95,
         "end": 99
       },
-      "symbol": 34
-    },
-    {
-      "range": {
-        "start": 137,
-        "end": 152
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 156,
-        "end": 162
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 167,
-        "end": 179
-      },
-      "symbol": 1
-    },
-    {
-      "range": {
-        "start": 180,
-        "end": 185
-      },
       "symbol": 35
     },
     {
       "range": {
-        "start": 217,
-        "end": 233
+        "start": 151,
+        "end": 166
       },
       "symbol": 15
     },
     {
       "range": {
-        "start": 237,
-        "end": 243
+        "start": 170,
+        "end": 176
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 248,
-        "end": 262
+        "start": 179,
+        "end": 191
       },
-      "symbol": 2
+      "symbol": 1
     },
     {
       "range": {
-        "start": 263,
-        "end": 268
+        "start": 192,
+        "end": 197
       },
       "symbol": 36
     },
     {
       "range": {
-        "start": 297,
-        "end": 303
+        "start": 229,
+        "end": 245
       },
-      "symbol": 33
+      "symbol": 16
     },
     {
       "range": {
-        "start": 316,
-        "end": 320
-      },
-      "symbol": 34
-    },
-    {
-      "range": {
-        "start": 324,
-        "end": 341
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 334,
-        "end": 340
+        "start": 249,
+        "end": 255
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 346,
-        "end": 355
-      },
-      "symbol": 39
-    },
-    {
-      "range": {
-        "start": 372,
-        "end": 381
-      },
-      "symbol": 3
-    },
-    {
-      "range": {
-        "start": 405,
-        "end": 415
-      },
-      "symbol": 40
-    },
-    {
-      "range": {
-        "start": 463,
-        "end": 473
-      },
-      "symbol": 41
-    },
-    {
-      "range": {
-        "start": 535,
-        "end": 540
+        "start": 264,
+        "end": 269
       },
       "symbol": 37
     },
     {
       "range": {
-        "start": 646,
-        "end": 657
+        "start": 282,
+        "end": 286
       },
-      "symbol": 4
+      "symbol": 41
     },
     {
       "range": {
-        "start": 673,
-        "end": 686
+        "start": 298,
+        "end": 312
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 313,
+        "end": 320
       },
       "symbol": 42
     },
     {
       "range": {
-        "start": 748,
-        "end": 759
+        "start": 323,
+        "end": 330
+      },
+      "symbol": 40
+    },
+    {
+      "range": {
+        "start": 334,
+        "end": 343
       },
       "symbol": 4
     },
     {
       "range": {
-        "start": 775,
-        "end": 785
+        "start": 366,
+        "end": 372
       },
-      "symbol": 41
+      "symbol": 34
     },
     {
       "range": {
-        "start": 796,
-        "end": 803
+        "start": 385,
+        "end": 389
       },
-      "symbol": 38
+      "symbol": 35
     },
     {
       "range": {
-        "start": 854,
-        "end": 867
+        "start": 393,
+        "end": 410
       },
-      "symbol": 5
+      "symbol": 10
     },
     {
       "range": {
-        "start": 883,
-        "end": 894
+        "start": 403,
+        "end": 409
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 413,
+        "end": 422
+      },
+      "symbol": 45
+    },
+    {
+      "range": {
+        "start": 437,
+        "end": 446
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 466,
+        "end": 476
+      },
+      "symbol": 46
+    },
+    {
+      "range": {
+        "start": 522,
+        "end": 532
+      },
+      "symbol": 47
+    },
+    {
+      "range": {
+        "start": 588,
+        "end": 593
       },
       "symbol": 43
     },
     {
       "range": {
-        "start": 945,
-        "end": 950
+        "start": 691,
+        "end": 702
       },
-      "symbol": 37
+      "symbol": 5
     },
     {
       "range": {
-        "start": 951,
-        "end": 953
+        "start": 728,
+        "end": 744
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 748,
+        "end": 760
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 761,
+        "end": 766
+      },
+      "symbol": 48
+    },
+    {
+      "range": {
+        "start": 784,
+        "end": 797
+      },
+      "symbol": 49
+    },
+    {
+      "range": {
+        "start": 853,
+        "end": 864
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 890,
+        "end": 906
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 910,
+        "end": 922
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 923,
+        "end": 928
+      },
+      "symbol": 50
+    },
+    {
+      "range": {
+        "start": 946,
+        "end": 957
+      },
+      "symbol": 51
+    },
+    {
+      "range": {
+        "start": 984,
+        "end": 1000
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 1004,
+        "end": 1016
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 1017,
+        "end": 1022
+      },
+      "symbol": 52
+    },
+    {
+      "range": {
+        "start": 1046,
+        "end": 1057
+      },
+      "symbol": 53
+    },
+    {
+      "range": {
+        "start": 1109,
+        "end": 1119
+      },
+      "symbol": 47
+    },
+    {
+      "range": {
+        "start": 1122,
+        "end": 1129
       },
       "symbol": 44
+    },
+    {
+      "range": {
+        "start": 1164,
+        "end": 1177
+      },
+      "symbol": 6
+    },
+    {
+      "range": {
+        "start": 1185,
+        "end": 1196
+      },
+      "symbol": 54
+    },
+    {
+      "range": {
+        "start": 1231,
+        "end": 1236
+      },
+      "symbol": 43
+    },
+    {
+      "range": {
+        "start": 1237,
+        "end": 1239
+      },
+      "symbol": 55
     }
   ],
   "typeOccurrences": [
@@ -1231,219 +1557,233 @@
     {
       "range": {
         "start": 118,
-        "end": 129
+        "end": 127
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 132,
+        "end": 143
       },
       "type": "html.InputEvent -> Action"
     },
     {
       "range": {
-        "start": 130,
-        "end": 135
+        "start": 144,
+        "end": 149
       },
       "type": "html.InputEvent"
     },
     {
       "range": {
-        "start": 156,
-        "end": 162
+        "start": 170,
+        "end": 176
       },
       "type": "Action"
     },
     {
       "range": {
-        "start": 167,
-        "end": 179
+        "start": 179,
+        "end": 191
       },
       "type": "String -> Action"
     },
     {
       "range": {
-        "start": 167,
-        "end": 191
+        "start": 179,
+        "end": 203
       },
       "type": "Action"
     },
     {
       "range": {
-        "start": 180,
-        "end": 185
+        "start": 192,
+        "end": 197
       },
       "type": "html.InputEvent"
     },
     {
       "range": {
-        "start": 180,
-        "end": 191
+        "start": 192,
+        "end": 203
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 196,
-        "end": 209
+        "start": 208,
+        "end": 221
       },
       "type": "html.ChangeEvent -> Action"
     },
     {
       "range": {
-        "start": 210,
-        "end": 215
+        "start": 222,
+        "end": 227
       },
       "type": "html.ChangeEvent"
     },
     {
       "range": {
-        "start": 237,
-        "end": 243
+        "start": 249,
+        "end": 255
       },
       "type": "Action"
     },
     {
       "range": {
-        "start": 248,
-        "end": 262
+        "start": 258,
+        "end": 345
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 264,
+        "end": 269
+      },
+      "type": "html.ChangeEvent"
+    },
+    {
+      "range": {
+        "start": 264,
+        "end": 277
+      },
+      "type": "Maybe<Bool>"
+    },
+    {
+      "range": {
+        "start": 282,
+        "end": 294
+      },
+      "type": "Maybe<Bool>"
+    },
+    {
+      "range": {
+        "start": 287,
+        "end": 294
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 298,
+        "end": 312
       },
       "type": "Bool -> Action"
     },
     {
       "range": {
-        "start": 248,
-        "end": 276
+        "start": 298,
+        "end": 320
       },
       "type": "Action"
     },
     {
       "range": {
-        "start": 263,
-        "end": 268
-      },
-      "type": "html.ChangeEvent"
-    },
-    {
-      "range": {
-        "start": 263,
-        "end": 276
+        "start": 313,
+        "end": 320
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 285,
-        "end": 289
+        "start": 323,
+        "end": 330
+      },
+      "type": "Maybe<Bool>"
+    },
+    {
+      "range": {
+        "start": 334,
+        "end": 343
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 354,
+        "end": 358
       },
       "type": "String -> Bool -> html.Html<Action>"
     },
     {
       "range": {
-        "start": 290,
-        "end": 295
+        "start": 359,
+        "end": 364
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 307,
-        "end": 314
+        "start": 376,
+        "end": 383
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 334,
-        "end": 340
+        "start": 403,
+        "end": 409
       },
       "type": "Action"
     },
     {
       "range": {
-        "start": 346,
-        "end": 355
+        "start": 413,
+        "end": 422
       },
       "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: C } -> Html<Action>"
     },
     {
       "range": {
-        "start": 346,
-        "end": 999
+        "start": 413,
+        "end": 1267
       },
       "type": "html.Html<Action>"
     },
     {
       "range": {
-        "start": 356,
-        "end": 999
+        "start": 423,
+        "end": 1267
       },
       "type": "{ children: Array<html.Html<Action>>, onSubmit: Action }"
     },
     {
       "range": {
-        "start": 372,
-        "end": 381
+        "start": 437,
+        "end": 446
       },
       "type": "Action"
     },
     {
       "range": {
-        "start": 397,
-        "end": 995
+        "start": 460,
+        "end": 1265
       },
       "type": "Array<html.Html<Action>>"
     },
     {
       "range": {
-        "start": 405,
-        "end": 415
+        "start": 466,
+        "end": 476
       },
       "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: C } -> Html<Action>"
     },
     {
       "range": {
-        "start": 405,
-        "end": 455
+        "start": 466,
+        "end": 516
       },
       "type": "html.Html<Action>"
     },
     {
       "range": {
-        "start": 416,
-        "end": 455
+        "start": 477,
+        "end": 516
       },
       "type": "{ children: String, htmlFor: String }"
-    },
-    {
-      "range": {
-        "start": 427,
-        "end": 434
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 446,
-        "end": 453
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 463,
-        "end": 473
-      },
-      "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action), onFileChange?: (FileChangeEvent -> Action) } -> Html<Action>"
-    },
-    {
-      "range": {
-        "start": 463,
-        "end": 665
-      },
-      "type": "html.Html<Action>"
-    },
-    {
-      "range": {
-        "start": 474,
-        "end": 665
-      },
-      "type": "{ id: String, inputType: String, name: String, onInput: (html.InputEvent -> Action), placeholder: String, required: Bool, value: String }"
     },
     {
       "range": {
@@ -1454,183 +1794,400 @@
     },
     {
       "range": {
-        "start": 511,
-        "end": 518
+        "start": 507,
+        "end": 514
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 535,
-        "end": 540
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 560,
-        "end": 564
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 587,
-        "end": 600
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 621,
-        "end": 627
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 646,
-        "end": 657
-      },
-      "type": "html.InputEvent -> Action"
-    },
-    {
-      "range": {
-        "start": 673,
-        "end": 686
-      },
-      "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>"
-    },
-    {
-      "range": {
-        "start": 673,
-        "end": 767
-      },
-      "type": "html.Html<Action>"
-    },
-    {
-      "range": {
-        "start": 687,
-        "end": 767
-      },
-      "type": "{ name: String, onInput: (html.InputEvent -> Action), value: String }"
-    },
-    {
-      "range": {
-        "start": 703,
-        "end": 710
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 727,
-        "end": 729
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 748,
-        "end": 759
-      },
-      "type": "html.InputEvent -> Action"
-    },
-    {
-      "range": {
-        "start": 775,
-        "end": 785
+        "start": 522,
+        "end": 532
       },
       "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action), onFileChange?: (FileChangeEvent -> Action) } -> Html<Action>"
     },
     {
       "range": {
-        "start": 775,
-        "end": 875
+        "start": 522,
+        "end": 778
       },
       "type": "html.Html<Action>"
     },
     {
       "range": {
-        "start": 786,
-        "end": 875
+        "start": 533,
+        "end": 778
       },
-      "type": "{ checked: Bool, inputType: String, onChange: (html.ChangeEvent -> Action) }"
+      "type": "{ id: String, inputType: String, name: String, onChange: (html.ChangeEvent -> Action), onInput: (html.InputEvent -> Action), placeholder: String, required: Bool, value: String }"
     },
     {
       "range": {
-        "start": 796,
-        "end": 803
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 824,
-        "end": 834
+        "start": 545,
+        "end": 552
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 854,
-        "end": 867
+        "start": 566,
+        "end": 573
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 588,
+        "end": 593
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 611,
+        "end": 615
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 636,
+        "end": 649
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 668,
+        "end": 674
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 691,
+        "end": 702
+      },
+      "type": "html.InputEvent -> Action"
+    },
+    {
+      "range": {
+        "start": 720,
+        "end": 772
+      },
+      "type": "html.ChangeEvent -> Action"
+    },
+    {
+      "range": {
+        "start": 721,
+        "end": 726
+      },
+      "type": "html.ChangeEvent"
+    },
+    {
+      "range": {
+        "start": 748,
+        "end": 760
+      },
+      "type": "String -> Action"
+    },
+    {
+      "range": {
+        "start": 748,
+        "end": 772
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 761,
+        "end": 766
+      },
+      "type": "html.ChangeEvent"
+    },
+    {
+      "range": {
+        "start": 761,
+        "end": 772
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 784,
+        "end": 797
+      },
+      "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 784,
+        "end": 940
+      },
+      "type": "html.Html<Action>"
+    },
+    {
+      "range": {
+        "start": 798,
+        "end": 940
+      },
+      "type": "{ name: String, onChange: (html.ChangeEvent -> Action), onInput: (html.InputEvent -> Action), value: String }"
+    },
+    {
+      "range": {
+        "start": 812,
+        "end": 819
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 834,
+        "end": 836
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 853,
+        "end": 864
+      },
+      "type": "html.InputEvent -> Action"
+    },
+    {
+      "range": {
+        "start": 882,
+        "end": 934
       },
       "type": "html.ChangeEvent -> Action"
     },
     {
       "range": {
         "start": 883,
-        "end": 894
+        "end": 888
       },
-      "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action>"
+      "type": "html.ChangeEvent"
     },
     {
       "range": {
-        "start": 883,
-        "end": 989
+        "start": 910,
+        "end": 922
+      },
+      "type": "String -> Action"
+    },
+    {
+      "range": {
+        "start": 910,
+        "end": 934
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 923,
+        "end": 928
+      },
+      "type": "html.ChangeEvent"
+    },
+    {
+      "range": {
+        "start": 923,
+        "end": 934
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 946,
+        "end": 957
+      },
+      "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: (ChangeEvent -> Action), children: C } -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 946,
+        "end": 1103
       },
       "type": "html.Html<Action>"
     },
     {
       "range": {
-        "start": 895,
-        "end": 989
+        "start": 958,
+        "end": 1103
       },
-      "type": "{ buttonType: String, children: String, disabled: Bool }"
+      "type": "{ children: html.Html<Action>, onChange: (html.ChangeEvent -> Action) }"
     },
     {
       "range": {
-        "start": 917,
-        "end": 925
+        "start": 976,
+        "end": 1028
+      },
+      "type": "html.ChangeEvent -> Action"
+    },
+    {
+      "range": {
+        "start": 977,
+        "end": 982
+      },
+      "type": "html.ChangeEvent"
+    },
+    {
+      "range": {
+        "start": 1004,
+        "end": 1016
+      },
+      "type": "String -> Action"
+    },
+    {
+      "range": {
+        "start": 1004,
+        "end": 1028
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 1017,
+        "end": 1022
+      },
+      "type": "html.ChangeEvent"
+    },
+    {
+      "range": {
+        "start": 1017,
+        "end": 1028
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 945,
-        "end": 950
+        "start": 1046,
+        "end": 1057
+      },
+      "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, selected?: Bool, disabled?: Bool, children: C } -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 1046,
+        "end": 1097
+      },
+      "type": "html.Html<Action>"
+    },
+    {
+      "range": {
+        "start": 1058,
+        "end": 1097
+      },
+      "type": "{ children: String, value: String }"
+    },
+    {
+      "range": {
+        "start": 1067,
+        "end": 1075
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 945,
-        "end": 956
+        "start": 1087,
+        "end": 1095
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1109,
+        "end": 1119
+      },
+      "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action), onFileChange?: (FileChangeEvent -> Action) } -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 1109,
+        "end": 1179
+      },
+      "type": "html.Html<Action>"
+    },
+    {
+      "range": {
+        "start": 1120,
+        "end": 1179
+      },
+      "type": "{ checked: Bool, inputType: String, onChange: (html.ChangeEvent -> Action) }"
+    },
+    {
+      "range": {
+        "start": 1122,
+        "end": 1129
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 954,
-        "end": 956
+        "start": 1142,
+        "end": 1152
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 976,
-        "end": 981
+        "start": 1164,
+        "end": 1177
+      },
+      "type": "html.ChangeEvent -> Action"
+    },
+    {
+      "range": {
+        "start": 1185,
+        "end": 1196
+      },
+      "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 1185,
+        "end": 1261
+      },
+      "type": "html.Html<Action>"
+    },
+    {
+      "range": {
+        "start": 1197,
+        "end": 1261
+      },
+      "type": "{ buttonType: String, children: String, disabled: Bool }"
+    },
+    {
+      "range": {
+        "start": 1211,
+        "end": 1219
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1231,
+        "end": 1236
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1231,
+        "end": 1242
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 1240,
+        "end": 1242
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1254,
+        "end": 1259
       },
       "type": "String"
     }
@@ -1682,8 +2239,8 @@
     },
     {
       "range": {
-        "start": 118,
-        "end": 129
+        "start": 132,
+        "end": 143
       },
       "callable": {
         "identity": "artifact/web-form-events::draftAction",
@@ -1704,8 +2261,8 @@
     },
     {
       "range": {
-        "start": 196,
-        "end": 209
+        "start": 208,
+        "end": 221
       },
       "callable": {
         "identity": "artifact/web-form-events::checkedAction",
@@ -1726,8 +2283,8 @@
     },
     {
       "range": {
-        "start": 285,
-        "end": 289
+        "start": 354,
+        "end": 358
       },
       "callable": {
         "identity": "artifact/web-form-events::view",
@@ -1752,8 +2309,8 @@
     },
     {
       "range": {
-        "start": 167,
-        "end": 179
+        "start": 179,
+        "end": 191
       },
       "callable": {
         "identity": "artifact/web-form-events::DraftChanged",
@@ -1774,8 +2331,8 @@
     },
     {
       "range": {
-        "start": 248,
-        "end": 262
+        "start": 298,
+        "end": 312
       },
       "callable": {
         "identity": "artifact/web-form-events::CheckedChanged",
@@ -1796,8 +2353,8 @@
     },
     {
       "range": {
-        "start": 346,
-        "end": 355
+        "start": 413,
+        "end": 422
       },
       "callable": {
         "identity": "std/web/html::form",
@@ -1823,8 +2380,8 @@
     },
     {
       "range": {
-        "start": 405,
-        "end": 415
+        "start": 466,
+        "end": 476
       },
       "callable": {
         "identity": "std/web/html::label",
@@ -1850,8 +2407,8 @@
     },
     {
       "range": {
-        "start": 463,
-        "end": 473
+        "start": 522,
+        "end": 532
       },
       "callable": {
         "identity": "std/web/html::input",
@@ -1874,8 +2431,8 @@
     },
     {
       "range": {
-        "start": 646,
-        "end": 657
+        "start": 691,
+        "end": 702
       },
       "callable": {
         "identity": "artifact/web-form-events::draftAction",
@@ -1896,8 +2453,30 @@
     },
     {
       "range": {
-        "start": 673,
-        "end": 686
+        "start": 748,
+        "end": 760
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::DraftChanged",
+        "name": "DraftChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "Action",
+        "constraints": [],
+        "signature": "DraftChanged arg1: String -> Action",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 784,
+        "end": 797
       },
       "callable": {
         "identity": "std/web/html::textarea",
@@ -1920,8 +2499,8 @@
     },
     {
       "range": {
-        "start": 748,
-        "end": 759
+        "start": 853,
+        "end": 864
       },
       "callable": {
         "identity": "artifact/web-form-events::draftAction",
@@ -1942,8 +2521,106 @@
     },
     {
       "range": {
-        "start": 775,
-        "end": 785
+        "start": 910,
+        "end": 922
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::DraftChanged",
+        "name": "DraftChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "Action",
+        "constraints": [],
+        "signature": "DraftChanged arg1: String -> Action",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 946,
+        "end": 957
+      },
+      "callable": {
+        "identity": "std/web/html::select",
+        "name": "select",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: (ChangeEvent -> Action), children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "select<Action, C> arg1: { id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: (ChangeEvent -> Action), children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1004,
+        "end": 1016
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::DraftChanged",
+        "name": "DraftChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "Action",
+        "constraints": [],
+        "signature": "DraftChanged arg1: String -> Action",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1046,
+        "end": 1057
+      },
+      "callable": {
+        "identity": "std/web/html::option",
+        "name": "option",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, selected?: Bool, disabled?: Bool, children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "option<Action, C> arg1: { id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, selected?: Bool, disabled?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1109,
+        "end": 1119
       },
       "callable": {
         "identity": "std/web/html::input",
@@ -1966,8 +2643,8 @@
     },
     {
       "range": {
-        "start": 854,
-        "end": 867
+        "start": 1164,
+        "end": 1177
       },
       "callable": {
         "identity": "artifact/web-form-events::checkedAction",
@@ -1988,8 +2665,8 @@
     },
     {
       "range": {
-        "start": 883,
-        "end": 894
+        "start": 1185,
+        "end": 1196
       },
       "callable": {
         "identity": "std/web/html::button",
@@ -2015,8 +2692,8 @@
     },
     {
       "range": {
-        "start": 167,
-        "end": 191
+        "start": 179,
+        "end": 203
       },
       "callable": {
         "identity": "artifact/web-form-events::DraftChanged",
@@ -2037,8 +2714,8 @@
     },
     {
       "range": {
-        "start": 248,
-        "end": 276
+        "start": 298,
+        "end": 320
       },
       "callable": {
         "identity": "artifact/web-form-events::CheckedChanged",
@@ -2059,8 +2736,8 @@
     },
     {
       "range": {
-        "start": 346,
-        "end": 999
+        "start": 413,
+        "end": 1267
       },
       "callable": {
         "identity": "std/web/html::form",
@@ -2086,8 +2763,8 @@
     },
     {
       "range": {
-        "start": 405,
-        "end": 455
+        "start": 466,
+        "end": 516
       },
       "callable": {
         "identity": "std/web/html::label",
@@ -2113,8 +2790,8 @@
     },
     {
       "range": {
-        "start": 463,
-        "end": 665
+        "start": 522,
+        "end": 778
       },
       "callable": {
         "identity": "std/web/html::input",
@@ -2137,8 +2814,30 @@
     },
     {
       "range": {
-        "start": 673,
-        "end": 767
+        "start": 748,
+        "end": 772
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::DraftChanged",
+        "name": "DraftChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "Action",
+        "constraints": [],
+        "signature": "DraftChanged arg1: String -> Action",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 784,
+        "end": 940
       },
       "callable": {
         "identity": "std/web/html::textarea",
@@ -2161,8 +2860,106 @@
     },
     {
       "range": {
-        "start": 775,
-        "end": 875
+        "start": 910,
+        "end": 934
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::DraftChanged",
+        "name": "DraftChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "Action",
+        "constraints": [],
+        "signature": "DraftChanged arg1: String -> Action",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 946,
+        "end": 1103
+      },
+      "callable": {
+        "identity": "std/web/html::select",
+        "name": "select",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: (ChangeEvent -> Action), children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "select<Action, C> arg1: { id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: (ChangeEvent -> Action), children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1004,
+        "end": 1028
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::DraftChanged",
+        "name": "DraftChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "Action",
+        "constraints": [],
+        "signature": "DraftChanged arg1: String -> Action",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1046,
+        "end": 1097
+      },
+      "callable": {
+        "identity": "std/web/html::option",
+        "name": "option",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, selected?: Bool, disabled?: Bool, children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "option<Action, C> arg1: { id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, selected?: Bool, disabled?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1109,
+        "end": 1179
       },
       "callable": {
         "identity": "std/web/html::input",
@@ -2185,8 +2982,8 @@
     },
     {
       "range": {
-        "start": 883,
-        "end": 989
+        "start": 1185,
+        "end": 1261
       },
       "callable": {
         "identity": "std/web/html::button",
@@ -2214,8 +3011,8 @@
   "completionContexts": [
     {
       "range": {
-        "start": 356,
-        "end": 999
+        "start": 423,
+        "end": 1267
       },
       "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: Array<html.Html<Action>> }",
       "recordFields": [
@@ -2368,8 +3165,8 @@
     },
     {
       "range": {
-        "start": 416,
-        "end": 455
+        "start": 477,
+        "end": 516
       },
       "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: String }",
       "recordFields": [
@@ -2512,8 +3309,8 @@
     },
     {
       "range": {
-        "start": 474,
-        "end": 665
+        "start": 533,
+        "end": 778
       },
       "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action), onFileChange?: (FileChangeEvent -> Action) }",
       "recordFields": [
@@ -2698,11 +3495,6 @@
           "type": "String"
         },
         {
-          "name": "onChange",
-          "optional": true,
-          "type": "ChangeEvent -> Action"
-        },
-        {
           "name": "onFileChange",
           "optional": true,
           "type": "FileChangeEvent -> Action"
@@ -2711,8 +3503,8 @@
     },
     {
       "range": {
-        "start": 687,
-        "end": 767
+        "start": 798,
+        "end": 940
       },
       "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }",
       "recordFields": [
@@ -2890,18 +3682,341 @@
           "name": "cols",
           "optional": true,
           "type": "Int"
-        },
-        {
-          "name": "onChange",
-          "optional": true,
-          "type": "ChangeEvent -> Action"
         }
       ]
     },
     {
       "range": {
-        "start": 786,
-        "end": 875
+        "start": 958,
+        "end": 1103
+      },
+      "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: (ChangeEvent -> Action), children: html.Html<Action> }",
+      "recordFields": [
+        {
+          "name": "id",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "class",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Style"
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Array<Attribute>"
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "tabIndex",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "lang",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "draggable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "contentEditable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "preventClickDefault",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "stopClickPropagation",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onFocus",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onBlur",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onKeyDown",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onKeyUp",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseDown",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseUp",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerDown",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerUp",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onDoubleClick",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onContextMenu",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onScroll",
+          "optional": true,
+          "type": "ScrollEvent -> EventAction<Action>"
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "required",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "multiple",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "autoFocus",
+          "optional": true,
+          "type": "Bool"
+        }
+      ]
+    },
+    {
+      "range": {
+        "start": 1058,
+        "end": 1097
+      },
+      "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, selected?: Bool, disabled?: Bool, children: String }",
+      "recordFields": [
+        {
+          "name": "id",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "class",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Style"
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Array<Attribute>"
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "tabIndex",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "lang",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "draggable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "contentEditable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "preventClickDefault",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "stopClickPropagation",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onFocus",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onBlur",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onKeyDown",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onKeyUp",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseDown",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseUp",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerDown",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerUp",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onDoubleClick",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onContextMenu",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onScroll",
+          "optional": true,
+          "type": "ScrollEvent -> EventAction<Action>"
+        },
+        {
+          "name": "selected",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "Bool"
+        }
+      ]
+    },
+    {
+      "range": {
+        "start": 1120,
+        "end": 1179
       },
       "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action), onFileChange?: (FileChangeEvent -> Action) }",
       "recordFields": [
@@ -3119,8 +4234,8 @@
     },
     {
       "range": {
-        "start": 895,
-        "end": 989
+        "start": 1197,
+        "end": 1261
       },
       "type": "{ id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: String }",
       "recordFields": [
@@ -6143,7 +7258,7 @@
       "category": "HTML",
       "kind": "opaque-struct",
       "signature": "ChangeEvent",
-      "description": "Immutable form-control snapshot containing value and checked state.",
+      "description": "Immutable form-control snapshot containing value and optional checked state: Just for checkbox/radio, Nothing for value controls.",
       "typeParameters": [],
       "constraints": []
     },

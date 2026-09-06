@@ -621,46 +621,9 @@ fn renderCustom ariaLabel: html.Attribute -> dataState: html.Attribute -> html.H
 
     #[test]
     fn compiles_typed_form_event_snapshots_through_the_runtime_abi() {
-        let source = r#"import * as html from "std/web/html"
-
-type Action =
-  | DraftChanged String
-  | CheckedChanged Bool
-  | Submitted
-
-fn draftAction event: html.InputEvent -> Action =
-  DraftChanged event.value
-
-fn checkedAction event: html.ChangeEvent -> Action =
-  CheckedChanged event.checked
-
-pub fn view draft: String -> checked: Bool -> html.Html<Action> =
-  html.form {
-    onSubmit: Submitted,
-    children: [
-      html.label { htmlFor: "draft", children: "Draft" },
-      html.input {
-        id: "draft",
-        name: "draft",
-        value: draft,
-        required: True,
-        placeholder: "Type a task",
-        inputType: "text",
-        onInput: draftAction
-      },
-      html.input {
-        checked,
-        inputType: "checkbox",
-        onChange: checkedAction
-      },
-      html.button {
-        buttonType: "submit",
-        disabled: draft == "",
-        children: "Add"
-      }
-    ]
-  }
-"#;
+        // Share the canonical Maybe<Bool> event fixture instead of duplicating its contract.
+        let source =
+            include_str!("../../../examples/spec/artifacts/schema-1/web-form-events/main.ssrg");
         let compiled = compile_module(CompileInput::new(
             "main.ssrg",
             "artifact/web-form-events",

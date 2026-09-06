@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.1] - 2026-09-06
+
+### Changed
+
+- #528 【#291・Web UI】onChangeでtext / selectがchecked読取エラーになる問題を修正
 ## [0.61.0] - 2026-09-05
 
 ### Fixed

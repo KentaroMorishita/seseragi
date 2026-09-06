@@ -13,10 +13,13 @@
       "core.adt",
       "core.string",
       "core.bool",
+      "core.maybe",
       "web.html.form",
       "web.html.label",
       "web.html.input",
       "web.html.textarea",
+      "web.html.select",
+      "web.html.option",
       "web.html.button",
       "core.string.eq-dictionary"
     ]

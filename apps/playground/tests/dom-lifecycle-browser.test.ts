@@ -72,6 +72,14 @@ test("owns mount, hydration, coarse updates, cancellation, and cleanup in a brow
         ).domLifecycleResult
     )
   ).toEqual({
+    changeSnapshots: [
+      { value: "changed", checked: { tag: "Nothing" } },
+      { value: "42", checked: { tag: "Nothing" } },
+      { value: "changed", checked: { tag: "Just", value: true } },
+      { value: "changed", checked: { tag: "Just", value: true } },
+      { value: "changed", checked: { tag: "Nothing" } },
+      { value: "changed", checked: { tag: "Nothing" } },
+    ],
     strictMismatchPath: [0, 0],
     dispatched: 1,
     duplicateTargetRejected: true,
