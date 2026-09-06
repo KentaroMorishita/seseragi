@@ -5976,8 +5976,14 @@
                   "name": "checked",
                   "type": {
                     "kind": "named",
-                    "name": "Bool",
-                    "arguments": []
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
                   }
                 }
               ]

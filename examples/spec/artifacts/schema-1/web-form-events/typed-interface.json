@@ -29,8 +29,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 278,
-        "end": 999
+        "start": 347,
+        "end": 1267
       },
       "scheme": {
         "typeParameters": [],

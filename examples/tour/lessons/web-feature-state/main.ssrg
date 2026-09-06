@@ -8,6 +8,7 @@ struct Model { draft: String, pinned: Bool, status: String }
 type Action =
   | DraftChanged String
   | PinnedChanged Bool
+  | IgnoredChange
   | Submitted
 
 let initial = Model { draft: "", pinned: False, status: "Ready" }
@@ -15,11 +16,15 @@ let initial = Model { draft: "", pinned: False, status: "Ready" }
 fn update action: Action -> model: Model -> Model = match action {
   DraftChanged value -> Model { ...model, draft: value, status: "Editing" }
   PinnedChanged value -> Model { ...model, pinned: value }
+  IgnoredChange -> model
   Submitted -> Model { ...model, status: `Saved: ${model.draft}` }
 }
 
 fn draftAction event: html.InputEvent -> Action = DraftChanged event.value
-fn pinnedAction event: html.ChangeEvent -> Action = PinnedChanged event.checked
+fn pinnedAction event: html.ChangeEvent -> Action = match event.checked {
+  Just checked -> PinnedChanged checked
+  Nothing -> IgnoredChange
+}
 
 fn form model: Model -> html.Html<Action> = html.form {
   id: "tour-form",

@@ -2657,6 +2657,9 @@ describe("Playground sample catalog", () => {
       ])
     )
     expect(
+      formItems.find((item) => item.name === "ChangeEvent")?.description
+    ).toContain("Just for checkbox/radio, Nothing for value controls")
+    expect(
       formItems.find((item) => item.name === "input")?.signature
     ).toContain("onInput?: (InputEvent -> Action)")
     expect(formItems.find((item) => item.name === "form")?.signature).toContain(

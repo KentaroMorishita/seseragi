@@ -7858,10 +7858,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "walkthrough": [
         {
           "heading": "Checkbox snapshotをActionへ包む",
-          "body": "checkedActionはChangeEventのchecked Boolを読み、CheckedChangedへ包みます。",
+          "body": "ChangeEvent.checkedはMaybe<Bool>です。checkboxのJust checkedをActionへ包み、checkedを持たないcontrolのNothingはIgnoredChangeとして扱います。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 15
+            "endLine": 19
           }
         }
       ],
@@ -7882,7 +7882,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       },
       "recap": [
         "onChangeはChangeEvent snapshotを受け取る。",
-        "Checkbox stateはchecked BoolとしてActionへ包める。"
+        "checked snapshotはMaybe<Bool>。NothingをFalseと決めつけず、Actionで扱いを分ける。"
       ],
       "next": {
         "lessonId": "web-form-submit",
@@ -8199,15 +8199,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "Model、Action、update、form componentは一つのfeature境界で定義され、入力・checkbox・submitをtyped state transitionへします。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 54
+            "endLine": 59
           }
         },
         {
           "heading": "MainだけがMutableSignalを所有する",
           "body": "mainがstateを作り、handlerへMutableSignal、dom.runへderived Signal<Html<Action>>だけを渡します。",
           "sourceRange": {
-            "startLine": 56,
-            "endLine": 59
+            "startLine": 61,
+            "endLine": 64
           }
         }
       ],

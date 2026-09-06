@@ -8,7 +8,6 @@ import {
   bindText,
   bindValue,
   ClearRenderedDom,
-  content as reactiveContent,
   createDomTarget,
   type DomContent,
   type DomMount,
@@ -18,10 +17,23 @@ import {
   mount,
   mountContent,
   PreserveRenderedDom,
+  content as reactiveContent,
   unmount,
 } from "../../src/dom"
 import { createEffectExecution, type Effect, run, unit } from "../../src/effect"
-import { button, div, fragment, input, p, span, style } from "../../src/html"
+import {
+  button,
+  type ChangeEvent,
+  div,
+  fragment,
+  input,
+  option,
+  p,
+  select,
+  span,
+  style,
+  textarea,
+} from "../../src/html"
 import { serviceSuccess } from "../../src/service"
 import {
   combine,
@@ -39,6 +51,7 @@ import { Just, type Maybe } from "../../src/sum"
 declare global {
   interface Window {
     domLifecycleResult?: Readonly<{
+      readonly changeSnapshots: readonly ChangeEvent[]
       readonly strictMismatchPath: readonly number[]
       readonly dispatched: number
       readonly duplicateTargetRejected: boolean
@@ -458,7 +471,53 @@ const targetRemoval =
     ? removalResult.error.value.tag
     : "unexpected"
 
+const changesRoot = document.createElement("div")
+host.append(changesRoot)
+const changesDom = createBrowserDom(document, () => undefined)
+const changeSnapshots: ChangeEvent[] = []
+const changes = await changesDom.service.mount(
+  defaultOptions(unit),
+  createDomTarget(changesRoot),
+  async (snapshot: ChangeEvent) => {
+    changeSnapshots.push(snapshot)
+    return serviceSuccess(unit)
+  },
+  constant(
+    div({
+      children: [
+        input({ inputType: "text", onChange: (event: ChangeEvent) => event }),
+        input({ inputType: "number", onChange: (event: ChangeEvent) => event }),
+        input({
+          inputType: "checkbox",
+          onChange: (event: ChangeEvent) => event,
+        }),
+        input({ inputType: "radio", onChange: (event: ChangeEvent) => event }),
+        textarea({ onChange: (event: ChangeEvent) => event }),
+        select({
+          onChange: (event: ChangeEvent) => event,
+          children: option({ value: "changed", children: "Changed" }),
+        }),
+      ],
+    })
+  )
+)
+assert(changes.kind === "success", "change controls must mount")
+for (const element of changesRoot.querySelectorAll<
+  HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+>("input,textarea,select")) {
+  element.value = element.type === "number" ? "42" : "changed"
+  if (
+    element instanceof HTMLInputElement &&
+    (element.type === "checkbox" || element.type === "radio")
+  )
+    element.checked = true
+  element.dispatchEvent(new Event("change", { bubbles: true }))
+  await new Promise((resolve) => setTimeout(resolve, 0))
+}
+await unmountTwice(changes.value)
+
 window.domLifecycleResult = Object.freeze({
+  changeSnapshots,
   strictMismatchPath: mismatch.error.value.path,
   dispatched,
   duplicateTargetRejected,

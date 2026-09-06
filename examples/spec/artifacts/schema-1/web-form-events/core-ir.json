@@ -181,6 +181,28 @@
         },
         {
           "namespace": "value",
+          "imported": "select",
+          "local": "html.select",
+          "canonical": "std/web/html::select",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "option",
+          "local": "html.option",
+          "canonical": "std/web/html::option",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
           "imported": "button",
           "local": "html.button",
           "canonical": "std/web/html::button",
@@ -237,12 +259,21 @@
             "start": 104,
             "end": 113
           }
+        },
+        {
+          "symbol": "artifact/web-form-events::Unchanged",
+          "name": "Unchanged",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 118,
+            "end": 127
+          }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 38,
-        "end": 113
+        "end": 127
       }
     }
   ],
@@ -252,8 +283,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 115,
-        "end": 191
+        "start": 129,
+        "end": 203
       },
       "parameters": [
         {
@@ -284,8 +315,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 180,
-                "end": 185
+                "start": 192,
+                "end": 197
               }
             },
             "field": "value",
@@ -296,8 +327,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 180,
-              "end": 191
+              "start": 192,
+              "end": 203
             }
           }
         ],
@@ -308,8 +339,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 167,
-          "end": 191
+          "start": 179,
+          "end": 203
         }
       }
     },
@@ -318,8 +349,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 193,
-        "end": 276
+        "start": 205,
+        "end": 345
       },
       "parameters": [
         {
@@ -334,39 +365,147 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "artifact/web-form-events::CheckedChanged",
-        "arguments": [
-          {
-            "kind": "field-access",
-            "receiver": {
-              "kind": "variable",
-              "name": "event",
-              "type": {
-                "kind": "external-named",
-                "name": "html.ChangeEvent",
-                "canonical": "std/web/html::ChangeEvent",
-                "arguments": []
-              },
-              "origin": {
-                "source": "main.ssrg",
-                "start": 263,
-                "end": 268
-              }
-            },
-            "field": "checked",
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "variable",
+            "name": "event",
             "type": {
-              "kind": "named",
-              "name": "Bool",
+              "kind": "external-named",
+              "name": "html.ChangeEvent",
+              "canonical": "std/web/html::ChangeEvent",
               "arguments": []
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 263,
-              "end": 276
+              "start": 264,
+              "end": 269
+            }
+          },
+          "field": "checked",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 264,
+            "end": 277
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Just",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 282,
+                  "end": 294
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "checked",
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 287,
+                  "end": 294
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "artifact/web-form-events::CheckedChanged",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "checked",
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 313,
+                    "end": 320
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 298,
+                "end": 320
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 282,
+              "end": 320
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "variable",
+              "name": "artifact/web-form-events::Unchanged",
+              "type": {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 334,
+                "end": 343
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 323,
+              "end": 343
             }
           }
         ],
+        "exhaustive": true,
         "type": {
           "kind": "named",
           "name": "Action",
@@ -374,8 +513,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 248,
-          "end": 276
+          "start": 258,
+          "end": 345
         }
       }
     },
@@ -384,8 +523,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 278,
-        "end": 999
+        "start": 347,
+        "end": 1267
       },
       "parameters": [
         {
@@ -427,14 +566,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 372,
-                    "end": 381
+                    "start": 437,
+                    "end": 446
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 362,
-                  "end": 381
+                  "start": 427,
+                  "end": 446
                 }
               },
               {
@@ -458,14 +597,14 @@
                                 "value": "draft",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 427,
-                                  "end": 434
+                                  "start": 488,
+                                  "end": 495
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 418,
-                                "end": 434
+                                "start": 479,
+                                "end": 495
                               }
                             },
                             {
@@ -476,14 +615,14 @@
                                 "value": "Draft",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 446,
-                                  "end": 453
+                                  "start": 507,
+                                  "end": 514
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 436,
-                                "end": 453
+                                "start": 497,
+                                "end": 514
                               }
                             }
                           ],
@@ -511,8 +650,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 416,
-                            "end": 455
+                            "start": 477,
+                            "end": 516
                           }
                         }
                       ],
@@ -553,8 +692,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 405,
-                        "end": 455
+                        "start": 466,
+                        "end": 516
                       }
                     },
                     {
@@ -572,14 +711,14 @@
                                 "value": "draft",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 488,
-                                  "end": 495
+                                  "start": 545,
+                                  "end": 552
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 484,
-                                "end": 495
+                                "start": 541,
+                                "end": 552
                               }
                             },
                             {
@@ -590,14 +729,14 @@
                                 "value": "draft",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 511,
-                                  "end": 518
+                                  "start": 566,
+                                  "end": 573
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 505,
-                                "end": 518
+                                "start": 560,
+                                "end": 573
                               }
                             },
                             {
@@ -613,14 +752,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 535,
-                                  "end": 540
+                                  "start": 588,
+                                  "end": 593
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 528,
-                                "end": 540
+                                "start": 581,
+                                "end": 593
                               }
                             },
                             {
@@ -631,14 +770,14 @@
                                 "value": true,
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 560,
-                                  "end": 564
+                                  "start": 611,
+                                  "end": 615
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 550,
-                                "end": 564
+                                "start": 601,
+                                "end": 615
                               }
                             },
                             {
@@ -649,14 +788,14 @@
                                 "value": "Type a task",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 587,
-                                  "end": 600
+                                  "start": 636,
+                                  "end": 649
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 574,
-                                "end": 600
+                                "start": 623,
+                                "end": 649
                               }
                             },
                             {
@@ -667,14 +806,14 @@
                                 "value": "text",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 621,
-                                  "end": 627
+                                  "start": 668,
+                                  "end": 674
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 610,
-                                "end": 627
+                                "start": 657,
+                                "end": 674
                               }
                             },
                             {
@@ -699,14 +838,100 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 646,
-                                  "end": 657
+                                  "start": 691,
+                                  "end": 702
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 637,
-                                "end": 657
+                                "start": 682,
+                                "end": 702
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onChange",
+                              "value": {
+                                "kind": "lambda",
+                                "parameter": {
+                                  "id": "event",
+                                  "kind": "named",
+                                  "type": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  }
+                                },
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "artifact/web-form-events::DraftChanged",
+                                  "arguments": [
+                                    {
+                                      "kind": "field-access",
+                                      "receiver": {
+                                        "kind": "variable",
+                                        "name": "event",
+                                        "type": {
+                                          "kind": "external-named",
+                                          "name": "html.ChangeEvent",
+                                          "canonical": "std/web/html::ChangeEvent",
+                                          "arguments": []
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 761,
+                                          "end": 766
+                                        }
+                                      },
+                                      "field": "value",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "String",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "source": "main.ssrg",
+                                        "start": 761,
+                                        "end": 772
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 748,
+                                    "end": 772
+                                  }
+                                },
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 720,
+                                  "end": 772
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 710,
+                                "end": 772
                               }
                             }
                           ],
@@ -736,6 +961,23 @@
                                   "kind": "named",
                                   "name": "String",
                                   "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onChange",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  }
                                 }
                               },
                               {
@@ -783,8 +1025,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 474,
-                            "end": 665
+                            "start": 533,
+                            "end": 778
                           }
                         }
                       ],
@@ -802,8 +1044,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 463,
-                        "end": 665
+                        "start": 522,
+                        "end": 778
                       }
                     },
                     {
@@ -821,14 +1063,14 @@
                                 "value": "notes",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 703,
-                                  "end": 710
+                                  "start": 812,
+                                  "end": 819
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 697,
-                                "end": 710
+                                "start": 806,
+                                "end": 819
                               }
                             },
                             {
@@ -839,14 +1081,14 @@
                                 "value": "",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 727,
-                                  "end": 729
+                                  "start": 834,
+                                  "end": 836
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 720,
-                                "end": 729
+                                "start": 827,
+                                "end": 836
                               }
                             },
                             {
@@ -871,14 +1113,100 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 748,
-                                  "end": 759
+                                  "start": 853,
+                                  "end": 864
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 739,
-                                "end": 759
+                                "start": 844,
+                                "end": 864
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onChange",
+                              "value": {
+                                "kind": "lambda",
+                                "parameter": {
+                                  "id": "event",
+                                  "kind": "named",
+                                  "type": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  }
+                                },
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "artifact/web-form-events::DraftChanged",
+                                  "arguments": [
+                                    {
+                                      "kind": "field-access",
+                                      "receiver": {
+                                        "kind": "variable",
+                                        "name": "event",
+                                        "type": {
+                                          "kind": "external-named",
+                                          "name": "html.ChangeEvent",
+                                          "canonical": "std/web/html::ChangeEvent",
+                                          "arguments": []
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 923,
+                                          "end": 928
+                                        }
+                                      },
+                                      "field": "value",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "String",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "source": "main.ssrg",
+                                        "start": 923,
+                                        "end": 934
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 910,
+                                    "end": 934
+                                  }
+                                },
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 882,
+                                  "end": 934
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 872,
+                                "end": 934
                               }
                             }
                           ],
@@ -892,6 +1220,23 @@
                                   "kind": "named",
                                   "name": "String",
                                   "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onChange",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  }
                                 }
                               },
                               {
@@ -923,8 +1268,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 687,
-                            "end": 767
+                            "start": 798,
+                            "end": 940
                           }
                         }
                       ],
@@ -942,8 +1287,318 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 673,
-                        "end": 767
+                        "start": 784,
+                        "end": 940
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::select",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onChange",
+                              "value": {
+                                "kind": "lambda",
+                                "parameter": {
+                                  "id": "event",
+                                  "kind": "named",
+                                  "type": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  }
+                                },
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "artifact/web-form-events::DraftChanged",
+                                  "arguments": [
+                                    {
+                                      "kind": "field-access",
+                                      "receiver": {
+                                        "kind": "variable",
+                                        "name": "event",
+                                        "type": {
+                                          "kind": "external-named",
+                                          "name": "html.ChangeEvent",
+                                          "canonical": "std/web/html::ChangeEvent",
+                                          "arguments": []
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 1017,
+                                          "end": 1022
+                                        }
+                                      },
+                                      "field": "value",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "String",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "source": "main.ssrg",
+                                        "start": 1017,
+                                        "end": 1028
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1004,
+                                    "end": 1028
+                                  }
+                                },
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 976,
+                                  "end": 1028
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 966,
+                                "end": 1028
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "call",
+                                "callee": "std/web/html::option",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "value",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "choice",
+                                          "origin": {
+                                            "source": "main.ssrg",
+                                            "start": 1067,
+                                            "end": 1075
+                                          }
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 1060,
+                                          "end": 1075
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "children",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "Choice",
+                                          "origin": {
+                                            "source": "main.ssrg",
+                                            "start": 1087,
+                                            "end": 1095
+                                          }
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 1077,
+                                          "end": 1095
+                                        }
+                                      }
+                                    ],
+                                    "type": {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "children",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "value",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 1058,
+                                      "end": 1097
+                                    }
+                                  }
+                                ],
+                                "evidence": [
+                                  {
+                                    "constraint": {
+                                      "name": "IntoChildren",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "String",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Action",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/web/html::IntoChildren<String>"
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "html.Html",
+                                  "canonical": "std/web/html::Html",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Action",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1046,
+                                  "end": 1097
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1036,
+                                "end": 1097
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "html.Html",
+                                  "canonical": "std/web/html::Html",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Action",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "onChange",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 958,
+                            "end": 1103
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "html.Html",
+                                "canonical": "std/web/html::Html",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Action",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<Html>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 946,
+                        "end": 1103
                       }
                     },
                     {
@@ -966,14 +1621,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 796,
-                                  "end": 803
+                                  "start": 1122,
+                                  "end": 1129
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 796,
-                                "end": 803
+                                "start": 1122,
+                                "end": 1129
                               }
                             },
                             {
@@ -984,14 +1639,14 @@
                                 "value": "checkbox",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 824,
-                                  "end": 834
+                                  "start": 1142,
+                                  "end": 1152
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 813,
-                                "end": 834
+                                "start": 1131,
+                                "end": 1152
                               }
                             },
                             {
@@ -1016,14 +1671,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 854,
-                                  "end": 867
+                                  "start": 1164,
+                                  "end": 1177
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 844,
-                                "end": 867
+                                "start": 1154,
+                                "end": 1177
                               }
                             }
                           ],
@@ -1068,8 +1723,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 786,
-                            "end": 875
+                            "start": 1120,
+                            "end": 1179
                           }
                         }
                       ],
@@ -1087,8 +1742,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 775,
-                        "end": 875
+                        "start": 1109,
+                        "end": 1179
                       }
                     },
                     {
@@ -1106,14 +1761,14 @@
                                 "value": "submit",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 917,
-                                  "end": 925
+                                  "start": 1211,
+                                  "end": 1219
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 905,
-                                "end": 925
+                                "start": 1199,
+                                "end": 1219
                               }
                             },
                             {
@@ -1132,8 +1787,8 @@
                                   },
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 945,
-                                    "end": 950
+                                    "start": 1231,
+                                    "end": 1236
                                   }
                                 },
                                 "right": {
@@ -1141,8 +1796,8 @@
                                   "value": "",
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 954,
-                                    "end": 956
+                                    "start": 1240,
+                                    "end": 1242
                                   }
                                 },
                                 "evidence": [
@@ -1170,14 +1825,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 945,
-                                  "end": 956
+                                  "start": 1231,
+                                  "end": 1242
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 935,
-                                "end": 956
+                                "start": 1221,
+                                "end": 1242
                               }
                             },
                             {
@@ -1188,14 +1843,14 @@
                                 "value": "Add",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 976,
-                                  "end": 981
+                                  "start": 1254,
+                                  "end": 1259
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 966,
-                                "end": 981
+                                "start": 1244,
+                                "end": 1259
                               }
                             }
                           ],
@@ -1231,8 +1886,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 895,
-                            "end": 989
+                            "start": 1197,
+                            "end": 1261
                           }
                         }
                       ],
@@ -1273,8 +1928,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 883,
-                        "end": 989
+                        "start": 1185,
+                        "end": 1261
                       }
                     }
                   ],
@@ -1298,14 +1953,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 397,
-                    "end": 995
+                    "start": 460,
+                    "end": 1265
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 387,
-                  "end": 995
+                  "start": 450,
+                  "end": 1265
                 }
               }
             ],
@@ -1346,8 +2001,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 356,
-              "end": 999
+              "start": 423,
+              "end": 1267
             }
           }
         ],
@@ -1401,8 +2056,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 346,
-          "end": 999
+          "start": 413,
+          "end": 1267
         }
       }
     }
