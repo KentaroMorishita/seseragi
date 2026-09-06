@@ -6,7 +6,7 @@ import {
 } from "./refresh-provider-fixture-locks"
 
 describe("provider fixture lock refresh", () => {
-  test("selects current provider-backed fixtures without rewriting stale-lock evidence", async () => {
+  test("selects all provider-backed fixtures without rewriting deliberate stale-lock evidence", async () => {
     const fixtures = (await providerFixtureDirectories()).map((directory) =>
       path.relative(repositoryRoot, directory)
     )
@@ -20,11 +20,11 @@ describe("provider fixture lock refresh", () => {
     expect(fixtures).toContain(
       "examples/spec/fixtures/projects/provider-http-client-e2e"
     )
-    expect(fixtures).not.toContain(
-      "examples/spec/fixtures/projects/package-stale-lock"
+    expect(fixtures).toContain(
+      "examples/spec/fixtures/projects/http-stream-events"
     )
     expect(fixtures).not.toContain(
-      "examples/spec/fixtures/projects/http-stream-events"
+      "examples/spec/fixtures/projects/package-stale-lock"
     )
   })
 })
