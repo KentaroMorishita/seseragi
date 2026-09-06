@@ -1,0 +1,83 @@
+name: Orchestration subtask
+description: 既存のqueued work-itemに従属し、独立queue位置を持たない作業
+title: ""
+labels:
+  - "role: subtask"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        subtaskは親work-itemのordering / checkpoint / Promotion / releaseに従属します。
+        独立した順序やreleaseが必要ならsubtaskではなくwork-itemへ昇格してください。
+
+  - type: dropdown
+    id: orchestration
+    attributes:
+      label: Orchestration
+      options:
+        - O01
+        - O02
+        - O03
+        - O04
+        - O05
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - compiler
+        - runtime
+        - tooling
+        - testing
+        - docs
+        - spec
+    validations:
+      required: true
+
+  - type: input
+    id: root
+    attributes:
+      label: Orchestration root
+      placeholder: "#549"
+    validations:
+      required: true
+
+  - type: input
+    id: impl_queue
+    attributes:
+      label: Impl queue
+      placeholder: "#291"
+    validations:
+      required: true
+
+  - type: input
+    id: parent
+    attributes:
+      label: Parent work-item
+      description: 同じOxxに属し、Impl queueへ登録済みの親work-item。
+      placeholder: "#502"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: 従属Scope / Acceptance
+      description: 親のどのacceptanceを補助する作業か。独立releaseを持たない理由も明記。
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contract
+    attributes:
+      label: Operating contract
+      options:
+        - label: "#512 を読み、親work-itemが同じOxxのImpl queueへ登録済みであることを確認した"
+          required: true
+        - label: "このsubtask自体には独立Impl/Promotion entryを作らない"
+          required: true
+        - label: "独立したordering/releaseが必要になったらwork-itemへ昇格する"
+          required: true
