@@ -278,7 +278,10 @@ fn detailsTask state: MutableSignal<Model> -> event: html.InputEvent -> Task<Uni
   dispatch state (DetailsChanged event.value)
 
 fn pinnedTask state: MutableSignal<Model> -> event: html.ChangeEvent -> Task<Unit> =
-  dispatch state (PinnedChanged event.checked)
+  match event.checked {
+    Just checked -> dispatch state (PinnedChanged checked)
+    Nothing -> dispatch state NoOp
+  }
 
 fn titleTask state: MutableSignal<Model>
   -> id: Int
