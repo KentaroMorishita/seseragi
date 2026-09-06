@@ -218,13 +218,14 @@ jobs:
           cargo build -p seseragi-cli --bin seseragi
           bun scripts/refresh-provider-fixture-locks.ts --cli target/debug/seseragi
           bun run fixtures:generate
+          bun scripts/generate-playground-samples.ts
           bun run build:playground:wasm
           bun scripts/release-contract.ts check
 
           unexpected=0
           while IFS= read -r file; do
             case "$file" in
-              CHANGELOG.md|Cargo.toml|Cargo.lock|package.json|runtime/ts/package.json|apps/playground/package.json|extensions/seseragi/package.json|extensions/seseragi-legacy/package.json|apps/playground/src/wasm/pkg/*|examples/spec/fixtures/projects/*/seseragi.lock)
+              CHANGELOG.md|Cargo.toml|Cargo.lock|package.json|runtime/ts/package.json|apps/playground/package.json|extensions/seseragi/package.json|extensions/seseragi-legacy/package.json|apps/playground/src/generated/sample-manifest.ts|apps/playground/tests/fixtures/*.interaction.json|apps/playground/src/wasm/pkg/*|examples/spec/fixtures/projects/*/seseragi.lock)
                 ;;
               *)
                 echo "unexpected release-preparation diff: $file" >&2
@@ -239,6 +240,8 @@ jobs:
             apps/playground/package.json \
             extensions/seseragi/package.json \
             extensions/seseragi-legacy/package.json \
+            apps/playground/src/generated/sample-manifest.ts \
+            apps/playground/tests/fixtures/*.interaction.json \
             apps/playground/src/wasm/pkg \
             examples/spec/fixtures/projects
           git diff --cached --quiet && {
