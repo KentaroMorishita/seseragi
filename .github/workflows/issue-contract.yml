@@ -61,7 +61,7 @@ jobs:
             }
 
             async function normalizeFormLabels(issue) {
-              let names = labelNames(issue)
+              const names = labelNames(issue)
               const role = names.find(name => knownRoles.has(name))
               if (!role || role === 'role: control') return issue
 
@@ -152,11 +152,13 @@ jobs:
                 }
 
                 if (role === 'role: subtask') {
-                  const parentMatch = (issue.body || '').match(/Parent work-item:\s*#(\d+)/i)
-                  if (!parentMatch) {
-                    violations.push('subtask body must contain `Parent work-item: #N`')
+                  const explicitParent = (issue.body || '').match(/Parent work-item:\s*#(\d+)/i)
+                  const formParent = headingValue(issue.body || '', 'Parent work-item')
+                  const formParentMatch = formParent ? formParent.match(/#(\d+)/) : null
+                  const parentNumber = explicitParent ? Number(explicitParent[1]) : formParentMatch ? Number(formParentMatch[1]) : null
+                  if (!parentNumber) {
+                    violations.push('subtask body must identify `Parent work-item: #N` or the Parent work-item form field')
                   } else {
-                    const parentNumber = Number(parentMatch[1])
                     const { data: parent } = await github.rest.issues.get({ owner, repo, issue_number: parentNumber })
                     const parentLabels = labelNames(parent)
                     if (!parentLabels.includes('role: work-item')) violations.push(`parent #${parentNumber} must be role: work-item`)
