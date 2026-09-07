@@ -9,6 +9,7 @@
       "canonical": "std/prelude::List"
     },
     {
+      "arity": 1,
       "spelling": "nonEmpty.NonEmptyList",
       "canonical": "std/non-empty-list::NonEmptyList",
       "provider": {

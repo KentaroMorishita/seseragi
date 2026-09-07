@@ -569,7 +569,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     .collect::<Vec<_>>();
                 let remaining_parameters = operation.source_arity.saturating_sub(arguments.len());
                 arguments.splice(0..0, dictionaries);
-                lower_uncurried_runtime_call(
+                let result = lower_uncurried_runtime_call(
                     operation.local_name.to_owned(),
                     arguments,
                     &type_ref,
@@ -577,7 +577,15 @@ pub(super) fn lower_core_expr_to_typescript(
                     "collection",
                     type_arguments,
                     Some(remaining_parameters),
-                )
+                );
+                if operation.result_erased {
+                    TypeScriptExpr::CheckedResult {
+                        value: Box::new(result),
+                        type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                    }
+                } else {
+                    result
+                }
             } else if let Some(operation) = runtime_stream_operation(&callee) {
                 if callee == "std/stream::fromIterable" {
                     arguments.extend(evidence.iter().map(|selected| {

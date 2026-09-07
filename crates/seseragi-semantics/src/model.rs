@@ -88,6 +88,8 @@ pub enum TypedForeignMember {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExternalTypeBinding {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub arity: Option<u32>,
     pub spelling: String,
     pub canonical: String,
     #[serde(skip_serializing_if = "Option::is_none")]

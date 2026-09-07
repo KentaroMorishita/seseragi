@@ -5,6 +5,7 @@
   "module": "artifact/unicode-text",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "text.TextSliceError",
       "canonical": "std/text::TextSliceError",
       "provider": {
@@ -13,6 +14,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "graphemes.GraphemeSliceError",
       "canonical": "std/text/grapheme::GraphemeSliceError",
       "provider": {
@@ -21,6 +23,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "NormalizationForm",
       "canonical": "std/text/unicode::NormalizationForm",
       "provider": {
@@ -29,6 +32,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "UnicodeGeneralCategory",
       "canonical": "std/text/unicode::UnicodeGeneralCategory",
       "provider": {
@@ -45,6 +49,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Utf8DecodeError",
       "canonical": "std/text::Utf8DecodeError",
       "provider": {

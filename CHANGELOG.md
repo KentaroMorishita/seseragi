@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.5] - 2026-09-07
+
+### Changed
+
+- #506 【#291・標準ライブラリ】5種のMonad transformerと標準instanceを追加
 ## [0.61.4] - 2026-09-07
 
 ### Changed

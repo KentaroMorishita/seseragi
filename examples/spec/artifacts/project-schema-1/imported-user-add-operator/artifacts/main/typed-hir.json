@@ -5,6 +5,7 @@
   "module": "fixture/imported-user-add-operator::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "Score",
       "canonical": "fixture/imported-user-add-operator::domain::Score",
       "provider": {

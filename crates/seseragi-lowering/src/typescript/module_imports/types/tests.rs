@@ -27,6 +27,7 @@ fn external(name: &str, canonical: &str) -> CoreType {
 
 fn binding(name: &str, canonical: &str, module: &str, export: &str) -> ExternalTypeBinding {
     ExternalTypeBinding {
+        arity: None,
         spelling: name.to_owned(),
         canonical: canonical.to_owned(),
         provider: Some(ExternalTypeProvider {
@@ -217,6 +218,7 @@ fn rejects_missing_binding_provider_or_output_plan_without_a_spelling_fallback()
 
     let missing_provider = module(
         vec![ExternalTypeBinding {
+            arity: None,
             spelling: "Hand".to_owned(),
             canonical: canonical.to_owned(),
             provider: None,

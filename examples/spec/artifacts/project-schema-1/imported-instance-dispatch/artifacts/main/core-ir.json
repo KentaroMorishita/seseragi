@@ -8,6 +8,7 @@
       "canonical": "std/prelude::ConsoleError"
     },
     {
+      "arity": 0,
       "spelling": "Badge",
       "canonical": "fixture/imported-instance-dispatch::domain::Badge",
       "provider": {

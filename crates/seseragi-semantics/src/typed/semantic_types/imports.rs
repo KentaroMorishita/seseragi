@@ -161,6 +161,22 @@ impl SemanticTypeCatalog {
                 .copied()
                 .map(SemanticTypeKey::TypeParameter)
                 .unwrap_or_else(|| self.key_from_typed_type(resolved, &type_ref)),
+            TypedType::Named { name, arguments } if parameters.contains_key(name) => {
+                SemanticTypeKey::Application {
+                    constructor: Box::new(SemanticValueType {
+                        type_ref: TypedType::Named {
+                            name: name.clone(),
+                            arguments: vec![],
+                        },
+                        key: SemanticTypeKey::TypeParameter(parameters[name]),
+                    }),
+                    arguments: arguments
+                        .iter()
+                        .cloned()
+                        .map(|argument| self.imported_payload(resolved, argument, parameters))
+                        .collect(),
+                }
+            }
             TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
                 let arguments = arguments
                     .iter()

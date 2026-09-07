@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.61.4",
+  "version": "0.61.5",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -377,6 +377,10 @@
     "./browser/dom": {
       "types": "./src/browser/dom.ts",
       "default": "./src/browser/dom.ts"
+    },
+    "./transformer": {
+      "types": "./src/transformer.ts",
+      "default": "./src/transformer.ts"
     }
   },
   "license": "Apache-2.0"

@@ -92,48 +92,7 @@ const STRUCTURAL_INSTANCES: &[StandardInstanceAuditSpec] = &[
 // projected directly from the canonical registries above, while missing rows
 // stay explicit until their queue issue connects the real instance and removes
 // the corresponding entry here.
-const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
-    audit_spec("Functor", "MaybeT<M, _> where Monad<M>", "9.9", None),
-    audit_spec("Applicative", "MaybeT<M, _> where Monad<M>", "9.9", None),
-    audit_spec("Monad", "MaybeT<M, _> where Monad<M>", "9.9", None),
-    audit_spec("Functor", "EitherT<E, M, _> where Monad<M>", "9.9", None),
-    audit_spec(
-        "Applicative",
-        "EitherT<E, M, _> where Monad<M>",
-        "9.9",
-        None,
-    ),
-    audit_spec("Monad", "EitherT<E, M, _> where Monad<M>", "9.9", None),
-    audit_spec("Functor", "ReaderT<R, M, _> where Monad<M>", "9.9", None),
-    audit_spec(
-        "Applicative",
-        "ReaderT<R, M, _> where Monad<M>",
-        "9.9",
-        None,
-    ),
-    audit_spec("Monad", "ReaderT<R, M, _> where Monad<M>", "9.9", None),
-    audit_spec("Functor", "StateT<S, M, _> where Monad<M>", "9.9", None),
-    audit_spec("Applicative", "StateT<S, M, _> where Monad<M>", "9.9", None),
-    audit_spec("Monad", "StateT<S, M, _> where Monad<M>", "9.9", None),
-    audit_spec(
-        "Functor",
-        "WriterT<W, M, _> where Monad<M>, Monoid<W>",
-        "9.9",
-        None,
-    ),
-    audit_spec(
-        "Applicative",
-        "WriterT<W, M, _> where Monad<M>, Monoid<W>",
-        "9.9",
-        None,
-    ),
-    audit_spec(
-        "Monad",
-        "WriterT<W, M, _> where Monad<M>, Monoid<W>",
-        "9.9",
-        None,
-    ),
-];
+const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[];
 
 const UNAVAILABLE_INSTANCES: &[StandardInstanceAuditSpec] = &[
     audit_spec("Functor", "Set", "10.5", None),
@@ -471,7 +430,7 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 284);
+        assert_eq!(surface.instances.len(), 299);
         assert_eq!(surface.builtin_instances.len(), 44);
         for identity in [
             "std/maybe::Eq",
@@ -512,7 +471,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 284 + 44 + 12);
+        assert_eq!(implemented.len(), 299 + 44 + 12);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()

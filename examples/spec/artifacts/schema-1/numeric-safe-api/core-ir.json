@@ -4,6 +4,7 @@
   "module": "artifact/numeric-safe-api",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "RoundingMode",
       "canonical": "std/number::RoundingMode",
       "provider": {
@@ -12,6 +13,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "ints.IntParseError",
       "canonical": "std/int::IntParseError",
       "provider": {
@@ -20,6 +22,15 @@
       }
     },
     {
+      "spelling": "RoundingMode",
+      "canonical": "std/number::RoundingMode",
+      "provider": {
+        "module": "std/number",
+        "export": "RoundingMode"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "floats.FloatConversionError",
       "canonical": "std/float::FloatConversionError",
       "provider": {

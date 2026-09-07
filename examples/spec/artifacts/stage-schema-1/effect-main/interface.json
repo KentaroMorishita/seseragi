@@ -9,36 +9,17 @@
       "namespace": "value",
       "name": "main",
       "visibility": "public",
-      "declaration": { "start": 0, "end": 78 },
+      "declaration": {
+        "start": 0,
+        "end": 78
+      },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "function",
-          "parameter": { "kind": "named", "name": "Unit", "arguments": [] },
-          "result": {
-            "kind": "effect",
-            "environment": {
-              "kind": "record",
-              "closed": true,
-              "fields": [
-                {
-                  "name": "console",
-                  "type": {
-                    "kind": "named",
-                    "name": "Console",
-                    "arguments": []
-                  }
-                }
-              ]
-            },
-            "failure": {
-              "kind": "named",
-              "name": "ConsoleError",
-              "arguments": []
-            },
-            "success": { "kind": "named", "name": "Unit", "arguments": [] }
-          }
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
         }
       }
     }

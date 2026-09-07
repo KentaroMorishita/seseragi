@@ -5,6 +5,7 @@
   "module": "fixture/imported-derived-structural::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "UserId",
       "canonical": "fixture/imported-derived-structural::domain::UserId",
       "provider": {
@@ -13,6 +14,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "Tree",
       "canonical": "fixture/imported-derived-structural::domain::Tree",
       "provider": {
@@ -21,6 +23,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Phase",
       "canonical": "fixture/imported-derived-structural::domain::Phase",
       "provider": {
@@ -29,6 +32,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "Phantom",
       "canonical": "fixture/imported-derived-structural::domain::Phantom",
       "provider": {
@@ -37,6 +41,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "Profile",
       "canonical": "fixture/imported-derived-structural::domain::Profile",
       "provider": {
@@ -45,6 +50,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "Nested",
       "canonical": "fixture/imported-derived-structural::domain::Nested",
       "provider": {
@@ -53,6 +59,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Reordered",
       "canonical": "fixture/imported-derived-structural::domain::Reordered",
       "provider": {

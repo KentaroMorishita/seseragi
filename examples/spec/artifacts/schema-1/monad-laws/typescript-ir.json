@@ -58,9 +58,7 @@
       "trait": "Functor",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Maybe",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "origin": {
@@ -182,9 +180,7 @@
       "trait": "Applicative",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Maybe",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "constraints": [
@@ -193,9 +189,7 @@
           "traitIdentity": "artifact/monad-laws::trait(Functor)",
           "arguments": [
             {
-              "kind": "reference",
-              "name": "Maybe",
-              "arguments": []
+              "kind": "unknown"
             }
           ]
         }
@@ -416,9 +410,7 @@
       "trait": "Monad",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Maybe",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "constraints": [
@@ -427,9 +419,7 @@
           "traitIdentity": "artifact/monad-laws::trait(Applicative)",
           "arguments": [
             {
-              "kind": "reference",
-              "name": "Maybe",
-              "arguments": []
+              "kind": "unknown"
             }
           ]
         }

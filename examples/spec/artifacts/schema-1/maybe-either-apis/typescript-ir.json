@@ -287,9 +287,7 @@
       "trait": "Functor",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Box",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "origin": {
@@ -404,9 +402,7 @@
       "trait": "Traversable",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Box",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "constraints": [
@@ -415,9 +411,7 @@
           "traitIdentity": "std/prelude::Functor",
           "arguments": [
             {
-              "kind": "reference",
-              "name": "Box",
-              "arguments": []
+              "kind": "unknown"
             }
           ]
         }

@@ -1,4 +1,5 @@
 use crate::{ResolvedModule, ScopeKind, SymbolId, SymbolKind, SymbolNamespace, TypedType};
+pub(crate) use aliases::fill_constructor_holes;
 use seseragi_syntax::{SurfaceDecl, TypeRef};
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -20,6 +21,10 @@ pub(crate) enum SemanticTypeKey {
     },
     Struct {
         owner: SymbolId,
+        arguments: Vec<SemanticValueType>,
+    },
+    Application {
+        constructor: Box<SemanticValueType>,
         arguments: Vec<SemanticValueType>,
     },
     TypeParameter(SymbolId),
@@ -148,6 +153,9 @@ pub(crate) fn semantic_values_are_compatible(
                         .zip(actual_arguments)
                         .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
                 }
+        }
+        (SemanticTypeKey::Application { .. }, _) | (_, SemanticTypeKey::Application { .. }) => {
+            semantic_values_have_same_identity(expected, actual)
         }
         (SemanticTypeKey::NamedGeneric { .. }, SemanticTypeKey::Other)
         | (SemanticTypeKey::Other, SemanticTypeKey::NamedGeneric { .. }) => {
@@ -293,6 +301,25 @@ pub(crate) fn semantic_values_have_same_identity(
                             )
                         },
                     )
+        }
+        (
+            SemanticTypeKey::Application {
+                constructor: left,
+                arguments: left_args,
+            },
+            SemanticTypeKey::Application {
+                constructor: right,
+                arguments: right_args,
+            },
+        ) => {
+            semantic_values_have_same_identity(left, right)
+                && semantic_arguments_have_same_identity(left_args, right_args)
+        }
+        (SemanticTypeKey::Application { .. }, SemanticTypeKey::NamedGeneric { .. })
+        | (SemanticTypeKey::NamedGeneric { .. }, SemanticTypeKey::Application { .. })
+        | (SemanticTypeKey::Application { .. }, SemanticTypeKey::Other)
+        | (SemanticTypeKey::Other, SemanticTypeKey::Application { .. }) => {
+            expected.type_ref == actual.type_ref
         }
         (SemanticTypeKey::Other, SemanticTypeKey::Other) => {
             structural_types_are_compatible(&expected.type_ref, &actual.type_ref)
@@ -987,7 +1014,32 @@ fn semantic_key_from_type_ref(
                     }
                 }
                 Some((parameter, SymbolKind::TypeParameter, _)) => {
-                    SemanticTypeKey::TypeParameter(parameter)
+                    if arguments.is_empty() {
+                        SemanticTypeKey::TypeParameter(parameter)
+                    } else {
+                        SemanticTypeKey::Application {
+                            constructor: Box::new(SemanticValueType {
+                                type_ref: TypedType::Named {
+                                    name: name.clone(),
+                                    arguments: vec![],
+                                },
+                                key: SemanticTypeKey::TypeParameter(parameter),
+                            }),
+                            arguments: arguments
+                                .iter()
+                                .map(|argument| SemanticValueType {
+                                    type_ref: aliases.expand(resolved, argument),
+                                    key: semantic_key_from_type_ref(
+                                        resolved,
+                                        owners,
+                                        struct_owners,
+                                        aliases,
+                                        argument,
+                                    ),
+                                })
+                                .collect(),
+                        }
+                    }
                 }
                 _ => named_generic_key(
                     name,

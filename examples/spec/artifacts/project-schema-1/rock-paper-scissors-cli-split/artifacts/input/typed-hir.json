@@ -9,6 +9,7 @@
       "canonical": "std/prelude::StdinError"
     },
     {
+      "arity": 0,
       "spelling": "Hand",
       "canonical": "fixture/rps-cli-split::domain::Hand",
       "provider": {

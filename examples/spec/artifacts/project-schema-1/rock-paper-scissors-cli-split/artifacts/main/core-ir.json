@@ -8,6 +8,7 @@
       "canonical": "std/prelude::ConsoleError"
     },
     {
+      "arity": 0,
       "spelling": "Hand",
       "canonical": "fixture/rps-cli-split::domain::Hand",
       "provider": {
@@ -16,6 +17,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Outcome",
       "canonical": "fixture/rps-cli-split::domain::Outcome",
       "provider": {
@@ -24,11 +26,20 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "InputError",
       "canonical": "fixture/rps-cli-split::input::InputError",
       "provider": {
         "module": "fixture/rps-cli-split::input",
         "export": "InputError"
+      }
+    },
+    {
+      "spelling": "Hand",
+      "canonical": "fixture/rps-cli-split::domain::Hand",
+      "provider": {
+        "module": "fixture/rps-cli-split::domain",
+        "export": "Hand"
       }
     }
   ],

@@ -1,0 +1,4009 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/transformers",
+  "runtimeRequirements": [
+    "core.transformer.maybe.type",
+    "core.transformer.either.type",
+    "core.transformer.reader.type",
+    "core.transformer.state.type",
+    "core.transformer.writer.type",
+    "effect.core.type",
+    "effect.console.service",
+    "effect.console.error",
+    "core.string",
+    "core.string.show",
+    "core.unit",
+    "core.maybe.monad",
+    "core.maybe",
+    "core.int",
+    "core.transformer.maybe.functor-dictionary",
+    "core.transformer.either.fromEither",
+    "core.either.right",
+    "core.either",
+    "core.transformer.reader.local",
+    "core.int.add",
+    "core.transformer.state.get",
+    "core.string.monoid",
+    "core.transformer.writer.tell",
+    "core.transformer.state.run",
+    "core.transformer.maybe.monad-dictionary",
+    "core.transformer.maybe.applicative-dictionary",
+    "core.transformer.state.modify",
+    "core.transformer.state.monad-dictionary",
+    "core.transformer.writer.monad-dictionary",
+    "core.transformer.writer.applicative-dictionary",
+    "core.transformer.maybe.fromMaybe",
+    "core.maybe.just",
+    "effect.core.monad",
+    "core.transformer.maybe.lift",
+    "core.transformer.writer.run",
+    "core.adt",
+    "core.transformer.reader.ask",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.int.show",
+    "effect.core.succeed",
+    "core.maybe.show",
+    "core.transformer.maybe.run",
+    "core.either.show",
+    "core.transformer.either.run",
+    "core.transformer.reader.run",
+    "core.tuple.show",
+    "core.unit.show",
+    "core.transformer.writer.listen"
+  ],
+  "imports": [
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.maybe.monad",
+      "local": "_ssrg_maybe_monad"
+    },
+    {
+      "feature": "core.transformer.maybe.functor-dictionary",
+      "local": "_ssrg_maybeTFunctor"
+    },
+    {
+      "feature": "core.transformer.either.fromEither",
+      "local": "_ssrg_eitherTFromEither"
+    },
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    },
+    {
+      "feature": "core.transformer.reader.local",
+      "local": "_ssrg_readerTLocal"
+    },
+    {
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "core.transformer.state.get",
+      "local": "_ssrg_stateTGet"
+    },
+    {
+      "feature": "core.string.monoid",
+      "local": "_ssrg_string_monoid"
+    },
+    {
+      "feature": "core.transformer.writer.tell",
+      "local": "_ssrg_writerTTell"
+    },
+    {
+      "feature": "core.transformer.state.run",
+      "local": "_ssrg_stateTRun"
+    },
+    {
+      "feature": "core.transformer.maybe.monad-dictionary",
+      "local": "_ssrg_maybeTMonad"
+    },
+    {
+      "feature": "core.transformer.maybe.applicative-dictionary",
+      "local": "_ssrg_maybeTApplicative"
+    },
+    {
+      "feature": "core.transformer.state.modify",
+      "local": "_ssrg_stateTModify"
+    },
+    {
+      "feature": "core.transformer.state.monad-dictionary",
+      "local": "_ssrg_stateTMonad"
+    },
+    {
+      "feature": "core.transformer.writer.monad-dictionary",
+      "local": "_ssrg_writerTMonad"
+    },
+    {
+      "feature": "core.transformer.writer.applicative-dictionary",
+      "local": "_ssrg_writerTApplicative"
+    },
+    {
+      "feature": "core.transformer.maybe.fromMaybe",
+      "local": "_ssrg_maybeTFromMaybe"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "effect.core.monad",
+      "local": "_ssrg_effect_monad"
+    },
+    {
+      "feature": "core.transformer.maybe.lift",
+      "local": "_ssrg_maybeTLift"
+    },
+    {
+      "feature": "core.transformer.writer.run",
+      "local": "_ssrg_writerTRun"
+    },
+    {
+      "feature": "core.transformer.reader.ask",
+      "local": "_ssrg_readerTAsk"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
+    },
+    {
+      "feature": "core.maybe.show",
+      "local": "_ssrg_show_maybeShow"
+    },
+    {
+      "feature": "core.transformer.maybe.run",
+      "local": "_ssrg_maybeTRun"
+    },
+    {
+      "feature": "core.either.show",
+      "local": "_ssrg_show_eitherShow"
+    },
+    {
+      "feature": "core.transformer.either.run",
+      "local": "_ssrg_eitherTRun"
+    },
+    {
+      "feature": "core.transformer.reader.run",
+      "local": "_ssrg_readerTRun"
+    },
+    {
+      "feature": "core.tuple.show",
+      "local": "_ssrg_show_tupleShow"
+    },
+    {
+      "feature": "core.unit.show",
+      "local": "_ssrg_show_unitShow"
+    },
+    {
+      "feature": "core.transformer.writer.listen",
+      "local": "_ssrg_writerTListen"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.transformer.maybe.type",
+      "local": "MaybeT"
+    },
+    {
+      "feature": "core.transformer.either.type",
+      "local": "EitherT"
+    },
+    {
+      "feature": "core.transformer.reader.type",
+      "local": "ReaderT"
+    },
+    {
+      "feature": "core.transformer.state.type",
+      "local": "StateT"
+    },
+    {
+      "feature": "core.transformer.writer.type",
+      "local": "WriterT"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "effect.console.service",
+      "local": "Console"
+    },
+    {
+      "feature": "effect.console.error",
+      "local": "ConsoleError"
+    }
+  ],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Log",
+      "brand": "__ssrg$brand$Log",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": {
+            "kind": "string"
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 665,
+        "end": 696
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Semigroup<artifact/transformers::Log>",
+      "trait": "Semigroup",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Log",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 697,
+        "end": 811
+      },
+      "dictionaryExport": "__ssrg$instance$Semigroup$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "append",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "Log",
+                "implicit": false
+              },
+              {
+                "name": "right",
+                "type": "Log",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "text",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_stringShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "identifier",
+                            "name": "left"
+                          },
+                          "field": "text"
+                        }
+                      ]
+                    },
+                    "right": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_stringShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "identifier",
+                            "name": "right"
+                          },
+                          "field": "text"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "Log",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 725,
+              "end": 809
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Monoid<artifact/transformers::Log>",
+      "trait": "Monoid",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Log",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Semigroup",
+          "traitIdentity": "std/prelude::Semigroup",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Log",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 812,
+        "end": 884
+      },
+      "dictionaryExport": "__ssrg$instance$Monoid$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "empty",
+            "parameters": [
+              {
+                "name": "unit",
+                "type": "undefined",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "text",
+                  "value": {
+                    "kind": "string",
+                    "value": ""
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "Log",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 837,
+              "end": 882
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "some",
+      "type": {
+        "kind": "reference",
+        "name": "MaybeT",
+        "arguments": [
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "optional",
+          "arguments": [
+            {
+              "kind": "number",
+              "value": "3"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "MaybeT",
+          "arguments": [
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 886,
+        "end": 930
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "mapped",
+      "type": {
+        "kind": "reference",
+        "name": "MaybeT",
+        "arguments": [
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "bump",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "some"
+            },
+            {
+              "kind": "type-application-call",
+              "callee": "_ssrg_maybeTFunctor",
+              "typeArguments": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_maybe_monad"
+                }
+              ]
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "MaybeT",
+          "arguments": [
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 931,
+        "end": 976
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "either",
+      "type": {
+        "kind": "reference",
+        "name": "EitherT",
+        "arguments": [
+          {
+            "kind": "string"
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_eitherTFromEither",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "5"
+                }
+              ]
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "EitherT",
+          "arguments": [
+            {
+              "kind": "string"
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 977,
+        "end": 1045
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "reader",
+      "type": {
+        "kind": "reference",
+        "name": "ReaderT",
+        "arguments": [
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "call",
+          "callee": "environment",
+          "arguments": [
+            {
+              "kind": "undefined"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "ReaderT",
+          "arguments": [
+            {
+              "kind": "number"
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1046,
+        "end": 1102
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "local",
+      "type": {
+        "kind": "reference",
+        "name": "ReaderT",
+        "arguments": [
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_readerTLocal",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "n: number",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_add",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "n"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "10"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "identifier",
+              "name": "reader"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "ReaderT",
+          "arguments": [
+            {
+              "kind": "number"
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1103,
+        "end": 1179
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "state",
+      "type": {
+        "kind": "reference",
+        "name": "StateT",
+        "arguments": [
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_stateTGet",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "undefined"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "StateT",
+          "arguments": [
+            {
+              "kind": "number"
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1180,
+        "end": 1229
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "writer",
+      "type": {
+        "kind": "reference",
+        "name": "WriterT",
+        "arguments": [
+          {
+            "kind": "string"
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_writerTTell",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_string_monoid"
+            },
+            {
+              "kind": "string",
+              "value": "hello"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "WriterT",
+          "arguments": [
+            {
+              "kind": "string"
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1230,
+        "end": 1291
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "runState",
+      "type": {
+        "kind": "function",
+        "parameter": {
+          "kind": "reference",
+          "name": "StateT",
+          "arguments": [
+            {
+              "kind": "number"
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        },
+        "result": {
+          "kind": "maybe",
+          "element": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "number"
+              },
+              {
+                "kind": "number"
+              }
+            ]
+          }
+        }
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "lambda",
+          "parameter": "__ssrg$collection$partial$0: StateT<number, unknown, number>",
+          "body": {
+            "kind": "runtime-call",
+            "callee": "_ssrg_stateTRun",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "7"
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$collection$partial$0"
+              }
+            ]
+          }
+        },
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "reference",
+            "name": "StateT",
+            "arguments": [
+              {
+                "kind": "number"
+              },
+              {
+                "kind": "unknown"
+              },
+              {
+                "kind": "number"
+              }
+            ]
+          },
+          "result": {
+            "kind": "maybe",
+            "element": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "number"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1292,
+        "end": 1364
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "doSome",
+      "type": {
+        "kind": "reference",
+        "name": "MaybeT",
+        "arguments": [
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_maybeTMonad",
+          "typeArguments": [
+            {
+              "kind": "unknown"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            }
+          ]
+        },
+        "statements": [
+          {
+            "kind": "const",
+            "name": "n",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "some"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1409,
+              "end": 1418
+            }
+          }
+        ],
+        "result": {
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "type-application-call",
+              "callee": "_ssrg_maybeTApplicative",
+              "typeArguments": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_maybe_monad"
+                }
+              ]
+            },
+            "method": "pure",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_add",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "n"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "10"
+                  }
+                ]
+              }
+            ]
+          },
+          "type": {
+            "kind": "reference",
+            "name": "MaybeT",
+            "arguments": [
+              {
+                "kind": "unknown"
+              },
+              {
+                "kind": "number"
+              }
+            ]
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1366,
+        "end": 1436
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "applied",
+      "type": {
+        "kind": "reference",
+        "name": "MaybeT",
+        "arguments": [
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_maybeTApplicative",
+            "typeArguments": [
+              {
+                "kind": "unknown"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_maybe_monad"
+              }
+            ]
+          },
+          "method": "apply",
+          "arguments": [
+            {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_maybeTApplicative",
+                  "typeArguments": [
+                    {
+                      "kind": "unknown"
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_maybe_monad"
+                    }
+                  ]
+                },
+                "method": "pure",
+                "arguments": [
+                  {
+                    "kind": "lambda",
+                    "parameter": "n: number",
+                    "body": {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_add",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "n"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "2"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "MaybeT",
+                "arguments": [
+                  {
+                    "kind": "unknown"
+                  },
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "number"
+                    },
+                    "result": {
+                      "kind": "number"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "identifier",
+              "name": "some"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "MaybeT",
+          "arguments": [
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1437,
+        "end": 1508
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "bound",
+      "type": {
+        "kind": "reference",
+        "name": "MaybeT",
+        "arguments": [
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_maybeTMonad",
+            "typeArguments": [
+              {
+                "kind": "unknown"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_maybe_monad"
+              }
+            ]
+          },
+          "method": "flatMap",
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": "n: number",
+              "body": {
+                "kind": "checked-result",
+                "value": {
+                  "kind": "call",
+                  "callee": "optional",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_add",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "n"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "3"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_maybe_monad"
+                    }
+                  ]
+                },
+                "type": {
+                  "kind": "reference",
+                  "name": "MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "unknown"
+                    },
+                    {
+                      "kind": "number"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "kind": "identifier",
+              "name": "some"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "MaybeT",
+          "arguments": [
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1509,
+        "end": 1582
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "stateStep",
+      "type": {
+        "kind": "reference",
+        "name": "StateT",
+        "arguments": [
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_stateTModify",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "n: number",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_add",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "n"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "1"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "StateT",
+          "arguments": [
+            {
+              "kind": "number"
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1583,
+        "end": 1656
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "stateFlow",
+      "type": {
+        "kind": "reference",
+        "name": "StateT",
+        "arguments": [
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_stateTMonad",
+          "typeArguments": [
+            {
+              "kind": "number"
+            },
+            {
+              "kind": "unknown"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            }
+          ]
+        },
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "identifier",
+              "name": "stateStep"
+            }
+          }
+        ],
+        "result": {
+          "kind": "checked-result",
+          "value": {
+            "kind": "runtime-call",
+            "callee": "_ssrg_stateTGet",
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_maybe_monad"
+              },
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          "type": {
+            "kind": "reference",
+            "name": "StateT",
+            "arguments": [
+              {
+                "kind": "number"
+              },
+              {
+                "kind": "unknown"
+              },
+              {
+                "kind": "number"
+              }
+            ]
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1657,
+        "end": 1731
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "first",
+      "type": {
+        "kind": "reference",
+        "name": "WriterT",
+        "arguments": [
+          {
+            "kind": "string"
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_writerTTell",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_string_monoid"
+            },
+            {
+              "kind": "string",
+              "value": "first-"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "WriterT",
+          "arguments": [
+            {
+              "kind": "string"
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1732,
+        "end": 1793
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "second",
+      "type": {
+        "kind": "reference",
+        "name": "WriterT",
+        "arguments": [
+          {
+            "kind": "string"
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_writerTTell",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_string_monoid"
+            },
+            {
+              "kind": "string",
+              "value": "second"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "WriterT",
+          "arguments": [
+            {
+              "kind": "string"
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1794,
+        "end": 1856
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "written",
+      "type": {
+        "kind": "reference",
+        "name": "WriterT",
+        "arguments": [
+          {
+            "kind": "string"
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_writerTMonad",
+          "typeArguments": [
+            {
+              "kind": "string"
+            },
+            {
+              "kind": "unknown"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_string_monoid"
+            }
+          ]
+        },
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "identifier",
+              "name": "first"
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "identifier",
+              "name": "second"
+            }
+          }
+        ],
+        "result": {
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "type-application-call",
+              "callee": "_ssrg_writerTApplicative",
+              "typeArguments": [
+                {
+                  "kind": "string"
+                },
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_maybe_monad"
+                },
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_string_monoid"
+                }
+              ]
+            },
+            "method": "pure",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "9"
+              }
+            ]
+          },
+          "type": {
+            "kind": "reference",
+            "name": "WriterT",
+            "arguments": [
+              {
+                "kind": "string"
+              },
+              {
+                "kind": "unknown"
+              },
+              {
+                "kind": "number"
+              }
+            ]
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1857,
+        "end": 1935
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "nested",
+      "type": {
+        "kind": "reference",
+        "name": "MaybeT",
+        "arguments": [
+          {
+            "kind": "reference",
+            "name": "StateT",
+            "arguments": [
+              {
+                "kind": "number"
+              },
+              {
+                "kind": "unknown"
+              },
+              {
+                "kind": "unknown"
+              }
+            ]
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_maybeTFromMaybe",
+          "arguments": [
+            {
+              "kind": "type-application-call",
+              "callee": "_ssrg_stateTMonad",
+              "typeArguments": [
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_maybe_monad"
+                }
+              ]
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_maybe_Just",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "2"
+                }
+              ]
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "MaybeT",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "StateT",
+              "arguments": [
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "unknown"
+                },
+                {
+                  "kind": "unknown"
+                }
+              ]
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1936,
+        "end": 2012
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "cold",
+      "type": {
+        "kind": "reference",
+        "name": "MaybeT",
+        "arguments": [
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_maybeTLift",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_effect_monad"
+            },
+            {
+              "kind": "call",
+              "callee": "mark",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "4"
+                }
+              ]
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "MaybeT",
+          "arguments": [
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2013,
+        "end": 2105
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "coldMapped",
+      "type": {
+        "kind": "reference",
+        "name": "MaybeT",
+        "arguments": [
+          {
+            "kind": "reference",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "console",
+                    "optional": false,
+                    "type": {
+                      "kind": "reference",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "reference",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "unknown"
+              }
+            ]
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_maybeTFunctor",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "fields": [
+                      {
+                        "name": "console",
+                        "optional": false,
+                        "type": {
+                          "kind": "reference",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "unknown"
+                  }
+                ]
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_effect_monad"
+              }
+            ]
+          },
+          "method": "map",
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": "n: number",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_add",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "n"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "1"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "identifier",
+              "name": "cold"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "MaybeT",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "fields": [
+                    {
+                      "name": "console",
+                      "optional": false,
+                      "type": {
+                        "kind": "reference",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "reference",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                {
+                  "kind": "unknown"
+                }
+              ]
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2106,
+        "end": 2217
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "customFirst",
+      "type": {
+        "kind": "reference",
+        "name": "WriterT",
+        "arguments": [
+          {
+            "kind": "reference",
+            "name": "Log",
+            "arguments": []
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_writerTTell",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Monoid$1",
+              "typeArguments": [],
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Semigroup$0"
+                }
+              ]
+            },
+            {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "text",
+                  "value": {
+                    "kind": "string",
+                    "value": "a"
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "Log",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "WriterT",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Log",
+              "arguments": []
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2219,
+        "end": 2294
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "customSecond",
+      "type": {
+        "kind": "reference",
+        "name": "WriterT",
+        "arguments": [
+          {
+            "kind": "reference",
+            "name": "Log",
+            "arguments": []
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_writerTTell",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Monoid$1",
+              "typeArguments": [],
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Semigroup$0"
+                }
+              ]
+            },
+            {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "text",
+                  "value": {
+                    "kind": "string",
+                    "value": "b"
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "Log",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "WriterT",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Log",
+              "arguments": []
+            },
+            {
+              "kind": "unknown"
+            },
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2295,
+        "end": 2371
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "custom",
+      "type": {
+        "kind": "reference",
+        "name": "WriterT",
+        "arguments": [
+          {
+            "kind": "reference",
+            "name": "Log",
+            "arguments": []
+          },
+          {
+            "kind": "unknown"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_writerTMonad",
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "Log",
+              "arguments": []
+            },
+            {
+              "kind": "unknown"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_monad"
+            },
+            {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Monoid$1",
+              "typeArguments": [],
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Semigroup$0"
+                }
+              ]
+            }
+          ]
+        },
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "identifier",
+              "name": "customFirst"
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "identifier",
+              "name": "customSecond"
+            }
+          }
+        ],
+        "result": {
+          "kind": "checked-result",
+          "value": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "type-application-call",
+              "callee": "_ssrg_writerTApplicative",
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Log",
+                  "arguments": []
+                },
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_maybe_monad"
+                },
+                {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Monoid$1",
+                  "typeArguments": [],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Semigroup$0"
+                    }
+                  ]
+                }
+              ]
+            },
+            "method": "pure",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "1"
+              }
+            ]
+          },
+          "type": {
+            "kind": "reference",
+            "name": "WriterT",
+            "arguments": [
+              {
+                "kind": "reference",
+                "name": "Log",
+                "arguments": []
+              },
+              {
+                "kind": "unknown"
+              },
+              {
+                "kind": "number"
+              }
+            ]
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2372,
+        "end": 2458
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "customText",
+      "type": {
+        "kind": "string"
+      },
+      "initializer": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "checked-result",
+          "value": {
+            "kind": "runtime-call",
+            "callee": "_ssrg_writerTRun",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "custom"
+              }
+            ]
+          },
+          "type": {
+            "kind": "maybe",
+            "element": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "reference",
+                  "name": "Log",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "number"
+              },
+              {
+                "kind": "reference",
+                "name": "Log",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "output",
+                "type": {
+                  "kind": "reference",
+                  "name": "Log",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "identifier",
+                "name": "output"
+              },
+              "field": "text"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "missing"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2459,
+        "end": 2556
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "bump",
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Functor",
+          "traitIdentity": "std/prelude::Functor",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "F",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "unknown",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          "method": "map",
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": "n: number",
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_add",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "n"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "1"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        },
+        "type": {
+          "kind": "unknown"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 258,
+        "end": 349
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "optional",
+      "typeParameters": [
+        {
+          "name": "M",
+          "arity": 1
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Monad",
+          "traitIdentity": "std/prelude::Monad",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "M",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "number",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_maybeTFromMaybe",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "__ssrg$evidence$0"
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_maybe_Just",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "MaybeT",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "M",
+              "arguments": []
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 351,
+        "end": 449
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "environment",
+      "typeParameters": [
+        {
+          "name": "M",
+          "arity": 1
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Monad",
+          "traitIdentity": "std/prelude::Monad",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "M",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_readerTAsk",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "__ssrg$evidence$0"
+            },
+            {
+              "kind": "undefined"
+            }
+          ]
+        },
+        "type": {
+          "kind": "reference",
+          "name": "ReaderT",
+          "arguments": [
+            {
+              "kind": "number"
+            },
+            {
+              "kind": "reference",
+              "name": "M",
+              "arguments": []
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 451,
+        "end": 529
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "mark",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "number",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "base:"
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_succeed",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 531,
+        "end": 663
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
+                          }
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_maybeShow",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybeTRun",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "mapped"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "maybe",
+                            "element": {
+                              "kind": "number"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "either",
+                          "error": {
+                            "kind": "string"
+                          },
+                          "value": {
+                            "kind": "number"
+                          }
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_eitherShow",
+                          "typeArguments": [
+                            {
+                              "kind": "string"
+                            },
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_stringShow"
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_eitherTRun",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "either"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "either",
+                            "error": {
+                              "kind": "string"
+                            },
+                            "value": {
+                              "kind": "number"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_readerTRun",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "2"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "local"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_readerTRun",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "2"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "reader"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "number"
+                            },
+                            {
+                              "kind": "number"
+                            }
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_tupleShow",
+                          "typeArguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "number"
+                                },
+                                {
+                                  "kind": "number"
+                                }
+                              ]
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "runState",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "state"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "undefined"
+                            },
+                            {
+                              "kind": "string"
+                            }
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_tupleShow",
+                          "typeArguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "undefined"
+                                },
+                                {
+                                  "kind": "string"
+                                }
+                              ]
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_unitShow"
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_stringShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_writerTRun",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "writer"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "undefined"
+                              },
+                              {
+                                "kind": "string"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
+                          }
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_maybeShow",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybeTRun",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "doSome"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "maybe",
+                            "element": {
+                              "kind": "number"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
+                          }
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_maybeShow",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybeTRun",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "applied"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "maybe",
+                            "element": {
+                              "kind": "number"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "number"
+                          }
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_maybeShow",
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybeTRun",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "bound"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "maybe",
+                            "element": {
+                              "kind": "number"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "number"
+                            },
+                            {
+                              "kind": "number"
+                            }
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_tupleShow",
+                          "typeArguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "number"
+                                },
+                                {
+                                  "kind": "number"
+                                }
+                              ]
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_stateTRun",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "7"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "stateFlow"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "number"
+                              },
+                              {
+                                "kind": "number"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "number"
+                                },
+                                {
+                                  "kind": "string"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "string"
+                            }
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_tupleShow",
+                          "typeArguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "tuple",
+                                  "elements": [
+                                    {
+                                      "kind": "number"
+                                    },
+                                    {
+                                      "kind": "string"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "string"
+                                }
+                              ]
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "type-application-call",
+                              "callee": "_ssrg_show_tupleShow",
+                              "typeArguments": [
+                                {
+                                  "kind": "tuple",
+                                  "elements": [
+                                    {
+                                      "kind": "number"
+                                    },
+                                    {
+                                      "kind": "string"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_intShow"
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_stringShow"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_stringShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_writerTRun",
+                          "arguments": [
+                            {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_writerTListen",
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_maybe_monad"
+                                  },
+                                  {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_string_monoid"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "written"
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "reference",
+                                "name": "WriterT",
+                                "arguments": [
+                                  {
+                                    "kind": "string"
+                                  },
+                                  {
+                                    "kind": "unknown"
+                                  },
+                                  {
+                                    "kind": "tuple",
+                                    "elements": [
+                                      {
+                                        "kind": "number"
+                                      },
+                                      {
+                                        "kind": "string"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "number"
+                                  },
+                                  {
+                                    "kind": "string"
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "string"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "maybe",
+                              "element": {
+                                "kind": "number"
+                              }
+                            },
+                            {
+                              "kind": "number"
+                            }
+                          ]
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "_ssrg_show_tupleShow",
+                          "typeArguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                },
+                                {
+                                  "kind": "number"
+                                }
+                              ]
+                            }
+                          ],
+                          "arguments": [
+                            {
+                              "kind": "type-application-call",
+                              "callee": "_ssrg_show_maybeShow",
+                              "typeArguments": [
+                                {
+                                  "kind": "number"
+                                }
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_intShow"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_stateTRun",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_maybeTRun",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "nested"
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "reference",
+                                "name": "StateT",
+                                "arguments": [
+                                  {
+                                    "kind": "number"
+                                  },
+                                  {
+                                    "kind": "unknown"
+                                  },
+                                  {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "maybe",
+                          "element": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "maybe",
+                                "element": {
+                                  "kind": "number"
+                                }
+                              },
+                              {
+                                "kind": "number"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "customText"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "before"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "const",
+            "name": "n",
+            "type": {
+              "kind": "maybe",
+              "element": {
+                "kind": "number"
+              }
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybeTRun",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "coldMapped"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "fields": [
+                      {
+                        "name": "console",
+                        "optional": false,
+                        "type": {
+                          "kind": "reference",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "maybe",
+                    "element": {
+                      "kind": "number"
+                    }
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 3055,
+              "end": 3077
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_maybeShow",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_intShow"
+                        }
+                      ]
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "n"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "const",
+            "name": "m",
+            "type": {
+              "kind": "maybe",
+              "element": {
+                "kind": "number"
+              }
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybeTRun",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "coldMapped"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "reference",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "fields": [
+                      {
+                        "name": "console",
+                        "optional": false,
+                        "type": {
+                          "kind": "reference",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "maybe",
+                    "element": {
+                      "kind": "number"
+                    }
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 3099,
+              "end": 3121
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_show_maybeShow",
+                  "typeArguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    }
+                  ]
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "m"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2558,
+        "end": 3142
+      }
+    }
+  ]
+}

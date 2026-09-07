@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "module": "artifact/transformers",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.transformer.maybe.type",
+      "core.transformer.either.type",
+      "core.transformer.reader.type",
+      "core.transformer.state.type",
+      "core.transformer.writer.type",
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.string",
+      "core.string.show",
+      "core.unit",
+      "core.maybe.monad",
+      "core.maybe",
+      "core.int",
+      "core.transformer.maybe.functor-dictionary",
+      "core.transformer.either.fromEither",
+      "core.either.right",
+      "core.either",
+      "core.transformer.reader.local",
+      "core.int.add",
+      "core.transformer.state.get",
+      "core.string.monoid",
+      "core.transformer.writer.tell",
+      "core.transformer.state.run",
+      "core.transformer.maybe.monad-dictionary",
+      "core.transformer.maybe.applicative-dictionary",
+      "core.transformer.state.modify",
+      "core.transformer.state.monad-dictionary",
+      "core.transformer.writer.monad-dictionary",
+      "core.transformer.writer.applicative-dictionary",
+      "core.transformer.maybe.fromMaybe",
+      "core.maybe.just",
+      "effect.core.monad",
+      "core.transformer.maybe.lift",
+      "core.transformer.writer.run",
+      "core.adt",
+      "core.transformer.reader.ask",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.show",
+      "effect.core.succeed",
+      "core.maybe.show",
+      "core.transformer.maybe.run",
+      "core.either.show",
+      "core.transformer.either.run",
+      "core.transformer.reader.run",
+      "core.tuple.show",
+      "core.unit.show",
+      "core.transformer.writer.listen"
+    ]
+  },
+  "exports": [
+    "bump",
+    "optional",
+    "environment",
+    "mark",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Semigroup<artifact/transformers::Log>",
+      "trait": "Semigroup",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Log",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Semigroup$0"
+    },
+    {
+      "identity": "std/prelude::Monoid<artifact/transformers::Log>",
+      "trait": "Monoid",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Log",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Monoid$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

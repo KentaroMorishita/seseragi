@@ -5,6 +5,7 @@
   "module": "fixture/imported-derived-show-debug::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "Code",
       "canonical": "fixture/imported-derived-show-debug::domain::Code",
       "provider": {
@@ -13,6 +14,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "Remote",
       "canonical": "fixture/imported-derived-show-debug::domain::Remote",
       "provider": {
