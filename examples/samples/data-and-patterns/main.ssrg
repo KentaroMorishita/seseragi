@@ -7,5 +7,5 @@ fn message delivery: Delivery -> String = match delivery {
   Shipped city -> `Shipped to ${city}`
 }
 
-  // constructorをすべて扱うので、このmatchは網羅的です。
+// constructorをすべて扱うので、このmatchは網羅的です。
 pub effect fn main = Shipped "Osaka" |> message |> println

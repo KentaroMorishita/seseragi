@@ -122,7 +122,7 @@ fn pulseView label: String
     ]
   }
 
-  // constructorを呼んだ時点で、各Pulse専用のlocal stateが一度だけ作られます。
+// constructorを呼んだ時点で、各Pulse専用のlocal stateが一度だけ作られます。
 effect fn createPulse label: String
   -> surfaceStyle: html.Style
   -> Signal<html.Html<Task<Unit>>>
@@ -202,8 +202,8 @@ fn selectFirst first: Signal<html.Html<Task<Unit>>>
       replacement
     else
       first
-    else
-      signals.constant $
+  else
+    signals.constant $
     hidden ()
 
 fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> = html.img {

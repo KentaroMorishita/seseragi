@@ -16,7 +16,7 @@ fn render label: String -> result: Either<String, Int> -> String = match result 
   Right value -> `${label}: ${value}`
 }
 
-  // doと>>=は同じPreludeのMonad<Either<String, _>> instanceを使います。
+// doと>>=は同じPreludeのMonad<Either<String, _>> instanceを使います。
 pub effect fn main = do {
   add (Right 20) (Right 22) |> render "do" |> println
 

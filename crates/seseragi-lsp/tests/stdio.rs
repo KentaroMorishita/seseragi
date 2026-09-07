@@ -562,11 +562,22 @@ fn binary_serves_open_document_diagnostics_over_stdio() {
 
 #[test]
 fn binary_formats_the_latest_document_with_the_shared_cli_formatter() {
+    assert_document_formatting(
+        include_str!("../../seseragi-formatter/tests/fixtures/canonical-layout.input.ssrg"),
+        include_str!("../../seseragi-formatter/tests/fixtures/canonical-layout.expected.ssrg"),
+    );
+}
+
+#[test]
+fn binary_formats_dogfood_indentation_with_the_shared_formatter() {
+    assert_document_formatting(
+        include_str!("../../seseragi-formatter/tests/fixtures/dogfood-indentation.input.ssrg"),
+        include_str!("../../seseragi-formatter/tests/fixtures/dogfood-indentation.expected.ssrg"),
+    );
+}
+
+fn assert_document_formatting(source: &str, expected: &str) {
     let uri = "file:///formatting.ssrg";
-    let source =
-        include_str!("../../seseragi-formatter/tests/fixtures/canonical-layout.input.ssrg");
-    let expected =
-        include_str!("../../seseragi-formatter/tests/fixtures/canonical-layout.expected.ssrg");
     let formatted = format_module(uri, source).expect("valid source");
     assert!(formatted.changed);
     assert_eq!(formatted.text, expected);
