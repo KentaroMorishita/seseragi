@@ -6,6 +6,416 @@
   "targetFamily": "typescript",
   "features": [
     {
+      "id": "core.transformer.maybe.type",
+      "kind": "value-representation",
+      "typescript": "readonly nominal struct with run field; base HKT application erased",
+      "boundary": "one transformer layer; base monad remains unexecuted",
+      "typeIdentity": "std/transformer/maybe::MaybeT",
+      "typeImport": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "MaybeT"
+      },
+      "import": null
+    },
+    {
+      "id": "core.transformer.maybe.functor-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "maybeTFunctor"
+      }
+    },
+    {
+      "id": "core.transformer.maybe.applicative-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "maybeTApplicative"
+      }
+    },
+    {
+      "id": "core.transformer.maybe.monad-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "maybeTMonad"
+      }
+    },
+    {
+      "id": "core.transformer.either.type",
+      "kind": "value-representation",
+      "typescript": "readonly nominal struct with run field; base HKT application erased",
+      "boundary": "one transformer layer; base monad remains unexecuted",
+      "typeIdentity": "std/transformer/either::EitherT",
+      "typeImport": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "EitherT"
+      },
+      "import": null
+    },
+    {
+      "id": "core.transformer.either.functor-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "eitherTFunctor"
+      }
+    },
+    {
+      "id": "core.transformer.either.applicative-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "eitherTApplicative"
+      }
+    },
+    {
+      "id": "core.transformer.either.monad-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "eitherTMonad"
+      }
+    },
+    {
+      "id": "core.transformer.reader.type",
+      "kind": "value-representation",
+      "typescript": "readonly nominal struct with run field; base HKT application erased",
+      "boundary": "one transformer layer; base monad remains unexecuted",
+      "typeIdentity": "std/transformer/reader::ReaderT",
+      "typeImport": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "ReaderT"
+      },
+      "import": null
+    },
+    {
+      "id": "core.transformer.reader.functor-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "readerTFunctor"
+      }
+    },
+    {
+      "id": "core.transformer.reader.applicative-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "readerTApplicative"
+      }
+    },
+    {
+      "id": "core.transformer.reader.monad-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "readerTMonad"
+      }
+    },
+    {
+      "id": "core.transformer.state.type",
+      "kind": "value-representation",
+      "typescript": "readonly nominal struct with run field; base HKT application erased",
+      "boundary": "one transformer layer; base monad remains unexecuted",
+      "typeIdentity": "std/transformer/state::StateT",
+      "typeImport": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "StateT"
+      },
+      "import": null
+    },
+    {
+      "id": "core.transformer.state.functor-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "stateTFunctor"
+      }
+    },
+    {
+      "id": "core.transformer.state.applicative-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "stateTApplicative"
+      }
+    },
+    {
+      "id": "core.transformer.state.monad-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "stateTMonad"
+      }
+    },
+    {
+      "id": "core.transformer.writer.type",
+      "kind": "value-representation",
+      "typescript": "readonly nominal struct with run field; base HKT application erased",
+      "boundary": "one transformer layer; base monad remains unexecuted",
+      "typeIdentity": "std/transformer/writer::WriterT",
+      "typeImport": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "WriterT"
+      },
+      "import": null
+    },
+    {
+      "id": "core.transformer.writer.functor-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "writerTFunctor"
+      }
+    },
+    {
+      "id": "core.transformer.writer.applicative-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "writerTApplicative"
+      }
+    },
+    {
+      "id": "core.transformer.writer.monad-dictionary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "conditional Monad base evidence; Writer additionally requires Monoid output evidence",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "writerTMonad"
+      }
+    },
+    {
+      "id": "core.transformer.maybe.run",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "maybeTRun"
+      }
+    },
+    {
+      "id": "core.transformer.maybe.fromMaybe",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "maybeTFromMaybe"
+      }
+    },
+    {
+      "id": "core.transformer.maybe.lift",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "maybeTLift"
+      }
+    },
+    {
+      "id": "core.transformer.either.run",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "eitherTRun"
+      }
+    },
+    {
+      "id": "core.transformer.either.fromEither",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "eitherTFromEither"
+      }
+    },
+    {
+      "id": "core.transformer.either.lift",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "eitherTLift"
+      }
+    },
+    {
+      "id": "core.transformer.reader.run",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "readerTRun"
+      }
+    },
+    {
+      "id": "core.transformer.reader.ask",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "readerTAsk"
+      }
+    },
+    {
+      "id": "core.transformer.reader.asks",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "readerTAsks"
+      }
+    },
+    {
+      "id": "core.transformer.reader.local",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "readerTLocal"
+      }
+    },
+    {
+      "id": "core.transformer.reader.lift",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "readerTLift"
+      }
+    },
+    {
+      "id": "core.transformer.state.run",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "stateTRun"
+      }
+    },
+    {
+      "id": "core.transformer.state.get",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "stateTGet"
+      }
+    },
+    {
+      "id": "core.transformer.state.put",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "stateTPut"
+      }
+    },
+    {
+      "id": "core.transformer.state.modify",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "stateTModify"
+      }
+    },
+    {
+      "id": "core.transformer.state.lift",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "stateTLift"
+      }
+    },
+    {
+      "id": "core.transformer.writer.run",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "writerTRun"
+      }
+    },
+    {
+      "id": "core.transformer.writer.tell",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "writerTTell"
+      }
+    },
+    {
+      "id": "core.transformer.writer.listen",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "writerTListen"
+      }
+    },
+    {
+      "id": "core.transformer.writer.lift",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical transformer operation; evidence precedes source arguments; no implicit base execution",
+      "import": {
+        "module": "@seseragi/runtime/transformer",
+        "export": "writerTLift"
+      }
+    },
+    {
       "id": "core.sum.type",
       "kind": "value-representation",
       "typescript": "readonly tagged Sum<A>",

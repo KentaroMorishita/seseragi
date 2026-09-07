@@ -5,6 +5,7 @@
   "module": "artifact/derived-json-codecs",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "json.JsonReadError",
       "canonical": "std/json::JsonReadError",
       "provider": {

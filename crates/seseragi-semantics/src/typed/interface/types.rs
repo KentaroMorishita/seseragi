@@ -122,6 +122,7 @@ mod tests {
     #[test]
     fn canonicalizes_a_named_type_from_its_unique_provider_binding() {
         let bindings = [ExternalTypeBinding {
+            arity: None,
             spelling: "html.Html".to_owned(),
             canonical: "std/web/html::Html".to_owned(),
             provider: Some(ExternalTypeProvider {

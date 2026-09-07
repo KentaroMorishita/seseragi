@@ -5,6 +5,7 @@
   "module": "artifact/http-client-small-response",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "http.HttpBuildError",
       "canonical": "std/http::HttpBuildError",
       "provider": {
@@ -13,6 +14,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "HttpUrl",
       "canonical": "std/http::HttpUrl",
       "provider": {
@@ -21,6 +23,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Request",
       "canonical": "std/http::Request",
       "provider": {
@@ -29,6 +32,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Method",
       "canonical": "std/http::Method",
       "provider": {
@@ -37,11 +41,30 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "bytes.ByteError",
       "canonical": "std/bytes::ByteError",
       "provider": {
         "module": "std/bytes",
         "export": "ByteError"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "Bytes",
+      "canonical": "std/bytes::Bytes",
+      "provider": {
+        "module": "std/bytes",
+        "export": "Bytes"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "HttpBodyLimit",
+      "canonical": "std/http::HttpBodyLimit",
+      "provider": {
+        "module": "std/http",
+        "export": "HttpBodyLimit"
       }
     },
     {
@@ -53,14 +76,7 @@
       }
     },
     {
-      "spelling": "HttpBodyLimit",
-      "canonical": "std/http::HttpBodyLimit",
-      "provider": {
-        "module": "std/http",
-        "export": "HttpBodyLimit"
-      }
-    },
-    {
+      "arity": 0,
       "spelling": "HttpClient",
       "canonical": "std/http::HttpClient",
       "provider": {
@@ -69,6 +85,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "http.HttpError",
       "canonical": "std/http::HttpError",
       "provider": {
@@ -77,6 +94,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Response",
       "canonical": "std/http::Response",
       "provider": {
@@ -85,6 +103,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "text.Utf8DecodeError",
       "canonical": "std/text::Utf8DecodeError",
       "provider": {

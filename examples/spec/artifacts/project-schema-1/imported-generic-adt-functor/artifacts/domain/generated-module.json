@@ -20,9 +20,7 @@
       "trait": "Functor",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Box",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "dictionaryExport": "__ssrg$instance$Functor$0"

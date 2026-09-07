@@ -174,7 +174,7 @@ pub(super) fn lower_module_imports(
     Ok(LoweredModuleImports {
         imports,
         value_names,
-        type_names: type_names.into(),
+        type_names: super::types::TypeScriptTypeContext::from(type_names).with_module(module),
         instance_names,
     })
 }

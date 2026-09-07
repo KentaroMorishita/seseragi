@@ -9,6 +9,7 @@
       "canonical": "std/prelude::Effect"
     },
     {
+      "arity": 1,
       "spelling": "ReduceStep",
       "canonical": "std/collection::ReduceStep",
       "provider": {
@@ -17,6 +18,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "effects.LoopControl",
       "canonical": "std/effect::LoopControl",
       "provider": {

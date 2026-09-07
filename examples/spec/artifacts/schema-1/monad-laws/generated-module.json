@@ -32,9 +32,7 @@
       "trait": "Functor",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Maybe",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "dictionaryExport": "__ssrg$instance$Functor$0"
@@ -44,9 +42,7 @@
       "trait": "Applicative",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Maybe",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "dictionaryExport": "__ssrg$instance$Applicative$1"
@@ -56,9 +52,7 @@
       "trait": "Monad",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Maybe",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "dictionaryExport": "__ssrg$instance$Monad$2"

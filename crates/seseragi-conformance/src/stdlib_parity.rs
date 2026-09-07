@@ -54,6 +54,24 @@ struct RouteDefinition {
 
 const ROUTES: &[RouteDefinition] = &[
     RouteDefinition {
+        id: "transformer-project",
+        evidence: "examples/spec/fixtures/projects/transformers",
+        products: &[
+            "cli-build",
+            "cli-run",
+            "lsp-project",
+            "wasm-project",
+            "playground-execution",
+        ],
+        modules: &[
+            "std/transformer/maybe",
+            "std/transformer/either",
+            "std/transformer/reader",
+            "std/transformer/state",
+            "std/transformer/writer",
+        ],
+    },
+    RouteDefinition {
         id: "portable-project",
         evidence: "examples/spec/fixtures/projects/std-parity-portable",
         products: &[
@@ -316,7 +334,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 54);
+        assert_eq!(surface.modules.len(), 59);
         assert!(surface
             .modules
             .iter()

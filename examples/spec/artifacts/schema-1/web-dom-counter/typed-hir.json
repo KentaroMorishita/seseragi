@@ -5,6 +5,7 @@
   "module": "artifact/web-dom-counter",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "html.Style",
       "canonical": "std/web/html::Style",
       "provider": {
@@ -13,6 +14,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Attribute",
       "canonical": "std/web/html::Attribute",
       "provider": {
@@ -21,6 +23,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "KeyboardEvent",
       "canonical": "std/web/html::KeyboardEvent",
       "provider": {
@@ -29,6 +32,7 @@
       }
     },
     {
+      "arity": 1,
       "spelling": "EventAction",
       "canonical": "std/web/html::EventAction",
       "provider": {
@@ -37,6 +41,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "MouseEvent",
       "canonical": "std/web/html::MouseEvent",
       "provider": {
@@ -45,6 +50,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "PointerEvent",
       "canonical": "std/web/html::PointerEvent",
       "provider": {
@@ -53,11 +59,21 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "ScrollEvent",
       "canonical": "std/web/html::ScrollEvent",
       "provider": {
         "module": "std/web/html",
         "export": "ScrollEvent"
+      }
+    },
+    {
+      "arity": 1,
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
       }
     },
     {
@@ -69,6 +85,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Dom",
       "canonical": "std/web/dom::Dom",
       "provider": {

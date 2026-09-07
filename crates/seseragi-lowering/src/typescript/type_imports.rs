@@ -90,6 +90,7 @@ fn runtime_type_bindings(module: &CoreModule) -> Vec<ExternalTypeBinding> {
             continue;
         }
         bindings.push(ExternalTypeBinding {
+            arity: None,
             spelling: spelling.to_owned(),
             canonical: type_import.canonical.to_owned(),
             provider: None,

@@ -4,6 +4,15 @@
   "module": "fixture/imported-unicode::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
+      "spelling": "text.TextSliceError",
+      "canonical": "std/text::TextSliceError",
+      "provider": {
+        "module": "std/text",
+        "export": "TextSliceError"
+      }
+    },
+    {
       "spelling": "text.TextSliceError",
       "canonical": "std/text::TextSliceError",
       "provider": {

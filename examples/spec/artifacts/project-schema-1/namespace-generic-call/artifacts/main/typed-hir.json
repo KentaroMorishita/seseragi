@@ -5,6 +5,7 @@
   "module": "fixture/namespace-call::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "domain.Hand",
       "canonical": "fixture/namespace-call::domain::Hand",
       "provider": {

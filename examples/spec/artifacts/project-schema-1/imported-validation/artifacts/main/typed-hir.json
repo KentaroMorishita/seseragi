@@ -5,6 +5,7 @@
   "module": "fixture/imported-validation::main",
   "externalTypeBindings": [
     {
+      "arity": 2,
       "spelling": "validation.Validation",
       "canonical": "std/validation::Validation",
       "provider": {
@@ -13,6 +14,23 @@
       }
     },
     {
+      "spelling": "validation.Validation",
+      "canonical": "std/validation::Validation",
+      "provider": {
+        "module": "std/validation",
+        "export": "Validation"
+      }
+    },
+    {
+      "spelling": "nonEmpty.NonEmptyList",
+      "canonical": "std/non-empty-list::NonEmptyList",
+      "provider": {
+        "module": "std/non-empty-list",
+        "export": "NonEmptyList"
+      }
+    },
+    {
+      "arity": 1,
       "spelling": "nonEmpty.NonEmptyList",
       "canonical": "std/non-empty-list::NonEmptyList",
       "provider": {

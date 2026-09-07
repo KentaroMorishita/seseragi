@@ -1,3 +1,4 @@
+mod transformer;
 use crate::ModuleLinkTarget;
 use serde::Serialize;
 use seseragi_syntax::{
@@ -184,7 +185,7 @@ const PROCESS_TARGET: &[&str] = &["process"];
 const BROWSER_TARGET: &[&str] = &["browser"];
 
 macro_rules! available_module {
-    ($specifier:literal, $interface:ident, $targets:expr) => {
+    ($specifier:literal, $interface:path, $targets:expr) => {
         StandardModuleDefinition {
             specifier: $specifier,
             status: StandardModuleStatus::Available,
@@ -193,7 +194,7 @@ macro_rules! available_module {
             interface: Some($interface),
         }
     };
-    ($specifier:literal, $interface:ident, $targets:expr, $services:expr) => {
+    ($specifier:literal, $interface:path, $targets:expr, $services:expr) => {
         StandardModuleDefinition {
             specifier: $specifier,
             status: StandardModuleStatus::Available,
@@ -339,6 +340,31 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         &["std/http/bun::BunHttpServer"]
     ),
     available_module!("std/iterator", iterator_interface, PORTABLE_TARGETS),
+    available_module!(
+        "std/transformer/maybe",
+        transformer::maybe_interface,
+        PORTABLE_TARGETS
+    ),
+    available_module!(
+        "std/transformer/either",
+        transformer::either_interface,
+        PORTABLE_TARGETS
+    ),
+    available_module!(
+        "std/transformer/reader",
+        transformer::reader_interface,
+        PORTABLE_TARGETS
+    ),
+    available_module!(
+        "std/transformer/state",
+        transformer::state_interface,
+        PORTABLE_TARGETS
+    ),
+    available_module!(
+        "std/transformer/writer",
+        transformer::writer_interface,
+        PORTABLE_TARGETS
+    ),
     available_module!("std/json", json_interface, PORTABLE_TARGETS),
     available_module!(
         "std/log",
@@ -382,11 +408,6 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     available_module!("std/text", text_interface, PORTABLE_TARGETS),
     available_module!("std/text/grapheme", grapheme_interface, PORTABLE_TARGETS),
     available_module!("std/text/unicode", unicode_interface, PORTABLE_TARGETS),
-    contract_module!("std/transformer/either", PORTABLE_TARGETS),
-    contract_module!("std/transformer/maybe", PORTABLE_TARGETS),
-    contract_module!("std/transformer/reader", PORTABLE_TARGETS),
-    contract_module!("std/transformer/state", PORTABLE_TARGETS),
-    contract_module!("std/transformer/writer", PORTABLE_TARGETS),
     available_module!("std/validation", validation_interface, PORTABLE_TARGETS),
 ];
 

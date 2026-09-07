@@ -5,6 +5,7 @@
   "module": "fixture/rps-domain-split::main",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "Hand",
       "canonical": "fixture/rps-domain-split::domain::Hand",
       "provider": {
@@ -13,6 +14,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "Outcome",
       "canonical": "fixture/rps-domain-split::domain::Outcome",
       "provider": {

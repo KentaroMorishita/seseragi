@@ -9,6 +9,7 @@
       "canonical": "std/prelude::ConsoleError"
     },
     {
+      "arity": 1,
       "spelling": "Box",
       "canonical": "fixture/imported-inherent-method::domain::Box",
       "provider": {

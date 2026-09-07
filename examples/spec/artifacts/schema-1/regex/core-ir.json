@@ -8,6 +8,7 @@
       "canonical": "std/prelude::ConsoleError"
     },
     {
+      "arity": 0,
       "spelling": "RegexCompileErrorKind",
       "canonical": "std/regex::RegexCompileErrorKind",
       "provider": {
@@ -16,6 +17,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "regex.Regex",
       "canonical": "std/regex::Regex",
       "provider": {
@@ -24,6 +26,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "regex.RegexMatch",
       "canonical": "std/regex::RegexMatch",
       "provider": {
@@ -32,6 +35,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "regex.RegexCompileError",
       "canonical": "std/regex::RegexCompileError",
       "provider": {
@@ -40,6 +44,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "RegexOptions",
       "canonical": "std/regex::RegexOptions",
       "provider": {
@@ -48,6 +53,7 @@
       }
     },
     {
+      "arity": 0,
       "spelling": "RegexSpan",
       "canonical": "std/regex::RegexSpan",
       "provider": {

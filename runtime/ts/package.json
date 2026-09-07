@@ -377,6 +377,10 @@
     "./browser/dom": {
       "types": "./src/browser/dom.ts",
       "default": "./src/browser/dom.ts"
+    },
+    "./transformer": {
+      "types": "./src/transformer.ts",
+      "default": "./src/transformer.ts"
     }
   },
   "license": "Apache-2.0"

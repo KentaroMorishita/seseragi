@@ -37,9 +37,7 @@
       "trait": "Functor",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Maybe",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "origin": {
@@ -161,9 +159,7 @@
       "trait": "Applicative",
       "arguments": [
         {
-          "kind": "reference",
-          "name": "Maybe",
-          "arguments": []
+          "kind": "unknown"
         }
       ],
       "constraints": [
@@ -172,9 +168,7 @@
           "traitIdentity": "artifact/applicative-maybe::trait(Functor)",
           "arguments": [
             {
-              "kind": "reference",
-              "name": "Maybe",
-              "arguments": []
+              "kind": "unknown"
             }
           ]
         }

@@ -1,0 +1,493 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/transformers",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/effect",
+      "module": "std/effect",
+      "origin": {
+        "start": 0,
+        "end": 33
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/effect::*",
+          "localName": "eff"
+        }
+      ]
+    },
+    {
+      "specifier": "std/transformer/maybe",
+      "module": "std/transformer/maybe",
+      "origin": {
+        "start": 34,
+        "end": 77
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/transformer/maybe::*",
+          "localName": "mt"
+        }
+      ]
+    },
+    {
+      "specifier": "std/transformer/reader",
+      "module": "std/transformer/reader",
+      "origin": {
+        "start": 78,
+        "end": 122
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/transformer/reader::*",
+          "localName": "rt"
+        }
+      ]
+    },
+    {
+      "specifier": "std/transformer/either",
+      "module": "std/transformer/either",
+      "origin": {
+        "start": 123,
+        "end": 167
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/transformer/either::*",
+          "localName": "et"
+        }
+      ]
+    },
+    {
+      "specifier": "std/transformer/state",
+      "module": "std/transformer/state",
+      "origin": {
+        "start": 168,
+        "end": 211
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/transformer/state::*",
+          "localName": "st"
+        }
+      ]
+    },
+    {
+      "specifier": "std/transformer/writer",
+      "module": "std/transformer/writer",
+      "origin": {
+        "start": 212,
+        "end": 256
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/transformer/writer::*",
+          "localName": "wt"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/transformers::Log",
+      "namespace": "type",
+      "name": "Log",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 665,
+        "end": 696
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Log",
+          "arity": 0
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "text",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "artifact/transformers::bump",
+      "namespace": "value",
+      "name": "bump",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 258,
+        "end": 349
+      },
+      "scheme": {
+        "typeParameters": [
+          {
+            "name": "F",
+            "arity": 1
+          }
+        ],
+        "constraints": [
+          {
+            "name": "Functor",
+            "traitIdentity": "std/prelude::Functor",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/transformers::optional",
+      "namespace": "value",
+      "name": "optional",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 351,
+        "end": 449
+      },
+      "scheme": {
+        "typeParameters": [
+          {
+            "name": "M",
+            "arity": 1
+          }
+        ],
+        "constraints": [
+          {
+            "name": "Monad",
+            "traitIdentity": "std/prelude::Monad",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "external-named",
+            "name": "mt.MaybeT",
+            "canonical": "std/transformer/maybe::MaybeT",
+            "providerModule": "std/transformer/maybe",
+            "providerExport": "MaybeT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/transformers::environment",
+      "namespace": "value",
+      "name": "environment",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 451,
+        "end": 529
+      },
+      "scheme": {
+        "typeParameters": [
+          {
+            "name": "M",
+            "arity": 1
+          }
+        ],
+        "constraints": [
+          {
+            "name": "Monad",
+            "traitIdentity": "std/prelude::Monad",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "external-named",
+            "name": "rt.ReaderT",
+            "canonical": "std/transformer/reader::ReaderT",
+            "providerModule": "std/transformer/reader",
+            "providerExport": "ReaderT",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/transformers::mark",
+      "namespace": "value",
+      "name": "mark",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 531,
+        "end": 663
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/transformers::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 2558,
+        "end": 3142
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Semigroup<artifact/transformers::Log>",
+      "providerModule": "artifact/transformers",
+      "traitIdentity": "std/prelude::Semigroup",
+      "argumentIdentities": [
+        "artifact/transformers::Log"
+      ],
+      "trait": "Semigroup",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Semigroup",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Log",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 697,
+        "end": 811
+      }
+    },
+    {
+      "identity": "std/prelude::Monoid<artifact/transformers::Log>",
+      "providerModule": "artifact/transformers",
+      "traitIdentity": "std/prelude::Monoid",
+      "argumentIdentities": [
+        "artifact/transformers::Log"
+      ],
+      "trait": "Monoid",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Monoid",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Log",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Semigroup",
+          "traitIdentity": "std/prelude::Semigroup",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Log",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 812,
+        "end": 884
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/transformers@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/transformers@0.0.0#workspace:."
+name = "fixture/transformers"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:2c2c5649fbd5eda12e0d089715ed4aeb8d2ba376bfa23a2e5eb4214547496322"
+content_digest = "sha256:063281bc3dda2a5b6e8ef397976222d38066c7f435824c1ac0cf0028b098e48d"
+dependencies = []

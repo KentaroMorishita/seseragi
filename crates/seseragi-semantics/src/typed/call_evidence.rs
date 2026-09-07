@@ -754,13 +754,25 @@ fn standard_instance_type_arguments(
         TypedType::Named { name, arguments }
             if instance.type_canonical.is_none() && name == instance.type_name =>
         {
-            Some(arguments.clone())
+            Some(
+                arguments
+                    .iter()
+                    .filter(|argument| !matches!(argument, TypedType::Hole))
+                    .cloned()
+                    .collect(),
+            )
         }
         TypedType::ExternalNamed {
             canonical,
             arguments,
             ..
-        } if instance.type_canonical == Some(canonical.as_str()) => Some(arguments.clone()),
+        } if instance.type_canonical == Some(canonical.as_str()) => Some(
+            arguments
+                .iter()
+                .filter(|argument| !matches!(argument, TypedType::Hole))
+                .cloned()
+                .collect(),
+        ),
         _ => None,
     }
 }

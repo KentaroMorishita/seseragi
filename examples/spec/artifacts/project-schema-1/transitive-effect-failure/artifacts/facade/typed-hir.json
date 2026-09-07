@@ -5,6 +5,7 @@
   "module": "fixture/transitive-effect-failure::facade",
   "externalTypeBindings": [
     {
+      "arity": 0,
       "spelling": "InputError",
       "canonical": "fixture/transitive-effect-failure::provider::InputError",
       "provider": {
