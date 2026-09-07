@@ -1,0 +1,1610 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/monoid-wrappers",
+  "runtimeRequirements": [
+    "core.sum.type",
+    "core.product.type",
+    "core.unit",
+    "core.int",
+    "core.int.subtract",
+    "core.int.add",
+    "core.string",
+    "core.string.add-dictionary",
+    "core.collection.combine",
+    "core.adt",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.int.show",
+    "core.array.reducible",
+    "core.int.zero-dictionary",
+    "core.int.add-dictionary",
+    "core.sum.monoid",
+    "core.sum.constructor",
+    "core.list.reducible",
+    "core.int.one-dictionary",
+    "core.int.mul-dictionary",
+    "core.product.monoid",
+    "core.list",
+    "core.list.from-array",
+    "core.product.constructor",
+    "core.sum.semigroup"
+  ],
+  "imports": [
+    {
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
+    },
+    {
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
+    },
+    {
+      "feature": "core.collection.combine",
+      "local": "_ssrg_collection_combine"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.int.zero-dictionary",
+      "local": "_ssrg_int_zero"
+    },
+    {
+      "feature": "core.int.add-dictionary",
+      "local": "_ssrg_int_add_dictionary"
+    },
+    {
+      "feature": "core.sum.monoid",
+      "local": "_ssrg_sum_monoid"
+    },
+    {
+      "feature": "core.sum.constructor",
+      "local": "_ssrg_sum_Sum"
+    },
+    {
+      "feature": "core.list.reducible",
+      "local": "_ssrg_list_reducible"
+    },
+    {
+      "feature": "core.int.one-dictionary",
+      "local": "_ssrg_int_one"
+    },
+    {
+      "feature": "core.int.mul-dictionary",
+      "local": "_ssrg_int_mul_dictionary"
+    },
+    {
+      "feature": "core.product.monoid",
+      "local": "_ssrg_product_monoid"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "core.product.constructor",
+      "local": "_ssrg_product_Product"
+    },
+    {
+      "feature": "core.sum.semigroup",
+      "local": "_ssrg_sum_semigroup"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.sum.type",
+      "local": "Sum"
+    },
+    {
+      "feature": "core.product.type",
+      "local": "Product"
+    }
+  ],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Tally",
+      "brand": "__ssrg$brand$Tally",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "number"
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 31
+      }
+    },
+    {
+      "exported": true,
+      "name": "Ordered",
+      "brand": "__ssrg$brand$Ordered",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "string"
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 248,
+        "end": 284
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Zero<artifact/monoid-wrappers::Tally>",
+      "trait": "Zero",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tally",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 32,
+        "end": 109
+      },
+      "dictionaryExport": "__ssrg$instance$Zero$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "zero",
+            "parameters": [
+              {
+                "name": "unit",
+                "type": "undefined",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int_subtract",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "number",
+                        "value": "1"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "Tally",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 57,
+              "end": 107
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Add<artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally,artifact/monoid-wrappers::Tally>",
+      "trait": "Add",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tally",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Tally",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Tally",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 110,
+        "end": 247
+      },
+      "dictionaryExport": "__ssrg$instance$Add$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "add",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "Tally",
+                "implicit": false
+              },
+              {
+                "name": "right",
+                "type": "Tally",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int_add",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_int_add",
+                        "arguments": [
+                          {
+                            "kind": "field-access",
+                            "receiver": {
+                              "kind": "identifier",
+                              "name": "left"
+                            },
+                            "field": "value"
+                          },
+                          {
+                            "kind": "field-access",
+                            "receiver": {
+                              "kind": "identifier",
+                              "name": "right"
+                            },
+                            "field": "value"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "number",
+                        "value": "1"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "Tally",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 148,
+              "end": 245
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::One<artifact/monoid-wrappers::Ordered>",
+      "trait": "One",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Ordered",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 285,
+        "end": 365
+      },
+      "dictionaryExport": "__ssrg$instance$One$2",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "one",
+            "parameters": [
+              {
+                "name": "unit",
+                "type": "undefined",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "string",
+                    "value": ""
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "Ordered",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 311,
+              "end": 363
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Mul<artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered,artifact/monoid-wrappers::Ordered>",
+      "trait": "Mul",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Ordered",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Ordered",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Ordered",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 366,
+        "end": 513
+      },
+      "dictionaryExport": "__ssrg$instance$Mul$3",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "mul",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "Ordered",
+                "implicit": false
+              },
+              {
+                "name": "right",
+                "type": "Ordered",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_add_dictionary"
+                    },
+                    "method": "add",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "left"
+                        },
+                        "field": "value"
+                      },
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "right"
+                        },
+                        "field": "value"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "Ordered",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 410,
+              "end": 511
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "mergeAll",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "traitIdentity": "std/prelude::Reducible",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        {
+          "name": "Monoid",
+          "traitIdentity": "std/prelude::Monoid",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "C",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_combine",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$1"
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 514,
+        "end": 600
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "unwrapSum",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Sum<A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Sum",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Sum"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "n",
+                "type": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "n"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 601,
+        "end": 668
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "unwrapProduct",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Product<A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Product",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Product"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "n",
+                "type": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "n"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 669,
+        "end": 748
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "unwrapSum",
+                        "arguments": [
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "call",
+                              "callee": "mergeAll",
+                              "arguments": [
+                                {
+                                  "kind": "array",
+                                  "elements": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_sum_Sum",
+                                      "arguments": [
+                                        {
+                                          "kind": "number",
+                                          "value": "1"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_sum_Sum",
+                                      "arguments": [
+                                        {
+                                          "kind": "number",
+                                          "value": "2"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_sum_Sum",
+                                      "arguments": [
+                                        {
+                                          "kind": "number",
+                                          "value": "3"
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "elementType": {
+                                    "kind": "reference",
+                                    "name": "Sum",
+                                    "arguments": [
+                                      {
+                                        "kind": "number"
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_array_reducible"
+                                },
+                                {
+                                  "kind": "type-application-call",
+                                  "callee": "_ssrg_sum_monoid",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ],
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_zero"
+                                    },
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_add_dictionary"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "reference",
+                              "name": "Sum",
+                              "arguments": [
+                                {
+                                  "kind": "number"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "unwrapProduct",
+                        "arguments": [
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "call",
+                              "callee": "mergeAll",
+                              "arguments": [
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_list_from_array",
+                                  "arguments": [
+                                    {
+                                      "kind": "array",
+                                      "elements": [
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_product_Product",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "2"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_product_Product",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "3"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "kind": "runtime-call",
+                                          "callee": "_ssrg_product_Product",
+                                          "arguments": [
+                                            {
+                                              "kind": "number",
+                                              "value": "4"
+                                            }
+                                          ]
+                                        }
+                                      ],
+                                      "elementType": {
+                                        "kind": "reference",
+                                        "name": "Product",
+                                        "arguments": [
+                                          {
+                                            "kind": "number"
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_list_reducible"
+                                },
+                                {
+                                  "kind": "type-application-call",
+                                  "callee": "_ssrg_product_monoid",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ],
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_one"
+                                    },
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_mul_dictionary"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "reference",
+                              "name": "Product",
+                              "arguments": [
+                                {
+                                  "kind": "number"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "emptySum",
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "reference",
+                "name": "Sum",
+                "arguments": [
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
+            },
+            "initializer": {
+              "kind": "array",
+              "elements": [],
+              "elementType": {
+                "kind": "reference",
+                "name": "Sum",
+                "arguments": [
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 919,
+              "end": 953
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "emptyProduct",
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "reference",
+                "name": "Product",
+                "arguments": [
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
+            },
+            "initializer": {
+              "kind": "array",
+              "elements": [],
+              "elementType": {
+                "kind": "reference",
+                "name": "Product",
+                "arguments": [
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 956,
+              "end": 998
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "unwrapSum",
+                        "arguments": [
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "call",
+                              "callee": "mergeAll",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "emptySum"
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_array_reducible"
+                                },
+                                {
+                                  "kind": "type-application-call",
+                                  "callee": "_ssrg_sum_monoid",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ],
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_zero"
+                                    },
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_add_dictionary"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "reference",
+                              "name": "Sum",
+                              "arguments": [
+                                {
+                                  "kind": "number"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "unwrapProduct",
+                        "arguments": [
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "call",
+                              "callee": "mergeAll",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "emptyProduct"
+                                },
+                                {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_array_reducible"
+                                },
+                                {
+                                  "kind": "type-application-call",
+                                  "callee": "_ssrg_product_monoid",
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
+                                    }
+                                  ],
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_one"
+                                    },
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_int_mul_dictionary"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "reference",
+                              "name": "Product",
+                              "arguments": [
+                                {
+                                  "kind": "number"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "custom",
+            "type": {
+              "kind": "reference",
+              "name": "Tally",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "unwrapSum",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "call",
+                    "callee": "mergeAll",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_sum_Sum",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "items": [
+                                  {
+                                    "kind": "field",
+                                    "name": "value",
+                                    "value": {
+                                      "kind": "number",
+                                      "value": "1"
+                                    }
+                                  }
+                                ],
+                                "assertedType": {
+                                  "kind": "reference",
+                                  "name": "Tally",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_sum_Sum",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "items": [
+                                  {
+                                    "kind": "field",
+                                    "name": "value",
+                                    "value": {
+                                      "kind": "number",
+                                      "value": "2"
+                                    }
+                                  }
+                                ],
+                                "assertedType": {
+                                  "kind": "reference",
+                                  "name": "Tally",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "reference",
+                          "name": "Sum",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Tally",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_array_reducible"
+                      },
+                      {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_sum_monoid",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "Tally",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$Zero$0"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$Add$1"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "reference",
+                    "name": "Sum",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Tally",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1107,
+              "end": 1193
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "custom"
+                        },
+                        "field": "value"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "ordered",
+            "type": {
+              "kind": "reference",
+              "name": "Ordered",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "unwrapProduct",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "call",
+                    "callee": "mergeAll",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_product_Product",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "items": [
+                                  {
+                                    "kind": "field",
+                                    "name": "value",
+                                    "value": {
+                                      "kind": "string",
+                                      "value": "first"
+                                    }
+                                  }
+                                ],
+                                "assertedType": {
+                                  "kind": "reference",
+                                  "name": "Ordered",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_product_Product",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "items": [
+                                  {
+                                    "kind": "field",
+                                    "name": "value",
+                                    "value": {
+                                      "kind": "string",
+                                      "value": "-second"
+                                    }
+                                  }
+                                ],
+                                "assertedType": {
+                                  "kind": "reference",
+                                  "name": "Ordered",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "reference",
+                          "name": "Product",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "Ordered",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_array_reducible"
+                      },
+                      {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_product_monoid",
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "Ordered",
+                            "arguments": []
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$One$2"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$Mul$3"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "reference",
+                    "name": "Product",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Ordered",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1226,
+              "end": 1365
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "ordered"
+                  },
+                  "field": "value"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "partial",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "reference",
+                "name": "Sum",
+                "arguments": [
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "result": {
+                "kind": "reference",
+                "name": "Sum",
+                "arguments": [
+                  {
+                    "kind": "number"
+                  }
+                ]
+              }
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_sum_semigroup",
+                  "typeArguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_add_dictionary"
+                    }
+                  ]
+                },
+                "method": "append",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_sum_Sum",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "10"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "reference",
+                  "name": "Sum",
+                  "arguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "reference",
+                  "name": "Sum",
+                  "arguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ]
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1392,
+              "end": 1443
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "unwrapSum",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "partial",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_sum_Sum",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "20"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 750,
+        "end": 1493
+      }
+    }
+  ]
+}

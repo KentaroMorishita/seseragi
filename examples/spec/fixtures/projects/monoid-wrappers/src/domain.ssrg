@@ -1,0 +1,21 @@
+pub struct Tally { value: Int }
+instance Zero<Tally> {
+  fn zero unit: Unit -> Tally = Tally { value: - 1 }
+}
+instance Add<Tally, Tally, Tally> {
+  fn add left: Tally -> right: Tally -> Tally = Tally {
+    value: left.value + right.value + 1
+  }
+}
+pub struct Ordered { value: String }
+instance One<Ordered> {
+  fn one unit: Unit -> Ordered = Ordered { value: "" }
+}
+instance Mul<Ordered, Ordered, Ordered> {
+  fn mul left: Ordered -> right: Ordered -> Ordered = Ordered {
+    value: left.value + right.value
+  }
+}
+pub fn mergeAll<C, A> values: C -> A where Reducible<C, A>, Monoid<A> = combine values
+pub fn unwrapSum<A> value: Sum<A> -> A = match value { Sum n -> n }
+pub fn unwrapProduct<A> value: Product<A> -> A = match value { Product n -> n }

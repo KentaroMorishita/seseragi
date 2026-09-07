@@ -4369,6 +4369,19 @@
       "name": "fail",
       "module": "std/effect",
       "category": "Effect",
+      "kind": "effect-function",
+      "signature": "fail<E> arg1: E -> Effect<{}, E, Never>",
+      "description": "Creates an Effect that fails with a typed error.",
+      "typeParameters": [
+        "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::fail",
+      "name": "fail",
+      "module": "std/effect",
+      "category": "Effect",
       "kind": "function",
       "signature": "fail<E> error: E -> Effect<{}, E, Never>",
       "description": "Creates an Effect that fails with a typed error.",
@@ -4433,6 +4446,20 @@
       "name": "fromEither",
       "module": "std/effect",
       "category": "Effect",
+      "kind": "effect-function",
+      "signature": "fromEither<E, A> arg1: Either<E, A> -> Effect<{}, E, A>",
+      "description": "Lifts Either into Effect without performing an external operation.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::fromEither",
+      "name": "fromEither",
+      "module": "std/effect",
+      "category": "Effect",
       "kind": "function",
       "signature": "fromEither<E, A> value: Either<E, A> -> Effect<{}, E, A>",
       "description": "Lifts Either into Effect without performing an external operation.",
@@ -4480,6 +4507,22 @@
       "description": "Builds or transforms a cold standard Effect value.",
       "typeParameters": [
         "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::mapError",
+      "name": "mapError",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "mapError<R, E, F, A> arg1: (E -> F) -> arg2: Effect<R, E, A> -> Effect<R, F, A>",
+      "description": "Transforms an Effect failure while preserving its success value.",
+      "typeParameters": [
+        "R",
+        "E",
+        "F",
         "A"
       ],
       "constraints": []
@@ -4743,6 +4786,19 @@
       "kind": "function",
       "signature": "spaced<A> arg1: Int -> arg2: Duration -> Either<ScheduleError, Schedule<A>>",
       "description": "Builds a fixed-delay Schedule with bounded reruns.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::succeed",
+      "name": "succeed",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "succeed<A> arg1: A -> Effect<{}, Never, A>",
+      "description": "Creates an Effect that succeeds with a value.",
       "typeParameters": [
         "A"
       ],
@@ -7536,6 +7592,32 @@
       "constraints": []
     },
     {
+      "identity": "std/prelude::Product",
+      "name": "Product",
+      "module": "std/prelude",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "A -> Product<A>",
+      "description": "Selects multiplication through a nominal wrapper; Monoid requires One and homogeneous Mul evidence.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Product",
+      "name": "Product",
+      "module": "std/prelude",
+      "category": "Number",
+      "kind": "type",
+      "signature": "Product<A>",
+      "description": "Selects multiplication through a nominal wrapper; Monoid requires One and homogeneous Mul evidence.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/number::RoundingMode",
       "name": "RoundingMode",
       "module": "std/number",
@@ -7544,6 +7626,32 @@
       "signature": "RoundingMode",
       "description": "Type from the shared numeric rounding surface.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Sum",
+      "name": "Sum",
+      "module": "std/prelude",
+      "category": "Number",
+      "kind": "constructor",
+      "signature": "A -> Sum<A>",
+      "description": "Selects addition through a nominal wrapper; Monoid requires Zero and homogeneous Add evidence.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Sum",
+      "name": "Sum",
+      "module": "std/prelude",
+      "category": "Number",
+      "kind": "type",
+      "signature": "Sum<A>",
+      "description": "Selects addition through a nominal wrapper; Monoid requires Zero and homogeneous Add evidence.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -11194,6 +11302,17 @@
       "typeParameters": [
         "T0"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::QueueClosed",
+      "name": "QueueClosed",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "QueueClosed",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {

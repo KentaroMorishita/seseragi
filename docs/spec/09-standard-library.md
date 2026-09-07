@@ -203,6 +203,10 @@ type Product<A> = | Product A
 数値の `Sum` は加算、`Product` は乗算のMonoid instanceを持ちます。WriterTの `W` もこの
 Monoid契約でlogを結合します。旧来の特別な `monoid` 宣言や `>>>` dispatchはありません。
 
+`Semigroup<Sum<A>>` は `Add<A, A, A>`、`Monoid<Sum<A>>` は加えて `Zero<A>` を要求します。
+`Semigroup<Product<A>>` は `Mul<A, A, A>`、`Monoid<Product<A>>` は加えて `One<A>` を要求します。
+これらは通常のinstance evidenceを使うため、同じ契約を満たす利用者定義型にも適用できます。
+
 ## 9.6 数値演算
 
 Intの `+`, `-`, `*`, `**` は結果がsafe integer範囲外ならdefectになります。Intの `/` は0方向へ

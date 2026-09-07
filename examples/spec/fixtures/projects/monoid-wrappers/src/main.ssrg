@@ -1,0 +1,20 @@
+import { Tally, Ordered, mergeAll, unwrapSum, unwrapProduct } from "./domain"
+
+pub effect fn main = do {
+  println $ show $ unwrapSum $ mergeAll [Sum 1, Sum 2, Sum 3]
+  println $ show $ unwrapProduct $ mergeAll `[Product 2, Product 3, Product 4]
+  let emptySum: Array<Sum<Int>> = []
+  let emptyProduct: Array<Product<Int>> = []
+  println $ show $ unwrapSum $ mergeAll emptySum
+  println $ show $ unwrapProduct $ mergeAll emptyProduct
+  let custom = unwrapSum $ mergeAll [Sum (Tally { value: 1 }), Sum (Tally { value: 2 })]
+  println $ show custom.value
+  let ordered = unwrapProduct $
+    mergeAll [
+      Product (Ordered { value: "first" }),
+      Product (Ordered { value: "-second" })
+    ]
+  println ordered.value
+  let partial: Sum<Int> -> Sum<Int> = append (Sum 10)
+  println $ show $ unwrapSum $ partial (Sum 20)
+}

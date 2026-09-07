@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.4] - 2026-09-07
+
+### Changed
+
+- #505 【#291・標準ライブラリ】Sum / ProductとMonoid instanceを追加
 ## [0.61.3] - 2026-09-07
 
 ### Changed

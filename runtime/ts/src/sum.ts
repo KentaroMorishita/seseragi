@@ -229,3 +229,53 @@ export function maybeMonoid<A>(element: RuntimeDictionary) {
     empty: (_unit: Unit): Maybe<A> => Nothing,
   })
 }
+
+/** Nominal choice of add composition; source evidence owns numeric behavior. */
+export type Sum<A> = Readonly<{ tag: "Sum"; value: A }>
+export function Sum<A>(value: A): Sum<A> {
+  return Object.freeze({ tag: "Sum", value })
+}
+export function sumSemigroup<A>(operation: RuntimeDictionary) {
+  const selected = operation as Readonly<{ add: (left: A) => (right: A) => A }>
+  return Object.freeze({
+    append:
+      (left: Sum<A>) =>
+      (right: Sum<A>): Sum<A> =>
+        Sum(selected.add(left.value)(right.value)),
+  })
+}
+export function sumMonoid<A>(
+  identity: RuntimeDictionary,
+  operation: RuntimeDictionary
+) {
+  const selected = identity as Readonly<{ zero: (unit: Unit) => A }>
+  return Object.freeze({
+    ...sumSemigroup<A>(operation),
+    empty: (_unit: Unit): Sum<A> => Sum(selected.zero(undefined)),
+  })
+}
+
+/** Nominal choice of mul composition; source evidence owns numeric behavior. */
+export type Product<A> = Readonly<{ tag: "Product"; value: A }>
+export function Product<A>(value: A): Product<A> {
+  return Object.freeze({ tag: "Product", value })
+}
+export function productSemigroup<A>(operation: RuntimeDictionary) {
+  const selected = operation as Readonly<{ mul: (left: A) => (right: A) => A }>
+  return Object.freeze({
+    append:
+      (left: Product<A>) =>
+      (right: Product<A>): Product<A> =>
+        Product(selected.mul(left.value)(right.value)),
+  })
+}
+export function productMonoid<A>(
+  identity: RuntimeDictionary,
+  operation: RuntimeDictionary
+) {
+  const selected = identity as Readonly<{ one: (unit: Unit) => A }>
+  return Object.freeze({
+    ...productSemigroup<A>(operation),
+    empty: (_unit: Unit): Product<A> => Product(selected.one(undefined)),
+  })
+}
