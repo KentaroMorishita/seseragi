@@ -9,5 +9,5 @@ impl Score {
 fn render score: Score -> String =
   if score == Score { value: 42 } then `Score: ${score.value}` else "Unexpected score"
 
-  // operator memberも通常のAdd / Eq instanceと同じ仕組みを使います。
+// operator memberも通常のAdd / Eq instanceと同じ仕組みを使います。
 pub effect fn main = Score { value: 21 } + 21 |> render |> println

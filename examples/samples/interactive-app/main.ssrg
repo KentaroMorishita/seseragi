@@ -181,7 +181,7 @@ effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
 effect fn parseSampleUrl value: String -> html.WebUrl fails String =
   mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
 
-  // Runtime boundary: dom.app owns Signal setup, dispatch, query and run.
+// Runtime boundary: dom.app owns Signal setup, dispatch, query and run.
 pub effect fn main -> Unit with dom: dom.Dom fails String = do {
   imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=960&h=480&q=80"
   dom.app { target: "#app", initial: initialState, update, view: view imageUrl }
