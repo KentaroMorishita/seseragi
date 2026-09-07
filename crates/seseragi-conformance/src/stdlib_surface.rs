@@ -48,6 +48,17 @@ mod tests {
     use super::*;
 
     #[test]
+    fn canonical_prelude_artifact_preserves_instance_tracking_contract() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap();
+        let case = root.join("examples/spec/artifacts/stdlib-schema-1/prelude");
+        assert_eq!(check_standard_library_case(&case), Ok(()));
+    }
+
+    #[test]
     fn rejects_a_surface_that_does_not_match_the_registry() {
         let root = std::env::temp_dir().join(format!(
             "seseragi-standard-library-surface-{}",
