@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.2] - 2026-09-07
+
+### Changed
+
+- #536 【#291 ＞ #357・Formatter】comment・nested block・else-ifの字下げ崩れを修正
 ## [0.61.1] - 2026-09-06
 
 ### Changed
