@@ -1070,6 +1070,92 @@
   ],
   "instances": [
     {
+      "trait": "Monoid",
+      "traitCanonical": "std/prelude::Monoid",
+      "typeConstructor": "Product",
+      "typeConstructorCanonical": "std/prelude::Product",
+      "typeConstructorArity": 1,
+      "identity": "std/product::Monoid",
+      "constraints": [
+        {
+          "trait": "One",
+          "traitCanonical": "std/prelude::One",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Mul",
+          "traitCanonical": "std/prelude::Mul",
+          "typeArgumentIndices": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "trait": "Semigroup",
+      "traitCanonical": "std/prelude::Semigroup",
+      "typeConstructor": "Product",
+      "typeConstructorCanonical": "std/prelude::Product",
+      "typeConstructorArity": 1,
+      "identity": "std/product::Semigroup",
+      "constraints": [
+        {
+          "trait": "Mul",
+          "traitCanonical": "std/prelude::Mul",
+          "typeArgumentIndices": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "trait": "Monoid",
+      "traitCanonical": "std/prelude::Monoid",
+      "typeConstructor": "Sum",
+      "typeConstructorCanonical": "std/prelude::Sum",
+      "typeConstructorArity": 1,
+      "identity": "std/sum::Monoid",
+      "constraints": [
+        {
+          "trait": "Zero",
+          "traitCanonical": "std/prelude::Zero",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Add",
+          "traitCanonical": "std/prelude::Add",
+          "typeArgumentIndices": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "trait": "Semigroup",
+      "traitCanonical": "std/prelude::Semigroup",
+      "typeConstructor": "Sum",
+      "typeConstructorCanonical": "std/prelude::Sum",
+      "typeConstructorArity": 1,
+      "identity": "std/sum::Semigroup",
+      "constraints": [
+        {
+          "trait": "Add",
+          "traitCanonical": "std/prelude::Add",
+          "typeArgumentIndices": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
       "trait": "Eq",
       "traitCanonical": "std/prelude::Eq",
       "typeConstructor": "Decimal",
@@ -6002,9 +6088,10 @@
       },
       {
         "trait": "Monoid",
-        "head": "Product<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
+        "head": "Product",
+        "identity": "std/product::Monoid",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
         "spec": "9.5"
       },
       {
@@ -6017,9 +6104,10 @@
       },
       {
         "trait": "Monoid",
-        "head": "Sum<A>",
-        "status": "specified-but-implementation-missing",
-        "classification": "missing",
+        "head": "Sum",
+        "identity": "std/sum::Monoid",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
         "spec": "9.5"
       },
       {
@@ -6311,10 +6399,26 @@
       },
       {
         "trait": "Semigroup",
+        "head": "Product",
+        "identity": "std/product::Semigroup",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Semigroup",
         "head": "String",
         "identity": "std/string::Semigroup",
         "status": "specified-and-implemented",
         "classification": "dictionary",
+        "spec": "9.5"
+      },
+      {
+        "trait": "Semigroup",
+        "head": "Sum",
+        "identity": "std/sum::Semigroup",
+        "status": "specified-and-implemented",
+        "classification": "conditional",
         "spec": "9.5"
       },
       {

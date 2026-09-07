@@ -8,6 +8,18 @@ pub(crate) struct RuntimeTypeImport {
 
 const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
     RuntimeTypeImport {
+        canonical: "std/prelude::Product",
+        runtime_feature: "core.product.type",
+        module: "@seseragi/runtime/sum",
+        export_name: "Product",
+    },
+    RuntimeTypeImport {
+        canonical: "std/prelude::Sum",
+        runtime_feature: "core.sum.type",
+        module: "@seseragi/runtime/sum",
+        export_name: "Sum",
+    },
+    RuntimeTypeImport {
         canonical: "std/text::TextSliceError",
         runtime_feature: "core.text.slice-error",
         module: "@seseragi/runtime/text",

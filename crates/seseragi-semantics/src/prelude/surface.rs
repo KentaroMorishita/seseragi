@@ -93,8 +93,6 @@ const STRUCTURAL_INSTANCES: &[StandardInstanceAuditSpec] = &[
 // stay explicit until their queue issue connects the real instance and removes
 // the corresponding entry here.
 const MISSING_INSTANCES: &[StandardInstanceAuditSpec] = &[
-    audit_spec("Monoid", "Sum<A>", "9.5", None),
-    audit_spec("Monoid", "Product<A>", "9.5", None),
     audit_spec("Functor", "MaybeT<M, _> where Monad<M>", "9.9", None),
     audit_spec("Applicative", "MaybeT<M, _> where Monad<M>", "9.9", None),
     audit_spec("Monad", "MaybeT<M, _> where Monad<M>", "9.9", None),
@@ -212,7 +210,10 @@ struct StandardInstanceConstraintSurface {
     #[serde(rename = "trait")]
     trait_name: &'static str,
     trait_canonical: &'static str,
-    type_argument_index: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_argument_index: Option<usize>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_argument_indices: Option<&'static [usize]>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -417,7 +418,11 @@ pub fn standard_prelude_surface() -> StandardModuleSurface {
                             StandardInstanceConstraintSurface {
                                 trait_name: constraint.trait_name,
                                 trait_canonical: required.canonical,
-                                type_argument_index: constraint.type_argument_index,
+                                type_argument_index: (constraint.type_argument_indices.len() == 1)
+                                    .then(|| constraint.type_argument_indices[0]),
+                                type_argument_indices: (constraint.type_argument_indices.len()
+                                    != 1)
+                                    .then_some(constraint.type_argument_indices),
                             }
                         })
                         .collect(),
@@ -466,7 +471,7 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 280);
+        assert_eq!(surface.instances.len(), 284);
         assert_eq!(surface.builtin_instances.len(), 44);
         for identity in [
             "std/maybe::Eq",
@@ -507,7 +512,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 280 + 44 + 12);
+        assert_eq!(implemented.len(), 284 + 44 + 12);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()
@@ -650,6 +655,28 @@ mod tests {
             }
         );
 
+        for (identity, operation) in [("std/sum::Monoid", "Add"), ("std/product::Monoid", "Mul")] {
+            let wrapper = surface
+                .instances
+                .iter()
+                .find(|instance| instance.identity == identity)
+                .unwrap();
+            assert_eq!(wrapper.constraints.len(), 2);
+            assert_eq!(wrapper.constraints[0].type_argument_index, Some(0));
+            assert_eq!(wrapper.constraints[1].trait_name, operation);
+            assert_eq!(wrapper.constraints[1].type_argument_index, None);
+            assert_eq!(
+                wrapper.constraints[1].type_argument_indices,
+                Some([0, 0, 0].as_slice())
+            );
+            assert!(surface
+                .instance_audit
+                .matrix
+                .iter()
+                .any(|row| row.identity == Some(identity)
+                    && row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented));
+        }
+
         let array_show = surface
             .instances
             .iter()
@@ -657,7 +684,7 @@ mod tests {
             .expect("Array Show must be part of the standard Prelude surface");
         assert_eq!(array_show.constraints.len(), 1);
         assert_eq!(array_show.constraints[0].trait_name, "Show");
-        assert_eq!(array_show.constraints[0].type_argument_index, 0);
+        assert_eq!(array_show.constraints[0].type_argument_index, Some(0));
 
         for name in [
             "Eq",

@@ -75,7 +75,7 @@ pub(crate) struct PreludeStandardInstance {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct PreludeStandardInstanceConstraint {
     pub(crate) trait_name: &'static str,
-    pub(crate) type_argument_index: usize,
+    pub(crate) type_argument_indices: &'static [usize],
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -454,6 +454,34 @@ const fn method(
 }
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
+    PreludeStandardInstance {
+        trait_name: "Monoid",
+        type_name: "Product",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/product::Monoid",
+    },
+    PreludeStandardInstance {
+        trait_name: "Semigroup",
+        type_name: "Product",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/product::Semigroup",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monoid",
+        type_name: "Sum",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/sum::Monoid",
+    },
+    PreludeStandardInstance {
+        trait_name: "Semigroup",
+        type_name: "Sum",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/sum::Semigroup",
+    },
     PreludeStandardInstance {
         trait_name: "Eq",
         type_name: "Decimal",
@@ -2873,7 +2901,31 @@ const ORDERING_VARIANTS: &[PreludeVariant] = &[
     },
 ];
 
+const SUM_VARIANTS: &[PreludeVariant] = &[PreludeVariant {
+    name: "Sum",
+    canonical: "std/prelude::Sum",
+    payload_parameter: Some(0),
+}];
+
+const PRODUCT_VARIANTS: &[PreludeVariant] = &[PreludeVariant {
+    name: "Product",
+    canonical: "std/prelude::Product",
+    payload_parameter: Some(0),
+}];
+
 pub(crate) const SUM_TYPES: &[PreludeSumType] = &[
+    PreludeSumType {
+        name: "Product",
+        canonical: "std/prelude::Product",
+        type_parameters: &["A"],
+        variants: PRODUCT_VARIANTS,
+    },
+    PreludeSumType {
+        name: "Sum",
+        canonical: "std/prelude::Sum",
+        type_parameters: &["A"],
+        variants: SUM_VARIANTS,
+    },
     PreludeSumType {
         name: "Maybe",
         canonical: "std/prelude::Maybe",
@@ -3243,7 +3295,11 @@ pub(crate) fn standard_instance_constraints(
         .map(|constraint| {
             Some(TypedConstraint {
                 name: constraint.trait_name.to_owned(),
-                arguments: vec![arguments.get(constraint.type_argument_index)?.clone()],
+                arguments: constraint
+                    .type_argument_indices
+                    .iter()
+                    .map(|index| arguments.get(*index).cloned())
+                    .collect::<Option<Vec<_>>>()?,
             })
         })
         .collect::<Option<Vec<_>>>()?;
@@ -3255,158 +3311,188 @@ pub(crate) fn standard_instance_constraint_specs(
 ) -> &'static [PreludeStandardInstanceConstraint] {
     const EQ_ELEMENT: &[PreludeStandardInstanceConstraint] = &[PreludeStandardInstanceConstraint {
         trait_name: "Eq",
-        type_argument_index: 0,
+        type_argument_indices: &[0],
     }];
     const ORD_ELEMENT: &[PreludeStandardInstanceConstraint] =
         &[PreludeStandardInstanceConstraint {
             trait_name: "Ord",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         }];
     const HASH_ELEMENT: &[PreludeStandardInstanceConstraint] =
         &[PreludeStandardInstanceConstraint {
             trait_name: "Hash",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         }];
     const SHOW_ELEMENT: &[PreludeStandardInstanceConstraint] =
         &[PreludeStandardInstanceConstraint {
             trait_name: "Show",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         }];
     const DEBUG_ELEMENT: &[PreludeStandardInstanceConstraint] =
         &[PreludeStandardInstanceConstraint {
             trait_name: "Debug",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         }];
     const EQ_EITHER: &[PreludeStandardInstanceConstraint] = &[
         PreludeStandardInstanceConstraint {
             trait_name: "Eq",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "Eq",
-            type_argument_index: 1,
+            type_argument_indices: &[1],
         },
     ];
     const SHOW_EITHER: &[PreludeStandardInstanceConstraint] = &[
         PreludeStandardInstanceConstraint {
             trait_name: "Show",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "Show",
-            type_argument_index: 1,
+            type_argument_indices: &[1],
         },
     ];
     const DEBUG_EITHER: &[PreludeStandardInstanceConstraint] = &[
         PreludeStandardInstanceConstraint {
             trait_name: "Debug",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "Debug",
-            type_argument_index: 1,
+            type_argument_indices: &[1],
         },
     ];
     const JSON_ENCODE_ELEMENT: &[PreludeStandardInstanceConstraint] =
         &[PreludeStandardInstanceConstraint {
             trait_name: "JsonEncode",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         }];
     const JSON_DECODE_ELEMENT: &[PreludeStandardInstanceConstraint] =
         &[PreludeStandardInstanceConstraint {
             trait_name: "JsonDecode",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         }];
     const JSON_ENCODE_EITHER: &[PreludeStandardInstanceConstraint] = &[
         PreludeStandardInstanceConstraint {
             trait_name: "JsonEncode",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "JsonEncode",
-            type_argument_index: 1,
+            type_argument_indices: &[1],
         },
     ];
     const JSON_DECODE_EITHER: &[PreludeStandardInstanceConstraint] = &[
         PreludeStandardInstanceConstraint {
             trait_name: "JsonDecode",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "JsonDecode",
-            type_argument_index: 1,
+            type_argument_indices: &[1],
         },
     ];
     const MAP_EQ: &[PreludeStandardInstanceConstraint] = &[
         PreludeStandardInstanceConstraint {
             trait_name: "Eq",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "Hash",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "Eq",
-            type_argument_index: 1,
+            type_argument_indices: &[1],
         },
     ];
     const SET_EQ: &[PreludeStandardInstanceConstraint] = &[
         PreludeStandardInstanceConstraint {
             trait_name: "Eq",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "Hash",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
     ];
     const MAP_DECODE: &[PreludeStandardInstanceConstraint] = &[
         PreludeStandardInstanceConstraint {
             trait_name: "Eq",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "Hash",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "JsonDecode",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "JsonDecode",
-            type_argument_index: 1,
+            type_argument_indices: &[1],
         },
     ];
     const SET_DECODE: &[PreludeStandardInstanceConstraint] = &[
         PreludeStandardInstanceConstraint {
             trait_name: "Eq",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "Hash",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
         PreludeStandardInstanceConstraint {
             trait_name: "JsonDecode",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         },
     ];
     const SEMIGROUP_ELEMENT: &[PreludeStandardInstanceConstraint] =
         &[PreludeStandardInstanceConstraint {
             trait_name: "Semigroup",
-            type_argument_index: 0,
+            type_argument_indices: &[0],
         }];
     match identity {
+        "std/product::Semigroup" => &[PreludeStandardInstanceConstraint {
+            trait_name: "Mul",
+            type_argument_indices: &[0, 0, 0],
+        }],
+        "std/product::Monoid" => &[
+            PreludeStandardInstanceConstraint {
+                trait_name: "One",
+                type_argument_indices: &[0],
+            },
+            PreludeStandardInstanceConstraint {
+                trait_name: "Mul",
+                type_argument_indices: &[0, 0, 0],
+            },
+        ],
+
+        "std/sum::Semigroup" => &[PreludeStandardInstanceConstraint {
+            trait_name: "Add",
+            type_argument_indices: &[0, 0, 0],
+        }],
+        "std/sum::Monoid" => &[
+            PreludeStandardInstanceConstraint {
+                trait_name: "Zero",
+                type_argument_indices: &[0],
+            },
+            PreludeStandardInstanceConstraint {
+                trait_name: "Add",
+                type_argument_indices: &[0, 0, 0],
+            },
+        ],
+
         "std/validation::Eq" => &[
             PreludeStandardInstanceConstraint {
                 trait_name: "Eq",
-                type_argument_index: 0,
+                type_argument_indices: &[0],
             },
             PreludeStandardInstanceConstraint {
                 trait_name: "Eq",
-                type_argument_index: 1,
+                type_argument_indices: &[1],
             },
         ],
         "std/validation::Show" => SHOW_EITHER,

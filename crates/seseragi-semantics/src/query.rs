@@ -1017,7 +1017,7 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
     }
 
     for sum_type in crate::prelude::SUM_TYPES {
-        let category = if sum_type.name == "Ordering" {
+        let category = if matches!(sum_type.name, "Ordering" | "Sum" | "Product") {
             "Number"
         } else {
             "Maybe / Either"
@@ -1201,8 +1201,9 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
             .cmp(&right.category)
             .then_with(|| left.name.cmp(&right.name))
             .then_with(|| left.identity.cmp(&right.identity))
+            .then_with(|| left.kind.cmp(&right.kind))
     });
-    items.dedup_by(|left, right| left.identity == right.identity);
+    items.dedup_by(|left, right| left.identity == right.identity && left.kind == right.kind);
     items
 }
 
@@ -1817,6 +1818,8 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         {
             "Applies the selected arithmetic trait instance."
         }
+        "std/prelude::Sum" => "Selects addition through a nominal wrapper; Monoid requires Zero and homogeneous Add evidence.",
+        "std/prelude::Product" => "Selects multiplication through a nominal wrapper; Monoid requires One and homogeneous Mul evidence.",
         "std/prelude::Maybe" => "Represents an optional value as Nothing or Just.",
         "std/prelude::Either" => "Represents either a typed failure or a success value.",
         "std/prelude::Ordering" => {

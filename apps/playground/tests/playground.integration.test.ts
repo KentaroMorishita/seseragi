@@ -366,7 +366,11 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: "42", debug: "()" })
   })
 
-  for (const fixtureName of ["effect-match", "effect-until"]) {
+  for (const fixtureName of [
+    "effect-match",
+    "effect-until",
+    "monoid-wrappers",
+  ]) {
     test(`executes ${fixtureName} across named and namespace imports`, async () => {
       const fixture = new URL(
         `../../../examples/spec/fixtures/projects/${fixtureName}/`,
