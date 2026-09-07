@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.3] - 2026-09-07
+
+### Changed
+
+- #502 【#291 ＞ #354・Effect】forEachUntil / LoopControlを標準APIへ接続
 ## [0.61.2] - 2026-09-07
 
 ### Changed

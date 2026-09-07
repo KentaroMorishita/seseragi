@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-until"
+  ],
+  "sourcesContent": [
+    "import * as collections from \"std/collection\"\nimport * as effects from \"std/effect\"\n\nlet totalBeforeNegative = [\n  1,\n  2,\n  -1,\n  100\n]\n  |> collections.reduceUntil 0 (\n    \\total value -> if value < 0 then\n      collections.Done total\n    else\n      collections.Next (total + value)\n  )\n\nfn stopAtThree value: Int -> Effect<{}, Never, effects.LoopControl> =\n  effects.succeed $\n  if value == 3 then\n    effects.Break\n  else\n    effects.Continue\n\nlet stopped = effects.forEachUntil stopAtThree [1, 2, 3, 4]\n"
+  ],
+  "names": [
+    "stopAtThree",
+    "succeed",
+    "intEq",
+    "Break",
+    "Continue",
+    "totalBeforeNegative",
+    "_ssrg_collection_reduceUntil",
+    "arrayIterable",
+    "intOrd",
+    "_ssrg_collection_Done",
+    "_ssrg_collection_Next",
+    "add",
+    "subtract",
+    "stopped",
+    "forEachUntil",
+    "arrayIterable"
+  ],
+  "mappings": ";;;;;;;;AAgBAA;AAbAK;AAoBAQ"
+}

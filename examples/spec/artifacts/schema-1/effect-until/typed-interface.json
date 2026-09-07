@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/effect-until",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/collection",
+      "module": "std/collection",
+      "origin": {
+        "start": 0,
+        "end": 45
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/collection::*",
+          "localName": "collections"
+        }
+      ]
+    },
+    {
+      "specifier": "std/effect",
+      "module": "std/effect",
+      "origin": {
+        "start": 46,
+        "end": 83
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/effect::*",
+          "localName": "effects"
+        }
+      ]
+    }
+  ],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

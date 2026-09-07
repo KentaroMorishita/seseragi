@@ -1,0 +1,19 @@
+import * as effects from "std/effect"
+import * as iterator from "std/iterator"
+
+pub struct Counting { start: Int }
+fn advance n: Int -> Maybe<(Int, Int)> = Just (n, n + 1)
+instance Iterable<Counting, Int> {
+  fn iterate values: Counting -> Iterator<Int> = iterator.unfold advance values.start
+}
+
+pub fn visit<C, R, E, A> action: (A -> Effect<R, E, effects.LoopControl>)
+  -> values: C
+  -> Effect<R, E, Unit>
+where Iterable<C, A> =
+  effects.forEachUntil action values
+
+pub effect fn observe value: Int = do {
+  println $ show value
+  effects.succeed $ if value == 3 then effects.Break else effects.Continue
+}
