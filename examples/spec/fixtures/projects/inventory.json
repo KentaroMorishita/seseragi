@@ -18,6 +18,7 @@
     "dts-overload-selection": { "availability": "current", "phase": "convert", "runners": ["cli-dts"], "evidence": ["crates/seseragi-cli/tests/dts.rs"] },
     "dts-unsupported-any": { "availability": "current", "phase": "diagnostic", "runners": ["cli-dts"], "evidence": ["crates/seseragi-cli/tests/dts.rs"] },
     "effect-concurrency-primitives": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
+    "effect-until": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "effect-resource-scope": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "effect-stream-simultaneous-failure": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "effect-tail-recursion": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },

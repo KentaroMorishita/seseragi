@@ -1,0 +1,19 @@
+import { Counting, visit, observe } from "./domain"
+import * as effects from "std/effect"
+import * as iterator from "std/iterator"
+
+fn advance n: Int -> Maybe<(Int, Int)> = Just (n, n + 1)
+
+pub effect fn main = do {
+  visit observe [1, 2, 3, 4]
+  visit observe `[1, 2, 3, 4]
+  visit observe (1 ..= 4)
+  visit observe (Counting { start: 1 })
+  visit observe (iterator.unfold advance 1)
+  let empty: Array<Int> = []
+  effects.forEachUntil observe empty
+  let partial: Array<Int> -> Effect<{ console: Console }, ConsoleError, Unit> =
+    effects.forEachUntil observe
+  partial [3, 4]
+  println "done"
+}

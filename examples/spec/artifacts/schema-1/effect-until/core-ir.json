@@ -1,0 +1,882 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-until",
+  "externalTypeBindings": [
+    {
+      "spelling": "Effect",
+      "canonical": "std/prelude::Effect"
+    },
+    {
+      "spelling": "ReduceStep",
+      "canonical": "std/collection::ReduceStep",
+      "provider": {
+        "module": "std/collection",
+        "export": "ReduceStep"
+      }
+    },
+    {
+      "spelling": "effects.LoopControl",
+      "canonical": "std/effect::LoopControl",
+      "provider": {
+        "module": "std/effect",
+        "export": "LoopControl"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/collection",
+      "module": "std/collection",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 45
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "Next",
+          "local": "collections.Next",
+          "canonical": "std/collection::Next",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 23
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Done",
+          "local": "collections.Done",
+          "canonical": "std/collection::Done",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 23
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "reduceUntil",
+          "local": "collections.reduceUntil",
+          "canonical": "std/collection::reduceUntil",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 23
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/effect",
+      "module": "std/effect",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 46,
+        "end": 83
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "LoopControl",
+          "local": "effects.LoopControl",
+          "canonical": "std/effect::LoopControl",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 58,
+            "end": 65
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Continue",
+          "local": "effects.Continue",
+          "canonical": "std/effect::Continue",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 58,
+            "end": 65
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Break",
+          "local": "effects.Break",
+          "canonical": "std/effect::Break",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 58,
+            "end": 65
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "succeed",
+          "local": "effects.succeed",
+          "canonical": "std/effect::succeed",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 58,
+            "end": 65
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "forEachUntil",
+          "local": "effects.forEachUntil",
+          "canonical": "std/effect::forEachUntil",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 58,
+            "end": 65
+          }
+        }
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "symbol": "artifact/effect-until::totalBeforeNegative",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 85,
+        "end": 288
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/collection::reduceUntil",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "0",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 166,
+              "end": 167
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": {
+              "id": "total",
+              "kind": "named",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "body": {
+              "kind": "lambda",
+              "parameter": {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              },
+              "body": {
+                "kind": "if",
+                "condition": {
+                  "kind": "binary",
+                  "operator": "<",
+                  "left": {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 193,
+                      "end": 198
+                    }
+                  },
+                  "right": {
+                    "kind": "integer",
+                    "value": "0",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 201,
+                      "end": 202
+                    }
+                  },
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Ord",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/int::Ord"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 193,
+                    "end": 202
+                  }
+                },
+                "thenBranch": {
+                  "kind": "call",
+                  "callee": "std/collection::Done",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "total",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 231,
+                        "end": 236
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "ReduceStep",
+                    "canonical": "std/collection::ReduceStep",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 214,
+                    "end": 236
+                  }
+                },
+                "elseBranch": {
+                  "kind": "call",
+                  "callee": "std/collection::Next",
+                  "arguments": [
+                    {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "variable",
+                        "name": "total",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 270,
+                          "end": 275
+                        }
+                      },
+                      "right": {
+                        "kind": "variable",
+                        "name": "value",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 278,
+                          "end": 283
+                        }
+                      },
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Add",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/int::Add"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 270,
+                        "end": 283
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "ReduceStep",
+                    "canonical": "std/collection::ReduceStep",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 252,
+                    "end": 284
+                  }
+                },
+                "type": {
+                  "kind": "external-named",
+                  "name": "ReduceStep",
+                  "canonical": "std/collection::ReduceStep",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 190,
+                  "end": 284
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ReduceStep",
+                  "canonical": "std/collection::ReduceStep",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 181,
+                "end": 284
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ReduceStep",
+                  "canonical": "std/collection::ReduceStep",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 174,
+              "end": 284
+            }
+          },
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "integer",
+                "value": "1",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 115,
+                  "end": 116
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "2",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 120,
+                  "end": 121
+                }
+              },
+              {
+                "kind": "unary",
+                "operator": "-",
+                "operand": {
+                  "kind": "integer",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 126,
+                    "end": 127
+                  }
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 125,
+                  "end": 127
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "100",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 131,
+                  "end": 134
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 111,
+              "end": 136
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Iterable",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Iterable"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 111,
+          "end": 288
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-until::stopped",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 448,
+        "end": 507
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/effect::forEachUntil",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "artifact/effect-until::stopAtThree",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "effects.LoopControl",
+                    "canonical": "std/effect::LoopControl",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 483,
+              "end": 494
+            }
+          },
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "integer",
+                "value": "1",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 496,
+                  "end": 497
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "2",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 499,
+                  "end": 500
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "3",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 502,
+                  "end": 503
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "4",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 505,
+                  "end": 506
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 495,
+              "end": 507
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Iterable",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Iterable"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 462,
+          "end": 507
+        }
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/effect-until::stopAtThree",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 290,
+        "end": 446
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/effect::succeed",
+        "arguments": [
+          {
+            "kind": "if",
+            "condition": {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 385,
+                  "end": 390
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "3",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 394,
+                  "end": 395
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Eq"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 385,
+                "end": 395
+              }
+            },
+            "thenBranch": {
+              "kind": "variable",
+              "name": "std/effect::Break",
+              "type": {
+                "kind": "external-named",
+                "name": "effects.LoopControl",
+                "canonical": "std/effect::LoopControl",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 405,
+                "end": 418
+              }
+            },
+            "elseBranch": {
+              "kind": "variable",
+              "name": "std/effect::Continue",
+              "type": {
+                "kind": "external-named",
+                "name": "effects.LoopControl",
+                "canonical": "std/effect::LoopControl",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 430,
+                "end": 446
+              }
+            },
+            "type": {
+              "kind": "external-named",
+              "name": "effects.LoopControl",
+              "canonical": "std/effect::LoopControl",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 382,
+              "end": 446
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "effects.LoopControl",
+              "canonical": "std/effect::LoopControl",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 362,
+          "end": 446
+        }
+      }
+    }
+  ]
+}

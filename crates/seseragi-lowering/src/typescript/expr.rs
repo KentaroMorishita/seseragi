@@ -660,12 +660,13 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_effect_operation(&callee) {
+                let mut dictionary_arguments = Vec::new();
                 if matches!(callee.as_str(), "std/test::equal" | "std/test::notEqual") {
                     let equality = evidence
                         .iter()
                         .find(|selected| selected.constraint.name == "Eq")
                         .expect("std/test equality assertion requires selected Eq evidence");
-                    arguments.push(
+                    dictionary_arguments.push(
                         equality_reference_from_evidence(
                             std::slice::from_ref(equality),
                             imported_values,
@@ -684,21 +685,38 @@ pub(super) fn lower_core_expr_to_typescript(
                             )
                         })
                         .expect("std/test equality assertion requires Debug evidence");
-                    arguments.push(debug);
-                } else if callee == "std/test::expectFailure" {
-                    arguments.extend(evidence.iter().map(|selected| {
+                    dictionary_arguments.push(debug);
+                } else {
+                    dictionary_arguments.extend(evidence.iter().map(|selected| {
                         local_dictionary_expression(
                             &selected.evidence,
                             imported_values,
                             imported_types,
                         )
-                        .expect("std/test failure assertion requires materializable evidence")
+                        .expect("constrained standard effect call requires materializable evidence")
                     }));
                 }
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
+                let mut parameters = Vec::new();
+                let mut remaining = &type_ref;
+                while let CoreType::Function { parameter, result } = remaining {
+                    let name = format!("__ssrg$effect$partial${}", parameters.len());
+                    let type_name =
+                        render_typescript_type(&type_ref_from_core_type(parameter, imported_types));
+                    arguments.push(TypeScriptExpr::Identifier { name: name.clone() });
+                    parameters.push((name, type_name));
+                    remaining = result;
                 }
+                arguments.extend(dictionary_arguments);
+                parameters.into_iter().rev().fold(
+                    TypeScriptExpr::RuntimeCall {
+                        callee: operation.local_name.to_owned(),
+                        arguments,
+                    },
+                    |body, (name, type_name)| TypeScriptExpr::Lambda {
+                        parameter: format!("{name}: {type_name}"),
+                        body: Box::new(body),
+                    },
+                )
             } else if let Some(operation) = runtime_signal_distinct_operation(&callee, &evidence) {
                 let equals =
                     equality_reference_from_evidence(&evidence, imported_values, imported_types)
@@ -772,14 +790,25 @@ pub(super) fn lower_core_expr_to_typescript(
                             matches!(argument, super::TypeScriptType::Function { .. })
                         });
                     let evidence_count = evidence.len();
-                    let mut call = lower_constrained_call(
-                        callee,
-                        arguments,
-                        evidence,
-                        deferred_evidence_parameters,
-                        deferred_evidence_type_constructor_parameters,
-                        imported_types,
-                    );
+                    // Typed HIR represents an imported effect reference as a
+                    // zero-argument partial Call. Preserve the callable value;
+                    // emitting f() would construct it before its argument exists.
+                    let mut call = if arguments.is_empty()
+                        && evidence.is_empty()
+                        && deferred_evidence_parameters.is_empty()
+                        && matches!(type_ref, CoreType::Function { .. })
+                    {
+                        TypeScriptExpr::Identifier { name: callee }
+                    } else {
+                        lower_constrained_call(
+                            callee,
+                            arguments,
+                            evidence,
+                            deferred_evidence_parameters,
+                            deferred_evidence_type_constructor_parameters,
+                            imported_types,
+                        )
+                    };
                     if check_late_callback {
                         // TypeScript fixes generic parameters at the first
                         // curried argument. The source checker used every

@@ -61893,6 +61893,172 @@
         "dependencies": [],
         "exports": [
           {
+            "symbol": "std/effect::LoopControl",
+            "namespace": "type",
+            "name": "LoopControl",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "LoopControl",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/effect::Continue",
+            "namespace": "value",
+            "name": "Continue",
+            "constructorOf": "std/effect::LoopControl",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "LoopControl",
+                "canonical": "std/effect::LoopControl",
+                "providerModule": "std/effect",
+                "providerExport": "LoopControl",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/effect::Break",
+            "namespace": "value",
+            "name": "Break",
+            "constructorOf": "std/effect::LoopControl",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "LoopControl",
+                "canonical": "std/effect::LoopControl",
+                "providerModule": "std/effect",
+                "providerExport": "LoopControl",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/effect::forEachUntil",
+            "namespace": "value",
+            "name": "forEachUntil",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "C",
+                "R",
+                "E",
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Iterable",
+                  "traitIdentity": "std/prelude::Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "C",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "LoopControl",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "C",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
             "symbol": "std/effect::Fiber",
             "namespace": "type",
             "name": "Fiber",

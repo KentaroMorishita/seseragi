@@ -451,6 +451,27 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         "unboundedParallelism"
     ),
     surface_operation!(
+        "std/effect::Continue",
+        "effect.iterable.continue",
+        "_ssrg_effect_Continue",
+        "@seseragi/runtime/effect",
+        "Continue"
+    ),
+    surface_operation!(
+        "std/effect::Break",
+        "effect.iterable.break",
+        "_ssrg_effect_Break",
+        "@seseragi/runtime/effect",
+        "Break"
+    ),
+    surface_operation!(
+        "std/effect::forEachUntil",
+        "effect.iterable.for-each-until",
+        "_ssrg_effect_forEachUntil",
+        "@seseragi/runtime/effect",
+        "forEachUntil"
+    ),
+    surface_operation!(
         "std/effect::forEachParallel",
         "effect.parallelism.for-each",
         "_ssrg_effect_forEachParallel",

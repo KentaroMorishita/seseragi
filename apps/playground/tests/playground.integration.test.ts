@@ -366,40 +366,42 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: "42", debug: "()" })
   })
 
-  test("executes effect match payloads across named and namespace imports", async () => {
-    const fixture = new URL(
-      "../../../examples/spec/fixtures/projects/effect-match/",
-      import.meta.url
-    )
-    const request: ProjectRequest = {
-      schema: 1,
-      manifest: await Bun.file(new URL("seseragi.toml", fixture)).text(),
-      files: await Promise.all(
-        ["domain.ssrg", "main.ssrg"].map(async (path) => ({
+  for (const fixtureName of ["effect-match", "effect-until"]) {
+    test(`executes ${fixtureName} across named and namespace imports`, async () => {
+      const fixture = new URL(
+        `../../../examples/spec/fixtures/projects/${fixtureName}/`,
+        import.meta.url
+      )
+      const request: ProjectRequest = {
+        schema: 1,
+        manifest: await Bun.file(new URL("seseragi.toml", fixture)).text(),
+        files: await Promise.all(
+          ["domain.ssrg", "main.ssrg"].map(async (path) => ({
+            path,
+            source: await Bun.file(new URL(`src/${path}`, fixture)).text(),
+          }))
+        ),
+      }
+      const analysis = await analyzeProject(request)
+      const compiled = await compileProject(request)
+      expect(analysis.status).toBe("success")
+      expect(compiled.status).toBe("success")
+      if (analysis.status !== "success" || compiled.status !== "success") return
+      if (compiled.entry.contract === undefined)
+        throw new Error("missing execution entry")
+      const result = await executeGeneratedProject(
+        compiled.modules.map(({ path, generated }) => ({
           path,
-          source: await Bun.file(new URL(`src/${path}`, fixture)).text(),
-        }))
-      ),
-    }
-    const analysis = await analyzeProject(request)
-    const compiled = await compileProject(request)
-    expect(analysis.status).toBe("success")
-    expect(compiled.status).toBe("success")
-    if (analysis.status !== "success" || compiled.status !== "success") return
-    if (compiled.entry.contract === undefined)
-      throw new Error("missing execution entry")
-    const result = await executeGeneratedProject(
-      compiled.modules.map(({ path, generated }) => ({
-        path,
-        typescript: generated.typescript,
-      })),
-      compiled.entry.path,
-      compiled.entry.contract
-    )
-    expect(result.stdout).toBe(
-      (await Bun.file(new URL("expected.stdout", fixture)).text()).trimEnd()
-    )
-  })
+          typescript: generated.typescript,
+        })),
+        compiled.entry.path,
+        compiled.entry.contract
+      )
+      expect(result.stdout).toBe(
+        (await Bun.file(new URL("expected.stdout", fixture)).text()).trimEnd()
+      )
+    })
+  }
   test("preserves concrete inline polymorphic payloads across project modules", async () => {
     const fixture = new URL(
       "../../../examples/spec/fixtures/projects/inline-polymorphic-inference/",

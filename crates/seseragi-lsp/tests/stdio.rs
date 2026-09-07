@@ -1899,3 +1899,36 @@ fn binary_exposes_optional_checked_change_snapshot() {
         .unwrap();
     assert_eq!(hover, "Inferred type:\nMaybe<\n  Bool,\n>");
 }
+
+#[test]
+fn binary_exposes_effect_until_iterable_and_control_contract() {
+    let workspace = TempWorkspace::new();
+    let source = "import * as effects from \"std/effect\"\nfn action value: Int -> Effect<{}, Never, effects.LoopControl> = effects.succeed effects.Break\npub let work = effects.forEachUntil action [1, 2]\n";
+    workspace.write("main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let position = LineIndex::new(source)
+        .try_locate_encoded(
+            source.find("forEachUntil").unwrap(),
+            PositionEncoding::Utf16,
+        )
+        .unwrap();
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":main_uri},"position":{"line":position.line,"character":position.character}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(
+        hover.contains("LoopControl") && hover.contains("Iterable"),
+        "{hover}"
+    );
+}
