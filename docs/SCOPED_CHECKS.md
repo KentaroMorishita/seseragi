@@ -37,6 +37,18 @@ native専用moduleは`browser: null`で宣言し、Playgroundへ別のmodule一�
 providerの`browser/` sourceから`runtime-browser/` packageへのprojectionはRustの
 package staging testでも同一内容を検証します。
 
+## Standard instance audit
+
+Prelude auditの`specified-but-implementation-missing`行は、canonical registryの
+`tracking_issue`に正のIssue番号を必ず持ちます。surface生成時に検証するため、
+unit testだけでなくconformanceのartifact照合も未追跡行を拒否します。
+GitHubへの問い合わせは不要です。実装完了時はmissing行を削除し、implemented /
+structural / intentionally unavailable行に古いtracking metadataを残しません。
+
+`prelude::surface`のsynthetic missing testは、現在のmissing一覧が空でもこの契約と
+JSONの`trackingIssue`投影を検証します。auditだけの変更はこのsemantics testと
+conformanceの`stdlib_surface` testを先に実行できます。
+
 ## Dependency installation
 
 通常のscoped checkは依存installを行わず、lockfileで管理されたlocal binaryだけを使います。

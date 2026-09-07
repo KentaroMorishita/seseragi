@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.6] - 2026-09-07
+
+### Changed
+
+- #507 【#291・標準ライブラリ監査】未実装standard instanceの追跡Issueを必須化
 ## [0.61.5] - 2026-09-07
 
 ### Changed
