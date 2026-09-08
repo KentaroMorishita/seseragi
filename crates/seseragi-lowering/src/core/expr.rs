@@ -90,6 +90,8 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<Co
         } => lower_pure_pattern_statements(source, pattern, value, origin),
         TypedBlockStatement::Function {
             effect: _,
+            rec_group,
+            return_type,
             name,
             type_parameters,
             constraints,
@@ -98,6 +100,8 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<Co
             body,
             origin,
         } => vec![CoreStatement::LocalFunction {
+            rec_group: rec_group.map(|span| source_span(source, span)),
+            return_type: return_type.map(lower_typed_type),
             name,
             type_parameters,
             constraints: constraints

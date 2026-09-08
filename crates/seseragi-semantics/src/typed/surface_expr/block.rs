@@ -43,7 +43,91 @@ pub(crate) fn type_block_with(
         SemanticTypeKey::Other,
     );
 
+    let mut active_rec_group = None;
+    let mut recursive_context = None;
     for item in items {
+        if let SurfaceBlockItem::Function {
+            rec_group: Some(group),
+            ..
+        } = item
+        {
+            if active_rec_group != Some(*group) {
+                for member in items {
+                    if let SurfaceBlockItem::Function {
+                        name_span,
+                        rec_group: Some(member_group),
+                        parameters,
+                        return_type,
+                        effect,
+                        ..
+                    } = member
+                    {
+                        if member_group != group {
+                            continue;
+                        }
+                        let parameters =
+                            typed_parameters_from_surface(parameters, base_context.resolution);
+                        let mut result = base_context
+                            .semantic_value_from_type_ref(return_type)
+                            .type_ref;
+                        if let Some(effect) = effect {
+                            result = crate::typed::type_ref::effect_value_type(
+                                &crate::typed::effect::typed_effect_from_surface(
+                                    &Some(return_type.clone()),
+                                    &effect.requirements,
+                                    effect.failure.as_ref(),
+                                    false,
+                                    &merged.value,
+                                    base_context.resolution,
+                                ),
+                            );
+                        }
+                        if let Some(symbol) =
+                            base_context.declaration_symbol(*name_span, SymbolKind::Function)
+                        {
+                            locals.insert(
+                                symbol,
+                                SemanticValueType {
+                                    type_ref: function_type(&parameters, result),
+                                    key: SemanticTypeKey::Other,
+                                },
+                            );
+                        }
+                    }
+                }
+                let members: BTreeMap<_, _> = items
+                    .iter()
+                    .filter_map(|member| {
+                        let SurfaceBlockItem::Function {
+                            name_span,
+                            rec_group: Some(member_group),
+                            ..
+                        } = member
+                        else {
+                            return None;
+                        };
+                        if member_group != group {
+                            return None;
+                        }
+                        let symbol =
+                            base_context.declaration_symbol(*name_span, SymbolKind::Function)?;
+                        Some((
+                            symbol,
+                            base_context
+                                .with_locals(locals.clone())
+                                .callable_value(symbol)?,
+                        ))
+                    })
+                    .collect();
+                recursive_context = members
+                    .keys()
+                    .next()
+                    .copied()
+                    .map(|first| super::recursion::RecursiveContext::new(members, first));
+                active_rec_group = Some(*group);
+            }
+        }
+
         match item {
             SurfaceBlockItem::Let {
                 pattern,
@@ -78,6 +162,7 @@ pub(crate) fn type_block_with(
                 merged.merge_issues_from(binding.expression);
             }
             SurfaceBlockItem::Function {
+                rec_group,
                 name,
                 name_span,
                 type_parameters,
@@ -148,6 +233,14 @@ pub(crate) fn type_block_with(
                 let mut context = base_context
                     .with_locals(function_locals)
                     .with_expected(Some(expected.clone()));
+                if rec_group.is_some() {
+                    if let (Some(group), Some(symbol)) = (
+                        &recursive_context,
+                        base_context.declaration_symbol(*name_span, SymbolKind::Function),
+                    ) {
+                        context.recursive_groups.push(group.for_member(symbol));
+                    }
+                }
                 if !constraints.is_empty() {
                     context = context.with_evidence_parameters(scoped_evidence);
                 }
@@ -220,6 +313,8 @@ pub(crate) fn type_block_with(
                     ));
                 }
                 statements.push(TypedBlockStatement::Function {
+                    rec_group: *rec_group,
+                    return_type: rec_group.map(|_| expected.type_ref.clone()),
                     effect: effect.as_ref().and_then(|_| {
                         crate::typed::type_ref::effect_from_value_type(&expected.type_ref)
                     }),
@@ -267,23 +362,40 @@ pub(crate) fn type_block_with(
     let semantic_type = result_analysis.semantic_type.clone();
     let result_value = result_analysis.value.clone();
     merged.merge_issues_from(result_analysis);
-    // Preserve lexical closure binding when a later declaration shadows a name.
-    // Each declaration scope ends at the block end; later bindings are nested.
-    let contains_effect_function = items.iter().any(|item| {
+    // A recursive group shares one lexical environment. Other declarations get
+    // subsequent scopes so later shadowing cannot change already-bound closures.
+    let isolate_declarations = items.iter().any(|item| {
         matches!(
             item,
             SurfaceBlockItem::Function {
                 effect: Some(_),
                 ..
+            } | SurfaceBlockItem::Function {
+                rec_group: Some(_),
+                ..
             }
         )
     });
-    merged.value = if contains_effect_function {
-        statements
+    merged.value = if isolate_declarations {
+        let mut groups: Vec<Vec<TypedBlockStatement>> = Vec::new();
+        let mut previous_group = None;
+        for statement in statements {
+            let group = match &statement {
+                TypedBlockStatement::Function { rec_group, .. } => *rec_group,
+                _ => None,
+            };
+            if group.is_some() && previous_group == group {
+                groups.last_mut().unwrap().push(statement);
+            } else {
+                groups.push(vec![statement]);
+            }
+            previous_group = group;
+        }
+        groups
             .into_iter()
             .rev()
-            .fold(result_value, |result, statement| TypedExpr::Block {
-                statements: vec![statement],
+            .fold(result_value, |result, statements| TypedExpr::Block {
+                statements,
                 result: Box::new(result),
                 type_ref: type_ref.clone(),
                 origin,

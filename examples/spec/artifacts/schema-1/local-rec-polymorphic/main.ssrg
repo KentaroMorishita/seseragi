@@ -1,0 +1,1 @@
+pub fn result -> Int = { rec { fn grow<A> x: A -> Int = grow [x] }; 1 }

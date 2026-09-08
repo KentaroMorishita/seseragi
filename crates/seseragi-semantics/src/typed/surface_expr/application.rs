@@ -41,6 +41,21 @@ pub(super) fn type_callable_value(
     }
     application.result = context.hydrate_semantic_value(application.result);
 
+    if let Some(issue) = context
+        .expected()
+        .and_then(|expected| context.recursive_call_issue(span, &[], &expected.type_ref))
+    {
+        let mut analysis = SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
+            name: signature.symbol.clone(),
+            evidence: Vec::new(),
+            type_ref: TypedType::Hole,
+            origin: span,
+        });
+        analysis.pure_call_issue = Some(issue);
+        analysis.semantic_type = SemanticTypeKey::Invalid;
+        return analysis;
+    }
+
     if signature.constraints.is_empty() {
         let semantic_type = if signature.parameters.is_empty() {
             application.result.key.clone()
@@ -233,12 +248,12 @@ pub(crate) fn type_known_application_with_explicit(
     let argument_order = argument_nodes
         .iter()
         .enumerate()
-        .filter(|(_, argument)| !requires_callable_context(argument))
+        .filter(|(_, argument)| !requires_callable_context(argument, context))
         .chain(
             argument_nodes
                 .iter()
                 .enumerate()
-                .filter(|(_, argument)| requires_callable_context(argument)),
+                .filter(|(_, argument)| requires_callable_context(argument, context)),
         )
         .map(|(index, _)| index)
         .collect::<Vec<_>>();
@@ -324,6 +339,49 @@ pub(crate) fn type_known_application_with_explicit(
             &semantic_arguments,
         )
     });
+    if issue.is_none() && !context.recursive_groups.is_empty() {
+        // Infer the callback expectation from the other arguments. A recursive
+        // member's own scheme must not erase a more specific expectation.
+        let other_arguments = indexed_arguments
+            .iter()
+            .filter(|(index, _)| {
+                let mut value = argument_nodes[*index];
+                while let SurfaceExpr::Grouped { value: inner, .. } = value {
+                    value = inner;
+                }
+                !context.is_recursive_member(value.span())
+            })
+            .cloned()
+            .collect::<Vec<_>>();
+        let callback_application = instantiated_application_indexed(
+            &signature,
+            expected_application,
+            argument_nodes.len(),
+            &other_arguments,
+        );
+        for (argument, parameter) in argument_nodes.iter().zip(&callback_application.parameters) {
+            let mut value = *argument;
+            while let SurfaceExpr::Grouped { value: inner, .. } = value {
+                value = inner;
+            }
+            if let Some(found) =
+                context.recursive_call_issue(value.span(), &[], &parameter.type_ref)
+            {
+                issue = Some(found);
+                break;
+            }
+        }
+    }
+    if issue.is_none() {
+        issue = context.recursive_call_issue(
+            callee_span,
+            &semantic_arguments
+                .iter()
+                .map(|v| v.type_ref.clone())
+                .collect::<Vec<_>>(),
+            &instantiated_application_result_type(&application, arguments.len()),
+        );
+    }
     let saturated = arguments.len() >= signature.parameters.len();
     let concrete_partial_constraints = !saturated
         && signature.trait_identity.is_none()
@@ -583,15 +641,19 @@ fn instantiate_explicit_signature(
 
 // Like lambdas, operator sections need operand types from the other arguments
 // before selecting their dictionary. This changes typing order, not execution order.
-fn requires_callable_context(expression: &SurfaceExpr) -> bool {
+fn requires_callable_context(
+    expression: &SurfaceExpr,
+    context: &PureExpressionContext<'_>,
+) -> bool {
     match expression {
         SurfaceExpr::Lambda { .. } => true,
         SurfaceExpr::Name { name, .. } => {
-            name == ":"
+            context.is_recursive_member(expression.span())
+                || name == ":"
                 || seseragi_syntax::standard_operator(name).is_some()
                 || seseragi_syntax::standard_trait_operator(name).is_some()
         }
-        SurfaceExpr::Grouped { value, .. } => requires_callable_context(value),
+        SurfaceExpr::Grouped { value, .. } => requires_callable_context(value, context),
         _ => false,
     }
 }

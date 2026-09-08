@@ -1748,6 +1748,8 @@ fn lower_core_statement_to_typescript(
             origin,
         },
         CoreStatement::LocalFunction {
+            rec_group,
+            return_type,
             name,
             type_parameters,
             constraints,
@@ -1763,6 +1765,10 @@ fn lower_core_statement_to_typescript(
                 .map(|parameter| parameter.name.clone())
                 .collect::<Vec<_>>();
             TypeScriptStatement::LocalFunction {
+                rec_group,
+                return_type: return_type
+                    .as_ref()
+                    .map(|ty| type_ref_from_core_type(ty, imported_types)),
                 name: safe_identifier(&name),
                 type_parameters,
                 constraints: constraints

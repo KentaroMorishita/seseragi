@@ -451,11 +451,15 @@ fn collect_statement_runtime_requirements(
             collect_expr_runtime_requirements(value, requirements);
         }
         CoreStatement::LocalFunction {
+            return_type,
             constraints,
             parameters,
             body,
             ..
         } => {
+            if let Some(return_type) = return_type {
+                collect_type_runtime_requirement(return_type, requirements);
+            }
             for constraint in constraints {
                 for argument in &constraint.arguments {
                     collect_type_runtime_requirement(argument, requirements);

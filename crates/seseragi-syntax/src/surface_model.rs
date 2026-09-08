@@ -661,6 +661,9 @@ pub enum SurfaceBlockItem {
         span: ByteSpan,
     },
     Function {
+        /// Source identity of the explicit recursive closure group, if any.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rec_group: Option<ByteSpan>,
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]

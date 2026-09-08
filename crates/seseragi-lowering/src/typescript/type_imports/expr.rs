@@ -190,11 +190,15 @@ pub(super) fn collect_expr_type_imports(
                         value
                     }
                     CoreStatement::LocalFunction {
+                        return_type,
                         constraints,
                         parameters,
                         body,
                         ..
                     } => {
+                        if let Some(return_type) = return_type {
+                            collect_type_imports(return_type, bindings, requirements, imports);
+                        }
                         for constraint in constraints {
                             for argument in &constraint.arguments {
                                 collect_type_imports(argument, bindings, requirements, imports);

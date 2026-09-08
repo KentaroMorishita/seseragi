@@ -2100,3 +2100,42 @@ fn binary_exposes_local_effect_function_contract() {
         .unwrap();
     assert!(hover.contains("Effect") && hover.contains("Int"), "{hover}");
 }
+
+#[test]
+fn binary_resolves_recursive_group_references_and_rename() {
+    let workspace = TempWorkspace::new();
+    let source = "pub fn result -> Bool = {\n  rec {\n    fn even n: Int -> Bool = if n == 0 then True else odd (n - 1)\n    fn odd n: Int -> Bool = if n == 0 then False else even (n - 1)\n  }\n  even 4\n}\n";
+    workspace.write("main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let position = LineIndex::new(source)
+        .try_locate_encoded(source.find("odd (n").unwrap(), PositionEncoding::Utf16)
+        .unwrap();
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/references","params":{"textDocument":{"uri":main_uri},"position":{"line":position.line,"character":position.character},"context":{"includeDeclaration":true}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"textDocument/rename","params":{"textDocument":{"uri":main_uri},"position":{"line":position.line,"character":position.character},"newName":"isOdd"}}),
+        json!({"jsonrpc":"2.0","id":4,"method":"textDocument/hover","params":{"textDocument":{"uri":main_uri},"position":{"line":position.line,"character":position.character}}}),
+        json!({"jsonrpc":"2.0","id":5,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+    assert_eq!(
+        response(&messages, 2)["result"].as_array().unwrap().len(),
+        2
+    );
+    let changes = response(&messages, 3)["result"]["documentChanges"]
+        .as_array()
+        .unwrap();
+    assert_eq!(changes.len(), 1);
+    let edits = changes[0]["edits"].as_array().unwrap();
+    assert_eq!(edits.len(), 2);
+    assert!(edits.iter().all(|edit| edit["newText"] == "isOdd"));
+    assert!(response(&messages, 4)["result"]
+        .to_string()
+        .contains("Bool"));
+}

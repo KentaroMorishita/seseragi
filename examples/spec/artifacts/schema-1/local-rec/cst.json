@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 548,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 548,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 0,
+            "endToken": 1,
+            "children": []
+          },
+          {
+            "kind": "effect-fn-decl",
+            "startToken": 2,
+            "endToken": 548,
+            "children": [
+              {
+                "kind": "effect-signature",
+                "startToken": 2,
+                "endToken": 372,
+                "children": []
+              },
+              {
+                "kind": "effect-requirements",
+                "startToken": 372,
+                "endToken": 460,
+                "children": []
+              },
+              {
+                "kind": "do-block",
+                "startToken": 460,
+                "endToken": 547,
+                "children": [
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 465,
+                    "endToken": 481,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 483,
+                    "endToken": 490,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 492,
+                    "endToken": 508,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 510,
+                    "endToken": 519,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 521,
+                    "endToken": 528,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-bind-item",
+                    "startToken": 530,
+                    "endToken": 537,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 539,
+                    "endToken": 542,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 544,
+                    "endToken": 545,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

@@ -627,6 +627,10 @@ pub enum TypeScriptStatement {
         origin: SourceSpan,
     },
     LocalFunction {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rec_group: Option<SourceSpan>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        return_type: Option<TypeScriptType>,
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<TypeParameter>,

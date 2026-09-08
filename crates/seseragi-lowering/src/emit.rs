@@ -572,6 +572,26 @@ fn render_function_body(
     is_effect: bool,
     self_name: Option<&str>,
 ) -> String {
+    render_function_body_with_return(
+        type_parameters,
+        parameters,
+        body,
+        is_async,
+        is_effect,
+        self_name,
+        None,
+    )
+}
+
+fn render_function_body_with_return(
+    type_parameters: &[seseragi_syntax::TypeParameter],
+    parameters: &[crate::TypeScriptParameter],
+    body: &TypeScriptExpr,
+    is_async: bool,
+    is_effect: bool,
+    self_name: Option<&str>,
+    return_type: Option<&crate::TypeScriptType>,
+) -> String {
     let rendered_body = self_name
         .filter(|_| !is_effect)
         .filter(|name| contains_direct_self_tail_call(body, name, parameters.len()))
@@ -589,8 +609,11 @@ fn render_function_body(
     } else {
         ""
     };
+    let return_annotation = return_type
+        .map(|ty| format!(": {}", render_typescript_type(ty)))
+        .unwrap_or_default();
     let final_arrow = format!(
-        "{async_prefix}{final_generic_prefix}({}: {}) => {rendered_body}",
+        "{async_prefix}{final_generic_prefix}({}: {}){return_annotation} => {rendered_body}",
         last.name, last.type_name
     );
     let rendered = leading.iter().rev().fold(final_arrow, |result, parameter| {
@@ -1041,6 +1064,49 @@ fn nullish_logical_mix(parent_operator: &str, operand: &TypeScriptExpr) -> bool 
         || (matches!(parent_operator, "&&" | "||") && child_operator == "??")
 }
 
+fn recursive_group_prefix(statements: &[TypeScriptStatement]) -> Option<(String, usize)> {
+    let TypeScriptStatement::LocalFunction {
+        rec_group: Some(group),
+        ..
+    } = statements.first()?
+    else {
+        return None;
+    };
+    let mut declarations = Vec::new();
+    for statement in statements {
+        let TypeScriptStatement::LocalFunction {
+            rec_group: Some(member_group),
+            return_type,
+            name,
+            type_parameters,
+            constraints,
+            parameters,
+            body,
+            ..
+        } = statement
+        else {
+            break;
+        };
+        if member_group != group {
+            break;
+        }
+        let parameters = evidence_parameters(parameters, 0, constraints.len());
+        declarations.push(format!(
+            "const {name} = {};",
+            render_function_body_with_return(
+                type_parameters,
+                &parameters,
+                body,
+                false,
+                false,
+                Some(name),
+                return_type.as_ref()
+            )
+        ));
+    }
+    Some((declarations.join(" "), declarations.len()))
+}
+
 fn render_monad_sequence(
     dictionary: &TypeScriptExpr,
     statements: &[TypeScriptStatement],
@@ -1049,6 +1115,10 @@ fn render_monad_sequence(
     let Some((statement, rest)) = statements.split_first() else {
         return render_typescript_expr(result);
     };
+    if let Some((declarations, count)) = recursive_group_prefix(statements) {
+        let continuation = render_monad_sequence(dictionary, &statements[count..], result);
+        return format!("(() => {{ {declarations} return {continuation}; }})()");
+    }
     let continuation = render_monad_sequence(dictionary, rest, result);
     let flat_map = format!("{}[\"flatMap\"]", render_typescript_expr(dictionary));
     match statement {
@@ -1105,6 +1175,14 @@ fn render_effect_sequence_with_result_renderer(
     let Some((statement, rest)) = statements.split_first() else {
         return render_result(result);
     };
+    if let Some((declarations, count)) = recursive_group_prefix(statements) {
+        let continuation = render_effect_sequence_with_result_renderer(
+            &statements[count..],
+            result,
+            render_result,
+        );
+        return format!("(() => {{ {declarations} return {continuation}; }})()");
+    }
     let continuation = render_effect_sequence_with_result_renderer(rest, result, render_result);
     match statement {
         TypeScriptStatement::Effect { value } => format!(

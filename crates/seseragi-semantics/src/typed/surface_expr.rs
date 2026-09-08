@@ -30,11 +30,13 @@ pub(crate) mod match_expression;
 mod monad_do;
 pub(super) mod pattern;
 mod record;
+mod recursion;
 mod signal;
 mod struct_value;
 mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
+    recursive_groups: Vec<recursion::RecursiveContext>,
     parameters: BTreeMap<SymbolId, SemanticValueType>,
     evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
     resolution: &'a TypedResolution<'a>,
@@ -44,6 +46,7 @@ pub(crate) struct PureExpressionContext<'a> {
 impl<'a> PureExpressionContext<'a> {
     pub(crate) fn new(parameters: &[TypedParameter], resolution: &'a TypedResolution<'a>) -> Self {
         Self {
+            recursive_groups: Vec::new(),
             parameters: resolution.parameter_types(parameters),
             evidence_parameters: Vec::new(),
             resolution,
@@ -54,6 +57,7 @@ impl<'a> PureExpressionContext<'a> {
     pub(crate) fn with_expected(&self, expected: Option<SemanticValueType>) -> Self {
         Self {
             parameters: self.parameters.clone(),
+            recursive_groups: self.recursive_groups.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
             resolution: self.resolution,
             expected,
@@ -405,6 +409,7 @@ impl<'a> PureExpressionContext<'a> {
         parameters.extend(locals);
         Self {
             parameters,
+            recursive_groups: self.recursive_groups.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
             resolution: self.resolution,
             expected: self.expected.clone(),

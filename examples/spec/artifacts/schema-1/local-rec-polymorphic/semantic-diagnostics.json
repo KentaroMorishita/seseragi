@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "rec.polymorphic-call",
+      "message": "Rec polymorphic call",
+      "primary": {
+        "start": 56,
+        "end": 60
+      },
+      "related": [
+        {
+          "message": "recursive group members must use one monomorphic type within the group",
+          "primary": {
+            "start": 0,
+            "end": 71
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "recursive group members must use one monomorphic type within the group",
+          "primary": {
+            "start": 0,
+            "end": 71
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

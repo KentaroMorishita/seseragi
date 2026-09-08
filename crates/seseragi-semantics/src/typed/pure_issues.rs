@@ -3,6 +3,9 @@ use seseragi_syntax::ByteSpan;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum PureCallIssue {
+    PolymorphicRecursion {
+        callee: ByteSpan,
+    },
     LocalEffect {
         issue: Box<super::effect_analysis::EffectFunctionIssue>,
         function: ByteSpan,

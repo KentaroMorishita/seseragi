@@ -1524,6 +1524,28 @@ describe("Playground project compiler boundary", () => {
     })
   })
 
+  test("executes explicit recursive closure groups", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/fixtures/projects/local-rec/src/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("local-rec.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing recursive group entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({
+      stdout: "(True, True)\n7\n(True, 42)\n42\n7\n7",
+      debug: "()",
+    })
+  })
+
   test("executes persistent List cons and operator sections through WASM", async () => {
     const source = await Bun.file(
       new URL(

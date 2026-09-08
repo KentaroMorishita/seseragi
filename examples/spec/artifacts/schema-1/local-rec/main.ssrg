@@ -1,0 +1,29 @@
+pub effect fn main = {
+  let outer = 7
+  fn first -> Int = 99
+  rec {
+    fn even n: Int -> Bool = if n == 0 then True else odd (n - 1)
+    fn odd n: Int -> Bool = if n == 0 then False else even (n - 1)
+    fn first n: Int -> Int = if n == 0 then outer else second (n - 1)
+    fn second n: Int -> Int = third n
+    fn third n: Int -> Int = first n
+    fn identity<A> value: A -> A = value
+    fn render<A> value: A -> n: Int -> String where Show<A> =
+      if n == 0 then show value else renderNext value (n - 1)
+    fn renderNext<B> value: B -> n: Int -> String where Show<B> = render value n
+    fn count n: Int -> Int = if n == 0 then outer else count (n - 1)
+    effect fn cold -> Unit with console: Console fails ConsoleError =
+      println "must stay cold"
+    effect fn left n: Int -> Int = if n == 0 then pure outer else right (n - 1)
+    effect fn right n: Int -> Int = left n
+  }
+  do {
+    println $ show (even 8, odd 9)
+    println $ first 3
+    println $ show (identity True, identity 42)
+    println $ render 42 3
+    println $ count 100000
+    value <- left 3
+    println value
+  }
+}

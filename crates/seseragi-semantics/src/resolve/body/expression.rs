@@ -220,6 +220,7 @@ pub(super) fn resolve_expression(
             span,
         } => {
             let mut block_scope = resolver.new_scope(scope, ScopeKind::Block, *span);
+            let mut active_rec_group = None;
             for item in items {
                 match item {
                     SurfaceBlockItem::Let {
@@ -235,27 +236,75 @@ pub(super) fn resolve_expression(
                         resolve_pattern(resolver, block_scope, pattern);
                     }
                     function @ SurfaceBlockItem::Function {
-                        name, name_span, ..
+                        name,
+                        name_span,
+                        rec_group,
+                        ..
                     } => {
-                        if items.iter().any(|item| {
-                            matches!(
-                                item,
-                                SurfaceBlockItem::Function {
-                                    effect: Some(_),
-                                    ..
+                        if let Some(group) = rec_group {
+                            if active_rec_group != Some(*group) {
+                                block_scope = resolver.new_scope(
+                                    block_scope,
+                                    ScopeKind::Block,
+                                    seseragi_syntax::ByteSpan {
+                                        start: group.start,
+                                        end: span.end,
+                                    },
+                                );
+                                for member in items {
+                                    if let SurfaceBlockItem::Function {
+                                        name,
+                                        name_span,
+                                        rec_group: member_group,
+                                        ..
+                                    } = member
+                                    {
+                                        if member_group == rec_group {
+                                            resolver.register(
+                                                block_scope,
+                                                SymbolNamespace::Value,
+                                                crate::SymbolKind::Function,
+                                                name,
+                                                None,
+                                                *name_span,
+                                            );
+                                        }
+                                    }
                                 }
-                            )
-                        }) {
-                            block_scope = resolver.new_scope(block_scope, ScopeKind::Block, *span);
+                                active_rec_group = Some(*group);
+                            }
+                        } else {
+                            active_rec_group = None;
+                            if items.iter().any(|item| {
+                                matches!(
+                                    item,
+                                    SurfaceBlockItem::Function {
+                                        effect: Some(_),
+                                        ..
+                                    } | SurfaceBlockItem::Function {
+                                        rec_group: Some(_),
+                                        ..
+                                    }
+                                )
+                            }) {
+                                block_scope = resolver.new_scope(
+                                    block_scope,
+                                    ScopeKind::Block,
+                                    seseragi_syntax::ByteSpan {
+                                        start: name_span.start,
+                                        end: span.end,
+                                    },
+                                );
+                            }
+                            resolver.register(
+                                block_scope,
+                                SymbolNamespace::Value,
+                                crate::SymbolKind::Function,
+                                name,
+                                None,
+                                *name_span,
+                            );
                         }
-                        resolver.register(
-                            block_scope,
-                            SymbolNamespace::Value,
-                            crate::SymbolKind::Function,
-                            name,
-                            None,
-                            *name_span,
-                        );
                         super::declarations::resolve_local_function(
                             resolver,
                             block_scope,

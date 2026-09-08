@@ -834,6 +834,10 @@ pub enum TypedBlockStatement {
     },
     Function {
         #[serde(default, skip_serializing_if = "Option::is_none")]
+        rec_group: Option<ByteSpan>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        return_type: Option<TypedType>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
         effect: Option<TypedEffect>,
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
