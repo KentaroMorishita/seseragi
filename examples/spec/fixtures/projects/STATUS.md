@@ -3,7 +3,7 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (76)
+## Current product-route fixtures (77)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
