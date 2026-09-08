@@ -37,6 +37,7 @@ mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
     recursive_groups: Vec<recursion::RecursiveContext>,
+    lexical_type_parameters: BTreeMap<String, SymbolId>,
     parameters: BTreeMap<SymbolId, SemanticValueType>,
     evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
     resolution: &'a TypedResolution<'a>,
@@ -47,6 +48,7 @@ impl<'a> PureExpressionContext<'a> {
     pub(crate) fn new(parameters: &[TypedParameter], resolution: &'a TypedResolution<'a>) -> Self {
         Self {
             recursive_groups: Vec::new(),
+            lexical_type_parameters: BTreeMap::new(),
             parameters: resolution.parameter_types(parameters),
             evidence_parameters: Vec::new(),
             resolution,
@@ -58,6 +60,7 @@ impl<'a> PureExpressionContext<'a> {
         Self {
             parameters: self.parameters.clone(),
             recursive_groups: self.recursive_groups.clone(),
+            lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
             resolution: self.resolution,
             expected,
@@ -212,7 +215,14 @@ impl<'a> PureExpressionContext<'a> {
     }
 
     pub(super) fn semantic_value_from_typed_type(&self, type_ref: &TypedType) -> SemanticValueType {
-        self.resolution.semantic_value_from_typed_type(type_ref)
+        if self.lexical_type_parameters.is_empty() {
+            return self.resolution.semantic_value_from_typed_type(type_ref);
+        }
+        self.semantic_types().value_with_type_parameters(
+            self.resolution.resolved(),
+            type_ref.clone(),
+            &self.lexical_type_parameters,
+        )
     }
 
     pub(super) fn hydrate_semantic_value(&self, value: SemanticValueType) -> SemanticValueType {
@@ -410,6 +420,7 @@ impl<'a> PureExpressionContext<'a> {
         Self {
             parameters,
             recursive_groups: self.recursive_groups.clone(),
+            lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
             resolution: self.resolution,
             expected: self.expected.clone(),
@@ -485,7 +496,33 @@ pub(crate) fn analyze_resolved_expression(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    let mut analysis = type_surface_expression(expression, context);
+    let resolved = context.resolution.resolved();
+    let span = expression.span();
+    let mut scopes = resolved
+        .scopes
+        .iter()
+        .filter(|scope| scope.origin.start <= span.start && span.end <= scope.origin.end)
+        .collect::<Vec<_>>();
+    scopes.sort_by_key(|scope| {
+        (
+            std::cmp::Reverse(scope.origin.end - scope.origin.start),
+            scope.id,
+        )
+    });
+    let mut scoped_context = context.with_expected(context.expected.clone());
+    scoped_context.lexical_type_parameters.clear();
+    for scope in scopes {
+        for symbol in resolved.symbols.iter().filter(|symbol| {
+            symbol.scope == scope.id
+                && symbol.kind == SymbolKind::TypeParameter
+                && symbol.canonical.is_none()
+        }) {
+            scoped_context
+                .lexical_type_parameters
+                .insert(symbol.spelling.clone(), symbol.id);
+        }
+    }
+    let mut analysis = type_surface_expression(expression, &scoped_context);
     ensure_recovery_hole_issue(&mut analysis);
     analysis
 }
