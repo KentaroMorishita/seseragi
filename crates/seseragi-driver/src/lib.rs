@@ -23,7 +23,7 @@ pub use compile::{
     compile_linked_module, compile_linked_module_with_output_paths, compile_module,
     LinkedCompileError,
 };
-pub use format::{format_module, format_module_with_options};
+pub use format::{format_module, format_module_range, format_module_with_options};
 pub use input::CompileInput;
 pub use local_package::{compile_local_package, CompiledLocalPackage, LocalPackageCompileError};
 pub use local_project::{

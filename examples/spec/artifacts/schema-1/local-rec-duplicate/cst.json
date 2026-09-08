@@ -23,6 +23,71 @@
             "startToken": 2,
             "endToken": 53,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 0,
+            "endToken": 52,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 0,
+                "endToken": 12,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 12,
+                "endToken": 52,
+                "children": [
+                  {
+                    "kind": "complete-block-item",
+                    "startToken": 17,
+                    "endToken": 29,
+                    "children": [
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 28,
+                        "endToken": 29,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "complete-block-item",
+                    "startToken": 30,
+                    "endToken": 42,
+                    "children": [
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 41,
+                        "endToken": 42,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 46,
+                    "endToken": 50,
+                    "children": [
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 46,
+                        "endToken": 47,
+                        "children": []
+                      },
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 48,
+                        "endToken": 50,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

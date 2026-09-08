@@ -30,6 +30,12 @@
                 "children": []
               }
             ]
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 0,
+            "endToken": 12,
+            "children": []
           }
         ]
       },
@@ -43,6 +49,19 @@
             "startToken": 14,
             "endToken": 15,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 14,
+            "endToken": 40,
+            "children": [
+              {
+                "kind": "complete-member",
+                "startToken": 26,
+                "endToken": 38,
+                "children": []
+              }
+            ]
           }
         ]
       },
@@ -56,6 +75,19 @@
             "startToken": 42,
             "endToken": 43,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 42,
+            "endToken": 68,
+            "children": [
+              {
+                "kind": "complete-member",
+                "startToken": 54,
+                "endToken": 66,
+                "children": []
+              }
+            ]
           }
         ]
       },
@@ -63,13 +95,113 @@
         "kind": "top-decl",
         "startToken": 70,
         "endToken": 100,
-        "children": []
+        "children": [
+          {
+            "kind": "complete-declaration",
+            "startToken": 70,
+            "endToken": 98,
+            "children": [
+              {
+                "kind": "complete-member",
+                "startToken": 80,
+                "endToken": 96,
+                "children": [
+                  {
+                    "kind": "complete-signature",
+                    "startToken": 80,
+                    "endToken": 95,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 95,
+                    "endToken": 96,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "kind": "top-decl",
         "startToken": 100,
         "endToken": 172,
-        "children": []
+        "children": [
+          {
+            "kind": "complete-declaration",
+            "startToken": 100,
+            "endToken": 170,
+            "children": [
+              {
+                "kind": "complete-member",
+                "startToken": 123,
+                "endToken": 168,
+                "children": [
+                  {
+                    "kind": "complete-signature",
+                    "startToken": 123,
+                    "endToken": 142,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 142,
+                    "endToken": 168,
+                    "children": [
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 144,
+                        "endToken": 145,
+                        "children": []
+                      },
+                      {
+                        "kind": "complete-arm",
+                        "startToken": 149,
+                        "endToken": 154,
+                        "children": [
+                          {
+                            "kind": "complete-expression",
+                            "startToken": 153,
+                            "endToken": 154,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "complete-arm",
+                        "startToken": 156,
+                        "endToken": 165,
+                        "children": [
+                          {
+                            "kind": "complete-expression",
+                            "startToken": 162,
+                            "endToken": 165,
+                            "children": [
+                              {
+                                "kind": "complete-expression",
+                                "startToken": 162,
+                                "endToken": 163,
+                                "children": []
+                              },
+                              {
+                                "kind": "complete-expression",
+                                "startToken": 164,
+                                "endToken": 165,
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "kind": "top-decl",
@@ -87,6 +219,38 @@
             "startToken": 174,
             "endToken": 197,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 172,
+            "endToken": 195,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 172,
+                "endToken": 192,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 192,
+                "endToken": 195,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 192,
+                    "endToken": 193,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 194,
+                    "endToken": 195,
+                    "children": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -111,6 +275,78 @@
                 "startToken": 199,
                 "endToken": 209,
                 "children": []
+              }
+            ]
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 197,
+            "endToken": 231,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 197,
+                "endToken": 220,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 220,
+                "endToken": 231,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 220,
+                    "endToken": 221,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 222,
+                    "endToken": 231,
+                    "children": [
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 223,
+                        "endToken": 230,
+                        "children": [
+                          {
+                            "kind": "complete-expression",
+                            "startToken": 223,
+                            "endToken": 224,
+                            "children": []
+                          },
+                          {
+                            "kind": "complete-expression",
+                            "startToken": 225,
+                            "endToken": 230,
+                            "children": [
+                              {
+                                "kind": "complete-expression",
+                                "startToken": 226,
+                                "endToken": 229,
+                                "children": [
+                                  {
+                                    "kind": "complete-expression",
+                                    "startToken": 226,
+                                    "endToken": 227,
+                                    "children": []
+                                  },
+                                  {
+                                    "kind": "complete-expression",
+                                    "startToken": 228,
+                                    "endToken": 229,
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }

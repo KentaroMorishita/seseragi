@@ -8,6 +8,8 @@
 //! non-trivia spelling are preserved.
 
 mod layout;
+mod range;
+pub use range::{format_cst_range, FormatEdit};
 
 use seseragi_syntax::{CstArtifact, TokenStream};
 

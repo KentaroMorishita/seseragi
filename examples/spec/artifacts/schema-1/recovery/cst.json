@@ -30,11 +30,29 @@
                 "children": []
               }
             ]
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 0,
+            "endToken": 10,
+            "children": []
           }
         ]
       }
     ]
   },
-  "missing": [{ "expected": "expression", "atToken": 10, "atByte": 21 }],
-  "errors": [{ "code": "SES-P0001", "startToken": 10, "endToken": 10 }]
+  "missing": [
+    {
+      "expected": "expression",
+      "atToken": 10,
+      "atByte": 21
+    }
+  ],
+  "errors": [
+    {
+      "code": "SES-P0001",
+      "startToken": 10,
+      "endToken": 10
+    }
+  ]
 }

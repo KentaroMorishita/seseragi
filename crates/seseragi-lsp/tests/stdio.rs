@@ -2196,3 +2196,37 @@ fn opaque_struct_hover_and_completion_hide_external_fields() {
     let completions = response(&messages, 3)["result"].to_string();
     assert!(!completions.contains("privateField"), "{completions}");
 }
+
+#[test]
+fn range_formatting_negotiates_positions_and_preserves_neighbors() {
+    let uri = "file:///range.ssrg";
+    let source = "let value=(\"😀\",1+2)\nlet untouched=3+4\n";
+    for (name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+    ] {
+        let offset = source.find("1+2").unwrap();
+        let index = LineIndex::new(source);
+        let start = index.try_locate_encoded(offset, encoding).unwrap();
+        let end = index.try_locate_encoded(offset + 3, encoding).unwrap();
+        let input = [
+            json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"general":{"positionEncodings":[name]}}}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+            json!({"jsonrpc":"2.0","id":2,"method":"textDocument/rangeFormatting","params":{"textDocument":{"uri":uri},"range":{"start":{"line":start.line,"character":start.character},"end":{"line":end.line,"character":end.character}},"options":{"tabSize":4,"insertSpaces":false}}}),
+            json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+            json!({"jsonrpc":"2.0","method":"exit"}),
+        ];
+        let messages = run_server(&input);
+        assert_eq!(
+            response(&messages, 1)["result"]["capabilities"]["documentRangeFormattingProvider"],
+            true
+        );
+        let edits = response(&messages, 2)["result"].as_array().unwrap();
+        assert_eq!(edits.len(), 1);
+        assert_eq!(edits[0]["newText"], " + ");
+        assert_eq!(
+            edits[0]["range"],
+            json!({"start":{"line":0,"character":start.character+1},"end":{"line":0,"character":start.character+2}})
+        );
+    }
+}

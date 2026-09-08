@@ -43,6 +43,45 @@
                 ]
               }
             ]
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 0,
+            "endToken": 25,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 0,
+                "endToken": 15,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 15,
+                "endToken": 25,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 19,
+                    "endToken": 23,
+                    "children": [
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 19,
+                        "endToken": 20,
+                        "children": []
+                      },
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 21,
+                        "endToken": 23,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

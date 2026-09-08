@@ -174,6 +174,13 @@ source rangeとtriviaを除いてformat前と同じです。range formatはrange
 declaration途中を独自grammarで整形しません。error node内はindent修復だけを許し、tokenの追加・削除・移動を
 行いません。
 
+LSPは `textDocument/rangeFormatting` を公開し、negotiated position encodingでrequestとTextEditを変換します。
+selectionがnodeの途中から始まる場合は、それを含む最小の完全nodeまで拡張します。複数のtop-level declarationに
+またがる場合は、交差するdeclarationごとに選択し、間のtriviaや未選択declarationを保持します。共有document layoutの
+同じtokenに対応する部分だけを使い、共通prefix / suffixを除いたTextEditを返します。node先頭が行頭のindentだけに
+続く場合、そのindentも対象です。error / missing nodeは変更せず、正常な周辺nodeは独立に整形できます。
+空白だけのselectionや不正なpositionはeditを返しません。source parserの構造が変わる候補も採用しません。
+
 ## 12.9 最低conformance case
 
 compilerとlanguage serverは、少なくとも次を同じ結合結果として扱います。

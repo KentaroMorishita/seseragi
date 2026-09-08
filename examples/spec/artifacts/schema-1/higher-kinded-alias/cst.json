@@ -11,25 +11,53 @@
         "kind": "top-decl",
         "startToken": 0,
         "endToken": 32,
-        "children": []
+        "children": [
+          {
+            "kind": "complete-declaration",
+            "startToken": 0,
+            "endToken": 31,
+            "children": []
+          }
+        ]
       },
       {
         "kind": "top-decl",
         "startToken": 32,
         "endToken": 53,
-        "children": []
+        "children": [
+          {
+            "kind": "complete-declaration",
+            "startToken": 32,
+            "endToken": 51,
+            "children": []
+          }
+        ]
       },
       {
         "kind": "top-decl",
         "startToken": 53,
         "endToken": 76,
-        "children": []
+        "children": [
+          {
+            "kind": "complete-declaration",
+            "startToken": 53,
+            "endToken": 75,
+            "children": []
+          }
+        ]
       },
       {
         "kind": "top-decl",
         "startToken": 76,
         "endToken": 109,
-        "children": []
+        "children": [
+          {
+            "kind": "complete-declaration",
+            "startToken": 76,
+            "endToken": 107,
+            "children": []
+          }
+        ]
       },
       {
         "kind": "top-decl",
@@ -55,6 +83,12 @@
                 ]
               }
             ]
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 109,
+            "endToken": 124,
+            "children": []
           }
         ]
       },
@@ -62,7 +96,14 @@
         "kind": "top-decl",
         "startToken": 126,
         "endToken": 144,
-        "children": []
+        "children": [
+          {
+            "kind": "complete-declaration",
+            "startToken": 126,
+            "endToken": 142,
+            "children": []
+          }
+        ]
       },
       {
         "kind": "top-decl",
@@ -80,6 +121,38 @@
             "startToken": 146,
             "endToken": 165,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 144,
+            "endToken": 164,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 144,
+                "endToken": 161,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 161,
+                "endToken": 164,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 161,
+                    "endToken": 162,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 163,
+                    "endToken": 164,
+                    "children": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -99,6 +172,38 @@
             "startToken": 167,
             "endToken": 192,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 165,
+            "endToken": 191,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 165,
+                "endToken": 188,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 188,
+                "endToken": 191,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 188,
+                    "endToken": 189,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 190,
+                    "endToken": 191,
+                    "children": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -118,6 +223,38 @@
             "startToken": 194,
             "endToken": 211,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 192,
+            "endToken": 209,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 192,
+                "endToken": 206,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 206,
+                "endToken": 209,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 206,
+                    "endToken": 207,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 208,
+                    "endToken": 209,
+                    "children": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -137,6 +274,38 @@
             "startToken": 213,
             "endToken": 249,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 211,
+            "endToken": 247,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 211,
+                "endToken": 244,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 244,
+                "endToken": 247,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 244,
+                    "endToken": 245,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 246,
+                    "endToken": 247,
+                    "children": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -156,6 +325,38 @@
             "startToken": 251,
             "endToken": 292,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 249,
+            "endToken": 291,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 249,
+                "endToken": 288,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 288,
+                "endToken": 291,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 288,
+                    "endToken": 289,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 290,
+                    "endToken": 291,
+                    "children": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
