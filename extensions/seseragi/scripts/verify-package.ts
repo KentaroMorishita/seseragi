@@ -366,3 +366,15 @@ if (import.meta.main) {
     `Verified ${file} for ${target}, including archive/extraction smoke.`
   )
 }
+
+/** Reads the target binary for cross-artifact byte identity verification. */
+export async function packageNativeBinary(
+  vsix: string,
+  target: string
+): Promise<Uint8Array> {
+  const contract = targetContract(target)
+  const entries = unzipSync(new Uint8Array(await Bun.file(vsix).arrayBuffer()))
+  const binary = entries[`extension/server/${target}/${contract.binary}`]
+  if (!binary) throw new Error(`VSIX has no native binary for ${target}`)
+  return binary
+}

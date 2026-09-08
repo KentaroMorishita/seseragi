@@ -1,0 +1,107 @@
+name: Linux native ABI
+
+on:
+  workflow_call:
+    inputs:
+      source-ref:
+        required: true
+        type: string
+      release:
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source-ref }}
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install frozen packaging dependencies
+        run: |
+          bun install --frozen-lockfile
+          bun install --cwd extensions/seseragi --frozen-lockfile
+      - name: Build both native tools in the pinned glibc baseline
+        run: |
+          mkdir -p target
+          bash scripts/linux-native.sh build
+      - name: Package native archive and the identical LSP in VSIX
+        id: version
+        env:
+          RELEASE_BUILD: ${{ inputs.release }}
+        run: |
+          set -euo pipefail
+          version="$(bun -p 'require("./package.json").version')"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          flags=()
+          if [[ "$RELEASE_BUILD" == true ]]; then flags+=(--release); fi
+          bun scripts/native-release.ts smoke --version "$version" --target linux-x64 \
+            --cli target/linux-native/x86_64-unknown-linux-gnu/release/seseragi \
+            --lsp target/linux-native/x86_64-unknown-linux-gnu/release/seseragi-lsp \
+            --output target/release "${flags[@]}"
+          export SESERAGI_EXTENSION_TARGET=linux-x64
+          export SESERAGI_LSP_BINARY="$PWD/target/linux-native/x86_64-unknown-linux-gnu/release/seseragi-lsp"
+          export SESERAGI_EXTENSION_OUTPUT="../../target/release/seseragi-v${version}-vscode-linux-x64.vsix"
+          bun extensions/seseragi/scripts/package-extension.ts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seseragi-release-${{ inputs.source-ref }}-native-linux-x64
+          path: |
+            target/release/seseragi-v*-linux-x64.tar.gz
+            target/release/seseragi-v*-linux-x64.tar.gz.sha256
+          if-no-files-found: error
+          overwrite: true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seseragi-release-${{ inputs.source-ref }}-vscode-linux-x64
+          path: target/release/seseragi-v*-vscode-linux-x64.vsix
+          if-no-files-found: error
+          overwrite: true
+
+  verify:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source-ref }}
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install frozen verification dependencies
+        run: |
+          bun install --frozen-lockfile
+          bun install --cwd extensions/seseragi --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: seseragi-release-${{ inputs.source-ref }}-native-linux-x64
+          path: target/release
+      - uses: actions/download-artifact@v4
+        with:
+          name: seseragi-release-${{ inputs.source-ref }}-vscode-linux-x64
+          path: target/release
+      - name: Smoke downloaded artifacts on the minimum glibc environment and modern Ubuntu
+        env:
+          RELEASE_BUILD: ${{ inputs.release }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          set -euo pipefail
+          flags=()
+          if [[ "$RELEASE_BUILD" == true ]]; then flags+=(--release); fi
+          args=("target/release/seseragi-v${VERSION}-linux-x64.tar.gz" "target/release/seseragi-v${VERSION}-vscode-linux-x64.vsix" "$VERSION" "${flags[@]}")
+          bash scripts/linux-native.sh verify "${args[@]}"
+          bun scripts/linux-native-smoke.ts "${args[@]}"
