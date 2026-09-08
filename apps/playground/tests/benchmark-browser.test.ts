@@ -66,7 +66,9 @@ test("portable benchmark kernel measures reactive DOM and tears its host down", 
       expect(entry.status).toBe("passed")
       expect(entry.samples).toHaveLength(3)
       expect(
-        entry.samples.every((sample) => sample * entry.iterations >= 1_000_000)
+        // Compare in report units: dividing then multiplying a valid duration
+        // can round below the minimum (for example, 1_000_000 / 29 * 29).
+        entry.samples.every((sample) => sample >= 1_000_000 / entry.iterations)
       ).toBe(true)
     }
     expect(await page.locator("main").count()).toBe(0)

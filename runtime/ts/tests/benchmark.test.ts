@@ -382,3 +382,27 @@ test("finite large samples do not overflow median arithmetic", () => {
     sampleCount: 4,
   })
 })
+
+test("minimum-duration samples preserve per-iteration precision after calibration", async () => {
+  let reads = 0
+  let clock = 0
+  const report = await runBenchmarks(
+    [{ name: "main", benchmarks: benchmark("precision", succeed(undefined)) }],
+    { ...config, warmup: 0 },
+    metadata,
+    {
+      nowNs: () => {
+        if (reads % 2 === 1) clock += reads === 1 ? 38_000 : 1_000_000
+        reads++
+        return clock
+      },
+    }
+  )
+  const result = report.cases[0]!
+  expect(result.status).toBe("passed")
+  expect(result.iterations).toBe(29)
+  expect(result.samples).toEqual(Array(3).fill(1_000_000 / 29))
+  expect(
+    result.samples!.every((sample) => sample >= 1_000_000 / result.iterations!)
+  ).toBe(true)
+})
