@@ -573,7 +573,14 @@ fn rebuilds_custom_shell_and_extensionless_public_assets_with_build_parity() {
     fs::remove_file(project.join("public/robots.txt")).unwrap();
     wait_for(
         Duration::from_secs(30),
-        || request(port, "/robots.txt").is_some_and(|r| r.0 == 404),
+        || {
+            assert!(
+                server.0.try_wait().unwrap().is_none(),
+                "dev server exited during deletion: {}",
+                fs::read_to_string(directory.join("dev.log")).unwrap()
+            );
+            request(port, "/robots.txt").is_some_and(|r| r.0 == 404)
+        },
         "deleted asset removal",
     );
     stop(&mut server.0);
