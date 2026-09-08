@@ -112,7 +112,10 @@ export async function runBenchmarkModules(
         nowNs: () => Number(process.hrtime.bigint() - origin),
         signal: cancellation.signal,
       },
-      { filter: options.filter, exact: options.exact }
+      {
+        ...(options.filter === undefined ? {} : { filter: options.filter }),
+        ...(options.exact === undefined ? {} : { exact: options.exact }),
+      }
     )
     const comparison: BenchmarkComparison[] | undefined =
       baseline === undefined ? undefined : compareBaseline(report, baseline)

@@ -684,24 +684,19 @@ fn compiles_an_irrefutable_tuple_pattern_in_effectful_for() {
 }
 
 #[test]
-fn diagnoses_a_contract_only_standard_module_without_synthesizing_an_interface() {
-    let diagnostics = compile_module(input(
+fn compiles_the_implemented_benchmark_standard_module() {
+    let compiled = compile_module(input(
         "entry.ssrg",
         "demo@1.2.3::game/domain",
         "import * as benchmark from \"std/benchmark\"\npub let answer: Int = 42\n",
     ))
-    .expect_err("unlinked imports must prevent all later compiler outputs");
-
-    assert_eq!(diagnostics.diagnostics.len(), 1);
-    assert_eq!(diagnostics.diagnostics[0].code, "SES-N0104");
-    assert_eq!(
-        diagnostics.diagnostics[0].message_key,
-        "module.standard-unavailable"
-    );
-    assert_eq!(
-        diagnostics.diagnostics[0].message(),
-        "This standard module is specified but not implemented"
-    );
+    .expect("benchmark is now an available standard module");
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert!(compiled
+        .typed_interface
+        .dependencies
+        .iter()
+        .any(|dependency| dependency.specifier == "std/benchmark"));
 }
 
 #[test]
@@ -709,7 +704,7 @@ fn reports_unlinked_imports_in_source_order() {
     let diagnostics = compile_module(input(
         "entry.ssrg",
         "artifact/driver-imports",
-        "import * as support from \"./support\"\nimport * as benchmark from \"std/benchmark\"\npub let answer: Int = 42\n",
+        "import * as support from \"./support\"\nimport * as benchmark from \"./benchmark\"\npub let answer: Int = 42\n",
     ))
     .expect_err("a single-module driver cannot resolve imports");
 
