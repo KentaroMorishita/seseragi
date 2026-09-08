@@ -87,10 +87,36 @@ jobs:
               .map(line => line.match(/^\s*-\s*\[ \]\s*#(\d+)\b/u))
               .filter(Boolean)
               .map(match => Number(match[1]))
-            if (unchecked[0] !== leafNumber) {
-              core.setFailed(`leaf #${leafNumber} is not Promotion frontier; current frontier is #${unchecked[0] || 'none'}`)
+            const batch = unchecked.length > 1 && unchecked.at(-1) === leafNumber
+            if (unchecked[0] !== leafNumber && !batch) {
+              core.setFailed(`leaf #${leafNumber} is not Promotion frontier or terminal batch; current frontier is #${unchecked[0] || 'none'}`)
               return
             }
+            const covered = batch ? unchecked : [leafNumber]
+            const checkpoints = []
+            for (const number of covered) {
+              const states = queueMatches(impl.body, number)
+              const row = promotionLines.find(line => new RegExp(`^\\s*-\\s*\\[ \\]\\s*#${number}\\s+—`, 'u').test(line))
+              const checkpoint = row?.match(/`([^`]+)`\s+@\s+`([0-9a-f]{40})`/u)
+              const item = await getIssue(number)
+              if (states.length !== 1 || !states[0] || !checkpoint ||
+                  !names(item).includes('stage: promotion-ready') || !names(item).includes(oid)) {
+                core.setFailed(`batch leaf #${number} lacks a ready checkpoint`)
+                return
+              }
+              checkpoints.push({ leaf: number, branch: checkpoint[1], sha: checkpoint[2] })
+            }
+            if (batch) {
+              const implQueue = [...(impl.body || '').matchAll(/^\s*-\s*\[([ xX])\]\s*#(\d+)\b/gmu)]
+              const start = implQueue.findIndex(entry => Number(entry[2]) === covered[0])
+              const pending = implQueue.slice(start)
+              if (start < 0 || pending.length !== covered.length || pending.some((entry, index) =>
+                  entry[1].toLowerCase() !== 'x' || Number(entry[2]) !== covered[index])) {
+                core.setFailed('terminal batch must cover the complete ready Impl suffix in queue order')
+                return
+              }
+            }
+            core.setOutput('covered_checkpoints', JSON.stringify(checkpoints))
 
             const entryPattern = new RegExp(`^\\s*-\\s*\\[ \\]\\s*#${leafNumber}\\s+—\\s+\\x60([^\\x60]+)\\x60\\s+@\\s+\\x60([0-9a-f]{40})\\x60`, 'u')
             const entry = promotionLines.find(line => entryPattern.test(line))?.match(entryPattern)
@@ -170,6 +196,7 @@ jobs:
           LEAF: ${{ steps.resolve.outputs.leaf }}
           SOURCE_BRANCH: ${{ steps.resolve.outputs.source_branch }}
           EXPECTED_SHA: ${{ steps.resolve.outputs.expected_sha }}
+          COVERED_CHECKPOINTS: ${{ steps.resolve.outputs.covered_checkpoints }}
           PREFLIGHT_RUN_ID: ${{ steps.resolve.outputs.preflight_run_id }}
         run: |
           set -euo pipefail
@@ -196,6 +223,15 @@ jobs:
             echo "stale handoff: expected $EXPECTED_SHA but origin/$SOURCE_BRANCH is $actual_sha" >&2
             exit 1
           }
+          while IFS=$'\t' read -r covered_leaf covered_branch covered_sha; do
+            git check-ref-format --branch "$covered_branch" >/dev/null
+            git fetch origin "refs/heads/$covered_branch"
+            test "$(git rev-parse FETCH_HEAD)" = "$covered_sha"
+            git merge-base --is-ancestor "$covered_sha" "$EXPECTED_SHA" || {
+              echo "batch checkpoint #$covered_leaf is not an ancestor of tested terminal" >&2
+              exit 1
+            }
+          done < <(printf '%s' "$COVERED_CHECKPOINTS" | jq -r '.[] | [.leaf, .branch, .sha] | @tsv')
           git checkout --detach refs/remotes/origin/main
           bun scripts/release-readiness.ts check
           if git merge-base --is-ancestor "$EXPECTED_SHA" refs/remotes/origin/main; then
@@ -364,6 +400,7 @@ jobs:
           EXPECTED_SHA: ${{ steps.resolve.outputs.expected_sha }}
           PROMOTION_BRANCH: ${{ steps.candidate.outputs.promotion_branch }}
           CANDIDATE_SHA: ${{ steps.publish.outputs.candidate_sha }}
+          COVERED_CHECKPOINTS: ${{ steps.resolve.outputs.covered_checkpoints }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
           PREFLIGHT_RUN_ID: ${{ steps.resolve.outputs.preflight_run_id }}
         with:
@@ -373,6 +410,7 @@ jobs:
             const body = [
               marker,
               '## Promotion candidate ready',
+              `- Covered queue checkpoints: ${JSON.parse(process.env.COVERED_CHECKPOINTS).map(item => '#' + item.leaf + ' @ ' + item.sha).join(', ')}`,
               '',
               `- Orchestration: **${process.env.OID}** / root #${process.env.ROOT}`,
               `- Impl / Promotion: #${process.env.IMPL} / #${process.env.PROMOTION}`,
