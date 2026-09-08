@@ -78,6 +78,7 @@ pub(super) fn lower_core_expr_to_typescript(
                             evidence,
                             deferred_evidence_parameters: Vec::new(),
                             deferred_evidence_type_constructor_parameters: Vec::new(),
+                            evidence_argument_index: None,
                             trait_dispatch: None,
                             type_ref,
                             origin,
@@ -315,6 +316,7 @@ pub(super) fn lower_core_expr_to_typescript(
             evidence,
             deferred_evidence_parameters,
             deferred_evidence_type_constructor_parameters,
+            evidence_argument_index,
             trait_dispatch,
             type_ref,
             origin,
@@ -829,6 +831,7 @@ pub(super) fn lower_core_expr_to_typescript(
                             evidence,
                             deferred_evidence_parameters,
                             deferred_evidence_type_constructor_parameters,
+                            evidence_argument_index,
                             imported_types,
                         )
                     };
@@ -1268,10 +1271,12 @@ fn lower_constrained_call(
     evidence: Vec<TypeScriptExpr>,
     deferred_parameters: Vec<CoreType>,
     deferred_type_constructor_parameters: Vec<String>,
+    evidence_argument_index: Option<usize>,
     imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
     if deferred_parameters.is_empty() {
-        arguments.extend(evidence);
+        let index = evidence_argument_index.unwrap_or(arguments.len());
+        arguments.splice(index..index, evidence);
         return TypeScriptExpr::Call {
             callee,
             arguments,
@@ -1755,14 +1760,23 @@ fn lower_core_statement_to_typescript(
             value: lower_core_expr_to_typescript(value, imported_values, imported_types),
         },
         CoreStatement::PureLet {
+            type_parameters,
             name,
             type_ref,
             value,
             origin,
         } => TypeScriptStatement::PureLet {
+            type_ref: type_ref_from_core_type(
+                &type_ref,
+                &imported_types.with_parameters(&type_parameters),
+            ),
+            initializer: lower_core_expr_to_typescript(
+                value,
+                imported_values,
+                &imported_types.with_parameters(&type_parameters),
+            ),
+            type_parameters,
             name: safe_identifier(&name),
-            type_ref: type_ref_from_core_type(&type_ref, imported_types),
-            initializer: lower_core_expr_to_typescript(value, imported_values, imported_types),
             origin,
         },
         CoreStatement::Bind {
@@ -1844,6 +1858,7 @@ fn lower_monad_do_statement(
             value,
             origin,
         } => TypeScriptStatement::PureLet {
+            type_parameters: Vec::new(),
             name: safe_identifier(&name),
             type_ref: type_ref_from_core_type(&type_ref, imported_types),
             initializer: lower_core_expr_to_typescript(value, imported_values, imported_types),

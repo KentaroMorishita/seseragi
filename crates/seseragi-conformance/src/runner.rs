@@ -16,7 +16,7 @@ use crate::provider_manifest::check_provider_manifest_case;
 use crate::provider_stream::check_provider_stream_case;
 use crate::provider_typescript_abi::check_provider_typescript_abi_case;
 use crate::report::{
-    print_list_json, print_list_text, print_run_json, print_success_text, Failure,
+    case_count, print_list_json, print_list_text, print_run_json, print_success_text, Failure,
 };
 use crate::runtime_abi::check_runtime_abi_case;
 use crate::stdlib_surface::check_standard_library_case;
@@ -27,6 +27,20 @@ use std::path::{Path, PathBuf};
 pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
     let artifacts = root.join("examples/spec/artifacts");
     let suite = Suite::discover(&artifacts);
+
+    if case_count(&suite) == 0 {
+        let failure = Failure {
+            kind: "discovery",
+            case: artifacts,
+            error: "no conformance fixtures discovered; ROOT must be a repository root".to_owned(),
+        };
+        if json {
+            print_run_json(&suite, &[failure]);
+        } else {
+            eprintln!("{}: {}", failure.case.display(), failure.error);
+        }
+        std::process::exit(2);
+    }
 
     if list {
         if json {

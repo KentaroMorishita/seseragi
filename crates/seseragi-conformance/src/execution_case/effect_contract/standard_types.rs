@@ -197,6 +197,7 @@ mod tests {
             namespace: "type".to_owned(),
             name: name.to_owned(),
             constructor_of: None,
+            call_arity: None,
             visibility: Visibility::Public,
             declaration_kind: Some("type".to_owned()),
             declaration: ByteSpan { start: 0, end: 8 },

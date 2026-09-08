@@ -91,6 +91,7 @@ mod tests {
                 namespace: "value".to_owned(),
                 name: "increment".to_owned(),
                 constructor_of: None,
+                call_arity: None,
                 visibility: Visibility::Public,
                 declaration_kind: Some("function".to_owned()),
                 declaration: ByteSpan { start: 4, end: 13 },

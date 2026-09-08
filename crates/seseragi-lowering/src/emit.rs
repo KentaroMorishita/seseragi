@@ -174,6 +174,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     for binding in &module.bindings {
         match binding {
             TypeScriptBinding::Const {
+                type_parameters,
                 exported,
                 name,
                 type_ref,
@@ -184,9 +185,10 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                     output.push_str("export ");
                 }
                 output.push_str(&format!(
-                    "const {name}: {} = {};\n",
+                    "const {name}: {}{} = {};\n",
+                    render_type_parameters(type_parameters),
                     render_typescript_type(type_ref),
-                    render_typescript_expr(initializer)
+                    render_generic_initializer(initializer, type_parameters)
                 ));
             }
         }
@@ -596,6 +598,18 @@ fn render_adt_variant_type(variant: &TypeScriptAdtVariant) -> String {
             render_typescript_type(payload)
         ),
         None => format!("{{ readonly tag: {tag} }}"),
+    }
+}
+
+fn render_generic_initializer(
+    value: &TypeScriptExpr,
+    parameters: &[seseragi_syntax::TypeParameter],
+) -> String {
+    let rendered = render_typescript_expr(value);
+    if !parameters.is_empty() && matches!(value, TypeScriptExpr::Lambda { .. }) {
+        format!("{}{}", render_arrow_type_parameters(parameters), rendered)
+    } else {
+        rendered
     }
 }
 
@@ -1181,14 +1195,16 @@ fn render_monad_sequence(
             render_typescript_expr(value)
         ),
         TypeScriptStatement::PureLet {
+            type_parameters,
             name,
             type_ref,
             initializer,
             ..
         } => format!(
-            "(() => {{ const {name}: {} = {}; return {continuation}; }})()",
+            "(() => {{ const {name}: {}{} = {}; return {continuation}; }})()",
+            render_type_parameters(type_parameters),
             render_typescript_type(type_ref),
-            render_typescript_expr(initializer)
+            render_generic_initializer(initializer, type_parameters)
         ),
         TypeScriptStatement::Const {
             name,
@@ -1244,14 +1260,16 @@ fn render_effect_sequence_with_result_renderer(
             render_typescript_expr(value)
         ),
         TypeScriptStatement::PureLet {
+            type_parameters,
             name,
             type_ref,
             initializer,
             ..
         } => format!(
-            "(() => {{ const {name}: {} = {}; return {continuation}; }})()",
+            "(() => {{ const {name}: {}{} = {}; return {continuation}; }})()",
+            render_type_parameters(type_parameters),
             render_typescript_type(type_ref),
-            render_typescript_expr(initializer)
+            render_generic_initializer(initializer, type_parameters)
         ),
         TypeScriptStatement::Const {
             name,

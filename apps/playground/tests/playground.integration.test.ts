@@ -373,6 +373,8 @@ describe("Playground project compiler boundary", () => {
     "transformers",
     "array-index",
     "char-literal",
+    "hkt-erasure",
+    "callable-values",
   ]) {
     test(`executes ${fixtureName} across named and namespace imports`, async () => {
       const fixture = new URL(

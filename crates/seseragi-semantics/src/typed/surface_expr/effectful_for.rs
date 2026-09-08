@@ -145,6 +145,7 @@ pub(crate) fn type_effectful_for_with(
             evidence: evidence.into_iter().collect(),
             deferred_evidence_parameters: Vec::new(),
             deferred_evidence_type_constructor_parameters: Vec::new(),
+            evidence_argument_index: None,
             trait_dispatch: None,
             type_ref: if invalid { TypedType::Hole } else { body_type },
             origin: span,

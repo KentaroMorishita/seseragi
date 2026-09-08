@@ -40,6 +40,8 @@ pub struct InterfaceExport {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub constructor_of: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub call_arity: Option<usize>,
     pub visibility: Visibility,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub declaration_kind: Option<String>,

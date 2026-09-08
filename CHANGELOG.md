@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.61.8] - 2026-09-08
+
+### Fixed
+
+- Preserve generic callable schemes through module, local, do-block and imported aliases, including higher-order use and generated TypeScript binders (#545).
+- Accept consecutive application of returned callables while preserving declared arity and constraint evidence order across module imports (#534).
+- Preserve nested HKT annotation behavior and reject forbidden outer type-parameter shadowing (#537).
+- Reject empty conformance runs and multiple repository roots instead of reporting a misleading success; synchronize callable interface and Tour diagnostic fixtures (#583, #584, #585).
+
+### Changed
+
+- Record the decision to keep canonical `sort` and stable key-based `sortBy` for Array and List without introducing an arbitrary-comparator `sortWith` API (#369).
+
 ## [0.61.7] - 2026-09-08
 
 ### Changed

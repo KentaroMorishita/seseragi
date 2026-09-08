@@ -1044,6 +1044,7 @@ pub fn listLength values: List<Int> -> Int = {
                     evidence: Vec::new(),
                     deferred_evidence_parameters: Vec::new(),
                     deferred_evidence_type_constructor_parameters: Vec::new(),
+                    evidence_argument_index: None,
                     trait_dispatch: None,
                     type_ref: int_type,
                     origin,

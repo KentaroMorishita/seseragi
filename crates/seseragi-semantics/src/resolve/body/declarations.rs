@@ -124,6 +124,18 @@ pub(super) fn resolve_local_function(
     else {
         return;
     };
+    for parameter in type_parameters {
+        if resolver
+            .lookup(parent, SymbolNamespace::Type, &parameter.name)
+            .is_some_and(|id| resolver.symbols[id.0 as usize].kind == SymbolKind::TypeParameter)
+        {
+            resolver.issues.push(crate::ResolveIssue {
+                code: "SES-N0002".to_owned(),
+                message_key: "name.duplicate-definition".to_owned(),
+                primary: *span,
+            });
+        }
+    }
     let scope = resolver.new_scope(parent, ScopeKind::Function, *span);
     register_type_parameters(resolver, scope, type_parameters, *span);
     register_parameters(resolver, scope, parameters);

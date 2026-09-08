@@ -27,7 +27,7 @@ mod typescript_ir;
 use std::path::PathBuf;
 
 fn main() {
-    let mut root = PathBuf::from(".");
+    let mut root = None;
     let mut list = false;
     let mut json = false;
     for arg in std::env::args().skip(1) {
@@ -44,10 +44,17 @@ fn main() {
                 print_usage();
                 std::process::exit(2);
             }
-            _ => root = PathBuf::from(arg),
+            _ => {
+                if root.replace(PathBuf::from(&arg)).is_some() {
+                    eprintln!(
+                        "only one repository ROOT is accepted; fixture paths are not selectors"
+                    );
+                    std::process::exit(2);
+                }
+            }
         }
     }
-    runner::run(root, list, json);
+    runner::run(root.unwrap_or_else(|| PathBuf::from(".")), list, json);
 }
 
 fn print_usage() {

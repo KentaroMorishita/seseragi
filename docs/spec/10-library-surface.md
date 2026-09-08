@@ -368,6 +368,8 @@ Array/List operationの共通規則は次です。
 - `zip` と `zipWith` は短い側の長さで停止する。`append suffix values` とpipelineで書いた
   `values |> append suffix` は、valuesの後ろへsuffixを連結する。
 - `sort` と `sortBy` はstable sort。`sortBy` はkeyをsource順に各要素一度だけ評価する。
+  任意の二項比較関数を直接受け取る `sortWith` は提供しない。型の標準順序には
+  `sort`、用途ごとの順位・射影には `sortBy` を使う。Array / List とも同じ契約とする。
 - `groupBy` はkeyをsource順に各要素一度だけ評価し、Mapのkeyを初出順、各groupの要素を
   source順に保つ。
 - 負indexと範囲外indexの `get` は `Nothing`。空collectionの `head`、`last`、`init`、`tail` は

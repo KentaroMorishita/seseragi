@@ -14,6 +14,13 @@ pub(crate) struct Failure {
     pub(crate) error: String,
 }
 
+pub(crate) fn case_count(suite: &Suite) -> usize {
+    categories(suite)
+        .iter()
+        .map(|category| category.cases.len())
+        .sum()
+}
+
 pub(crate) fn print_list_text(suite: &Suite) {
     for category in categories(suite) {
         if matches!(

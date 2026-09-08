@@ -155,6 +155,8 @@ pub struct CoreModuleImport {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CoreBinding {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_parameters: Vec<TypeParameter>,
     pub symbol: String,
     pub visibility: Visibility,
     pub origin: SourceSpan,
@@ -411,6 +413,8 @@ pub enum CoreExpr {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         deferred_evidence_type_constructor_parameters: Vec<String>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
+        evidence_argument_index: Option<usize>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
         trait_dispatch: Option<CoreTraitDispatch>,
         #[serde(rename = "type")]
         type_ref: CoreType,
@@ -553,6 +557,8 @@ pub enum CoreStatement {
         value: CoreExpr,
     },
     PureLet {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         name: String,
         #[serde(rename = "type")]
         type_ref: CoreType,
@@ -742,20 +748,28 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
             }),
             TypedDecl::Let {
                 bindings: pattern_bindings,
+                scheme,
                 pattern,
                 visibility,
                 origin,
                 value,
                 ..
-            } => bindings.extend(lower_top_level_pattern_binding(
-                &module.source,
-                &module.module,
-                pattern_bindings,
-                pattern,
-                value,
-                visibility,
-                origin,
-            )),
+            } => bindings.extend(
+                lower_top_level_pattern_binding(
+                    &module.source,
+                    &module.module,
+                    pattern_bindings,
+                    pattern,
+                    value,
+                    visibility,
+                    origin,
+                )
+                .into_iter()
+                .map(|mut binding| {
+                    binding.type_parameters = scheme.type_parameters.clone();
+                    binding
+                }),
+            ),
             TypedDecl::Fn {
                 symbol,
                 visibility,

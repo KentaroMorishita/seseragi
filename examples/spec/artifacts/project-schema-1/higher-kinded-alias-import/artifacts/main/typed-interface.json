@@ -40,6 +40,7 @@
       "symbol": "fixture/higher-kinded-alias-import::main::useMaybe",
       "namespace": "value",
       "name": "useMaybe",
+      "callArity": 1,
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
@@ -116,6 +117,7 @@
       "symbol": "fixture/higher-kinded-alias-import::main::useEither",
       "namespace": "value",
       "name": "useEither",
+      "callArity": 1,
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
@@ -202,6 +204,7 @@
       "symbol": "fixture/higher-kinded-alias-import::main::useBox",
       "namespace": "value",
       "name": "useBox",
+      "callArity": 1,
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {

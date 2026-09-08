@@ -289,6 +289,8 @@ pub enum TypeScriptLoweringError {
 )]
 pub enum TypeScriptBinding {
     Const {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         exported: bool,
         name: String,
         #[serde(rename = "type")]
@@ -619,6 +621,8 @@ pub enum TypeScriptStatement {
         value: TypeScriptExpr,
     },
     PureLet {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         name: String,
         #[serde(rename = "type")]
         type_ref: TypeScriptType,
@@ -918,13 +922,21 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                 local_name(&binding.symbol),
             );
             TypeScriptBinding::Const {
+                type_parameters: binding.type_parameters.clone(),
                 exported: binding.visibility == Visibility::Public,
                 name: local_name(&binding.symbol),
-                type_ref: type_ref_from_core_expr(&binding.value, &module_imports.type_names),
+                type_ref: type_ref_from_core_expr(
+                    &binding.value,
+                    &module_imports
+                        .type_names
+                        .with_parameters(&binding.type_parameters),
+                ),
                 initializer: lower_core_expr_to_typescript(
                     binding.value,
                     &binding_value_names,
-                    &module_imports.type_names,
+                    &module_imports
+                        .type_names
+                        .with_parameters(&binding.type_parameters),
                 ),
                 origin: binding.origin,
             }

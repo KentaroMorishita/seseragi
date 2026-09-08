@@ -411,6 +411,15 @@ fn type_do_block(
                 locals.extend(binding.pattern.locals.clone());
                 issues.patterns.extend(binding.pattern.issues);
                 statements.push(TypedDoStatement::PureLet {
+                    type_parameters: binding
+                        .pattern
+                        .locals
+                        .keys()
+                        .next()
+                        .filter(|_| binding.pattern.locals.len() == 1)
+                        .and_then(|symbol| context.callable(*symbol))
+                        .map(|signature| signature.type_parameters.clone())
+                        .unwrap_or_default(),
                     pattern: binding.pattern.typed,
                     value: binding.expression.value,
                     origin: *span,
