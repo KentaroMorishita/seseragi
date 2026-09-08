@@ -9,6 +9,10 @@ on:
       - "scripts/prepare-promotion-release.ts"
       - "scripts/prepare-promotion-release.test.ts"
       - "scripts/promotion-workflow.test.ts"
+      - "scripts/check-scoped.sh"
+      - "scripts/check.sh"
+      - "scripts/check-collection.test.ts"
+      - "scripts/run-macos-cargo-tests.ts"
       - "scripts/refresh-provider-fixture-locks.ts"
       - "scripts/refresh-provider-fixture-locks.test.ts"
       - "scripts/release-contract.ts"
@@ -22,6 +26,10 @@ on:
       - "scripts/prepare-promotion-release.ts"
       - "scripts/prepare-promotion-release.test.ts"
       - "scripts/promotion-workflow.test.ts"
+      - "scripts/check-scoped.sh"
+      - "scripts/check.sh"
+      - "scripts/check-collection.test.ts"
+      - "scripts/run-macos-cargo-tests.ts"
       - "scripts/refresh-provider-fixture-locks.ts"
       - "scripts/refresh-provider-fixture-locks.test.ts"
   workflow_dispatch:
@@ -41,4 +49,4 @@ jobs:
       - name: Lint promotion tooling
         run: bunx biome lint scripts/prepare-promotion-release.ts scripts/prepare-promotion-release.test.ts scripts/promotion-workflow.test.ts scripts/refresh-provider-fixture-locks.ts scripts/refresh-provider-fixture-locks.test.ts
       - name: Test promotion tooling
-        run: bun test scripts/prepare-promotion-release.test.ts scripts/promotion-workflow.test.ts scripts/refresh-provider-fixture-locks.test.ts
+        run: bun test scripts/check-collection.test.ts scripts/prepare-promotion-release.test.ts scripts/promotion-workflow.test.ts scripts/refresh-provider-fixture-locks.test.ts

@@ -9,6 +9,23 @@ PLAYGROUND_TSC="$ROOT/apps/playground/node_modules/.bin/tsc"
 EXTENSION_ESBUILD="$ROOT/extensions/seseragi/node_modules/.bin/esbuild"
 EXTENSION_VSCE="$ROOT/extensions/seseragi/node_modules/.bin/vsce"
 
+# Full gates collect independent failures; scoped lanes retain fail-fast behavior.
+CHECK_FAILURES=()
+COLLECT_CHECK_FAILURES=0
+check_step() {
+  if [[ "$COLLECT_CHECK_FAILURES" != 1 ]]; then
+    "$@"
+    return
+  fi
+  local result=0
+  "$@" || result=$?
+  if ((result != 0)); then
+    CHECK_FAILURES+=("$* (exit $result)")
+    printf 'FAILED: %s (exit %s)\n' "$*" "$result" >&2
+  fi
+  return 0
+}
+
 usage() {
   cat <<'EOF'
 Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|wasm|extension|release|release-gate|release-gate-after-wasm|full> [args...]
@@ -53,24 +70,22 @@ require_extension_tools() {
 
 run_native_sample_checks() {
   echo "Checking runnable samples through the native CLI..."
-  bun run test:samples:cli
+  check_step bun run test:samples:cli
 }
 
 run_sample_manifest_check() {
   echo "Checking the committed Playground sample manifest..."
-  (
-    cd apps/playground
-    bun run samples:check
-  )
+  pushd apps/playground >/dev/null
+    check_step bun run samples:check
+  popd >/dev/null
 }
 
 run_sample_compiler_checks() {
   require_playground_tools
   echo "Compiling and formatting every canonical sample through committed WASM..."
-  (
-    cd apps/playground
-    bun test tests/sample-compilation.test.ts
-  )
+  pushd apps/playground >/dev/null
+    check_step bun test tests/sample-compilation.test.ts
+  popd >/dev/null
 }
 
 run_sample_base_checks() {
@@ -86,7 +101,7 @@ run_sample_checks() {
 run_playground_lint() {
   require_root_tools
   echo "Linting Playground and sample catalog sources..."
-  "$BIOME" lint \
+  check_step "$BIOME" lint \
     apps/playground/index.html \
     apps/playground/tour/index.html \
     apps/playground/vite.config.ts \
@@ -118,7 +133,7 @@ run_playground_lint() {
 
 run_playground_bundle_build() {
   echo "Building the Playground bundle from an isolated dependency install..."
-  bun scripts/check-playground-isolated-build.ts
+  check_step bun scripts/check-playground-isolated-build.ts
 }
 
 run_playground_checks() {
@@ -127,18 +142,16 @@ run_playground_checks() {
   run_playground_lint
 
   echo "Running Playground tests..."
-  (
-    cd apps/playground
-    bun run tour:check
-    bun run runtime:check
-    bun test tests
-  )
+  pushd apps/playground >/dev/null
+    check_step bun run tour:check
+    check_step bun run runtime:check
+    check_step bun test tests
+  popd >/dev/null
 
   echo "Type-checking Playground TypeScript..."
-  (
-    cd apps/playground
-    "$PLAYGROUND_TSC" --noEmit
-  )
+  pushd apps/playground >/dev/null
+    check_step "$PLAYGROUND_TSC" --noEmit
+  popd >/dev/null
 
   run_playground_bundle_build
 }
@@ -156,85 +169,84 @@ run_cargo_tests() {
       rm -f "$artifacts"
       return 1
     fi
-    if ! bun "$ROOT/scripts/run-macos-cargo-tests.ts" "$artifacts"; then
-      rm -f "$artifacts"
-      return 1
-    fi
+    local test_result=0
+    bun "$ROOT/scripts/run-macos-cargo-tests.ts" "$artifacts" || test_result=1
     rm -f "$artifacts"
-    return
+    cargo test --doc --no-fail-fast "${cargo_args[@]}" || test_result=1
+    return "$test_result"
   fi
 
-  cargo test "${cargo_args[@]}"
+  cargo test --no-fail-fast "${cargo_args[@]}"
 }
 
 run_rust_checks() {
   echo "Checking Rust formatting..."
-  cargo fmt --all -- --check
+  check_step cargo fmt --all -- --check
 
   echo "Testing the Rust workspace..."
-  run_cargo_tests "$@"
+  check_step run_cargo_tests "$@"
 }
 
 run_conformance_checks() {
   require_root_tools
   require_playground_tools
   echo "Checking project fixture roles and availability..."
-  bun run fixtures:check
+  check_step bun run fixtures:check
   echo "Checking the bundled PostgreSQL external Provider..."
-  bun run postgres:bundle:check
+  check_step bun run postgres:bundle:check
   echo "Checking the pinned timezone database bundle..."
-  bun run timezones:bundle:check
-  bun test runtime/providers/timezones.test.ts
+  check_step bun run timezones:bundle:check
+  check_step bun test runtime/providers/timezones.test.ts
   echo "Type-checking TypeScript runtime Providers..."
-  "$PLAYGROUND_TSC" --noEmit -p "$ROOT/runtime/providers/tsconfig.json"
+  check_step "$PLAYGROUND_TSC" --noEmit -p "$ROOT/runtime/providers/tsconfig.json"
   echo "Testing the foreign TypeScript runtime boundary..."
-  bun test runtime/ts/tests/foreign.test.ts
+  check_step bun test runtime/ts/tests/foreign.test.ts
   echo "Testing the Traversable runtime boundary..."
-  bun test runtime/ts/tests/traversable.test.ts
+  check_step bun test runtime/ts/tests/traversable.test.ts
   echo "Testing persistent Map / Set and serialization boundaries..."
-  bun test runtime/ts/tests/persistent-index.test.ts runtime/ts/tests/map.test.ts runtime/ts/tests/set.test.ts runtime/ts/tests/map-set-codecs.test.ts
+  check_step bun test runtime/ts/tests/persistent-index.test.ts runtime/ts/tests/map.test.ts runtime/ts/tests/set.test.ts runtime/ts/tests/map-set-codecs.test.ts
   echo "Testing concrete Array / List sequence operations..."
-  bun test runtime/ts/tests/sequence.test.ts
+  check_step bun test runtime/ts/tests/sequence.test.ts
   echo "Testing generic collection short-circuit traversal..."
-  bun test runtime/ts/tests/collection.test.ts
+  check_step bun test runtime/ts/tests/collection.test.ts
   echo "Testing Maybe / Either operations and conditional Monoid..."
-  bun test runtime/ts/tests/sum.test.ts
+  check_step bun test runtime/ts/tests/sum.test.ts
   echo "Testing Validation accumulation and conditional dictionaries..."
-  bun test runtime/ts/tests/validation.test.ts
+  check_step bun test runtime/ts/tests/validation.test.ts
   echo "Testing the portable regular-expression runtime..."
-  bun test runtime/ts/tests/regex.test.ts
+  check_step bun test runtime/ts/tests/regex.test.ts
   echo "Testing portable Hex / Base64 codecs..."
-  bun test runtime/ts/tests/bytes-codecs.test.ts
+  check_step bun test runtime/ts/tests/bytes-codecs.test.ts
   echo "Testing arbitrary-precision BigInt arithmetic..."
-  bun test runtime/ts/tests/big-int.test.ts
+  check_step bun test runtime/ts/tests/big-int.test.ts
   echo "Testing arbitrary-precision Decimal arithmetic..."
-  bun test runtime/ts/tests/decimal.test.ts
+  check_step bun test runtime/ts/tests/decimal.test.ts
   echo "Checking pinned Unicode data and text conformance..."
-  bun run unicode:check
-  bun test runtime/ts/tests/unicode.test.ts runtime/ts/tests/unicode-artifact.test.ts
+  check_step bun run unicode:check
+  check_step bun test runtime/ts/tests/unicode.test.ts runtime/ts/tests/unicode-artifact.test.ts
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
-    cargo run -p seseragi-conformance -- .
+    check_step cargo run -p seseragi-conformance -- .
   else
-    cargo run -p seseragi-conformance -- "$@"
+    check_step cargo run -p seseragi-conformance -- "$@"
   fi
 }
 
 run_wasm_checks() {
   echo "Checking committed WASM freshness..."
-  ./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg
-  git diff --exit-code -- apps/playground/src/wasm/pkg
+  check_step ./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg
+  check_step git diff --exit-code -- apps/playground/src/wasm/pkg
 }
 
 run_release_contract_metadata_check() {
   require_root_tools
   echo "Checking the canonical release contract..."
-  bun scripts/release-contract.ts check
-  bun scripts/release-readiness.ts check
-  bun scripts/check-extension-identity.ts
+  check_step bun scripts/release-contract.ts check
+  check_step bun scripts/release-readiness.ts check
+  check_step bun scripts/check-extension-identity.ts
 
   echo "Testing release contract tooling..."
-  "$BIOME" lint \
+  check_step "$BIOME" lint \
     scripts/release-contract.ts \
     scripts/release-contract.test.ts \
     scripts/release-gate.ts \
@@ -250,7 +262,7 @@ run_release_contract_metadata_check() {
     scripts/local-web-product-e2e.ts \
     scripts/local-web-product-e2e-extension.cjs \
     scripts/local-web-product-e2e.test.ts
-  bun test \
+  check_step bun test \
     scripts/release-contract.test.ts \
     scripts/release-gate.test.ts \
     scripts/release-readiness.test.ts \
@@ -264,14 +276,13 @@ run_release_contract_check() {
   run_release_contract_metadata_check
 
   echo "Packaging and re-extracting the host native release archive..."
-  cargo build --locked --release -p seseragi-cli -p seseragi-lsp
-  bun scripts/native-release.ts smoke
+  check_step bash -c 'cargo build --locked --release -p seseragi-cli -p seseragi-lsp && bun scripts/native-release.ts smoke'
 }
 
 run_extension_lint() {
   require_root_tools
   echo "Linting VS Code extension sources..."
-  "$BIOME" lint \
+  check_step "$BIOME" lint \
     extensions/seseragi/extension.js \
     extensions/seseragi/extension-core.js \
     extensions/seseragi/scripts \
@@ -282,13 +293,12 @@ run_extension_lint() {
 
 run_extension_behavior_checks() {
   echo "Checking official extension identity and legacy references..."
-  bun scripts/check-extension-identity.ts
+  check_step bun scripts/check-extension-identity.ts
 
   echo "Testing the VS Code extension..."
-  (
-    cd extensions/seseragi
-    bun test tests
-  )
+  pushd extensions/seseragi >/dev/null
+    check_step bun test tests
+  popd >/dev/null
 }
 
 run_extension_checks() {
@@ -297,11 +307,10 @@ run_extension_checks() {
   run_extension_behavior_checks
 
   echo "Packaging and verifying the VS Code extension..."
-  (
-    cd extensions/seseragi
-    bun scripts/package-extension.ts
-    bun scripts/package-legacy.ts
-  )
+  pushd extensions/seseragi >/dev/null
+    check_step bun scripts/package-extension.ts
+    check_step bun scripts/package-legacy.ts
+  popd >/dev/null
 }
 
 run_full_checks() {
@@ -334,12 +343,15 @@ run_full_checks() {
   require_root_tools
   require_playground_tools
   require_extension_tools
+  COLLECT_CHECK_FAILURES=1
 
+  check_step bun test scripts/check-collection.test.ts
+  check_step bun scripts/check-readme.ts
   echo "Checking Rust formatting..."
-  cargo fmt --all -- --check
+  check_step cargo fmt --all -- --check
 
   echo "Linting active TypeScript and HTML sources..."
-  "$BIOME" lint \
+  check_step "$BIOME" lint \
     apps/playground/index.html \
     apps/playground/tour/index.html \
     apps/playground/vite.config.ts \
@@ -397,7 +409,7 @@ run_full_checks() {
     runtime/timezones/rules.ts
 
   echo "Testing Rust workspace..."
-  run_cargo_tests
+  check_step run_cargo_tests
 
   run_conformance_checks
   run_native_sample_checks
@@ -413,13 +425,12 @@ run_full_checks() {
   fi
 
   echo "Checking Playground catalog and Tour manifests..."
-  (
-    cd apps/playground
-    bun run samples:check
-    bun run tour:check
-    bun test tests
-    "$PLAYGROUND_TSC" --noEmit
-  )
+  pushd apps/playground >/dev/null
+    check_step bun run samples:check
+    check_step bun run tour:check
+    check_step bun test tests
+    check_step "$PLAYGROUND_TSC" --noEmit
+  popd >/dev/null
   run_playground_bundle_build
 
   if [[ "$artifact_mode" == "delegate" ]]; then
@@ -428,9 +439,14 @@ run_full_checks() {
     echo "Release artifact packaging is delegated to the SHA-pinned matrix jobs."
   else
     echo "Packaging the VS Code extension..."
-    bun run build:extension
+    check_step bun run build:extension
   fi
 
+  if ((${#CHECK_FAILURES[@]} != 0)); then
+    printf '\nFull gate failures (%s):\n' "${#CHECK_FAILURES[@]}" >&2
+    printf ' - %s\n' "${CHECK_FAILURES[@]}" >&2
+    return 1
+  fi
   echo "All checks passed."
 }
 
