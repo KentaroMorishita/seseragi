@@ -125,3 +125,30 @@ pub fn concrete value: F<Int> -> F<Int> = value
     compile_module(CompileInput::new("scoped.ssrg", "fixture/scoped", source))
         .expect("local generic calls preserve the outer constructor identity");
 }
+
+#[test]
+fn local_hkt_annotations_share_their_lexical_binder() {
+    for body in [
+        "{ let kept: G<B> = item; kept }",
+        "match True { True -> item; False -> item }",
+        "if True then item else item",
+    ] {
+        let source = format!(
+            "pub fn outer<F<_>, A> value: F<A> -> F<A> where Functor<F> = {{\n\
+             fn nested<G<_>, B> item: G<B> -> G<B> where Functor<G> = {body}\n\
+             let kept: F<A> = nested value\nkept\n}}"
+        );
+        compile_module(CompileInput::new("local.ssrg", "fixture/local", &source))
+            .expect("local binders and captured outer binders keep distinct identities");
+    }
+}
+
+#[test]
+fn local_hkt_annotations_do_not_accept_mismatches_or_shadowing() {
+    for source in [
+        "pub fn outer unit: Unit -> Int = { fn nested<G<_>, B> item: G<B> -> G<B> = { let kept: Int = item; item }; 1 }",
+        "pub fn outer<F<_>, A> value: F<A> -> F<A> = { fn nested<F<_>, B> item: F<B> -> F<B> = item; value }",
+    ] {
+        assert!(compile_module(CompileInput::new("invalid.ssrg", "fixture/invalid", source)).is_err());
+    }
+}

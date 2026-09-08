@@ -740,7 +740,85 @@ fn collect_callables(
             _ => {}
         }
     }
+    // Preserve explicitly quantified callable schemes through simple aliases.
+    // Captured monomorphic values are not generalized here.
+    for _ in 0..resolved.symbols.len() {
+        let before = callables.len();
+        for declaration in &resolved.declarations {
+            if let SurfaceDecl::Let {
+                pattern,
+                type_ref: None,
+                body: Some(body),
+                ..
+            } = declaration
+            {
+                collect_callable_alias(pattern, body, resolved, &mut callables);
+            }
+            for body in declaration_bodies(declaration) {
+                collect_local_callables(body, resolved, semantic_types, &mut callables);
+            }
+        }
+        if callables.len() == before {
+            break;
+        }
+    }
     callables
+}
+
+fn collect_callable_alias(
+    pattern: &seseragi_syntax::SurfacePattern,
+    mut value: &SurfaceExpr,
+    resolved: &ResolvedModule,
+    callables: &mut BTreeMap<SymbolId, TopLevelPureFunction>,
+) {
+    let seseragi_syntax::SurfacePattern::Name { name_span, .. } = pattern else {
+        return;
+    };
+    while let SurfaceExpr::Grouped { value: inner, .. } = value {
+        value = inner;
+    }
+    if !matches!(
+        value,
+        SurfaceExpr::Name {
+            type_arguments: None,
+            ..
+        } | SurfaceExpr::Member { .. }
+    ) {
+        return;
+    }
+    let Some(target) = resolved
+        .references
+        .iter()
+        .find(|reference| {
+            reference.origin == value.span()
+                && matches!(
+                    reference.namespace,
+                    SymbolNamespace::Value | SymbolNamespace::Operator
+                )
+        })
+        .and_then(|reference| reference.target)
+    else {
+        return;
+    };
+    let Some(mut signature) = callables.get(&target).cloned() else {
+        return;
+    };
+    // Constrained values already capture evidence through the existing value path.
+    // Do not invent universally quantified dictionaries for such captures.
+    if signature.type_parameters.is_empty() || !signature.constraints.is_empty() {
+        return;
+    }
+    let Some(symbol) = resolved.symbols.iter().find(|symbol| {
+        symbol.origin == *name_span
+            && matches!(symbol.kind, SymbolKind::Let | SymbolKind::PatternBinding)
+    }) else {
+        return;
+    };
+    signature.symbol = symbol
+        .canonical
+        .clone()
+        .unwrap_or_else(|| symbol.spelling.clone());
+    callables.insert(symbol.id, signature);
 }
 
 fn declaration_bodies(declaration: &SurfaceDecl) -> Vec<&SurfaceExpr> {
@@ -777,7 +855,15 @@ fn collect_local_callables(
         SurfaceExpr::Block { items, result, .. } => {
             for item in items {
                 match item {
-                    SurfaceBlockItem::Let { value, .. } => {
+                    SurfaceBlockItem::Let {
+                        pattern,
+                        type_ref,
+                        value,
+                        ..
+                    } => {
+                        if type_ref.is_none() {
+                            collect_callable_alias(pattern, value, resolved, callables);
+                        }
                         collect_local_callables(value, resolved, semantic_types, callables);
                     }
                     SurfaceBlockItem::Function {
@@ -939,6 +1025,15 @@ fn collect_local_callables(
         }
         SurfaceExpr::Do { items, result, .. } => {
             for item in items {
+                if let SurfaceDoItem::Let {
+                    pattern,
+                    type_ref: None,
+                    value,
+                    ..
+                } = item
+                {
+                    collect_callable_alias(pattern, value, resolved, callables);
+                }
                 let value = match item {
                     SurfaceDoItem::Bind { value, .. }
                     | SurfaceDoItem::Let { value, .. }

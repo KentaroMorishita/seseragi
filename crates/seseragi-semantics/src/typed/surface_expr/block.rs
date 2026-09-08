@@ -154,6 +154,15 @@ pub(crate) fn type_block_with(
                 }
                 locals.extend(binding.pattern.locals.clone());
                 statements.push(TypedBlockStatement::Let {
+                    type_parameters: binding
+                        .pattern
+                        .locals
+                        .keys()
+                        .next()
+                        .filter(|_| binding.pattern.locals.len() == 1)
+                        .and_then(|symbol| context.resolution.callable(*symbol))
+                        .map(|signature| signature.type_parameters.clone())
+                        .unwrap_or_default(),
                     pattern: binding.pattern.typed,
                     value: binding.expression.value.clone(),
                     origin: *span,

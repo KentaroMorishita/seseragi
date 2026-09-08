@@ -31,9 +31,8 @@ instance Traversable<Box> {
 pub fn throughApplicative<F<_>, A> f: (A -> A)
   -> value: F<A>
   -> F<A>
-where Applicative<F> =
-  {
-    let mapped = map f value
+where Applicative<F> = {
+    let mapped: F<A> = map f value
     match True {
       True -> if True then mapped else value
       False -> value
@@ -41,7 +40,7 @@ where Applicative<F> =
   }
 
 pub fn throughMonad<M<_>, A, B> f: (A -> M<B>) -> value: M<A> -> M<B> where Monad<M> = {
-  let bound = flatMap f value
+  let bound: M<B> = flatMap f value
   let identity: M<B> -> M<B> = \item -> item
   identity bound
 }
@@ -55,5 +54,9 @@ pub fn retain<F<_>, A> value: F<A> -> F<A> where Functor<F> = {
     False -> retained
   }
   let identity: F<A> -> F<A> = \item -> item
-  identity (local retained)
+  fn nested<G<_>, B> item: G<B> -> G<B> where Functor<G> = {
+    let kept: G<B> = item
+    kept
+  }
+  identity (nested (local retained))
 }

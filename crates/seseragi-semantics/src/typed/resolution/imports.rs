@@ -43,6 +43,16 @@ pub(super) fn collect_imported_callables(
         .filter(|import| {
             import.in_scope
                 && (import.export.namespace == "operator"
+                    || (import.export.namespace == "value"
+                        && matches!(
+                            import.export.declaration_kind.as_deref(),
+                            None | Some("value")
+                        )
+                        && matches!(
+                            import.export.scheme.type_ref,
+                            seseragi_syntax::InterfaceType::Function { .. }
+                        )
+                        && !import.export.scheme.type_parameters.is_empty())
                     || matches!(
                         import.export.declaration_kind.as_deref(),
                         Some("function" | "effect-function")
@@ -60,7 +70,18 @@ pub(super) fn imported_callable(
 ) -> Option<TopLevelPureFunction> {
     let export = &import.export;
     let scheme_type_bindings = import.scheme_type_bindings.as_deref()?;
-    let (parameter_interfaces, result_interface) = flatten_function(export.scheme.type_ref.clone());
+    let (mut parameter_interfaces, mut result_interface) =
+        flatten_function(export.scheme.type_ref.clone());
+    if let Some(arity) = export.call_arity {
+        if arity <= parameter_interfaces.len() {
+            for parameter in parameter_interfaces.split_off(arity).into_iter().rev() {
+                result_interface = seseragi_syntax::InterfaceType::Function {
+                    parameter: Box::new(parameter),
+                    result: Box::new(result_interface),
+                };
+            }
+        }
+    }
     let type_parameters = export
         .scheme
         .type_parameters

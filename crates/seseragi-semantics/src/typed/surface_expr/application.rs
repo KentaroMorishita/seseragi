@@ -236,8 +236,21 @@ pub(crate) fn type_known_application_with_explicit(
     context: &PureExpressionContext<'_>,
     mut type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
-    let (signature, explicit_issue) =
+    let (mut signature, explicit_issue) =
         instantiate_explicit_signature(signature, explicit_type_arguments, callee_span, context);
+    let declared_arity = signature.parameters.len();
+    // Infer across the whole source application, including function-valued results.
+    // Dictionary application still belongs immediately after the declared parameters.
+    while let TypedType::Function { parameter, result } = signature.result.clone() {
+        signature
+            .semantic_parameters
+            .push(context.semantic_value_from_typed_type(&parameter).key);
+        signature.parameters.push(*parameter);
+        signature.result = *result;
+        signature.semantic_result = context
+            .semantic_value_from_typed_type(&signature.result)
+            .key;
+    }
     let expected_application = context.expected();
     let mut analyses = (0..argument_nodes.len())
         .map(|_| None)
@@ -382,7 +395,7 @@ pub(crate) fn type_known_application_with_explicit(
             &instantiated_application_result_type(&application, arguments.len()),
         );
     }
-    let saturated = arguments.len() >= signature.parameters.len();
+    let saturated = arguments.len() >= declared_arity;
     let concrete_partial_constraints = !saturated
         && signature.trait_identity.is_none()
         && !application.constraints.is_empty()
@@ -460,6 +473,7 @@ pub(crate) fn type_known_application_with_explicit(
             application
                 .parameters
                 .iter()
+                .take(declared_arity)
                 .skip(arguments.len())
                 .map(|parameter| parameter.type_ref.clone())
                 .collect()
@@ -483,6 +497,8 @@ pub(crate) fn type_known_application_with_explicit(
             evidence,
             deferred_evidence_parameters,
             deferred_evidence_type_constructor_parameters,
+            evidence_argument_index: (argument_nodes.len() > declared_arity)
+                .then_some(declared_arity),
             trait_dispatch: signature
                 .trait_identity
                 .clone()
@@ -645,6 +661,13 @@ fn requires_callable_context(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
 ) -> bool {
+    if context
+        .target(expression.span())
+        .and_then(|target| context.callable_value(target))
+        .is_some_and(|signature| !signature.type_parameters.is_empty())
+    {
+        return true;
+    }
     match expression {
         SurfaceExpr::Lambda { .. } => true,
         SurfaceExpr::Name { name, .. } => {

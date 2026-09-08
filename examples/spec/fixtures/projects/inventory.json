@@ -48,6 +48,7 @@
     "http-stream-events": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "imported-derived-json-codecs": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "hkt-erasure": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
+    "callable-values": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "inline-polymorphic-inference": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "imported-derived-structural": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "imported-derived-show-debug": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },

@@ -1,0 +1,21 @@
+import { forward, returned, same, local } from "./domain"
+import * as domain from "./domain"
+import * as arrays from "std/array"
+import * as lists from "std/list"
+let prepend = (:)
+let fromNamespace = domain.forward
+fn rank value: String -> Int = if value == "urgent" then 0 else 1
+pub effect fn main = do {
+  let keep = forward
+  println $ show (returned 1 2)
+  println $ show (same 1 1)
+  println $ show (forward 1)
+  println (forward "ok")
+  println $ show (keep True)
+  println $ show (fromNamespace 7)
+  println $ show (map forward [1, 2])
+  println $ show (local ())
+  println $ show (prepend True `[])
+  println $ show (arrays.sortBy rank ["normal", "urgent", "later"])
+  println $ show (lists.sortBy rank `["normal", "urgent", "later"])
+}

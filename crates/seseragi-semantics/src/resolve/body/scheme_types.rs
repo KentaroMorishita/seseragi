@@ -9,6 +9,9 @@ pub(super) use trait_bindings::{export_contract_trait_bindings, export_scheme_tr
 
 fn has_callable_scheme(export: &InterfaceExport) -> bool {
     export.namespace == "operator"
+        || (export.namespace == "value"
+            && matches!(export.scheme.type_ref, InterfaceType::Function { .. })
+            && !export.scheme.type_parameters.is_empty())
         || matches!(
             export.declaration_kind.as_deref(),
             Some("constructor" | "function" | "effect-function" | "inherent-method")
@@ -264,6 +267,7 @@ mod tests {
             namespace: "trait".to_owned(),
             name: "Convert".to_owned(),
             constructor_of: None,
+            call_arity: None,
             visibility: Visibility::Public,
             declaration_kind: Some("trait".to_owned()),
             declaration: ByteSpan { start: 5, end: 40 },
@@ -332,6 +336,7 @@ mod tests {
                 namespace: "value".to_owned(),
                 name: "ResponseStarted".to_owned(),
                 constructor_of: Some("std/http::HttpEvent".to_owned()),
+                call_arity: None,
                 visibility: Visibility::Public,
                 declaration_kind: Some("constructor".to_owned()),
                 declaration: ByteSpan { start: 0, end: 0 },
@@ -411,6 +416,7 @@ mod tests {
             namespace: "type".to_owned(),
             name: name.to_owned(),
             constructor_of: None,
+            call_arity: None,
             visibility: Visibility::Public,
             declaration_kind: Some("type".to_owned()),
             declaration: ByteSpan { start: 0, end: 4 },
@@ -437,6 +443,7 @@ mod tests {
             namespace: "value".to_owned(),
             name: name.to_owned(),
             constructor_of: None,
+            call_arity: None,
             visibility: Visibility::Public,
             declaration_kind: Some("function".to_owned()),
             declaration: ByteSpan { start: 5, end: 20 },

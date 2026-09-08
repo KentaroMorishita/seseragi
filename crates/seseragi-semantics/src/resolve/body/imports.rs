@@ -232,6 +232,7 @@ fn ensure_dependency_method(
         namespace: "method".to_owned(),
         name: method.name.clone(),
         constructor_of: None,
+        call_arity: None,
         visibility: seseragi_syntax::Visibility::Public,
         declaration_kind: Some("inherent-method".to_owned()),
         declaration: method.origin,
