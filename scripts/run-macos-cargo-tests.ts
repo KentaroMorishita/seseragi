@@ -57,18 +57,31 @@ const sign = (executable: string): void => {
 }
 
 const directory = mkdtempSync(join(tmpdir(), "seseragi-cargo-tests-"))
+const failures: string[] = []
 try {
   let index = 0
   for (const executable of executables) {
     const copy = join(directory, `${index}-${basename(executable)}`)
     index += 1
-    copyFileSync(executable, copy)
-    chmodSync(copy, 0o755)
-    sign(copy)
-    run(copy, [])
+    try {
+      copyFileSync(executable, copy)
+      chmodSync(copy, 0o755)
+      sign(copy)
+      run(copy, [])
+    } catch (error) {
+      failures.push(`${executable}: ${String(error)}`)
+      console.error(failures.at(-1))
+    }
   }
 } finally {
   rmSync(directory, { force: true, recursive: true })
 }
 
 console.log(`Ran ${executables.size} signed macOS Cargo test artifacts.`)
+
+if (failures.length > 0) {
+  console.error(
+    `Failed ${failures.length} Cargo test artifacts:\n${failures.join("\n")}`
+  )
+  process.exitCode = 1
+}
