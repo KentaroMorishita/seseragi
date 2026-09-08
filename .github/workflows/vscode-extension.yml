@@ -6,6 +6,7 @@ on:
       - ".github/workflows/vscode-extension.yml"
       - ".github/workflows/linux-native.yml"
       - "scripts/linux-native*"
+      - "scripts/fixtures/linux-abi-too-new.c"
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
@@ -24,6 +25,7 @@ on:
       - ".github/workflows/vscode-extension.yml"
       - ".github/workflows/linux-native.yml"
       - "scripts/linux-native*"
+      - "scripts/fixtures/linux-abi-too-new.c"
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
@@ -109,6 +111,7 @@ jobs:
           if-no-files-found: error
 
   migration:
+    if: inputs.linux-portability-only != true
     name: legacy migration stub
     runs-on: ubuntu-latest
     steps:

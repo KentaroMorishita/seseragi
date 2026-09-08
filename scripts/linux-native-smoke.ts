@@ -38,6 +38,19 @@ try {
   run(["tar", "-xzf", path.resolve(archive), "-C", directory])
   const cli = path.join(directory, "seseragi")
   const lsp = path.join(directory, "seseragi-lsp")
+  const cliMetadata = JSON.parse(run([cli, "--version-json"]))
+  const lspMetadata = JSON.parse(run([lsp, "--version-json"]))
+  for (const field of [
+    "version",
+    "commit",
+    "channel",
+    "dirty",
+    "target",
+    "releaseTag",
+  ]) {
+    if (cliMetadata[field] !== lspMetadata[field])
+      throw new Error(`CLI/LSP metadata mismatch: ${field}`)
+  }
   assertLinuxAbi(cli)
   assertLinuxAbi(lsp)
   const bundled = await packageNativeBinary(vsix, "linux-x64")
@@ -67,8 +80,19 @@ try {
     throw new Error("downloaded LSP did not initialize")
   }
   const source = path.join(directory, "main.ssrg")
-  await writeFile(source, 'effect fn main = do { println "linux ABI smoke" }\n')
-  run([cli, "check", source], directory)
+  await writeFile(
+    source,
+    'pub effect fn main = do { println "linux ABI smoke" }\n'
+  )
+  const invalid = path.join(directory, "invalid.ssrg")
+  await writeFile(invalid, 'pub let value: Int = "wrong"\n')
+  const rejected = Bun.spawnSync(
+    [cli, "build", invalid, "--out-dir", path.join(directory, "invalid-built")],
+    { stdout: "pipe", stderr: "pipe", timeout: 30_000 }
+  )
+  if (rejected.success || !rejected.stderr.toString().includes("SES-T0101")) {
+    throw new Error("downloaded CLI did not reject the type-invalid source")
+  }
   run(
     [cli, "build", source, "--out-dir", path.join(directory, "built")],
     directory
@@ -81,7 +105,7 @@ try {
       throw new Error(`unexpected execution output: ${output}`)
   }
   console.log(
-    "Downloaded CLI/LSP/VSIX: checksum, ABI, identical LSP, initialize, check/build/run passed"
+    "Downloaded CLI/LSP/VSIX: checksum, ABI, identical LSP, initialize, type-check diagnostics/build/run passed"
   )
 } finally {
   await rm(directory, { recursive: true, force: true })

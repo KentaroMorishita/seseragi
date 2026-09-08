@@ -215,7 +215,7 @@ checksum形式は保持します。muslを追加する場合は独立targetと�
 `readelf` gateはCLI / LSP両方のELF architecture、GNU loader、必要library、RPATH / RUNPATH、GLIBC symbol
 versionを検査し、2.34超過や未知のGLIBC ABI requirementを失敗にします。VSIXはnative archiveと同じLSPを
 再buildせず同梱し、download後にbytesの一致も確認します。baseline smokeはCLI version / metadata、LSP initialize、
-最小programのcheck / build / runと生成entryの実行を含みます。glibc versionはcontainer内の `getconf` でも照合します。
+型不一致programをbuild時の診断で拒否するcheck、最小programのbuild / runと生成entryの実行を含みます。glibc versionはcontainer内の `getconf` でも照合します。
 container digest更新はこのgateを通して明示的に行い、runner更新によるABI floorの上昇を許しません。
 
 canonical releaseとVS Code CIは `.github/workflows/linux-native.yml` を共有します。単独確認は既存の

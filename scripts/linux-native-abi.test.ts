@@ -36,7 +36,9 @@ test("release cannot bypass downloaded baseline smoke or rebuild a separate Linu
   expect(release).toContain("local-web-product-e2e, linux-native]")
   expect(release).not.toContain("target: linux-x64")
   expect(linux).toContain("actions/download-artifact@v4")
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: literal Bash array expansion
   expect(linux).toContain('bash scripts/linux-native.sh verify "${args[@]}"')
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: literal Bash array expansion
   expect(linux).toContain('bun scripts/linux-native-smoke.ts "${args[@]}"')
   expect(linux).toContain(
     'SESERAGI_LSP_BINARY="$PWD/target/linux-native/x86_64-unknown-linux-gnu/release/seseragi-lsp"'

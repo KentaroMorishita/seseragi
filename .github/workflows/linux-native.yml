@@ -94,6 +94,15 @@ jobs:
         with:
           name: seseragi-release-${{ inputs.source-ref }}-vscode-linux-x64
           path: target/release
+      - name: Prove the ABI gate rejects a newer-glibc ELF
+        run: |
+          set -euo pipefail
+          gcc scripts/fixtures/linux-abi-too-new.c -o target/linux-abi-too-new
+          if bun scripts/linux-native-abi.ts target/linux-abi-too-new > target/linux-abi-negative.log 2>&1; then
+            echo 'ABI gate accepted a post-baseline GLIBC dependency' >&2
+            exit 1
+          fi
+          grep 'exceeds linux-x64 glibc 2.34' target/linux-abi-negative.log
       - name: Smoke downloaded artifacts on the minimum glibc environment and modern Ubuntu
         env:
           RELEASE_BUILD: ${{ inputs.release }}
