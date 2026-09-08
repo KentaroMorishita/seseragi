@@ -6927,6 +6927,19 @@
       ]
     },
     {
+      "identity": "std/prelude:::",
+      "name": ":",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "A : List<A> -> List<A>",
+      "description": "Persistent List cons. Precedence 4, right associative; evaluates head then tail once and shares the tail in O(1). The operator section (:) is a curried function.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::<",
       "name": "<",
       "module": "std/prelude",

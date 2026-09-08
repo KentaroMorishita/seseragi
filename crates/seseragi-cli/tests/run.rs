@@ -1937,3 +1937,23 @@ fn runs_maybe_fallback() {
         fs::read_to_string(package.join("expected.stdout")).unwrap()
     );
 }
+
+#[test]
+fn runs_list_cons() {
+    let package =
+        LockedProject::copy(&repository_root().join("examples/spec/fixtures/projects/list-cons"));
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+}

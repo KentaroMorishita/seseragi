@@ -50,7 +50,7 @@ impl SurfaceParser<'_> {
 
     pub(super) fn operator_spelling(&self, start: usize) -> Option<(String, usize)> {
         let first = self.tokens.get(start)?;
-        if !is_operator_spelling_token(first.kind) {
+        if first.kind != TokenKind::PunctuationColon && !is_operator_spelling_token(first.kind) {
             return None;
         }
         let mut spelling = first.raw.clone();

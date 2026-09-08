@@ -544,6 +544,7 @@ fn builtin_operator_spec(spelling: &str) -> Option<OperatorSpec> {
         "&&" => (4, Associativity::Left, OperatorMeaning::Binary),
         "==" | "!=" | "<" | "<=" | ">" | ">=" => (6, Associativity::None, OperatorMeaning::Binary),
         ".." | "..=" => (7, Associativity::Left, OperatorMeaning::Binary),
+        ":" => (8, Associativity::Right, OperatorMeaning::Binary),
         "+" | "-" => (8, Associativity::Left, OperatorMeaning::Binary),
         "*" | "/" | "%" => (10, Associativity::Left, OperatorMeaning::Binary),
         "**" => (12, Associativity::Right, OperatorMeaning::Binary),

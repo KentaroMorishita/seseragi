@@ -532,6 +532,9 @@ pub(super) fn lower_core_expr_to_typescript(
                 // recover the element type from C. Preserve the types already
                 // selected by Seseragi instead of accepting host `unknown`.
                 let type_arguments = match (callee.as_str(), evidence.first()) {
+                    ("std/prelude:::", _) => {
+                        vec![list_cons_element_type(&type_ref, imported_types)]
+                    }
                     ("std/map::fromEntries", Some(selected)) => {
                         let [collection, CoreType::Tuple { elements }] =
                             selected.constraint.arguments.as_slice()
@@ -1416,6 +1419,20 @@ fn lower_core_expressions(
         .collect()
 }
 
+fn list_cons_element_type(
+    type_ref: &CoreType,
+    imported_types: &TypeScriptTypeContext,
+) -> super::TypeScriptType {
+    let mut result = type_ref_from_core_type(type_ref, imported_types);
+    while let super::TypeScriptType::Function { result: next, .. } = result {
+        result = *next;
+    }
+    match result {
+        super::TypeScriptType::List { element } => *element,
+        _ => unreachable!("checked List cons must return a List"),
+    }
+}
+
 fn lower_binary(
     operator: String,
     left: CoreExpr,
@@ -1427,6 +1444,15 @@ fn lower_binary(
 ) -> TypeScriptExpr {
     let left = lower_core_expr_to_typescript(left, imported_values, imported_types);
     let right = lower_core_expr_to_typescript(right, imported_values, imported_types);
+    if operator == ":" {
+        return TypeScriptExpr::TypeApplicationCall {
+            callee: crate::list_ops::runtime_list_cons_operation()
+                .local_name
+                .to_owned(),
+            type_arguments: vec![list_cons_element_type(&type_ref, imported_types)],
+            arguments: vec![left, right],
+        };
+    }
     if let Some(operation) = runtime_range_operation(&operator) {
         return TypeScriptExpr::RuntimeCall {
             callee: operation.local_name.to_owned(),

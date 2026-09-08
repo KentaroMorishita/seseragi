@@ -16,6 +16,9 @@ pub(super) fn type_binary(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
+    if operator == ":" {
+        return super::cons::type_cons(left, right, span, context);
+    }
     if operator == "??" {
         return super::fallback::type_fallback(left, right, span, context);
     }

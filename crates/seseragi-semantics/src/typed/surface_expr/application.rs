@@ -151,6 +151,18 @@ pub(crate) fn type_application_with(
         return type_unknown_application(callee, &argument_nodes, expression.span(), context);
     };
 
+    if signature.symbol == "std/prelude:::" && explicit_type_arguments.is_none() {
+        if let [head, tail] = argument_nodes.as_slice() {
+            return super::cons::type_cons_with(
+                head,
+                tail,
+                expression.span(),
+                context,
+                type_argument,
+            );
+        }
+    }
+
     type_known_application_with_explicit(
         signature,
         explicit_type_arguments,
@@ -575,7 +587,8 @@ fn requires_callable_context(expression: &SurfaceExpr) -> bool {
     match expression {
         SurfaceExpr::Lambda { .. } => true,
         SurfaceExpr::Name { name, .. } => {
-            seseragi_syntax::standard_operator(name).is_some()
+            name == ":"
+                || seseragi_syntax::standard_operator(name).is_some()
                 || seseragi_syntax::standard_trait_operator(name).is_some()
         }
         SurfaceExpr::Grouped { value, .. } => requires_callable_context(value),

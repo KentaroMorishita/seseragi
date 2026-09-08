@@ -21,6 +21,7 @@ mod binary;
 pub(crate) mod block;
 mod comprehension;
 pub(crate) mod conditional;
+mod cons;
 pub(crate) mod effectful_for;
 mod expected;
 mod fallback;

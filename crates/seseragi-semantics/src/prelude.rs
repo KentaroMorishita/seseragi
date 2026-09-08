@@ -3110,7 +3110,8 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 || PURE_FUNCTION_NAMES.contains(&spelling)
         }
         SymbolNamespace::Operator => {
-            seseragi_syntax::standard_operator(spelling).is_some()
+            spelling == ":"
+                || seseragi_syntax::standard_operator(spelling).is_some()
                 || seseragi_syntax::standard_trait_operator(spelling).is_some()
         }
         SymbolNamespace::Trait => trait_by_name(spelling).is_some(),

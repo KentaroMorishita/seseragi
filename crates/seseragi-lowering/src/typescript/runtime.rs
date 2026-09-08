@@ -290,6 +290,12 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 collect_evidence_runtime_requirements(evidence, requirements);
             }
             collect_type_runtime_requirement(type_ref, requirements);
+            if operator == ":" {
+                push_unique(
+                    requirements,
+                    crate::list_ops::runtime_list_cons_operation().runtime_feature,
+                );
+            }
             if let Some(operation) = runtime_range_operation(operator) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = int_operation {
@@ -918,6 +924,16 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 .flatten();
             if int_operation.is_none() {
                 collect_evidence_runtime_imports(evidence, imports);
+            }
+            if operator == ":" {
+                let operation = crate::list_ops::runtime_list_cons_operation();
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
             }
             if let Some(operation) = runtime_range_operation(operator) {
                 push_import_unique(

@@ -27,7 +27,8 @@ pub(crate) fn ends_after_operator(tokens: &[Token], start: usize, end: usize) ->
 fn is_leading_operator(kind: TokenKind) -> bool {
     matches!(
         kind,
-        TokenKind::OperatorPipeline
+        TokenKind::PunctuationColon
+            | TokenKind::OperatorPipeline
             | TokenKind::OperatorCustom
             | TokenKind::OperatorArithmetic
             | TokenKind::OperatorComparison

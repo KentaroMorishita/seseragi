@@ -666,6 +666,7 @@ fn binary_binding_power(token: &Token) -> Option<(u8, u8, ParsedOperator)> {
         (TokenKind::OperatorRangeExclusive | TokenKind::OperatorRangeInclusive, _) => {
             (35, false, ParsedOperator::Binary)
         }
+        (TokenKind::PunctuationColon, ":") => (40, true, ParsedOperator::Binary),
         (TokenKind::OperatorArithmetic, "+" | "-") => (40, false, ParsedOperator::Binary),
         (TokenKind::OperatorArithmetic, "*" | "/" | "%") => (50, false, ParsedOperator::Binary),
         (TokenKind::OperatorArithmetic, "**") => (60, true, ParsedOperator::Binary),

@@ -1502,6 +1502,28 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
   })
 
+  test("executes persistent List cons and operator sections through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/list-cons/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("list-cons.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing cons execution entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({
+      stdout: "`[Nothing, Just 1]\n`[1, 2, 3]\n`[0, 1, 2, 3]\n1\nTrue",
+      debug: "()",
+    })
+  })
+
   test("executes right-associative Maybe fallback without evaluating the unused branch", async () => {
     const source = await Bun.file(
       new URL(

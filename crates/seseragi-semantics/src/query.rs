@@ -944,6 +944,13 @@ fn local_symbol_in_range(
 pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
     let mut items = Vec::new();
 
+    items.push(AnalysisReferenceItem {
+        name: ":".to_owned(), identity: "std/prelude:::".to_owned(), module: "std/prelude".to_owned(),
+        category: "Operators".to_owned(), kind: "operator".to_owned(), signature: Some("A : List<A> -> List<A>".to_owned()), multiline_signature: Some("A : List<A> -> List<A>".to_owned()),
+        description: "Persistent List cons. Precedence 4, right associative; evaluates head then tail once and shares the tail in O(1). The operator section (:) is a curried function.".to_owned(),
+        type_parameters: vec!["A".to_owned()], constraints: vec![],
+    });
+
     let task_target = TypeDocument::Named {
         name: "Effect".to_owned(),
         canonical: Some("std/effect::Effect".to_owned()),

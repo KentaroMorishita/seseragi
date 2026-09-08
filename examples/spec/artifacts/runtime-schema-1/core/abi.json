@@ -3426,6 +3426,16 @@
       }
     },
     {
+      "id": "core.list.cons",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A, List<A>) -> List<A>; immutable O(1) cons preserves tail identity and evaluates head before tail",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "Cons"
+      }
+    },
+    {
       "id": "core.list.from-array",
       "kind": "runtime-helper",
       "typescript": "function",

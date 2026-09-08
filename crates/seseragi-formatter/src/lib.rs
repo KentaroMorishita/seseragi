@@ -83,6 +83,24 @@ mod tests {
     }
 
     #[test]
+    fn preserves_list_cons_and_type_annotation_spacing() {
+        let source = "pub let values:List<Int> =1:2:3:`[]\n";
+        for width in [20, 88] {
+            let formatted = format_with_width(source, width);
+            assert_eq!(
+                format_with_width(&formatted.text, width).text,
+                formatted.text
+            );
+            assert_eq!(formatted.text.matches(':').count(), 4);
+            assert!(
+                seseragi_syntax::parse_diagnostics("cons.ssrg", &formatted.text)
+                    .diagnostics
+                    .is_empty()
+            );
+        }
+    }
+
+    #[test]
     fn preserves_right_associative_maybe_fallback_layout() {
         let source = "pub let display = cached??requested??\"anonymous\"\n";
         for width in [20, 88] {
