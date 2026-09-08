@@ -970,6 +970,11 @@ fn type_name(
             SemanticTypeKey::Invalid,
         );
     };
+    if let Some(signature) = context.callable_value(target).filter(|signature| {
+        !signature.type_parameters.is_empty() && signature.constraints.is_empty()
+    }) {
+        return application::type_callable_value(&signature, span, context);
+    }
     if let Some(value_type) = context.parameters.get(&target) {
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {

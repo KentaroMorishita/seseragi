@@ -561,6 +561,8 @@ pub enum TypedExpr {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         deferred_evidence_type_constructor_parameters: Vec<String>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
+        evidence_argument_index: Option<usize>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
         trait_dispatch: Option<TypedTraitDispatch>,
         #[serde(rename = "type")]
         type_ref: TypedType,
@@ -832,6 +834,8 @@ pub struct TypedRecordPatternField {
 )]
 pub enum TypedBlockStatement {
     Let {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         pattern: TypedPattern,
         value: TypedExpr,
         origin: ByteSpan,
@@ -867,6 +871,8 @@ pub enum TypedDoStatement {
         value: TypedExpr,
     },
     PureLet {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         pattern: TypedPattern,
         value: TypedExpr,
         origin: ByteSpan,

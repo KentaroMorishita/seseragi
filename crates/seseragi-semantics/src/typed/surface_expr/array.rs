@@ -283,6 +283,7 @@ pub(super) fn type_index(
             evidence: vec![],
             deferred_evidence_parameters: vec![],
             deferred_evidence_type_constructor_parameters: vec![],
+            evidence_argument_index: None,
             trait_dispatch: None,
             type_ref,
             origin: span,

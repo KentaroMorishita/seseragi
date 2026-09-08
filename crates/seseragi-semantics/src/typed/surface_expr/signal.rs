@@ -25,6 +25,7 @@ pub(super) fn type_read(
         evidence: Vec::new(),
         deferred_evidence_parameters: Vec::new(),
         deferred_evidence_type_constructor_parameters: Vec::new(),
+        evidence_argument_index: None,
         trait_dispatch: None,
         type_ref: call
             .map(|call| call.result)
@@ -76,6 +77,7 @@ pub(super) fn type_assignment(
         evidence: Vec::new(),
         deferred_evidence_parameters: Vec::new(),
         deferred_evidence_type_constructor_parameters: Vec::new(),
+        evidence_argument_index: None,
         trait_dispatch: None,
         type_ref: call.1,
         origin: span,

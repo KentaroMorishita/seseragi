@@ -124,15 +124,27 @@ pub(crate) fn typed_decl_from_surface(
                     })
                 })
                 .collect();
+            let callable_scheme = typed_pattern
+                .locals
+                .keys()
+                .next()
+                .filter(|_| typed_pattern.locals.len() == 1)
+                .and_then(|symbol| resolution.callable(*symbol));
             Some(TypedDecl::Let {
                 bindings,
                 pattern: typed_pattern.typed,
                 visibility,
                 origin: span,
                 scheme: TypedScheme {
-                    type_parameters: Vec::new(),
-                    constraints: Vec::new(),
-                    constraint_identities: Vec::new(),
+                    type_parameters: callable_scheme
+                        .map(|scheme| scheme.type_parameters.clone())
+                        .unwrap_or_default(),
+                    constraints: callable_scheme
+                        .map(|scheme| scheme.constraints.clone())
+                        .unwrap_or_default(),
+                    constraint_identities: callable_scheme
+                        .map(|scheme| scheme.constraint_identities.clone())
+                        .unwrap_or_default(),
                     type_ref: input.type_ref,
                 },
                 value,

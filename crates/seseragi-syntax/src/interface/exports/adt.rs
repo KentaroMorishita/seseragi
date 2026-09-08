@@ -58,6 +58,7 @@ pub(super) fn exports_from_type_decl(
             namespace: "value".to_owned(),
             name: variant.name.clone(),
             constructor_of: Some(owner.clone()),
+            call_arity: None,
             visibility: *visibility,
             declaration_kind: Some("constructor".to_owned()),
             declaration: variant.name_span,

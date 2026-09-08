@@ -84,10 +84,11 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
 fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<CoreStatement> {
     match statement {
         TypedBlockStatement::Let {
+            type_parameters,
             pattern,
             value,
             origin,
-        } => lower_pure_pattern_statements(source, pattern, value, origin),
+        } => lower_pure_pattern_statements(source, pattern, value, origin, type_parameters),
         TypedBlockStatement::Function {
             effect: _,
             rec_group,
@@ -170,6 +171,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             evidence,
             deferred_evidence_parameters,
             deferred_evidence_type_constructor_parameters,
+            evidence_argument_index,
             trait_dispatch,
             type_ref,
             origin,
@@ -182,6 +184,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
                 .map(lower_typed_type)
                 .collect(),
             deferred_evidence_type_constructor_parameters,
+            evidence_argument_index,
             trait_dispatch: trait_dispatch.map(|dispatch| super::CoreTraitDispatch {
                 trait_identity: dispatch.trait_identity,
                 method: dispatch.method,
@@ -659,8 +662,18 @@ fn lower_pure_pattern_statements(
     pattern: TypedPattern,
     value: TypedExpr,
     origin: ByteSpan,
+    type_parameters: Vec<seseragi_syntax::TypeParameter>,
 ) -> Vec<CoreStatement> {
-    lower_core_pattern_statements(source, pattern, lower_expr(source, value), origin, false)
+    let mut statements =
+        lower_core_pattern_statements(source, pattern, lower_expr(source, value), origin, false);
+    if let [CoreStatement::PureLet {
+        type_parameters: parameters,
+        ..
+    }] = statements.as_mut_slice()
+    {
+        *parameters = type_parameters;
+    }
+    statements
 }
 
 fn lower_bind_pattern_statements(
@@ -691,6 +704,7 @@ fn lower_core_pattern_statements(
             }
         } else {
             CoreStatement::PureLet {
+                type_parameters: Vec::new(),
                 name: binding.name.clone(),
                 type_ref: binding.type_ref.clone(),
                 value,
@@ -709,6 +723,7 @@ fn lower_core_pattern_statements(
         }
     } else {
         CoreStatement::PureLet {
+            type_parameters: Vec::new(),
             name: temporary.clone(),
             type_ref: plan.input_type.clone(),
             value,
@@ -716,6 +731,7 @@ fn lower_core_pattern_statements(
         }
     }];
     statements.extend(plan.bindings.iter().map(|binding| CoreStatement::PureLet {
+        type_parameters: Vec::new(),
         name: binding.name.clone(),
         type_ref: binding.type_ref.clone(),
         value: projection_expression(&temporary, &plan, binding),
@@ -802,6 +818,7 @@ pub(super) fn lower_top_level_pattern_binding(
     let plan = lower_pattern_binding_plan(source, pattern);
     if direct_binding(&plan).is_some() && bindings.len() == 1 {
         return vec![CoreBinding {
+            type_parameters: Vec::new(),
             symbol: bindings[0].symbol.clone(),
             visibility,
             origin: source_span(source, origin),
@@ -811,6 +828,7 @@ pub(super) fn lower_top_level_pattern_binding(
 
     let temporary = pattern_temporary(origin);
     let mut lowered = vec![CoreBinding {
+        type_parameters: Vec::new(),
         symbol: format!("{module}::{temporary}"),
         visibility: Visibility::Private,
         origin: source_span(source, origin),
@@ -825,6 +843,7 @@ pub(super) fn lower_top_level_pattern_binding(
             continue;
         };
         lowered.push(CoreBinding {
+            type_parameters: Vec::new(),
             symbol: binding.symbol,
             visibility,
             origin: source_span(source, binding.origin),
@@ -840,10 +859,11 @@ fn lower_effect_statement(source: &str, statement: TypedDoStatement) -> Vec<Core
             value: lower_effect_body(source, value),
         }],
         TypedDoStatement::PureLet {
+            type_parameters,
             pattern,
             value,
             origin,
-        } => lower_pure_pattern_statements(source, pattern, value, origin),
+        } => lower_pure_pattern_statements(source, pattern, value, origin, type_parameters),
         TypedDoStatement::Bind {
             pattern,
             value,
@@ -860,10 +880,11 @@ fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> Vec<CoreSt
             value: lower_expr(source, value),
         }],
         TypedDoStatement::PureLet {
+            type_parameters,
             pattern,
             value,
             origin,
-        } => lower_pure_pattern_statements(source, pattern, value, origin),
+        } => lower_pure_pattern_statements(source, pattern, value, origin, type_parameters),
         TypedDoStatement::Bind {
             pattern,
             value,
