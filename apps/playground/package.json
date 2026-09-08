@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/playground",
-  "version": "0.61.7",
+  "version": "0.61.8",
   "private": true,
   "type": "module",
   "scripts": {

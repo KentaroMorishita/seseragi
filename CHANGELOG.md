@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.8] - 2026-09-08
+
+### Changed
+
+- #585 【O01 / hotfix】generic callable文脈改善後のTour診断snapshotを同期
 ## [0.61.7] - 2026-09-08
 
 ### Changed
