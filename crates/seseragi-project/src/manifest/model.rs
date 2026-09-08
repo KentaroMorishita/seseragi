@@ -14,6 +14,7 @@ pub struct Manifest {
     pub test: Option<ManifestTest>,
     pub foreign_typescript: Option<ManifestForeignTypescript>,
     pub web: Option<ManifestWeb>,
+    pub build_profile: Option<crate::BuildProfile>,
     pub(crate) deferred: DeferredTables,
 }
 

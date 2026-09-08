@@ -2,6 +2,7 @@
   "schema": 1,
   "module": "fixture/imported-derived-show-debug::domain",
   "target": "typescript-es2022",
+  "profile": "development",
   "runtime": {
     "identity": "@seseragi/runtime",
     "abiMajor": 1,

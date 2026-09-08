@@ -8,6 +8,7 @@
       "name": "Code",
       "visibility": "public",
       "opaque": false,
+      "newtype": true,
       "typeParameters": [],
       "variants": [
         {

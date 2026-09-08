@@ -15,6 +15,8 @@ mod lockfile;
 mod manifest;
 mod module_path;
 mod package_name;
+mod profile;
+pub use profile::BuildProfile;
 mod source_import;
 mod specifier;
 mod standard;

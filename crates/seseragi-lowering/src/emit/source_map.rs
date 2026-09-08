@@ -67,7 +67,7 @@ fn module_names_and_mappings(
         push_declaration_mapping(
             &mut names,
             &mut mappings,
-            generated_line,
+            generated_line + usize::from(adt.erased_newtype),
             &adt.name,
             &adt.origin,
             source_text,

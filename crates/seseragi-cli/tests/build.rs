@@ -832,10 +832,10 @@ fn documents_build_in_cli_help() {
 
     assert_eq!(output.status.code(), Some(0));
     assert!(String::from_utf8_lossy(&output.stdout).contains(
-        "seseragi build path/to/app.ssrg [--target process|web] [--out-dir path/to/dist]"
+        "seseragi build path/to/app.ssrg [--target process|web] [--profile development|release] [--out-dir path/to/dist]"
     ));
     assert!(String::from_utf8_lossy(&output.stdout).contains(
-        "seseragi build path/to/package [--target process|web] [--out-dir path/to/dist]"
+        "seseragi build path/to/package [--target process|web] [--profile development|release] [--out-dir path/to/dist]"
     ));
 }
 

@@ -2,6 +2,7 @@
   "schema": 1,
   "module": "fixture/imported-generic-adt-monad::main",
   "target": "typescript-es2022",
+  "profile": "development",
   "runtime": {
     "identity": "@seseragi/runtime",
     "abiMajor": 1,

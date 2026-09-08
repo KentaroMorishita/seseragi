@@ -174,6 +174,8 @@ pub enum TypedDecl {
         name: String,
         visibility: Visibility,
         opaque: bool,
+        #[serde(default, skip_serializing_if = "is_false")]
+        newtype: bool,
         type_parameters: Vec<seseragi_syntax::TypeParameter>,
         variants: Vec<TypedAdtVariant>,
         origin: ByteSpan,

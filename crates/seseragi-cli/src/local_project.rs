@@ -1,6 +1,6 @@
 use seseragi_driver::{
-    compile_local_project, compile_local_project_with_providers, LinkedCompileError,
-    ProjectCompileError,
+    compile_local_project_with_profile, compile_local_project_with_providers_and_profile,
+    LinkedCompileError, ProjectCompileError,
 };
 use seseragi_project::{select_project_target, ProjectCommand, ProjectTarget};
 use seseragi_runtime::{
@@ -38,7 +38,14 @@ pub(crate) fn compile_path(
     invocation_target: Option<ProjectTarget>,
     diagnostic_format: DiagnosticFormat,
 ) -> Result<LocalProjectCompilation, String> {
-    compile_path_inner(path, command, invocation_target, diagnostic_format, true)
+    compile_path_inner(
+        path,
+        command,
+        invocation_target,
+        diagnostic_format,
+        true,
+        None,
+    )
 }
 
 pub(crate) fn compile_path_unlocked(
@@ -47,7 +54,31 @@ pub(crate) fn compile_path_unlocked(
     invocation_target: Option<ProjectTarget>,
     diagnostic_format: DiagnosticFormat,
 ) -> Result<LocalProjectCompilation, String> {
-    compile_path_inner(path, command, invocation_target, diagnostic_format, false)
+    compile_path_inner(
+        path,
+        command,
+        invocation_target,
+        diagnostic_format,
+        false,
+        None,
+    )
+}
+
+pub(crate) fn compile_path_with_profile(
+    path: &Path,
+    command: ProjectCommand,
+    invocation_target: Option<ProjectTarget>,
+    diagnostic_format: DiagnosticFormat,
+    profile: Option<seseragi_project::BuildProfile>,
+) -> Result<LocalProjectCompilation, String> {
+    compile_path_inner(
+        path,
+        command,
+        invocation_target,
+        diagnostic_format,
+        true,
+        profile,
+    )
 }
 
 fn compile_path_inner(
@@ -56,6 +87,7 @@ fn compile_path_inner(
     invocation_target: Option<ProjectTarget>,
     diagnostic_format: DiagnosticFormat,
     validate_lock: bool,
+    profile: Option<seseragi_project::BuildProfile>,
 ) -> Result<LocalProjectCompilation, String> {
     let lockfile = if !validate_lock {
         Ok(None)
@@ -70,7 +102,7 @@ fn compile_path_inner(
     let process_run_options = project_run_options(&project);
     let baseline = match render_compile_result(
         &project,
-        compile_local_project(&project),
+        compile_local_project_with_profile(&project, profile),
         diagnostic_format,
     )? {
         Some(compiled) => compiled,
@@ -101,7 +133,8 @@ fn compile_path_inner(
         ProjectTarget::Process => {
             let configuration = seseragi_runtime::bun_process_provider_configuration()?;
             let provider_target = configuration.context.target.clone();
-            let resolved = compile_local_project_with_providers(&project, configuration);
+            let resolved =
+                compile_local_project_with_providers_and_profile(&project, configuration, profile);
             let result = match resolved {
                 Err(error)
                     if matches!(
@@ -115,7 +148,7 @@ fn compile_path_inner(
                                     .any(|reason| reason == "standard-module-target")
                     ) =>
                 {
-                    compile_local_project(&project)
+                    compile_local_project_with_profile(&project, profile)
                 }
                 Ok(compiled) => Ok(compiled),
                 other => other,
@@ -126,7 +159,7 @@ fn compile_path_inner(
             let configuration = seseragi_runtime::browser_provider_configuration()?;
             let provider_target = configuration.context.target.clone();
             (
-                compile_local_project_with_providers(&project, configuration),
+                compile_local_project_with_providers_and_profile(&project, configuration, profile),
                 provider_target,
             )
         }

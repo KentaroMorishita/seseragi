@@ -141,3 +141,19 @@ full gateを実行した場合は、作業ログまたはPR本文へ「必要理
   integration pointで明示的に実行する。CIに同じ長時間検査を各sample変更へ無条件に重ねない。
 - scoped laneが不足している場合は、対象コマンドを個別に実行して結果を記録し、lane追加を
   次の基盤Issueとして扱う。
+
+### Release profile implementation checks
+
+`cargo test -p seseragi-cli --test profiles` compiles the canonical performance
+fixtures in both profiles and executes each in a fresh process. It also runs
+`scripts/release-shapes.ts` against the emitted release module and fixture
+predicates. Install root dependencies with `bun install --frozen-lockfile` first.
+The checker resolves canonical module symbols through generated inspection roots;
+metadata does not report optimization success. Its AST proof is conservative:
+unsupported wrapper/projection shapes fail instead of being guessed. Inspection
+roots are retained in release output; bundling/DCE is a separate boundary.
+
+`bun test scripts/release-shapes.test.ts runtime/ts/tests/effect-stack.test.ts`
+checks shape rejection cases and 100,000 Effect binds independently of pure TCO.
+The conformance lane includes these checks. Profile/compiler/runtime integration
+still requires the full gate and regenerated WASM during Promotion.

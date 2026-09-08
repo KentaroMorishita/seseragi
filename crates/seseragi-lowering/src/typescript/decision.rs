@@ -56,6 +56,7 @@ pub(super) fn lower_core_decision(
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
+    let erases_newtype = branches.iter().flat_map(|branch| &branch.tests).any(|test| matches!(test, CoreDecisionTest::Constructor { constructor, .. } if imported_types.is_erased_newtype(constructor)));
     let public_type = type_ref_from_core_type(&scrutinee_type, imported_types);
     let private_type = type_ref_from_core_type(
         &scrutinee_type,
@@ -67,22 +68,180 @@ pub(super) fn lower_core_decision(
     } else {
         scrutinee
     };
+    let mut branches = branches
+        .into_iter()
+        .map(|branch| lower_branch(branch, imported_values, imported_types))
+        .collect::<Vec<_>>();
+    if erases_newtype && branches.len() == 1 {
+        let branch = &mut branches[0];
+        if let TypeScriptExpr::Identifier { name } = &scrutinee {
+            if branch.tests.is_empty()
+                && branch.guard.is_none()
+                && branch
+                    .bindings
+                    .iter()
+                    .all(|binding| binding.path.is_empty())
+                && !contains_scope(&branch.value)
+            {
+                let renames = branch
+                    .bindings
+                    .iter()
+                    .map(|binding| (binding.name.clone(), name.clone()))
+                    .collect();
+                substitute_bindings(&mut branch.value, &renames);
+                return TypeScriptExpr::CheckedResult {
+                    value: Box::new(branch.value.clone()),
+                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                };
+            }
+        }
+    }
     TypeScriptExpr::Decision {
         scrutinee: Box::new(scrutinee),
         scrutinee_type: private_type,
-        branches: branches
-            .into_iter()
-            .map(|branch| lower_branch(branch, imported_values, imported_types))
-            .collect(),
+        branches,
         type_ref: type_ref_from_core_type(&type_ref, imported_types),
     }
 }
 
+// Called only for scope-free expressions after the scrutinee is an immutable
+// identifier. Runtime references are a separate namespace and never substituted.
+fn substitute_bindings(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
+    match expr {
+        TypeScriptExpr::Identifier { name } => {
+            if let Some(replacement) = renames.get(name) {
+                *name = replacement.clone();
+            }
+        }
+        TypeScriptExpr::Call {
+            callee, arguments, ..
+        }
+        | TypeScriptExpr::TypeApplicationCall {
+            callee, arguments, ..
+        } => {
+            if let Some(replacement) = renames.get(callee) {
+                *callee = replacement.clone();
+            }
+            for argument in arguments {
+                substitute_bindings(argument, renames);
+            }
+        }
+        TypeScriptExpr::RuntimeCall { arguments, .. }
+        | TypeScriptExpr::ForeignTaskCall { arguments, .. }
+        | TypeScriptExpr::Tuple {
+            elements: arguments,
+        }
+        | TypeScriptExpr::Array {
+            elements: arguments,
+            ..
+        } => {
+            for argument in arguments {
+                substitute_bindings(argument, renames);
+            }
+        }
+        TypeScriptExpr::FieldAccess {
+            receiver: value, ..
+        }
+        | TypeScriptExpr::OptionalFieldAccess {
+            receiver: value, ..
+        }
+        | TypeScriptExpr::CheckedResult { value, .. }
+        | TypeScriptExpr::Await { value }
+        | TypeScriptExpr::Unary { operand: value, .. } => substitute_bindings(value, renames),
+        TypeScriptExpr::Binary { left, right, .. } => {
+            substitute_bindings(left, renames);
+            substitute_bindings(right, renames);
+        }
+        TypeScriptExpr::Conditional {
+            condition,
+            then_branch,
+            else_branch,
+        } => {
+            substitute_bindings(condition, renames);
+            substitute_bindings(then_branch, renames);
+            substitute_bindings(else_branch, renames);
+        }
+        TypeScriptExpr::DictionaryCall {
+            dictionary,
+            arguments,
+            ..
+        } => {
+            substitute_bindings(dictionary, renames);
+            for argument in arguments {
+                substitute_bindings(argument, renames);
+            }
+        }
+        TypeScriptExpr::Record { items, .. } => {
+            for item in items {
+                match item {
+                    super::TypeScriptRecordValueItem::Field { value, .. }
+                    | super::TypeScriptRecordValueItem::Spread { value } => {
+                        substitute_bindings(value, renames)
+                    }
+                }
+            }
+        }
+        TypeScriptExpr::Lambda { .. }
+        | TypeScriptExpr::Sequence { .. }
+        | TypeScriptExpr::MonadDo { .. }
+        | TypeScriptExpr::Decision { .. } => unreachable!("scope-free substitution"),
+        TypeScriptExpr::Undefined
+        | TypeScriptExpr::Bigint { .. }
+        | TypeScriptExpr::Number { .. }
+        | TypeScriptExpr::String { .. }
+        | TypeScriptExpr::Boolean { .. }
+        | TypeScriptExpr::RuntimeReference { .. }
+        | TypeScriptExpr::CurriedRuntimeReference { .. } => {}
+    }
+}
+
 fn lower_branch(
-    branch: CoreDecisionBranch,
+    mut branch: CoreDecisionBranch,
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptDecisionBranch {
+    let erased_paths = branch
+        .tests
+        .iter()
+        .filter_map(|test| match test {
+            CoreDecisionTest::Constructor {
+                path, constructor, ..
+            } if imported_types.is_erased_newtype(constructor) => Some(path.clone()),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    fn erase_projection(
+        path: &mut Vec<CoreDecisionProjection>,
+        erased: &[Vec<CoreDecisionProjection>],
+    ) {
+        let original = path.clone();
+        *path = original
+            .iter()
+            .enumerate()
+            .filter(|(index, projection)| {
+                !matches!(projection, CoreDecisionProjection::AdtPayload)
+                    || !erased
+                        .iter()
+                        .any(|prefix| prefix.as_slice() == &original[..*index])
+            })
+            .map(|(_, projection)| projection.clone())
+            .collect();
+    }
+    branch.tests.retain(|test| !matches!(test, CoreDecisionTest::Constructor { constructor, .. } if imported_types.is_erased_newtype(constructor)));
+    for test in &mut branch.tests {
+        match test {
+            CoreDecisionTest::Integer { path, .. }
+            | CoreDecisionTest::String { path, .. }
+            | CoreDecisionTest::Boolean { path, .. }
+            | CoreDecisionTest::Constructor { path, .. }
+            | CoreDecisionTest::ArrayLength { path, .. }
+            | CoreDecisionTest::ListLength { path, .. } => erase_projection(path, &erased_paths),
+            CoreDecisionTest::Invalid { .. } => {}
+        }
+    }
+    for binding in &mut branch.bindings {
+        erase_projection(&mut binding.path, &erased_paths);
+    }
     TypeScriptDecisionBranch {
         tests: branch.tests.into_iter().map(lower_test).collect(),
         bindings: branch
@@ -226,6 +385,12 @@ fn lower_pattern(
         CorePattern::Constructor {
             symbol, argument, ..
         } => {
+            if imported_types.is_erased_newtype(&symbol) {
+                if let Some(argument) = argument {
+                    lower_pattern(*argument, path, tests, bindings, imported_types);
+                }
+                return;
+            }
             tests.push(TypeScriptDecisionTest::TagEquals {
                 path: path.clone(),
                 tag: local_name(&symbol),
@@ -287,5 +452,54 @@ fn lower_pattern(
             }
         }
         CorePattern::Invalid { .. } => tests.push(TypeScriptDecisionTest::Invalid),
+    }
+}
+
+// Substitution is restricted to scope-free expressions so a nested binder can
+// never capture the scrutinee name or shadow a pattern binding.
+fn contains_scope(expr: &TypeScriptExpr) -> bool {
+    match expr {
+        TypeScriptExpr::Lambda { .. }
+        | TypeScriptExpr::Sequence { .. }
+        | TypeScriptExpr::MonadDo { .. }
+        | TypeScriptExpr::Decision { .. } => true,
+        TypeScriptExpr::Tuple { elements } | TypeScriptExpr::Array { elements, .. } => {
+            elements.iter().any(contains_scope)
+        }
+        TypeScriptExpr::FieldAccess { receiver, .. }
+        | TypeScriptExpr::OptionalFieldAccess { receiver, .. } => contains_scope(receiver),
+        TypeScriptExpr::Record { items, .. } => items.iter().any(|item| match item {
+            super::TypeScriptRecordValueItem::Field { value, .. }
+            | super::TypeScriptRecordValueItem::Spread { value } => contains_scope(value),
+        }),
+        TypeScriptExpr::Binary { left, right, .. } => contains_scope(left) || contains_scope(right),
+        TypeScriptExpr::Unary { operand, .. } => contains_scope(operand),
+        TypeScriptExpr::Conditional {
+            condition,
+            then_branch,
+            else_branch,
+        } => {
+            contains_scope(condition) || contains_scope(then_branch) || contains_scope(else_branch)
+        }
+        TypeScriptExpr::Call { arguments, .. }
+        | TypeScriptExpr::TypeApplicationCall { arguments, .. }
+        | TypeScriptExpr::ForeignTaskCall { arguments, .. }
+        | TypeScriptExpr::RuntimeCall { arguments, .. } => arguments.iter().any(contains_scope),
+        TypeScriptExpr::DictionaryCall {
+            dictionary,
+            arguments,
+            ..
+        } => contains_scope(dictionary) || arguments.iter().any(contains_scope),
+        TypeScriptExpr::CheckedResult { value, .. } | TypeScriptExpr::Await { value } => {
+            contains_scope(value)
+        }
+        TypeScriptExpr::Undefined
+        | TypeScriptExpr::Bigint { .. }
+        | TypeScriptExpr::Number { .. }
+        | TypeScriptExpr::String { .. }
+        | TypeScriptExpr::Boolean { .. }
+        | TypeScriptExpr::Identifier { .. }
+        | TypeScriptExpr::RuntimeReference { .. }
+        | TypeScriptExpr::CurriedRuntimeReference { .. } => false,
     }
 }

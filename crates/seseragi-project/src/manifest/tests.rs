@@ -244,3 +244,23 @@ fn rejects_unsafe_duplicate_artifacts_and_invalid_provider_selections() {
         assert!(parse_manifest(&source).is_err());
     }
 }
+
+#[test]
+fn validates_build_profile_without_duplicating_run_target() {
+    let base = "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n";
+    assert_eq!(parse_manifest(base).unwrap().build_profile, None);
+    for (value, expected) in [
+        ("development", crate::BuildProfile::Development),
+        ("release", crate::BuildProfile::Release),
+    ] {
+        assert_eq!(
+            parse_manifest(&format!("{base}[build]\nprofile = \"{value}\"\n"))
+                .unwrap()
+                .build_profile,
+            Some(expected)
+        );
+    }
+    for invalid in ["profile = \"fast\"", "target = \"web\"", "profile = 1"] {
+        assert!(parse_manifest(&format!("{base}[build]\n{invalid}\n")).is_err());
+    }
+}

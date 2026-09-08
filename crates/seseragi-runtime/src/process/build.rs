@@ -136,13 +136,22 @@ pub fn build_main_with_options(
             &compiled.generated.source_map,
         )?;
         match target {
-            BuildTarget::Process => fs::write(staging.join(BUILD_MARKER_NAME), BUILD_MARKER)
-                .map_err(|error| format!("failed to write build ownership marker: {error}"))?,
+            BuildTarget::Process => {
+                let mut marker: serde_json::Value =
+                    serde_json::from_str(BUILD_MARKER).expect("valid marker template");
+                marker["profile"] = compiled.generated.metadata.profile.clone().into();
+                write_json(
+                    &staging.join(BUILD_MARKER_NAME),
+                    "build ownership marker",
+                    &marker,
+                )?;
+            }
             BuildTarget::Web => finish_web_build(
                 staging,
                 &contract,
                 "./main.ts",
                 "web-single-file",
+                &compiled.generated.metadata.profile,
                 None,
                 None,
                 options,
@@ -233,6 +242,7 @@ pub fn build_local_project_with_options(
                 &ProjectBuildMarker {
                     schema: 1,
                     kind: "local-project",
+                    profile: &entry.generated.metadata.profile,
                     target: BuildTarget::Process.marker_target(),
                     entry: "entry.ts",
                     entry_module: &project.entry_module,
@@ -245,6 +255,7 @@ pub fn build_local_project_with_options(
                 &contract,
                 &format!("./{}", path_string(&entry_path)),
                 "web-local-project",
+                &entry.generated.metadata.profile,
                 project.web.as_ref(),
                 project.compiled.provider_resolution.as_ref(),
                 options,
@@ -258,6 +269,7 @@ fn finish_web_build(
     contract: &crate::MainContract,
     entry_module: &str,
     kind: &'static str,
+    profile: &str,
     web: Option<&(PathBuf, seseragi_project::ManifestWeb)>,
     providers: Option<&seseragi_driver::ProviderResolution>,
     options: ProcessRunOptions,
@@ -306,6 +318,7 @@ fn finish_web_build(
         &WebBuildMarker {
             schema: 1,
             kind,
+            profile: profile.to_owned(),
             target: BuildTarget::Web.marker_target(),
             entry: "assets/app.js",
             source_map: "assets/app.js.map",
@@ -384,6 +397,7 @@ fn remove_optional_directory(path: &Path) -> Result<(), String> {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct ProjectBuildMarker<'entry> {
+    profile: &'entry str,
     schema: u32,
     kind: &'static str,
     target: &'static str,
@@ -405,6 +419,7 @@ struct ProjectBuildModule {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct WebBuildMarker {
+    profile: String,
     schema: u32,
     kind: &'static str,
     target: &'static str,

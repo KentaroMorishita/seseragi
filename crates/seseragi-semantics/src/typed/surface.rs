@@ -309,6 +309,7 @@ pub(crate) fn typed_decl_from_surface(
             AdtDeclInput {
                 visibility,
                 opaque,
+                newtype: false,
                 name,
                 name_span,
                 type_parameters,
@@ -330,6 +331,7 @@ pub(crate) fn typed_decl_from_surface(
             AdtDeclInput {
                 visibility,
                 opaque,
+                newtype: true,
                 name: name.clone(),
                 name_span,
                 type_parameters,

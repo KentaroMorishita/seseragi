@@ -153,6 +153,8 @@ pub struct TypeScriptStruct {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptAdt {
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub erased_newtype: bool,
     pub exported: bool,
     pub name: String,
     pub type_parameters: Vec<TypeParameter>,
@@ -655,7 +657,27 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
     module: CoreModule,
     plan: &TypeScriptOutputPlan,
 ) -> Result<TypeScriptModule, TypeScriptLoweringError> {
-    let module_imports = lower_module_imports(&module, plan)?;
+    lower_core_module_to_typescript_ir_with_options(
+        module,
+        plan,
+        &TypeScriptLoweringOptions::default(),
+    )
+}
+
+#[derive(Clone, Debug, Default)]
+pub struct TypeScriptLoweringOptions {
+    pub erased_newtype_constructors: std::collections::BTreeSet<String>,
+}
+
+pub fn lower_core_module_to_typescript_ir_with_options(
+    module: CoreModule,
+    plan: &TypeScriptOutputPlan,
+    options: &TypeScriptLoweringOptions,
+) -> Result<TypeScriptModule, TypeScriptLoweringError> {
+    let mut module_imports = lower_module_imports(&module, plan)?;
+    module_imports.type_names = module_imports
+        .type_names
+        .with_erased_newtypes(options.erased_newtype_constructors.clone());
     let foreign_opaque_names = foreign_opaque_type_names(&module.foreign_modules);
     let mut runtime_requirements = Vec::new();
     let mut imports = Vec::new();

@@ -28,6 +28,7 @@ pub type AppError deriving Show =
         &typescript.instances,
         &typescript.type_imports,
         &typescript.structs,
+        &typescript.adts,
     );
 
     assert_eq!(output.lines().count(), typescript.instances.len());
@@ -57,6 +58,7 @@ pub type Chain deriving Show =
         &typescript.instances,
         &typescript.type_imports,
         &typescript.structs,
+        &typescript.adts,
     );
 
     assert!(output.contains(
@@ -150,7 +152,7 @@ pub type Tree<A> deriving JsonEncode, JsonDecode =
 fn emits_nothing_without_selected_instances_or_show_import() {
     let mut output = String::new();
 
-    render_typescript_instances(&mut output, &[], &[], &[]);
+    render_typescript_instances(&mut output, &[], &[], &[], &[]);
 
     assert!(output.is_empty());
 }

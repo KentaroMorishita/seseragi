@@ -17,6 +17,7 @@ pub(super) fn render_typescript_instances(
     instances: &[TypeScriptInstance],
     type_imports: &[TypeScriptTypeImport],
     structures: &[crate::TypeScriptStruct],
+    adts: &[crate::TypeScriptAdt],
 ) {
     if instances.is_empty() {
         return;
@@ -31,7 +32,12 @@ pub(super) fn render_typescript_instances(
             .iter()
             .find(|import| import.feature == dictionary_feature)
             .map(|import| import.local.as_str());
-        output.push_str(&render_instance(instance, display_type_local, structures));
+        output.push_str(&render_instance(
+            instance,
+            display_type_local,
+            structures,
+            adts,
+        ));
         output.push('\n');
     }
 }
@@ -40,8 +46,12 @@ fn render_instance(
     instance: &TypeScriptInstance,
     display_type_local: Option<&str>,
     structures: &[crate::TypeScriptStruct],
+    adts: &[crate::TypeScriptAdt],
 ) -> String {
     let head = render_instance_head(instance);
+    let erased = adts
+        .iter()
+        .any(|adt| adt.erased_newtype && head.split('<').next() == Some(adt.name.as_str()));
     let private_head = structures
         .iter()
         .any(|structure| {
@@ -52,7 +62,7 @@ fn render_instance(
         TypeScriptInstanceImplementation::DerivedShow { adt_name, variants } => {
             let _ = adt_name;
             render_derived_display_instance(instance, display_type_local, |head, method| {
-                render_derived_adt_body(head, method, variants)
+                render_derived_adt_body(head, method, variants, erased)
             })
         }
         TypeScriptInstanceImplementation::DerivedStructShow {
@@ -68,7 +78,7 @@ fn render_instance(
             variants,
             transparent_newtype,
             ..
-        } => render_derived_json_adt_instance(instance, variants, *transparent_newtype),
+        } => render_derived_json_adt_instance(instance, variants, *transparent_newtype, erased),
         TypeScriptInstanceImplementation::DerivedStructJson { fields, .. } => {
             render_derived_json_struct_instance(instance, fields)
         }
@@ -76,11 +86,15 @@ fn render_instance(
             variants,
             transparent_newtype,
             ..
-        } => {
-            render_structural_instance(instance, Some((variants, *transparent_newtype)), &[], None)
-        }
+        } => render_structural_instance(
+            instance,
+            Some((variants, *transparent_newtype)),
+            &[],
+            None,
+            erased,
+        ),
         TypeScriptInstanceImplementation::DerivedStructStructural { fields, .. } => {
-            render_structural_instance(instance, None, fields, private_head.as_deref())
+            render_structural_instance(instance, None, fields, private_head.as_deref(), false)
         }
         TypeScriptInstanceImplementation::UserDefined { methods } => {
             render_user_defined_instance(instance, methods)
@@ -93,6 +107,7 @@ fn render_structural_instance(
     adt: Option<(&[TypeScriptDerivedShowVariant], bool)>,
     fields: &[TypeScriptDerivedShowField],
     private_head: Option<&str>,
+    erased: bool,
 ) -> String {
     let head = render_instance_head(instance);
     let method = match instance.trait_name.as_str() {
@@ -107,43 +122,55 @@ fn render_structural_instance(
         _ => "number",
     };
     let body = if let Some((variants, transparent)) = adt {
-        let mut body = String::new();
-        if method == "eq" {
-            body.push_str("if (left.tag !== right.tag) return false; ");
-        }
-        if method == "compare" && !transparent {
-            let tags = render_string_array(variants.iter().map(|variant| variant.tag.as_str()));
-            body.push_str(&format!("if (left.tag !== right.tag) return {{ tag: {tags}.indexOf(left.tag) < {tags}.indexOf(right.tag) ? \"Less\" : \"Greater\" }}; "));
-        }
-        body.push_str("switch (left.tag) { ");
-        for (index, variant) in variants.iter().enumerate() {
-            body.push_str(&format!("case {:?}: {{ ", variant.tag));
-            if method != "hash" {
-                body.push_str(&format!(
-                    "if (right.tag !== {:?}) throw new Error(\"invalid derived comparison\"); ",
-                    variant.tag
-                ));
-            }
-            let members = variant
-                .payload
-                .as_ref()
-                .map(|payload| {
-                    vec![(
-                        "left.value".to_owned(),
-                        "right.value".to_owned(),
-                        &payload.dictionary,
-                    )]
-                })
-                .unwrap_or_default();
-            body.push_str(&structural_body(
+        if erased {
+            let payload = variants
+                .first()
+                .and_then(|variant| variant.payload.as_ref())
+                .expect("erased newtype payload");
+            structural_body(
                 method,
-                &members,
-                if transparent { None } else { Some(index) },
-            ));
-            body.push_str(" } ");
+                &[("left".to_owned(), "right".to_owned(), &payload.dictionary)],
+                None,
+            )
+        } else {
+            let mut body = String::new();
+            if method == "eq" {
+                body.push_str("if (left.tag !== right.tag) return false; ");
+            }
+            if method == "compare" && !transparent {
+                let tags = render_string_array(variants.iter().map(|variant| variant.tag.as_str()));
+                body.push_str(&format!("if (left.tag !== right.tag) return {{ tag: {tags}.indexOf(left.tag) < {tags}.indexOf(right.tag) ? \"Less\" : \"Greater\" }}; "));
+            }
+            body.push_str("switch (left.tag) { ");
+            for (index, variant) in variants.iter().enumerate() {
+                body.push_str(&format!("case {:?}: {{ ", variant.tag));
+                if method != "hash" {
+                    body.push_str(&format!(
+                        "if (right.tag !== {:?}) throw new Error(\"invalid derived comparison\"); ",
+                        variant.tag
+                    ));
+                }
+                let members = variant
+                    .payload
+                    .as_ref()
+                    .map(|payload| {
+                        vec![(
+                            "left.value".to_owned(),
+                            "right.value".to_owned(),
+                            &payload.dictionary,
+                        )]
+                    })
+                    .unwrap_or_default();
+                body.push_str(&structural_body(
+                    method,
+                    &members,
+                    if transparent { None } else { Some(index) },
+                ));
+                body.push_str(" } ");
+            }
+            body.push_str("} throw new Error(\"invalid derived value\");");
+            body
         }
-        body.push_str("} throw new Error(\"invalid derived value\");");
-        body
     } else {
         let members = fields
             .iter()
@@ -261,6 +288,7 @@ fn render_derived_json_adt_instance(
     instance: &TypeScriptInstance,
     variants: &[TypeScriptDerivedShowVariant],
     transparent_newtype: bool,
+    erased: bool,
 ) -> String {
     let head = render_instance_head(instance);
     let direction = json_direction(instance);
@@ -274,7 +302,14 @@ fn render_derived_json_adt_instance(
             .expect("derived newtype JSON codec must retain its representation");
         let thunk = render_dictionary_thunk(&payload.dictionary);
         let helper = format!("_ssrg_json_derivednewtype_{direction}");
-        if direction == "decode" {
+        if erased {
+            let dictionary_type = if direction == "decode" {
+                "_ssrg_json_JsonDecode"
+            } else {
+                "_ssrg_json_JsonEncode"
+            };
+            format!("{{ {direction}Json: value => (({thunk})() as unknown as {dictionary_type}<{head}>).{direction}Json(value) }}")
+        } else if direction == "decode" {
             format!("{helper}<{head}>({:?}, {thunk})", variant.tag)
         } else {
             format!("{helper}<{head}>({thunk})")
@@ -489,7 +524,17 @@ fn render_derived_adt_body(
     head: &str,
     method: &str,
     variants: &[TypeScriptDerivedShowVariant],
+    erased: bool,
 ) -> String {
+    if erased {
+        let variant = variants.first().expect("erased newtype constructor");
+        let payload = variant.payload.as_ref().expect("erased newtype payload");
+        return format!(
+            r#"(value: {head}): string => {:?} + " " + {}.{method}(value)"#,
+            variant.tag,
+            render_dictionary_reference(&payload.dictionary)
+        );
+    }
     if variants.is_empty() {
         return format!("(value: {head}): string => value");
     }

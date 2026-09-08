@@ -188,6 +188,18 @@ builderをbackend / libraryで検証します。release profileやbenchmark実�
 
 すべてのprofileは同じ言語semanticsを持ちます。
 
+`seseragi build`と`seseragi run`は`--profile development|release`を受け付けます。
+選択順はCLI指定、root manifestの`[build].profile`、既定の`development`です。
+選択したprofileは依存moduleを含む一つのcompile graph全体へ適用し、同じgraph内の混在を拒否します。
+CLIによるprofile上書きはlockfileを書き換えません。manifest自体を編集した場合は、通常のcontent digest契約に従って明示的に`seseragi lock update`します。targetは従来の`[run].target`で選び、`[build]`へ重複定義しません。
+`generated-module.json`とprocess / webの`.seseragi-build.json`は選択した`profile`を記録します。
+
+```toml
+[build]
+profile = "release"
+```
+
+
 - development profileはdiagnostic、読みやすいgenerated code、source map、instrumentationを優先できる。
 - release profileはdead code elimination、newtype erasure、direct call lowering、inlining、specialization、fusion、
   static data hoistを適用できる。

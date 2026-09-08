@@ -140,6 +140,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         &module.instances,
         &module.type_imports,
         &module.structs,
+        &module.adts,
     );
     for function in &module.functions {
         match function {
@@ -466,6 +467,17 @@ pub(super) fn evidence_parameters(
 }
 
 fn render_adt(output: &mut String, adt: &TypeScriptAdt) {
+    if adt.erased_newtype {
+        let variant = adt.variants.first().expect("newtype constructor");
+        let payload = variant.payload.as_ref().expect("newtype payload");
+        let parameters = render_type_parameters(&adt.type_parameters);
+        let arguments = render_type_arguments(&adt.type_parameters);
+        let export = if adt.exported { "export " } else { "" };
+        output.push_str(&format!("declare const __ssrg$newtype${}: unique symbol;\n{export}type {}{parameters} = {} & {{ readonly [__ssrg$newtype${}]: true }};\n", adt.name, adt.name, render_typescript_type(payload), adt.name));
+        let export = if variant.exported { "export " } else { "" };
+        output.push_str(&format!("{export}const {} = {parameters}(value: {}): {}{arguments} => value as {}{arguments};\n", variant.name, render_typescript_type(payload), adt.name, adt.name));
+        return;
+    }
     if adt.exported {
         output.push_str("export ");
     }

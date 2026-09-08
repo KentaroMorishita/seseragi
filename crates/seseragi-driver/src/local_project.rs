@@ -68,7 +68,7 @@ impl LocalProjectCompileError {
 pub fn compile_local_project(
     project: &LoadedLocalProject,
 ) -> Result<CompiledLocalProject, LocalProjectCompileError> {
-    compile_local_project_inner(project, None)
+    compile_local_project_inner(project, None, None)
 }
 
 /// Compiles a local project and resolves the entry point's provider
@@ -78,7 +78,23 @@ pub fn compile_local_project_with_providers(
     mut configuration: ProjectProviderConfiguration,
 ) -> Result<CompiledLocalProject, LocalProjectCompileError> {
     configuration.entry_module = logical_module_id(project.entry());
-    compile_local_project_inner(project, Some(configuration))
+    compile_local_project_inner(project, Some(configuration), None)
+}
+
+pub fn compile_local_project_with_profile(
+    project: &LoadedLocalProject,
+    profile: Option<seseragi_project::BuildProfile>,
+) -> Result<CompiledLocalProject, LocalProjectCompileError> {
+    compile_local_project_inner(project, None, profile)
+}
+
+pub fn compile_local_project_with_providers_and_profile(
+    project: &LoadedLocalProject,
+    mut configuration: ProjectProviderConfiguration,
+    profile: Option<seseragi_project::BuildProfile>,
+) -> Result<CompiledLocalProject, LocalProjectCompileError> {
+    configuration.entry_module = logical_module_id(project.entry());
+    compile_local_project_inner(project, Some(configuration), profile)
 }
 
 /// Compiles all test source through the ordinary linked project pipeline, then
@@ -170,7 +186,16 @@ pub fn compile_local_tests(
 fn compile_local_project_inner(
     project: &LoadedLocalProject,
     configuration: Option<ProjectProviderConfiguration>,
+    profile: Option<seseragi_project::BuildProfile>,
 ) -> Result<CompiledLocalProject, LocalProjectCompileError> {
+    let profile = profile
+        .or_else(|| {
+            project
+                .packages()
+                .package(project.packages().root())
+                .and_then(|package| package.manifest().build_profile)
+        })
+        .unwrap_or_default();
     let foreign_host_directories = collect_foreign_host_directories(project);
     let mut graph = ModuleGraph::new();
     let mut identities_by_id = BTreeMap::new();
@@ -195,6 +220,7 @@ fn compile_local_project_inner(
             output_path(identity),
         )
         .with_package_scope(logical_package_scope(identity.package()))
+        .with_profile(profile)
     });
     let compiled = match configuration {
         Some(configuration) => compile_project_with_providers(graph, inputs, configuration),
@@ -406,6 +432,7 @@ fn error_module(error: &ProjectCompileError) -> Option<&str> {
             .first()
             .map(|diagnostics| diagnostics.module.as_str()),
         ProjectCompileError::DuplicateOutputPath { first_module, .. } => Some(first_module),
+        ProjectCompileError::MixedProfiles { module } => Some(module),
         ProjectCompileError::Graph(_) => None,
     }
 }

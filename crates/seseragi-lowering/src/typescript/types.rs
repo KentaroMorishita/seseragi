@@ -15,6 +15,7 @@ pub(super) struct TypeScriptTypeContext {
     arities: BTreeMap<String, u32>,
     private_struct_names: BTreeSet<String>,
     private_representation: bool,
+    erased_newtypes: BTreeSet<String>,
 }
 
 impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
@@ -25,11 +26,21 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
             arities: BTreeMap::new(),
             private_struct_names: BTreeSet::new(),
             private_representation: false,
+            erased_newtypes: BTreeSet::new(),
         }
     }
 }
 
 impl TypeScriptTypeContext {
+    pub(super) fn with_erased_newtypes(mut self, constructors: BTreeSet<String>) -> Self {
+        self.erased_newtypes = constructors;
+        self
+    }
+
+    pub(super) fn is_erased_newtype(&self, constructor: &str) -> bool {
+        self.erased_newtypes.contains(constructor)
+    }
+
     pub(super) fn with_module(mut self, module: &crate::CoreModule) -> Self {
         if module.structs.iter().any(|structure| structure.opaque) {
             self.private_struct_names.extend(

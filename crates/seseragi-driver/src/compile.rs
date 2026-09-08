@@ -1,8 +1,7 @@
 use crate::{analyze::analyze_module_frontend, CompileInput, CompiledModule};
 use seseragi_lowering::{
-    emit_typescript_module, emit_typescript_module_with_output_paths,
-    lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_plan,
-    lower_typed_module, GeneratedOutputPaths, TypeScriptLoweringError, TypeScriptOutputPlan,
+    emit_typescript_module, emit_typescript_module_with_output_paths, lower_typed_module,
+    GeneratedOutputPaths, TypeScriptLoweringError, TypeScriptOutputPlan,
 };
 use seseragi_semantics::{analyze_linked_module, AnalyzedModule};
 use seseragi_syntax::{parse_diagnostics, DiagnosticArtifact};
@@ -17,6 +16,7 @@ pub fn compile_module(input: CompileInput<'_>) -> Result<CompiledModule, Diagnos
         analyzed.typed_hir,
         analyzed.typed_interface,
         input.source(),
+        input.profile(),
     ))
 }
 
@@ -52,8 +52,15 @@ pub fn compile_linked_module_with_output_paths(
     let diagnostics = parse_diagnostics(linked.interface.source.clone(), source);
     let analyzed = analyze_linked_module(diagnostics, linked, source)
         .map_err(LinkedCompileError::Diagnostics)?;
-    compile_analyzed_module_with_output_paths(analyzed, source, output_plan, output_paths)
-        .map_err(LinkedCompileError::TypeScriptPlan)
+    compile_analyzed_module_with_output_paths(
+        analyzed,
+        source,
+        output_plan,
+        output_paths,
+        seseragi_project::BuildProfile::Development,
+        &std::collections::BTreeSet::new(),
+    )
+    .map_err(LinkedCompileError::TypeScriptPlan)
 }
 
 /// Finishes lowering and emission for a project module whose shared frontend
@@ -63,11 +70,25 @@ pub(crate) fn compile_analyzed_module_with_output_paths(
     source: &str,
     output_plan: &TypeScriptOutputPlan,
     output_paths: GeneratedOutputPaths,
+    profile: seseragi_project::BuildProfile,
+    project_newtypes: &std::collections::BTreeSet<String>,
 ) -> Result<CompiledModule, TypeScriptLoweringError> {
     let core_ir = lower_typed_module(analyzed.typed_hir.clone());
-    let typescript_ir = lower_core_module_to_typescript_ir_with_plan(core_ir.clone(), output_plan)?;
-    let generated =
+    let options = lowering_options(&core_ir, profile, project_newtypes);
+    let typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
+        core_ir.clone(),
+        output_plan,
+        &options,
+    )?;
+    let mut generated =
         emit_typescript_module_with_output_paths(typescript_ir.clone(), source, output_paths);
+    configure_profile_metadata(
+        &core_ir,
+        &typescript_ir,
+        &options,
+        profile,
+        &mut generated.metadata,
+    );
 
     Ok(CompiledModule {
         diagnostics: analyzed.diagnostics,
@@ -84,10 +105,24 @@ fn finish_compilation(
     typed_hir: seseragi_semantics::TypedModule,
     typed_interface: seseragi_semantics::TypedModuleInterface,
     source: &str,
+    profile: seseragi_project::BuildProfile,
 ) -> CompiledModule {
     let core_ir = lower_typed_module(typed_hir.clone());
-    let typescript_ir = lower_core_module_to_typescript_ir(core_ir.clone());
-    let generated = emit_typescript_module(typescript_ir.clone(), source);
+    let options = lowering_options(&core_ir, profile, &std::collections::BTreeSet::new());
+    let typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
+        core_ir.clone(),
+        &TypeScriptOutputPlan::default(),
+        &options,
+    )
+    .expect("single module output plan");
+    let mut generated = emit_typescript_module(typescript_ir.clone(), source);
+    configure_profile_metadata(
+        &core_ir,
+        &typescript_ir,
+        &options,
+        profile,
+        &mut generated.metadata,
+    );
 
     CompiledModule {
         diagnostics,
@@ -2356,4 +2391,67 @@ pub fn invalid -> Array<Int> =
         assert!(compiled.generated.typescript.contains("answer(undefined)"));
         assert!(!compiled.generated.typescript.contains("answer(_)"));
     }
+}
+
+fn configure_profile_metadata(
+    core: &seseragi_lowering::CoreModule,
+    typescript: &seseragi_lowering::TypeScriptModule,
+    options: &seseragi_lowering::TypeScriptLoweringOptions,
+    profile: seseragi_project::BuildProfile,
+    metadata: &mut seseragi_lowering::GeneratedModule,
+) {
+    metadata.profile = profile.as_str().to_owned();
+    if profile == seseragi_project::BuildProfile::Release {
+        metadata.effect_roots = core
+            .functions
+            .iter()
+            .filter(|function| function.is_effect)
+            .map(|function| function.symbol.clone())
+            .collect();
+        metadata.inspection_roots = core
+            .functions
+            .iter()
+            .zip(&typescript.functions)
+            .map(|(core, emitted)| {
+                let seseragi_lowering::TypeScriptFunction::ConstFunction { name, .. } = emitted;
+                (core.symbol.clone(), name.clone())
+            })
+            .collect();
+        metadata.newtype_constructors = typescript
+            .adts
+            .iter()
+            .filter(|adt| adt.erased_newtype)
+            .flat_map(|adt| adt.variants.iter().map(|variant| variant.name.clone()))
+            .chain(
+                typescript
+                    .source_imports
+                    .iter()
+                    .flat_map(|import| import.bindings.iter())
+                    .filter(|binding| {
+                        options
+                            .erased_newtype_constructors
+                            .contains(&binding.canonical)
+                    })
+                    .map(|binding| binding.local.clone()),
+            )
+            .collect();
+    }
+}
+
+fn lowering_options(
+    core: &seseragi_lowering::CoreModule,
+    profile: seseragi_project::BuildProfile,
+    project_newtypes: &std::collections::BTreeSet<String>,
+) -> seseragi_lowering::TypeScriptLoweringOptions {
+    let mut options = seseragi_lowering::TypeScriptLoweringOptions::default();
+    if profile == seseragi_project::BuildProfile::Release {
+        options.erased_newtype_constructors = project_newtypes.clone();
+        options.erased_newtype_constructors.extend(
+            core.adts
+                .iter()
+                .filter(|adt| adt.newtype)
+                .flat_map(|adt| adt.variants.iter().map(|variant| variant.symbol.clone())),
+        );
+    }
+    options
 }

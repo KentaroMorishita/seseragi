@@ -3,7 +3,7 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (72)
+## Current product-route fixtures (75)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -58,6 +58,9 @@
 | `package-path-dependency` | `run` | `project-loader` | `crates/seseragi-project/src/local_project/tests.rs`<br>`crates/seseragi-driver/src/local_project.rs` |
 | `package-path-dependency-basic` | `run` | `cli-run`, `project-loader` | `crates/seseragi-cli/tests/run.rs`<br>`crates/seseragi-driver/src/local_project.rs` |
 | `package-stale-lock` | `diagnostic` | `project-loader` | `crates/seseragi-project/src/lockfile/tests.rs` |
+| `performance-profile-equivalence` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/profiles.rs` |
+| `performance-release-shapes` | `compile` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/profiles.rs` |
+| `performance-stack-safety` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/profiles.rs` |
 | `postgres-application` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs` |
 | `sqlite-application` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs` |
 | `prelude-reduce-lambda` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
@@ -80,7 +83,7 @@
 | `test-discovery` | `test` | `cli-test` | `crates/seseragi-cli/src/test.rs` |
 | `typeclass-operator-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 
-## Contract-only fixtures (16)
+## Contract-only fixtures (13)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -93,9 +96,6 @@
 | `modules-reexport-run` | `run` | `planned-conformance` | - |
 | `package-invalid-manifest` | `diagnostic` | `planned-conformance` | - |
 | `package-undeclared-dependency` | `diagnostic` | `planned-conformance` | - |
-| `performance-profile-equivalence` | `run` | `planned-conformance` | - |
-| `performance-release-shapes` | `compile` | `planned-conformance` | - |
-| `performance-stack-safety` | `run` | `planned-conformance` | - |
 | `signal-transaction-lifetime` | `run` | `planned-conformance` | - |
 | `target-capabilities` | `tooling` | `planned-tooling` | - |
 | `typescript-abi-constrained` | `diagnostic` | `planned-tooling` | - |

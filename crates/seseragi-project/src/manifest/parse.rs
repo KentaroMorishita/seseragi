@@ -38,12 +38,19 @@ pub fn parse_manifest(source: &str) -> Result<Manifest, ManifestError> {
         test,
         foreign_typescript,
         web: raw.web.map(parse_web).transpose()?,
+        build_profile: raw.build.and_then(|build| build.profile),
         deferred: DeferredTables {
             foreign: None,
             benchmark: raw.benchmark,
             tool: raw.tool,
         },
     })
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RawBuild {
+    profile: Option<crate::BuildProfile>,
 }
 
 #[derive(Deserialize)]
@@ -136,6 +143,7 @@ fn parse_manifest_file_path(
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct RawManifest {
+    build: Option<RawBuild>,
     package: RawPackage,
     #[serde(default)]
     layout: Option<RawLayout>,

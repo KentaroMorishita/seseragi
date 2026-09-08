@@ -189,6 +189,8 @@ run_conformance_checks() {
   "$PLAYGROUND_TSC" --noEmit -p "$ROOT/runtime/providers/tsconfig.json"
   echo "Testing the foreign TypeScript runtime boundary..."
   bun test runtime/ts/tests/foreign.test.ts
+  echo "Testing release output shapes and stack-safe Effect binds..."
+  bun test scripts/release-shapes.test.ts runtime/ts/tests/effect-stack.test.ts runtime/ts/tests/effect-until.test.ts
   echo "Testing the Traversable runtime boundary..."
   bun test runtime/ts/tests/traversable.test.ts
   echo "Testing persistent Map / Set and serialization boundaries..."
@@ -242,6 +244,9 @@ run_release_contract_metadata_check() {
     scripts/release-readiness.ts \
     scripts/release-readiness.test.ts \
     scripts/native-release.ts \
+    scripts/check-generated-types.ts \
+    scripts/release-shapes.ts \
+    scripts/release-shapes.test.ts \
     scripts/linux-native-abi.ts \
     scripts/linux-native-smoke.ts \
     scripts/native-release.test.ts \
@@ -376,6 +381,9 @@ run_full_checks() {
     scripts/timezone-bundle.ts \
     scripts/run-macos-cargo-tests.ts \
     scripts/native-release.ts \
+    scripts/check-generated-types.ts \
+    scripts/release-shapes.ts \
+    scripts/release-shapes.test.ts \
     scripts/linux-native-abi.ts \
     scripts/linux-native-smoke.ts \
     scripts/native-release.test.ts \
