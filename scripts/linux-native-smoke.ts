@@ -5,7 +5,7 @@ import {
   packageNativeBinary,
   verifyPackage,
 } from "../extensions/seseragi/scripts/verify-package"
-import { assertLinuxAbi } from "./linux-native-abi"
+import { assertLinuxAbi, assertNativeBuildIdentity } from "./linux-native-abi"
 import { verifyNativeRelease } from "./native-release"
 
 function run(command: string[], cwd?: string, stdin?: Buffer): string {
@@ -40,17 +40,7 @@ try {
   const lsp = path.join(directory, "seseragi-lsp")
   const cliMetadata = JSON.parse(run([cli, "--version-json"]))
   const lspMetadata = JSON.parse(run([lsp, "--version-json"]))
-  for (const field of [
-    "version",
-    "commit",
-    "channel",
-    "dirty",
-    "target",
-    "releaseTag",
-  ]) {
-    if (cliMetadata[field] !== lspMetadata[field])
-      throw new Error(`CLI/LSP metadata mismatch: ${field}`)
-  }
+  assertNativeBuildIdentity(cliMetadata, lspMetadata)
   assertLinuxAbi(cli)
   assertLinuxAbi(lsp)
   const bundled = await packageNativeBinary(vsix, "linux-x64")

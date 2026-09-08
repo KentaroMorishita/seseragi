@@ -74,3 +74,18 @@ if (import.meta.main) {
     throw new Error("usage: linux-native-abi.ts ELF...")
   for (const binary of process.argv.slice(2)) assertLinuxAbi(binary)
 }
+
+export function assertNativeBuildIdentity(
+  cli: Record<string, unknown>,
+  lsp: Record<string, unknown>
+): void {
+  for (const field of ["version", "commit", "channel", "dirty", "target"]) {
+    if (cli[field] === undefined || cli[field] !== lsp[field]) {
+      throw new Error(`CLI/LSP metadata mismatch: ${field}`)
+    }
+  }
+  // CLI JSON uses null for a development build; LSP omits the optional tag.
+  if ((cli.releaseTag ?? null) !== (lsp.releaseTag ?? null)) {
+    throw new Error("CLI/LSP metadata mismatch: releaseTag")
+  }
+}

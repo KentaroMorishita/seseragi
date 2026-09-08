@@ -1,6 +1,9 @@
 import { expect, test } from "bun:test"
 import { readFileSync } from "node:fs"
-import { assertGlibcVersions } from "./linux-native-abi"
+import {
+  assertGlibcVersions,
+  assertNativeBuildIdentity,
+} from "./linux-native-abi"
 import contract from "./linux-native-contract.json"
 
 test("compares required GLIBC versions numerically and fails closed", () => {
@@ -43,4 +46,32 @@ test("release cannot bypass downloaded baseline smoke or rebuild a separate Linu
   expect(linux).toContain(
     'SESERAGI_LSP_BINARY="$PWD/target/linux-native/x86_64-unknown-linux-gnu/release/seseragi-lsp"'
   )
+})
+
+test("compares build identity while accepting optional development tag encodings", () => {
+  const metadata = {
+    version: "1.0.0",
+    commit: "abcdef",
+    channel: "development",
+    dirty: false,
+    target: "x86_64-unknown-linux-gnu",
+  }
+  assertNativeBuildIdentity({ ...metadata, releaseTag: null }, metadata)
+  assertNativeBuildIdentity(
+    { ...metadata, releaseTag: "v1.0.0" },
+    { ...metadata, releaseTag: "v1.0.0" }
+  )
+  for (const field of [
+    "version",
+    "commit",
+    "channel",
+    "dirty",
+    "target",
+    "releaseTag",
+  ]) {
+    expect(() =>
+      assertNativeBuildIdentity(metadata, { ...metadata, [field]: "different" })
+    ).toThrow(`mismatch: ${field}`)
+  }
+  expect(() => assertNativeBuildIdentity({}, {})).toThrow()
 })
