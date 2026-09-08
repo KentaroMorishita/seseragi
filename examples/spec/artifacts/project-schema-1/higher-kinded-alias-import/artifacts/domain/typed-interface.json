@@ -124,6 +124,7 @@
       "symbol": "fixture/higher-kinded-alias-import::domain::keepMaybe",
       "namespace": "value",
       "name": "keepMaybe",
+      "callArity": 1,
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
@@ -200,6 +201,7 @@
       "symbol": "fixture/higher-kinded-alias-import::domain::keepEither",
       "namespace": "value",
       "name": "keepEither",
+      "callArity": 1,
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {

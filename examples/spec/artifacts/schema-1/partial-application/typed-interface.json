@@ -45,6 +45,7 @@
       "symbol": "artifact/partial-application::addTo",
       "namespace": "value",
       "name": "addTo",
+      "callArity": 1,
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
