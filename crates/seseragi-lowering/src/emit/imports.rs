@@ -28,6 +28,25 @@ pub(super) fn render_import_lines(module: &TypeScriptModule) -> Vec<String> {
 fn render_source_imports(module: &TypeScriptModule) -> Vec<String> {
     let mut lines = Vec::new();
     for import in &module.source_imports {
+        if !import.reexports.is_empty() {
+            let bindings = import
+                .reexports
+                .iter()
+                .map(|binding| {
+                    let kind = if binding.type_only { "type " } else { "" };
+                    if binding.imported == binding.local {
+                        format!("{kind}{}", binding.imported)
+                    } else {
+                        format!("{kind}{} as {}", binding.imported, binding.local)
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join(", ");
+            lines.push(format!(
+                "export {{ {bindings} }} from {:?}",
+                import.specifier
+            ));
+        }
         if !import.bindings.is_empty() {
             let bindings = import
                 .bindings

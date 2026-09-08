@@ -1667,6 +1667,39 @@ describe("Playground project compiler boundary", () => {
     expect(formatted.status).toBe("success")
   })
 
+  test("executes opaque structs through a public facade without exposing fields", async () => {
+    const root = "../../../examples/spec/fixtures/projects/opaque-struct/"
+    const files = await Promise.all(
+      ["main", "domain", "facade"].map(async (name) => ({
+        path: `${name}.ssrg`,
+        source: await Bun.file(
+          new URL(`${root}src/${name}.ssrg`, import.meta.url)
+        ).text(),
+      }))
+    )
+    const expected = await Bun.file(
+      new URL(`${root}expected.stdout`, import.meta.url)
+    ).text()
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files,
+    })
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry.contract)
+      throw new Error("missing opaque struct execution entry")
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
+  })
+
   test("executes imported Unicode APIs and enforces dependency guards in the browser runtime", async () => {
     const root =
       "../../../examples/spec/artifacts/project-schema-1/imported-unicode/"

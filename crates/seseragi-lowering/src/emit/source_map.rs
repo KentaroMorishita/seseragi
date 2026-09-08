@@ -98,7 +98,9 @@ fn module_names_and_mappings(
             &structure.origin,
             source_text,
         );
-        generated_line += structure.fields.len() + 4;
+        let mut rendered = String::new();
+        super::render_struct(&mut rendered, structure);
+        generated_line += rendered.lines().count();
     }
 
     for instance in &module.instances {
@@ -547,6 +549,7 @@ mod tests {
             imports: Vec::new(),
             type_imports: Vec::new(),
             source_imports: vec![TypeScriptSourceImport {
+                reexports: Vec::new(),
                 module: "fixture/game::domain".to_owned(),
                 specifier: "./domain.js".to_owned(),
                 runtime_edge: true,

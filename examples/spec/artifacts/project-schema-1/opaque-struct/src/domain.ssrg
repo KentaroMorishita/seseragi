@@ -1,0 +1,12 @@
+pub opaque struct Secret deriving Eq, Show { value: Int }
+pub opaque struct Box<A> { value: A }
+pub fn create value: Int -> Secret = Secret { value }
+pub fn read secret: Secret -> Int = secret.value
+pub fn unpack secret: Secret -> Int = { let Secret { value } = secret; value }
+pub fn update secret: Secret -> Secret = Secret { ...secret, value: 9 }
+pub fn box<A> value: A -> Box<A> = Box { value }
+pub fn unbox<A> boxed: Box<A> -> A = { let Box { value } = boxed; value }
+pub fn nested boxed: Box<Secret> -> Int =
+  { let Box { value: Secret { value } } = boxed; value }
+pub fn collect secrets: Array<Secret> -> Array<Int> =
+  [value | Secret { value } <- secrets]

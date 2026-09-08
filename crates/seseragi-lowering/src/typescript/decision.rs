@@ -15,6 +15,7 @@ use super::{
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(super) struct TypeScriptPatternDecision {
+    pub(super) private_representation: bool,
     pub(super) scrutinee_type: super::TypeScriptType,
     pub(super) tests: Vec<TypeScriptDecisionTest>,
     pub(super) bindings: Vec<TypeScriptDecisionBinding>,
@@ -24,7 +25,12 @@ pub(super) fn lower_core_pattern_decision(
     pattern: CorePattern,
     imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptPatternDecision {
-    let scrutinee_type = type_ref_from_core_type(&core_pattern_type(&pattern), imported_types);
+    let scrutinee_type = type_ref_from_core_type(
+        &core_pattern_type(&pattern),
+        &imported_types.with_private_representation(),
+    );
+    let private_representation =
+        scrutinee_type != type_ref_from_core_type(&core_pattern_type(&pattern), imported_types);
     let mut tests = Vec::new();
     let mut bindings = Vec::new();
     lower_pattern(
@@ -35,6 +41,7 @@ pub(super) fn lower_core_pattern_decision(
         imported_types,
     );
     TypeScriptPatternDecision {
+        private_representation,
         scrutinee_type,
         tests,
         bindings,
@@ -49,13 +56,20 @@ pub(super) fn lower_core_decision(
     imported_values: &BTreeMap<String, String>,
     imported_types: &TypeScriptTypeContext,
 ) -> TypeScriptExpr {
+    let public_type = type_ref_from_core_type(&scrutinee_type, imported_types);
+    let private_type = type_ref_from_core_type(
+        &scrutinee_type,
+        &imported_types.with_private_representation(),
+    );
+    let scrutinee = lower_core_expr_to_typescript(scrutinee, imported_values, imported_types);
+    let scrutinee = if public_type != private_type {
+        super::types::assert_private_representation(scrutinee, private_type.clone())
+    } else {
+        scrutinee
+    };
     TypeScriptExpr::Decision {
-        scrutinee: Box::new(lower_core_expr_to_typescript(
-            scrutinee,
-            imported_values,
-            imported_types,
-        )),
-        scrutinee_type: type_ref_from_core_type(&scrutinee_type, imported_types),
+        scrutinee: Box::new(scrutinee),
+        scrutinee_type: private_type,
         branches: branches
             .into_iter()
             .map(|branch| lower_branch(branch, imported_values, imported_types))

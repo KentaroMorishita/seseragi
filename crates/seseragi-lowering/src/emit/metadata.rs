@@ -89,7 +89,13 @@ fn generated_instance_from_typescript(instance: &TypeScriptInstance) -> Generate
 }
 
 fn module_exports(module: &TypeScriptModule) -> Vec<String> {
-    let mut exports = Vec::new();
+    let mut exports = module
+        .source_imports
+        .iter()
+        .flat_map(|import| &import.reexports)
+        .filter(|binding| !binding.type_only)
+        .map(|binding| binding.local.clone())
+        .collect::<Vec<_>>();
     for adt in &module.adts {
         for variant in &adt.variants {
             if variant.exported {

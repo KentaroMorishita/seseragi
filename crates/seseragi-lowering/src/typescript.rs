@@ -145,6 +145,8 @@ pub struct TypeScriptStruct {
     pub opaque: bool,
     pub type_parameters: Vec<TypeParameter>,
     pub fields: Vec<TypeScriptRecordTypeField>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub private_fields: Option<Vec<TypeScriptRecordTypeField>>,
     pub origin: SourceSpan,
 }
 
@@ -186,6 +188,8 @@ pub struct TypeScriptTypeImport {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptSourceImport {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub reexports: Vec<TypeScriptSourceImportBinding>,
     pub module: String,
     pub specifier: String,
     /// Whether this group originated from a Seseragi source dependency edge
@@ -808,6 +812,26 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
             name: local_name(&structure.symbol),
             brand: format!("__ssrg$brand${}", local_name(&structure.symbol)),
             opaque: structure.opaque,
+            private_fields: module_imports
+                .type_names
+                .has_private_representations()
+                .then(|| {
+                    structure
+                        .fields
+                        .iter()
+                        .map(|field| TypeScriptRecordTypeField {
+                            name: field.name.clone(),
+                            optional: false,
+                            type_ref: types::type_ref_from_core_type(
+                                &field.type_ref,
+                                &module_imports
+                                    .type_names
+                                    .with_parameters(&structure.type_parameters)
+                                    .with_private_representation(),
+                            ),
+                        })
+                        .collect()
+                }),
             type_parameters: structure.type_parameters.clone(),
             fields: structure
                 .fields

@@ -135,7 +135,12 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     for structure in &module.structs {
         render_struct(&mut output, structure);
     }
-    render_typescript_instances(&mut output, &module.instances, &module.type_imports);
+    render_typescript_instances(
+        &mut output,
+        &module.instances,
+        &module.type_imports,
+        &module.structs,
+    );
     for function in &module.functions {
         match function {
             TypeScriptFunction::ConstFunction {
@@ -523,15 +528,52 @@ fn render_struct(output: &mut String, structure: &TypeScriptStruct) {
     }
     let type_parameters = render_type_parameters(&structure.type_parameters);
     output.push_str(&format!("type {}{type_parameters} = {{\n", structure.name));
-    for field in &structure.fields {
+    if !structure.opaque {
+        render_struct_fields(output, &structure.fields);
+    }
+    let brand_type = if structure.opaque && !structure.type_parameters.is_empty() {
+        format!(
+            "readonly [{}]",
+            structure
+                .type_parameters
+                .iter()
+                .map(|parameter| if parameter.is_constructor() {
+                    "unknown"
+                } else {
+                    parameter.name.as_str()
+                })
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
+    } else {
+        "true".to_owned()
+    };
+    output.push_str(&format!(
+        "  readonly [{}]: {brand_type};\n",
+        structure.brand
+    ));
+    output.push_str("};\n");
+    if let Some(fields) = &structure.private_fields {
         output.push_str(&format!(
-            "  readonly {}: {};\n",
-            format!("{:?}", field.name),
+            "type {}{type_parameters} = {{\n",
+            crate::typescript::types::private_representation_name(&structure.name)
+        ));
+        render_struct_fields(output, fields);
+        output.push_str(&format!(
+            "  readonly [{}]: {brand_type};\n}};\n",
+            structure.brand
+        ));
+    }
+}
+
+fn render_struct_fields(output: &mut String, fields: &[crate::TypeScriptRecordTypeField]) {
+    for field in fields {
+        output.push_str(&format!(
+            "  readonly {:?}: {};\n",
+            field.name,
             render_typescript_type(&field.type_ref)
         ));
     }
-    output.push_str(&format!("  readonly [{}]: true;\n", structure.brand));
-    output.push_str("};\n");
 }
 
 fn render_adt_variant_type(variant: &TypeScriptAdtVariant) -> String {

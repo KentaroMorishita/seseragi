@@ -13,6 +13,8 @@ pub(super) struct TypeScriptTypeContext {
     imported_names: Arc<BTreeMap<String, String>>,
     constructors: BTreeSet<String>,
     arities: BTreeMap<String, u32>,
+    private_struct_names: BTreeSet<String>,
+    private_representation: bool,
 }
 
 impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
@@ -21,12 +23,22 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
             imported_names: Arc::new(imported_names),
             constructors: BTreeSet::new(),
             arities: BTreeMap::new(),
+            private_struct_names: BTreeSet::new(),
+            private_representation: false,
         }
     }
 }
 
 impl TypeScriptTypeContext {
     pub(super) fn with_module(mut self, module: &crate::CoreModule) -> Self {
+        if module.structs.iter().any(|structure| structure.opaque) {
+            self.private_struct_names.extend(
+                module
+                    .structs
+                    .iter()
+                    .map(|structure| structure.name.clone()),
+            );
+        }
         for binding in &module.external_type_bindings {
             if let Some(arity) = binding.arity {
                 self.arities.insert(binding.canonical.clone(), arity);
@@ -54,6 +66,16 @@ impl TypeScriptTypeContext {
         self
     }
 
+    pub(super) fn with_private_representation(&self) -> Self {
+        let mut context = self.clone();
+        context.private_representation = true;
+        context
+    }
+
+    pub(super) fn has_private_representations(&self) -> bool {
+        !self.private_struct_names.is_empty()
+    }
+
     pub(super) fn get(&self, canonical: &str) -> Option<&String> {
         self.imported_names.get(canonical)
     }
@@ -61,6 +83,7 @@ impl TypeScriptTypeContext {
     pub(super) fn with_parameters(&self, parameters: &[TypeParameter]) -> Self {
         let mut scoped = self.clone();
         for parameter in parameters {
+            scoped.private_struct_names.remove(&parameter.name);
             scoped.constructors.remove(&parameter.name);
             if parameter.is_constructor() {
                 scoped.constructors.insert(parameter.name.clone());
@@ -228,6 +251,24 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                 ) =>
         {
             TypeScriptType::Range
+        }
+        CoreType::Named { name, arguments }
+            if imported_types.private_representation
+                && imported_types.private_struct_names.contains(name) =>
+        {
+            TypeScriptType::Reference {
+                name: private_representation_name(&local_name(name)),
+                arguments: arguments
+                    .iter()
+                    .map(|argument| {
+                        type_ref_from_core_type_with_erasure(
+                            argument,
+                            imported_types,
+                            type_constructor_parameters,
+                        )
+                    })
+                    .collect(),
+            }
         }
         CoreType::Named { name, arguments } => TypeScriptType::Reference {
             name: runtime_type_import_for_surface(name)
@@ -527,5 +568,22 @@ mod tests {
             lower_core_parameter_to_typescript(parameter, &Default::default(), &["F".to_owned()]);
 
         assert_eq!(lowered.type_name, "unknown");
+    }
+}
+
+pub(crate) fn private_representation_name(name: &str) -> String {
+    format!("__ssrg$representation${name}")
+}
+
+pub(super) fn assert_private_representation(
+    value: super::TypeScriptExpr,
+    type_ref: TypeScriptType,
+) -> super::TypeScriptExpr {
+    super::TypeScriptExpr::CheckedResult {
+        value: Box::new(super::TypeScriptExpr::CheckedResult {
+            value: Box::new(value),
+            type_ref: TypeScriptType::Unknown,
+        }),
+        type_ref,
     }
 }

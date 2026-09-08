@@ -23,7 +23,12 @@ pub type AppError deriving Show =
     show_import.local = "ResolvedShow".to_owned();
 
     let mut output = String::new();
-    render_typescript_instances(&mut output, &typescript.instances, &typescript.type_imports);
+    render_typescript_instances(
+        &mut output,
+        &typescript.instances,
+        &typescript.type_imports,
+        &typescript.structs,
+    );
 
     assert_eq!(output.lines().count(), typescript.instances.len());
     assert_eq!(
@@ -47,7 +52,12 @@ pub type Chain deriving Show =
     let typescript = lower_core_module_to_typescript_ir(core);
 
     let mut output = String::new();
-    render_typescript_instances(&mut output, &typescript.instances, &typescript.type_imports);
+    render_typescript_instances(
+        &mut output,
+        &typescript.instances,
+        &typescript.type_imports,
+        &typescript.structs,
+    );
 
     assert!(output.contains(
         "case \"Link\": return \"Link\" + \" \" + __ssrg$instance$Show$0.show(value.value);"
@@ -140,7 +150,7 @@ pub type Tree<A> deriving JsonEncode, JsonDecode =
 fn emits_nothing_without_selected_instances_or_show_import() {
     let mut output = String::new();
 
-    render_typescript_instances(&mut output, &[], &[]);
+    render_typescript_instances(&mut output, &[], &[], &[]);
 
     assert!(output.is_empty());
 }

@@ -122,6 +122,8 @@ pub struct TypedModuleDependency {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypedModuleImport {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reexported_as: Option<String>,
     pub namespace: String,
     pub imported: String,
     pub local: String,

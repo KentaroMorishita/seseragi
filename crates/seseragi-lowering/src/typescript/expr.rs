@@ -880,15 +880,34 @@ pub(super) fn lower_core_expr_to_typescript(
             elements: lower_core_expressions(elements, imported_values, imported_types),
         },
         CoreExpr::FieldAccess {
-            receiver, field, ..
-        } => TypeScriptExpr::FieldAccess {
-            receiver: Box::new(lower_core_expr_to_typescript(
-                *receiver,
-                imported_values,
-                imported_types,
-            )),
+            receiver,
             field,
-        },
+            type_ref,
+            ..
+        } => {
+            let public_type = type_ref_from_core_expr(&receiver, imported_types);
+            let private_type =
+                type_ref_from_core_expr(&receiver, &imported_types.with_private_representation());
+            let receiver =
+                lower_core_expr_to_typescript(*receiver, imported_values, imported_types);
+            if private_type != public_type {
+                TypeScriptExpr::CheckedResult {
+                    value: Box::new(TypeScriptExpr::FieldAccess {
+                        receiver: Box::new(super::types::assert_private_representation(
+                            receiver,
+                            private_type,
+                        )),
+                        field,
+                    }),
+                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                }
+            } else {
+                TypeScriptExpr::FieldAccess {
+                    receiver: Box::new(receiver),
+                    field,
+                }
+            }
+        }
         CoreExpr::OptionalFieldAccess {
             receiver, field, ..
         } => TypeScriptExpr::OptionalFieldAccess {

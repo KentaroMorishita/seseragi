@@ -247,6 +247,7 @@ mod tests {
                     end: source.len(),
                 },
                 imports: vec![TypedModuleImport {
+                    reexported_as: None,
                     namespace: "value".to_owned(),
                     imported: "increment".to_owned(),
                     local: "next".to_owned(),

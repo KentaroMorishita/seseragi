@@ -143,6 +143,8 @@ pub struct CoreModuleDependency {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CoreModuleImport {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reexported_as: Option<String>,
     pub namespace: String,
     pub imported: String,
     pub local: String,
@@ -643,6 +645,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 .imports
                 .into_iter()
                 .map(|import| CoreModuleImport {
+                    reexported_as: import.reexported_as,
                     namespace: import.namespace,
                     imported: import.imported,
                     local: import.local,

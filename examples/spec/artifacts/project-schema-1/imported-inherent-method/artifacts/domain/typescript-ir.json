@@ -23,6 +23,17 @@
           }
         }
       ],
+      "privateFields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
       "origin": {
         "source": "domain.ssrg",
         "start": 0,
@@ -105,12 +116,40 @@
               "callee": "transform",
               "arguments": [
                 {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "self"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "identifier",
+                          "name": "self"
+                        },
+                        "type": {
+                          "kind": "unknown"
+                        }
+                      },
+                      "type": {
+                        "kind": "reference",
+                        "name": "__ssrg$representation$Box",
+                        "arguments": [
+                          {
+                            "kind": "reference",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    "field": "value"
                   },
-                  "field": "value"
+                  "type": {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
                 }
               ]
             }
@@ -149,12 +188,40 @@
         }
       ],
       "body": {
-        "kind": "field-access",
-        "receiver": {
-          "kind": "identifier",
-          "name": "self"
+        "kind": "checked-result",
+        "value": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "checked-result",
+            "value": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "identifier",
+                "name": "self"
+              },
+              "type": {
+                "kind": "unknown"
+              }
+            },
+            "type": {
+              "kind": "reference",
+              "name": "__ssrg$representation$Box",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          },
+          "field": "value"
         },
-        "field": "value"
+        "type": {
+          "kind": "reference",
+          "name": "A",
+          "arguments": []
+        }
       },
       "origin": {
         "source": "domain.ssrg",
@@ -177,12 +244,40 @@
         }
       ],
       "body": {
-        "kind": "field-access",
-        "receiver": {
-          "kind": "identifier",
-          "name": "self"
+        "kind": "checked-result",
+        "value": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "checked-result",
+            "value": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "identifier",
+                "name": "self"
+              },
+              "type": {
+                "kind": "unknown"
+              }
+            },
+            "type": {
+              "kind": "reference",
+              "name": "__ssrg$representation$Box",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          },
+          "field": "value"
         },
-        "field": "value"
+        "type": {
+          "kind": "reference",
+          "name": "A",
+          "arguments": []
+        }
       },
       "origin": {
         "source": "domain.ssrg",

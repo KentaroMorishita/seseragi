@@ -16,6 +16,7 @@ pub(super) fn render_typescript_instances(
     output: &mut String,
     instances: &[TypeScriptInstance],
     type_imports: &[TypeScriptTypeImport],
+    structures: &[crate::TypeScriptStruct],
 ) {
     if instances.is_empty() {
         return;
@@ -30,12 +31,23 @@ pub(super) fn render_typescript_instances(
             .iter()
             .find(|import| import.feature == dictionary_feature)
             .map(|import| import.local.as_str());
-        output.push_str(&render_instance(instance, display_type_local));
+        output.push_str(&render_instance(instance, display_type_local, structures));
         output.push('\n');
     }
 }
 
-fn render_instance(instance: &TypeScriptInstance, display_type_local: Option<&str>) -> String {
+fn render_instance(
+    instance: &TypeScriptInstance,
+    display_type_local: Option<&str>,
+    structures: &[crate::TypeScriptStruct],
+) -> String {
+    let head = render_instance_head(instance);
+    let private_head = structures
+        .iter()
+        .any(|structure| {
+            structure.opaque && head.split('<').next() == Some(structure.name.as_str())
+        })
+        .then(|| crate::typescript::types::private_representation_name(&head));
     match &instance.implementation {
         TypeScriptInstanceImplementation::DerivedShow { adt_name, variants } => {
             let _ = adt_name;
@@ -49,7 +61,7 @@ fn render_instance(instance: &TypeScriptInstance, display_type_local: Option<&st
         } => {
             let _ = struct_name;
             render_derived_display_instance(instance, display_type_local, |head, method| {
-                render_derived_struct_body(head, method, fields)
+                render_derived_struct_body(head, method, fields, private_head.as_deref())
             })
         }
         TypeScriptInstanceImplementation::DerivedJson {
@@ -64,9 +76,11 @@ fn render_instance(instance: &TypeScriptInstance, display_type_local: Option<&st
             variants,
             transparent_newtype,
             ..
-        } => render_structural_instance(instance, Some((variants, *transparent_newtype)), &[]),
+        } => {
+            render_structural_instance(instance, Some((variants, *transparent_newtype)), &[], None)
+        }
         TypeScriptInstanceImplementation::DerivedStructStructural { fields, .. } => {
-            render_structural_instance(instance, None, fields)
+            render_structural_instance(instance, None, fields, private_head.as_deref())
         }
         TypeScriptInstanceImplementation::UserDefined { methods } => {
             render_user_defined_instance(instance, methods)
@@ -78,6 +92,7 @@ fn render_structural_instance(
     instance: &TypeScriptInstance,
     adt: Option<(&[TypeScriptDerivedShowVariant], bool)>,
     fields: &[TypeScriptDerivedShowField],
+    private_head: Option<&str>,
 ) -> String {
     let head = render_instance_head(instance);
     let method = match instance.trait_name.as_str() {
@@ -134,8 +149,8 @@ fn render_structural_instance(
             .iter()
             .map(|field| {
                 (
-                    format!("left[{:?}]", field.name),
-                    format!("right[{:?}]", field.name),
+                    format!("{}[{:?}]", private_value("left", private_head), field.name),
+                    format!("{}[{:?}]", private_value("right", private_head), field.name),
                     &field.dictionary,
                 )
             })
@@ -502,14 +517,16 @@ fn render_derived_struct_body(
     head: &str,
     method: &str,
     fields: &[TypeScriptDerivedShowField],
+    private_head: Option<&str>,
 ) -> String {
     let rendered_fields = fields
         .iter()
         .map(|field| {
             format!(
-                "{:?} + {}.{method}(value[{:?}])",
+                "{:?} + {}.{method}({}[{:?}])",
                 format!("{}: ", field.name),
                 render_dictionary_reference(&field.dictionary),
+                private_value("value", private_head),
                 field.name,
             )
         })
@@ -543,3 +560,10 @@ fn render_dictionary_reference(reference: &TypeScriptShowDictionaryReference) ->
 
 #[cfg(test)]
 mod tests;
+
+fn private_value(value: &str, private_head: Option<&str>) -> String {
+    private_head.map_or_else(
+        || value.to_owned(),
+        |head| format!("({value} as unknown as {head})"),
+    )
+}

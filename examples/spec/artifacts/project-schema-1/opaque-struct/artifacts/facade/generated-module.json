@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "module": "fixture/opaque-struct::facade",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": []
+  },
+  "exports": [
+    "create",
+    "read",
+    "unpack",
+    "update",
+    "box",
+    "unbox",
+    "nested",
+    "collect"
+  ],
+  "outputs": {
+    "typescript": "dist/opaque-struct/facade.ts",
+    "sourceMap": "dist/opaque-struct/facade.ts.map"
+  }
+}

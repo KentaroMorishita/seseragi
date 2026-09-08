@@ -1,0 +1,38 @@
+{
+  "version": 3,
+  "file": "dist/opaque-struct/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/opaque-struct::domain"
+  ],
+  "sourcesContent": [
+    "pub opaque struct Secret deriving Eq, Show { value: Int }\npub opaque struct Box<A> { value: A }\npub fn create value: Int -> Secret = Secret { value }\npub fn read secret: Secret -> Int = secret.value\npub fn unpack secret: Secret -> Int = { let Secret { value } = secret; value }\npub fn update secret: Secret -> Secret = Secret { ...secret, value: 9 }\npub fn box<A> value: A -> Box<A> = Box { value }\npub fn unbox<A> boxed: Box<A> -> A = { let Box { value } = boxed; value }\npub fn nested boxed: Box<Secret> -> Int =\n  { let Box { value: Secret { value } } = boxed; value }\npub fn collect secrets: Array<Secret> -> Array<Int> =\n  [value | Secret { value } <- secrets]\n"
+  ],
+  "names": [
+    "Secret",
+    "Box",
+    "__ssrg$instance$Eq$0",
+    "__ssrg$instance$Show$1",
+    "create",
+    "read",
+    "unpack",
+    "__ssrg$pattern$238",
+    "value",
+    "value",
+    "update",
+    "box",
+    "unbox",
+    "__ssrg$pattern$437",
+    "value",
+    "value",
+    "nested",
+    "__ssrg$pattern$518",
+    "value",
+    "value",
+    "collect",
+    "_ssrg_array_comprehend",
+    "value",
+    "value"
+  ],
+  "mappings": ";;;;;;;AAAAA;;;;;;;;AACAC;;;;;;;AADAC;AAAAC;AAEAC;AACAC;AACAC;AACAI;AACAC;AACAC;AACAI;AAEAI"
+}

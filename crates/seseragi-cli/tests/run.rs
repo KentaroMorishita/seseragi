@@ -1998,3 +1998,24 @@ fn runs_local_rec() {
         fs::read_to_string(package.join("expected.stdout")).unwrap()
     );
 }
+
+#[test]
+fn runs_opaque_struct() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/opaque-struct"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+}

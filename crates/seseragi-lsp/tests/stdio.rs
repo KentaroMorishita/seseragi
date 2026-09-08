@@ -2139,3 +2139,33 @@ fn binary_resolves_recursive_group_references_and_rename() {
         .to_string()
         .contains("Bool"));
 }
+
+#[test]
+fn opaque_struct_hover_and_completion_hide_external_fields() {
+    let workspace = TempWorkspace::new();
+    workspace.write("seseragi.toml", "[package]\nname = \"fixture/opaque-lsp\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n[run]\nentry = \"main\"\ntarget = \"process\"\n");
+    workspace.write("src/domain.ssrg", "pub opaque struct Secret { privateField: Int }\npub fn create -> Secret = Secret { privateField: 7 }\n");
+    workspace.write(
+        "src/facade.ssrg",
+        "pub import { Secret, create } from \"./domain\"\n",
+    );
+    let source = "import { Secret, create } from \"./facade\"\nlet secret: Secret = create ()\n";
+    workspace.write("src/main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let uri = file_uri(&workspace.path().join("src/main.ssrg"));
+    let changed = format!("{source}let probe = secret.\n");
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":uri},"position":{"line":1,"character":5}}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":uri,"version":2},"contentChanges":[{"text":changed}]}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":{"line":2,"character":19}}}),
+        json!({"jsonrpc":"2.0","id":4,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    let hover = response(&messages, 2)["result"].to_string();
+    assert!(hover.contains("Secret"), "{hover} {messages:#?}");
+    assert!(!hover.contains("privateField"), "{hover}");
+    let completions = response(&messages, 3)["result"].to_string();
+    assert!(!completions.contains("privateField"), "{completions}");
+}

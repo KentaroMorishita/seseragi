@@ -130,9 +130,7 @@ fn pattern_predicate(
     guard: Option<TypeScriptExpr>,
 ) -> TypeScriptExpr {
     TypeScriptExpr::Decision {
-        scrutinee: Box::new(TypeScriptExpr::Identifier {
-            name: parameter.to_owned(),
-        }),
+        scrutinee: Box::new(pattern_scrutinee(parameter, pattern)),
         scrutinee_type: pattern.scrutinee_type.clone(),
         branches: vec![
             TypeScriptDecisionBranch {
@@ -159,9 +157,7 @@ fn pattern_transform(
     transform_type: TypeScriptType,
 ) -> TypeScriptExpr {
     TypeScriptExpr::Decision {
-        scrutinee: Box::new(TypeScriptExpr::Identifier {
-            name: parameter.to_owned(),
-        }),
+        scrutinee: Box::new(pattern_scrutinee(parameter, pattern)),
         scrutinee_type: pattern.scrutinee_type.clone(),
         branches: vec![TypeScriptDecisionBranch {
             tests: pattern.tests.clone(),
@@ -170,5 +166,22 @@ fn pattern_transform(
             value: transform,
         }],
         type_ref: transform_type,
+    }
+}
+
+fn pattern_scrutinee(
+    parameter: &str,
+    pattern: &crate::typescript::decision::TypeScriptPatternDecision,
+) -> TypeScriptExpr {
+    let value = TypeScriptExpr::Identifier {
+        name: parameter.to_owned(),
+    };
+    if pattern.private_representation {
+        crate::typescript::types::assert_private_representation(
+            value,
+            pattern.scrutinee_type.clone(),
+        )
+    } else {
+        value
     }
 }

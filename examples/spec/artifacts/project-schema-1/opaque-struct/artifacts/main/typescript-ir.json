@@ -1,0 +1,504 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/opaque-struct::main",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.int",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.string",
+    "core.bool.show",
+    "core.bool",
+    "core.int.show",
+    "core.array.show"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.array.show",
+      "local": "_ssrg_show_arrayShow"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/opaque-struct::facade",
+      "specifier": "./facade.js",
+      "bindings": [
+        {
+          "imported": "create",
+          "local": "create",
+          "sourceLocal": "create",
+          "canonical": "fixture/opaque-struct::domain::create",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 28,
+            "end": 34
+          }
+        },
+        {
+          "imported": "read",
+          "local": "read",
+          "sourceLocal": "read",
+          "canonical": "fixture/opaque-struct::domain::read",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 38,
+            "end": 42
+          }
+        },
+        {
+          "imported": "unpack",
+          "local": "unpack",
+          "sourceLocal": "unpack",
+          "canonical": "fixture/opaque-struct::domain::unpack",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 46,
+            "end": 52
+          }
+        },
+        {
+          "imported": "update",
+          "local": "update",
+          "sourceLocal": "update",
+          "canonical": "fixture/opaque-struct::domain::update",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 56,
+            "end": 62
+          }
+        },
+        {
+          "imported": "box",
+          "local": "box",
+          "sourceLocal": "box",
+          "canonical": "fixture/opaque-struct::domain::box",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 66,
+            "end": 69
+          }
+        },
+        {
+          "imported": "unbox",
+          "local": "unbox",
+          "sourceLocal": "unbox",
+          "canonical": "fixture/opaque-struct::domain::unbox",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 73,
+            "end": 78
+          }
+        },
+        {
+          "imported": "nested",
+          "local": "nested",
+          "sourceLocal": "nested",
+          "canonical": "fixture/opaque-struct::domain::nested",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 82,
+            "end": 88
+          }
+        },
+        {
+          "imported": "collect",
+          "local": "collect",
+          "sourceLocal": "collect",
+          "canonical": "fixture/opaque-struct::domain::collect",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 92,
+            "end": 99
+          }
+        },
+        {
+          "imported": "Box",
+          "local": "Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/opaque-struct::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 117
+          }
+        },
+        {
+          "imported": "Secret",
+          "local": "Secret",
+          "sourceLocal": "Secret",
+          "canonical": "fixture/opaque-struct::domain::Secret",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 117
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 117
+      }
+    },
+    {
+      "module": "fixture/opaque-struct::domain",
+      "specifier": "./domain.js",
+      "runtimeEdge": false,
+      "bindings": [
+        {
+          "imported": "__ssrg$instance$Eq$0",
+          "local": "__ssrg$instance$Eq$0",
+          "sourceLocal": "Eq<fixture/opaque-struct::domain::Secret>",
+          "canonical": "Eq<fixture/opaque-struct::domain::Secret>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 119,
+            "end": 434
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Show$1",
+          "local": "__ssrg$instance$Show$1",
+          "sourceLocal": "Show<fixture/opaque-struct::domain::Secret>",
+          "canonical": "Show<fixture/opaque-struct::domain::Secret>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 119,
+            "end": 434
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 119,
+        "end": 434
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "secret",
+            "type": {
+              "kind": "reference",
+              "name": "Secret",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "create",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "7"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 141,
+              "end": 165
+            }
+          }
+        ],
+        "result": {
+          "kind": "sequence",
+          "statements": [
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "read",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "secret"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "unpack",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "secret"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Show$1"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "secret"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_boolShow"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$Eq$0"
+                          },
+                          "method": "eq",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "secret"
+                            },
+                            {
+                              "kind": "call",
+                              "callee": "create",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "7"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "unbox",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "box",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "42"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "nested",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "box",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "secret"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_arrayShow",
+                        "typeArguments": [
+                          {
+                            "kind": "number"
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_show_intShow"
+                          }
+                        ]
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "collect",
+                          "arguments": [
+                            {
+                              "kind": "array",
+                              "elements": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "secret"
+                                }
+                              ],
+                              "elementType": {
+                                "kind": "reference",
+                                "name": "Secret",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "result": {
+            "kind": "runtime-call",
+            "callee": "_ssrg_console_println",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "read",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "update",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "secret"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 119,
+        "end": 434
+      }
+    }
+  ]
+}
