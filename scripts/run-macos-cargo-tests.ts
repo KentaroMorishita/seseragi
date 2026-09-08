@@ -32,6 +32,10 @@ for (const line of readFileSync(manifestPath, "utf8").split("\n")) {
   }
 }
 
+if (executables.size === 0) {
+  throw new Error("no Cargo test artifacts found; tests were not executed")
+}
+
 const run = (command: string, args: string[]): void => {
   const result = spawnSync(command, args, { stdio: "inherit" })
   if (result.error) throw result.error
@@ -77,7 +81,9 @@ try {
   rmSync(directory, { force: true, recursive: true })
 }
 
-console.log(`Ran ${executables.size} signed macOS Cargo test artifacts.`)
+console.log(
+  `Attempted ${executables.size} macOS Cargo test artifacts; ${failures.length} failed.`
+)
 
 if (failures.length > 0) {
   console.error(
