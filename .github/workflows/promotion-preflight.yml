@@ -1,25 +1,24 @@
-name: Promotion publish
+name: Promotion preflight
 
 on:
   issue_comment:
     types: [created]
 
 permissions:
-  actions: read
-  contents: write
+  contents: read
   issues: write
 
 concurrency:
-  group: promotion-publish-${{ github.event.issue.number }}
+  group: promotion-preflight-${{ github.event.issue.number }}
   cancel-in-progress: false
 
 jobs:
-  publish:
-    if: github.event.comment.body == '/promote' && !github.event.issue.pull_request
+  preflight:
+    if: github.event.comment.body == '/preflight' && !github.event.issue.pull_request
     runs-on: macos-15
-    timeout-minutes: 60
+    timeout-minutes: 120
     steps:
-      - name: Resolve frontier and successful preflight
+      - name: Resolve Orchestration and Promotion queue contract
         id: resolve
         uses: actions/github-script@v7
         with:
@@ -27,7 +26,7 @@ jobs:
             const { owner, repo } = context.repo
             const association = context.payload.comment?.author_association
             if (!['OWNER', 'MEMBER', 'COLLABORATOR'].includes(association)) {
-              core.setFailed(`unauthorized /promote author association: ${association || 'unknown'}`)
+              core.setFailed(`unauthorized /preflight author association: ${association || 'unknown'}`)
               return
             }
 
@@ -37,11 +36,20 @@ jobs:
             const names = issue => (issue.labels || []).map(label =>
               typeof label === 'string' ? label : label.name
             )
+
             const leaf = await getIssue(leafNumber)
             const leafLabels = names(leaf)
             const memberships = leafLabels.filter(label => /^O\d{2}$/u.test(label))
-            if (memberships.length !== 1 || !leafLabels.includes('role: work-item') || !leafLabels.includes('stage: promotion-ready')) {
-              core.setFailed(`leaf #${leafNumber} is not an unambiguous promotion-ready work-item`)
+            if (memberships.length !== 1) {
+              core.setFailed(`leaf #${leafNumber} must have exactly one Oxx label; found ${memberships.join(', ') || 'none'}`)
+              return
+            }
+            if (!leafLabels.includes('role: work-item')) {
+              core.setFailed(`leaf #${leafNumber} must be role: work-item`)
+              return
+            }
+            if (!leafLabels.includes('stage: promotion-ready')) {
+              core.setFailed(`leaf #${leafNumber} is not stage: promotion-ready`)
               return
             }
 
@@ -51,7 +59,11 @@ jobs:
             for (const line of (indexIssue.body || '').split('\n')) {
               const match = line.match(/^\|\s*(O\d{2})\s*\|[^|]*\|\s*#(\d+)\s*\|\s*#(\d+)\s*\|\s*#(\d+)\s*\|/u)
               if (match?.[1] === oid) {
-                registry = { root: Number(match[2]), impl: Number(match[3]), promotion: Number(match[4]) }
+                registry = {
+                  root: Number(match[2]),
+                  impl: Number(match[3]),
+                  promotion: Number(match[4]),
+                }
                 break
               }
             }
@@ -65,10 +77,16 @@ jobs:
               getIssue(registry.impl),
               getIssue(registry.promotion),
             ])
-            if (!names(root).includes(oid) || !names(root).includes('role: orchestration') ||
-                !names(impl).includes(oid) || !names(impl).includes('queue: implementation') ||
-                !names(promotion).includes(oid) || !names(promotion).includes('queue: promotion')) {
-              core.setFailed(`${oid} orchestration registry contract mismatch`)
+            if (!names(root).includes(oid) || !names(root).includes('role: orchestration')) {
+              core.setFailed(`${oid} root #${registry.root} contract mismatch`)
+              return
+            }
+            if (!names(impl).includes(oid) || !names(impl).includes('queue: implementation')) {
+              core.setFailed(`${oid} Impl queue #${registry.impl} contract mismatch`)
+              return
+            }
+            if (!names(promotion).includes(oid) || !names(promotion).includes('queue: promotion')) {
+              core.setFailed(`${oid} Promotion queue #${registry.promotion} contract mismatch`)
               return
             }
 
@@ -83,17 +101,9 @@ jobs:
             }
 
             const promotionLines = (promotion.body || '').split('\n')
-            const unchecked = promotionLines
-              .map(line => line.match(/^\s*-\s*\[ \]\s*#(\d+)\b/u))
-              .filter(Boolean)
-              .map(match => Number(match[1]))
-            if (unchecked[0] !== leafNumber) {
-              core.setFailed(`leaf #${leafNumber} is not Promotion frontier; current frontier is #${unchecked[0] || 'none'}`)
-              return
-            }
-
             const entryPattern = new RegExp(`^\\s*-\\s*\\[ \\]\\s*#${leafNumber}\\s+—\\s+\\x60([^\\x60]+)\\x60\\s+@\\s+\\x60([0-9a-f]{40})\\x60`, 'u')
-            const entry = promotionLines.find(line => entryPattern.test(line))?.match(entryPattern)
+            const entryLine = promotionLines.find(line => entryPattern.test(line))
+            const entry = entryLine?.match(entryPattern)
             if (!entry) {
               core.setFailed(`Promotion queue #${registry.promotion} has no canonical branch/SHA entry for #${leafNumber}`)
               return
@@ -105,28 +115,6 @@ jobs:
               return
             }
 
-            const artifactName = `promotion-preflight-${leafNumber}-${expectedSha}`
-            const artifacts = await github.paginate(github.rest.actions.listArtifactsForRepo, {
-              owner,
-              repo,
-              per_page: 100,
-            })
-            const candidates = artifacts
-              .filter(artifact => artifact.name === artifactName && !artifact.expired && artifact.workflow_run?.id)
-              .sort((left, right) => right.id - left.id)
-            let preflightRun = null
-            for (const artifact of candidates) {
-              const run = (await github.rest.actions.getWorkflowRun({ owner, repo, run_id: artifact.workflow_run.id })).data
-              if (run.conclusion === 'success' && run.event === 'issue_comment' && (run.path || '').includes('/promotion-preflight.yml')) {
-                preflightRun = run
-                break
-              }
-            }
-            if (!preflightRun) {
-              core.setFailed(`no successful, unexpired /preflight artifact for #${leafNumber} @ ${expectedSha}`)
-              return
-            }
-
             core.setOutput('oid', oid)
             core.setOutput('root', String(registry.root))
             core.setOutput('impl', String(registry.impl))
@@ -135,8 +123,6 @@ jobs:
             core.setOutput('issue_title', (leaf.title || '').replace(/[\r\n]+/gu, ' ').trim())
             core.setOutput('source_branch', sourceBranch)
             core.setOutput('expected_sha', expectedSha)
-            core.setOutput('artifact_name', artifactName)
-            core.setOutput('preflight_run_id', String(preflightRun.id))
 
       - uses: actions/checkout@v4
         with:
@@ -156,37 +142,12 @@ jobs:
         with:
           version: v0.15.0
 
-      - name: Download successful preflight artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ steps.resolve.outputs.artifact_name }}
-          path: ${{ runner.temp }}/promotion-preflight
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.resolve.outputs.preflight_run_id }}
-
-      - name: Verify preflight evidence and exact origin checkpoint
-        id: preflight
+      - name: Validate latest main and exact origin checkpoint
         env:
-          LEAF: ${{ steps.resolve.outputs.leaf }}
           SOURCE_BRANCH: ${{ steps.resolve.outputs.source_branch }}
           EXPECTED_SHA: ${{ steps.resolve.outputs.expected_sha }}
-          PREFLIGHT_RUN_ID: ${{ steps.resolve.outputs.preflight_run_id }}
         run: |
           set -euo pipefail
-          evidence="$RUNNER_TEMP/promotion-preflight/evidence.json"
-          bundle="$RUNNER_TEMP/promotion-preflight/candidate.bundle"
-          test "$(jq -r .schema "$evidence")" = 1
-          test "$(jq -r .leaf "$evidence")" = "$LEAF"
-          test "$(jq -r .source_branch "$evidence")" = "$SOURCE_BRANCH"
-          test "$(jq -r .source_sha "$evidence")" = "$EXPECTED_SHA"
-          test "$(jq -r .run_id "$evidence")" = "$PREFLIGHT_RUN_ID"
-          git bundle verify "$bundle"
-          git fetch "$bundle" \
-            refs/promotion-preflight/integration:refs/remotes/preflight/integration \
-            refs/promotion-preflight/candidate:refs/remotes/preflight/candidate
-          test "$(git rev-parse refs/remotes/preflight/integration)" = "$(jq -r .integration_sha "$evidence")"
-          test "$(git rev-parse refs/remotes/preflight/candidate)" = "$(jq -r .candidate_sha "$evidence")"
-
           git check-ref-format --branch "$SOURCE_BRANCH" >/dev/null
           git fetch --force origin \
             +refs/heads/main:refs/remotes/origin/main \
@@ -202,10 +163,8 @@ jobs:
             echo "checkpoint $EXPECTED_SHA is already contained in main" >&2
             exit 1
           fi
-          echo "preflight_integration_sha=$(git rev-parse refs/remotes/preflight/integration)" >> "$GITHUB_OUTPUT"
-          echo "preflight_candidate_sha=$(git rev-parse refs/remotes/preflight/candidate)" >> "$GITHUB_OUTPUT"
 
-      - name: Rebuild frontier integration candidate
+      - name: Build ancestry-preserving integration candidate
         id: candidate
         env:
           OID: ${{ steps.resolve.outputs.oid }}
@@ -230,26 +189,7 @@ jobs:
           echo "integration_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "promotion_branch=$promotion_branch" >> "$GITHUB_OUTPUT"
 
-      - name: Verify tested source and build semantics are unchanged
-        env:
-          PREFLIGHT_INTEGRATION_SHA: ${{ steps.preflight.outputs.preflight_integration_sha }}
-          INTEGRATION_SHA: ${{ steps.candidate.outputs.integration_sha }}
-        run: |
-          set -euo pipefail
-          unexpected=0
-          while IFS= read -r file; do
-            case "$file" in
-              CHANGELOG.md|Cargo.toml|Cargo.lock|package.json|runtime/ts/package.json|apps/playground/package.json|extensions/seseragi/package.json|extensions/seseragi-legacy/package.json|apps/playground/src/generated/sample-manifest.ts|apps/playground/tests/fixtures/*.interaction.json|apps/playground/src/wasm/pkg/*|examples/spec/fixtures/projects/*/seseragi.lock)
-                ;;
-              *)
-                echo "preflight invalidated by source/build delta: $file" >&2
-                unexpected=1
-                ;;
-            esac
-          done < <(git diff --name-only "$PREFLIGHT_INTEGRATION_SHA" "$INTEGRATION_SHA")
-          test "$unexpected" = 0
-
-      - name: Prepare current deterministic release metadata and generated artifacts
+      - name: Prepare deterministic release metadata and generated artifacts
         id: release
         env:
           LEAF: ${{ steps.resolve.outputs.leaf }}
@@ -304,55 +244,73 @@ jobs:
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "candidate_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Verify final candidate differs only by mechanical release output
+      - name: Install Playwright Chromium used by full gate
+        working-directory: apps/playground
+        run: bunx playwright install chromium
+
+      - name: Run exact repository full gate
+        run: bun run check
+
+      - name: Verify immutable candidate after the gate
         env:
-          PREFLIGHT_CANDIDATE_SHA: ${{ steps.preflight.outputs.preflight_candidate_sha }}
           CANDIDATE_SHA: ${{ steps.release.outputs.candidate_sha }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           set -euo pipefail
-          unexpected=0
-          while IFS= read -r file; do
-            case "$file" in
-              CHANGELOG.md|Cargo.toml|Cargo.lock|package.json|runtime/ts/package.json|apps/playground/package.json|extensions/seseragi/package.json|extensions/seseragi-legacy/package.json|apps/playground/src/generated/sample-manifest.ts|apps/playground/tests/fixtures/*.interaction.json|apps/playground/src/wasm/pkg/*|examples/spec/fixtures/projects/*/seseragi.lock)
-                ;;
-              *)
-                echo "preflight candidate invalidated by non-mechanical delta: $file" >&2
-                unexpected=1
-                ;;
-            esac
-          done < <(git diff --name-only "$PREFLIGHT_CANDIDATE_SHA" "$CANDIDATE_SHA")
-          test "$unexpected" = 0
           test "$(git rev-parse HEAD)" = "$CANDIDATE_SHA"
-          test -z "$(git status --porcelain)"
+          test -z "$(git status --porcelain)" || {
+            git status --short >&2
+            echo "full gate left the candidate dirty" >&2
+            exit 1
+          }
           bun scripts/release-contract.ts check
           bun scripts/release-contract.ts check-tag "$RELEASE_TAG"
           bun scripts/release-readiness.ts check
 
-      - name: Publish immutable Promotion branch
-        id: publish
+      - name: Package immutable preflight evidence
+        id: evidence
         env:
-          PROMOTION_BRANCH: ${{ steps.candidate.outputs.promotion_branch }}
+          LEAF: ${{ steps.resolve.outputs.leaf }}
+          SOURCE_BRANCH: ${{ steps.resolve.outputs.source_branch }}
+          EXPECTED_SHA: ${{ steps.resolve.outputs.expected_sha }}
+          MAIN_SHA: ${{ steps.candidate.outputs.main_sha }}
+          INTEGRATION_SHA: ${{ steps.candidate.outputs.integration_sha }}
           CANDIDATE_SHA: ${{ steps.release.outputs.candidate_sha }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           set -euo pipefail
-          remote_sha="$(git ls-remote origin "refs/heads/$PROMOTION_BRANCH" | awk '{print $1}')"
-          if [[ -n "$remote_sha" ]]; then
-            git fetch --force origin "+refs/heads/$PROMOTION_BRANCH:refs/remotes/promotion/existing"
-            existing_tree="$(git rev-parse 'refs/remotes/promotion/existing^{tree}')"
-            candidate_tree="$(git rev-parse "${CANDIDATE_SHA}^{tree}")"
-            test "$existing_tree" = "$candidate_tree" || {
-              echo "Promotion branch already exists with a different candidate: $PROMOTION_BRANCH" >&2
-              exit 1
-            }
-            final_sha="$remote_sha"
-          else
-            git push origin "$CANDIDATE_SHA:refs/heads/$PROMOTION_BRANCH"
-            final_sha="$CANDIDATE_SHA"
-          fi
-          echo "candidate_sha=$final_sha" >> "$GITHUB_OUTPUT"
+          artifact_name="promotion-preflight-${LEAF}-${EXPECTED_SHA}"
+          evidence_dir="$RUNNER_TEMP/$artifact_name"
+          mkdir -p "$evidence_dir"
+          git update-ref refs/promotion-preflight/integration "$INTEGRATION_SHA"
+          git update-ref refs/promotion-preflight/candidate "$CANDIDATE_SHA"
+          git bundle create "$evidence_dir/candidate.bundle" \
+            refs/promotion-preflight/integration \
+            refs/promotion-preflight/candidate
+          jq -n \
+            --arg schema "1" \
+            --arg leaf "$LEAF" \
+            --arg source_branch "$SOURCE_BRANCH" \
+            --arg source_sha "$EXPECTED_SHA" \
+            --arg main_sha "$MAIN_SHA" \
+            --arg integration_sha "$INTEGRATION_SHA" \
+            --arg candidate_sha "$CANDIDATE_SHA" \
+            --arg release_tag "$RELEASE_TAG" \
+            --arg run_id "$GITHUB_RUN_ID" \
+            '{schema: ($schema | tonumber), leaf: ($leaf | tonumber), source_branch: $source_branch, source_sha: $source_sha, main_sha: $main_sha, integration_sha: $integration_sha, candidate_sha: $candidate_sha, release_tag: $release_tag, run_id: ($run_id | tonumber)}' \
+            > "$evidence_dir/evidence.json"
+          echo "artifact_name=$artifact_name" >> "$GITHUB_OUTPUT"
+          echo "evidence_dir=$evidence_dir" >> "$GITHUB_OUTPUT"
 
-      - name: Record Promotion publication evidence
+      - name: Upload immutable preflight evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.evidence.outputs.artifact_name }}
+          path: ${{ steps.evidence.outputs.evidence_dir }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Record Promotion preflight evidence
         uses: actions/github-script@v7
         env:
           OID: ${{ steps.resolve.outputs.oid }}
@@ -362,27 +320,29 @@ jobs:
           LEAF: ${{ steps.resolve.outputs.leaf }}
           SOURCE_BRANCH: ${{ steps.resolve.outputs.source_branch }}
           EXPECTED_SHA: ${{ steps.resolve.outputs.expected_sha }}
-          PROMOTION_BRANCH: ${{ steps.candidate.outputs.promotion_branch }}
-          CANDIDATE_SHA: ${{ steps.publish.outputs.candidate_sha }}
+          MAIN_SHA: ${{ steps.candidate.outputs.main_sha }}
+          INTEGRATION_SHA: ${{ steps.candidate.outputs.integration_sha }}
+          CANDIDATE_SHA: ${{ steps.release.outputs.candidate_sha }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
-          PREFLIGHT_RUN_ID: ${{ steps.resolve.outputs.preflight_run_id }}
+          ARTIFACT_NAME: ${{ steps.evidence.outputs.artifact_name }}
         with:
           script: |
             const { owner, repo } = context.repo
-            const marker = `<!-- seseragi-promotion-ready:${process.env.LEAF}:${process.env.EXPECTED_SHA} -->`
+            const marker = `<!-- seseragi-promotion-preflight:${process.env.LEAF}:${process.env.EXPECTED_SHA} -->`
             const body = [
               marker,
-              '## Promotion candidate ready',
+              '## Promotion preflight ready',
               '',
               `- Orchestration: **${process.env.OID}** / root #${process.env.ROOT}`,
               `- Impl / Promotion: #${process.env.IMPL} / #${process.env.PROMOTION}`,
               `- source: \`${process.env.SOURCE_BRANCH}\` @ \`${process.env.EXPECTED_SHA}\``,
-              `- candidate: \`${process.env.PROMOTION_BRANCH}\` @ \`${process.env.CANDIDATE_SHA}\``,
-              `- planned release: **${process.env.RELEASE_TAG}**`,
-              `- exact full gate: **reused from matching preflight** — ${context.serverUrl}/${owner}/${repo}/actions/runs/${process.env.PREFLIGHT_RUN_ID}`,
-              `- publication reconstruction: **green** — ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+              `- tested main: \`${process.env.MAIN_SHA}\``,
+              `- tested integration: \`${process.env.INTEGRATION_SHA}\``,
+              `- tested candidate: \`${process.env.CANDIDATE_SHA}\` (${process.env.RELEASE_TAG})`,
+              `- artifact: \`${process.env.ARTIFACT_NAME}\``,
+              `- exact full gate: **green** — ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
               '',
-              'The published candidate was reconstructed from latest main and differs from the tested candidate only in the mechanical release-output allowlist.',
+              'No branch was published. `/promote` may reuse this gate only when it reconstructs the same source/build tree; otherwise preflight must rerun.',
             ].join('\n')
             const { data: comments } = await github.rest.issues.listComments({ owner, repo, issue_number: Number(process.env.LEAF), per_page: 100 })
             const existing = comments.find(comment => (comment.body || '').includes(marker))
@@ -392,7 +352,7 @@ jobs:
               await github.rest.issues.createComment({ owner, repo, issue_number: Number(process.env.LEAF), body })
             }
 
-      - name: Record failed Promotion publication
+      - name: Record failed Promotion preflight
         if: failure()
         uses: actions/github-script@v7
         with:
@@ -404,10 +364,10 @@ jobs:
               repo,
               issue_number: leaf,
               body: [
-                '## Promotion publication failed',
+                '## Promotion preflight failed',
                 '',
-                `Publication stopped without applying semantic/source fixes. Evidence: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+                `GitHub-hosted preparation stopped without applying semantic/source fixes. Evidence: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
                 '',
-                'If preflight identity was invalidated, rerun `/preflight`. Meaning-changing failures return to the paired Impl queue under #512 SYNC BARRIER.',
+                'If the failure requires a meaning-changing fix, return it to the paired Impl queue under #512 SYNC BARRIER.',
               ].join('\n'),
             })
