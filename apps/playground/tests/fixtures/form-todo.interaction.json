@@ -3,8 +3,8 @@
   "sampleId": "form-todo",
   "sourcePath": "examples/samples/form-todo/main.ssrg",
   "manifest": {
-    "sourceHash": "sha256:c4e1163c7303c2b973c3e22861274849ea7192f5e0cac09ed582555894706674",
-    "workspaceHash": "sha256:311bf0735578586383377a1503db5161193642051af803a57660492669114b7c"
+    "sourceHash": "sha256:8610a37c1731f1b158625824230039da1aed6c00b70984dc25d68debc2ec9c75",
+    "workspaceHash": "sha256:56ef239598c528cd836a597450d8e57416bf578b54e6eb1921a77aeb015baaa9"
   },
   "runner": {
     "kind": "browser-use",

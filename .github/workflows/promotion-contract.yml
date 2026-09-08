@@ -1,0 +1,40 @@
+name: Promotion contract
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/promotion-prepare.yml"
+      - ".github/workflows/promotion-contract.yml"
+      - "scripts/prepare-promotion-release.ts"
+      - "scripts/prepare-promotion-release.test.ts"
+      - "scripts/refresh-provider-fixture-locks.ts"
+      - "scripts/refresh-provider-fixture-locks.test.ts"
+      - "scripts/release-contract.ts"
+      - "scripts/release-readiness.ts"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/promotion-prepare.yml"
+      - ".github/workflows/promotion-contract.yml"
+      - "scripts/prepare-promotion-release.ts"
+      - "scripts/prepare-promotion-release.test.ts"
+      - "scripts/refresh-provider-fixture-locks.ts"
+      - "scripts/refresh-provider-fixture-locks.test.ts"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - run: bun install --frozen-lockfile
+      - name: Lint promotion tooling
+        run: bunx biome lint scripts/prepare-promotion-release.ts scripts/prepare-promotion-release.test.ts scripts/refresh-provider-fixture-locks.ts scripts/refresh-provider-fixture-locks.test.ts
+      - name: Test promotion tooling
+        run: bun test scripts/prepare-promotion-release.test.ts scripts/refresh-provider-fixture-locks.test.ts

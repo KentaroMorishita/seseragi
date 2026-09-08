@@ -183,7 +183,7 @@ effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
 effect fn parseSampleUrl value: String -> html.WebUrl fails String =
   mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
 
-  // Runtime boundary: explicit code owns Signal setup, dispatch, query and run.
+// Runtime boundary: explicit code owns Signal setup, dispatch, query and run.
 fn handle state: MutableSignal<TrailState> -> action: Action -> Task<Unit> =
   signals.update (update action) state
 

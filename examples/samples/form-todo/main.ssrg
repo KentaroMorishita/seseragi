@@ -105,36 +105,36 @@ fn trackLabel track: Track -> String = match track {
 
 fn sameTrack first: Track -> second: Track -> Bool = match first {
   Build -> match second {
-      Build -> True
-      _ -> False
-    }
+    Build -> True
+    _ -> False
+  }
   Share -> match second {
-      Share -> True
-      _ -> False
-    }
+    Share -> True
+    _ -> False
+  }
   Rest -> match second {
-      Rest -> True
-      _ -> False
-    }
+    Rest -> True
+    _ -> False
+  }
 }
 
 fn sameFilter first: ViewFilter -> second: ViewFilter -> Bool = match first {
   All -> match second {
-      All -> True
-      _ -> False
-    }
+    All -> True
+    _ -> False
+  }
   Pinned -> match second {
-      Pinned -> True
-      _ -> False
-    }
+    Pinned -> True
+    _ -> False
+  }
   Open -> match second {
-      Open -> True
-      _ -> False
-    }
+    Open -> True
+    _ -> False
+  }
   Complete -> match second {
-      Complete -> True
-      _ -> False
-    }
+    Complete -> True
+    _ -> False
+  }
 }
 
 fn filterLabel filter: ViewFilter -> String = match filter {
@@ -187,8 +187,8 @@ fn toggleComplete id: Int -> plan: Plan -> Plan =
       False
     else
       True }
-    else
-      plan
+  else
+    plan
 
 fn togglePinned id: Int -> plan: Plan -> Plan =
   if plan.id == id then
@@ -196,8 +196,8 @@ fn togglePinned id: Int -> plan: Plan -> Plan =
       False
     else
       True }
-    else
-      plan
+  else
+    plan
 
 fn renamePlan id: Int -> title: String -> plan: Plan -> Plan =
   if plan.id == id then Plan { ...plan, title } else plan
@@ -278,7 +278,10 @@ fn detailsTask state: MutableSignal<Model> -> event: html.InputEvent -> Task<Uni
   dispatch state (DetailsChanged event.value)
 
 fn pinnedTask state: MutableSignal<Model> -> event: html.ChangeEvent -> Task<Unit> =
-  dispatch state (PinnedChanged event.checked)
+  match event.checked {
+    Just checked -> dispatch state (PinnedChanged checked)
+    Nothing -> dispatch state NoOp
+  }
 
 fn titleTask state: MutableSignal<Model>
   -> id: Int

@@ -19,6 +19,10 @@ const outputPath = resolve(
   repositoryRoot,
   "apps/playground/src/generated/sample-manifest.ts"
 )
+const interactionFixturesRoot = resolve(
+  repositoryRoot,
+  "apps/playground/tests/fixtures"
+)
 const checkOnly = process.argv.includes("--check")
 
 type LoadedSample = {
@@ -54,6 +58,12 @@ type LoadedSource = {
 type LoadedOutput = {
   readonly path: string
   readonly content: string
+}
+
+type InteractionFixtureUpdate = {
+  readonly path: string
+  readonly current: string
+  readonly expected: string
 }
 
 const directoryEntries = await readdir(samplesRoot, { withFileTypes: true })
@@ -230,6 +240,8 @@ validatePreviewSourceReadability(
 )
 
 const generated = renderGeneratedModule(loadedSamples, discoverGroups)
+const interactionFixtureUpdates =
+  await renderInteractionFixtureUpdates(loadedSamples)
 if (checkOnly) {
   const current = await readFile(outputPath, "utf8").catch(() => "")
   if (current !== generated) {
@@ -237,13 +249,34 @@ if (checkOnly) {
       "Playground sample manifest is stale. Run `bun run samples:generate` in apps/playground."
     )
   }
+  const staleInteractionFixtures = interactionFixtureUpdates.filter(
+    ({ current: fixtureCurrent, expected }) => fixtureCurrent !== expected
+  )
+  if (staleInteractionFixtures.length > 0) {
+    throw new Error(
+      `Playground interaction fixture provenance is stale: ${staleInteractionFixtures
+        .map(({ path }) => repositoryPath(path))
+        .join(", ")}. Run \`bun run samples:generate\` in apps/playground.`
+    )
+  }
   console.log(`Validated ${loadedSamples.length} Playground samples.`)
 } else {
   await mkdir(resolve(outputPath, ".."), { recursive: true })
   await writeFile(outputPath, generated)
+  let synchronizedFixtures = 0
+  for (const update of interactionFixtureUpdates) {
+    if (update.current === update.expected) continue
+    await writeFile(update.path, update.expected)
+    synchronizedFixtures += 1
+  }
   console.log(
     `Generated ${repositoryPath(outputPath)} (${loadedSamples.length} samples).`
   )
+  if (synchronizedFixtures > 0) {
+    console.log(
+      `Synchronized provenance for ${synchronizedFixtures} interaction fixture(s).`
+    )
+  }
 }
 
 function renderGeneratedModule(
@@ -309,6 +342,53 @@ function renderGeneratedModule(
     `${indent(JSON.stringify(groups, null, 2), 2)}`,
     "",
   ].join("\n")
+}
+
+async function renderInteractionFixtureUpdates(
+  samples: readonly LoadedSample[]
+): Promise<InteractionFixtureUpdate[]> {
+  const definitions = new Map(
+    samples.map(({ definition }) => [definition.id, definition])
+  )
+  const entries = (await readdir(interactionFixturesRoot, { withFileTypes: true }))
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".interaction.json"))
+    .sort((left, right) => left.name.localeCompare(right.name))
+
+  return Promise.all(
+    entries.map(async (entry): Promise<InteractionFixtureUpdate> => {
+      const path = resolve(interactionFixturesRoot, entry.name)
+      const current = await readFile(path, "utf8")
+      const fixture = expectRecord(JSON.parse(current), entry.name)
+      const sampleId = expectString(fixture.sampleId, `${entry.name}.sampleId`)
+      const definition = definitions.get(sampleId)
+      if (definition === undefined) {
+        throw new Error(`${entry.name} references unknown sample ${sampleId}`)
+      }
+      const manifest = expectRecord(fixture.manifest, `${entry.name}.manifest`)
+      const currentSourceHash = expectString(
+        manifest.sourceHash,
+        `${entry.name}.manifest.sourceHash`
+      )
+      const currentWorkspaceHash = expectString(
+        manifest.workspaceHash,
+        `${entry.name}.manifest.workspaceHash`
+      )
+      const expected = replaceJsonStringProperty(
+        replaceJsonStringProperty(
+          current,
+          "sourceHash",
+          currentSourceHash,
+          definition.sourceHash,
+          `${entry.name}.manifest.sourceHash`
+        ),
+        "workspaceHash",
+        currentWorkspaceHash,
+        definition.workspaceHash,
+        `${entry.name}.manifest.workspaceHash`
+      )
+      return { path, current, expected }
+    })
+  )
 }
 
 async function loadManifest(
@@ -421,6 +501,13 @@ function expectRecord(
   return value as Record<string, unknown>
 }
 
+function expectString(value: unknown, context: string): string {
+  if (typeof value !== "string" || value === "") {
+    throw new Error(`${context} must be a non-empty string`)
+  }
+  return value
+}
+
 function optionalRecord(
   value: unknown,
   context: string
@@ -440,6 +527,29 @@ function packagePath(value: unknown, context: string): string {
     throw new Error(`${context} must be a canonical relative path`)
   }
   return value
+}
+
+function replaceJsonStringProperty(
+  source: string,
+  property: string,
+  current: string,
+  next: string,
+  context: string
+): string {
+  if (current === next) return source
+  const pattern = new RegExp(
+    `("${escapeRegExp(property)}"\\s*:\\s*)${escapeRegExp(JSON.stringify(current))}`,
+    "gu"
+  )
+  const matches = [...source.matchAll(pattern)]
+  if (matches.length !== 1) {
+    throw new Error(`${context} must appear exactly once in its fixture source`)
+  }
+  return source.replace(pattern, `$1${JSON.stringify(next)}`)
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
 function renderImport(name: string, repositoryFile: string): string {

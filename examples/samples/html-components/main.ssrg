@@ -61,7 +61,7 @@ let headingStyle = html.style { color: "#7c2d12" }
 
 let navLinkStyle = html.style { backgroundColor: "#ffedd5", color: "#9a3412" }
 
-  // Styleは値として再利用でき、variablesはCSS custom propertyになります。
+// Styleは値として再利用でき、variablesはCSS custom propertyになります。
 let cardStyle = html.style {
   variables: { cardShadow: "0 18px 42px #7c2d1220" },
   boxShadow: "var(--card-shadow)"
@@ -71,7 +71,7 @@ let cardCopyStyle = html.style { color: "#4b5563" }
 
 let footerStyle = html.style { color: "#78716c" }
 
-  // 通常のpure関数を、そのままHTML componentとして使えます。
+// 通常のpure関数を、そのままHTML componentとして使えます。
 fn card<Action> imageUrl: html.WebUrl
   -> title: String
   -> detail: String

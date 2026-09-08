@@ -1,5 +1,50 @@
 # Change Log
 
+## [0.61.6] - 2026-09-07
+
+### Changed
+
+- #507 【#291・標準ライブラリ監査】未実装standard instanceの追跡Issueを必須化
+## [0.61.5] - 2026-09-07
+
+### Changed
+
+- #506 【#291・標準ライブラリ】5種のMonad transformerと標準instanceを追加
+## [0.61.4] - 2026-09-07
+
+### Changed
+
+- #505 【#291・標準ライブラリ】Sum / ProductとMonoid instanceを追加
+## [0.61.3] - 2026-09-07
+
+### Changed
+
+- #502 【#291 ＞ #354・Effect】forEachUntil / LoopControlを標準APIへ接続
+## [0.61.2] - 2026-09-07
+
+### Changed
+
+- #536 【#291 ＞ #357・Formatter】comment・nested block・else-ifの字下げ崩れを修正
+## [0.61.1] - 2026-09-06
+
+### Changed
+
+- #528 【#291・Web UI】onChangeでtext / selectがchecked読取エラーになる問題を修正
+## [0.61.0] - 2026-09-05
+
+### Fixed
+
+- Reject unpaired UTF-16 surrogates at the TypeScript foreign `String` codec
+  boundary while preserving valid Unicode scalar strings byte-for-byte.
+
+## [0.60.0] - 2026-09-05
+
+### Fixed
+
+- Preserve ADT match payload bindings, trait evidence, and Effect contracts in
+  `do`-block match arms, including pure-to-Effect calls, failure channels, and
+  imported constructors.
+
 ## [0.59.0] - 2026-09-05
 
 ### Fixed
