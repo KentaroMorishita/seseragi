@@ -107,6 +107,16 @@ mod tests {
     }
 
     #[test]
+    fn preserves_record_and_effect_row_braces_in_long_sample_lines() {
+        for source in [
+            include_str!("../../../examples/samples/html-components/main.ssrg"),
+            include_str!("../../../examples/samples/typeclass-operator-parity/main.ssrg"),
+        ] {
+            assert_eq!(format(source).text, source);
+        }
+    }
+
+    #[test]
     fn preserves_list_cons_and_type_annotation_spacing() {
         let source = "pub let values:List<Int> =1:2:3:`[]\n";
         for width in [20, 88] {

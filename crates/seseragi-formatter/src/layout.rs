@@ -19,6 +19,8 @@ pub(super) fn format_valid_module(
         &angles,
         &member_bodies,
     );
+    let mut statement_blocks = HashSet::new();
+    collect_statement_blocks(&cst.root, &tokens.tokens, &mut statement_blocks);
     // Split long inline statement blocks at their existing structural boundaries
     // before wrapping applications, so local bindings receive their own indent.
     let lines = lines.into_iter().flat_map(|line| {
@@ -32,9 +34,7 @@ pub(super) fn format_valid_module(
             .iter()
             .copied()
             .filter_map(|open| {
-                if tokens.tokens[open].kind != TokenKind::PunctuationBraceLeft
-                    || delimiters.joinable_open(open)
-                {
+                if !statement_blocks.contains(&open) {
                     return None;
                 }
                 let close = delimiters.matching(open)?;
@@ -142,6 +142,23 @@ pub(super) fn format_valid_module(
     }
     output.push(String::new());
     output.join("\n")
+}
+
+fn collect_statement_blocks(node: &CstNode, tokens: &[Token], blocks: &mut HashSet<usize>) {
+    if node.kind == "complete-expression"
+        && tokens
+            .get(node.start_token)
+            .is_some_and(|token| token.kind == TokenKind::PunctuationBraceLeft)
+        && node
+            .children
+            .iter()
+            .any(|child| child.kind == "complete-block-item")
+    {
+        blocks.insert(node.start_token);
+    }
+    for child in &node.children {
+        collect_statement_blocks(child, tokens, blocks);
+    }
 }
 
 #[derive(Clone, Debug)]
