@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.7] - 2026-09-08
+
+### Changed
+
+- #581 【O01 / hotfix】Web devのasset削除監視raceを解消
 ## [0.61.6] - 2026-09-07
 
 ### Changed
