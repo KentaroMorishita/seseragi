@@ -3,10 +3,14 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (64)
+## Current product-route fixtures (76)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
+| `web-assets` | `run` | `cli-build` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/dev.rs` |
+| `array-index` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `char-literal` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `benchmark-discovery` | `tooling` | `cli-benchmark` | `crates/seseragi-cli/tests/benchmark.rs` |
 | `child-process-captured` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `cli-build-nested` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs` |
 | `doc-tests` | `tooling` | `cli-doc` | `crates/seseragi-cli/tests/doc.rs` |
@@ -37,6 +41,11 @@
 | `foreign-failure-phases` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-pure-load` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-string-scalars` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `local-effect-fn` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `local-rec` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `opaque-struct` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `list-cons` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `maybe-fallback` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-task-load` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-task-single-flight` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-web-load` | `run` | `cli-build` | `crates/seseragi-cli/tests/build.rs` |
@@ -50,6 +59,9 @@
 | `package-path-dependency` | `run` | `project-loader` | `crates/seseragi-project/src/local_project/tests.rs`<br>`crates/seseragi-driver/src/local_project.rs` |
 | `package-path-dependency-basic` | `run` | `cli-run`, `project-loader` | `crates/seseragi-cli/tests/run.rs`<br>`crates/seseragi-driver/src/local_project.rs` |
 | `package-stale-lock` | `diagnostic` | `project-loader` | `crates/seseragi-project/src/lockfile/tests.rs` |
+| `performance-profile-equivalence` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/profiles.rs` |
+| `performance-release-shapes` | `compile` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/profiles.rs` |
+| `performance-stack-safety` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/profiles.rs` |
 | `postgres-application` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs` |
 | `sqlite-application` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs` |
 | `prelude-reduce-lambda` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
@@ -72,11 +84,10 @@
 | `test-discovery` | `test` | `cli-test` | `crates/seseragi-cli/src/test.rs` |
 | `typeclass-operator-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 
-## Contract-only fixtures (16)
+## Contract-only fixtures (12)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
-| `benchmark-discovery` | `tooling` | `planned-tooling` | - |
 | `http-non-success-response` | `run` | `planned-conformance` | - |
 | `http-stream-events` | `run` | `planned-conformance` | - |
 | `imported-derived-show-debug` | `run` | `planned-conformance` | - |
@@ -85,9 +96,6 @@
 | `modules-reexport-run` | `run` | `planned-conformance` | - |
 | `package-invalid-manifest` | `diagnostic` | `planned-conformance` | - |
 | `package-undeclared-dependency` | `diagnostic` | `planned-conformance` | - |
-| `performance-profile-equivalence` | `run` | `planned-conformance` | - |
-| `performance-release-shapes` | `compile` | `planned-conformance` | - |
-| `performance-stack-safety` | `run` | `planned-conformance` | - |
 | `signal-transaction-lifetime` | `run` | `planned-conformance` | - |
 | `target-capabilities` | `tooling` | `planned-tooling` | - |
 | `typescript-abi-constrained` | `diagnostic` | `planned-tooling` | - |

@@ -218,28 +218,61 @@ fn watch_snapshot(roots: &[PathBuf]) -> Result<BTreeMap<PathBuf, WatchStamp>, St
         root: &Path,
         directory: &Path,
         files: &mut BTreeMap<PathBuf, WatchStamp>,
+        web: Option<&seseragi_project::ManifestWeb>,
     ) -> Result<(), String> {
-        for entry in fs::read_dir(directory)
-            .map_err(|error| format!("failed to watch {}: {error}", directory.display()))?
-        {
-            let entry = entry.map_err(|error| {
-                format!(
-                    "failed to read watched directory {}: {error}",
-                    directory.display()
-                )
-            })?;
+        let entries = match fs::read_dir(directory) {
+            Ok(entries) => entries,
+            Err(error) if error.kind() == ErrorKind::NotFound => return Ok(()),
+            Err(error) => return Err(format!("failed to watch {}: {error}", directory.display())),
+        };
+        for entry in entries {
+            let entry = match entry {
+                Ok(entry) => entry,
+                Err(error) if error.kind() == ErrorKind::NotFound => continue,
+                Err(error) => {
+                    return Err(format!(
+                        "failed to read watched directory {}: {error}",
+                        directory.display()
+                    ))
+                }
+            };
             let path = entry.path();
             let relative = path.strip_prefix(root).expect("watched path is under root");
             if ignored(relative) {
                 continue;
             }
-            let metadata = entry.metadata().map_err(|error| {
-                format!("failed to inspect watched path {}: {error}", path.display())
-            })?;
+            let metadata = match entry.metadata() {
+                Ok(metadata) => metadata,
+                Err(error) if error.kind() == ErrorKind::NotFound => continue,
+                Err(error) => {
+                    return Err(format!(
+                        "failed to inspect watched path {}: {error}",
+                        path.display()
+                    ))
+                }
+            };
             if metadata.is_dir() {
-                visit(root, &path, files)?;
-            } else if watched(relative) {
-                let fingerprint = fingerprint(&path)?;
+                visit(root, &path, files, web)?;
+            } else if watched(relative)
+                || web.is_some_and(|web| {
+                    web.index
+                        .as_ref()
+                        .is_some_and(|index| relative == Path::new(index.as_str()))
+                        || web
+                            .public
+                            .as_ref()
+                            .is_some_and(|public| relative.starts_with(public.as_str()))
+                })
+            {
+                let fingerprint = if metadata.is_file() {
+                    let Some(fingerprint) = fingerprint(&path)? else {
+                        // An editor or asset deletion can race the directory scan.
+                        continue;
+                    };
+                    fingerprint
+                } else {
+                    0
+                };
                 files.insert(
                     path,
                     WatchStamp {
@@ -255,17 +288,31 @@ fn watch_snapshot(roots: &[PathBuf]) -> Result<BTreeMap<PathBuf, WatchStamp>, St
 
     let mut files = BTreeMap::new();
     for root in roots {
-        visit(root, root, &mut files)?;
+        let web = fs::read_to_string(root.join("seseragi.toml"))
+            .ok()
+            .and_then(|source| seseragi_project::parse_manifest(&source).ok())
+            .and_then(|manifest| manifest.web);
+        visit(root, root, &mut files, web.as_ref())?;
     }
     Ok(files)
 }
 
-fn fingerprint(path: &Path) -> Result<u64, String> {
-    let bytes = fs::read(path)
-        .map_err(|error| format!("failed to read watched path {}: {error}", path.display()))?;
-    Ok(bytes.into_iter().fold(0xcbf29ce484222325, |hash, byte| {
-        (hash ^ u64::from(byte)).wrapping_mul(0x100000001b3)
-    }))
+fn fingerprint(path: &Path) -> Result<Option<u64>, String> {
+    let bytes = match fs::read(path) {
+        Ok(bytes) => bytes,
+        Err(error) if error.kind() == ErrorKind::NotFound => return Ok(None),
+        Err(error) => {
+            return Err(format!(
+                "failed to read watched path {}: {error}",
+                path.display()
+            ))
+        }
+    };
+    Ok(Some(
+        bytes.into_iter().fold(0xcbf29ce484222325, |hash, byte| {
+            (hash ^ u64::from(byte)).wrapping_mul(0x100000001b3)
+        }),
+    ))
 }
 
 fn ignored(path: &Path) -> bool {
@@ -287,6 +334,15 @@ fn serve(
     version: &AtomicU64,
     build_available: bool,
 ) -> Result<(), String> {
+    // Accepted sockets can inherit the nonblocking listener state on macOS.
+    // Complete large bundles/assets with bounded blocking writes instead of
+    // abandoning the response at the first full socket buffer.
+    stream
+        .set_nonblocking(false)
+        .map_err(|error| format!("failed to configure client: {error}"))?;
+    stream
+        .set_write_timeout(Some(Duration::from_secs(5)))
+        .map_err(|error| format!("failed to configure client: {error}"))?;
     stream
         .set_read_timeout(Some(Duration::from_millis(100)))
         .map_err(|error| format!("failed to configure client: {error}"))?;
@@ -332,7 +388,15 @@ fn serve(
         );
         return response(&mut stream, 503, "text/html; charset=utf-8", &body, method);
     }
-    let relative = safe_path(request_path).ok_or_else(|| "invalid request path".to_owned())?;
+    let Some(relative) = safe_path(request_path) else {
+        return response(
+            &mut stream,
+            400,
+            "text/plain; charset=utf-8",
+            b"Invalid request path\n",
+            method,
+        );
+    };
     let path = output.join(&relative);
     let metadata = fs::metadata(&path).ok();
     let path = if metadata.as_ref().is_some_and(|value| value.is_file()) {
@@ -357,12 +421,16 @@ fn serve(
 }
 
 fn safe_path(request_path: &str) -> Option<PathBuf> {
-    let trimmed = request_path.trim_start_matches('/');
+    let decoded = decode_url_path(request_path)?;
+    let trimmed = decoded.trim_start_matches('/');
     let path = if trimmed.is_empty() {
         "index.html"
     } else {
         trimmed
     };
+    if path.contains('\\') || path.contains(':') || path.chars().any(char::is_control) {
+        return None;
+    }
     let path = Path::new(path);
     if path
         .components()
@@ -372,6 +440,21 @@ fn safe_path(request_path: &str) -> Option<PathBuf> {
     } else {
         None
     }
+}
+
+fn decode_url_path(value: &str) -> Option<String> {
+    let mut bytes = Vec::new();
+    let mut input = value.as_bytes().iter().copied();
+    while let Some(byte) = input.next() {
+        if byte == b'%' {
+            let high = (input.next()? as char).to_digit(16)?;
+            let low = (input.next()? as char).to_digit(16)?;
+            bytes.push((high * 16 + low) as u8);
+        } else {
+            bytes.push(byte);
+        }
+    }
+    String::from_utf8(bytes).ok()
 }
 
 fn inject_reload(index: &[u8]) -> Vec<u8> {
@@ -407,6 +490,15 @@ fn content_type(path: &Path) -> &'static str {
         Some("map") | Some("json") => "application/json; charset=utf-8",
         Some("svg") => "image/svg+xml",
         Some("png") => "image/png",
+        Some("ico") => "image/x-icon",
+        Some("jpg" | "jpeg") => "image/jpeg",
+        Some("gif") => "image/gif",
+        Some("webp") => "image/webp",
+        Some("avif") => "image/avif",
+        Some("txt") => "text/plain; charset=utf-8",
+        Some("webmanifest") => "application/manifest+json",
+        Some("woff") => "font/woff",
+        Some("woff2") => "font/woff2",
         _ => "application/octet-stream",
     }
 }
@@ -497,6 +589,43 @@ mod tests {
         assert!(index.ends_with("</body>"));
         let failed = inject_reload(b"<body>Build failed</body>");
         assert!(String::from_utf8(failed).unwrap().contains(RELOAD_PATH));
+    }
+
+    #[test]
+    fn watch_snapshots_survive_files_deleted_during_enumeration() {
+        let unique = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let directory = std::env::temp_dir().join(format!(
+            "seseragi-watch-delete-{}-{unique}",
+            std::process::id()
+        ));
+        fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("main.ssrg");
+        fs::write(&path, "let value = 1\n").unwrap();
+        let enumerated = fs::read_dir(&directory).unwrap().next().unwrap().unwrap();
+        fs::remove_file(&path).unwrap();
+        assert_eq!(fingerprint(&enumerated.path()).unwrap(), None);
+        let stopping = Arc::new(AtomicBool::new(false));
+        let writer_stop = Arc::clone(&stopping);
+        let writer = std::thread::spawn(move || {
+            while !writer_stop.load(Ordering::SeqCst) {
+                fs::write(&path, "let value = 1\n").unwrap();
+                fs::remove_file(&path).unwrap();
+            }
+        });
+        let mut failure = None;
+        for _ in 0..1000 {
+            if let Err(error) = watch_snapshot(&[directory.clone()]) {
+                failure = Some(error);
+                break;
+            }
+        }
+        stopping.store(true, Ordering::SeqCst);
+        writer.join().unwrap();
+        fs::remove_dir_all(directory).unwrap();
+        assert_eq!(failure, None);
     }
 
     #[test]

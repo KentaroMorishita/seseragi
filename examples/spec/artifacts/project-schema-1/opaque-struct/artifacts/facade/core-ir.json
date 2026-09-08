@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/opaque-struct::facade",
+  "externalTypeBindings": [
+    {
+      "arity": 0,
+      "spelling": "Secret",
+      "canonical": "fixture/opaque-struct::domain::Secret",
+      "provider": {
+        "module": "fixture/opaque-struct::domain",
+        "export": "Secret"
+      }
+    },
+    {
+      "arity": 1,
+      "spelling": "Box",
+      "canonical": "fixture/opaque-struct::domain::Box",
+      "provider": {
+        "module": "fixture/opaque-struct::domain",
+        "export": "Box"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/opaque-struct::domain",
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 0,
+        "end": 121
+      },
+      "imports": [
+        {
+          "reexportedAs": "Secret",
+          "namespace": "type",
+          "imported": "Secret",
+          "local": "Secret",
+          "canonical": "fixture/opaque-struct::domain::Secret",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 15,
+            "end": 21
+          }
+        },
+        {
+          "reexportedAs": "Box",
+          "namespace": "type",
+          "imported": "Box",
+          "local": "Box",
+          "canonical": "fixture/opaque-struct::domain::Box",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 25,
+            "end": 28
+          }
+        },
+        {
+          "reexportedAs": "create",
+          "namespace": "value",
+          "imported": "create",
+          "local": "create",
+          "canonical": "fixture/opaque-struct::domain::create",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 32,
+            "end": 38
+          }
+        },
+        {
+          "reexportedAs": "read",
+          "namespace": "value",
+          "imported": "read",
+          "local": "read",
+          "canonical": "fixture/opaque-struct::domain::read",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 42,
+            "end": 46
+          }
+        },
+        {
+          "reexportedAs": "unpack",
+          "namespace": "value",
+          "imported": "unpack",
+          "local": "unpack",
+          "canonical": "fixture/opaque-struct::domain::unpack",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 50,
+            "end": 56
+          }
+        },
+        {
+          "reexportedAs": "update",
+          "namespace": "value",
+          "imported": "update",
+          "local": "update",
+          "canonical": "fixture/opaque-struct::domain::update",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 60,
+            "end": 66
+          }
+        },
+        {
+          "reexportedAs": "box",
+          "namespace": "value",
+          "imported": "box",
+          "local": "box",
+          "canonical": "fixture/opaque-struct::domain::box",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 70,
+            "end": 73
+          }
+        },
+        {
+          "reexportedAs": "unbox",
+          "namespace": "value",
+          "imported": "unbox",
+          "local": "unbox",
+          "canonical": "fixture/opaque-struct::domain::unbox",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 77,
+            "end": 82
+          }
+        },
+        {
+          "reexportedAs": "nested",
+          "namespace": "value",
+          "imported": "nested",
+          "local": "nested",
+          "canonical": "fixture/opaque-struct::domain::nested",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 86,
+            "end": 92
+          }
+        },
+        {
+          "reexportedAs": "collect",
+          "namespace": "value",
+          "imported": "collect",
+          "local": "collect",
+          "canonical": "fixture/opaque-struct::domain::collect",
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 96,
+            "end": 103
+          }
+        }
+      ]
+    }
+  ]
+}

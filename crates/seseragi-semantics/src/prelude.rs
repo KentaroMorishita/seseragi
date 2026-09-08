@@ -455,6 +455,20 @@ const fn method(
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "BenchmarkFailure",
+        type_canonical: Some("std/benchmark::BenchmarkFailure"),
+        type_arity: 0,
+        identity: "std/benchmark::EqBenchmarkFailure",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "BenchmarkFailure",
+        type_canonical: Some("std/benchmark::BenchmarkFailure"),
+        type_arity: 0,
+        identity: "Show<std/benchmark::BenchmarkFailure>",
+    },
+    PreludeStandardInstance {
         trait_name: "Functor",
         type_name: "MaybeT",
         type_canonical: Some("std/transformer/maybe::MaybeT"),
@@ -3110,7 +3124,8 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 || PURE_FUNCTION_NAMES.contains(&spelling)
         }
         SymbolNamespace::Operator => {
-            seseragi_syntax::standard_operator(spelling).is_some()
+            spelling == ":"
+                || seseragi_syntax::standard_operator(spelling).is_some()
                 || seseragi_syntax::standard_trait_operator(spelling).is_some()
         }
         SymbolNamespace::Trait => trait_by_name(spelling).is_some(),

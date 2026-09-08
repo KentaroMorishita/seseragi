@@ -13,7 +13,12 @@ pub(super) fn collect_imported_values(
         .imports
         .iter()
         .filter(|import| {
-            import.in_scope && import.export.declaration_kind.as_deref() == Some("value")
+            import.in_scope
+                && import.export.namespace == "value"
+                && matches!(
+                    import.export.declaration_kind.as_deref(),
+                    None | Some("value")
+                )
         })
         .filter_map(|import| {
             let bindings = import.scheme_type_bindings.as_deref().unwrap_or_default();

@@ -1020,6 +1020,75 @@ clampNumberはboundかvalueがNaN、またはtotalCompareでlowerがupperより�
 canonical NaNへし、signはNaNだけNothing、negative zeroを含むzeroはJust 0です。powerはIEEE 754 / ECMAScript
 Math.pow互換の特殊値表に従い、backend差を許しません。
 
+### `std/math`
+
+数学定数・初等関数・超越関数を提供するpure portable moduleです。すべてのtargetで利用でき、
+Effect、Provider、host API identityをsignatureへ含めません。Floatの表現・parse・format・conversion・
+classificationは `std/float` が所有し、既存のabs・power・roundIntegralを移動・複製しません。
+Floatへstandard Eq/Ordを追加しません。
+
+```seseragi
+let pi: Float
+let e: Float
+let tau: Float
+fn sin value: Float -> Float
+fn cos value: Float -> Float
+fn tan value: Float -> Float
+fn asin value: Float -> Float
+fn acos value: Float -> Float
+fn atan value: Float -> Float
+fn atan2 y: Float -> x: Float -> Float
+fn exp value: Float -> Float
+fn log value: Float -> Float
+fn log2 value: Float -> Float
+fn log10 value: Float -> Float
+fn sqrt value: Float -> Float
+fn cbrt value: Float -> Float
+fn hypot x: Float -> y: Float -> Float
+fn sinh value: Float -> Float
+fn cosh value: Float -> Float
+fn tanh value: Float -> Float
+```
+
+定数は関数ではなくvalue exportです。pi・e・tauはそれぞれ数学的なπ・自然対数の底・2πを
+round-to-nearest ties-to-evenでbinary64へ丸めた値です。角度の入出力はradianです。
+logは自然対数、log2/log10は底2/10、cbrtは負数にも定義される実立方根です。
+hypotは二変数のユークリッド長で、中間の二乗だけがoverflow/underflowする実装を許しません。
+
+特殊値と境界は次の表を全backendのcontractとします。domain外入力はNaNであり、throw・
+Effect failure・defectにはしません。NaNのpayload/signは保存しません。
+
+| 関数 | 境界と特殊値 |
+| --- | --- |
+| sin / tan | ±0は同じ符号のzero、±InfinityはNaN |
+| cos | ±0は1、±InfinityはNaN |
+| asin | ±0は同じ符号のzero、±1は±π/2、範囲[-1,1]の外はNaN |
+| acos | 1は+0、-1はπ、±0はπ/2、範囲[-1,1]の外はNaN |
+| atan | ±0は同じ符号のzero、±Infinityは±π/2 |
+| exp | ±0は1、+Infinityは+Infinity、-Infinityは+0 |
+| log / log2 / log10 | ±0は-Infinity、1は+0、負数はNaN、+Infinityは+Infinity |
+| sqrt | ±0は同じ符号のzero、負数はNaN、+Infinityは+Infinity |
+| cbrt / sinh | ±0は同じ符号のzero、±Infinityは同じ符号のInfinity |
+| cosh | ±0は1、±Infinityは+Infinity |
+| tanh | ±0は同じ符号のzero、±Infinityは±1 |
+| hypot | どちらかが±Infinityなら他方がNaNでも+Infinity、両方zeroなら+0 |
+
+上表のhypot例外以外は、どの引数がNaNでもNaNを返します。有限入力のoverflowは数学的結果と
+同符号のInfinity、zeroへのunderflowは数学的結果と同符号のzeroです。subnormalを一律zeroへ
+flushしません。三角関数のpi等は丸めた入力であり、`sin pi` がexact zeroになるとは限りません。
+
+atan2は点(x,y)の偏角を[-π,π]で返し、第一引数がyです。yの符号をsとすると、
+y=±0かつxが正数/+0ならs0、xが負数/-0ならsπです。yがnonzeroでx=±0ならsπ/2です。
+yだけが無限大ならsπ/2、xだけが+Infinityならs0、xだけが-Infinityならsπです。
+両方が無限大ならxが正のときsπ/4、負のときs3π/4です。
+
+通常の有限結果はbinary64の近似値です。特殊値・定数・上表のexact zero/one以外について、
+correct rounding、一律のULP上限、backend間のbit一致は要求しません。backendは数学関数を
+近似し、少なくとも代表点（sin 0.5、cos 0.5、log 2、sqrt 2、atan2 1 1など）を
+`abs(actual - expected) <= 1e-14 * max(1, abs(expected))` で満たすものとします。
+利用側は目的に応じた許容誤差で検証します。TypeScript backendはMathを実装手段に使えますが、
+JavaScript APIそのものやその全API集合をsource contractにはしません。
+
 ### `std/big-int`
 
 `BigInt`は有限な任意精度整数を表すstandard opaque typeです。source literalは追加せず、parseまたは

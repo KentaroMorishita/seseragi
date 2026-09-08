@@ -707,6 +707,32 @@ fn collect_local_symbol_types(
         TypedExpr::Lambda { parameter, .. } => {
             collect_parameter_types(resolved, std::slice::from_ref(parameter), types);
         }
+        TypedExpr::Block { statements, .. } => {
+            for statement in statements {
+                if let TypedBlockStatement::Function {
+                    name,
+                    parameters,
+                    body,
+                    effect,
+                    origin,
+                    ..
+                } = statement
+                {
+                    if let Some(id) =
+                        local_symbol_in_range(resolved, name, *origin, SymbolKind::Function)
+                    {
+                        let result = effect
+                            .as_ref()
+                            .map(crate::typed::effect_value_type)
+                            .unwrap_or_else(|| {
+                                crate::typed::application_argument_type_from_expr(body)
+                            });
+                        types.insert(id, callable_typed_type(parameters, &result));
+                    }
+                    collect_parameter_types(resolved, parameters, types);
+                }
+            }
+        }
         _ => {}
     });
     walk_patterns(expression, &mut |pattern| {
@@ -944,6 +970,19 @@ fn local_symbol_in_range(
 pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
     let mut items = Vec::new();
 
+    items.push(AnalysisReferenceItem {
+        name: ":".to_owned(),
+        identity: "std/prelude:::".to_owned(),
+        module: "std/prelude".to_owned(),
+        category: "Operators".to_owned(),
+        kind: "operator".to_owned(),
+        signature: Some("A : List<A> -> List<A>".to_owned()),
+        multiline_signature: Some("A : List<A> -> List<A>".to_owned()),
+        description: "Persistent List cons. Precedence 4, right associative; evaluates head then tail once and shares the tail in O(1). The operator section (:) is a curried function.".to_owned(),
+        type_parameters: vec!["A".to_owned()],
+        constraints: vec![],
+    });
+
     let task_target = TypeDocument::Named {
         name: "Effect".to_owned(),
         canonical: Some("std/effect::Effect".to_owned()),
@@ -1171,6 +1210,17 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
             constraints: vec![operator.trait_name.to_owned()],
         });
     }
+
+    items.push(AnalysisReferenceItem {
+        identity: "std/prelude::??".to_owned(),
+        name: "??".to_owned(), module: "std/prelude".to_owned(),
+        category: "Operators".to_owned(), kind: "operator".to_owned(),
+        signature: Some("Maybe<A> ?? A -> A".to_owned()),
+        multiline_signature: Some("Maybe<A> ?? A -> A".to_owned()),
+        description: "Maybe fallback. Precedence 0, right-associative. Evaluates the left once; evaluates the fallback only for Nothing. Syntax only: no operator section or overload.".to_owned(),
+        type_parameters: vec!["A".to_owned()],
+        constraints: vec![],
+    });
 
     let trait_items = items
         .iter()
@@ -1409,7 +1459,9 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
 
 fn standard_category(name: &str, module: &str) -> &'static str {
     match module {
-        "std/number" | "std/int" | "std/big-int" | "std/decimal" | "std/float" => "Number",
+        "std/number" | "std/int" | "std/big-int" | "std/decimal" | "std/float" | "std/math" => {
+            "Number"
+        }
         "std/array" | "std/list" | "std/collection" => "Collection",
         "std/maybe" => "Maybe",
         "std/either" => "Either",
@@ -2016,6 +2068,9 @@ fn module_description(module: &str, export: &InterfaceExport) -> &'static str {
             "Parses, formats, or computes with Int under the safe integer contract."
         }
         ("std/int", _) => "Type from the checked safe integer surface.",
+        ("std/math", _) => {
+            "Pure portable mathematics on Float; angles are radians and atan2 takes y then x."
+        }
         ("std/float", "value") => {
             "Parses, formats, classifies, or explicitly converts an IEEE 754 Float."
         }
@@ -2268,6 +2323,7 @@ fn walk_expression(expression: &TypedExpr, visit: &mut impl FnMut(&TypedExpr)) {
         | TypedExpr::Integer { .. }
         | TypedExpr::Float { .. }
         | TypedExpr::String { .. }
+        | TypedExpr::Char { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. } => {}
     }
@@ -2344,6 +2400,7 @@ fn walk_pattern(pattern: &TypedPattern, visit: &mut impl FnMut(&TypedPattern)) {
         }
         TypedPattern::Integer { .. }
         | TypedPattern::String { .. }
+        | TypedPattern::Char { .. }
         | TypedPattern::Boolean { .. }
         | TypedPattern::Wildcard { .. }
         | TypedPattern::Binding { .. }
@@ -2358,6 +2415,7 @@ fn expression_origin(expression: &TypedExpr) -> ByteSpan {
         | TypedExpr::Integer { origin, .. }
         | TypedExpr::Float { origin, .. }
         | TypedExpr::String { origin, .. }
+        | TypedExpr::Char { origin, .. }
         | TypedExpr::Template { origin, .. }
         | TypedExpr::Boolean { origin, .. }
         | TypedExpr::Variable { origin, .. }
@@ -2389,6 +2447,7 @@ fn expression_type(expression: &TypedExpr) -> Option<TypedType> {
         | TypedExpr::Integer { type_ref, .. }
         | TypedExpr::Float { type_ref, .. }
         | TypedExpr::String { type_ref, .. }
+        | TypedExpr::Char { type_ref, .. }
         | TypedExpr::Template { type_ref, .. }
         | TypedExpr::Boolean { type_ref, .. }
         | TypedExpr::Variable { type_ref, .. }
@@ -2421,6 +2480,9 @@ fn pattern_type(pattern: &TypedPattern) -> Option<(ByteSpan, &TypedType)> {
             type_ref, origin, ..
         }
         | TypedPattern::String {
+            type_ref, origin, ..
+        }
+        | TypedPattern::Char {
             type_ref, origin, ..
         }
         | TypedPattern::Boolean {

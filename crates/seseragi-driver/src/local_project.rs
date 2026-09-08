@@ -14,6 +14,7 @@ pub struct CompiledLocalProject {
     pub compiled: CompiledProject,
     pub entry_module: String,
     pub foreign_host_directories: Vec<ForeignHostDirectory>,
+    pub web: Option<(PathBuf, seseragi_project::ManifestWeb)>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -67,7 +68,7 @@ impl LocalProjectCompileError {
 pub fn compile_local_project(
     project: &LoadedLocalProject,
 ) -> Result<CompiledLocalProject, LocalProjectCompileError> {
-    compile_local_project_inner(project, None)
+    compile_local_project_inner(project, None, None)
 }
 
 /// Compiles a local project and resolves the entry point's provider
@@ -77,13 +78,66 @@ pub fn compile_local_project_with_providers(
     mut configuration: ProjectProviderConfiguration,
 ) -> Result<CompiledLocalProject, LocalProjectCompileError> {
     configuration.entry_module = logical_module_id(project.entry());
-    compile_local_project_inner(project, Some(configuration))
+    compile_local_project_inner(project, Some(configuration), None)
+}
+
+pub fn compile_local_project_with_profile(
+    project: &LoadedLocalProject,
+    profile: Option<seseragi_project::BuildProfile>,
+) -> Result<CompiledLocalProject, LocalProjectCompileError> {
+    compile_local_project_inner(project, None, profile)
+}
+
+pub fn compile_local_project_with_providers_and_profile(
+    project: &LoadedLocalProject,
+    mut configuration: ProjectProviderConfiguration,
+    profile: Option<seseragi_project::BuildProfile>,
+) -> Result<CompiledLocalProject, LocalProjectCompileError> {
+    configuration.entry_module = logical_module_id(project.entry());
+    compile_local_project_inner(project, Some(configuration), profile)
 }
 
 /// Compiles all test source through the ordinary linked project pipeline, then
 /// selects modules with the exact `pub let tests: std/test::Test` export.
 pub fn compile_local_tests(
     project: &LoadedLocalTests,
+) -> Result<CompiledLocalTests, LocalTestCompileError> {
+    compile_tool_roots(
+        project,
+        "tests",
+        "std/test::Test",
+        seseragi_project::BuildProfile::Development,
+    )
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CompiledLocalBenchmarks {
+    pub compiled: CompiledProject,
+    pub benchmark_modules: Vec<CompiledTestModule>,
+    pub foreign_host_directories: Vec<ForeignHostDirectory>,
+}
+
+pub fn compile_local_benchmarks(
+    project: &LoadedLocalTests,
+    profile: seseragi_project::BuildProfile,
+) -> Result<CompiledLocalBenchmarks, LocalTestCompileError> {
+    let compiled = compile_tool_roots(project, "benchmarks", "std/benchmark::Benchmark", profile)?;
+    Ok(CompiledLocalBenchmarks {
+        compiled: compiled.compiled,
+        benchmark_modules: compiled.test_modules,
+        foreign_host_directories: collect_foreign_directories(
+            project.packages(),
+            project.modules(),
+            test_output_path,
+        ),
+    })
+}
+
+fn compile_tool_roots(
+    project: &LoadedLocalTests,
+    binding: &str,
+    canonical_type: &str,
+    profile: seseragi_project::BuildProfile,
 ) -> Result<CompiledLocalTests, LocalTestCompileError> {
     let mut graph = ModuleGraph::new();
     let mut identities_by_id = BTreeMap::new();
@@ -108,6 +162,7 @@ pub fn compile_local_tests(
             test_output_path(identity),
         )
         .with_package_scope(logical_package_scope(identity.package()))
+        .with_profile(profile)
     });
     let compiled = compile_project(graph, inputs).map_err(|error| {
         LocalTestCompileError::Compile(LocalProjectCompileError {
@@ -128,7 +183,7 @@ pub fn compile_local_tests(
             .typed_interface
             .exports
             .iter()
-            .filter(|export| export.namespace == "value" && export.name == "tests")
+            .filter(|export| export.namespace == "value" && export.name == binding)
             .collect::<Vec<_>>();
         if matching.is_empty() {
             continue;
@@ -136,10 +191,17 @@ pub fn compile_local_tests(
         let [export] = matching.as_slice() else {
             return Err(LocalTestCompileError::Discovery {
                 module: identity.path().as_str().to_owned(),
-                reason: "test module must export exactly one `pub let tests: test.Test`".to_owned(),
+                reason: format!(
+                    "module must export exactly one `pub let {binding}: {canonical_type}`"
+                ),
             });
         };
-        let exact = export.scheme.type_parameters.is_empty()
+        let owned_let = module.typed_hir.declarations.iter().any(|declaration| {
+            matches!(declaration, seseragi_semantics::TypedDecl::Let { bindings, visibility: seseragi_syntax::Visibility::Public, .. }
+                if bindings.iter().any(|bound| bound.symbol == export.symbol))
+        });
+        let exact = (binding != "benchmarks" || owned_let)
+            && export.scheme.type_parameters.is_empty()
             && export.scheme.constraints.is_empty()
             && matches!(
                 &export.scheme.type_ref,
@@ -147,12 +209,12 @@ pub fn compile_local_tests(
                     canonical,
                     arguments,
                     ..
-                } if canonical == "std/test::Test" && arguments.is_empty()
+                } if canonical == canonical_type && arguments.is_empty()
             );
         if !exact {
             return Err(LocalTestCompileError::Discovery {
                 module: identity.path().as_str().to_owned(),
-                reason: "`tests` must have the exact type `std/test::Test`".to_owned(),
+                reason: format!("`{binding}` must have the exact type `{canonical_type}`"),
             });
         }
         test_modules.push(CompiledTestModule {
@@ -169,7 +231,16 @@ pub fn compile_local_tests(
 fn compile_local_project_inner(
     project: &LoadedLocalProject,
     configuration: Option<ProjectProviderConfiguration>,
+    profile: Option<seseragi_project::BuildProfile>,
 ) -> Result<CompiledLocalProject, LocalProjectCompileError> {
+    let profile = profile
+        .or_else(|| {
+            project
+                .packages()
+                .package(project.packages().root())
+                .and_then(|package| package.manifest().build_profile)
+        })
+        .unwrap_or_default();
     let foreign_host_directories = collect_foreign_host_directories(project);
     let mut graph = ModuleGraph::new();
     let mut identities_by_id = BTreeMap::new();
@@ -194,6 +265,7 @@ fn compile_local_project_inner(
             output_path(identity),
         )
         .with_package_scope(logical_package_scope(identity.package()))
+        .with_profile(profile)
     });
     let compiled = match configuration {
         Some(configuration) => compile_project_with_providers(graph, inputs, configuration),
@@ -205,7 +277,17 @@ fn compile_local_project_inner(
             .map(Box::new),
         error: Box::new(error),
     })?;
+    let root_package = project
+        .packages()
+        .package(project.packages().root())
+        .expect("root package exists");
+    let web = root_package
+        .manifest()
+        .web
+        .clone()
+        .map(|web| (root_package.root().to_owned(), web));
     Ok(CompiledLocalProject {
+        web,
         entry_module: logical_module_id(project.entry()),
         compiled,
         foreign_host_directories,
@@ -213,9 +295,17 @@ fn compile_local_project_inner(
 }
 
 fn collect_foreign_host_directories(project: &LoadedLocalProject) -> Vec<ForeignHostDirectory> {
+    collect_foreign_directories(project.packages(), project.modules(), output_path)
+}
+
+fn collect_foreign_directories<'a>(
+    packages: &seseragi_project::LocalPackageGraph,
+    modules: impl Iterator<Item = (&'a ModuleIdentity, &'a seseragi_project::LoadedModule)>,
+    output_path: fn(&ModuleIdentity) -> String,
+) -> Vec<ForeignHostDirectory> {
     let mut directories = BTreeMap::<(PathBuf, PathBuf, PathBuf), BTreeSet<PathBuf>>::new();
-    for (identity, module) in project.modules() {
-        let Some(package) = project.packages().package(identity.package()) else {
+    for (identity, module) in modules {
+        let Some(package) = packages.package(identity.package()) else {
             continue;
         };
         let surface = seseragi_syntax::parse_surface_ast(
@@ -281,12 +371,13 @@ fn collect_foreign_host_directories(project: &LoadedLocalProject) -> Vec<Foreign
                 .then_some(component)
             });
             let (source_directory, target_directory) = if let Some(host_root) = host_root {
-                (
-                    package.root().join(host_root),
-                    PathBuf::from("dist/packages")
-                        .join(identity.package().name().as_str())
-                        .join(host_root),
-                )
+                (package.root().join(host_root), {
+                    let mut target_root = target_file.clone();
+                    for _ in package_relative.components().skip(1) {
+                        target_root.pop();
+                    }
+                    target_root
+                })
             } else {
                 (source_directory.to_owned(), target_directory.to_owned())
             };
@@ -353,6 +444,11 @@ fn output_path(identity: &ModuleIdentity) -> String {
 
 fn test_aware_module_id(identity: &ModuleIdentity) -> String {
     match identity.root() {
+        ModuleRoot::Benchmark => format!(
+            "{}::@benchmark/{}",
+            logical_package_scope(identity.package()),
+            identity.path().as_str()
+        ),
         ModuleRoot::Test => format!(
             "{}::test/{}",
             logical_package_scope(identity.package()),
@@ -395,6 +491,7 @@ fn error_module(error: &ProjectCompileError) -> Option<&str> {
             .first()
             .map(|diagnostics| diagnostics.module.as_str()),
         ProjectCompileError::DuplicateOutputPath { first_module, .. } => Some(first_module),
+        ProjectCompileError::MixedProfiles { module } => Some(module),
         ProjectCompileError::Graph(_) => None,
     }
 }

@@ -1,0 +1,26 @@
+import {
+  Secret,
+  Box,
+  create,
+  read,
+  unpack,
+  update,
+  box,
+  unbox,
+  nested,
+  collect
+} from "./facade"
+
+pub effect fn main = {
+  let secret = create 7
+  do {
+    println $ read secret
+    println $ unpack secret
+    println $ show secret
+    println $ show (secret == create 7)
+    println $ unbox (box 42)
+    println $ nested (box secret)
+    println $ show (collect [secret])
+    println $ read (update secret)
+  }
+}

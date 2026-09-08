@@ -143,6 +143,7 @@ impl State {
                             "workspaceSymbolProvider": true,
                             "codeActionProvider": true,
                             "documentFormattingProvider": true,
+                            "documentRangeFormattingProvider": true,
                             "semanticTokensProvider": {
                                 "legend": {
                                     "tokenTypes": SEMANTIC_TOKEN_TYPES,
@@ -278,6 +279,22 @@ impl State {
                                 features::code_actions(
                                     document,
                                     &params,
+                                    self.encoding.unwrap_or(PositionEncoding::Utf16),
+                                )
+                            })
+                    })
+                    .unwrap_or_else(|| json!([]));
+                Ok(vec![response(id, result)])
+            }
+            Some("textDocument/rangeFormatting") => {
+                let result = parse_params::<crate::model::DocumentRangeFormattingParams>(&message)
+                    .and_then(|params| {
+                        self.documents
+                            .get(&params.text_document.uri)
+                            .map(|document| {
+                                features::range_formatting(
+                                    document,
+                                    params.range,
                                     self.encoding.unwrap_or(PositionEncoding::Utf16),
                                 )
                             })

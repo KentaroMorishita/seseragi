@@ -1,0 +1,366 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/opaque-struct::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/opaque-struct::domain::Secret",
+      "namespace": "type",
+      "name": "Secret",
+      "visibility": "public",
+      "declarationKind": "opaque-struct",
+      "declaration": {
+        "start": 0,
+        "end": 57
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Secret",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/opaque-struct::domain::Box",
+      "namespace": "type",
+      "name": "Box",
+      "visibility": "public",
+      "declarationKind": "opaque-struct",
+      "declaration": {
+        "start": 58,
+        "end": 95
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Box",
+          "arity": 1
+        }
+      }
+    },
+    {
+      "symbol": "fixture/opaque-struct::domain::create",
+      "namespace": "value",
+      "name": "create",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 96,
+        "end": 149
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/opaque-struct::domain::read",
+      "namespace": "value",
+      "name": "read",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 150,
+        "end": 198
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/opaque-struct::domain::unpack",
+      "namespace": "value",
+      "name": "unpack",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 199,
+        "end": 277
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/opaque-struct::domain::update",
+      "namespace": "value",
+      "name": "update",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 278,
+        "end": 349
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/opaque-struct::domain::box",
+      "namespace": "value",
+      "name": "box",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 350,
+        "end": 398
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/opaque-struct::domain::unbox",
+      "namespace": "value",
+      "name": "unbox",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 399,
+        "end": 472
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/opaque-struct::domain::nested",
+      "namespace": "value",
+      "name": "nested",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 473,
+        "end": 571
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Secret",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/opaque-struct::domain::collect",
+      "namespace": "value",
+      "name": "collect",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 572,
+        "end": 665
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Secret",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Eq<fixture/opaque-struct::domain::Secret>",
+      "providerModule": "fixture/opaque-struct::domain",
+      "traitIdentity": "Eq",
+      "argumentIdentities": [
+        "fixture/opaque-struct::domain::Secret"
+      ],
+      "typeIdentity": "fixture/opaque-struct::domain::Secret",
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 57
+      }
+    },
+    {
+      "identity": "Show<fixture/opaque-struct::domain::Secret>",
+      "providerModule": "fixture/opaque-struct::domain",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "fixture/opaque-struct::domain::Secret"
+      ],
+      "typeIdentity": "fixture/opaque-struct::domain::Secret",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 57
+      }
+    }
+  ]
+}

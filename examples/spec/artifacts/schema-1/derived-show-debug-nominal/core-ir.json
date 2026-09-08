@@ -8,6 +8,7 @@
       "name": "UserId",
       "visibility": "public",
       "opaque": false,
+      "newtype": true,
       "typeParameters": [],
       "variants": [
         {

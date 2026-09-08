@@ -1,13 +1,13 @@
 [package]
 name = "fixture/benchmark-discovery"
 version = "0.0.0"
-language = ">=0.1.0 <0.2.0"
+language = ">=0.1.0"
 
 [exports]
 "." = "library"
 
 [benchmark]
-target = "test-js"
+target = "node"
 warmup = 3
 samples = 5
 minimum_sample_ms = 10

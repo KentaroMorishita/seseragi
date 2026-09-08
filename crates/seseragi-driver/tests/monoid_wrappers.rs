@@ -8,7 +8,8 @@ fn unwrapSum<A> value: Sum<A> -> A = match value { Sum n -> n }
 fn unwrapProduct<A> value: Product<A> -> A = match value { Product n -> n }
 pub let added = unwrapSum $ total [Sum 1, Sum 2, Sum 3]
 pub let multiplied = unwrapProduct $ combine [Product 2, Product 3, Product 4]
-pub let none: Sum<Int> = combine ([]: Array<Sum<Int>>)
+let empty: Array<Sum<Int>> = []
+pub let none: Sum<Int> = combine empty
 "#;
     let analysis = analyze_module(CompileInput::new("wrapper.ssrg", "fixture/wrapper", source));
     for name in ["Sum", "Product"] {

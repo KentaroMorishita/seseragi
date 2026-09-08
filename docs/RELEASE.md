@@ -197,3 +197,26 @@ if ($actual -ne $expected) { throw "SHA-256 checksum mismatch" }
 Expand-Archive $archive
 & ".\\$($archive.Replace('.zip', ''))\\seseragi.exe" --version
 ```
+
+### Linux native ABI compatibility
+
+`linux-x64` は `x86_64-unknown-linux-gnu` のCLI / LSPで、最低glibcは **2.34** です。
+AlmaLinux 9のlinux/amd64 container digestを `scripts/linux-native-contract.json` に固定し、
+その中で同じRust toolchainから両binaryをbuildします。最低環境の実行gateはこのcontainerで行い、
+別jobがdownloadしたarchive / checksum / VSIXを使います。modern Ubuntu 24.04でも同じ配布物を検証します。
+Amazon Linux 2023 / RHEL 9のglibc 2.34、Ubuntu 22.04、Debian 12以降を意図したcompatibility windowです。
+個別distribution固有の設定や外部providerの依存まで保証するものではありません。
+
+Ubuntu 22.04 runner固定だけではglibc 2.35になり、Amazon Linux 2023へ届きません。
+controlled containerを採用し、musl版は現時点では追加しません。`linux-x64` のGNU loader、archive名、
+checksum形式は保持します。muslを追加する場合は独立targetとしてruntime / packaging / smokeを設計します。
+[Amazon Linuxのtoolchain contract](https://docs.aws.amazon.com/linux/al2023/ug/glibc-gcc-and-binutils.html)も参照してください。
+
+`readelf` gateはCLI / LSP両方のELF architecture、GNU loader、必要library、RPATH / RUNPATH、GLIBC symbol
+versionを検査し、2.34超過や未知のGLIBC ABI requirementを失敗にします。VSIXはnative archiveと同じLSPを
+再buildせず同梱し、download後にbytesの一致も確認します。baseline smokeはCLI version / metadata、LSP initialize、
+型不一致programをbuild時の診断で拒否するcheck、最小programのbuild / runと生成entryの実行を含みます。glibc versionはcontainer内の `getconf` でも照合します。
+container digest更新はこのgateを通して明示的に行い、runner更新によるABI floorの上昇を許しません。
+
+canonical releaseとVS Code CIは `.github/workflows/linux-native.yml` を共有します。単独確認は既存の
+VS Code Extension workflowを `linux-portability-only=true` でdispatchできます。配布前のsourceチェックは別途必要です。

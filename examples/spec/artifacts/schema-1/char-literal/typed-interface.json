@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/char-literal",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/char-literal::result",
+      "namespace": "value",
+      "name": "result",
+      "visibility": "public",
+      "declaration": {
+        "start": 342,
+        "end": 348
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

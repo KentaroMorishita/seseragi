@@ -5,11 +5,13 @@ fn increment value: Count -> Count =
     Count raw -> Count (raw + 1)
   }
 
+fn unwrap count: Count -> Int = match count { Count raw -> raw }
+
 fn normalize value: Int -> Int =
   value
     |> Count
     |> increment
-    |> (\count -> match count { Count raw -> raw })
+    |> unwrap
 
 fn countdown current: Int -> total: Int -> Int =
   if current <= 0

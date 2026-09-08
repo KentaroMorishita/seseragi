@@ -1,0 +1,2328 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/local-effect-fn",
+  "externalTypeBindings": [
+    {
+      "spelling": "Console",
+      "canonical": "std/prelude::Console"
+    },
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "bindings": [
+    {
+      "symbol": "artifact/local-effect-fn::quiet",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 71,
+        "end": 92
+      },
+      "value": {
+        "kind": "call",
+        "callee": "artifact/local-effect-fn::silent",
+        "arguments": [
+          {
+            "kind": "unit",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 90,
+              "end": 92
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 83,
+          "end": 92
+        }
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/local-effect-fn::silent",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 70
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "local-function",
+            "name": "ignored",
+            "parameters": [
+              {
+                "id": "unit",
+                "kind": "implicit",
+                "type": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "must stay cold",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 52,
+                    "end": 68
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 44,
+                "end": 68
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 21,
+              "end": 68
+            }
+          }
+        ],
+        "result": {
+          "kind": "unit",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 69,
+            "end": 69
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 20,
+          "end": 70
+        }
+      }
+    },
+    {
+      "symbol": "artifact/local-effect-fn::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 94,
+        "end": 977
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "outer",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "integer",
+              "value": "7",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 131,
+                "end": 132
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 116,
+              "end": 132
+            }
+          }
+        ],
+        "result": {
+          "kind": "sequence",
+          "statements": [
+            {
+              "kind": "local-function",
+              "name": "unused",
+              "parameters": [
+                {
+                  "id": "unit",
+                  "kind": "implicit",
+                  "type": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                }
+              ],
+              "body": {
+                "kind": "effect-operation",
+                "operation": "console.println",
+                "requirements": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "arguments": [
+                  {
+                    "kind": "string",
+                    "value": "must stay cold",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 162,
+                      "end": 178
+                    }
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 154,
+                  "end": 178
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 133,
+                "end": 178
+              }
+            }
+          ],
+          "result": {
+            "kind": "sequence",
+            "statements": [
+              {
+                "kind": "local-function",
+                "name": "captured",
+                "parameters": [
+                  {
+                    "id": "unit",
+                    "kind": "implicit",
+                    "type": {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  }
+                ],
+                "body": {
+                  "kind": "call",
+                  "callee": "std/prelude::Applicative::pure",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "outer",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 207,
+                        "end": 212
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Applicative",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/effect::Applicative"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Applicative",
+                    "method": "pure"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 202,
+                    "end": 212
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 179,
+                  "end": 212
+                }
+              }
+            ],
+            "result": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "local-function",
+                  "name": "identity",
+                  "typeParameters": [
+                    "A"
+                  ],
+                  "parameters": [
+                    {
+                      "id": "value",
+                      "kind": "named",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    }
+                  ],
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/prelude::Applicative::pure",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "value",
+                        "type": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 258,
+                          "end": 263
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Applicative",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Effect",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "closed": true,
+                                  "fields": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Never",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/effect::Applicative"
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "std/prelude::Applicative",
+                      "method": "pure"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 253,
+                      "end": 263
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 213,
+                    "end": 263
+                  }
+                }
+              ],
+              "result": {
+                "kind": "sequence",
+                "statements": [
+                  {
+                    "kind": "local-function",
+                    "name": "render",
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "constraints": [
+                      {
+                        "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "parameters": [
+                      {
+                        "id": "value",
+                        "kind": "named",
+                        "type": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      }
+                    ],
+                    "body": {
+                      "kind": "call",
+                      "callee": "std/prelude::Applicative::pure",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Show::show",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "value",
+                              "type": {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 332,
+                                "end": 337
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Show",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "parameter",
+                                "index": 0
+                              }
+                            }
+                          ],
+                          "traitDispatch": {
+                            "traitIdentity": "std/prelude::Show",
+                            "method": "show"
+                          },
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 327,
+                            "end": 337
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Applicative",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Effect",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "closed": true,
+                                    "fields": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Never",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/effect::Applicative"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Applicative",
+                        "method": "pure"
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 321,
+                        "end": 338
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 264,
+                      "end": 338
+                    }
+                  }
+                ],
+                "result": {
+                  "kind": "sequence",
+                  "statements": [
+                    {
+                      "kind": "local-function",
+                      "name": "count",
+                      "parameters": [
+                        {
+                          "id": "n",
+                          "kind": "named",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        }
+                      ],
+                      "body": {
+                        "kind": "if",
+                        "condition": {
+                          "kind": "binary",
+                          "operator": "==",
+                          "left": {
+                            "kind": "variable",
+                            "name": "n",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 376,
+                              "end": 377
+                            }
+                          },
+                          "right": {
+                            "kind": "integer",
+                            "value": "0",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 381,
+                              "end": 382
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Eq",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/int::Eq"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 376,
+                            "end": 382
+                          }
+                        },
+                        "thenBranch": {
+                          "kind": "call",
+                          "callee": "std/prelude::Applicative::pure",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "1",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 393,
+                                "end": 394
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Applicative",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Effect",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "closed": true,
+                                        "fields": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Never",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/effect::Applicative"
+                              }
+                            }
+                          ],
+                          "traitDispatch": {
+                            "traitIdentity": "std/prelude::Applicative",
+                            "method": "pure"
+                          },
+                          "type": {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 388,
+                            "end": 394
+                          }
+                        },
+                        "elseBranch": {
+                          "kind": "call",
+                          "callee": "count",
+                          "arguments": [
+                            {
+                              "kind": "binary",
+                              "operator": "-",
+                              "left": {
+                                "kind": "variable",
+                                "name": "n",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 407,
+                                  "end": 408
+                                }
+                              },
+                              "right": {
+                                "kind": "integer",
+                                "value": "1",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 411,
+                                  "end": 412
+                                }
+                              },
+                              "evidence": [
+                                {
+                                  "constraint": {
+                                    "name": "Sub",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "std/int::Sub"
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 407,
+                                "end": 412
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 400,
+                            "end": 413
+                          }
+                        },
+                        "type": {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 373,
+                          "end": 413
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 339,
+                        "end": 413
+                      }
+                    }
+                  ],
+                  "result": {
+                    "kind": "sequence",
+                    "statements": [
+                      {
+                        "kind": "local-function",
+                        "name": "log",
+                        "parameters": [
+                          {
+                            "id": "value",
+                            "kind": "named",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          }
+                        ],
+                        "body": {
+                          "kind": "effect-operation",
+                          "operation": "console.println",
+                          "requirements": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "console",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Console",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "failure": {
+                            "kind": "named",
+                            "name": "ConsoleError",
+                            "arguments": []
+                          },
+                          "success": {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          },
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "value",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 504,
+                                "end": 509
+                              }
+                            }
+                          ],
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 496,
+                            "end": 509
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 414,
+                          "end": 509
+                        }
+                      }
+                    ],
+                    "result": {
+                      "kind": "sequence",
+                      "statements": [
+                        {
+                          "kind": "pure-let",
+                          "name": "fromPure",
+                          "type": {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "value": {
+                            "kind": "sequence",
+                            "statements": [
+                              {
+                                "kind": "local-function",
+                                "name": "step",
+                                "parameters": [
+                                  {
+                                    "id": "unit",
+                                    "kind": "implicit",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Unit",
+                                      "arguments": []
+                                    }
+                                  }
+                                ],
+                                "body": {
+                                  "kind": "integer",
+                                  "value": "1",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 550,
+                                    "end": 551
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 528,
+                                  "end": 551
+                                }
+                              }
+                            ],
+                            "result": {
+                              "kind": "sequence",
+                              "statements": [
+                                {
+                                  "kind": "local-function",
+                                  "name": "step",
+                                  "parameters": [
+                                    {
+                                      "id": "unit",
+                                      "kind": "implicit",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Unit",
+                                        "arguments": []
+                                      }
+                                    }
+                                  ],
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "std/prelude::Applicative::pure",
+                                    "arguments": [
+                                      {
+                                        "kind": "integer",
+                                        "value": "2",
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 578,
+                                          "end": 579
+                                        }
+                                      }
+                                    ],
+                                    "evidence": [
+                                      {
+                                        "constraint": {
+                                          "name": "Applicative",
+                                          "arguments": [
+                                            {
+                                              "kind": "named",
+                                              "name": "Effect",
+                                              "arguments": [
+                                                {
+                                                  "kind": "record",
+                                                  "closed": true,
+                                                  "fields": []
+                                                },
+                                                {
+                                                  "kind": "named",
+                                                  "name": "Never",
+                                                  "arguments": []
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        "evidence": {
+                                          "kind": "standard",
+                                          "identity": "std/effect::Applicative"
+                                        }
+                                      }
+                                    ],
+                                    "traitDispatch": {
+                                      "traitIdentity": "std/prelude::Applicative",
+                                      "method": "pure"
+                                    },
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Effect",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "closed": true,
+                                          "fields": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Never",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 573,
+                                      "end": 579
+                                    }
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 552,
+                                    "end": 579
+                                  }
+                                }
+                              ],
+                              "result": {
+                                "kind": "call",
+                                "callee": "step",
+                                "arguments": [
+                                  {
+                                    "kind": "unit",
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 589,
+                                      "end": 591
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Never",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 584,
+                                  "end": 591
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 527,
+                                "end": 595
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 527,
+                              "end": 595
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 510,
+                            "end": 595
+                          }
+                        }
+                      ],
+                      "result": {
+                        "kind": "sequence",
+                        "statements": [
+                          {
+                            "kind": "pure-let",
+                            "name": "fromEffect",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "value": {
+                              "kind": "sequence",
+                              "statements": [
+                                {
+                                  "kind": "local-function",
+                                  "name": "step",
+                                  "parameters": [
+                                    {
+                                      "id": "unit",
+                                      "kind": "implicit",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Unit",
+                                        "arguments": []
+                                      }
+                                    }
+                                  ],
+                                  "body": {
+                                    "kind": "call",
+                                    "callee": "std/prelude::Applicative::pure",
+                                    "arguments": [
+                                      {
+                                        "kind": "integer",
+                                        "value": "1",
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 643,
+                                          "end": 644
+                                        }
+                                      }
+                                    ],
+                                    "evidence": [
+                                      {
+                                        "constraint": {
+                                          "name": "Applicative",
+                                          "arguments": [
+                                            {
+                                              "kind": "named",
+                                              "name": "Effect",
+                                              "arguments": [
+                                                {
+                                                  "kind": "record",
+                                                  "closed": true,
+                                                  "fields": []
+                                                },
+                                                {
+                                                  "kind": "named",
+                                                  "name": "Never",
+                                                  "arguments": []
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        "evidence": {
+                                          "kind": "standard",
+                                          "identity": "std/effect::Applicative"
+                                        }
+                                      }
+                                    ],
+                                    "traitDispatch": {
+                                      "traitIdentity": "std/prelude::Applicative",
+                                      "method": "pure"
+                                    },
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Effect",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "closed": true,
+                                          "fields": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Never",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 638,
+                                      "end": 644
+                                    }
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 616,
+                                    "end": 644
+                                  }
+                                }
+                              ],
+                              "result": {
+                                "kind": "sequence",
+                                "statements": [
+                                  {
+                                    "kind": "local-function",
+                                    "name": "step",
+                                    "parameters": [
+                                      {
+                                        "id": "unit",
+                                        "kind": "implicit",
+                                        "type": {
+                                          "kind": "named",
+                                          "name": "Unit",
+                                          "arguments": []
+                                        }
+                                      }
+                                    ],
+                                    "body": {
+                                      "kind": "integer",
+                                      "value": "3",
+                                      "origin": {
+                                        "source": "main.ssrg",
+                                        "start": 666,
+                                        "end": 667
+                                      }
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 645,
+                                      "end": 667
+                                    }
+                                  }
+                                ],
+                                "result": {
+                                  "kind": "call",
+                                  "callee": "step",
+                                  "arguments": [
+                                    {
+                                      "kind": "unit",
+                                      "origin": {
+                                        "source": "main.ssrg",
+                                        "start": 677,
+                                        "end": 679
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 672,
+                                    "end": 679
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 615,
+                                  "end": 683
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 615,
+                                "end": 683
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 596,
+                              "end": 683
+                            }
+                          }
+                        ],
+                        "result": {
+                          "kind": "sequence",
+                          "statements": [
+                            {
+                              "kind": "bind",
+                              "name": "value",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "value": {
+                                "kind": "call",
+                                "callee": "captured",
+                                "arguments": [
+                                  {
+                                    "kind": "unit",
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 713,
+                                      "end": 715
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Never",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 704,
+                                  "end": 715
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 695,
+                                "end": 715
+                              }
+                            },
+                            {
+                              "kind": "effect",
+                              "value": {
+                                "kind": "call",
+                                "callee": "log",
+                                "arguments": [
+                                  {
+                                    "kind": "variable",
+                                    "name": "value",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 724,
+                                      "end": 729
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "console",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "Console",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "ConsoleError",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Unit",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 720,
+                                  "end": 729
+                                }
+                              }
+                            },
+                            {
+                              "kind": "bind",
+                              "name": "first",
+                              "type": {
+                                "kind": "named",
+                                "name": "Bool",
+                                "arguments": []
+                              },
+                              "value": {
+                                "kind": "call",
+                                "callee": "identity",
+                                "arguments": [
+                                  {
+                                    "kind": "boolean",
+                                    "value": true,
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 752,
+                                      "end": 756
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Never",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Bool",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 743,
+                                  "end": 756
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 734,
+                                "end": 756
+                              }
+                            },
+                            {
+                              "kind": "bind",
+                              "name": "second",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "value": {
+                                "kind": "call",
+                                "callee": "identity",
+                                "arguments": [
+                                  {
+                                    "kind": "integer",
+                                    "value": "9",
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 780,
+                                      "end": 781
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Never",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 771,
+                                  "end": 781
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 761,
+                                "end": 781
+                              }
+                            },
+                            {
+                              "kind": "effect",
+                              "value": {
+                                "kind": "effect-operation",
+                                "operation": "console.println",
+                                "requirements": {
+                                  "kind": "record",
+                                  "closed": true,
+                                  "fields": [
+                                    {
+                                      "name": "console",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Console",
+                                        "arguments": []
+                                      }
+                                    }
+                                  ]
+                                },
+                                "failure": {
+                                  "kind": "named",
+                                  "name": "ConsoleError",
+                                  "arguments": []
+                                },
+                                "success": {
+                                  "kind": "named",
+                                  "name": "Unit",
+                                  "arguments": []
+                                },
+                                "arguments": [
+                                  {
+                                    "kind": "call",
+                                    "callee": "std/prelude::Show::show",
+                                    "arguments": [
+                                      {
+                                        "kind": "tuple",
+                                        "elements": [
+                                          {
+                                            "kind": "variable",
+                                            "name": "first",
+                                            "type": {
+                                              "kind": "named",
+                                              "name": "Bool",
+                                              "arguments": []
+                                            },
+                                            "origin": {
+                                              "source": "main.ssrg",
+                                              "start": 802,
+                                              "end": 807
+                                            }
+                                          },
+                                          {
+                                            "kind": "variable",
+                                            "name": "second",
+                                            "type": {
+                                              "kind": "named",
+                                              "name": "Int",
+                                              "arguments": []
+                                            },
+                                            "origin": {
+                                              "source": "main.ssrg",
+                                              "start": 809,
+                                              "end": 815
+                                            }
+                                          }
+                                        ],
+                                        "type": {
+                                          "kind": "tuple",
+                                          "elements": [
+                                            {
+                                              "kind": "named",
+                                              "name": "Bool",
+                                              "arguments": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Int",
+                                              "arguments": []
+                                            }
+                                          ]
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 801,
+                                          "end": 816
+                                        }
+                                      }
+                                    ],
+                                    "evidence": [
+                                      {
+                                        "constraint": {
+                                          "name": "Show",
+                                          "arguments": [
+                                            {
+                                              "kind": "tuple",
+                                              "elements": [
+                                                {
+                                                  "kind": "named",
+                                                  "name": "Bool",
+                                                  "arguments": []
+                                                },
+                                                {
+                                                  "kind": "named",
+                                                  "name": "Int",
+                                                  "arguments": []
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        "evidence": {
+                                          "kind": "standard",
+                                          "identity": "std/tuple::Show",
+                                          "typeArguments": [
+                                            {
+                                              "kind": "tuple",
+                                              "elements": [
+                                                {
+                                                  "kind": "named",
+                                                  "name": "Bool",
+                                                  "arguments": []
+                                                },
+                                                {
+                                                  "kind": "named",
+                                                  "name": "Int",
+                                                  "arguments": []
+                                                }
+                                              ]
+                                            }
+                                          ],
+                                          "evidenceArguments": [
+                                            {
+                                              "constraint": {
+                                                "name": "Show",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "named",
+                                                    "name": "Bool",
+                                                    "arguments": []
+                                                  }
+                                                ]
+                                              },
+                                              "evidence": {
+                                                "kind": "standard",
+                                                "identity": "Show<std/prelude::Bool>"
+                                              }
+                                            },
+                                            {
+                                              "constraint": {
+                                                "name": "Show",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "named",
+                                                    "name": "Int",
+                                                    "arguments": []
+                                                  }
+                                                ]
+                                              },
+                                              "evidence": {
+                                                "kind": "standard",
+                                                "identity": "Show<std/prelude::Int>"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    "traitDispatch": {
+                                      "traitIdentity": "std/prelude::Show",
+                                      "method": "show"
+                                    },
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 796,
+                                      "end": 816
+                                    }
+                                  }
+                                ],
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 786,
+                                  "end": 816
+                                }
+                              }
+                            },
+                            {
+                              "kind": "bind",
+                              "name": "result",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "value": {
+                                "kind": "call",
+                                "callee": "count",
+                                "arguments": [
+                                  {
+                                    "kind": "integer",
+                                    "value": "3",
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 837,
+                                      "end": 838
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Never",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 831,
+                                  "end": 838
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 821,
+                                "end": 838
+                              }
+                            },
+                            {
+                              "kind": "effect",
+                              "value": {
+                                "kind": "effect-operation",
+                                "operation": "console.println",
+                                "requirements": {
+                                  "kind": "record",
+                                  "closed": true,
+                                  "fields": [
+                                    {
+                                      "name": "console",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Console",
+                                        "arguments": []
+                                      }
+                                    }
+                                  ]
+                                },
+                                "failure": {
+                                  "kind": "named",
+                                  "name": "ConsoleError",
+                                  "arguments": []
+                                },
+                                "success": {
+                                  "kind": "named",
+                                  "name": "Unit",
+                                  "arguments": []
+                                },
+                                "arguments": [
+                                  {
+                                    "kind": "variable",
+                                    "name": "result",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 851,
+                                      "end": 857
+                                    }
+                                  }
+                                ],
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 843,
+                                  "end": 857
+                                }
+                              }
+                            },
+                            {
+                              "kind": "bind",
+                              "name": "rendered",
+                              "type": {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              "value": {
+                                "kind": "call",
+                                "callee": "render",
+                                "arguments": [
+                                  {
+                                    "kind": "integer",
+                                    "value": "42",
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 881,
+                                      "end": 883
+                                    }
+                                  }
+                                ],
+                                "evidence": [
+                                  {
+                                    "constraint": {
+                                      "name": "Show",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "Show<std/prelude::Int>"
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Never",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 874,
+                                  "end": 883
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 862,
+                                "end": 883
+                              }
+                            },
+                            {
+                              "kind": "effect",
+                              "value": {
+                                "kind": "effect-operation",
+                                "operation": "console.println",
+                                "requirements": {
+                                  "kind": "record",
+                                  "closed": true,
+                                  "fields": [
+                                    {
+                                      "name": "console",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Console",
+                                        "arguments": []
+                                      }
+                                    }
+                                  ]
+                                },
+                                "failure": {
+                                  "kind": "named",
+                                  "name": "ConsoleError",
+                                  "arguments": []
+                                },
+                                "success": {
+                                  "kind": "named",
+                                  "name": "Unit",
+                                  "arguments": []
+                                },
+                                "arguments": [
+                                  {
+                                    "kind": "variable",
+                                    "name": "rendered",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 896,
+                                      "end": 904
+                                    }
+                                  }
+                                ],
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 888,
+                                  "end": 904
+                                }
+                              }
+                            },
+                            {
+                              "kind": "bind",
+                              "name": "shadowed",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "value": {
+                                "kind": "variable",
+                                "name": "fromPure",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Never",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 921,
+                                  "end": 929
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 909,
+                                "end": 929
+                              }
+                            }
+                          ],
+                          "result": {
+                            "kind": "effect-operation",
+                            "operation": "console.println",
+                            "requirements": {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": [
+                                {
+                                  "name": "console",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Console",
+                                    "arguments": []
+                                  }
+                                }
+                              ]
+                            },
+                            "failure": {
+                              "kind": "named",
+                              "name": "ConsoleError",
+                              "arguments": []
+                            },
+                            "success": {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            },
+                            "arguments": [
+                              {
+                                "kind": "call",
+                                "callee": "std/prelude::Show::show",
+                                "arguments": [
+                                  {
+                                    "kind": "tuple",
+                                    "elements": [
+                                      {
+                                        "kind": "variable",
+                                        "name": "shadowed",
+                                        "type": {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 950,
+                                          "end": 958
+                                        }
+                                      },
+                                      {
+                                        "kind": "variable",
+                                        "name": "fromEffect",
+                                        "type": {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 960,
+                                          "end": 970
+                                        }
+                                      }
+                                    ],
+                                    "type": {
+                                      "kind": "tuple",
+                                      "elements": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 949,
+                                      "end": 971
+                                    }
+                                  }
+                                ],
+                                "evidence": [
+                                  {
+                                    "constraint": {
+                                      "name": "Show",
+                                      "arguments": [
+                                        {
+                                          "kind": "tuple",
+                                          "elements": [
+                                            {
+                                              "kind": "named",
+                                              "name": "Int",
+                                              "arguments": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Int",
+                                              "arguments": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/tuple::Show",
+                                      "typeArguments": [
+                                        {
+                                          "kind": "tuple",
+                                          "elements": [
+                                            {
+                                              "kind": "named",
+                                              "name": "Int",
+                                              "arguments": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Int",
+                                              "arguments": []
+                                            }
+                                          ]
+                                        }
+                                      ],
+                                      "evidenceArguments": [
+                                        {
+                                          "constraint": {
+                                            "name": "Show",
+                                            "arguments": [
+                                              {
+                                                "kind": "named",
+                                                "name": "Int",
+                                                "arguments": []
+                                              }
+                                            ]
+                                          },
+                                          "evidence": {
+                                            "kind": "standard",
+                                            "identity": "Show<std/prelude::Int>"
+                                          }
+                                        },
+                                        {
+                                          "constraint": {
+                                            "name": "Show",
+                                            "arguments": [
+                                              {
+                                                "kind": "named",
+                                                "name": "Int",
+                                                "arguments": []
+                                              }
+                                            ]
+                                          },
+                                          "evidence": {
+                                            "kind": "standard",
+                                            "identity": "Show<std/prelude::Int>"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                "traitDispatch": {
+                                  "traitIdentity": "std/prelude::Show",
+                                  "method": "show"
+                                },
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 944,
+                                  "end": 971
+                                }
+                              }
+                            ],
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 934,
+                              "end": 971
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 686,
+                            "end": 975
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 115,
+                          "end": 977
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 115,
+                        "end": 977
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 115,
+                      "end": 977
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 115,
+                    "end": 977
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 115,
+                  "end": 977
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 115,
+                "end": 977
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 115,
+              "end": 977
+            }
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 115,
+            "end": 977
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 115,
+          "end": 977
+        }
+      }
+    }
+  ]
+}

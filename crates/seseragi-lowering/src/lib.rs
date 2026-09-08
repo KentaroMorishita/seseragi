@@ -45,15 +45,16 @@ pub use runtime_modules::runtime_provided_modules;
 pub(crate) use span::source_span;
 pub use span::SourceSpan;
 pub use typescript::{
-    lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_plan,
-    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptAlias, TypeScriptBinding,
-    TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
-    TypeScriptDecisionTest, TypeScriptDerivedShowField, TypeScriptDerivedShowPayload,
-    TypeScriptDerivedShowVariant, TypeScriptExpr, TypeScriptForeignMember, TypeScriptForeignModule,
-    TypeScriptForeignNamespace, TypeScriptForeignOpaqueType, TypeScriptForeignValue,
-    TypeScriptFunction, TypeScriptImport, TypeScriptInstance, TypeScriptInstanceConstraint,
-    TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptLoweringError,
-    TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter, TypeScriptRecordTypeField,
+    lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_options,
+    lower_core_module_to_typescript_ir_with_plan, TypeScriptAdt, TypeScriptAdtVariant,
+    TypeScriptAlias, TypeScriptBinding, TypeScriptDecisionBinding, TypeScriptDecisionBranch,
+    TypeScriptDecisionProjection, TypeScriptDecisionTest, TypeScriptDerivedShowField,
+    TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant, TypeScriptExpr,
+    TypeScriptForeignMember, TypeScriptForeignModule, TypeScriptForeignNamespace,
+    TypeScriptForeignOpaqueType, TypeScriptForeignValue, TypeScriptFunction, TypeScriptImport,
+    TypeScriptInstance, TypeScriptInstanceConstraint, TypeScriptInstanceImplementation,
+    TypeScriptInstanceMethod, TypeScriptLoweringError, TypeScriptLoweringOptions, TypeScriptModule,
+    TypeScriptOutputPlan, TypeScriptParameter, TypeScriptRecordTypeField,
     TypeScriptRecordValueItem, TypeScriptShowDictionaryReference, TypeScriptSourceImport,
     TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct, TypeScriptType,
     TypeScriptTypeImport,
@@ -247,6 +248,7 @@ mod tests {
                     end: source.len(),
                 },
                 imports: vec![TypedModuleImport {
+                    reexported_as: None,
                     namespace: "value".to_owned(),
                     imported: "increment".to_owned(),
                     local: "next".to_owned(),

@@ -171,6 +171,7 @@ fn freshens_same_spelling_owners_and_rewrites_exact_type_occurrences() {
         vec![external("Hand", left), external("Hand", right)],
     );
     module.adts.push(CoreAdt {
+        newtype: false,
         symbol: "fixture/main::Hand".to_owned(),
         name: "Hand".to_owned(),
         visibility: Visibility::Private,

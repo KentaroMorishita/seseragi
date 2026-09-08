@@ -12,6 +12,8 @@ pub struct CoreAdt {
     pub name: String,
     pub visibility: Visibility,
     pub opaque: bool,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub newtype: bool,
     pub type_parameters: Vec<TypeParameter>,
     pub variants: Vec<CoreAdtVariant>,
     pub origin: SourceSpan,
@@ -32,6 +34,7 @@ pub(super) struct AdtDeclInput {
     pub(super) name: String,
     pub(super) visibility: Visibility,
     pub(super) opaque: bool,
+    pub(super) newtype: bool,
     pub(super) type_parameters: Vec<TypeParameter>,
     pub(super) variants: Vec<TypedAdtVariant>,
     pub(super) origin: ByteSpan,
@@ -43,6 +46,7 @@ pub(super) fn lower_adt(source: &str, input: AdtDeclInput) -> CoreAdt {
         name: input.name,
         visibility: input.visibility,
         opaque: input.opaque,
+        newtype: input.newtype,
         type_parameters: input.type_parameters,
         variants: input
             .variants

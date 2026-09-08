@@ -38,6 +38,11 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
     match expression {
         SurfaceExpr::Application {
             function, argument, ..
+        }
+        | SurfaceExpr::Index {
+            receiver: function,
+            index: argument,
+            ..
         } => {
             collect_expression_errors(function, errors);
             collect_expression_errors(argument, errors);
@@ -150,6 +155,7 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
         | SurfaceExpr::Integer { .. }
         | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
+        | SurfaceExpr::Char { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. } => {}
     }

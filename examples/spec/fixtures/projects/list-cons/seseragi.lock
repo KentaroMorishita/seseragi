@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/list-cons@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/list-cons@0.0.0#workspace:."
+name = "fixture/list-cons"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:5111d650bd6836b3cc6b8b26e1c2b9167cfb855f164e9731381219bfe92e4b7d"
+content_digest = "sha256:bb9045204d11d1c88859bcf7e6aa5310628567aa80ea5ef363e314e72583c8e3"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/list-cons@0.0.0#workspace:."
+declaration = "src/main.ssrg#42-163"
+specifier = "../host/probe.mjs"
+exact_identity = "workspace:host/probe.mjs"
+declaration_digest = "sha256:82fcb43074b7920bb36dbcd1defcc89c27141320809d4f864736da8ef84583ef"
+content_digest = "sha256:8ac208640ec493d3b1ad96cf77a3416c5049206e601b9652e058990b100cf481"

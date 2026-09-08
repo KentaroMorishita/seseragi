@@ -126,6 +126,7 @@ pub(crate) fn type_pattern(
     }
     match pattern {
         SurfacePattern::Integer { raw, span } => type_integer_pattern(raw, *span, expected),
+        SurfacePattern::Char { raw, span } => literal::type_char_pattern(raw, *span, expected),
         SurfacePattern::String { raw, span } => type_string_pattern(raw, *span, expected),
         SurfacePattern::Boolean { value, span } => type_boolean_pattern(*value, *span, expected),
         SurfacePattern::Wildcard { span } => PatternAnalysis {
@@ -495,6 +496,7 @@ fn pattern_span(pattern: &SurfacePattern) -> seseragi_syntax::ByteSpan {
     match pattern {
         SurfacePattern::Integer { span, .. }
         | SurfacePattern::String { span, .. }
+        | SurfacePattern::Char { span, .. }
         | SurfacePattern::Boolean { span, .. }
         | SurfacePattern::Wildcard { span }
         | SurfacePattern::Name { span, .. }

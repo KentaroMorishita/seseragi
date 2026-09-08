@@ -1,0 +1,51 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/list-cons"
+  ],
+  "sourcesContent": [
+    "fn prepend<A> head: A -> tail: List<A> -> List<A> = head : tail\nfn first values: List<Int> -> Int = match values {\n  `[head, ...tail] -> head\n  `[] -> 0\n}\nlet values: List<Int> = 1 : 2 : 3 : `[]\nlet withFour = (:) 4\npub effect fn main = do {\n  println $ show (Nothing : `[Just 1])\n  println $ show values\n  println $ show (prepend 0 values)\n  println $ show (first values)\n  println $ show (withFour values == `[4, 1, 2, 3])\n}\n"
+  ],
+  "names": [
+    "prepend",
+    "Cons",
+    "first",
+    "head",
+    "tail",
+    "main",
+    "println",
+    "listShow",
+    "maybeShow",
+    "intShow",
+    "Cons",
+    "Nothing",
+    "fromArray",
+    "Just",
+    "println",
+    "listShow",
+    "intShow",
+    "println",
+    "listShow",
+    "intShow",
+    "prepend",
+    "println",
+    "intShow",
+    "first",
+    "println",
+    "boolShow",
+    "listEq",
+    "intEq",
+    "withFour",
+    "fromArray",
+    "values",
+    "Cons",
+    "Cons",
+    "Cons",
+    "fromArray",
+    "withFour",
+    "Cons"
+  ],
+  "mappings": ";;;;;;;;;AAAAA;AACAE;AAMAG;AAFAyB;AACAK"
+}

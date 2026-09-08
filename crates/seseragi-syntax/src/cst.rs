@@ -5,6 +5,7 @@ use crate::token::{Token, TokenKind, TokenStream};
 use serde::Serialize;
 
 mod adt;
+mod complete;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -57,7 +58,8 @@ pub fn parse_cst_from_tokens(stream: TokenStream) -> CstArtifact {
         missing: Vec::new(),
         errors: Vec::new(),
     };
-    let root = parser.parse_module();
+    let mut root = parser.parse_module();
+    complete::enrich(&mut root, &stream);
     CstArtifact {
         schema: 1,
         source: stream.source,

@@ -1,0 +1,866 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/opaque-struct::domain",
+  "runtimeRequirements": [
+    "core.show.dictionary",
+    "core.show.bounded",
+    "core.int.eq-dictionary",
+    "core.int.show",
+    "core.int",
+    "core.array.comprehend"
+  ],
+  "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.array.comprehend",
+      "local": "_ssrg_array_comprehend"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
+    }
+  ],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Secret",
+      "brand": "__ssrg$brand$Secret",
+      "opaque": true,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "number"
+          }
+        }
+      ],
+      "privateFields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "number"
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 57
+      }
+    },
+    {
+      "exported": true,
+      "name": "Box",
+      "brand": "__ssrg$brand$Box",
+      "opaque": true,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "privateFields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 58,
+        "end": 95
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Eq<fixture/opaque-struct::domain::Secret>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Secret",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/opaque-struct::domain::Secret",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 57
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$0",
+      "implementation": {
+        "kind": "derived-struct-structural",
+        "structName": "Secret",
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "kind": "number"
+            },
+            "dictionary": {
+              "kind": "runtime",
+              "identity": "std/int::Eq",
+              "feature": "core.int.eq-dictionary",
+              "local": "_ssrg_int_eq_dictionary"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Show<fixture/opaque-struct::domain::Secret>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Secret",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/opaque-struct::domain::Secret",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 57
+      },
+      "dictionaryExport": "__ssrg$instance$Show$1",
+      "implementation": {
+        "kind": "derived-struct-show",
+        "structName": "Secret",
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "kind": "number"
+            },
+            "dictionary": {
+              "kind": "runtime",
+              "identity": "Show<std/prelude::Int>",
+              "feature": "core.int.show",
+              "local": "_ssrg_show_intShow"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "create",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "number",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Secret",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 96,
+        "end": 149
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "read",
+      "parameters": [
+        {
+          "name": "secret",
+          "type": "Secret",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "checked-result",
+        "value": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "checked-result",
+            "value": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "identifier",
+                "name": "secret"
+              },
+              "type": {
+                "kind": "unknown"
+              }
+            },
+            "type": {
+              "kind": "reference",
+              "name": "__ssrg$representation$Secret",
+              "arguments": []
+            }
+          },
+          "field": "value"
+        },
+        "type": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 150,
+        "end": 198
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "unpack",
+      "parameters": [
+        {
+          "name": "secret",
+          "type": "Secret",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$238",
+            "type": {
+              "kind": "reference",
+              "name": "Secret",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "secret"
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 238,
+              "end": 268
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "value",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "checked-result",
+                "value": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "__ssrg$pattern$238"
+                  },
+                  "type": {
+                    "kind": "unknown"
+                  }
+                },
+                "type": {
+                  "kind": "reference",
+                  "name": "__ssrg$representation$Secret",
+                  "arguments": []
+                }
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "__ssrg$representation$Secret",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "record-field",
+                          "name": "value"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 252,
+              "end": 257
+            }
+          }
+        ],
+        "result": {
+          "kind": "identifier",
+          "name": "value"
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 199,
+        "end": 277
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "update",
+      "parameters": [
+        {
+          "name": "secret",
+          "type": "Secret",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "identifier",
+              "name": "secret"
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "number",
+              "value": "9"
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Secret",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 278,
+        "end": 349
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "box",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 350,
+        "end": 398
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "unbox",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "boxed",
+          "type": "Box<A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$437",
+            "type": {
+              "kind": "reference",
+              "name": "Box",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "boxed"
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 437,
+              "end": 463
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "value",
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "checked-result",
+                "value": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "__ssrg$pattern$437"
+                  },
+                  "type": {
+                    "kind": "unknown"
+                  }
+                },
+                "type": {
+                  "kind": "reference",
+                  "name": "__ssrg$representation$Box",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "__ssrg$representation$Box",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "record-field",
+                          "name": "value"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 448,
+              "end": 453
+            }
+          }
+        ],
+        "result": {
+          "kind": "identifier",
+          "name": "value"
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 399,
+        "end": 472
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "nested",
+      "parameters": [
+        {
+          "name": "boxed",
+          "type": "Box<Secret>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$518",
+            "type": {
+              "kind": "reference",
+              "name": "Box",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Secret",
+                  "arguments": []
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "boxed"
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 518,
+              "end": 562
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "value",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "checked-result",
+                "value": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "__ssrg$pattern$518"
+                  },
+                  "type": {
+                    "kind": "unknown"
+                  }
+                },
+                "type": {
+                  "kind": "reference",
+                  "name": "__ssrg$representation$Box",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "__ssrg$representation$Secret",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "__ssrg$representation$Box",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "__ssrg$representation$Secret",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "record-field",
+                          "name": "value"
+                        },
+                        {
+                          "kind": "record-field",
+                          "name": "value"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 545,
+              "end": 550
+            }
+          }
+        ],
+        "result": {
+          "kind": "identifier",
+          "name": "value"
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 473,
+        "end": 571
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "collect",
+      "parameters": [
+        {
+          "name": "secrets",
+          "type": "ReadonlyArray<Secret>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_comprehend",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "secrets"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_item0",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "checked-result",
+                "value": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "$ssrg_item0"
+                  },
+                  "type": {
+                    "kind": "unknown"
+                  }
+                },
+                "type": {
+                  "kind": "reference",
+                  "name": "__ssrg$representation$Secret",
+                  "arguments": []
+                }
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "__ssrg$representation$Secret",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "record-field",
+                          "name": "value"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                }
+              ],
+              "type": {
+                "kind": "boolean"
+              }
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_item0",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "checked-result",
+                "value": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "$ssrg_item0"
+                  },
+                  "type": {
+                    "kind": "unknown"
+                  }
+                },
+                "type": {
+                  "kind": "reference",
+                  "name": "__ssrg$representation$Secret",
+                  "arguments": []
+                }
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "__ssrg$representation$Secret",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "record-field",
+                          "name": "value"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 572,
+        "end": 665
+      }
+    }
+  ]
+}

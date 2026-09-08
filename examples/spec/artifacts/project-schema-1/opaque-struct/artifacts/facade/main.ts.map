@@ -1,0 +1,13 @@
+{
+  "version": 3,
+  "file": "dist/opaque-struct/facade.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/opaque-struct::facade"
+  ],
+  "sourcesContent": [
+    "pub import {\n  Secret,\n  Box,\n  create,\n  read,\n  unpack,\n  update,\n  box,\n  unbox,\n  nested,\n  collect\n} from \"./domain\"\n"
+  ],
+  "names": [],
+  "mappings": ""
+}

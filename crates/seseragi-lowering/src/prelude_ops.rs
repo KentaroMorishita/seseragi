@@ -10,6 +10,14 @@ pub(crate) struct RuntimePreludeDictionary {
 
 const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
     RuntimePreludeDictionary {
+        semantic_identity: "std/benchmark::EqBenchmarkFailure",
+        runtime_feature: "benchmark.failure.eq",
+        local_name: "_ssrg_benchmarkFailureEq",
+        module: "@seseragi/runtime/benchmark",
+        export_name: "benchmarkFailureEq",
+        source_map_name: "benchmarkFailureEq",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/transformer/maybe::Functor",
         runtime_feature: "core.transformer.maybe.functor-dictionary",
         local_name: "_ssrg_maybeTFunctor",

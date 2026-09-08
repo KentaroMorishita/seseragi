@@ -90,7 +90,7 @@ fn parses_path_dependencies_without_assigning_resolved_identity() {
     ));
     assert!(manifest.deferred.foreign.is_none());
     assert!(manifest.test.is_none());
-    assert!(manifest.deferred.benchmark.is_none());
+    assert!(manifest.benchmark.is_none());
     assert!(manifest.deferred.tool.is_none());
 }
 
@@ -243,4 +243,56 @@ fn rejects_unsafe_duplicate_artifacts_and_invalid_provider_selections() {
         );
         assert!(parse_manifest(&source).is_err());
     }
+}
+
+#[test]
+fn validates_build_profile_without_duplicating_run_target() {
+    let base = "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n";
+    assert_eq!(parse_manifest(base).unwrap().build_profile, None);
+    for (value, expected) in [
+        ("development", crate::BuildProfile::Development),
+        ("release", crate::BuildProfile::Release),
+    ] {
+        assert_eq!(
+            parse_manifest(&format!("{base}[build]\nprofile = \"{value}\"\n"))
+                .unwrap()
+                .build_profile,
+            Some(expected)
+        );
+    }
+    for invalid in ["profile = \"fast\"", "target = \"web\"", "profile = 1"] {
+        assert!(parse_manifest(&format!("{base}[build]\n{invalid}\n")).is_err());
+    }
+}
+
+#[test]
+fn benchmark_settings_have_validated_defaults_and_safe_integers() {
+    let base = "[package]\nname = \"fixture/benchmark\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0\"\n[benchmark]\n";
+    let parsed = parse_manifest(base).unwrap().benchmark.unwrap();
+    assert_eq!(
+        (parsed.warmup, parsed.samples, parsed.minimum_sample_ms),
+        (10, 50, 100)
+    );
+    assert_eq!(parsed.regression_threshold_percent, 5.0);
+    assert!(parsed.target.is_none());
+    for setting in [
+        "warmup = -1",
+        "samples = 2",
+        "minimum_sample_ms = 0",
+        "regression_threshold_percent = -1",
+        "regression_threshold_percent = nan",
+        "regression_threshold_percent = inf",
+        "samples = 9007199254740992",
+        "warmup = 9007199254740992",
+        "unknown = 1",
+    ] {
+        assert!(
+            parse_manifest(&format!("{base}{setting}\n")).is_err(),
+            "{setting}"
+        );
+    }
+    assert!(parse_manifest(&format!(
+        "{base}warmup = 0\nsamples = 3\nregression_threshold_percent = 0\n"
+    ))
+    .is_ok());
 }

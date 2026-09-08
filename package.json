@@ -1,6 +1,6 @@
 {
   "name": "seseragi",
-  "version": "0.61.6",
+  "version": "0.61.7",
   "private": true,
   "workspaces": [
     "runtime/ts"
@@ -63,6 +63,7 @@
     "@vscode/test-electron": "2.5.2",
     "pg": "8.23.0",
     "pg-cursor": "2.22.0",
-    "ws": "^8.21.3"
+    "ws": "^8.21.3",
+    "typescript": "5.8.3"
   }
 }

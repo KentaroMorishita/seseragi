@@ -1,0 +1,1075 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/local-effect-fn",
+  "runtimeRequirements": [
+    "effect.core.type",
+    "effect.console.service",
+    "effect.console.error",
+    "core.unit",
+    "effect.console.println",
+    "core.string",
+    "core.int",
+    "effect.core.applicative",
+    "core.int.eq-dictionary",
+    "core.bool",
+    "core.int.subtract",
+    "effect.core.flatMap",
+    "core.bool.show",
+    "core.int.show",
+    "core.tuple.show"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "effect.core.applicative",
+      "local": "_ssrg_effect_applicative"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
+    {
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.tuple.show",
+      "local": "_ssrg_show_tupleShow"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "effect.console.service",
+      "local": "Console"
+    },
+    {
+      "feature": "effect.console.error",
+      "local": "ConsoleError"
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "quiet",
+      "type": {
+        "kind": "undefined"
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "silent",
+        "arguments": [
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 71,
+        "end": 92
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "silent",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "local-function",
+            "name": "ignored",
+            "parameters": [
+              {
+                "name": "_unit",
+                "type": "undefined",
+                "implicit": true
+              }
+            ],
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "must stay cold"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 21,
+              "end": 68
+            }
+          }
+        ],
+        "result": {
+          "kind": "undefined"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 70
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "outer",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "number",
+              "value": "7"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 116,
+              "end": 132
+            }
+          }
+        ],
+        "result": {
+          "kind": "sequence",
+          "statements": [
+            {
+              "kind": "local-function",
+              "name": "unused",
+              "parameters": [
+                {
+                  "name": "_unit",
+                  "type": "undefined",
+                  "implicit": true
+                }
+              ],
+              "body": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_console_println",
+                "arguments": [
+                  {
+                    "kind": "string",
+                    "value": "must stay cold"
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 133,
+                "end": 178
+              }
+            }
+          ],
+          "result": {
+            "kind": "sequence",
+            "statements": [
+              {
+                "kind": "local-function",
+                "name": "captured",
+                "parameters": [
+                  {
+                    "name": "_unit",
+                    "type": "undefined",
+                    "implicit": true
+                  }
+                ],
+                "body": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_effect_applicative"
+                    },
+                    "method": "pure",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "outer"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "reference",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "fields": []
+                      },
+                      {
+                        "kind": "never"
+                      },
+                      {
+                        "kind": "number"
+                      }
+                    ]
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 179,
+                  "end": 212
+                }
+              }
+            ],
+            "result": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "local-function",
+                  "name": "identity",
+                  "typeParameters": [
+                    "A"
+                  ],
+                  "parameters": [
+                    {
+                      "name": "value",
+                      "type": "A",
+                      "implicit": false
+                    }
+                  ],
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_effect_applicative"
+                      },
+                      "method": "pure",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 213,
+                    "end": 263
+                  }
+                }
+              ],
+              "result": {
+                "kind": "sequence",
+                "statements": [
+                  {
+                    "kind": "local-function",
+                    "name": "render",
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "constraints": [
+                      {
+                        "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
+                        "arguments": [
+                          {
+                            "kind": "reference",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "parameters": [
+                      {
+                        "name": "value",
+                        "type": "A",
+                        "implicit": false
+                      }
+                    ],
+                    "body": {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_effect_applicative"
+                        },
+                        "method": "pure",
+                        "arguments": [
+                          {
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "identifier",
+                                "name": "__ssrg$evidence$0"
+                              },
+                              "method": "show",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "value"
+                                }
+                              ]
+                            },
+                            "type": {
+                              "kind": "string"
+                            }
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "reference",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "fields": []
+                          },
+                          {
+                            "kind": "never"
+                          },
+                          {
+                            "kind": "string"
+                          }
+                        ]
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 264,
+                      "end": 338
+                    }
+                  }
+                ],
+                "result": {
+                  "kind": "sequence",
+                  "statements": [
+                    {
+                      "kind": "local-function",
+                      "name": "count",
+                      "parameters": [
+                        {
+                          "name": "n",
+                          "type": "number",
+                          "implicit": false
+                        }
+                      ],
+                      "body": {
+                        "kind": "conditional",
+                        "condition": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_int_eq_dictionary"
+                          },
+                          "method": "eq",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "n"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "0"
+                            }
+                          ]
+                        },
+                        "thenBranch": {
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_effect_applicative"
+                            },
+                            "method": "pure",
+                            "arguments": [
+                              {
+                                "kind": "number",
+                                "value": "1"
+                              }
+                            ]
+                          },
+                          "type": {
+                            "kind": "reference",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "fields": []
+                              },
+                              {
+                                "kind": "never"
+                              },
+                              {
+                                "kind": "number"
+                              }
+                            ]
+                          }
+                        },
+                        "elseBranch": {
+                          "kind": "call",
+                          "callee": "count",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_int_subtract",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "n"
+                                },
+                                {
+                                  "kind": "number",
+                                  "value": "1"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 339,
+                        "end": 413
+                      }
+                    }
+                  ],
+                  "result": {
+                    "kind": "sequence",
+                    "statements": [
+                      {
+                        "kind": "local-function",
+                        "name": "log",
+                        "parameters": [
+                          {
+                            "name": "value",
+                            "type": "number",
+                            "implicit": false
+                          }
+                        ],
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_console_println",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "value"
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 414,
+                          "end": 509
+                        }
+                      }
+                    ],
+                    "result": {
+                      "kind": "sequence",
+                      "statements": [
+                        {
+                          "kind": "pure-let",
+                          "name": "fromPure",
+                          "type": {
+                            "kind": "reference",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "fields": []
+                              },
+                              {
+                                "kind": "never"
+                              },
+                              {
+                                "kind": "number"
+                              }
+                            ]
+                          },
+                          "initializer": {
+                            "kind": "sequence",
+                            "statements": [
+                              {
+                                "kind": "local-function",
+                                "name": "step",
+                                "parameters": [
+                                  {
+                                    "name": "_unit",
+                                    "type": "undefined",
+                                    "implicit": true
+                                  }
+                                ],
+                                "body": {
+                                  "kind": "number",
+                                  "value": "1"
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 528,
+                                  "end": 551
+                                }
+                              }
+                            ],
+                            "result": {
+                              "kind": "sequence",
+                              "statements": [
+                                {
+                                  "kind": "local-function",
+                                  "name": "step",
+                                  "parameters": [
+                                    {
+                                      "name": "_unit",
+                                      "type": "undefined",
+                                      "implicit": true
+                                    }
+                                  ],
+                                  "body": {
+                                    "kind": "checked-result",
+                                    "value": {
+                                      "kind": "dictionary-call",
+                                      "dictionary": {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_effect_applicative"
+                                      },
+                                      "method": "pure",
+                                      "arguments": [
+                                        {
+                                          "kind": "number",
+                                          "value": "2"
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "kind": "reference",
+                                      "name": "Effect",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "fields": []
+                                        },
+                                        {
+                                          "kind": "never"
+                                        },
+                                        {
+                                          "kind": "number"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 552,
+                                    "end": 579
+                                  }
+                                }
+                              ],
+                              "result": {
+                                "kind": "call",
+                                "callee": "step",
+                                "arguments": [
+                                  {
+                                    "kind": "undefined"
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 510,
+                            "end": 595
+                          }
+                        }
+                      ],
+                      "result": {
+                        "kind": "sequence",
+                        "statements": [
+                          {
+                            "kind": "pure-let",
+                            "name": "fromEffect",
+                            "type": {
+                              "kind": "number"
+                            },
+                            "initializer": {
+                              "kind": "sequence",
+                              "statements": [
+                                {
+                                  "kind": "local-function",
+                                  "name": "step",
+                                  "parameters": [
+                                    {
+                                      "name": "_unit",
+                                      "type": "undefined",
+                                      "implicit": true
+                                    }
+                                  ],
+                                  "body": {
+                                    "kind": "checked-result",
+                                    "value": {
+                                      "kind": "dictionary-call",
+                                      "dictionary": {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_effect_applicative"
+                                      },
+                                      "method": "pure",
+                                      "arguments": [
+                                        {
+                                          "kind": "number",
+                                          "value": "1"
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "kind": "reference",
+                                      "name": "Effect",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "fields": []
+                                        },
+                                        {
+                                          "kind": "never"
+                                        },
+                                        {
+                                          "kind": "number"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 616,
+                                    "end": 644
+                                  }
+                                }
+                              ],
+                              "result": {
+                                "kind": "sequence",
+                                "statements": [
+                                  {
+                                    "kind": "local-function",
+                                    "name": "step",
+                                    "parameters": [
+                                      {
+                                        "name": "_unit",
+                                        "type": "undefined",
+                                        "implicit": true
+                                      }
+                                    ],
+                                    "body": {
+                                      "kind": "number",
+                                      "value": "3"
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 645,
+                                      "end": 667
+                                    }
+                                  }
+                                ],
+                                "result": {
+                                  "kind": "call",
+                                  "callee": "step",
+                                  "arguments": [
+                                    {
+                                      "kind": "undefined"
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 596,
+                              "end": 683
+                            }
+                          }
+                        ],
+                        "result": {
+                          "kind": "sequence",
+                          "statements": [
+                            {
+                              "kind": "const",
+                              "name": "value",
+                              "type": {
+                                "kind": "number"
+                              },
+                              "initializer": {
+                                "kind": "call",
+                                "callee": "captured",
+                                "arguments": [
+                                  {
+                                    "kind": "undefined"
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 695,
+                                "end": 715
+                              }
+                            },
+                            {
+                              "kind": "effect",
+                              "value": {
+                                "kind": "call",
+                                "callee": "log",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "value"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "const",
+                              "name": "first",
+                              "type": {
+                                "kind": "boolean"
+                              },
+                              "initializer": {
+                                "kind": "call",
+                                "callee": "identity",
+                                "arguments": [
+                                  {
+                                    "kind": "boolean",
+                                    "value": true
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 734,
+                                "end": 756
+                              }
+                            },
+                            {
+                              "kind": "const",
+                              "name": "second",
+                              "type": {
+                                "kind": "number"
+                              },
+                              "initializer": {
+                                "kind": "call",
+                                "callee": "identity",
+                                "arguments": [
+                                  {
+                                    "kind": "number",
+                                    "value": "9"
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 761,
+                                "end": 781
+                              }
+                            },
+                            {
+                              "kind": "effect",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_console_println",
+                                "arguments": [
+                                  {
+                                    "kind": "checked-result",
+                                    "value": {
+                                      "kind": "dictionary-call",
+                                      "dictionary": {
+                                        "kind": "type-application-call",
+                                        "callee": "_ssrg_show_tupleShow",
+                                        "typeArguments": [
+                                          {
+                                            "kind": "tuple",
+                                            "elements": [
+                                              {
+                                                "kind": "boolean"
+                                              },
+                                              {
+                                                "kind": "number"
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "arguments": [
+                                          {
+                                            "kind": "runtime-reference",
+                                            "name": "_ssrg_show_boolShow"
+                                          },
+                                          {
+                                            "kind": "runtime-reference",
+                                            "name": "_ssrg_show_intShow"
+                                          }
+                                        ]
+                                      },
+                                      "method": "show",
+                                      "arguments": [
+                                        {
+                                          "kind": "tuple",
+                                          "elements": [
+                                            {
+                                              "kind": "identifier",
+                                              "name": "first"
+                                            },
+                                            {
+                                              "kind": "identifier",
+                                              "name": "second"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "kind": "string"
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "const",
+                              "name": "result",
+                              "type": {
+                                "kind": "number"
+                              },
+                              "initializer": {
+                                "kind": "call",
+                                "callee": "count",
+                                "arguments": [
+                                  {
+                                    "kind": "number",
+                                    "value": "3"
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 821,
+                                "end": 838
+                              }
+                            },
+                            {
+                              "kind": "effect",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_console_println",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "result"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "const",
+                              "name": "rendered",
+                              "type": {
+                                "kind": "string"
+                              },
+                              "initializer": {
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "call",
+                                  "callee": "render",
+                                  "arguments": [
+                                    {
+                                      "kind": "number",
+                                      "value": "42"
+                                    },
+                                    {
+                                      "kind": "runtime-reference",
+                                      "name": "_ssrg_show_intShow"
+                                    }
+                                  ]
+                                },
+                                "type": {
+                                  "kind": "reference",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "never"
+                                    },
+                                    {
+                                      "kind": "string"
+                                    }
+                                  ]
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 862,
+                                "end": 883
+                              }
+                            },
+                            {
+                              "kind": "effect",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_console_println",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "rendered"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "const",
+                              "name": "shadowed",
+                              "type": {
+                                "kind": "number"
+                              },
+                              "initializer": {
+                                "kind": "identifier",
+                                "name": "fromPure"
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 909,
+                                "end": 929
+                              }
+                            }
+                          ],
+                          "result": {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_console_println",
+                            "arguments": [
+                              {
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "type-application-call",
+                                    "callee": "_ssrg_show_tupleShow",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "tuple",
+                                        "elements": [
+                                          {
+                                            "kind": "number"
+                                          },
+                                          {
+                                            "kind": "number"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_show_intShow"
+                                      },
+                                      {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_show_intShow"
+                                      }
+                                    ]
+                                  },
+                                  "method": "show",
+                                  "arguments": [
+                                    {
+                                      "kind": "tuple",
+                                      "elements": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "shadowed"
+                                        },
+                                        {
+                                          "kind": "identifier",
+                                          "name": "fromEffect"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "type": {
+                                  "kind": "string"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 94,
+        "end": 977
+      }
+    }
+  ]
+}

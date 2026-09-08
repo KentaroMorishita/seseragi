@@ -34,24 +34,26 @@ fn run_file(invocation: &Invocation) -> Result<i32, String> {
         .map_err(|error| format!("failed to read {}: {error}", path.display()))?;
     let source_name = path.to_string_lossy();
     let format = invocation.diagnostic_format();
-    let compiled =
-        match compile_module(CompileInput::new(&source_name, "single-file/main", &source)) {
-            Ok(compiled) => compiled,
-            Err(diagnostics) => {
-                eprint!(
-                    "{}",
-                    render_diagnostics(
-                        format,
-                        &[DiagnosticDocument {
-                            path: &source_name,
-                            source: &source,
-                            artifact: &diagnostics,
-                        }],
-                    )?
-                );
-                return Ok(2);
-            }
-        };
+    let compiled = match compile_module(
+        CompileInput::new(&source_name, "single-file/main", &source)
+            .with_profile(invocation.profile.unwrap_or_default()),
+    ) {
+        Ok(compiled) => compiled,
+        Err(diagnostics) => {
+            eprint!(
+                "{}",
+                render_diagnostics(
+                    format,
+                    &[DiagnosticDocument {
+                        path: &source_name,
+                        source: &source,
+                        artifact: &diagnostics,
+                    }],
+                )?
+            );
+            return Ok(2);
+        }
+    };
     if !compiled.diagnostics.diagnostics.is_empty() {
         eprint!(
             "{}",
@@ -74,6 +76,7 @@ fn run_file(invocation: &Invocation) -> Result<i32, String> {
 pub(super) struct Invocation {
     path: PathBuf,
     target: Option<ProjectTarget>,
+    profile: Option<seseragi_project::BuildProfile>,
     diagnostic_format: Option<DiagnosticFormat>,
     signal_mode: Option<ProcessSignalMode>,
     shutdown_grace_ms: Option<u64>,
@@ -86,6 +89,7 @@ impl Invocation {
         let mut invocation = Self {
             path: PathBuf::new(),
             target: None,
+            profile: None,
             diagnostic_format: None,
             signal_mode: None,
             shutdown_grace_ms: None,
@@ -103,6 +107,14 @@ impl Invocation {
                     .ok_or_else(|| format!("{flag} requires a value"))
             };
             let consumed = match argument.as_str() {
+                "--profile" => {
+                    set_once(
+                        &mut invocation.profile,
+                        seseragi_project::BuildProfile::parse(value("--profile")?)?,
+                        "--profile",
+                    )?;
+                    2
+                }
                 "--target" => {
                     set_once(
                         &mut invocation.target,

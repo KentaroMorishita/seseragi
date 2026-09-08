@@ -228,7 +228,9 @@ tail取得を定数時間で行えます。runtime表現は観測できず、bac
 
 ArrayとListは別の型で、暗黙変換しません。変換は `std/array` の `toList` と `std/list` の
 `toArray` を使います。
-`array[index]` の型は `Maybe<A>` です。負のindexと範囲外indexは `Nothing` になります。
+`array[index]` の型は `Maybe<A>` です。indexは`Int`で、負のindexと範囲外indexは `Nothing` になります。
+添字の`[`はreceiverの直後に置きます。`f [1]`は従来どおりArrayを引数に渡す関数適用です。
+receiver、indexの順にそれぞれ一度だけ評価します。
 Listにはindex構文を提供しません。
 
 Array patternは `[first, second, ...rest]`、List patternは

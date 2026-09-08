@@ -45,7 +45,7 @@ pub fn generate_lockfile(root: impl AsRef<Path>) -> Result<Lockfile, LockError> 
         } else {
             relative_source(&root, package.root())?
         };
-        let digests = package_digests(package.root(), &package.manifest().layout)?;
+        let digests = package_digests(package.root(), package.manifest())?;
         let dependencies = graph
             .graph()
             .dependencies_for(identity)
@@ -390,7 +390,7 @@ fn validate_local_manifest_contract(
                 lockfile.language
             )));
         }
-        let digests = package_digests(&package_root, &manifest.layout)?;
+        let digests = package_digests(&package_root, &manifest)?;
         if digests.manifest != package.manifest_digest {
             return Err(LockError::Stale(format!(
                 "manifest digest for `{}` changed",

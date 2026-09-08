@@ -22,6 +22,14 @@ macro_rules! display_dictionary {
 }
 
 const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
+    RuntimeDisplayDictionary {
+        semantic_identity: "Show<std/benchmark::BenchmarkFailure>",
+        runtime_feature: "benchmark.failure.show",
+        local_name: "_ssrg_benchmarkFailureShow",
+        module: "@seseragi/runtime/benchmark",
+        export_name: "benchmarkFailureShow",
+        source_map_name: "benchmarkFailureShow",
+    },
     display_dictionary!(
         "Show<std/decimal::Decimal>",
         "core.decimal.show",

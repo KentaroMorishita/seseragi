@@ -18,6 +18,16 @@ pub(super) fn call_diagnostic(
     function_span: seseragi_syntax::ByteSpan,
 ) -> Diagnostic {
     let (code, message_key, primary, related_message, type_difference) = match issue {
+        PureCallIssue::LocalEffect { issue, function } => {
+            return super::effect::diagnostic_from_issue(*issue, function)
+        }
+        PureCallIssue::PolymorphicRecursion { callee } => (
+            "SES-T0101",
+            "rec.polymorphic-call",
+            callee,
+            "recursive group members must use one monomorphic type within the group".to_owned(),
+            None,
+        ),
         PureCallIssue::InvalidExpression { expression } => (
             "SES-T0101",
             "expression.invalid",

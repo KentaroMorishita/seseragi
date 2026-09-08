@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "case": "local-effect-fn",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/local-effect-fn",
+    "export": "main",
+    "compiledModule": "../../schema-1/local-effect-fn/generated-module.json",
+    "typedInterface": "../../schema-1/local-effect-fn/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.unit",
+      "effect.console.println",
+      "core.string",
+      "core.int",
+      "effect.core.applicative",
+      "core.int.eq-dictionary",
+      "core.bool",
+      "core.int.subtract",
+      "effect.core.flatMap",
+      "core.bool.show",
+      "core.int.show",
+      "core.tuple.show"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

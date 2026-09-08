@@ -18,6 +18,16 @@ pub(super) fn type_struct_pattern(
     let Some(owner) = context.type_target(name_span) else {
         return invalid(span, format!("struct pattern `{name}` is unresolved"));
     };
+    if context
+        .semantic_types()
+        .struct_type(owner)
+        .is_some_and(|structure| !structure.construction_allowed)
+    {
+        return invalid(
+            name_span,
+            format!("struct representation `{name}` is private to its defining module"),
+        );
+    }
     let SemanticTypeKey::Struct {
         owner: expected_owner,
         arguments,

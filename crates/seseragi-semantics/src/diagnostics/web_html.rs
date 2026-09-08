@@ -81,6 +81,11 @@ fn visit_expression(
             value: argument,
             ..
         }
+        | SurfaceExpr::Index {
+            receiver: function,
+            index: argument,
+            ..
+        }
         | SurfaceExpr::Binary {
             left: function,
             right: argument,
@@ -179,6 +184,7 @@ fn visit_expression(
         | SurfaceExpr::Integer { .. }
         | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
+        | SurfaceExpr::Char { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. }
         | SurfaceExpr::Error { .. } => {}

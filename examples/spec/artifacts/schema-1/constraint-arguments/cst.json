@@ -23,6 +23,25 @@
             "startToken": 2,
             "endToken": 46,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 0,
+            "endToken": 45,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 0,
+                "endToken": 44,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 44,
+                "endToken": 45,
+                "children": []
+              }
+            ]
           }
         ]
       }

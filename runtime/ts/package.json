@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.61.6",
+  "version": "0.61.7",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -92,6 +92,10 @@
     "./number": {
       "types": "./src/number.ts",
       "default": "./src/number.ts"
+    },
+    "./math": {
+      "types": "./src/math.ts",
+      "default": "./src/math.ts"
     },
     "./float": {
       "types": "./src/float.ts",
@@ -381,6 +385,23 @@
     "./transformer": {
       "types": "./src/transformer.ts",
       "default": "./src/transformer.ts"
+    },
+    "./benchmark": {
+      "types": "./src/benchmark.ts",
+      "default": "./src/benchmark.ts"
+    },
+    "./benchmark-runner": {
+      "types": "./src/benchmark-runner.ts",
+      "default": "./src/benchmark-runner.ts"
+    },
+    "./benchmark-baseline": {
+      "types": "./src/benchmark-baseline.ts",
+      "default": "./src/benchmark-baseline.ts"
+    },
+    "./benchmark-host": {
+      "types": "./src/benchmark-host.ts",
+      "browser": null,
+      "default": "./src/benchmark-host.ts"
     }
   },
   "license": "Apache-2.0"

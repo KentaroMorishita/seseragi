@@ -143,6 +143,8 @@ pub struct CoreModuleDependency {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CoreModuleImport {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reexported_as: Option<String>,
     pub namespace: String,
     pub imported: String,
     pub local: String,
@@ -279,6 +281,12 @@ pub enum CorePattern {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    Char {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     String {
         value: String,
         #[serde(rename = "type")]
@@ -366,6 +374,10 @@ pub enum CoreExpr {
         origin: SourceSpan,
     },
     Float64 {
+        value: String,
+        origin: SourceSpan,
+    },
+    Char {
         value: String,
         origin: SourceSpan,
     },
@@ -555,6 +567,10 @@ pub enum CoreStatement {
         origin: SourceSpan,
     },
     LocalFunction {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rec_group: Option<SourceSpan>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        return_type: Option<CoreType>,
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<TypeParameter>,
@@ -629,6 +645,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 .imports
                 .into_iter()
                 .map(|import| CoreModuleImport {
+                    reexported_as: import.reexported_as,
                     namespace: import.namespace,
                     imported: import.imported,
                     local: import.local,
@@ -682,6 +699,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 name,
                 visibility,
                 opaque,
+                newtype,
                 type_parameters,
                 variants,
                 origin,
@@ -692,6 +710,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                     name,
                     visibility,
                     opaque,
+                    newtype,
                     type_parameters,
                     variants,
                     origin,

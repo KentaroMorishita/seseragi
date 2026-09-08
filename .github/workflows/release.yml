@@ -98,6 +98,13 @@ jobs:
           test "$release_sha" = "${{ needs.plan.outputs.release_sha }}"
           echo "release_sha=$release_sha" >> "$GITHUB_OUTPUT"
 
+  linux-native:
+    needs: gate
+    uses: ./.github/workflows/linux-native.yml
+    with:
+      source-ref: ${{ needs.gate.outputs.release_sha }}
+      release: true
+
   native:
     needs: gate
     name: native (${{ matrix.target }})
@@ -110,9 +117,6 @@ jobs:
             archive: tar.gz
           - runner: macos-15-intel
             target: darwin-x64
-            archive: tar.gz
-          - runner: ubuntu-latest
-            target: linux-x64
             archive: tar.gz
           - runner: windows-latest
             target: win32-x64
@@ -165,9 +169,6 @@ jobs:
           - runner: macos-15-intel
             target: darwin-x64
             archive: tar.gz
-          - runner: ubuntu-latest
-            target: linux-x64
-            archive: tar.gz
           - runner: windows-latest
             target: win32-x64
             archive: zip
@@ -208,8 +209,6 @@ jobs:
             target: darwin-arm64
           - runner: macos-15-intel
             target: darwin-x64
-          - runner: ubuntu-latest
-            target: linux-x64
           - runner: windows-latest
             target: win32-x64
     runs-on: ${{ matrix.runner }}
@@ -314,7 +313,7 @@ jobs:
           overwrite: true
 
   local-web-product-e2e:
-    needs: [gate, native-verify, vscode]
+    needs: [gate, native-verify, vscode, linux-native]
     runs-on: ubuntu-latest
     env:
       RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
@@ -359,7 +358,7 @@ jobs:
           overwrite: true
 
   publish:
-    needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime, local-web-product-e2e]
+    needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime, local-web-product-e2e, linux-native]
     runs-on: ubuntu-latest
     permissions:
       contents: write

@@ -35,11 +35,15 @@ test("packages and re-verifies every native target before publish", async () => 
     path.join(repositoryRoot, ".github/workflows/release.yml"),
     "utf8"
   )
-  for (const target of Object.keys(nativeReleaseTargets)) {
+  for (const target of Object.keys(nativeReleaseTargets).filter(
+    (target) => target !== "linux-x64"
+  )) {
     expect(
       workflow.match(new RegExp(`target: ${target}`, "gu"))?.length ?? 0
     ).toBeGreaterThanOrEqual(2)
   }
+  expect(workflow).toContain("uses: ./.github/workflows/linux-native.yml")
+  expect(workflow).toContain("local-web-product-e2e, linux-native]")
   expect(workflow).toContain("native-release.ts smoke")
   expect(workflow).toContain("native-release.ts verify")
   expect(workflow).toContain("needs: [gate, native-verify, vscode")

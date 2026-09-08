@@ -112,6 +112,7 @@ pub(super) fn resolve_local_function(
     function: &SurfaceBlockItem,
 ) {
     let SurfaceBlockItem::Function {
+        effect,
         type_parameters,
         parameters,
         return_type,
@@ -127,6 +128,12 @@ pub(super) fn resolve_local_function(
     register_type_parameters(resolver, scope, type_parameters, *span);
     register_parameters(resolver, scope, parameters);
     resolve_type_ref(resolver, scope, return_type);
+    if let Some(effect) = effect {
+        resolve_requirements(resolver, scope, &effect.requirements);
+        if let Some(failure) = &effect.failure {
+            resolve_type_ref(resolver, scope, failure);
+        }
+    }
     resolve_constraints(resolver, scope, constraints);
     expression::resolve_expression(resolver, scope, value);
 }

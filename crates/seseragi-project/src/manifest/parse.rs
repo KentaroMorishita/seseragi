@@ -1,8 +1,8 @@
 use super::dependency::{parse_dependencies, RawDependency};
 use super::model::{
     DeferredTables, LanguageRequirement, LayoutPath, Manifest, ManifestFilePath,
-    ManifestForeignTypescript, ManifestLayout, ManifestPackage, ManifestRun, ManifestTest, RunSeed,
-    SignalMode, TargetId,
+    ManifestForeignTypescript, ManifestLayout, ManifestPackage, ManifestRun, ManifestTest,
+    ManifestWeb, RunSeed, SignalMode, TargetId,
 };
 use super::ManifestError;
 use crate::{ModulePath, PackageName};
@@ -36,12 +36,53 @@ pub fn parse_manifest(source: &str) -> Result<Manifest, ManifestError> {
         providers,
         run,
         test,
+        benchmark: raw.benchmark.map(parse_benchmark).transpose()?,
         foreign_typescript,
+        web: raw.web.map(parse_web).transpose()?,
+        build_profile: raw.build.and_then(|build| build.profile),
         deferred: DeferredTables {
             foreign: None,
-            benchmark: raw.benchmark,
             tool: raw.tool,
         },
+    })
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RawBuild {
+    profile: Option<crate::BuildProfile>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RawWeb {
+    index: Option<String>,
+    public: Option<String>,
+}
+
+fn parse_web(raw: RawWeb) -> Result<ManifestWeb, ManifestError> {
+    fn path(field: &'static str, value: String) -> Result<ManifestFilePath, ManifestError> {
+        let path = parse_manifest_file_path(field, value)?;
+        if matches!(
+            path.as_str().split('/').next(),
+            Some(".git" | ".seseragi" | "node_modules" | "dist")
+        ) {
+            return Err(ManifestError::InvalidManifestFilePath {
+                field,
+                value: path.as_str().to_owned(),
+            });
+        }
+        Ok(path)
+    }
+    Ok(ManifestWeb {
+        index: raw
+            .index
+            .map(|value| path("web.index", value))
+            .transpose()?,
+        public: raw
+            .public
+            .map(|value| path("web.public", value))
+            .transpose()?,
     })
 }
 
@@ -102,6 +143,7 @@ fn parse_manifest_file_path(
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct RawManifest {
+    build: Option<RawBuild>,
     package: RawPackage,
     #[serde(default)]
     layout: Option<RawLayout>,
@@ -116,11 +158,13 @@ struct RawManifest {
     #[serde(default)]
     foreign: Option<RawForeign>,
     #[serde(default)]
+    web: Option<RawWeb>,
+    #[serde(default)]
     run: Option<RawRun>,
     #[serde(default)]
     test: Option<RawTest>,
     #[serde(default)]
-    benchmark: Option<toml::Table>,
+    benchmark: Option<RawBenchmark>,
     #[serde(default)]
     tool: Option<toml::Table>,
 }
@@ -465,4 +509,35 @@ fn parse_seed(field: &'static str, seed: RawSeed) -> Result<RunSeed, ManifestErr
         RawSeed::Name(value) => Err(ManifestError::InvalidSeed { field, value }),
         RawSeed::Fixed(value) => Ok(RunSeed::Fixed(value)),
     }
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RawBenchmark {
+    target: Option<String>,
+    warmup: Option<u64>,
+    samples: Option<u64>,
+    minimum_sample_ms: Option<u64>,
+    regression_threshold_percent: Option<f64>,
+}
+
+fn parse_benchmark(raw: RawBenchmark) -> Result<super::ManifestBenchmark, ManifestError> {
+    let value = super::ManifestBenchmark {
+        target: raw.target.map(parse_target).transpose()?,
+        warmup: raw.warmup.unwrap_or(10),
+        samples: raw.samples.unwrap_or(50),
+        minimum_sample_ms: raw.minimum_sample_ms.unwrap_or(100),
+        regression_threshold_percent: raw.regression_threshold_percent.unwrap_or(5.0),
+    };
+    if value.samples < 3
+        || value.warmup > 9_007_199_254_740_991
+        || value.samples > 9_007_199_254_740_991
+        || value.minimum_sample_ms > 9_007_199_254_740_991
+        || value.minimum_sample_ms == 0
+        || !value.regression_threshold_percent.is_finite()
+        || value.regression_threshold_percent < 0.0
+    {
+        return Err(ManifestError::InvalidBenchmarkSetting("benchmark requires samples >= 3, minimum_sample_ms > 0 and finite nonnegative regression_threshold_percent".to_owned()));
+    }
+    Ok(value)
 }

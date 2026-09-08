@@ -76,10 +76,14 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
     require_span(expression, path)?;
 
     match kind {
-        "unit" | "integer" | "float" | "string" | "boolean" | "name" => Ok(()),
+        "unit" | "integer" | "float" | "char" | "string" | "boolean" | "name" => Ok(()),
         "tuple" => validate_expression_array(expression, "elements", path, 2),
         "array" | "list" => validate_expression_array(expression, "elements", path, 0),
         "member" => validate_child(expression, "receiver", path),
+        "index" => {
+            validate_child(expression, "receiver", path)?;
+            validate_child(expression, "index", path)
+        }
         "record" => validate_record(expression, path),
         "struct" => {
             expression
@@ -400,7 +404,7 @@ fn validate_pattern(pattern: &Value, path: &str) -> Result<(), String> {
     }
     require_span(pattern, path)?;
     match kind {
-        "integer" | "string" | "boolean" | "name" | "wildcard" => Ok(()),
+        "integer" | "char" | "string" | "boolean" | "name" | "wildcard" => Ok(()),
         "constructor" => match pattern.get("argument") {
             Some(argument) => validate_pattern(argument, &format!("{path}.argument")),
             None => Ok(()),
@@ -623,6 +627,34 @@ mod tests {
         });
 
         assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn index_requires_valid_receiver_and_offset_children() {
+        let module = json!({
+            "declarations": [{
+                "kind": "let",
+                "pattern": {"kind": "name", "name": "value", "span": {"start": 0, "end": 5}},
+                "body": {
+                    "kind": "index",
+                    "receiver": {"kind": "name", "span": {"start": 8, "end": 14}},
+                    "index": {"kind": "integer", "span": {"start": 15, "end": 16}},
+                    "span": {"start": 8, "end": 17}
+                }
+            }]
+        });
+        assert!(validate_surface_ast(&module).is_ok());
+        for field in ["receiver", "index"] {
+            let mut missing = module.clone();
+            missing["declarations"][0]["body"]
+                .as_object_mut()
+                .unwrap()
+                .remove(field);
+            assert!(validate_surface_ast(&missing).unwrap_err().contains(field));
+            let mut invalid = module.clone();
+            invalid["declarations"][0]["body"][field]["kind"] = json!("error");
+            assert!(validate_surface_ast(&invalid).unwrap_err().contains(field));
+        }
     }
 
     #[test]

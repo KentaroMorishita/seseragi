@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "module": "fixture/opaque-struct::domain",
+  "target": "typescript-es2022",
+  "profile": "development",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.show.dictionary",
+      "core.show.bounded",
+      "core.int.eq-dictionary",
+      "core.int.show",
+      "core.int",
+      "core.array.comprehend"
+    ]
+  },
+  "exports": [
+    "create",
+    "read",
+    "unpack",
+    "update",
+    "box",
+    "unbox",
+    "nested",
+    "collect"
+  ],
+  "instances": [
+    {
+      "identity": "Eq<fixture/opaque-struct::domain::Secret>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Secret",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/opaque-struct::domain::Secret",
+      "dictionaryExport": "__ssrg$instance$Eq$0"
+    },
+    {
+      "identity": "Show<fixture/opaque-struct::domain::Secret>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Secret",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/opaque-struct::domain::Secret",
+      "dictionaryExport": "__ssrg$instance$Show$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/opaque-struct/domain.ts",
+    "sourceMap": "dist/opaque-struct/domain.ts.map"
+  }
+}

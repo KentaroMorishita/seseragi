@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-N0002",
+      "severity": "Error",
+      "messageKey": "name.duplicate-definition",
+      "message": "Name duplicate definition",
+      "primary": {
+        "start": 53,
+        "end": 56
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 0,
+            "end": 79
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 0,
+            "end": 79
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

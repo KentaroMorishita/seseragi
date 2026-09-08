@@ -672,6 +672,10 @@ fn collect_callables(
     callables.extend(imports::collect_imported_callables(resolved));
     for symbol in &resolved.symbols {
         if symbol.namespace == SymbolNamespace::Operator {
+            if symbol.canonical.as_deref() == Some("std/prelude:::") {
+                callables.insert(symbol.id, standard_cons_callable());
+                continue;
+            }
             if let Some(operator) =
                 seseragi_syntax::standard_operator(&symbol.spelling).filter(|operator| {
                     operator.kind == seseragi_syntax::StandardOperatorKind::Comparison
@@ -861,7 +865,12 @@ fn collect_local_callables(
             collect_local_callables(function, resolved, semantic_types, callables);
             collect_local_callables(argument, resolved, semantic_types, callables);
         }
-        SurfaceExpr::Assignment { target, value, .. }
+        SurfaceExpr::Index {
+            receiver: target,
+            index: value,
+            ..
+        }
+        | SurfaceExpr::Assignment { target, value, .. }
         | SurfaceExpr::Binary {
             left: target,
             right: value,
@@ -945,6 +954,7 @@ fn collect_local_callables(
         | SurfaceExpr::Integer { .. }
         | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
+        | SurfaceExpr::Char { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. }
         | SurfaceExpr::Error { .. } => {}
@@ -1101,6 +1111,36 @@ fn standard_trait_operator_callable(
         .map(|parameter| parameter.expect("trait operator order must be a permutation"))
         .collect();
     callable
+}
+
+fn standard_cons_callable() -> TopLevelPureFunction {
+    let element = named_type("A");
+    let list = TypedType::Named {
+        name: "List".to_owned(),
+        arguments: vec![element.clone()],
+    };
+    let list_key = SemanticTypeKey::NamedGeneric {
+        name: "List".to_owned(),
+        arguments: vec![super::semantic_types::SemanticValueType {
+            type_ref: element.clone(),
+            key: SemanticTypeKey::SchemeParameter("A".to_owned()),
+        }],
+    };
+    TopLevelPureFunction {
+        symbol: "std/prelude:::".to_owned(),
+        trait_identity: None,
+        trait_method: None,
+        type_parameters: vec![seseragi_syntax::TypeParameter::value("A")],
+        constraints: vec![],
+        constraint_identities: vec![],
+        parameters: vec![element, list.clone()],
+        semantic_parameters: vec![
+            SemanticTypeKey::SchemeParameter("A".to_owned()),
+            list_key.clone(),
+        ],
+        result: list,
+        semantic_result: list_key,
+    }
 }
 
 fn standard_reduce_callable() -> TopLevelPureFunction {

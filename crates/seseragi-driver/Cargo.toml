@@ -6,6 +6,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+serde_json.workspace = true
 semver.workspace = true
 seseragi-formatter = { path = "../seseragi-formatter" }
 seseragi-lowering = { path = "../seseragi-lowering" }
@@ -14,6 +15,3 @@ seseragi-provider = { path = "../seseragi-provider" }
 seseragi-semantics = { path = "../seseragi-semantics" }
 seseragi-source = { path = "../seseragi-source" }
 seseragi-syntax = { path = "../seseragi-syntax" }
-
-[dev-dependencies]
-serde_json.workspace = true

@@ -8,6 +8,8 @@
 //! non-trivia spelling are preserved.
 
 mod layout;
+mod range;
+pub use range::{format_cst_range, FormatEdit};
 
 use seseragi_syntax::{CstArtifact, TokenStream};
 
@@ -80,6 +82,110 @@ mod tests {
         let tokens = lex("main.ssrg", source);
         let cst = parse_cst_from_tokens(tokens.clone());
         format_cst_with_options(&tokens, &cst, FormatOptions::new(line_width))
+    }
+
+    #[test]
+    fn wraps_inline_lambda_bindings_without_breaking_application_indentation() {
+        let source = "pub let example = effects.defer (\\_ -> { let result = benchmark.blackBox (values |> map (\\x -> x + 1) |> arrays.filter (\\x -> x > 2) |> reduce 0 (+)); effects.succeed () })\n";
+        assert!(seseragi_syntax::parse_diagnostics("inline.ssrg", source)
+            .diagnostics
+            .is_empty());
+        for width in [40, 60, 88, 120] {
+            let formatted = format_with_width(source, width);
+            assert!(
+                seseragi_syntax::parse_diagnostics("inline.ssrg", &formatted.text)
+                    .diagnostics
+                    .is_empty(),
+                "width {width}: {}",
+                formatted.text
+            );
+            assert_eq!(
+                format_with_width(&formatted.text, width).text,
+                formatted.text
+            );
+        }
+    }
+
+    #[test]
+    fn preserves_record_and_effect_row_braces_in_long_sample_lines() {
+        for source in [
+            include_str!("../../../examples/samples/html-components/main.ssrg"),
+            include_str!("../../../examples/samples/typeclass-operator-parity/main.ssrg"),
+        ] {
+            assert_eq!(format(source).text, source);
+        }
+    }
+
+    #[test]
+    fn preserves_list_cons_and_type_annotation_spacing() {
+        let source = "pub let values:List<Int> =1:2:3:`[]\n";
+        for width in [20, 88] {
+            let formatted = format_with_width(source, width);
+            assert_eq!(
+                format_with_width(&formatted.text, width).text,
+                formatted.text
+            );
+            assert_eq!(formatted.text.matches(':').count(), 4);
+            assert!(
+                seseragi_syntax::parse_diagnostics("cons.ssrg", &formatted.text)
+                    .diagnostics
+                    .is_empty()
+            );
+        }
+    }
+
+    #[test]
+    fn preserves_right_associative_maybe_fallback_layout() {
+        let source = "pub let display = cached??requested??\"anonymous\"\n";
+        for width in [20, 88] {
+            let formatted = format_with_width(source, width);
+            assert_eq!(
+                format_with_width(&formatted.text, width).text,
+                formatted.text
+            );
+            assert_eq!(formatted.text.matches("??").count(), 2);
+            assert!(
+                seseragi_syntax::parse_diagnostics("fallback.ssrg", &formatted.text)
+                    .diagnostics
+                    .is_empty()
+            );
+        }
+    }
+
+    #[test]
+    fn preserves_char_literal_spelling_and_apostrophe_application() {
+        let source = r"let account'='瀬'
+pub let result=(account','\u{03BB}','\'','\\')
+";
+        for width in [20, 88] {
+            let formatted = format_with_width(source, width);
+            assert_eq!(
+                format_with_width(&formatted.text, width).text,
+                formatted.text
+            );
+            for spelling in ["account'", "'瀬'", r"'\u{03BB}'", r"'\''", r"'\\'"] {
+                assert!(formatted.text.contains(spelling), "{}", formatted.text);
+            }
+            assert!(
+                seseragi_syntax::parse_diagnostics("char.ssrg", &formatted.text)
+                    .diagnostics
+                    .is_empty()
+            );
+        }
+    }
+
+    #[test]
+    fn keeps_index_adjacency_distinct_from_array_application() {
+        let source = "let values=[1,2,3]\nlet selected=values[ 1 ]\nlet applied=read [1,2]\nlet nested=([values])[0]\n";
+        for width in [20, 88] {
+            let formatted = format_with_width(source, width);
+            assert!(formatted.text.contains("values[1]"), "{}", formatted.text);
+            assert!(formatted.text.contains("read ["), "{}", formatted.text);
+            assert_eq!(
+                format_with_width(&formatted.text, width).text,
+                formatted.text
+            );
+        }
     }
 
     #[test]

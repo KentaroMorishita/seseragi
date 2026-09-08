@@ -213,10 +213,8 @@ fn validates_a_mixed_path_and_registry_graph_with_semver_ranges() {
     let local_manifest =
         crate::parse_manifest(&fs::read_to_string(local_root.join("seseragi.toml")).unwrap())
             .unwrap();
-    let root_digests =
-        super::digest::package_digests(project.path(), &root_manifest.layout).unwrap();
-    let local_digests =
-        super::digest::package_digests(&local_root, &local_manifest.layout).unwrap();
+    let root_digests = super::digest::package_digests(project.path(), &root_manifest).unwrap();
+    let local_digests = super::digest::package_digests(&local_root, &local_manifest).unwrap();
     let http_id = "acme/http@2.1.4#registry:default".to_owned();
     let lockfile = Lockfile {
         schema: 1,

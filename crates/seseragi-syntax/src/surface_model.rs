@@ -469,6 +469,10 @@ pub enum SurfaceExpr {
         raw: String,
         span: ByteSpan,
     },
+    Char {
+        raw: String,
+        span: ByteSpan,
+    },
     String {
         raw: String,
         span: ByteSpan,
@@ -485,6 +489,11 @@ pub enum SurfaceExpr {
         name: String,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         type_arguments: Option<Vec<TypeRef>>,
+        span: ByteSpan,
+    },
+    Index {
+        receiver: Box<SurfaceExpr>,
+        index: Box<SurfaceExpr>,
         span: ByteSpan,
     },
     Member {
@@ -607,10 +616,12 @@ impl SurfaceExpr {
             | Self::Integer { span, .. }
             | Self::Float { span, .. }
             | Self::String { span, .. }
+            | Self::Char { span, .. }
             | Self::Template { span, .. }
             | Self::Boolean { span, .. }
             | Self::Name { span, .. }
             | Self::Member { span, .. }
+            | Self::Index { span, .. }
             | Self::Application { span, .. }
             | Self::Prefix { span, .. }
             | Self::Assignment { span, .. }
@@ -650,17 +661,30 @@ pub enum SurfaceBlockItem {
         span: ByteSpan,
     },
     Function {
+        /// Source identity of the explicit recursive closure group, if any.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rec_group: Option<ByteSpan>,
         name: String,
         name_span: ByteSpan,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<TypeParameter>,
         parameters: Vec<SurfaceParameter>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        effect: Option<SurfaceLocalEffectContract>,
         return_type: TypeRef,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<SurfaceConstraint>,
         value: SurfaceExpr,
         span: ByteSpan,
     },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceLocalEffectContract {
+    pub inferred: bool,
+    pub requirements: Vec<SurfaceRequirement>,
+    pub failure: Option<TypeRef>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -778,6 +802,10 @@ pub enum SurfacePattern {
         raw: String,
         span: ByteSpan,
     },
+    Char {
+        raw: String,
+        span: ByteSpan,
+    },
     String {
         raw: String,
         span: ByteSpan,
@@ -837,6 +865,7 @@ impl SurfacePattern {
         match self {
             Self::Integer { span, .. }
             | Self::String { span, .. }
+            | Self::Char { span, .. }
             | Self::Boolean { span, .. }
             | Self::Name { span, .. }
             | Self::Wildcard { span }
@@ -889,6 +918,7 @@ impl SurfacePattern {
             }
             Self::Integer { .. }
             | Self::String { .. }
+            | Self::Char { .. }
             | Self::Boolean { .. }
             | Self::Wildcard { .. }
             | Self::Error { .. } => {}

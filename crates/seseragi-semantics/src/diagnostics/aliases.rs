@@ -699,6 +699,11 @@ fn walk_expression_types(expression: &SurfaceExpr, visit: &mut impl FnMut(&TypeR
             value: argument,
             ..
         }
+        | SurfaceExpr::Index {
+            receiver: function,
+            index: argument,
+            ..
+        }
         | SurfaceExpr::Binary {
             left: function,
             right: argument,
@@ -832,6 +837,7 @@ fn walk_expression_types(expression: &SurfaceExpr, visit: &mut impl FnMut(&TypeR
         | SurfaceExpr::Integer { .. }
         | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
+        | SurfaceExpr::Char { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. }
         | SurfaceExpr::Error { .. } => {}

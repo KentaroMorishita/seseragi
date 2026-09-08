@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/local-effect-fn@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/local-effect-fn@0.0.0#workspace:."
+name = "fixture/local-effect-fn"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:5f7a79864e6c66a66b9a363bbe043951c7112df1b88deeca74f728bc4039d6cc"
+content_digest = "sha256:b891ed14c4273b8f57df760cabb5ca56492e63f5ed6d1adce09b7824971c1e17"
+dependencies = []

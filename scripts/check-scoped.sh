@@ -189,6 +189,7 @@ run_rust_checks() {
 
 run_conformance_checks() {
   require_root_tools
+  require_root_tools
   require_playground_tools
   echo "Checking project fixture roles and availability..."
   check_step bun run fixtures:check
@@ -199,31 +200,13 @@ run_conformance_checks() {
   check_step bun test runtime/providers/timezones.test.ts
   echo "Type-checking TypeScript runtime Providers..."
   check_step "$PLAYGROUND_TSC" --noEmit -p "$ROOT/runtime/providers/tsconfig.json"
-  echo "Testing the foreign TypeScript runtime boundary..."
-  check_step bun test runtime/ts/tests/foreign.test.ts
-  echo "Testing the Traversable runtime boundary..."
-  check_step bun test runtime/ts/tests/traversable.test.ts
-  echo "Testing persistent Map / Set and serialization boundaries..."
-  check_step bun test runtime/ts/tests/persistent-index.test.ts runtime/ts/tests/map.test.ts runtime/ts/tests/set.test.ts runtime/ts/tests/map-set-codecs.test.ts
-  echo "Testing concrete Array / List sequence operations..."
-  check_step bun test runtime/ts/tests/sequence.test.ts
-  echo "Testing generic collection short-circuit traversal..."
-  check_step bun test runtime/ts/tests/collection.test.ts
-  echo "Testing Maybe / Either operations and conditional Monoid..."
-  check_step bun test runtime/ts/tests/sum.test.ts
-  echo "Testing Validation accumulation and conditional dictionaries..."
-  check_step bun test runtime/ts/tests/validation.test.ts
-  echo "Testing the portable regular-expression runtime..."
-  check_step bun test runtime/ts/tests/regex.test.ts
-  echo "Testing portable Hex / Base64 codecs..."
-  check_step bun test runtime/ts/tests/bytes-codecs.test.ts
-  echo "Testing arbitrary-precision BigInt arithmetic..."
-  check_step bun test runtime/ts/tests/big-int.test.ts
-  echo "Testing arbitrary-precision Decimal arithmetic..."
-  check_step bun test runtime/ts/tests/decimal.test.ts
+  echo "Testing all TypeScript runtime boundaries..."
+  check_step bun test runtime/ts/tests
+  check_step "$BIOME" lint runtime/ts/src/benchmark.ts runtime/ts/src/benchmark-runner.ts runtime/ts/src/benchmark-baseline.ts runtime/ts/src/benchmark-host.ts runtime/ts/fixtures/benchmark-quality runtime/ts/tests/benchmark.test.ts runtime/ts/tests/benchmark-host.test.ts runtime/ts/tests/benchmark-quality.test.ts
+  echo "Testing release output shapes..."
+  check_step bun test scripts/release-shapes.test.ts
   echo "Checking pinned Unicode data and text conformance..."
   check_step bun run unicode:check
-  check_step bun test runtime/ts/tests/unicode.test.ts runtime/ts/tests/unicode-artifact.test.ts
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     check_step cargo run -p seseragi-conformance -- .
@@ -254,7 +237,13 @@ run_release_contract_metadata_check() {
     scripts/release-readiness.ts \
     scripts/release-readiness.test.ts \
     scripts/native-release.ts \
+    scripts/check-generated-types.ts \
+    scripts/release-shapes.ts \
+    scripts/release-shapes.test.ts \
+    scripts/linux-native-abi.ts \
+    scripts/linux-native-smoke.ts \
     scripts/native-release.test.ts \
+    scripts/linux-native-abi.test.ts \
     scripts/release-promotion.ts \
     scripts/release-promotion.test.ts \
     scripts/local-dogfood.ts \
@@ -267,6 +256,7 @@ run_release_contract_metadata_check() {
     scripts/release-gate.test.ts \
     scripts/release-readiness.test.ts \
     scripts/native-release.test.ts \
+    scripts/linux-native-abi.test.ts \
     scripts/release-promotion.test.ts \
     scripts/local-dogfood.test.ts \
     scripts/local-web-product-e2e.test.ts
@@ -384,7 +374,13 @@ run_full_checks() {
     scripts/timezone-bundle.ts \
     scripts/run-macos-cargo-tests.ts \
     scripts/native-release.ts \
+    scripts/check-generated-types.ts \
+    scripts/release-shapes.ts \
+    scripts/release-shapes.test.ts \
+    scripts/linux-native-abi.ts \
+    scripts/linux-native-smoke.ts \
     scripts/native-release.test.ts \
+    scripts/linux-native-abi.test.ts \
     scripts/local-web-product-e2e.ts \
     scripts/local-web-product-e2e-extension.cjs \
     scripts/local-web-product-e2e.test.ts \

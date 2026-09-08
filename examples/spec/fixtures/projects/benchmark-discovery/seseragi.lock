@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/benchmark-discovery@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/benchmark-discovery@0.0.0#workspace:."
+name = "fixture/benchmark-discovery"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:042c97bfc1483424ef5309f7176dea4558450fb4dcf78481eff121a52c1a41f2"
+content_digest = "sha256:fe598c98cd0effdf032b341f8f86b64d2ea9d3a767bdb0d661652498f42c0617"
+dependencies = []

@@ -30,27 +30,44 @@ pub fn load_local_project(
 /// test directory and links its normal source dependencies through the same
 /// package graph as production compilation.
 pub fn load_local_tests(root: impl AsRef<Path>) -> Result<LoadedLocalTests, LocalProjectLoadError> {
+    load_tool_roots(root, ModuleRoot::Test)
+}
+
+pub fn load_local_benchmarks(
+    root: impl AsRef<Path>,
+) -> Result<LoadedLocalTests, LocalProjectLoadError> {
+    load_tool_roots(root, ModuleRoot::Benchmark)
+}
+
+fn load_tool_roots(
+    root: impl AsRef<Path>,
+    tool_root: ModuleRoot,
+) -> Result<LoadedLocalTests, LocalProjectLoadError> {
     let packages = discover_local_package_graph(root).map_err(LocalProjectLoadError::Packages)?;
     let root = packages.root().clone();
     let package = packages
         .package(&root)
         .expect("discovered package graph contains its root");
-    let candidate = package
-        .root()
-        .join(package.manifest().layout.tests.as_str());
+    let layout = if tool_root == ModuleRoot::Benchmark {
+        &package.manifest().layout.benchmarks
+    } else {
+        &package.manifest().layout.tests
+    };
+    let candidate = package.root().join(layout.as_str());
     let roots = if candidate.exists() {
         let test_root =
-            filesystem::resolve_source_root(package.root(), &package.manifest().layout.tests)
-                .map_err(|error| LocalProjectLoadError::Filesystem {
+            filesystem::resolve_source_root(package.root(), layout).map_err(|error| {
+                LocalProjectLoadError::Filesystem {
                     package: Box::new(root.clone()),
                     error: Box::new(error),
-                })?;
-        discover_test_modules(&root, &test_root)?
+                }
+            })?;
+        discover_modules(&root, tool_root, &test_root)?
     } else {
         Vec::new()
     };
     let (graph, modules) = {
-        let mut state = SourceDiscovery::new_with_tests(&packages, BTreeMap::new())?;
+        let mut state = SourceDiscovery::new_inner(&packages, BTreeMap::new(), Some(tool_root))?;
         state.discover_all(roots.iter().cloned())?;
         let graph = state.finish()?;
         (graph, state.modules)
@@ -82,13 +99,6 @@ pub fn load_local_documents(
         (graph, state.modules)
     };
     Ok(LoadedLocalDocuments::new(packages, roots, graph, modules))
-}
-
-fn discover_test_modules(
-    package: &PackageIdentity,
-    test_root: &Path,
-) -> Result<Vec<ModuleIdentity>, LocalProjectLoadError> {
-    discover_modules(package, ModuleRoot::Test, test_root)
 }
 
 fn discover_modules(
@@ -229,20 +239,13 @@ impl<'a> SourceDiscovery<'a> {
         packages: &'a LocalPackageGraph,
         overlays: BTreeMap<PathBuf, String>,
     ) -> Result<Self, LocalProjectLoadError> {
-        Self::new_inner(packages, overlays, false)
-    }
-
-    fn new_with_tests(
-        packages: &'a LocalPackageGraph,
-        overlays: BTreeMap<PathBuf, String>,
-    ) -> Result<Self, LocalProjectLoadError> {
-        Self::new_inner(packages, overlays, true)
+        Self::new_inner(packages, overlays, None)
     }
 
     fn new_inner(
         packages: &'a LocalPackageGraph,
         overlays: BTreeMap<PathBuf, String>,
-        include_tests: bool,
+        tool_root: Option<ModuleRoot>,
     ) -> Result<Self, LocalProjectLoadError> {
         let mut source_roots = BTreeMap::new();
         for (identity, package) in packages.packages() {
@@ -279,26 +282,26 @@ impl<'a> SourceDiscovery<'a> {
                 })?;
                 source_roots.insert((identity.clone(), ModuleRoot::Generated), generated_root);
             }
-            if include_tests && identity == packages.root() {
-                let candidate = package
-                    .root()
-                    .join(package.manifest().layout.tests.as_str());
+            if let Some(tool_root) = tool_root.filter(|_| identity == packages.root()) {
+                let layout = if tool_root == ModuleRoot::Benchmark {
+                    &package.manifest().layout.benchmarks
+                } else {
+                    &package.manifest().layout.tests
+                };
+                let candidate = package.root().join(layout.as_str());
                 if candidate.exists() {
-                    let test_root = filesystem::resolve_source_root(
-                        package.root(),
-                        &package.manifest().layout.tests,
-                    )
-                    .map_err(|error| LocalProjectLoadError::Filesystem {
-                        package: Box::new(identity.clone()),
-                        error: Box::new(error),
-                    })?;
+                    let test_root = filesystem::resolve_source_root(package.root(), layout)
+                        .map_err(|error| LocalProjectLoadError::Filesystem {
+                            package: Box::new(identity.clone()),
+                            error: Box::new(error),
+                        })?;
                     audit::audit_source_root(&test_root).map_err(|error| {
                         LocalProjectLoadError::Filesystem {
                             package: Box::new(identity.clone()),
                             error: Box::new(error),
                         }
                     })?;
-                    source_roots.insert((identity.clone(), ModuleRoot::Test), test_root);
+                    source_roots.insert((identity.clone(), tool_root), test_root);
                 }
             }
         }

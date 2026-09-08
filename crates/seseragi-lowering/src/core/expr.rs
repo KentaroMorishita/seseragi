@@ -89,6 +89,9 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<Co
             origin,
         } => lower_pure_pattern_statements(source, pattern, value, origin),
         TypedBlockStatement::Function {
+            effect: _,
+            rec_group,
+            return_type,
             name,
             type_parameters,
             constraints,
@@ -97,6 +100,8 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<Co
             body,
             origin,
         } => vec![CoreStatement::LocalFunction {
+            rec_group: rec_group.map(|span| source_span(source, span)),
+            return_type: return_type.map(lower_typed_type),
             name,
             type_parameters,
             constraints: constraints
@@ -126,6 +131,10 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin: source_span(source, origin),
         },
         TypedExpr::Float { value, origin, .. } => CoreExpr::Float64 {
+            value,
+            origin: source_span(source, origin),
+        },
+        TypedExpr::Char { value, origin, .. } => CoreExpr::Char {
             value,
             origin: source_span(source, origin),
         },
@@ -302,6 +311,9 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref,
             origin,
         } => {
+            if operator == "??" {
+                return super::decision::lower_fallback(source, *left, *right, type_ref, origin);
+            }
             let origin = source_span(source, origin);
             let type_ref = lower_typed_type(type_ref);
             if matches!(operator.as_str(), "&&" | "||") {
@@ -495,6 +507,15 @@ fn lower_pattern(source: &str, pattern: TypedPattern) -> CorePattern {
             type_ref,
             origin,
         } => CorePattern::Integer {
+            value,
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedPattern::Char {
+            value,
+            type_ref,
+            origin,
+        } => CorePattern::Char {
             value,
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),

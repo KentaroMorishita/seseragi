@@ -149,7 +149,7 @@ pub fn operator_section_policy(spelling: &str) -> OperatorSectionPolicy {
         return OperatorSectionPolicy::Referenceable;
     }
     if spelling == ":" {
-        return OperatorSectionPolicy::PendingReferenceable;
+        return OperatorSectionPolicy::Referenceable;
     }
     if matches!(
         spelling,
@@ -292,16 +292,10 @@ mod tests {
 
     #[test]
     fn classifies_operator_section_policy_without_spelling_fallbacks() {
-        for spelling in ["+", "==", "<", "<=", ">", ">=", "<$>", "<*>", ">>="] {
+        for spelling in [":", "+", "==", "<", "<=", ">", ">=", "<$>", "<*>", ">>="] {
             assert_eq!(
                 operator_section_policy(spelling),
                 OperatorSectionPolicy::Referenceable
-            );
-        }
-        for spelling in [":"] {
-            assert_eq!(
-                operator_section_policy(spelling),
-                OperatorSectionPolicy::PendingReferenceable
             );
         }
         for spelling in ["&&", "||", "??", "|>", "$", ":=", "!", "..", "..="] {

@@ -262,7 +262,12 @@ fn normalize_expression(
                 }
             }
         }
-        SurfaceExpr::Binary { left, right, .. } => {
+        SurfaceExpr::Index {
+            receiver: left,
+            index: right,
+            ..
+        }
+        | SurfaceExpr::Binary { left, right, .. } => {
             normalize_expression(left, custom, issues);
             normalize_expression(right, custom, issues);
         }
@@ -323,6 +328,7 @@ fn normalize_expression(
         | SurfaceExpr::Integer { .. }
         | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
+        | SurfaceExpr::Char { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. }
         | SurfaceExpr::Error { .. } => {}
@@ -533,10 +539,12 @@ fn builtin_operator_spec(spelling: &str) -> Option<OperatorSpec> {
     let (rank, associativity, meaning) = match spelling {
         "$" => (-4, Associativity::Right, OperatorMeaning::Apply),
         "|>" => (-2, Associativity::Left, OperatorMeaning::Pipeline),
+        "??" => (0, Associativity::Right, OperatorMeaning::Binary),
         "||" => (2, Associativity::Left, OperatorMeaning::Binary),
         "&&" => (4, Associativity::Left, OperatorMeaning::Binary),
         "==" | "!=" | "<" | "<=" | ">" | ">=" => (6, Associativity::None, OperatorMeaning::Binary),
         ".." | "..=" => (7, Associativity::Left, OperatorMeaning::Binary),
+        ":" => (8, Associativity::Right, OperatorMeaning::Binary),
         "+" | "-" => (8, Associativity::Left, OperatorMeaning::Binary),
         "*" | "/" | "%" => (10, Associativity::Left, OperatorMeaning::Binary),
         "**" => (12, Associativity::Right, OperatorMeaning::Binary),

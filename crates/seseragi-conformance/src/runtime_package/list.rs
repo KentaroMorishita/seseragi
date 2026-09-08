@@ -5,9 +5,12 @@ pub(super) fn check_typescript_runtime_list(root: &Path) -> Result<(), String> {
     let output = Command::new("bun")
         .arg("--eval")
         .arg(
-            "import { collectMap, fromArray, fromListNonEmpty, headNonEmpty, listApplicative, listFunctor, listMonad, reduce, reduce1NonEmpty, singleton, tailNonEmpty, toArray, toListNonEmpty } from \"./src/list.ts\";\n\
+            "import { Cons, collectMap, fromArray, fromListNonEmpty, headNonEmpty, listApplicative, listFunctor, listMonad, reduce, reduce1NonEmpty, singleton, tailNonEmpty, toArray, toListNonEmpty } from \"./src/list.ts\";\n\
              const values = fromArray([1, 2, 3]);\n\
              const empty = fromArray([]);\n\
+             const prepended = Cons(0, values);\n\
+             const opaqueTail = new Proxy(values, { get() { throw new Error(\"cons inspected tail\"); } });\n\
+             const shared = Cons(1, opaqueTail).tail === opaqueTail;\n\
              const collected = [];\n\
              let cursor = values;\n\
              while (cursor.tag === \"Cons\") { collected.push(String(cursor.head)); cursor = cursor.tail; }\n\
@@ -21,7 +24,7 @@ pub(super) fn check_typescript_runtime_list(root: &Path) -> Result<(), String> {
              const nonEmpty = fromListNonEmpty(values);\n\
              const singletonValue = singleton(9);\n\
              const nonEmptyValues = nonEmpty.tag === \"Just\" ? { head: String(headNonEmpty(nonEmpty.value)), tail: toArray(tailNonEmpty(nonEmpty.value)).map(String), list: toArray(toListNonEmpty(nonEmpty.value)).map(String), reduced: String(reduce1NonEmpty((left) => (right) => left + right, nonEmpty.value)) } : undefined;\n\
-             process.stdout.write(JSON.stringify({ collected, empty: empty.tag, frozen: Object.isFrozen(values) && values.tag === \"Cons\" && Object.isFrozen(values.tail), total: String(total), odds, mapped, applied, flattened, pure, nonEmpty: nonEmptyValues, fromEmpty: fromListNonEmpty(empty).tag, singleton: String(headNonEmpty(singletonValue)) }));\n",
+             process.stdout.write(JSON.stringify({ cons: shared && prepended.tail === values && Object.isFrozen(prepended), collected, empty: empty.tag, frozen: Object.isFrozen(values) && values.tag === \"Cons\" && Object.isFrozen(values.tail), total: String(total), odds, mapped, applied, flattened, pure, nonEmpty: nonEmptyValues, fromEmpty: fromListNonEmpty(empty).tag, singleton: String(headNonEmpty(singletonValue)) }));\n",
         )
         .current_dir(root.join("runtime/ts"))
         .output()
@@ -33,7 +36,7 @@ pub(super) fn check_typescript_runtime_list(root: &Path) -> Result<(), String> {
             String::from_utf8_lossy(&output.stderr)
         ));
     }
-    let expected = b"{\"collected\":[\"1\",\"2\",\"3\"],\"empty\":\"Empty\",\"frozen\":true,\"total\":\"6\",\"odds\":[\"1\",\"9\"],\"mapped\":[\"11\",\"12\",\"13\"],\"applied\":[\"11\",\"12\",\"2\",\"4\"],\"flattened\":[\"1\",\"11\",\"2\",\"12\"],\"pure\":[\"42\"],\"nonEmpty\":{\"head\":\"1\",\"tail\":[\"2\",\"3\"],\"list\":[\"1\",\"2\",\"3\"],\"reduced\":\"6\"},\"fromEmpty\":\"Nothing\",\"singleton\":\"9\"}";
+    let expected = b"{\"cons\":true,\"collected\":[\"1\",\"2\",\"3\"],\"empty\":\"Empty\",\"frozen\":true,\"total\":\"6\",\"odds\":[\"1\",\"9\"],\"mapped\":[\"11\",\"12\",\"13\"],\"applied\":[\"11\",\"12\",\"2\",\"4\"],\"flattened\":[\"1\",\"11\",\"2\",\"12\"],\"pure\":[\"42\"],\"nonEmpty\":{\"head\":\"1\",\"tail\":[\"2\",\"3\"],\"list\":[\"1\",\"2\",\"3\"],\"reduced\":\"6\"},\"fromEmpty\":\"Nothing\",\"singleton\":\"9\"}";
     if output.stdout != expected {
         return Err(format!(
             "TypeScript List runtime probe returned unexpected values: {}",

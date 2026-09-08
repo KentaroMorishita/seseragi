@@ -56,7 +56,8 @@ pub(crate) use surface_expr::pattern::type_pattern;
 pub(crate) use surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use type_ref::typed_type_from_interface_type;
 pub(crate) use type_ref::{
-    inferred_type_from_expr, typed_type_contains_hole, typed_type_from_type_ref,
+    application_argument_type_from_expr, effect_value_type, inferred_type_from_expr,
+    typed_type_contains_hole, typed_type_from_type_ref,
 };
 
 pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {

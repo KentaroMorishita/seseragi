@@ -111,3 +111,17 @@ fn imported_hkt_callers_keep_concrete_type_arguments() {
         .typescript
         .contains("Box<number>"));
 }
+
+#[test]
+fn keeps_lexical_hkt_identity_through_a_generic_local_call() {
+    let source = r#"
+type F<A> = | F A
+pub fn scoped<F<_>, A> value: F<A> -> F<A> = {
+  fn local<G<_>, B> item: G<B> -> G<B> = item
+  local value
+}
+pub fn concrete value: F<Int> -> F<Int> = value
+"#;
+    compile_module(CompileInput::new("scoped.ssrg", "fixture/scoped", source))
+        .expect("local generic calls preserve the outer constructor identity");
+}

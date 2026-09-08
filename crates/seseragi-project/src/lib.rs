@@ -15,12 +15,16 @@ mod lockfile;
 mod manifest;
 mod module_path;
 mod package_name;
+mod profile;
+pub use profile::BuildProfile;
 mod source_import;
 mod specifier;
 mod standard;
 mod target;
 mod virtual_package;
+mod web_assets;
 mod workspace;
+pub use web_assets::{load_web_assets, WebAsset, WebAssetError, WebAssets};
 
 pub use foreign::{resolve_foreign_typescript_module, ResolvedForeignTypescriptModule};
 pub use graph::{ModuleGraph, ModuleGraphError};
@@ -50,8 +54,9 @@ pub use local_graph::{
     PackageImportError, ResolvedPackageImport,
 };
 pub use local_project::{
-    load_local_documents, load_local_project, load_local_project_with_overlays, load_local_tests,
-    LoadedLocalDocuments, LoadedLocalProject, LoadedLocalTests, LocalProjectLoadError,
+    load_local_benchmarks, load_local_documents, load_local_project,
+    load_local_project_with_overlays, load_local_tests, LoadedLocalDocuments, LoadedLocalProject,
+    LoadedLocalTests, LocalProjectLoadError,
 };
 pub use lockfile::{
     generate_lockfile, parse_lockfile, read_and_validate_development_lockfile,
@@ -60,9 +65,9 @@ pub use lockfile::{
 };
 pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,
-    LanguageRequirement, LayoutPath, Manifest, ManifestDependency, ManifestError, ManifestFilePath,
-    ManifestForeignTypescript, ManifestLayout, ManifestPackage, ManifestRun, ManifestTest,
-    ProviderArtifactPath, RunSeed, SignalMode, TargetId,
+    LanguageRequirement, LayoutPath, Manifest, ManifestBenchmark, ManifestDependency,
+    ManifestError, ManifestFilePath, ManifestForeignTypescript, ManifestLayout, ManifestPackage,
+    ManifestRun, ManifestTest, ManifestWeb, ProviderArtifactPath, RunSeed, SignalMode, TargetId,
 };
 pub use module_path::{ModulePath, ModulePathError};
 pub use package_name::{PackageName, PackageNameError};

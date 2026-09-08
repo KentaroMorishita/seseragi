@@ -1,3 +1,4 @@
+import * as math from "std/math"
 import * as iterator from "std/iterator"
 import * as arrays from "std/array"
 import * as collections from "std/collection"
@@ -135,4 +136,6 @@ pub effect fn main = do {
   println `big-int: ${bigIntSummary}`
   println `decimal: ${decimalSummary}`
   println `iterator: ${first [1, 2]} / ${iteratorListHead} / ${first (3..=4)} / ${first (Countdown 4)} / ${first finiteIterator} / ${first finiteIterator} / ${iteratorComprehension} / ${boundedTotal}`
+  println `math: ${floats.format math.pi} / ${floats.format math.e} / ${floats.format (math.sin 0.0)} / ${floats.format (math.cos 0.0)} / ${floats.format (math.sqrt 4.0)} / ${floats.format (math.log 1.0)} / ${floats.format (math.atan2 0.0 1.0)}`
+  println `math boundary: ${floats.isNaN (math.sqrt (-1.0))} / ${floats.isNaN (math.sin (floats.positiveInfinity ()))} / ${floats.isNegativeZero (math.sin (-0.0))} / ${floats.isNegativeZero (math.atan2 (-0.0) 1.0)} / ${floats.format (math.log 0.0)} / ${floats.format (math.hypot (floats.nan ()) (floats.positiveInfinity ()))}`
 }

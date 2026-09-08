@@ -103,6 +103,10 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
             name: "Float".to_owned(),
             arguments: Vec::new(),
         },
+        TypedExpr::Char { .. } => TypedType::Named {
+            name: "Char".to_owned(),
+            arguments: Vec::new(),
+        },
         TypedExpr::String { .. } => TypedType::Named {
             name: "String".to_owned(),
             arguments: Vec::new(),

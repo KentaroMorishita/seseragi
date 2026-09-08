@@ -15,12 +15,26 @@ const FROM_ARRAY: RuntimeListOperation = RuntimeListOperation {
     source_map_name: "fromArray",
 };
 
+const CONS: RuntimeListOperation = RuntimeListOperation {
+    runtime_feature: "core.list.cons",
+    local_name: "_ssrg_list_cons",
+    module: "@seseragi/runtime/list",
+    export_name: "Cons",
+    source_map_name: "Cons",
+};
+
+pub(crate) fn runtime_list_cons_operation() -> RuntimeListOperation {
+    CONS
+}
+
 pub(crate) fn runtime_list_literal_operation() -> RuntimeListOperation {
     FROM_ARRAY
 }
 
 pub(crate) fn runtime_list_operation_for_feature(feature: &str) -> Option<RuntimeListOperation> {
-    (feature == FROM_ARRAY.runtime_feature).then_some(FROM_ARRAY)
+    [FROM_ARRAY, CONS]
+        .into_iter()
+        .find(|operation| operation.runtime_feature == feature)
 }
 
 #[cfg(test)]

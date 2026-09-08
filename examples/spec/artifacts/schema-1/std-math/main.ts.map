@@ -1,0 +1,41 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/std-math"
+  ],
+  "sourcesContent": [
+    "import * as math from \"std/math\"\nimport { pi as circleConstant, sin, atan2 } from \"std/math\"\npub let constants = (math.pi, math.e, math.tau, circleConstant)\npub let functions: Array<Float -> Float> = [\n  sin,\n  math.cos,\n  math.tan,\n  math.asin,\n  math.acos,\n  math.atan,\n  math.exp,\n  math.log,\n  math.log2,\n  math.log10,\n  math.sqrt,\n  math.cbrt,\n  math.sinh,\n  math.cosh,\n  math.tanh\n]\npub let partial: Float -> Float = atan2 1.0\npub let length = math.hypot 3.0 4.0\npub let result = partial 1.0\n"
+  ],
+  "names": [
+    "constants",
+    "pi",
+    "e",
+    "tau",
+    "pi",
+    "functions",
+    "sin",
+    "cos",
+    "tan",
+    "asin",
+    "acos",
+    "atan",
+    "exp",
+    "log",
+    "log2",
+    "log10",
+    "sqrt",
+    "cbrt",
+    "sinh",
+    "cosh",
+    "tanh",
+    "partial",
+    "atan2",
+    "length",
+    "hypot",
+    "result",
+    "partial"
+  ],
+  "mappings": ";;;;AAEAA;AACAK;AAiBAgB;AACAE;AACAE"
+}

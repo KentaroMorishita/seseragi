@@ -17,7 +17,44 @@
             "startToken": 0,
             "endToken": 18,
             "children": [
-              { "kind": "effect-signature", "startToken": 0, "endToken": 18, "children": [] }
+              {
+                "kind": "effect-signature",
+                "startToken": 0,
+                "endToken": 18,
+                "children": []
+              }
+            ]
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 0,
+            "endToken": 17,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 0,
+                "endToken": 14,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 14,
+                "endToken": 17,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 14,
+                    "endToken": 15,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 16,
+                    "endToken": 17,
+                    "children": []
+                  }
+                ]
+              }
             ]
           }
         ]

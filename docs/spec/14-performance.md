@@ -188,6 +188,18 @@ builderをbackend / libraryで検証します。release profileやbenchmark実�
 
 すべてのprofileは同じ言語semanticsを持ちます。
 
+`seseragi build`と`seseragi run`は`--profile development|release`を受け付けます。
+選択順はCLI指定、root manifestの`[build].profile`、既定の`development`です。
+選択したprofileは依存moduleを含む一つのcompile graph全体へ適用し、同じgraph内の混在を拒否します。
+CLIによるprofile上書きはlockfileを書き換えません。manifest自体を編集した場合は、通常のcontent digest契約に従って明示的に`seseragi lock update`します。targetは従来の`[run].target`で選び、`[build]`へ重複定義しません。
+`generated-module.json`とprocess / webの`.seseragi-build.json`は選択した`profile`を記録します。
+
+```toml
+[build]
+profile = "release"
+```
+
+
 - development profileはdiagnostic、読みやすいgenerated code、source map、instrumentationを優先できる。
 - release profileはdead code elimination、newtype erasure、direct call lowering、inlining、specialization、fusion、
   static data hoistを適用できる。
@@ -268,6 +280,20 @@ regression failureにしません。同名caseのinput sizeが違う場合は比
 上書きできます。少なくとも一件のregression、case failure、invalid / incompatible baselineはexit code 1、
 compile / discovery / option errorは2、成功は0です。machine-readable reportはbaselineと同じschema familyを使い、
 caseをcanonical discovery orderで並べます。
+
+実装のprocess runnerは`--target node`（`process` / `test-js` aliasも可）を受け取り、現在の実行adapterである
+Bunとそのversionをmetadataへ記録します。`[build].profile` にかかわらずreleaseを使用し、lockを暗黙更新しません。
+`--warmup`、`--samples`、`--minimum-sample-ms`、`--seed`、`--timeout-ms`、`--cleanup-grace-ms` はそのrunだけの設定です。
+`--json` はcaptureをcase内に保持したreportを出力します。timeoutは各bodyと計測phaseの上限であり、cleanupには
+別のgrace期間があります。calibration後に短すぎるsampleが出た場合は、それまでのsampleを破棄して反復数を増やします。
+
+portable kernelは `@seseragi/runtime/benchmark-runner` の`runBenchmarks`です。browser hostはmonotonic clock、
+AbortSignal、adapter/host metadataを渡し、追加serviceを必要とするbodyにはhost側でserviceを解決します。
+CLIの`--target web`でbrowserを暗黙起動しません。process baselineとbrowser baselineは別の比較identityです。
+`runtime/ts/fixtures/benchmark-quality/browser.ts` と実Chromium testがreactive leaf / region / transaction / distinctを
+計測し、host所有のmountを終了時に解放します。mount準備とunmountはこの更新計測のsampleに含めません。
+compiler境界の最低suiteは`benchmark-discovery/benchmarks/quality.ssrg`、runtime境界は
+`runtime/ts/fixtures/benchmark-quality/portable.ts`です。絶対時間をtestの合否へ使わず、実行結果と計測契約を検証します。
 
 最適化を要求するための`inline`、ownership、borrow、unsafeなどのsource annotationは現時点で追加しません。
 profileとbenchmarkで解決できない実測上の問題があり、意味論上の必要性を説明できた場合だけ、独立した言語機能として

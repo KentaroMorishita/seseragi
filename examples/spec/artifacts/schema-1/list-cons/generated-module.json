@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "module": "artifact/list-cons",
+  "target": "typescript-es2022",
+  "profile": "development",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.list",
+      "core.int",
+      "core.list.cons",
+      "core.list.from-array",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.show",
+      "core.maybe.show",
+      "core.list.show",
+      "core.string",
+      "core.maybe",
+      "core.maybe.nothing",
+      "core.maybe.just",
+      "core.bool.show",
+      "core.int.eq-dictionary",
+      "core.list.eq-dictionary",
+      "core.bool"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

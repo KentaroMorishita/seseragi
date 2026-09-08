@@ -333,6 +333,41 @@ export function defer<Environment, Failure, Success>(
   return (environment, context) => thunk(unit)(environment, context)
 }
 
+// Bind plans are internal and owned by their callable Effect value.
+// Interpreting both left- and right-associated chains avoids one host frame per
+// bind while keeping every callback cold and every value checkpoint in order.
+type ErasedEffect = Effect<unknown, unknown, unknown>
+type BindPlan = {
+  readonly source: ErasedEffect
+  readonly next: (value: unknown) => ErasedEffect
+}
+const bindPlan = Symbol("seseragi.effect-bind")
+type PlannedEffect = ErasedEffect & { readonly [bindPlan]?: BindPlan }
+
+async function interpretBinds(
+  initial: ErasedEffect,
+  environment: unknown,
+  context: EffectContext
+): Promise<unknown> {
+  const continuations: BindPlan["next"][] = []
+  let current = initial
+  while (true) {
+    let plan = (current as PlannedEffect)[bindPlan]
+    while (plan !== undefined) {
+      continuations.push(plan.next)
+      current = plan.source
+      plan = (current as PlannedEffect)[bindPlan]
+    }
+    const value = await awaitWithCancellation(
+      current(environment, context),
+      context
+    )
+    const next = continuations.pop()
+    if (next === undefined) return value
+    current = next(value)
+  }
+}
+
 export function flatMap<
   Environment,
   Failure,
@@ -344,17 +379,23 @@ export function flatMap<
   effect: Effect<Environment, Failure, Success>,
   next: (value: Success) => Effect<NextEnvironment, NextFailure, NextSuccess>
 ): Effect<Environment & NextEnvironment, Failure | NextFailure, NextSuccess> {
-  return async (environment, context) => {
-    const activeContext = context ?? createEffectExecution().context
-    const value = await awaitWithCancellation(
-      effect(environment, activeContext),
-      activeContext
-    )
-    return awaitWithCancellation(
-      next(value)(environment, activeContext),
-      activeContext
-    )
-  }
+  const bound: Effect<
+    Environment & NextEnvironment,
+    Failure | NextFailure,
+    NextSuccess
+  > = (environment, context) =>
+    interpretBinds(
+      bound as ErasedEffect,
+      environment,
+      context ?? createEffectExecution().context
+    ) as Promise<NextSuccess>
+  Object.defineProperty(bound, bindPlan, {
+    value: {
+      source: effect as ErasedEffect,
+      next: next as (value: unknown) => ErasedEffect,
+    } satisfies BindPlan,
+  })
+  return bound
 }
 
 export const effectFunctor = Object.freeze({

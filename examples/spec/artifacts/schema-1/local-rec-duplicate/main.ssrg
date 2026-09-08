@@ -1,0 +1,1 @@
+pub fn result -> Int = { rec { fn get -> Int = 1; fn get -> Int = 2 }; get () }

@@ -1584,6 +1584,12 @@ fn binary_exposes_portable_standard_metadata_from_the_parity_package() {
             PositionEncoding::Utf16,
         )
         .unwrap();
+    let math_position = LineIndex::new(&source)
+        .try_locate_encoded(
+            source.find("math.pi").unwrap() + "math.".len(),
+            PositionEncoding::Utf16,
+        )
+        .unwrap();
     let root_uri = file_uri(&package);
     let main_uri = file_uri(&main_path);
     let input = [
@@ -1618,6 +1624,18 @@ fn binary_exposes_portable_standard_metadata_from_the_parity_package() {
                 "line": iterator_position.line, "character": iterator_position.character
             }}
         }),
+        json!({
+            "jsonrpc": "2.0", "id": 6, "method": "textDocument/hover",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": math_position.line, "character": math_position.character
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 7, "method": "textDocument/completion",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": math_position.line, "character": math_position.character
+            }}
+        }),
         json!({"jsonrpc": "2.0", "id": 4, "method": "shutdown"}),
         json!({"jsonrpc": "2.0", "method": "exit"}),
     ];
@@ -1640,6 +1658,15 @@ fn binary_exposes_portable_standard_metadata_from_the_parity_package() {
         "{iterator_hover}"
     );
     assert!(iterator_hover.contains("Iterator"), "{iterator_hover}");
+    let math_hover = response(&messages, 6)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(
+        math_hover.contains("std/math::pi") && math_hover.contains("Float"),
+        "{math_hover}"
+    );
+    let math_completions = response(&messages, 7)["result"].as_array().unwrap();
+    assert!(math_completions.iter().any(|item| item["label"] == "atan2"));
     let completions = response(&messages, 3)["result"].as_array().unwrap();
     let length = completions
         .iter()
@@ -1979,4 +2006,227 @@ fn binary_exposes_canonical_transformer_result() {
         .as_str()
         .unwrap();
     assert!(hover.contains("MaybeT") && hover.contains("Int"), "{hover}");
+}
+
+#[test]
+fn binary_exposes_canonical_array_index_result() {
+    let workspace = TempWorkspace::new();
+    let source = "let values = [10, 20]\npub let total = values[1]\n";
+    workspace.write("main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":main_uri},"position":{"line":1,"character":8}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(hover.contains("Maybe") && hover.contains("Int"), "{hover}");
+}
+
+#[test]
+fn binary_exposes_canonical_char_literal_result() {
+    let workspace = TempWorkspace::new();
+    let source = "let values = ['a', '瀬']\npub let total = 'λ'\n";
+    workspace.write("main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":main_uri},"position":{"line":1,"character":8}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(hover.contains("Char"), "{hover}");
+}
+
+#[test]
+fn binary_exposes_canonical_maybe_fallback_result() {
+    let workspace = TempWorkspace::new();
+    let source = "let values = Just 7\npub let total = values ?? 9\n";
+    workspace.write("main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":main_uri},"position":{"line":1,"character":8}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(hover.contains("Int") && !hover.contains("Maybe"), "{hover}");
+}
+
+#[test]
+fn binary_exposes_canonical_list_cons_result() {
+    let workspace = TempWorkspace::new();
+    let source = "let values = `[7]\npub let total = 1 : values\n";
+    workspace.write("main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":main_uri},"position":{"line":1,"character":8}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(hover.contains("List<") && hover.contains("Int"), "{hover}");
+}
+
+#[test]
+fn binary_exposes_local_effect_function_contract() {
+    let workspace = TempWorkspace::new();
+    let source = "pub fn task -> Effect<{}, Never, Int> = {\n  effect fn captured = pure 7\n  captured ()\n}\n";
+    workspace.write("main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":main_uri},"position":{"line":1,"character":14}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(hover.contains("Effect") && hover.contains("Int"), "{hover}");
+}
+
+#[test]
+fn binary_resolves_recursive_group_references_and_rename() {
+    let workspace = TempWorkspace::new();
+    let source = "pub fn result -> Bool = {\n  rec {\n    fn even n: Int -> Bool = if n == 0 then True else odd (n - 1)\n    fn odd n: Int -> Bool = if n == 0 then False else even (n - 1)\n  }\n  even 4\n}\n";
+    workspace.write("main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let position = LineIndex::new(source)
+        .try_locate_encoded(source.find("odd (n").unwrap(), PositionEncoding::Utf16)
+        .unwrap();
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/references","params":{"textDocument":{"uri":main_uri},"position":{"line":position.line,"character":position.character},"context":{"includeDeclaration":true}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"textDocument/rename","params":{"textDocument":{"uri":main_uri},"position":{"line":position.line,"character":position.character},"newName":"isOdd"}}),
+        json!({"jsonrpc":"2.0","id":4,"method":"textDocument/hover","params":{"textDocument":{"uri":main_uri},"position":{"line":position.line,"character":position.character}}}),
+        json!({"jsonrpc":"2.0","id":5,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+    assert_eq!(
+        response(&messages, 2)["result"].as_array().unwrap().len(),
+        2
+    );
+    let changes = response(&messages, 3)["result"]["documentChanges"]
+        .as_array()
+        .unwrap();
+    assert_eq!(changes.len(), 1);
+    let edits = changes[0]["edits"].as_array().unwrap();
+    assert_eq!(edits.len(), 2);
+    assert!(edits.iter().all(|edit| edit["newText"] == "isOdd"));
+    assert!(response(&messages, 4)["result"]
+        .to_string()
+        .contains("Bool"));
+}
+
+#[test]
+fn opaque_struct_hover_and_completion_hide_external_fields() {
+    let workspace = TempWorkspace::new();
+    workspace.write("seseragi.toml", "[package]\nname = \"fixture/opaque-lsp\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n[run]\nentry = \"main\"\ntarget = \"process\"\n");
+    workspace.write("src/domain.ssrg", "pub opaque struct Secret { privateField: Int }\npub fn create -> Secret = Secret { privateField: 7 }\n");
+    workspace.write(
+        "src/facade.ssrg",
+        "pub import { Secret, create } from \"./domain\"\n",
+    );
+    let source = "import { Secret, create } from \"./facade\"\nlet secret: Secret = create ()\n";
+    workspace.write("src/main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let uri = file_uri(&workspace.path().join("src/main.ssrg"));
+    let changed = format!("{source}let probe = secret.\n");
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":uri},"position":{"line":1,"character":5}}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":uri,"version":2},"contentChanges":[{"text":changed}]}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"textDocument/completion","params":{"textDocument":{"uri":uri},"position":{"line":2,"character":19}}}),
+        json!({"jsonrpc":"2.0","id":4,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    let hover = response(&messages, 2)["result"].to_string();
+    assert!(hover.contains("Secret"), "{hover} {messages:#?}");
+    assert!(!hover.contains("privateField"), "{hover}");
+    let completions = response(&messages, 3)["result"].to_string();
+    assert!(!completions.contains("privateField"), "{completions}");
+}
+
+#[test]
+fn range_formatting_negotiates_positions_and_preserves_neighbors() {
+    let uri = "file:///range.ssrg";
+    let source = "let value=(\"😀\",1+2)\nlet untouched=3+4\n";
+    for (name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+    ] {
+        let offset = source.find("1+2").unwrap();
+        let index = LineIndex::new(source);
+        let start = index.try_locate_encoded(offset, encoding).unwrap();
+        let end = index.try_locate_encoded(offset + 3, encoding).unwrap();
+        let input = [
+            json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"general":{"positionEncodings":[name]}}}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+            json!({"jsonrpc":"2.0","id":2,"method":"textDocument/rangeFormatting","params":{"textDocument":{"uri":uri},"range":{"start":{"line":start.line,"character":start.character},"end":{"line":end.line,"character":end.character}},"options":{"tabSize":4,"insertSpaces":false}}}),
+            json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+            json!({"jsonrpc":"2.0","method":"exit"}),
+        ];
+        let messages = run_server(&input);
+        assert_eq!(
+            response(&messages, 1)["result"]["capabilities"]["documentRangeFormattingProvider"],
+            true
+        );
+        let edits = response(&messages, 2)["result"].as_array().unwrap();
+        assert_eq!(edits.len(), 1);
+        assert_eq!(edits[0]["newText"], " + ");
+        assert_eq!(
+            edits[0]["range"],
+            json!({"start":{"line":0,"character":start.character+1},"end":{"line":0,"character":start.character+2}})
+        );
+    }
 }

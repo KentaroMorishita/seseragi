@@ -417,6 +417,85 @@ fn runs_imported_derived_json_codecs() {
 }
 
 #[test]
+fn array_index_evaluates_receiver_and_offset_once_in_source_order() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/foreign-pure-load"),
+    );
+    fs::create_dir_all(package.join("host")).unwrap();
+    fs::write(
+        package.join("host/order.mjs"),
+        r#"
+const events = [];
+export function values() { events.push("receiver"); return [10, 20]; }
+export function offset() { events.push("index"); return 1; }
+export function trace() { return events.join(","); }
+"#,
+    )
+    .unwrap();
+    fs::write(
+        package.join("src/main.ssrg"),
+        r#"
+foreign "typescript" from "../host/order.mjs" {
+  pure fn values unit: Unit -> Array<Int>
+  pure fn offset unit: Unit -> Int
+  pure fn trace unit: Unit -> String
+}
+let selected = (values ())[offset ()]
+pub effect fn main = do {
+  println $ show selected
+  println (trace ())
+}
+"#,
+    )
+    .unwrap();
+    let updated = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args(["lock", "update"])
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        updated.status.success(),
+        "{}",
+        String::from_utf8_lossy(&updated.stderr)
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        "Just 20\nreceiver,index\n"
+    );
+}
+
+#[test]
+fn runs_array_index() {
+    let package =
+        LockedProject::copy(&repository_root().join("examples/spec/fixtures/projects/array-index"));
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn runs_transformers() {
     let package = LockedProject::copy(
         &repository_root().join("examples/spec/fixtures/projects/transformers"),
@@ -1797,4 +1876,146 @@ fn phase_one_goal_program_passes_format_check() {
 
     assert_eq!(output.status.code(), Some(0));
     assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
+fn runs_char_literal() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/char-literal"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+}
+
+#[test]
+fn runs_char_literal_lesson_02() {
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(repository_root().join("examples/spec/lessons/02-values-and-functions.ssrg"))
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        "answer: 42, initial: 瀬, million: 1000000\n"
+    );
+}
+
+#[test]
+fn runs_maybe_fallback() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/maybe-fallback"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+}
+
+#[test]
+fn runs_list_cons() {
+    let package =
+        LockedProject::copy(&repository_root().join("examples/spec/fixtures/projects/list-cons"));
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+}
+
+#[test]
+fn runs_local_effect_fn() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/local-effect-fn"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+}
+
+#[test]
+fn runs_local_rec() {
+    let package =
+        LockedProject::copy(&repository_root().join("examples/spec/fixtures/projects/local-rec"));
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+}
+
+#[test]
+fn runs_opaque_struct() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/opaque-struct"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
 }

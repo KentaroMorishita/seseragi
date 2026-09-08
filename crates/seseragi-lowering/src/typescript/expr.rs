@@ -55,7 +55,9 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
         CoreExpr::Integer { value, .. } => TypeScriptExpr::Number { value },
         CoreExpr::Float64 { value, .. } => TypeScriptExpr::Number { value },
-        CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
+        CoreExpr::String { value, .. } | CoreExpr::Char { value, .. } => {
+            TypeScriptExpr::String { value }
+        }
         CoreExpr::Template { parts, .. } => lower_template(parts, imported_values, imported_types),
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
         CoreExpr::Variable {
@@ -317,6 +319,16 @@ pub(super) fn lower_core_expr_to_typescript(
             type_ref,
             origin,
         } => {
+            if imported_types.is_erased_newtype(&callee) && arguments.len() == 1 {
+                return TypeScriptExpr::CheckedResult {
+                    value: Box::new(lower_core_expr_to_typescript(
+                        arguments.into_iter().next().expect("newtype payload"),
+                        imported_values,
+                        imported_types,
+                    )),
+                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                };
+            }
             let signal_operation = runtime_signal_operation(&callee);
             let checked_argument_types = arguments
                 .iter()
@@ -530,6 +542,9 @@ pub(super) fn lower_core_expr_to_typescript(
                 // recover the element type from C. Preserve the types already
                 // selected by Seseragi instead of accepting host `unknown`.
                 let type_arguments = match (callee.as_str(), evidence.first()) {
+                    ("std/prelude:::", _) => {
+                        vec![list_cons_element_type(&type_ref, imported_types)]
+                    }
                     ("std/map::fromEntries", Some(selected)) => {
                         let [collection, CoreType::Tuple { elements }] =
                             selected.constraint.arguments.as_slice()
@@ -875,15 +890,34 @@ pub(super) fn lower_core_expr_to_typescript(
             elements: lower_core_expressions(elements, imported_values, imported_types),
         },
         CoreExpr::FieldAccess {
-            receiver, field, ..
-        } => TypeScriptExpr::FieldAccess {
-            receiver: Box::new(lower_core_expr_to_typescript(
-                *receiver,
-                imported_values,
-                imported_types,
-            )),
+            receiver,
             field,
-        },
+            type_ref,
+            ..
+        } => {
+            let public_type = type_ref_from_core_expr(&receiver, imported_types);
+            let private_type =
+                type_ref_from_core_expr(&receiver, &imported_types.with_private_representation());
+            let receiver =
+                lower_core_expr_to_typescript(*receiver, imported_values, imported_types);
+            if private_type != public_type {
+                TypeScriptExpr::CheckedResult {
+                    value: Box::new(TypeScriptExpr::FieldAccess {
+                        receiver: Box::new(super::types::assert_private_representation(
+                            receiver,
+                            private_type,
+                        )),
+                        field,
+                    }),
+                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                }
+            } else {
+                TypeScriptExpr::FieldAccess {
+                    receiver: Box::new(receiver),
+                    field,
+                }
+            }
+        }
         CoreExpr::OptionalFieldAccess {
             receiver, field, ..
         } => TypeScriptExpr::OptionalFieldAccess {
@@ -1414,6 +1448,20 @@ fn lower_core_expressions(
         .collect()
 }
 
+fn list_cons_element_type(
+    type_ref: &CoreType,
+    imported_types: &TypeScriptTypeContext,
+) -> super::TypeScriptType {
+    let mut result = type_ref_from_core_type(type_ref, imported_types);
+    while let super::TypeScriptType::Function { result: next, .. } = result {
+        result = *next;
+    }
+    match result {
+        super::TypeScriptType::List { element } => *element,
+        _ => unreachable!("checked List cons must return a List"),
+    }
+}
+
 fn lower_binary(
     operator: String,
     left: CoreExpr,
@@ -1425,6 +1473,15 @@ fn lower_binary(
 ) -> TypeScriptExpr {
     let left = lower_core_expr_to_typescript(left, imported_values, imported_types);
     let right = lower_core_expr_to_typescript(right, imported_values, imported_types);
+    if operator == ":" {
+        return TypeScriptExpr::TypeApplicationCall {
+            callee: crate::list_ops::runtime_list_cons_operation()
+                .local_name
+                .to_owned(),
+            type_arguments: vec![list_cons_element_type(&type_ref, imported_types)],
+            arguments: vec![left, right],
+        };
+    }
     if let Some(operation) = runtime_range_operation(&operator) {
         return TypeScriptExpr::RuntimeCall {
             callee: operation.local_name.to_owned(),
@@ -1720,6 +1777,8 @@ fn lower_core_statement_to_typescript(
             origin,
         },
         CoreStatement::LocalFunction {
+            rec_group,
+            return_type,
             name,
             type_parameters,
             constraints,
@@ -1735,6 +1794,10 @@ fn lower_core_statement_to_typescript(
                 .map(|parameter| parameter.name.clone())
                 .collect::<Vec<_>>();
             TypeScriptStatement::LocalFunction {
+                rec_group,
+                return_type: return_type
+                    .as_ref()
+                    .map(|ty| type_ref_from_core_type(ty, imported_types)),
                 name: safe_identifier(&name),
                 type_parameters,
                 constraints: constraints

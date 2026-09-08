@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/opaque-struct::facade",
+  "runtimeRequirements": [],
+  "sourceImports": [
+    {
+      "reexports": [
+        {
+          "imported": "Secret",
+          "local": "Secret",
+          "sourceLocal": "Secret",
+          "canonical": "fixture/opaque-struct::domain::Secret",
+          "typeOnly": true,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 15,
+            "end": 21
+          }
+        },
+        {
+          "imported": "Box",
+          "local": "Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/opaque-struct::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 25,
+            "end": 28
+          }
+        },
+        {
+          "imported": "create",
+          "local": "create",
+          "sourceLocal": "create",
+          "canonical": "fixture/opaque-struct::domain::create",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 32,
+            "end": 38
+          }
+        },
+        {
+          "imported": "read",
+          "local": "read",
+          "sourceLocal": "read",
+          "canonical": "fixture/opaque-struct::domain::read",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 42,
+            "end": 46
+          }
+        },
+        {
+          "imported": "unpack",
+          "local": "unpack",
+          "sourceLocal": "unpack",
+          "canonical": "fixture/opaque-struct::domain::unpack",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 50,
+            "end": 56
+          }
+        },
+        {
+          "imported": "update",
+          "local": "update",
+          "sourceLocal": "update",
+          "canonical": "fixture/opaque-struct::domain::update",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 60,
+            "end": 66
+          }
+        },
+        {
+          "imported": "box",
+          "local": "box",
+          "sourceLocal": "box",
+          "canonical": "fixture/opaque-struct::domain::box",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 70,
+            "end": 73
+          }
+        },
+        {
+          "imported": "unbox",
+          "local": "unbox",
+          "sourceLocal": "unbox",
+          "canonical": "fixture/opaque-struct::domain::unbox",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 77,
+            "end": 82
+          }
+        },
+        {
+          "imported": "nested",
+          "local": "nested",
+          "sourceLocal": "nested",
+          "canonical": "fixture/opaque-struct::domain::nested",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 86,
+            "end": 92
+          }
+        },
+        {
+          "imported": "collect",
+          "local": "collect",
+          "sourceLocal": "collect",
+          "canonical": "fixture/opaque-struct::domain::collect",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 96,
+            "end": 103
+          }
+        }
+      ],
+      "module": "fixture/opaque-struct::domain",
+      "specifier": "./domain.js",
+      "bindings": [],
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 0,
+        "end": 121
+      }
+    }
+  ]
+}

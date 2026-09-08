@@ -1,0 +1,5 @@
+pub fn prepend<A> head: A -> tail: List<A> -> List<A> = head : tail
+pub fn first values: List<Int> -> Int = match values {
+  `[head, ...tail] -> head
+  `[] -> 0
+}

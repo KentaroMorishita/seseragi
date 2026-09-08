@@ -21,7 +21,7 @@ pub(super) fn collect_effect_fn_diagnostics(
     );
 }
 
-fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diagnostic {
+pub(super) fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diagnostic {
     match issue {
         EffectFunctionIssue::CompactContractClause { primary } => Diagnostic {
             type_difference: None,

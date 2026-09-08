@@ -23,6 +23,45 @@
             "startToken": 2,
             "endToken": 33,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 0,
+            "endToken": 32,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 0,
+                "endToken": 21,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 21,
+                "endToken": 32,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 22,
+                    "endToken": 23,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-clause",
+                    "startToken": 26,
+                    "endToken": 31,
+                    "children": [
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 30,
+                        "endToken": 31,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

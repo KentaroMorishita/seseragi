@@ -5,3 +5,5 @@ codecs: 6f6b / b2s= / b2s / [111, 107] / [111, 107] / [111, 107] / InvalidHexDig
 big-int: 18014398509481987
 decimal: 0.12 / 12345678901234567890.000000000000000001
 iterator: Just 1 / Just 2 / Just 3 / Just 4 / Just 3 / Just 3 / [6, 4, 2] / 6
+math: 3.141592653589793 / 2.718281828459045 / 0.0 / 1.0 / 2.0 / 0.0 / 0.0
+math boundary: True / True / True / True / -Infinity / Infinity

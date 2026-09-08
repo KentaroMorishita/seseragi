@@ -142,6 +142,11 @@ fn segment_is_complete(tokens: &[Token], start: usize, end: usize) -> bool {
     let Some(first) = significant.first().copied() else {
         return false;
     };
+    if tokens[first].kind == TokenKind::KeywordRec {
+        return significant
+            .last()
+            .is_some_and(|index| tokens[*index].kind == TokenKind::PunctuationBraceRight);
+    }
     if tokens[first].kind != TokenKind::KeywordFor {
         if let Some(bind) = top_level_token(tokens, start, end, TokenKind::OperatorBind) {
             return parse_expression_range(tokens, bind + 1, end).is_some();
@@ -154,7 +159,10 @@ fn segment_is_complete(tokens: &[Token], start: usize, end: usize) -> bool {
             .find(|index| tokens[*index].kind == TokenKind::OperatorEquals)
             .is_some_and(|equals| parse_expression_range(tokens, equals + 1, end).is_some());
     }
-    if tokens[first].kind == TokenKind::KeywordFn {
+    if matches!(
+        tokens[first].kind,
+        TokenKind::KeywordFn | TokenKind::KeywordEffect
+    ) {
         return top_level_token(tokens, start, end, TokenKind::OperatorEquals)
             .is_some_and(|equals| parse_expression_range(tokens, equals + 1, end).is_some());
     }
