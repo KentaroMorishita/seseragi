@@ -6,6 +6,7 @@
 //! adapter. CLI, conformance, and future interactive surfaces can therefore
 //! share compiler output without reimplementing language semantics.
 
+pub mod artifact;
 mod contract;
 #[cfg(not(target_arch = "wasm32"))]
 mod package;
