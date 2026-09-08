@@ -19,6 +19,54 @@ pub(super) fn format_valid_module(
         &angles,
         &member_bodies,
     );
+    // Split long inline statement blocks at their existing structural boundaries
+    // before wrapping applications, so local bindings receive their own indent.
+    let lines = lines.into_iter().flat_map(|line| {
+        let LogicalLine::Content(indices) = &line else {
+            return vec![line];
+        };
+        if display_width(&render_flat(indices, &tokens.tokens, &angles)) <= line_width {
+            return vec![line];
+        }
+        let blocks: Vec<_> = indices
+            .iter()
+            .copied()
+            .filter_map(|open| {
+                if tokens.tokens[open].kind != TokenKind::PunctuationBraceLeft
+                    || delimiters.joinable_open(open)
+                {
+                    return None;
+                }
+                let close = delimiters.matching(open)?;
+                indices.contains(&close).then_some((open, close))
+            })
+            .collect();
+        if blocks.is_empty() {
+            return vec![line];
+        }
+        let mut result = Vec::new();
+        let mut part = Vec::new();
+        for index in indices.iter().copied() {
+            if blocks.iter().any(|(_, close)| *close == index) && !part.is_empty() {
+                result.push(LogicalLine::Content(std::mem::take(&mut part)));
+            }
+            part.push(index);
+            if blocks
+                .iter()
+                .any(|(open, close)| *open == index || *close == index)
+                || tokens.tokens[index].kind == TokenKind::PunctuationSemicolon
+                    && blocks
+                        .iter()
+                        .any(|(open, close)| *open < index && index < *close)
+            {
+                result.push(LogicalLine::Content(std::mem::take(&mut part)));
+            }
+        }
+        if !part.is_empty() {
+            result.push(LogicalLine::Content(part));
+        }
+        result
+    });
     let mut output = Vec::new();
     let mut delimiter_depth = 0usize;
     let mut implementation_member_seen = false;
