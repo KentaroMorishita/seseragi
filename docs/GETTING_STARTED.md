@@ -57,6 +57,20 @@ seseragi lock update
 `SES-K0102`で停止し、自動更新しません。`dev`中の通常のsource編集は許可しますが、
 dependency graphやProvider要件が変わった場合は再度`seseragi lock update`が必要です。
 
+独自のtitle/meta/faviconを使う場合は、生成projectへ次を追加できます。
+
+```toml
+[web]
+index = "web/index.html"
+public = "public"
+```
+
+`web/index.html`のheadに `<!-- seseragi:head -->`、bodyの`<div id="app"></div>`の後へ
+`<!-- seseragi:entry -->` を一つずつ置くと、CLIがCSS/JSを接続します。`public/images/favicon.svg`等は
+同じ相対pathで配信されます。設定追加後に`seseragi lock update`を実行します。dev中はHTMLとassetの編集も
+rebuildされ、通常buildの前には変更したcontentのlockを更新します。詳細は
+[Web document contract](spec/11-packages-and-projects.md#web-documentとpublic-assets)を参照してください。
+
 ## 3. VS Codeで開く
 
 ```sh

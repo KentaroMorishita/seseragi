@@ -1,5 +1,5 @@
 use super::LockError;
-use crate::ManifestLayout;
+use crate::Manifest;
 use sha2::{Digest, Sha256};
 use std::fs;
 use std::path::Path;
@@ -9,10 +9,8 @@ pub(super) struct PackageDigests {
     pub content: String,
 }
 
-pub(super) fn package_digests(
-    root: &Path,
-    layout: &ManifestLayout,
-) -> Result<PackageDigests, LockError> {
+pub(super) fn package_digests(root: &Path, config: &Manifest) -> Result<PackageDigests, LockError> {
+    let layout = &config.layout;
     let manifest_path = root.join("seseragi.toml");
     let manifest = fs::read(&manifest_path)
         .map_err(|source| LockError::io("read manifest", &manifest_path, source))?;
@@ -24,6 +22,16 @@ pub(super) fn package_digests(
         false,
         &mut files,
     )?;
+    if let Some(web) = &config.web {
+        let assets = crate::load_web_assets(root, web)
+            .map_err(|error| LockError::PackageGraph(error.to_string()))?;
+        for asset in assets.index.into_iter().chain(assets.public) {
+            let relative = portable_relative(root, &asset.source)?;
+            if !files.iter().any(|(path, _)| path == &relative) {
+                files.push((relative, asset.bytes));
+            }
+        }
+    }
     files.sort_by(|left, right| left.0.as_bytes().cmp(right.0.as_bytes()));
     let mut content = Sha256::new();
     for (path, bytes) in files {

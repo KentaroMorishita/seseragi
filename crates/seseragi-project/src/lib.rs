@@ -20,7 +20,9 @@ mod specifier;
 mod standard;
 mod target;
 mod virtual_package;
+mod web_assets;
 mod workspace;
+pub use web_assets::{load_web_assets, WebAsset, WebAssetError, WebAssets};
 
 pub use foreign::{resolve_foreign_typescript_module, ResolvedForeignTypescriptModule};
 pub use graph::{ModuleGraph, ModuleGraphError};
@@ -62,7 +64,7 @@ pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,
     LanguageRequirement, LayoutPath, Manifest, ManifestDependency, ManifestError, ManifestFilePath,
     ManifestForeignTypescript, ManifestLayout, ManifestPackage, ManifestRun, ManifestTest,
-    ProviderArtifactPath, RunSeed, SignalMode, TargetId,
+    ManifestWeb, ProviderArtifactPath, RunSeed, SignalMode, TargetId,
 };
 pub use module_path::{ModulePath, ModulePathError};
 pub use package_name::{PackageName, PackageNameError};

@@ -85,7 +85,7 @@ tool固有設定だけは `[tool.<tool-name>]` 以下に置けます。compiler�
 構いませんが、言語semanticsへ影響させません。
 
 core top-level tableは `package`、`layout`、`exports`、`dependencies`、`foreign`、`provider`、
-`providers`、`run`、`test`、`benchmark`、`tool`です。`provider`はprovider packageのartifact一覧、
+`providers`、`run`、`web`、`test`、`benchmark`、`tool`です。`provider`はprovider packageのartifact一覧、
 `providers`はexecutable rootのexplicit selectionを表し、詳細は15章に従います。`package.name`、
 `package.version`、`package.language` は必須で、それ以外は省略できます。
 
@@ -373,6 +373,39 @@ cancellation、signal処理はrunnerとtarget adapterの責務であり、10.14�
 conformance runnerはsource path、absolute build path、host module cache pathを比較identityに含めません。
 entry、runtime ABI major、required runtime feature、host service trace、stdout / stderr、exit分類を比較します。
 
+### Web documentとpublic assets
+
+entry packageはoptionalな `[web]` でdocument templateとstatic asset directoryを指定できます。
+
+```toml
+[web]
+index = "web/index.html"
+public = "public"
+```
+
+両fieldは独立に省略でき、省略時は既存のdefault documentを生成し、public fileをcopyしません。
+暗黙の `public/index.html` overrideやpostbuild commandはありません。指定pathはpackage root相対で、
+absolute path、`.`/`..`、空segment、backslashを許しません。`.git`、`.seseragi`、`node_modules`、
+`dist` 以下を入力に指定できません。設定済みのfile/directoryがなければerrorです。
+
+custom indexはUTF-8 HTMLで、`<head>`内に `<!-- seseragi:head -->`、`<body>`内に
+`<!-- seseragi:entry -->` をそれぞれちょうど一つ置きます。builderが前者をgenerated CSSへのlink、
+後者をgenerated module scriptへ置換します。applicationは生成pathを手書きせず、通常のmount先
+`<div id="app"></div>` を用意します。title/meta/favicon等と他のdocument内容はそのまま保持します。
+placeholder不足/重複はbuild errorです。HTML全般の意味検証はbrowserの責務です。
+
+public directory内のregular fileを相対pathのUTF-8 byte順にWeb artifactへcopyします。空directoryは
+出力契約に含みません。symlink（package内を指すものも含む）・特殊file・非UTF-8/NFC pathを拒否し、
+既存source identityと同じUnicode lowercaseでcase collisionを検出します。generated `assets/`、
+root `index.html`、`.seseragi-build.json`、dev用 `__seseragi_dev/` は予約され、同名public pathはerrorです。
+copyによる上書きやsource tree外のfile取り込みは行いません。失敗時は前回の成功buildを保持します。
+
+この入力はpackage content digestに含みます。通常のbuildでは変更後に明示的なlock updateが必要です。
+devは既存のeditable workspace契約に従い、HTML/public fileの追加・変更・削除も監視して同じWeb buildを
+再実行します。devだけのcopy ruleは持たず、live reload script以外のdocument/assetsはproductionと同一です。
+設定pathの変更はmanifest変更としてlock updateを要求します。path dependencyのWeb inputsをroot appへ
+自動mergeしません。Playground virtual source compilationはfilesystem assetsの配信を所有しません。
+
 ## 11.11 lockfile
 
 package managerはpackage rootへ `seseragi.lock` を生成します。lockfileは少なくとも、全packageの
@@ -423,13 +456,13 @@ packageはpackages内のidです。同じimport、id、package identityの重複
 dependenciesはimport順、TOML keyは上の順で生成します。
 
 manifest_digestは対象 `seseragi.toml` のraw bytes、content_digestはmanifest、通常source、公開generated interface、
-converter metadataをpath順にlength-prefixしてSHA-256したlowercase hexです。lockfile自身、test / benchmark root、build
+converter metadata、明示設定したWeb document/public fileをpath順にlength-prefixしてSHA-256したlowercase hexです。lockfile自身、test / benchmark root、build
 artifact、absolute path、mtimeはcontent digestへ含めません。foreign moduleはpackage entryのcontent digestにbinding
 metadataとdeclaration digestを含め、host lockfile全体のraw pathを含めません。digest prefixは必ず `sha256:` です。
 
 writerは上記canonical順と末尾newline一つで生成し、readerはTOML上のkey順を要求しません。未知keyは同じschema major
 では無視しますが、未知schema major、必須key欠落、型違い、非canonical ID / digest、参照先のないedgeを拒否します。
-manifest、source content、converter metadata、toolchain version databaseのいずれかがlockと違えば `SES-K0102` で、
+manifest、source/Web content、converter metadata、toolchain version databaseのいずれかがlockと違えば `SES-K0102` で、
 通常build中に書き換えません。
 
 Provider選択は別lockfileへ分離せず、package entryの後ろに`[[providers]]`として固定します。

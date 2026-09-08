@@ -1,8 +1,8 @@
 use super::dependency::{parse_dependencies, RawDependency};
 use super::model::{
     DeferredTables, LanguageRequirement, LayoutPath, Manifest, ManifestFilePath,
-    ManifestForeignTypescript, ManifestLayout, ManifestPackage, ManifestRun, ManifestTest, RunSeed,
-    SignalMode, TargetId,
+    ManifestForeignTypescript, ManifestLayout, ManifestPackage, ManifestRun, ManifestTest,
+    ManifestWeb, RunSeed, SignalMode, TargetId,
 };
 use super::ManifestError;
 use crate::{ModulePath, PackageName};
@@ -37,11 +37,45 @@ pub fn parse_manifest(source: &str) -> Result<Manifest, ManifestError> {
         run,
         test,
         foreign_typescript,
+        web: raw.web.map(parse_web).transpose()?,
         deferred: DeferredTables {
             foreign: None,
             benchmark: raw.benchmark,
             tool: raw.tool,
         },
+    })
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RawWeb {
+    index: Option<String>,
+    public: Option<String>,
+}
+
+fn parse_web(raw: RawWeb) -> Result<ManifestWeb, ManifestError> {
+    fn path(field: &'static str, value: String) -> Result<ManifestFilePath, ManifestError> {
+        let path = parse_manifest_file_path(field, value)?;
+        if matches!(
+            path.as_str().split('/').next(),
+            Some(".git" | ".seseragi" | "node_modules" | "dist")
+        ) {
+            return Err(ManifestError::InvalidManifestFilePath {
+                field,
+                value: path.as_str().to_owned(),
+            });
+        }
+        Ok(path)
+    }
+    Ok(ManifestWeb {
+        index: raw
+            .index
+            .map(|value| path("web.index", value))
+            .transpose()?,
+        public: raw
+            .public
+            .map(|value| path("web.public", value))
+            .transpose()?,
     })
 }
 
@@ -115,6 +149,8 @@ struct RawManifest {
     providers: BTreeMap<String, String>,
     #[serde(default)]
     foreign: Option<RawForeign>,
+    #[serde(default)]
+    web: Option<RawWeb>,
     #[serde(default)]
     run: Option<RawRun>,
     #[serde(default)]

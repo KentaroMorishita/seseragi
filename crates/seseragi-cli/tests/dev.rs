@@ -487,3 +487,95 @@ fn documents_dev_in_cli_help() {
     assert!(stdout.contains("--port 3000"));
     assert!(stdout.contains("--open"));
 }
+
+#[test]
+fn rebuilds_custom_shell_and_extensionless_public_assets_with_build_parity() {
+    let _server = DEV_SERVER_TEST_LOCK
+        .lock()
+        .unwrap_or_else(|p| p.into_inner());
+    let directory = test_directory("custom-web-assets");
+    let project = directory.join("project");
+    copy_directory(
+        &repository_root().join("examples/spec/fixtures/projects/web-assets"),
+        &project,
+    );
+    fs::write(project.join("public/large.txt"), "x".repeat(2_000_000)).unwrap();
+    update_lock(&project);
+    let production = directory.join("production");
+    let build = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args(["build", "--target", "web"])
+        .arg(&project)
+        .arg("--out-dir")
+        .arg(&production)
+        .output()
+        .unwrap();
+    assert!(
+        build.status.success(),
+        "{}",
+        String::from_utf8_lossy(&build.stderr)
+    );
+    let log = fs::File::create(directory.join("dev.log")).unwrap();
+    let port = available_port();
+    struct Server(Child);
+    impl Drop for Server {
+        fn drop(&mut self) {
+            let _ = self.0.kill();
+            let _ = self.0.wait();
+        }
+    }
+    let mut server = Server(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("dev")
+            .arg(&project)
+            .args(["--port", &port.to_string()])
+            .stdout(Stdio::from(log.try_clone().unwrap()))
+            .stderr(Stdio::from(log))
+            .spawn()
+            .unwrap(),
+    );
+    wait_for(
+        Duration::from_secs(30),
+        || request(port, "/").is_some_and(|r| r.0 == 200),
+        "custom document",
+    );
+    assert_eq!(request(port, "/large.txt").unwrap().1.len(), 2_000_000);
+    let html = request(port, "/").unwrap().1;
+    assert!(html.contains("<title>Seseragi custom document</title>"));
+    let generated = fs::read_to_string(project.join(".seseragi/dev/index.html")).unwrap();
+    assert_eq!(
+        generated,
+        fs::read_to_string(production.join("index.html")).unwrap()
+    );
+    assert_eq!(
+        request(port, "/images/read%20me.txt").unwrap(),
+        (200, "nested public asset\n".to_owned())
+    );
+    assert_eq!(request(port, "/status").unwrap().1, "ready\n");
+    assert_eq!(request(port, "/%2e%2e/seseragi.toml").unwrap().0, 400);
+
+    fs::write(project.join("public/status"), "changed\n").unwrap();
+    let index = project.join("web/index.html");
+    fs::write(
+        &index,
+        fs::read_to_string(&index)
+            .unwrap()
+            .replace("Seseragi custom document", "Rebuilt document"),
+    )
+    .unwrap();
+    wait_for(
+        Duration::from_secs(30),
+        || {
+            request(port, "/").is_some_and(|r| r.1.contains("<title>Rebuilt document</title>"))
+                && request(port, "/status").is_some_and(|r| r.1 == "changed\n")
+        },
+        "HTML and extensionless asset rebuild",
+    );
+    fs::remove_file(project.join("public/robots.txt")).unwrap();
+    wait_for(
+        Duration::from_secs(30),
+        || request(port, "/robots.txt").is_some_and(|r| r.0 == 404),
+        "deleted asset removal",
+    );
+    stop(&mut server.0);
+    fs::remove_dir_all(directory).unwrap();
+}

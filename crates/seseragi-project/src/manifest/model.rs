@@ -13,7 +13,14 @@ pub struct Manifest {
     pub run: Option<ManifestRun>,
     pub test: Option<ManifestTest>,
     pub foreign_typescript: Option<ManifestForeignTypescript>,
+    pub web: Option<ManifestWeb>,
     pub(crate) deferred: DeferredTables,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ManifestWeb {
+    pub index: Option<ManifestFilePath>,
+    pub public: Option<ManifestFilePath>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

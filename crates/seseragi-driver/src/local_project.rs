@@ -14,6 +14,7 @@ pub struct CompiledLocalProject {
     pub compiled: CompiledProject,
     pub entry_module: String,
     pub foreign_host_directories: Vec<ForeignHostDirectory>,
+    pub web: Option<(PathBuf, seseragi_project::ManifestWeb)>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -205,7 +206,17 @@ fn compile_local_project_inner(
             .map(Box::new),
         error: Box::new(error),
     })?;
+    let root_package = project
+        .packages()
+        .package(project.packages().root())
+        .expect("root package exists");
+    let web = root_package
+        .manifest()
+        .web
+        .clone()
+        .map(|web| (root_package.root().to_owned(), web));
     Ok(CompiledLocalProject {
+        web,
         entry_module: logical_module_id(project.entry()),
         compiled,
         foreign_host_directories,
