@@ -1,0 +1,4 @@
+pub fn invalid -> Unit = {
+  effect fn hidden -> Unit with console: Console = println 1
+  ()
+}

@@ -50,6 +50,14 @@ pub(crate) fn analyze_effect_body(
 ) -> EffectBodyAnalysis {
     let context = PureExpressionContext::new(parameters, resolution)
         .with_evidence_parameters(evidence_parameters);
+    analyze_effect_body_in_context(body, &context, resolution)
+}
+
+pub(crate) fn analyze_effect_body_in_context(
+    body: &SurfaceExpr,
+    context: &PureExpressionContext<'_>,
+    resolution: &TypedResolution<'_>,
+) -> EffectBodyAnalysis {
     let mut conditional_issues = Vec::new();
     let mut call_issues = Vec::new();
     let mut array_issues = Vec::new();

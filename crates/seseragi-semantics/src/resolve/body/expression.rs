@@ -219,7 +219,7 @@ pub(super) fn resolve_expression(
             result,
             span,
         } => {
-            let block_scope = resolver.new_scope(scope, ScopeKind::Block, *span);
+            let mut block_scope = resolver.new_scope(scope, ScopeKind::Block, *span);
             for item in items {
                 match item {
                     SurfaceBlockItem::Let {
@@ -237,6 +237,17 @@ pub(super) fn resolve_expression(
                     function @ SurfaceBlockItem::Function {
                         name, name_span, ..
                     } => {
+                        if items.iter().any(|item| {
+                            matches!(
+                                item,
+                                SurfaceBlockItem::Function {
+                                    effect: Some(_),
+                                    ..
+                                }
+                            )
+                        }) {
+                            block_scope = resolver.new_scope(block_scope, ScopeKind::Block, *span);
+                        }
                         resolver.register(
                             block_scope,
                             SymbolNamespace::Value,

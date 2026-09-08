@@ -1,0 +1,38 @@
+fn silent -> Unit = {
+  effect fn ignored = println "must stay cold"
+}
+let quiet = silent ()
+
+pub effect fn main = {
+  let outer = 7
+  effect fn unused = println "must stay cold"
+  effect fn captured = pure outer
+  effect fn identity<A> value: A -> A = pure value
+  effect fn render<A> value: A -> String where Show<A> = pure (show value)
+  effect fn count n: Int -> Int = if n == 0 then pure 1 else count (n - 1)
+  effect fn log value: Int -> Unit with console: Console fails ConsoleError =
+    println value
+  let fromPure = {
+    fn step -> Int = 1
+    effect fn step = pure 2
+    step ()
+  }
+  let fromEffect = {
+    effect fn step = pure 1
+    fn step -> Int = 3
+    step ()
+  }
+  do {
+    value <- captured ()
+    log value
+    first <- identity True
+    second <- identity 9
+    println $ show (first, second)
+    result <- count 3
+    println result
+    rendered <- render 42
+    println rendered
+    shadowed <- fromPure
+    println $ show (shadowed, fromEffect)
+  }
+}

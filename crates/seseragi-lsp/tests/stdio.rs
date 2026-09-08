@@ -2076,3 +2076,27 @@ fn binary_exposes_canonical_list_cons_result() {
         .unwrap();
     assert!(hover.contains("List<") && hover.contains("Int"), "{hover}");
 }
+
+#[test]
+fn binary_exposes_local_effect_function_contract() {
+    let workspace = TempWorkspace::new();
+    let source = "pub fn task -> Effect<{}, Never, Int> = {\n  effect fn captured = pure 7\n  captured ()\n}\n";
+    workspace.write("main.ssrg", source);
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let messages = run_server(&[
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"textDocument":{"hover":{"contentFormat":["plaintext"]}}},"workspaceFolders":[{"uri":root_uri,"name":"fixture"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":main_uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":main_uri},"position":{"line":1,"character":14}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ]);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(hover.contains("Effect") && hover.contains("Int"), "{hover}");
+}

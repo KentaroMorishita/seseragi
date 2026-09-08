@@ -89,6 +89,7 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<Co
             origin,
         } => lower_pure_pattern_statements(source, pattern, value, origin),
         TypedBlockStatement::Function {
+            effect: _,
             name,
             type_parameters,
             constraints,

@@ -107,8 +107,32 @@ pub(crate) fn analyze_effect_function(
     resolution: &TypedResolution<'_>,
 ) -> Vec<EffectFunctionIssue> {
     let SurfaceDecl::EffectFn {
-        inferred_contract,
         parameters,
+        constraints,
+        body,
+        ..
+    } = declaration
+    else {
+        return Vec::new();
+    };
+    let Some(surface_body) = body.as_ref() else {
+        return Vec::new();
+    };
+    let typed_parameters = typed_parameters_from_surface(parameters, resolution);
+    let scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
+    let body_analysis =
+        analyze_effect_body(surface_body, &typed_parameters, resolution, scoped_evidence);
+    validate_effect_function(declaration, tokens, resolution, body_analysis)
+}
+
+pub(crate) fn validate_effect_function(
+    declaration: &SurfaceDecl,
+    tokens: &[Token],
+    resolution: &TypedResolution<'_>,
+    body_analysis: super::effect_body::EffectBodyAnalysis,
+) -> Vec<EffectFunctionIssue> {
+    let SurfaceDecl::EffectFn {
+        inferred_contract,
         return_type,
         requirements,
         failure,
@@ -123,10 +147,6 @@ pub(crate) fn analyze_effect_function(
     let Some(surface_body) = body.as_ref() else {
         return Vec::new();
     };
-    let typed_parameters = typed_parameters_from_surface(parameters, resolution);
-    let scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
-    let body_analysis =
-        analyze_effect_body(surface_body, &typed_parameters, resolution, scoped_evidence);
     let typed_body = body_analysis.value;
 
     if !body_analysis.conditional_issues.is_empty() {

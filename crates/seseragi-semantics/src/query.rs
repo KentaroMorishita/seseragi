@@ -707,6 +707,32 @@ fn collect_local_symbol_types(
         TypedExpr::Lambda { parameter, .. } => {
             collect_parameter_types(resolved, std::slice::from_ref(parameter), types);
         }
+        TypedExpr::Block { statements, .. } => {
+            for statement in statements {
+                if let TypedBlockStatement::Function {
+                    name,
+                    parameters,
+                    body,
+                    effect,
+                    origin,
+                    ..
+                } = statement
+                {
+                    if let Some(id) =
+                        local_symbol_in_range(resolved, name, *origin, SymbolKind::Function)
+                    {
+                        let result = effect
+                            .as_ref()
+                            .map(crate::typed::effect_value_type)
+                            .unwrap_or_else(|| {
+                                crate::typed::application_argument_type_from_expr(body)
+                            });
+                        types.insert(id, callable_typed_type(parameters, &result));
+                    }
+                    collect_parameter_types(resolved, parameters, types);
+                }
+            }
+        }
         _ => {}
     });
     walk_patterns(expression, &mut |pattern| {

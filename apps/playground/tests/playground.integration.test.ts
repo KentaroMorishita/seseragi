@@ -1502,6 +1502,28 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
   })
 
+  test("executes local effect functions with capture and cold declarations", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/fixtures/projects/local-effect-fn/src/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("local-effect-fn.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing local effect entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({
+      stdout: "7\n(True, 9)\n1\n42\n(2, 3)",
+      debug: "()",
+    })
+  })
+
   test("executes persistent List cons and operator sections through WASM", async () => {
     const source = await Bun.file(
       new URL(

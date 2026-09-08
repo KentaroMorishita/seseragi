@@ -666,12 +666,22 @@ pub enum SurfaceBlockItem {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<TypeParameter>,
         parameters: Vec<SurfaceParameter>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        effect: Option<SurfaceLocalEffectContract>,
         return_type: TypeRef,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<SurfaceConstraint>,
         value: SurfaceExpr,
         span: ByteSpan,
     },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceLocalEffectContract {
+    pub inferred: bool,
+    pub requirements: Vec<SurfaceRequirement>,
+    pub failure: Option<TypeRef>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

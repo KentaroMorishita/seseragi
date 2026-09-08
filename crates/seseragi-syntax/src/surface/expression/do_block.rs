@@ -154,7 +154,10 @@ fn segment_is_complete(tokens: &[Token], start: usize, end: usize) -> bool {
             .find(|index| tokens[*index].kind == TokenKind::OperatorEquals)
             .is_some_and(|equals| parse_expression_range(tokens, equals + 1, end).is_some());
     }
-    if tokens[first].kind == TokenKind::KeywordFn {
+    if matches!(
+        tokens[first].kind,
+        TokenKind::KeywordFn | TokenKind::KeywordEffect
+    ) {
         return top_level_token(tokens, start, end, TokenKind::OperatorEquals)
             .is_some_and(|equals| parse_expression_range(tokens, equals + 1, end).is_some());
     }

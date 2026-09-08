@@ -21,6 +21,9 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
             .copied()?;
         let declaration = match parser.tokens[first].kind {
             TokenKind::KeywordLet => surface.parse_let_decl(Visibility::Private, start, first, end),
+            TokenKind::KeywordEffect => {
+                surface.parse_effect_fn_decl(Visibility::Private, start, first, end)
+            }
             TokenKind::KeywordFn => surface.parse_fn_decl(Visibility::Private, start, first, end),
             _ => None,
         };
@@ -39,11 +42,16 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
         }
     }
 
-    let result = result.unwrap_or_else(|| SurfaceExpr::Error {
-        span: ByteSpan {
+    let result = result.unwrap_or_else(|| {
+        let span = ByteSpan {
             start: parser.tokens[close].start,
             end: parser.tokens[close].start,
-        },
+        };
+        if items.is_empty() {
+            SurfaceExpr::Error { span }
+        } else {
+            SurfaceExpr::Unit { span }
+        }
     });
     parser.cursor = close + 1;
     Some(SurfaceExpr::Block {
@@ -86,6 +94,7 @@ fn block_item(declaration: SurfaceDecl) -> Option<SurfaceBlockItem> {
             span,
             ..
         } => Some(SurfaceBlockItem::Function {
+            effect: None,
             name,
             name_span,
             type_parameters,
@@ -98,6 +107,34 @@ fn block_item(declaration: SurfaceDecl) -> Option<SurfaceBlockItem> {
                     end: span.end,
                 },
             }),
+            span,
+        }),
+        SurfaceDecl::EffectFn {
+            name,
+            name_span,
+            type_parameters,
+            parameters,
+            inferred_contract,
+            return_type,
+            requirements,
+            failure,
+            constraints,
+            body,
+            span,
+            ..
+        } => Some(SurfaceBlockItem::Function {
+            effect: Some(crate::surface_model::SurfaceLocalEffectContract {
+                inferred: inferred_contract,
+                requirements,
+                failure,
+            }),
+            name,
+            name_span,
+            type_parameters,
+            parameters,
+            return_type: return_type.unwrap_or(crate::TypeRef::Hole { span: name_span }),
+            constraints,
+            value: body.unwrap_or(SurfaceExpr::Error { span }),
             span,
         }),
         _ => None,

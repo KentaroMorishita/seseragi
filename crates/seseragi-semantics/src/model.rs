@@ -833,6 +833,8 @@ pub enum TypedBlockStatement {
         origin: ByteSpan,
     },
     Function {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        effect: Option<TypedEffect>,
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<seseragi_syntax::TypeParameter>,

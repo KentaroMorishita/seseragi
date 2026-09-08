@@ -18,6 +18,9 @@ pub(super) fn call_diagnostic(
     function_span: seseragi_syntax::ByteSpan,
 ) -> Diagnostic {
     let (code, message_key, primary, related_message, type_difference) = match issue {
+        PureCallIssue::LocalEffect { issue, function } => {
+            return super::effect::diagnostic_from_issue(*issue, function)
+        }
         PureCallIssue::InvalidExpression { expression } => (
             "SES-T0101",
             "expression.invalid",

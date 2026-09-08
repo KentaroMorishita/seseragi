@@ -102,7 +102,8 @@
       "definition": {
         "start": 40,
         "end": 44
-      }
+      },
+      "typeName": "Int -> Int -> Int -> Int"
     },
     {
       "id": 5,
@@ -114,7 +115,8 @@
       "definition": {
         "start": 45,
         "end": 54
-      }
+      },
+      "typeName": "Int"
     },
     {
       "id": 6,
@@ -126,7 +128,8 @@
       "definition": {
         "start": 63,
         "end": 70
-      }
+      },
+      "typeName": "Int"
     },
     {
       "id": 7,
@@ -138,7 +141,8 @@
       "definition": {
         "start": 79,
         "end": 83
-      }
+      },
+      "typeName": "Int"
     },
     {
       "id": 8,
@@ -496,6 +500,34 @@
     },
     {
       "range": {
+        "start": 40,
+        "end": 44
+      },
+      "type": "Int -> Int -> Int -> Int"
+    },
+    {
+      "range": {
+        "start": 45,
+        "end": 54
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 63,
+        "end": 70
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 79,
+        "end": 83
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
         "start": 102,
         "end": 196
       },
@@ -528,6 +560,13 @@
         "end": 138
       },
       "type": "Int"
+    },
+    {
+      "range": {
+        "start": 154,
+        "end": 158
+      },
+      "type": "Int -> Int -> Int -> Int"
     },
     {
       "range": {
@@ -584,6 +623,13 @@
         "end": 195
       },
       "type": "Int"
+    },
+    {
+      "range": {
+        "start": 200,
+        "end": 204
+      },
+      "type": "Int -> Int -> Int -> Int"
     },
     {
       "range": {

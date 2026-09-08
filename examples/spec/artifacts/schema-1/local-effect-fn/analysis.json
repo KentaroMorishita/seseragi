@@ -1,307 +1,85 @@
 {
   "schema": 1,
   "source": "main.ssrg",
-  "module": "artifact/collection-rest-pattern",
+  "module": "artifact/local-effect-fn",
   "diagnostics": {
     "schema": 1,
-    "source": "artifact/collection-rest-pattern/main.ssrg",
+    "source": "artifact/local-effect-fn/main.ssrg",
     "positionEncoding": "utf-8",
     "diagnostics": []
   },
   "symbols": [
     {
       "id": 0,
-      "identity": "artifact/collection-rest-pattern::sumArray",
-      "name": "sumArray",
-      "module": "artifact/collection-rest-pattern",
+      "identity": "artifact/local-effect-fn::silent",
+      "name": "silent",
+      "module": "artifact/local-effect-fn",
       "namespace": "value",
       "kind": "function",
       "definition": {
         "start": 3,
-        "end": 11
+        "end": 9
       },
-      "typeName": "Array<Int> -> Int",
+      "typeName": "Unit -> Unit",
       "callable": {
-        "identity": "artifact/collection-rest-pattern::sumArray",
-        "name": "sumArray",
-        "module": "artifact/collection-rest-pattern",
+        "identity": "artifact/local-effect-fn::silent",
+        "name": "silent",
+        "module": "artifact/local-effect-fn",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "Array<Int>"
+            "type": "Unit"
           }
         ],
-        "result": "Int",
+        "result": "Unit",
         "constraints": [],
-        "signature": "sumArray values: Array<Int> -> Int",
+        "signature": "silent Unit -> Unit",
         "remainingParameters": []
       }
     },
     {
       "id": 1,
-      "identity": "artifact/collection-rest-pattern::sumList",
-      "name": "sumList",
-      "module": "artifact/collection-rest-pattern",
+      "identity": "artifact/local-effect-fn::quiet",
+      "name": "quiet",
+      "module": "artifact/local-effect-fn",
       "namespace": "value",
-      "kind": "function",
+      "kind": "let",
       "definition": {
-        "start": 206,
-        "end": 213
+        "start": 75,
+        "end": 80
       },
-      "typeName": "List<Int> -> Int",
-      "callable": {
-        "identity": "artifact/collection-rest-pattern::sumList",
-        "name": "sumList",
-        "module": "artifact/collection-rest-pattern",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "Int",
-        "constraints": [],
-        "signature": "sumList values: List<Int> -> Int",
-        "remainingParameters": []
-      }
+      "typeName": "Unit"
     },
     {
       "id": 2,
-      "identity": "artifact/collection-rest-pattern::collectionRestWorks",
-      "name": "collectionRestWorks",
-      "module": "artifact/collection-rest-pattern",
+      "identity": "artifact/local-effect-fn::main",
+      "name": "main",
+      "module": "artifact/local-effect-fn",
       "namespace": "value",
-      "kind": "function",
+      "kind": "effect-function",
       "definition": {
-        "start": 412,
-        "end": 431
+        "start": 108,
+        "end": 112
       },
-      "typeName": "Unit -> Bool",
+      "typeName": "Unit -> Effect<{ console: Console }, ConsoleError, Unit>",
       "callable": {
-        "identity": "artifact/collection-rest-pattern::collectionRestWorks",
-        "name": "collectionRestWorks",
-        "module": "artifact/collection-rest-pattern",
+        "identity": "artifact/local-effect-fn::main",
+        "name": "main",
+        "module": "artifact/local-effect-fn",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "unit",
             "type": "Unit"
           }
         ],
-        "result": "Bool",
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
         "constraints": [],
-        "signature": "collectionRestWorks unit: Unit -> Bool",
+        "signature": "main Unit -> Effect<{ console: Console }, ConsoleError, Unit>",
         "remainingParameters": []
       }
     },
     {
       "id": 3,
-      "identity": "std/prelude::Array",
-      "name": "Array",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 4,
-      "identity": "std/prelude::Int",
-      "name": "Int",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 5,
-      "identity": "artifact/collection-rest-pattern::local(5)",
-      "name": "values",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 12,
-        "end": 18
-      },
-      "typeName": "Array<Int>"
-    },
-    {
-      "id": 6,
-      "identity": "artifact/collection-rest-pattern::local(6)",
-      "name": "loop",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 47,
-        "end": 51
-      },
-      "typeName": "Int -> Array<Int> -> Int"
-    },
-    {
-      "id": 7,
-      "identity": "artifact/collection-rest-pattern::local(7)",
-      "name": "total",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 52,
-        "end": 57
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 8,
-      "identity": "artifact/collection-rest-pattern::local(8)",
-      "name": "rest",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 66,
-        "end": 70
-      },
-      "typeName": "Array<Int>"
-    },
-    {
-      "id": 9,
-      "identity": "artifact/collection-rest-pattern::local(9)",
-      "name": "head",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 134,
-        "end": 138
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 10,
-      "identity": "artifact/collection-rest-pattern::local(10)",
-      "name": "tail",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 143,
-        "end": 147
-      },
-      "typeName": "Array<Int>"
-    },
-    {
-      "id": 11,
-      "identity": "std/prelude::+",
-      "name": "+",
-      "module": "std/prelude",
-      "namespace": "operator",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 12,
-      "identity": "std/prelude::List",
-      "name": "List",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 13,
-      "identity": "artifact/collection-rest-pattern::local(13)",
-      "name": "values",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 214,
-        "end": 220
-      },
-      "typeName": "List<Int>"
-    },
-    {
-      "id": 14,
-      "identity": "artifact/collection-rest-pattern::local(14)",
-      "name": "loop",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 248,
-        "end": 252
-      },
-      "typeName": "Int -> List<Int> -> Int"
-    },
-    {
-      "id": 15,
-      "identity": "artifact/collection-rest-pattern::local(15)",
-      "name": "total",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 253,
-        "end": 258
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 16,
-      "identity": "artifact/collection-rest-pattern::local(16)",
-      "name": "rest",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 267,
-        "end": 271
-      },
-      "typeName": "List<Int>"
-    },
-    {
-      "id": 17,
-      "identity": "artifact/collection-rest-pattern::local(17)",
-      "name": "head",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 336,
-        "end": 340
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 18,
-      "identity": "artifact/collection-rest-pattern::local(18)",
-      "name": "tail",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 345,
-        "end": 349
-      },
-      "typeName": "List<Int>"
-    },
-    {
-      "id": 19,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -313,22 +91,284 @@
       }
     },
     {
-      "id": 20,
-      "identity": "artifact/collection-rest-pattern::local(20)",
-      "name": "unit",
-      "module": "artifact/collection-rest-pattern",
+      "id": 4,
+      "identity": "artifact/local-effect-fn::local(4)",
+      "name": "ignored",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 34,
+        "end": 41
+      },
+      "typeName": "Unit -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "id": 5,
+      "identity": "std/prelude::println",
+      "name": "println",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> Effect<{ console: Console }, ConsoleError, Unit>",
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      },
+      "description": "Writes text followed by a newline through Console."
+    },
+    {
+      "id": 6,
+      "identity": "artifact/local-effect-fn::local(6)",
+      "name": "outer",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 123,
+        "end": 128
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 7,
+      "identity": "artifact/local-effect-fn::local(7)",
+      "name": "unused",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 145,
+        "end": 151
+      },
+      "typeName": "Unit -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "id": 8,
+      "identity": "artifact/local-effect-fn::local(8)",
+      "name": "captured",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 191,
+        "end": 199
+      },
+      "typeName": "Unit -> Effect<{}, Never, Int>"
+    },
+    {
+      "id": 9,
+      "identity": "std/prelude::Applicative",
+      "name": "Applicative",
+      "module": "std/prelude",
+      "namespace": "trait",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "identity": "std/prelude::Applicative::pure",
+      "name": "pure",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "trait-method",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "A -> F<A>",
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      },
+      "description": "Lifts a value into an Applicative context."
+    },
+    {
+      "id": 11,
+      "identity": "artifact/local-effect-fn::local(11)",
+      "name": "identity",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 225,
+        "end": 233
+      },
+      "typeName": "A -> Effect<{}, Never, A>"
+    },
+    {
+      "id": 12,
+      "identity": "artifact/local-effect-fn::local(12)",
+      "name": "A",
+      "module": "artifact/local-effect-fn",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 213,
+        "end": 263
+      }
+    },
+    {
+      "id": 13,
+      "identity": "artifact/local-effect-fn::local(13)",
+      "name": "value",
+      "module": "artifact/local-effect-fn",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 432,
-        "end": 436
+        "start": 237,
+        "end": 242
       },
-      "typeName": "Unit"
+      "typeName": "A"
+    },
+    {
+      "id": 14,
+      "identity": "artifact/local-effect-fn::local(14)",
+      "name": "render",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 276,
+        "end": 282
+      },
+      "typeName": "A -> Effect<{}, Never, String>"
+    },
+    {
+      "id": 15,
+      "identity": "artifact/local-effect-fn::local(15)",
+      "name": "A",
+      "module": "artifact/local-effect-fn",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 264,
+        "end": 338
+      }
+    },
+    {
+      "id": 16,
+      "identity": "artifact/local-effect-fn::local(16)",
+      "name": "value",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 286,
+        "end": 291
+      },
+      "typeName": "A"
+    },
+    {
+      "id": 17,
+      "identity": "std/prelude::String",
+      "name": "String",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 18,
+      "identity": "std/prelude::Show",
+      "name": "Show",
+      "module": "std/prelude",
+      "namespace": "trait",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 19,
+      "identity": "std/prelude::Show::show",
+      "name": "show",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "trait-method",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "A -> String",
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 20,
+      "identity": "artifact/local-effect-fn::local(20)",
+      "name": "count",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 351,
+        "end": 356
+      },
+      "typeName": "Int -> Effect<{}, Never, Int>"
     },
     {
       "id": 21,
-      "identity": "std/prelude::Bool",
-      "name": "Bool",
+      "identity": "std/prelude::Int",
+      "name": "Int",
       "module": "std/prelude",
       "namespace": "type",
       "kind": "prelude",
@@ -339,32 +379,19 @@
     },
     {
       "id": 22,
-      "identity": "artifact/collection-rest-pattern::local(22)",
-      "name": "arrayTotal",
-      "module": "artifact/collection-rest-pattern",
+      "identity": "artifact/local-effect-fn::local(22)",
+      "name": "n",
+      "module": "artifact/local-effect-fn",
       "namespace": "value",
-      "kind": "pattern-binding",
+      "kind": "parameter",
       "definition": {
-        "start": 461,
-        "end": 471
+        "start": 357,
+        "end": 358
       },
       "typeName": "Int"
     },
     {
       "id": 23,
-      "identity": "artifact/collection-rest-pattern::local(23)",
-      "name": "listTotal",
-      "module": "artifact/collection-rest-pattern",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 502,
-        "end": 511
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 24,
       "identity": "std/prelude::==",
       "name": "==",
       "module": "std/prelude",
@@ -374,724 +401,1124 @@
         "start": 0,
         "end": 0
       }
+    },
+    {
+      "id": 24,
+      "identity": "std/prelude::-",
+      "name": "-",
+      "module": "std/prelude",
+      "namespace": "operator",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 25,
+      "identity": "artifact/local-effect-fn::local(25)",
+      "name": "log",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 426,
+        "end": 429
+      },
+      "typeName": "Int -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "id": 26,
+      "identity": "artifact/local-effect-fn::local(26)",
+      "name": "value",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 430,
+        "end": 435
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 27,
+      "identity": "std/prelude::Console",
+      "name": "Console",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 28,
+      "identity": "std/prelude::ConsoleError",
+      "name": "ConsoleError",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 29,
+      "identity": "artifact/local-effect-fn::local(29)",
+      "name": "step",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 536,
+        "end": 540
+      },
+      "typeName": "Unit -> Int"
+    },
+    {
+      "id": 30,
+      "identity": "artifact/local-effect-fn::local(30)",
+      "name": "step",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 566,
+        "end": 570
+      },
+      "typeName": "Unit -> Effect<{}, Never, Int>"
+    },
+    {
+      "id": 31,
+      "identity": "artifact/local-effect-fn::local(31)",
+      "name": "fromPure",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 516,
+        "end": 524
+      },
+      "typeName": "Effect<{}, Never, Int>"
+    },
+    {
+      "id": 32,
+      "identity": "artifact/local-effect-fn::local(32)",
+      "name": "step",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 631,
+        "end": 635
+      },
+      "typeName": "Unit -> Effect<{}, Never, Int>"
+    },
+    {
+      "id": 33,
+      "identity": "artifact/local-effect-fn::local(33)",
+      "name": "step",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 652,
+        "end": 656
+      },
+      "typeName": "Unit -> Int"
+    },
+    {
+      "id": 34,
+      "identity": "artifact/local-effect-fn::local(34)",
+      "name": "fromEffect",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 602,
+        "end": 612
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 35,
+      "identity": "artifact/local-effect-fn::local(35)",
+      "name": "value",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 695,
+        "end": 700
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 36,
+      "identity": "artifact/local-effect-fn::local(36)",
+      "name": "first",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 734,
+        "end": 739
+      },
+      "typeName": "Bool"
+    },
+    {
+      "id": 37,
+      "identity": "artifact/local-effect-fn::local(37)",
+      "name": "second",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 761,
+        "end": 767
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 38,
+      "identity": "artifact/local-effect-fn::local(38)",
+      "name": "result",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 821,
+        "end": 827
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 39,
+      "identity": "artifact/local-effect-fn::local(39)",
+      "name": "rendered",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 862,
+        "end": 870
+      },
+      "typeName": "String"
+    },
+    {
+      "id": 40,
+      "identity": "artifact/local-effect-fn::local(40)",
+      "name": "shadowed",
+      "module": "artifact/local-effect-fn",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 909,
+        "end": 917
+      },
+      "typeName": "Int"
     }
   ],
   "symbolOccurrences": [
     {
       "range": {
         "start": 3,
-        "end": 11
+        "end": 9
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 206,
-        "end": 213
+        "start": 75,
+        "end": 80
       },
       "symbol": 1
     },
     {
       "range": {
-        "start": 412,
-        "end": 431
+        "start": 108,
+        "end": 112
       },
       "symbol": 2
     },
     {
       "range": {
-        "start": 12,
-        "end": 18
+        "start": 34,
+        "end": 41
       },
-      "symbol": 5
+      "symbol": 4
     },
     {
       "range": {
-        "start": 47,
-        "end": 51
+        "start": 123,
+        "end": 128
       },
       "symbol": 6
     },
     {
       "range": {
-        "start": 52,
-        "end": 57
+        "start": 145,
+        "end": 151
       },
       "symbol": 7
     },
     {
       "range": {
-        "start": 66,
-        "end": 70
+        "start": 191,
+        "end": 199
       },
       "symbol": 8
     },
     {
       "range": {
-        "start": 134,
-        "end": 138
+        "start": 225,
+        "end": 233
       },
-      "symbol": 9
+      "symbol": 11
     },
     {
       "range": {
-        "start": 143,
-        "end": 147
+        "start": 213,
+        "end": 263
       },
-      "symbol": 10
+      "symbol": 12
     },
     {
       "range": {
-        "start": 214,
-        "end": 220
+        "start": 237,
+        "end": 242
       },
       "symbol": 13
     },
     {
       "range": {
-        "start": 248,
-        "end": 252
+        "start": 276,
+        "end": 282
       },
       "symbol": 14
     },
     {
       "range": {
-        "start": 253,
-        "end": 258
+        "start": 264,
+        "end": 338
       },
       "symbol": 15
     },
     {
       "range": {
-        "start": 267,
-        "end": 271
+        "start": 286,
+        "end": 291
       },
       "symbol": 16
     },
     {
       "range": {
-        "start": 336,
-        "end": 340
-      },
-      "symbol": 17
-    },
-    {
-      "range": {
-        "start": 345,
-        "end": 349
-      },
-      "symbol": 18
-    },
-    {
-      "range": {
-        "start": 432,
-        "end": 436
+        "start": 351,
+        "end": 356
       },
       "symbol": 20
     },
     {
       "range": {
-        "start": 461,
-        "end": 471
+        "start": 357,
+        "end": 358
       },
       "symbol": 22
     },
     {
       "range": {
-        "start": 502,
-        "end": 511
+        "start": 426,
+        "end": 429
       },
-      "symbol": 23
+      "symbol": 25
     },
     {
       "range": {
-        "start": 20,
-        "end": 30
+        "start": 430,
+        "end": 435
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 536,
+        "end": 540
+      },
+      "symbol": 29
+    },
+    {
+      "range": {
+        "start": 566,
+        "end": 570
+      },
+      "symbol": 30
+    },
+    {
+      "range": {
+        "start": 516,
+        "end": 524
+      },
+      "symbol": 31
+    },
+    {
+      "range": {
+        "start": 631,
+        "end": 635
+      },
+      "symbol": 32
+    },
+    {
+      "range": {
+        "start": 652,
+        "end": 656
+      },
+      "symbol": 33
+    },
+    {
+      "range": {
+        "start": 602,
+        "end": 612
+      },
+      "symbol": 34
+    },
+    {
+      "range": {
+        "start": 695,
+        "end": 700
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 734,
+        "end": 739
+      },
+      "symbol": 36
+    },
+    {
+      "range": {
+        "start": 761,
+        "end": 767
+      },
+      "symbol": 37
+    },
+    {
+      "range": {
+        "start": 821,
+        "end": 827
+      },
+      "symbol": 38
+    },
+    {
+      "range": {
+        "start": 862,
+        "end": 870
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 909,
+        "end": 917
+      },
+      "symbol": 40
+    },
+    {
+      "range": {
+        "start": 13,
+        "end": 17
       },
       "symbol": 3
     },
     {
       "range": {
-        "start": 26,
-        "end": 29
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 34,
-        "end": 37
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 59,
-        "end": 62
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 72,
-        "end": 82
-      },
-      "symbol": 3
-    },
-    {
-      "range": {
-        "start": 78,
-        "end": 81
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 86,
-        "end": 89
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 102,
-        "end": 106
-      },
-      "symbol": 8
-    },
-    {
-      "range": {
-        "start": 121,
-        "end": 126
-      },
-      "symbol": 7
-    },
-    {
-      "range": {
-        "start": 152,
-        "end": 156
-      },
-      "symbol": 6
-    },
-    {
-      "range": {
-        "start": 158,
-        "end": 163
-      },
-      "symbol": 7
-    },
-    {
-      "range": {
-        "start": 164,
-        "end": 165
-      },
-      "symbol": 11
-    },
-    {
-      "range": {
-        "start": 166,
-        "end": 170
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 172,
-        "end": 176
-      },
-      "symbol": 10
-    },
-    {
-      "range": {
-        "start": 186,
-        "end": 190
-      },
-      "symbol": 6
-    },
-    {
-      "range": {
-        "start": 193,
-        "end": 199
+        "start": 44,
+        "end": 51
       },
       "symbol": 5
     },
     {
       "range": {
-        "start": 222,
-        "end": 231
+        "start": 83,
+        "end": 89
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 154,
+        "end": 161
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 202,
+        "end": 206
+      },
+      "symbol": 10
+    },
+    {
+      "range": {
+        "start": 207,
+        "end": 212
+      },
+      "symbol": 6
+    },
+    {
+      "range": {
+        "start": 244,
+        "end": 245
       },
       "symbol": 12
     },
     {
       "range": {
-        "start": 227,
-        "end": 230
+        "start": 249,
+        "end": 250
       },
-      "symbol": 4
+      "symbol": 12
     },
     {
       "range": {
-        "start": 235,
-        "end": 238
+        "start": 253,
+        "end": 257
       },
-      "symbol": 4
+      "symbol": 10
     },
     {
       "range": {
-        "start": 260,
+        "start": 258,
         "end": 263
       },
-      "symbol": 4
+      "symbol": 13
     },
     {
       "range": {
-        "start": 273,
-        "end": 282
-      },
-      "symbol": 12
-    },
-    {
-      "range": {
-        "start": 278,
-        "end": 281
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 286,
-        "end": 289
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 302,
-        "end": 306
-      },
-      "symbol": 16
-    },
-    {
-      "range": {
-        "start": 322,
-        "end": 327
+        "start": 293,
+        "end": 294
       },
       "symbol": 15
     },
     {
       "range": {
-        "start": 354,
-        "end": 358
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 360,
-        "end": 365
-      },
-      "symbol": 15
-    },
-    {
-      "range": {
-        "start": 366,
-        "end": 367
-      },
-      "symbol": 11
-    },
-    {
-      "range": {
-        "start": 368,
-        "end": 372
+        "start": 298,
+        "end": 304
       },
       "symbol": 17
     },
     {
       "range": {
-        "start": 374,
-        "end": 378
+        "start": 311,
+        "end": 315
       },
       "symbol": 18
+    },
+    {
+      "range": {
+        "start": 316,
+        "end": 317
+      },
+      "symbol": 15
+    },
+    {
+      "range": {
+        "start": 321,
+        "end": 325
+      },
+      "symbol": 10
+    },
+    {
+      "range": {
+        "start": 327,
+        "end": 331
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 332,
+        "end": 337
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 360,
+        "end": 363
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 367,
+        "end": 370
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 376,
+        "end": 377
+      },
+      "symbol": 22
+    },
+    {
+      "range": {
+        "start": 378,
+        "end": 380
+      },
+      "symbol": 23
     },
     {
       "range": {
         "start": 388,
         "end": 392
       },
-      "symbol": 14
+      "symbol": 10
     },
     {
       "range": {
-        "start": 395,
-        "end": 401
+        "start": 400,
+        "end": 405
       },
-      "symbol": 13
+      "symbol": 20
     },
     {
       "range": {
-        "start": 438,
-        "end": 442
-      },
-      "symbol": 19
-    },
-    {
-      "range": {
-        "start": 446,
-        "end": 450
-      },
-      "symbol": 21
-    },
-    {
-      "range": {
-        "start": 474,
-        "end": 482
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 514,
-        "end": 521
-      },
-      "symbol": 1
-    },
-    {
-      "range": {
-        "start": 541,
-        "end": 551
+        "start": 407,
+        "end": 408
       },
       "symbol": 22
     },
     {
       "range": {
-        "start": 552,
-        "end": 554
+        "start": 409,
+        "end": 410
       },
       "symbol": 24
     },
     {
       "range": {
-        "start": 563,
-        "end": 572
+        "start": 437,
+        "end": 440
       },
-      "symbol": 23
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 444,
+        "end": 448
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 463,
+        "end": 470
+      },
+      "symbol": 27
+    },
+    {
+      "range": {
+        "start": 477,
+        "end": 489
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 496,
+        "end": 503
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 504,
+        "end": 509
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 544,
+        "end": 547
+      },
+      "symbol": 21
     },
     {
       "range": {
         "start": 573,
-        "end": 575
+        "end": 577
       },
-      "symbol": 24
+      "symbol": 10
+    },
+    {
+      "range": {
+        "start": 584,
+        "end": 588
+      },
+      "symbol": 30
+    },
+    {
+      "range": {
+        "start": 638,
+        "end": 642
+      },
+      "symbol": 10
+    },
+    {
+      "range": {
+        "start": 660,
+        "end": 663
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 672,
+        "end": 676
+      },
+      "symbol": 33
+    },
+    {
+      "range": {
+        "start": 704,
+        "end": 712
+      },
+      "symbol": 8
+    },
+    {
+      "range": {
+        "start": 720,
+        "end": 723
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 724,
+        "end": 729
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 743,
+        "end": 751
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 771,
+        "end": 779
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 786,
+        "end": 793
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 796,
+        "end": 800
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 802,
+        "end": 807
+      },
+      "symbol": 36
+    },
+    {
+      "range": {
+        "start": 809,
+        "end": 815
+      },
+      "symbol": 37
+    },
+    {
+      "range": {
+        "start": 831,
+        "end": 836
+      },
+      "symbol": 20
+    },
+    {
+      "range": {
+        "start": 843,
+        "end": 850
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 851,
+        "end": 857
+      },
+      "symbol": 38
+    },
+    {
+      "range": {
+        "start": 874,
+        "end": 880
+      },
+      "symbol": 14
+    },
+    {
+      "range": {
+        "start": 888,
+        "end": 895
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 896,
+        "end": 904
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 921,
+        "end": 929
+      },
+      "symbol": 31
+    },
+    {
+      "range": {
+        "start": 934,
+        "end": 941
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 944,
+        "end": 948
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 950,
+        "end": 958
+      },
+      "symbol": 40
+    },
+    {
+      "range": {
+        "start": 960,
+        "end": 970
+      },
+      "symbol": 34
     }
   ],
   "typeOccurrences": [
     {
       "range": {
         "start": 3,
-        "end": 11
+        "end": 9
       },
-      "type": "Array<Int> -> Int"
+      "type": "Unit -> Unit"
     },
     {
       "range": {
-        "start": 12,
-        "end": 18
+        "start": 20,
+        "end": 70
       },
-      "type": "Array<Int>"
+      "type": "Unit"
     },
     {
       "range": {
-        "start": 40,
-        "end": 201
+        "start": 34,
+        "end": 41
       },
-      "type": "Int"
+      "type": "Unit -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 47,
+        "start": 44,
         "end": 51
       },
-      "type": "Int -> Array<Int> -> Int"
+      "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 44,
+        "end": 68
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
         "start": 52,
-        "end": 57
+        "end": 68
       },
-      "type": "Int"
+      "type": "String"
     },
     {
       "range": {
-        "start": 66,
-        "end": 70
+        "start": 75,
+        "end": 80
       },
-      "type": "Array<Int>"
+      "type": "Unit"
     },
     {
       "range": {
-        "start": 96,
-        "end": 182
+        "start": 83,
+        "end": 89
       },
-      "type": "Int"
+      "type": "Unit -> Unit"
     },
     {
       "range": {
-        "start": 102,
-        "end": 106
+        "start": 83,
+        "end": 92
       },
-      "type": "Array<Int>"
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 90,
+        "end": 92
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 108,
+        "end": 112
+      },
+      "type": "Unit -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
         "start": 115,
-        "end": 117
+        "end": 977
       },
-      "type": "Array<Int>"
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 121,
-        "end": 126
+        "start": 123,
+        "end": 128
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 133,
-        "end": 148
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 134,
-        "end": 138
+        "start": 131,
+        "end": 132
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 143,
-        "end": 147
+        "start": 145,
+        "end": 151
       },
-      "type": "Array<Int>"
+      "type": "Unit -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 152,
-        "end": 156
+        "start": 154,
+        "end": 161
       },
-      "type": "Int -> Array<Int> -> Int"
+      "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 152,
-        "end": 176
+        "start": 154,
+        "end": 178
       },
-      "type": "Int"
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 158,
-        "end": 163
+        "start": 162,
+        "end": 178
       },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 158,
-        "end": 170
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 166,
-        "end": 170
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 172,
-        "end": 176
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 186,
-        "end": 190
-      },
-      "type": "Int -> Array<Int> -> Int"
-    },
-    {
-      "range": {
-        "start": 186,
-        "end": 199
-      },
-      "type": "Int"
+      "type": "String"
     },
     {
       "range": {
         "start": 191,
-        "end": 192
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 193,
         "end": 199
       },
-      "type": "Array<Int>"
+      "type": "Unit -> Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 206,
-        "end": 213
+        "start": 202,
+        "end": 206
       },
-      "type": "List<Int> -> Int"
+      "type": "A -> F<A>"
     },
     {
       "range": {
-        "start": 214,
-        "end": 220
+        "start": 202,
+        "end": 212
       },
-      "type": "List<Int>"
+      "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 241,
-        "end": 403
+        "start": 207,
+        "end": 212
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 248,
-        "end": 252
+        "start": 225,
+        "end": 233
       },
-      "type": "Int -> List<Int> -> Int"
+      "type": "A -> Effect<{}, Never, A>"
+    },
+    {
+      "range": {
+        "start": 237,
+        "end": 242
+      },
+      "type": "A"
     },
     {
       "range": {
         "start": 253,
-        "end": 258
+        "end": 257
       },
-      "type": "Int"
+      "type": "A -> F<A>"
     },
     {
       "range": {
-        "start": 267,
-        "end": 271
+        "start": 253,
+        "end": 263
       },
-      "type": "List<Int>"
+      "type": "Effect<{}, Never, A>"
     },
     {
       "range": {
-        "start": 296,
-        "end": 384
+        "start": 258,
+        "end": 263
       },
-      "type": "Int"
+      "type": "A"
     },
     {
       "range": {
-        "start": 302,
-        "end": 306
+        "start": 276,
+        "end": 282
       },
-      "type": "List<Int>"
+      "type": "A -> Effect<{}, Never, String>"
     },
     {
       "range": {
-        "start": 315,
-        "end": 318
+        "start": 286,
+        "end": 291
       },
-      "type": "List<Int>"
+      "type": "A"
     },
     {
       "range": {
-        "start": 322,
-        "end": 327
+        "start": 321,
+        "end": 325
       },
-      "type": "Int"
+      "type": "A -> F<A>"
     },
     {
       "range": {
-        "start": 334,
-        "end": 350
+        "start": 321,
+        "end": 338
       },
-      "type": "List<Int>"
+      "type": "Effect<{}, Never, String>"
     },
     {
       "range": {
-        "start": 336,
-        "end": 340
+        "start": 327,
+        "end": 331
       },
-      "type": "Int"
+      "type": "A -> String"
     },
     {
       "range": {
-        "start": 345,
-        "end": 349
+        "start": 327,
+        "end": 337
       },
-      "type": "List<Int>"
+      "type": "String"
     },
     {
       "range": {
-        "start": 354,
+        "start": 332,
+        "end": 337
+      },
+      "type": "A"
+    },
+    {
+      "range": {
+        "start": 351,
+        "end": 356
+      },
+      "type": "Int -> Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 357,
         "end": 358
       },
-      "type": "Int -> List<Int> -> Int"
+      "type": "Int"
     },
     {
       "range": {
-        "start": 354,
-        "end": 378
+        "start": 373,
+        "end": 413
+      },
+      "type": "Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 376,
+        "end": 377
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 360,
-        "end": 365
+        "start": 376,
+        "end": 382
       },
-      "type": "Int"
+      "type": "Bool"
     },
     {
       "range": {
-        "start": 360,
-        "end": 372
+        "start": 381,
+        "end": 382
       },
       "type": "Int"
-    },
-    {
-      "range": {
-        "start": 368,
-        "end": 372
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 374,
-        "end": 378
-      },
-      "type": "List<Int>"
     },
     {
       "range": {
         "start": 388,
         "end": 392
       },
-      "type": "Int -> List<Int> -> Int"
+      "type": "A -> F<A>"
     },
     {
       "range": {
         "start": 388,
-        "end": 401
+        "end": 394
       },
-      "type": "Int"
+      "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
@@ -1102,353 +1529,1421 @@
     },
     {
       "range": {
-        "start": 395,
-        "end": 401
+        "start": 400,
+        "end": 405
       },
-      "type": "List<Int>"
+      "type": "Int -> Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 412,
-        "end": 431
+        "start": 400,
+        "end": 413
       },
-      "type": "Unit -> Bool"
+      "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 432,
-        "end": 436
-      },
-      "type": "Unit"
-    },
-    {
-      "range": {
-        "start": 453,
-        "end": 591
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 461,
-        "end": 471
+        "start": 407,
+        "end": 408
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 474,
-        "end": 482
-      },
-      "type": "Array<Int> -> Int"
-    },
-    {
-      "range": {
-        "start": 474,
-        "end": 495
+        "start": 407,
+        "end": 412
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 483,
-        "end": 495
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 484,
-        "end": 485
+        "start": 411,
+        "end": 412
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 487,
-        "end": 488
+        "start": 426,
+        "end": 429
+      },
+      "type": "Int -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 430,
+        "end": 435
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 490,
-        "end": 491
+        "start": 496,
+        "end": 503
+      },
+      "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 496,
+        "end": 509
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 504,
+        "end": 509
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 493,
-        "end": 494
+        "start": 516,
+        "end": 524
       },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 502,
-        "end": 511
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 514,
-        "end": 521
-      },
-      "type": "List<Int> -> Int"
-    },
-    {
-      "range": {
-        "start": 514,
-        "end": 535
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 522,
-        "end": 535
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 524,
-        "end": 525
-      },
-      "type": "Int"
+      "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
         "start": 527,
-        "end": 528
+        "end": 595
       },
-      "type": "Int"
+      "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 530,
-        "end": 531
+        "start": 536,
+        "end": 540
       },
-      "type": "Int"
+      "type": "Unit -> Int"
     },
     {
       "range": {
-        "start": 533,
-        "end": 534
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 538,
-        "end": 589
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 541,
+        "start": 550,
         "end": 551
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 541,
-        "end": 557
+        "start": 566,
+        "end": 570
       },
-      "type": "Bool"
+      "type": "Unit -> Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 555,
-        "end": 557
+        "start": 573,
+        "end": 577
       },
-      "type": "Int"
+      "type": "A -> F<A>"
     },
     {
       "range": {
-        "start": 563,
-        "end": 572
+        "start": 573,
+        "end": 579
       },
-      "type": "Int"
+      "type": "Effect<{}, Never, Int>"
     },
     {
       "range": {
-        "start": 563,
-        "end": 578
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 576,
-        "end": 578
+        "start": 578,
+        "end": 579
       },
       "type": "Int"
     },
     {
       "range": {
         "start": 584,
-        "end": 589
+        "end": 588
+      },
+      "type": "Unit -> Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 584,
+        "end": 591
+      },
+      "type": "Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 589,
+        "end": 591
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 602,
+        "end": 612
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 615,
+        "end": 683
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 631,
+        "end": 635
+      },
+      "type": "Unit -> Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 638,
+        "end": 642
+      },
+      "type": "A -> F<A>"
+    },
+    {
+      "range": {
+        "start": 638,
+        "end": 644
+      },
+      "type": "Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 643,
+        "end": 644
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 652,
+        "end": 656
+      },
+      "type": "Unit -> Int"
+    },
+    {
+      "range": {
+        "start": 666,
+        "end": 667
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 672,
+        "end": 676
+      },
+      "type": "Unit -> Int"
+    },
+    {
+      "range": {
+        "start": 672,
+        "end": 679
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 677,
+        "end": 679
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 686,
+        "end": 975
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 695,
+        "end": 700
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 704,
+        "end": 712
+      },
+      "type": "Unit -> Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 704,
+        "end": 715
+      },
+      "type": "Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 713,
+        "end": 715
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 720,
+        "end": 723
+      },
+      "type": "Int -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 720,
+        "end": 729
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 724,
+        "end": 729
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 734,
+        "end": 739
       },
       "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 743,
+        "end": 751
+      },
+      "type": "A -> Effect<{}, Never, A>"
+    },
+    {
+      "range": {
+        "start": 743,
+        "end": 756
+      },
+      "type": "Effect<{}, Never, Bool>"
+    },
+    {
+      "range": {
+        "start": 752,
+        "end": 756
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 761,
+        "end": 767
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 771,
+        "end": 779
+      },
+      "type": "A -> Effect<{}, Never, A>"
+    },
+    {
+      "range": {
+        "start": 771,
+        "end": 781
+      },
+      "type": "Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 780,
+        "end": 781
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 786,
+        "end": 793
+      },
+      "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 786,
+        "end": 816
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 796,
+        "end": 800
+      },
+      "type": "A -> String"
+    },
+    {
+      "range": {
+        "start": 796,
+        "end": 816
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 801,
+        "end": 816
+      },
+      "type": "(Bool, Int)"
+    },
+    {
+      "range": {
+        "start": 802,
+        "end": 807
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 809,
+        "end": 815
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 821,
+        "end": 827
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 831,
+        "end": 836
+      },
+      "type": "Int -> Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 831,
+        "end": 838
+      },
+      "type": "Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 837,
+        "end": 838
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 843,
+        "end": 850
+      },
+      "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 843,
+        "end": 857
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 851,
+        "end": 857
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 862,
+        "end": 870
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 874,
+        "end": 880
+      },
+      "type": "A -> Effect<{}, Never, String>"
+    },
+    {
+      "range": {
+        "start": 874,
+        "end": 883
+      },
+      "type": "Effect<{}, Never, String>"
+    },
+    {
+      "range": {
+        "start": 881,
+        "end": 883
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 888,
+        "end": 895
+      },
+      "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 888,
+        "end": 904
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 896,
+        "end": 904
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 909,
+        "end": 917
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 921,
+        "end": 929
+      },
+      "type": "Effect<{}, Never, Int>"
+    },
+    {
+      "range": {
+        "start": 934,
+        "end": 941
+      },
+      "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 934,
+        "end": 971
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 944,
+        "end": 948
+      },
+      "type": "A -> String"
+    },
+    {
+      "range": {
+        "start": 944,
+        "end": 971
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 949,
+        "end": 971
+      },
+      "type": "(Int, Int)"
+    },
+    {
+      "range": {
+        "start": 950,
+        "end": 958
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 960,
+        "end": 970
+      },
+      "type": "Int"
     }
   ],
   "callableOccurrences": [
     {
       "range": {
         "start": 3,
-        "end": 11
+        "end": 9
       },
       "callable": {
-        "identity": "artifact/collection-rest-pattern::sumArray",
-        "name": "sumArray",
-        "module": "artifact/collection-rest-pattern",
+        "identity": "artifact/local-effect-fn::silent",
+        "name": "silent",
+        "module": "artifact/local-effect-fn",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "Array<Int>"
-          }
-        ],
-        "result": "Int",
-        "constraints": [],
-        "signature": "sumArray values: Array<Int> -> Int",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 206,
-        "end": 213
-      },
-      "callable": {
-        "identity": "artifact/collection-rest-pattern::sumList",
-        "name": "sumList",
-        "module": "artifact/collection-rest-pattern",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "Int",
-        "constraints": [],
-        "signature": "sumList values: List<Int> -> Int",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 412,
-        "end": 431
-      },
-      "callable": {
-        "identity": "artifact/collection-rest-pattern::collectionRestWorks",
-        "name": "collectionRestWorks",
-        "module": "artifact/collection-rest-pattern",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "unit",
             "type": "Unit"
           }
         ],
-        "result": "Bool",
+        "result": "Unit",
         "constraints": [],
-        "signature": "collectionRestWorks unit: Unit -> Bool",
+        "signature": "silent Unit -> Unit",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 474,
-        "end": 482
+        "start": 108,
+        "end": 112
       },
       "callable": {
-        "identity": "artifact/collection-rest-pattern::sumArray",
-        "name": "sumArray",
-        "module": "artifact/collection-rest-pattern",
+        "identity": "artifact/local-effect-fn::main",
+        "name": "main",
+        "module": "artifact/local-effect-fn",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "Array<Int>"
+            "type": "Unit"
           }
         ],
-        "result": "Int",
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
         "constraints": [],
-        "signature": "sumArray values: Array<Int> -> Int",
+        "signature": "main Unit -> Effect<{ console: Console }, ConsoleError, Unit>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 514,
-        "end": 521
+        "start": 44,
+        "end": 51
       },
       "callable": {
-        "identity": "artifact/collection-rest-pattern::sumList",
-        "name": "sumList",
-        "module": "artifact/collection-rest-pattern",
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "List<Int>"
+            "name": "text",
+            "type": "String"
           }
         ],
-        "result": "Int",
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
         "constraints": [],
-        "signature": "sumList values: List<Int> -> Int",
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 474,
-        "end": 495
+        "start": 83,
+        "end": 89
       },
       "callable": {
-        "identity": "artifact/collection-rest-pattern::sumArray",
-        "name": "sumArray",
-        "module": "artifact/collection-rest-pattern",
+        "identity": "artifact/local-effect-fn::silent",
+        "name": "silent",
+        "module": "artifact/local-effect-fn",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "Array<Int>"
+            "type": "Unit"
           }
         ],
-        "result": "Int",
+        "result": "Unit",
         "constraints": [],
-        "signature": "sumArray values: Array<Int> -> Int",
+        "signature": "silent Unit -> Unit",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 514,
-        "end": 535
+        "start": 154,
+        "end": 161
       },
       "callable": {
-        "identity": "artifact/collection-rest-pattern::sumList",
-        "name": "sumList",
-        "module": "artifact/collection-rest-pattern",
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "List<Int>"
+            "name": "text",
+            "type": "String"
           }
         ],
-        "result": "Int",
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
         "constraints": [],
-        "signature": "sumList values: List<Int> -> Int",
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 202,
+        "end": 206
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 253,
+        "end": 257
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 321,
+        "end": 325
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 327,
+        "end": 331
+      },
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 388,
+        "end": 392
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 496,
+        "end": 503
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 573,
+        "end": 577
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 638,
+        "end": 642
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 786,
+        "end": 793
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 796,
+        "end": 800
+      },
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 843,
+        "end": 850
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 888,
+        "end": 895
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 934,
+        "end": 941
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 944,
+        "end": 948
+      },
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 44,
+        "end": 68
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 83,
+        "end": 92
+      },
+      "callable": {
+        "identity": "artifact/local-effect-fn::silent",
+        "name": "silent",
+        "module": "artifact/local-effect-fn",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "Unit",
+        "constraints": [],
+        "signature": "silent Unit -> Unit",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 154,
+        "end": 178
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 202,
+        "end": 212
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 253,
+        "end": 263
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 321,
+        "end": 338
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 327,
+        "end": 337
+      },
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 388,
+        "end": 394
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 496,
+        "end": 509
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 573,
+        "end": 579
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 638,
+        "end": 644
+      },
+      "callable": {
+        "identity": "std/prelude::Applicative::pure",
+        "name": "pure",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "F<A>",
+        "constraints": [
+          "Applicative<F<_>>"
+        ],
+        "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 786,
+        "end": 816
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 796,
+        "end": 816
+      },
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 843,
+        "end": 857
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 888,
+        "end": 904
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 934,
+        "end": 971
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 944,
+        "end": 971
+      },
+      "callable": {
+        "identity": "std/prelude::Show::show",
+        "name": "show",
+        "module": "std/prelude",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Show<A>"
+        ],
+        "signature": "show<A> arg1: A -> String where Show<A>",
         "remainingParameters": []
       }
     }

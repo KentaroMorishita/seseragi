@@ -141,6 +141,16 @@ impl<'a> PureExpressionContext<'a> {
     pub(super) fn callable_value(&self, target: SymbolId) -> Option<TopLevelPureFunction> {
         if let Some(callable) = self.callable(target) {
             let mut callable = callable.clone();
+            if let Some(local) = self.parameters.get(&target) {
+                let mut result = &local.type_ref;
+                for _ in &callable.parameters {
+                    if let TypedType::Function { result: next, .. } = result {
+                        result = next;
+                    }
+                }
+                callable.result = result.clone();
+                callable.semantic_result = self.semantic_value_from_typed_type(result).key;
+            }
             if let Some(trait_name) = self
                 .resolution
                 .symbol(target)
