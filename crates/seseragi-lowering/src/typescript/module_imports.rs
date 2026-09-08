@@ -52,6 +52,7 @@ pub(super) fn lower_module_imports(
             .position(|import| import.module == dependency.module)
             .unwrap_or_else(|| {
                 imports.push(TypeScriptSourceImport {
+                    reexports: Vec::new(),
                     module: dependency.module.clone(),
                     specifier: specifier.to_owned(),
                     runtime_edge: true,
@@ -63,6 +64,18 @@ pub(super) fn lower_module_imports(
         let group = &mut imports[index];
 
         for import in &dependency.imports {
+            if let Some(exported) = &import.reexported_as {
+                if matches!(import.namespace.as_str(), "value" | "type") {
+                    group.reexports.push(TypeScriptSourceImportBinding {
+                        imported: safe_identifier(&import.imported),
+                        local: safe_identifier(exported),
+                        source_local: import.local.clone(),
+                        canonical: import.canonical.clone(),
+                        type_only: import.namespace == "type",
+                        origin: import.origin.clone(),
+                    });
+                }
+            }
             match import.namespace.as_str() {
                 "value"
                     if referenced_values.contains(&import.canonical)

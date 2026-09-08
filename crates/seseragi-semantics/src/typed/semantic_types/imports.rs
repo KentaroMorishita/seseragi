@@ -54,7 +54,7 @@ impl SemanticTypeCatalog {
                         canonical: import.export.symbol.clone(),
                         spelling: import.local_name.clone(),
                         payload: payload.map(|type_ref| {
-                            self.imported_payload(resolved, type_ref, &parameter_ids)
+                            self.value_with_type_parameters(resolved, type_ref, &parameter_ids)
                         }),
                     })
                 })
@@ -125,7 +125,11 @@ impl SemanticTypeCatalog {
                     let type_ref = typed_type_from_interface_type(field.type_ref.clone())?;
                     Some(SemanticStructField {
                         name: field.name.clone(),
-                        type_ref: self.imported_payload(resolved, type_ref, &parameter_ids),
+                        type_ref: self.value_with_type_parameters(
+                            resolved,
+                            type_ref,
+                            &parameter_ids,
+                        ),
                     })
                 })
                 .collect::<Vec<_>>();
@@ -149,7 +153,7 @@ impl SemanticTypeCatalog {
         }
     }
 
-    fn imported_payload(
+    pub(crate) fn value_with_type_parameters(
         &self,
         resolved: &ResolvedModule,
         type_ref: TypedType,
@@ -173,7 +177,9 @@ impl SemanticTypeCatalog {
                     arguments: arguments
                         .iter()
                         .cloned()
-                        .map(|argument| self.imported_payload(resolved, argument, parameters))
+                        .map(|argument| {
+                            self.value_with_type_parameters(resolved, argument, parameters)
+                        })
                         .collect(),
                 }
             }
@@ -181,7 +187,7 @@ impl SemanticTypeCatalog {
                 let arguments = arguments
                     .iter()
                     .cloned()
-                    .map(|argument| self.imported_payload(resolved, argument, parameters))
+                    .map(|argument| self.value_with_type_parameters(resolved, argument, parameters))
                     .collect::<Vec<_>>();
                 match self.key_from_typed_type(resolved, &type_ref) {
                     SemanticTypeKey::Adt { owner, .. } => SemanticTypeKey::Adt { owner, arguments },
@@ -204,7 +210,10 @@ impl SemanticTypeCatalog {
                 elements
                     .iter()
                     .cloned()
-                    .map(|element| self.imported_payload(resolved, element, parameters).key)
+                    .map(|element| {
+                        self.value_with_type_parameters(resolved, element, parameters)
+                            .key
+                    })
                     .collect(),
             ),
             _ => SemanticTypeKey::Other,

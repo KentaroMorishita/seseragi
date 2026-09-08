@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - ".github/workflows/vscode-extension.yml"
+      - ".github/workflows/linux-native.yml"
+      - "scripts/linux-native*"
+      - "scripts/fixtures/linux-abi-too-new.c"
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
@@ -20,6 +23,9 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/vscode-extension.yml"
+      - ".github/workflows/linux-native.yml"
+      - "scripts/linux-native*"
+      - "scripts/fixtures/linux-abi-too-new.c"
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
@@ -33,12 +39,18 @@ on:
       - "crates/seseragi-semantics/**"
       - "crates/seseragi-source/**"
   workflow_dispatch:
+    inputs:
+      linux-portability-only:
+        description: Run only the downloaded Linux CLI/LSP/VSIX portability gate
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 jobs:
   test:
+    if: inputs.linux-portability-only != true
     name: shared extension and LSP tests
     runs-on: ubuntu-latest
     steps:
@@ -63,6 +75,7 @@ jobs:
         run: cargo test -p seseragi-lsp
 
   package:
+    if: inputs.linux-portability-only != true
     name: ${{ matrix.target }}
     strategy:
       fail-fast: false
@@ -72,8 +85,6 @@ jobs:
             target: darwin-arm64
           - runner: macos-15-intel
             target: darwin-x64
-          - runner: ubuntu-latest
-            target: linux-x64
           - runner: windows-latest
             target: win32-x64
     runs-on: ${{ matrix.runner }}
@@ -100,6 +111,7 @@ jobs:
           if-no-files-found: error
 
   migration:
+    if: inputs.linux-portability-only != true
     name: legacy migration stub
     runs-on: ubuntu-latest
     steps:
@@ -118,3 +130,8 @@ jobs:
           name: seseragi-vscode-legacy-migration
           path: target/seseragi-legacy-migration-v*.vsix
           if-no-files-found: error
+
+  linux-native:
+    uses: ./.github/workflows/linux-native.yml
+    with:
+      source-ref: ${{ github.sha }}

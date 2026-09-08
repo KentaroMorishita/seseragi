@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "module": "artifact/local-effect-fn",
+  "target": "typescript-es2022",
+  "profile": "development",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.unit",
+      "effect.console.println",
+      "core.string",
+      "core.int",
+      "effect.core.applicative",
+      "core.int.eq-dictionary",
+      "core.bool",
+      "core.int.subtract",
+      "effect.core.flatMap",
+      "core.bool.show",
+      "core.int.show",
+      "core.tuple.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -16,7 +16,7 @@ fails ConsoleError =
     recovered <-
       effects.defer (\_ -> do {
         refs.update (\count -> count + 1) calls
-        effects.fail "expected"
+        (\_ -> Score 0) <$> effects.fail "expected"
       })
         |> effects.recover (\_ -> effects.succeed $ Score 41)
 

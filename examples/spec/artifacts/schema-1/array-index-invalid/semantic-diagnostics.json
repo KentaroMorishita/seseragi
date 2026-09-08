@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "array.index-receiver-not-array",
+      "message": "Array index receiver not array",
+      "primary": {
+        "start": 24,
+        "end": 25
+      },
+      "related": [
+        {
+          "message": "index access requires Array<A>, received Int",
+          "primary": {
+            "start": 0,
+            "end": 28
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "index access requires Array<A>, received Int",
+          "primary": {
+            "start": 0,
+            "end": 28
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "array.index-not-int",
+      "message": "Array index not int",
+      "primary": {
+        "start": 54,
+        "end": 58
+      },
+      "related": [
+        {
+          "message": "array index must be Int, received Bool",
+          "primary": {
+            "start": 29,
+            "end": 59
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "array index must be Int, received Bool",
+          "primary": {
+            "start": 29,
+            "end": 59
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "array.index-receiver-not-array",
+      "message": "Array index receiver not array",
+      "primary": {
+        "start": 75,
+        "end": 79
+      },
+      "related": [
+        {
+          "message": "index access requires Array<A>, received List<Int>",
+          "primary": {
+            "start": 60,
+            "end": 82
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "index access requires Array<A>, received List<Int>",
+          "primary": {
+            "start": 60,
+            "end": 82
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "array.index-receiver-not-array",
+      "message": "Array index receiver not array",
+      "primary": {
+        "start": 99,
+        "end": 105
+      },
+      "related": [
+        {
+          "message": "index access requires Array<A>, received (Int, Int)",
+          "primary": {
+            "start": 83,
+            "end": 108
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "index access requires Array<A>, received (Int, Int)",
+          "primary": {
+            "start": 83,
+            "end": 108
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

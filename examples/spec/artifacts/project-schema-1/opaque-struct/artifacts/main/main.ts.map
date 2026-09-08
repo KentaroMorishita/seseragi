@@ -1,0 +1,40 @@
+{
+  "version": 3,
+  "file": "dist/opaque-struct/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/opaque-struct::main"
+  ],
+  "sourcesContent": [
+    "import {\n  Secret,\n  Box,\n  create,\n  read,\n  unpack,\n  update,\n  box,\n  unbox,\n  nested,\n  collect\n} from \"./facade\"\n\npub effect fn main = {\n  let secret = create 7\n  do {\n    println $ read secret\n    println $ unpack secret\n    println $ show secret\n    println $ show (secret == create 7)\n    println $ unbox (box 42)\n    println $ nested (box secret)\n    println $ show (collect [secret])\n    println $ read (update secret)\n  }\n}\n"
+  ],
+  "names": [
+    "main",
+    "secret",
+    "create",
+    "println",
+    "read",
+    "println",
+    "unpack",
+    "println",
+    "__ssrg$instance$Show$1",
+    "println",
+    "boolShow",
+    "__ssrg$instance$Eq$0",
+    "create",
+    "println",
+    "unbox",
+    "box",
+    "println",
+    "nested",
+    "box",
+    "println",
+    "arrayShow",
+    "intShow",
+    "collect",
+    "println",
+    "read",
+    "update"
+  ],
+  "mappings": ";;;;;;;;AAaAA"
+}

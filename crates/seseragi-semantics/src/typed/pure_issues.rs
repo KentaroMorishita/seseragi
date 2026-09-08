@@ -3,6 +3,13 @@ use seseragi_syntax::ByteSpan;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum PureCallIssue {
+    PolymorphicRecursion {
+        callee: ByteSpan,
+    },
+    LocalEffect {
+        issue: Box<super::effect_analysis::EffectFunctionIssue>,
+        function: ByteSpan,
+    },
     InvalidExpression {
         expression: ByteSpan,
     },
@@ -99,6 +106,14 @@ pub(crate) enum MonadDoIssue {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum ArrayIssue {
+    InvalidIndexReceiver {
+        receiver: ByteSpan,
+        actual: TypedType,
+    },
+    InvalidIndexType {
+        index: ByteSpan,
+        actual: TypedType,
+    },
     EmptyWithoutExpectedType {
         collection: &'static str,
         literal: ByteSpan,

@@ -19,6 +19,54 @@ pub(super) fn format_valid_module(
         &angles,
         &member_bodies,
     );
+    let mut statement_blocks = HashSet::new();
+    collect_statement_blocks(&cst.root, &tokens.tokens, &mut statement_blocks);
+    // Split long inline statement blocks at their existing structural boundaries
+    // before wrapping applications, so local bindings receive their own indent.
+    let lines = lines.into_iter().flat_map(|line| {
+        let LogicalLine::Content(indices) = &line else {
+            return vec![line];
+        };
+        if display_width(&render_flat(indices, &tokens.tokens, &angles)) <= line_width {
+            return vec![line];
+        }
+        let blocks: Vec<_> = indices
+            .iter()
+            .copied()
+            .filter_map(|open| {
+                if !statement_blocks.contains(&open) {
+                    return None;
+                }
+                let close = delimiters.matching(open)?;
+                indices.contains(&close).then_some((open, close))
+            })
+            .collect();
+        if blocks.is_empty() {
+            return vec![line];
+        }
+        let mut result = Vec::new();
+        let mut part = Vec::new();
+        for index in indices.iter().copied() {
+            if blocks.iter().any(|(_, close)| *close == index) && !part.is_empty() {
+                result.push(LogicalLine::Content(std::mem::take(&mut part)));
+            }
+            part.push(index);
+            if blocks
+                .iter()
+                .any(|(open, close)| *open == index || *close == index)
+                || tokens.tokens[index].kind == TokenKind::PunctuationSemicolon
+                    && blocks
+                        .iter()
+                        .any(|(open, close)| *open < index && index < *close)
+            {
+                result.push(LogicalLine::Content(std::mem::take(&mut part)));
+            }
+        }
+        if !part.is_empty() {
+            result.push(LogicalLine::Content(part));
+        }
+        result
+    });
     let mut output = Vec::new();
     let mut delimiter_depth = 0usize;
     let mut implementation_member_seen = false;
@@ -94,6 +142,23 @@ pub(super) fn format_valid_module(
     }
     output.push(String::new());
     output.join("\n")
+}
+
+fn collect_statement_blocks(node: &CstNode, tokens: &[Token], blocks: &mut HashSet<usize>) {
+    if node.kind == "complete-expression"
+        && tokens
+            .get(node.start_token)
+            .is_some_and(|token| token.kind == TokenKind::PunctuationBraceLeft)
+        && node
+            .children
+            .iter()
+            .any(|child| child.kind == "complete-block-item")
+    {
+        blocks.insert(node.start_token);
+    }
+    for child in &node.children {
+        collect_statement_blocks(child, tokens, blocks);
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -844,6 +909,7 @@ fn ends_application_atom(kind: TokenKind) -> bool {
             | TokenKind::LiteralBoolean
             | TokenKind::LiteralFloat
             | TokenKind::LiteralInteger
+            | TokenKind::LiteralChar
             | TokenKind::LiteralString
             | TokenKind::LiteralTemplate
             | TokenKind::PunctuationBraceRight
@@ -860,6 +926,7 @@ fn starts_application_atom(token: &Token) -> bool {
             | TokenKind::LiteralBoolean
             | TokenKind::LiteralFloat
             | TokenKind::LiteralInteger
+            | TokenKind::LiteralChar
             | TokenKind::LiteralString
             | TokenKind::LiteralTemplate
             | TokenKind::OperatorLambda
@@ -1074,6 +1141,25 @@ fn render_flat(indices: &[usize], tokens: &[Token], angles: &HashSet<usize>) -> 
 fn needs_space(previous: usize, current: usize, tokens: &[Token], angles: &HashSet<usize>) -> bool {
     let left = &tokens[previous];
     let right = &tokens[current];
+    if right.kind == TokenKind::PunctuationSquareLeft
+        && left.end == right.start
+        && matches!(
+            left.kind,
+            TokenKind::IdentifierLower
+                | TokenKind::IdentifierUpper
+                | TokenKind::LiteralBoolean
+                | TokenKind::LiteralFloat
+                | TokenKind::LiteralInteger
+                | TokenKind::LiteralChar
+                | TokenKind::LiteralString
+                | TokenKind::LiteralTemplate
+                | TokenKind::PunctuationParenRight
+                | TokenKind::PunctuationSquareRight
+                | TokenKind::PunctuationBraceRight
+        )
+    {
+        return false;
+    }
     if is_operator(left.kind) && is_operator(right.kind) && left.end == right.start {
         return false;
     }

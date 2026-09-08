@@ -15,6 +15,7 @@ pub(super) fn collect_expr_type_imports(
         | CoreExpr::Integer { .. }
         | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
+        | CoreExpr::Char { .. }
         | CoreExpr::Boolean { .. } => {}
         CoreExpr::Template { parts, .. } => {
             for part in parts {
@@ -189,11 +190,15 @@ pub(super) fn collect_expr_type_imports(
                         value
                     }
                     CoreStatement::LocalFunction {
+                        return_type,
                         constraints,
                         parameters,
                         body,
                         ..
                     } => {
+                        if let Some(return_type) = return_type {
+                            collect_type_imports(return_type, bindings, requirements, imports);
+                        }
                         for constraint in constraints {
                             for argument in &constraint.arguments {
                                 collect_type_imports(argument, bindings, requirements, imports);
@@ -250,6 +255,7 @@ fn collect_pattern_type_imports(
     match pattern {
         CorePattern::Integer { .. }
         | CorePattern::String { .. }
+        | CorePattern::Char { .. }
         | CorePattern::Boolean { .. }
         | CorePattern::Wildcard { .. }
         | CorePattern::Invalid { .. } => {}

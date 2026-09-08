@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "case": "local-rec",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/local-rec",
+    "export": "main",
+    "compiledModule": "../../schema-1/local-rec/generated-module.json",
+    "typedInterface": "../../schema-1/local-rec/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.unit",
+      "core.int",
+      "core.bool",
+      "core.int.eq-dictionary",
+      "core.int.subtract",
+      "core.string",
+      "effect.console.println",
+      "effect.core.applicative",
+      "effect.core.flatMap",
+      "core.bool.show",
+      "core.tuple.show",
+      "core.int.show"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

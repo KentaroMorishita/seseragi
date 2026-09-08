@@ -12,8 +12,17 @@ pub struct Manifest {
     pub providers: BTreeMap<String, String>,
     pub run: Option<ManifestRun>,
     pub test: Option<ManifestTest>,
+    pub benchmark: Option<ManifestBenchmark>,
     pub foreign_typescript: Option<ManifestForeignTypescript>,
+    pub web: Option<ManifestWeb>,
+    pub build_profile: Option<crate::BuildProfile>,
     pub(crate) deferred: DeferredTables,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ManifestWeb {
+    pub index: Option<ManifestFilePath>,
+    pub public: Option<ManifestFilePath>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -215,6 +224,14 @@ pub enum RunSeed {
 #[derive(Clone, Debug, Default, PartialEq)]
 pub(crate) struct DeferredTables {
     pub foreign: Option<toml::Table>,
-    pub benchmark: Option<toml::Table>,
     pub tool: Option<toml::Table>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct ManifestBenchmark {
+    pub target: Option<TargetId>,
+    pub warmup: u64,
+    pub samples: u64,
+    pub minimum_sample_ms: u64,
+    pub regression_threshold_percent: f64,
 }

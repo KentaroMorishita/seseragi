@@ -1,0 +1,1340 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/std-math",
+  "moduleDependencies": [
+    {
+      "specifier": "std/math",
+      "module": "std/math",
+      "origin": {
+        "start": 0,
+        "end": 32
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "pi",
+          "local": "circleConstant",
+          "canonical": "std/math::pi",
+          "origin": {
+            "start": 48,
+            "end": 62
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "sin",
+          "local": "sin",
+          "canonical": "std/math::sin",
+          "origin": {
+            "start": 64,
+            "end": 67
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "atan2",
+          "local": "atan2",
+          "canonical": "std/math::atan2",
+          "origin": {
+            "start": 69,
+            "end": 74
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "pi",
+          "local": "math.pi",
+          "canonical": "std/math::pi",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "e",
+          "local": "math.e",
+          "canonical": "std/math::e",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "tau",
+          "local": "math.tau",
+          "canonical": "std/math::tau",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "cos",
+          "local": "math.cos",
+          "canonical": "std/math::cos",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "tan",
+          "local": "math.tan",
+          "canonical": "std/math::tan",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "asin",
+          "local": "math.asin",
+          "canonical": "std/math::asin",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "acos",
+          "local": "math.acos",
+          "canonical": "std/math::acos",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "atan",
+          "local": "math.atan",
+          "canonical": "std/math::atan",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "exp",
+          "local": "math.exp",
+          "canonical": "std/math::exp",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "log",
+          "local": "math.log",
+          "canonical": "std/math::log",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "log2",
+          "local": "math.log2",
+          "canonical": "std/math::log2",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "log10",
+          "local": "math.log10",
+          "canonical": "std/math::log10",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "sqrt",
+          "local": "math.sqrt",
+          "canonical": "std/math::sqrt",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "cbrt",
+          "local": "math.cbrt",
+          "canonical": "std/math::cbrt",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "sinh",
+          "local": "math.sinh",
+          "canonical": "std/math::sinh",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "cosh",
+          "local": "math.cosh",
+          "canonical": "std/math::cosh",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "tanh",
+          "local": "math.tanh",
+          "canonical": "std/math::tanh",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "hypot",
+          "local": "math.hypot",
+          "canonical": "std/math::hypot",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/math",
+      "module": "std/math",
+      "origin": {
+        "start": 33,
+        "end": 92
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "pi",
+          "local": "circleConstant",
+          "canonical": "std/math::pi",
+          "origin": {
+            "start": 48,
+            "end": 62
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "sin",
+          "local": "sin",
+          "canonical": "std/math::sin",
+          "origin": {
+            "start": 64,
+            "end": 67
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "atan2",
+          "local": "atan2",
+          "canonical": "std/math::atan2",
+          "origin": {
+            "start": 69,
+            "end": 74
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "pi",
+          "local": "math.pi",
+          "canonical": "std/math::pi",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "e",
+          "local": "math.e",
+          "canonical": "std/math::e",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "tau",
+          "local": "math.tau",
+          "canonical": "std/math::tau",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "cos",
+          "local": "math.cos",
+          "canonical": "std/math::cos",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "tan",
+          "local": "math.tan",
+          "canonical": "std/math::tan",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "asin",
+          "local": "math.asin",
+          "canonical": "std/math::asin",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "acos",
+          "local": "math.acos",
+          "canonical": "std/math::acos",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "atan",
+          "local": "math.atan",
+          "canonical": "std/math::atan",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "exp",
+          "local": "math.exp",
+          "canonical": "std/math::exp",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "log",
+          "local": "math.log",
+          "canonical": "std/math::log",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "log2",
+          "local": "math.log2",
+          "canonical": "std/math::log2",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "log10",
+          "local": "math.log10",
+          "canonical": "std/math::log10",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "sqrt",
+          "local": "math.sqrt",
+          "canonical": "std/math::sqrt",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "cbrt",
+          "local": "math.cbrt",
+          "canonical": "std/math::cbrt",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "sinh",
+          "local": "math.sinh",
+          "canonical": "std/math::sinh",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "cosh",
+          "local": "math.cosh",
+          "canonical": "std/math::cosh",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "tanh",
+          "local": "math.tanh",
+          "canonical": "std/math::tanh",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "hypot",
+          "local": "math.hypot",
+          "canonical": "std/math::hypot",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/std-math::constants",
+          "name": "constants",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 101,
+            "end": 110
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 0,
+        "name": "constants",
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 101,
+          "end": 110
+        }
+      },
+      "visibility": "public",
+      "origin": {
+        "start": 93,
+        "end": 156
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "variable",
+            "name": "std/math::pi",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 114,
+              "end": 121
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::e",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 123,
+              "end": 129
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::tau",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 131,
+              "end": 139
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::pi",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 141,
+              "end": 155
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 113,
+          "end": 156
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/std-math::functions",
+          "name": "functions",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 165,
+            "end": 174
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 1,
+        "name": "functions",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 165,
+          "end": 174
+        }
+      },
+      "visibility": "public",
+      "origin": {
+        "start": 157,
+        "end": 388
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "variable",
+            "name": "std/math::sin",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 204,
+              "end": 207
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::cos",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 211,
+              "end": 219
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::tan",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 223,
+              "end": 231
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::asin",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 235,
+              "end": 244
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::acos",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 248,
+              "end": 257
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::atan",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 261,
+              "end": 270
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::exp",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 274,
+              "end": 282
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::log",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 286,
+              "end": 294
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::log2",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 298,
+              "end": 307
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::log10",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 311,
+              "end": 321
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::sqrt",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 325,
+              "end": 334
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::cbrt",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 338,
+              "end": 347
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::sinh",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 351,
+              "end": 360
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::cosh",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 364,
+              "end": 373
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "std/math::tanh",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 377,
+              "end": 386
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 200,
+          "end": 388
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/std-math::partial",
+          "name": "partial",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 397,
+            "end": 404
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 2,
+        "name": "partial",
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          }
+        },
+        "origin": {
+          "start": 397,
+          "end": 404
+        }
+      },
+      "visibility": "public",
+      "origin": {
+        "start": 389,
+        "end": 432
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          }
+        }
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/math::atan2",
+        "arguments": [
+          {
+            "kind": "float",
+            "value": "1.0",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 429,
+              "end": 432
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          }
+        },
+        "origin": {
+          "start": 423,
+          "end": 432
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/std-math::length",
+          "name": "length",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 441,
+            "end": 447
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 3,
+        "name": "length",
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "start": 441,
+          "end": 447
+        }
+      },
+      "visibility": "public",
+      "origin": {
+        "start": 433,
+        "end": 468
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/math::hypot",
+        "arguments": [
+          {
+            "kind": "float",
+            "value": "3.0",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 461,
+              "end": 464
+            }
+          },
+          {
+            "kind": "float",
+            "value": "4.0",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 465,
+              "end": 468
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "start": 450,
+          "end": 468
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/std-math::result",
+          "name": "result",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 477,
+            "end": 483
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 4,
+        "name": "result",
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "start": 477,
+          "end": 483
+        }
+      },
+      "visibility": "public",
+      "origin": {
+        "start": 469,
+        "end": 497
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "call",
+        "callee": "partial",
+        "arguments": [
+          {
+            "kind": "float",
+            "value": "1.0",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 494,
+              "end": 497
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "start": 486,
+          "end": 497
+        }
+      }
+    }
+  ]
+}

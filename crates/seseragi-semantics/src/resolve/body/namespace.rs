@@ -196,6 +196,7 @@ impl Resolver {
             member.origin,
         );
         self.namespace_imports.select(ResolvedImport {
+            reexported_as: None,
             symbol,
             specifier: member.specifier,
             module: member.module,

@@ -1070,6 +1070,22 @@
   ],
   "instances": [
     {
+      "trait": "Eq",
+      "traitCanonical": "std/prelude::Eq",
+      "typeConstructor": "BenchmarkFailure",
+      "typeConstructorCanonical": "std/benchmark::BenchmarkFailure",
+      "typeConstructorArity": 0,
+      "identity": "std/benchmark::EqBenchmarkFailure"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "BenchmarkFailure",
+      "typeConstructorCanonical": "std/benchmark::BenchmarkFailure",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/benchmark::BenchmarkFailure>"
+    },
+    {
       "trait": "Functor",
       "traitCanonical": "std/prelude::Functor",
       "typeConstructor": "MaybeT",
@@ -5379,6 +5395,14 @@
       },
       {
         "trait": "Eq",
+        "head": "BenchmarkFailure",
+        "identity": "std/benchmark::EqBenchmarkFailure",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.3 / 9.4"
+      },
+      {
+        "trait": "Eq",
         "head": "BigInt",
         "identity": "std/big-int::Eq",
         "status": "specified-and-implemented",
@@ -6688,6 +6712,14 @@
         "trait": "Show",
         "head": "Base64DecodeError",
         "identity": "Show<std/bytes/base64::Base64DecodeError>",
+        "status": "specified-and-implemented",
+        "classification": "dictionary",
+        "spec": "9.11"
+      },
+      {
+        "trait": "Show",
+        "head": "BenchmarkFailure",
+        "identity": "Show<std/benchmark::BenchmarkFailure>",
         "status": "specified-and-implemented",
         "classification": "dictionary",
         "spec": "9.11"

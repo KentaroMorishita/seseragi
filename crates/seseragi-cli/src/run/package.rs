@@ -1,14 +1,15 @@
-use crate::local_project::{compile_path, LocalProjectCompilation};
+use crate::local_project::{compile_path_with_profile, LocalProjectCompilation};
 use crate::run::Invocation;
 use seseragi_project::ProjectCommand;
 use std::path::Path;
 
 pub(super) fn run_package(path: &Path, invocation: &Invocation) -> Result<i32, String> {
-    let compiled = match compile_path(
+    let compiled = match compile_path_with_profile(
         path,
         ProjectCommand::Run,
         invocation.target(),
         invocation.diagnostic_format(),
+        invocation.profile,
     )? {
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => return Ok(2),

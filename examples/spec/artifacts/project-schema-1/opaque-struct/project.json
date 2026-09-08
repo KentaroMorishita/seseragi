@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/opaque-struct::domain",
+    "fixture/opaque-struct::facade",
+    "fixture/opaque-struct::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/opaque-struct::domain",
+      "source": "src/domain.ssrg",
+      "output": "dist/opaque-struct/domain.js",
+      "artifacts": "artifacts/domain",
+      "imports": []
+    },
+    {
+      "id": "fixture/opaque-struct::facade",
+      "source": "src/facade.ssrg",
+      "output": "dist/opaque-struct/facade.js",
+      "artifacts": "artifacts/facade",
+      "imports": [
+        {
+          "specifier": "./domain",
+          "module": "fixture/opaque-struct::domain"
+        }
+      ]
+    },
+    {
+      "id": "fixture/opaque-struct::main",
+      "source": "src/main.ssrg",
+      "output": "dist/opaque-struct/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./facade",
+          "module": "fixture/opaque-struct::facade"
+        }
+      ]
+    }
+  ]
+}

@@ -16,6 +16,12 @@ pub(super) fn type_binary(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
+    if operator == ":" {
+        return super::cons::type_cons(left, right, span, context);
+    }
+    if operator == "??" {
+        return super::fallback::type_fallback(left, right, span, context);
+    }
     let operand_context = context.without_expected();
     let left_span = left.span();
     let right_span = right.span();

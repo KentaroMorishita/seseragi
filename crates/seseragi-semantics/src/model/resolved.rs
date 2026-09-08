@@ -40,6 +40,8 @@ pub struct ResolvedModule {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ResolvedImport {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reexported_as: Option<String>,
     pub symbol: SymbolId,
     pub specifier: String,
     pub module: String,

@@ -70,6 +70,29 @@ impl ExpressionParser<'_> {
                 break;
             }
 
+            // Adjacency distinguishes indexing from applying a function to an Array.
+            if self.kind_at_cursor() == Some(TokenKind::PunctuationSquareLeft)
+                && self.tokens[self.cursor].start == left.span().end
+            {
+                const INDEX_BP: u8 = 90;
+                if INDEX_BP < min_bp {
+                    break;
+                }
+                self.cursor += 1;
+                let index = self.parse_expr_bp(0, &[TokenKind::PunctuationSquareRight])?;
+                let close = self.consume(TokenKind::PunctuationSquareRight)?;
+                let span = ByteSpan {
+                    start: left.span().start,
+                    end: close.end,
+                };
+                left = SurfaceExpr::Index {
+                    receiver: Box::new(left),
+                    index: Box::new(index),
+                    span,
+                };
+                continue;
+            }
+
             if self.kind_at_cursor() == Some(TokenKind::PunctuationDot) {
                 const MEMBER_BP: u8 = 90;
                 if MEMBER_BP < min_bp {
@@ -312,6 +335,10 @@ impl ExpressionParser<'_> {
                 raw: token.raw.clone(),
                 span: token_span(token),
             }),
+            TokenKind::LiteralChar => Some(SurfaceExpr::Char {
+                raw: token.raw.clone(),
+                span: token_span(token),
+            }),
             TokenKind::LiteralString => Some(SurfaceExpr::String {
                 raw: token.raw.clone(),
                 span: token_span(token),
@@ -477,6 +504,7 @@ impl ExpressionParser<'_> {
             Some(
                 TokenKind::LiteralInteger
                     | TokenKind::LiteralFloat
+                    | TokenKind::LiteralChar
                     | TokenKind::LiteralString
                     | TokenKind::LiteralTemplate
                     | TokenKind::LiteralBoolean
@@ -638,6 +666,7 @@ fn binary_binding_power(token: &Token) -> Option<(u8, u8, ParsedOperator)> {
         (TokenKind::OperatorRangeExclusive | TokenKind::OperatorRangeInclusive, _) => {
             (35, false, ParsedOperator::Binary)
         }
+        (TokenKind::PunctuationColon, ":") => (40, true, ParsedOperator::Binary),
         (TokenKind::OperatorArithmetic, "+" | "-") => (40, false, ParsedOperator::Binary),
         (TokenKind::OperatorArithmetic, "*" | "/" | "%") => (50, false, ParsedOperator::Binary),
         (TokenKind::OperatorArithmetic, "**") => (60, true, ParsedOperator::Binary),

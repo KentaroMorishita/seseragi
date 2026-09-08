@@ -135,7 +135,13 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     for structure in &module.structs {
         render_struct(&mut output, structure);
     }
-    render_typescript_instances(&mut output, &module.instances, &module.type_imports);
+    render_typescript_instances(
+        &mut output,
+        &module.instances,
+        &module.type_imports,
+        &module.structs,
+        &module.adts,
+    );
     for function in &module.functions {
         match function {
             TypeScriptFunction::ConstFunction {
@@ -461,6 +467,17 @@ pub(super) fn evidence_parameters(
 }
 
 fn render_adt(output: &mut String, adt: &TypeScriptAdt) {
+    if adt.erased_newtype {
+        let variant = adt.variants.first().expect("newtype constructor");
+        let payload = variant.payload.as_ref().expect("newtype payload");
+        let parameters = render_type_parameters(&adt.type_parameters);
+        let arguments = render_type_arguments(&adt.type_parameters);
+        let export = if adt.exported { "export " } else { "" };
+        output.push_str(&format!("declare const __ssrg$newtype${}: unique symbol;\n{export}type {}{parameters} = {} & {{ readonly [__ssrg$newtype${}]: true }};\n", adt.name, adt.name, render_typescript_type(payload), adt.name));
+        let export = if variant.exported { "export " } else { "" };
+        output.push_str(&format!("{export}const {} = {parameters}(value: {}): {}{arguments} => value as {}{arguments};\n", variant.name, render_typescript_type(payload), adt.name, adt.name));
+        return;
+    }
     if adt.exported {
         output.push_str("export ");
     }
@@ -523,15 +540,52 @@ fn render_struct(output: &mut String, structure: &TypeScriptStruct) {
     }
     let type_parameters = render_type_parameters(&structure.type_parameters);
     output.push_str(&format!("type {}{type_parameters} = {{\n", structure.name));
-    for field in &structure.fields {
+    if !structure.opaque {
+        render_struct_fields(output, &structure.fields);
+    }
+    let brand_type = if structure.opaque && !structure.type_parameters.is_empty() {
+        format!(
+            "readonly [{}]",
+            structure
+                .type_parameters
+                .iter()
+                .map(|parameter| if parameter.is_constructor() {
+                    "unknown"
+                } else {
+                    parameter.name.as_str()
+                })
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
+    } else {
+        "true".to_owned()
+    };
+    output.push_str(&format!(
+        "  readonly [{}]: {brand_type};\n",
+        structure.brand
+    ));
+    output.push_str("};\n");
+    if let Some(fields) = &structure.private_fields {
         output.push_str(&format!(
-            "  readonly {}: {};\n",
-            format!("{:?}", field.name),
+            "type {}{type_parameters} = {{\n",
+            crate::typescript::types::private_representation_name(&structure.name)
+        ));
+        render_struct_fields(output, fields);
+        output.push_str(&format!(
+            "  readonly [{}]: {brand_type};\n}};\n",
+            structure.brand
+        ));
+    }
+}
+
+fn render_struct_fields(output: &mut String, fields: &[crate::TypeScriptRecordTypeField]) {
+    for field in fields {
+        output.push_str(&format!(
+            "  readonly {:?}: {};\n",
+            field.name,
             render_typescript_type(&field.type_ref)
         ));
     }
-    output.push_str(&format!("  readonly [{}]: true;\n", structure.brand));
-    output.push_str("};\n");
 }
 
 fn render_adt_variant_type(variant: &TypeScriptAdtVariant) -> String {
@@ -572,6 +626,26 @@ fn render_function_body(
     is_effect: bool,
     self_name: Option<&str>,
 ) -> String {
+    render_function_body_with_return(
+        type_parameters,
+        parameters,
+        body,
+        is_async,
+        is_effect,
+        self_name,
+        None,
+    )
+}
+
+fn render_function_body_with_return(
+    type_parameters: &[seseragi_syntax::TypeParameter],
+    parameters: &[crate::TypeScriptParameter],
+    body: &TypeScriptExpr,
+    is_async: bool,
+    is_effect: bool,
+    self_name: Option<&str>,
+    return_type: Option<&crate::TypeScriptType>,
+) -> String {
     let rendered_body = self_name
         .filter(|_| !is_effect)
         .filter(|name| contains_direct_self_tail_call(body, name, parameters.len()))
@@ -589,8 +663,11 @@ fn render_function_body(
     } else {
         ""
     };
+    let return_annotation = return_type
+        .map(|ty| format!(": {}", render_typescript_type(ty)))
+        .unwrap_or_default();
     let final_arrow = format!(
-        "{async_prefix}{final_generic_prefix}({}: {}) => {rendered_body}",
+        "{async_prefix}{final_generic_prefix}({}: {}){return_annotation} => {rendered_body}",
         last.name, last.type_name
     );
     let rendered = leading.iter().rev().fold(final_arrow, |result, parameter| {
@@ -1041,6 +1118,49 @@ fn nullish_logical_mix(parent_operator: &str, operand: &TypeScriptExpr) -> bool 
         || (matches!(parent_operator, "&&" | "||") && child_operator == "??")
 }
 
+fn recursive_group_prefix(statements: &[TypeScriptStatement]) -> Option<(String, usize)> {
+    let TypeScriptStatement::LocalFunction {
+        rec_group: Some(group),
+        ..
+    } = statements.first()?
+    else {
+        return None;
+    };
+    let mut declarations = Vec::new();
+    for statement in statements {
+        let TypeScriptStatement::LocalFunction {
+            rec_group: Some(member_group),
+            return_type,
+            name,
+            type_parameters,
+            constraints,
+            parameters,
+            body,
+            ..
+        } = statement
+        else {
+            break;
+        };
+        if member_group != group {
+            break;
+        }
+        let parameters = evidence_parameters(parameters, 0, constraints.len());
+        declarations.push(format!(
+            "const {name} = {};",
+            render_function_body_with_return(
+                type_parameters,
+                &parameters,
+                body,
+                false,
+                false,
+                Some(name),
+                return_type.as_ref()
+            )
+        ));
+    }
+    Some((declarations.join(" "), declarations.len()))
+}
+
 fn render_monad_sequence(
     dictionary: &TypeScriptExpr,
     statements: &[TypeScriptStatement],
@@ -1049,6 +1169,10 @@ fn render_monad_sequence(
     let Some((statement, rest)) = statements.split_first() else {
         return render_typescript_expr(result);
     };
+    if let Some((declarations, count)) = recursive_group_prefix(statements) {
+        let continuation = render_monad_sequence(dictionary, &statements[count..], result);
+        return format!("(() => {{ {declarations} return {continuation}; }})()");
+    }
     let continuation = render_monad_sequence(dictionary, rest, result);
     let flat_map = format!("{}[\"flatMap\"]", render_typescript_expr(dictionary));
     match statement {
@@ -1105,6 +1229,14 @@ fn render_effect_sequence_with_result_renderer(
     let Some((statement, rest)) = statements.split_first() else {
         return render_result(result);
     };
+    if let Some((declarations, count)) = recursive_group_prefix(statements) {
+        let continuation = render_effect_sequence_with_result_renderer(
+            &statements[count..],
+            result,
+            render_result,
+        );
+        return format!("(() => {{ {declarations} return {continuation}; }})()");
+    }
     let continuation = render_effect_sequence_with_result_renderer(rest, result, render_result);
     match statement {
         TypeScriptStatement::Effect { value } => format!(

@@ -21,18 +21,23 @@ mod binary;
 pub(crate) mod block;
 mod comprehension;
 pub(crate) mod conditional;
+mod cons;
 pub(crate) mod effectful_for;
 mod expected;
+mod fallback;
 pub(crate) mod lambda;
 pub(crate) mod match_expression;
 mod monad_do;
 pub(super) mod pattern;
 mod record;
+mod recursion;
 mod signal;
 mod struct_value;
 mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
+    recursive_groups: Vec<recursion::RecursiveContext>,
+    lexical_type_parameters: BTreeMap<String, SymbolId>,
     parameters: BTreeMap<SymbolId, SemanticValueType>,
     evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
     resolution: &'a TypedResolution<'a>,
@@ -42,6 +47,8 @@ pub(crate) struct PureExpressionContext<'a> {
 impl<'a> PureExpressionContext<'a> {
     pub(crate) fn new(parameters: &[TypedParameter], resolution: &'a TypedResolution<'a>) -> Self {
         Self {
+            recursive_groups: Vec::new(),
+            lexical_type_parameters: BTreeMap::new(),
             parameters: resolution.parameter_types(parameters),
             evidence_parameters: Vec::new(),
             resolution,
@@ -52,6 +59,8 @@ impl<'a> PureExpressionContext<'a> {
     pub(crate) fn with_expected(&self, expected: Option<SemanticValueType>) -> Self {
         Self {
             parameters: self.parameters.clone(),
+            recursive_groups: self.recursive_groups.clone(),
+            lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
             resolution: self.resolution,
             expected,
@@ -139,6 +148,16 @@ impl<'a> PureExpressionContext<'a> {
     pub(super) fn callable_value(&self, target: SymbolId) -> Option<TopLevelPureFunction> {
         if let Some(callable) = self.callable(target) {
             let mut callable = callable.clone();
+            if let Some(local) = self.parameters.get(&target) {
+                let mut result = &local.type_ref;
+                for _ in &callable.parameters {
+                    if let TypedType::Function { result: next, .. } = result {
+                        result = next;
+                    }
+                }
+                callable.result = result.clone();
+                callable.semantic_result = self.semantic_value_from_typed_type(result).key;
+            }
             if let Some(trait_name) = self
                 .resolution
                 .symbol(target)
@@ -196,7 +215,14 @@ impl<'a> PureExpressionContext<'a> {
     }
 
     pub(super) fn semantic_value_from_typed_type(&self, type_ref: &TypedType) -> SemanticValueType {
-        self.resolution.semantic_value_from_typed_type(type_ref)
+        if self.lexical_type_parameters.is_empty() {
+            return self.resolution.semantic_value_from_typed_type(type_ref);
+        }
+        self.semantic_types().value_with_type_parameters(
+            self.resolution.resolved(),
+            type_ref.clone(),
+            &self.lexical_type_parameters,
+        )
     }
 
     pub(super) fn hydrate_semantic_value(&self, value: SemanticValueType) -> SemanticValueType {
@@ -393,6 +419,8 @@ impl<'a> PureExpressionContext<'a> {
         parameters.extend(locals);
         Self {
             parameters,
+            recursive_groups: self.recursive_groups.clone(),
+            lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
             resolution: self.resolution,
             expected: self.expected.clone(),
@@ -468,7 +496,33 @@ pub(crate) fn analyze_resolved_expression(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    let mut analysis = type_surface_expression(expression, context);
+    let resolved = context.resolution.resolved();
+    let span = expression.span();
+    let mut scopes = resolved
+        .scopes
+        .iter()
+        .filter(|scope| scope.origin.start <= span.start && span.end <= scope.origin.end)
+        .collect::<Vec<_>>();
+    scopes.sort_by_key(|scope| {
+        (
+            std::cmp::Reverse(scope.origin.end - scope.origin.start),
+            scope.id,
+        )
+    });
+    let mut scoped_context = context.with_expected(context.expected.clone());
+    scoped_context.lexical_type_parameters.clear();
+    for scope in scopes {
+        for symbol in resolved.symbols.iter().filter(|symbol| {
+            symbol.scope == scope.id
+                && symbol.kind == SymbolKind::TypeParameter
+                && symbol.canonical.is_none()
+        }) {
+            scoped_context
+                .lexical_type_parameters
+                .insert(symbol.spelling.clone(), symbol.id);
+        }
+    }
+    let mut analysis = type_surface_expression(expression, &scoped_context);
     ensure_recovery_hole_issue(&mut analysis);
     analysis
 }
@@ -510,6 +564,11 @@ pub(super) fn type_surface_expression(
             type_ref: named_type("Float"),
             origin: *span,
         }),
+        SurfaceExpr::Char { raw, span } => SurfaceExpressionAnalysis::valid(TypedExpr::Char {
+            value: seseragi_syntax::decode_char_literal(raw).unwrap_or_default(),
+            type_ref: named_type("Char"),
+            origin: *span,
+        }),
         SurfaceExpr::String { raw, span } => SurfaceExpressionAnalysis::valid(TypedExpr::String {
             value: unquote_string(raw),
             type_ref: named_type("String"),
@@ -524,6 +583,11 @@ pub(super) fn type_surface_expression(
             })
         }
         SurfaceExpr::Name { name, span, .. } => type_name(name, *span, context),
+        SurfaceExpr::Index {
+            receiver,
+            index,
+            span,
+        } => array::type_index(receiver, index, *span, context),
         SurfaceExpr::Member {
             receiver,
             field,
@@ -755,6 +819,7 @@ fn recovery_hole_origin(expression: &TypedExpr) -> Option<ByteSpan> {
         | TypedExpr::Integer { .. }
         | TypedExpr::Float { .. }
         | TypedExpr::String { .. }
+        | TypedExpr::Char { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. } => None,
     }

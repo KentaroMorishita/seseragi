@@ -3,6 +3,7 @@ pub struct CompileInput<'source> {
     source_name: &'source str,
     module_id: &'source str,
     source: &'source str,
+    profile: seseragi_project::BuildProfile,
 }
 
 impl<'source> CompileInput<'source> {
@@ -20,7 +21,17 @@ impl<'source> CompileInput<'source> {
             source_name,
             module_id,
             source,
+            profile: seseragi_project::BuildProfile::Development,
         }
+    }
+
+    pub const fn with_profile(mut self, profile: seseragi_project::BuildProfile) -> Self {
+        self.profile = profile;
+        self
+    }
+
+    pub const fn profile(&self) -> seseragi_project::BuildProfile {
+        self.profile
     }
 
     /// Diagnostic label and frontend source spelling. Later artifacts may

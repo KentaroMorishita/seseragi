@@ -136,13 +136,23 @@ pub fn build_main_with_options(
             &compiled.generated.source_map,
         )?;
         match target {
-            BuildTarget::Process => fs::write(staging.join(BUILD_MARKER_NAME), BUILD_MARKER)
-                .map_err(|error| format!("failed to write build ownership marker: {error}"))?,
+            BuildTarget::Process => {
+                let mut marker: serde_json::Value =
+                    serde_json::from_str(BUILD_MARKER).expect("valid marker template");
+                marker["profile"] = compiled.generated.metadata.profile.clone().into();
+                write_json(
+                    &staging.join(BUILD_MARKER_NAME),
+                    "build ownership marker",
+                    &marker,
+                )?;
+            }
             BuildTarget::Web => finish_web_build(
                 staging,
                 &contract,
                 "./main.ts",
                 "web-single-file",
+                &compiled.generated.metadata.profile,
+                None,
                 None,
                 options,
             )?,
@@ -232,6 +242,7 @@ pub fn build_local_project_with_options(
                 &ProjectBuildMarker {
                     schema: 1,
                     kind: "local-project",
+                    profile: &entry.generated.metadata.profile,
                     target: BuildTarget::Process.marker_target(),
                     entry: "entry.ts",
                     entry_module: &project.entry_module,
@@ -244,6 +255,8 @@ pub fn build_local_project_with_options(
                 &contract,
                 &format!("./{}", path_string(&entry_path)),
                 "web-local-project",
+                &entry.generated.metadata.profile,
+                project.web.as_ref(),
                 project.compiled.provider_resolution.as_ref(),
                 options,
             ),
@@ -256,6 +269,8 @@ fn finish_web_build(
     contract: &crate::MainContract,
     entry_module: &str,
     kind: &'static str,
+    profile: &str,
+    web: Option<&(PathBuf, seseragi_project::ManifestWeb)>,
     providers: Option<&seseragi_driver::ProviderResolution>,
     options: ProcessRunOptions,
 ) -> Result<(), String> {
@@ -284,7 +299,16 @@ fn finish_web_build(
             String::from_utf8_lossy(&output.stderr).trim_end()
         ));
     }
-    fs::write(staging.join("index.html"), WEB_INDEX)
+    let web_assets = web
+        .map(|(root, config)| seseragi_project::load_web_assets(root, config))
+        .transpose()
+        .map_err(|error| format!("{}: {error}", error.code()))?
+        .unwrap_or_default();
+    let index = match &web_assets.index {
+        Some(asset) => render_web_index(&asset.bytes)?,
+        None => WEB_INDEX.to_owned(),
+    };
+    fs::write(staging.join("index.html"), index)
         .map_err(|error| format!("failed to write web index: {error}"))?;
     fs::write(staging.join("assets/app.css"), WEB_CSS)
         .map_err(|error| format!("failed to write web baseline CSS: {error}"))?;
@@ -294,6 +318,7 @@ fn finish_web_build(
         &WebBuildMarker {
             schema: 1,
             kind,
+            profile: profile.to_owned(),
             target: BuildTarget::Web.marker_target(),
             entry: "assets/app.js",
             source_map: "assets/app.js.map",
@@ -311,7 +336,40 @@ fn finish_web_build(
     for path in ["dist", "node_modules"] {
         remove_optional_directory(&staging.join(path))?;
     }
+    for asset in web_assets.public {
+        let target = staging.join(&asset.output);
+        if target.exists() {
+            return Err(format!(
+                "public asset `{}` collides with generated Web output",
+                asset.output
+            ));
+        }
+        fs::create_dir_all(target.parent().expect("asset output has parent"))
+            .map_err(|error| format!("failed to create public asset directory: {error}"))?;
+        fs::write(&target, asset.bytes)
+            .map_err(|error| format!("failed to write public asset `{}`: {error}", asset.output))?;
+    }
     Ok(())
+}
+
+fn render_web_index(bytes: &[u8]) -> Result<String, String> {
+    let source =
+        std::str::from_utf8(bytes).map_err(|_| "web.index must be UTF-8 HTML".to_owned())?;
+    const HEAD: &str = "<!-- seseragi:head -->";
+    const ENTRY: &str = "<!-- seseragi:entry -->";
+    for marker in [HEAD, ENTRY] {
+        if source.matches(marker).count() != 1 {
+            return Err(format!(
+                "web.index requires exactly one `{marker}` placeholder"
+            ));
+        }
+    }
+    Ok(source
+        .replace(HEAD, "<link rel=\"stylesheet\" href=\"./assets/app.css\">")
+        .replace(
+            ENTRY,
+            "<script type=\"module\" src=\"./assets/app.js\"></script>",
+        ))
 }
 
 fn remove_optional_file(path: &Path) -> Result<(), String> {
@@ -339,6 +397,7 @@ fn remove_optional_directory(path: &Path) -> Result<(), String> {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct ProjectBuildMarker<'entry> {
+    profile: &'entry str,
     schema: u32,
     kind: &'static str,
     target: &'static str,
@@ -360,6 +419,7 @@ struct ProjectBuildModule {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct WebBuildMarker {
+    profile: String,
     schema: u32,
     kind: &'static str,
     target: &'static str,
@@ -546,6 +606,21 @@ mod tests {
     use super::{is_managed_build, replace_output_directory, BUILD_MARKER, BUILD_MARKER_NAME};
     use std::fs;
     use std::path::Path;
+
+    #[test]
+    fn custom_document_preserves_metadata_and_requires_both_entry_markers() {
+        let source = b"<title>Custom</title><!-- seseragi:head --><div id=\"app\"></div><!-- seseragi:entry -->";
+        let rendered = super::render_web_index(source).unwrap();
+        assert!(rendered.contains("<title>Custom</title>"));
+        assert!(rendered.contains("./assets/app.css"));
+        assert!(rendered.contains("./assets/app.js"));
+        assert!(!rendered.contains("seseragi:entry"));
+        assert!(super::render_web_index(b"<title>Missing</title>").is_err());
+        assert!(super::render_web_index(
+            b"<!-- seseragi:head --><!-- seseragi:entry --><!-- seseragi:entry -->"
+        )
+        .is_err());
+    }
 
     #[test]
     fn refuses_to_replace_an_unmanaged_directory() {

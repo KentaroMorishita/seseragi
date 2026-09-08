@@ -11,13 +11,27 @@
         "kind": "top-decl",
         "startToken": 0,
         "endToken": 15,
-        "children": []
+        "children": [
+          {
+            "kind": "complete-declaration",
+            "startToken": 0,
+            "endToken": 13,
+            "children": []
+          }
+        ]
       },
       {
         "kind": "top-decl",
         "startToken": 15,
         "endToken": 26,
-        "children": []
+        "children": [
+          {
+            "kind": "complete-declaration",
+            "startToken": 15,
+            "endToken": 25,
+            "children": []
+          }
+        ]
       }
     ]
   },

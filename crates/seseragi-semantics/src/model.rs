@@ -122,6 +122,8 @@ pub struct TypedModuleDependency {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypedModuleImport {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reexported_as: Option<String>,
     pub namespace: String,
     pub imported: String,
     pub local: String,
@@ -172,6 +174,8 @@ pub enum TypedDecl {
         name: String,
         visibility: Visibility,
         opaque: bool,
+        #[serde(default, skip_serializing_if = "is_false")]
+        newtype: bool,
         type_parameters: Vec<seseragi_syntax::TypeParameter>,
         variants: Vec<TypedAdtVariant>,
         origin: ByteSpan,
@@ -501,6 +505,12 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Char {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     String {
         value: String,
         #[serde(rename = "type")]
@@ -733,6 +743,12 @@ pub enum TypedPattern {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Char {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     String {
         value: String,
         #[serde(rename = "type")]
@@ -821,6 +837,12 @@ pub enum TypedBlockStatement {
         origin: ByteSpan,
     },
     Function {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rec_group: Option<ByteSpan>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        return_type: Option<TypedType>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        effect: Option<TypedEffect>,
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<seseragi_syntax::TypeParameter>,

@@ -6,6 +6,7 @@ use super::TypedResolution;
 pub(super) struct AdtDeclInput {
     pub(super) visibility: Visibility,
     pub(super) opaque: bool,
+    pub(super) newtype: bool,
     pub(super) name: String,
     pub(super) name_span: ByteSpan,
     pub(super) type_parameters: Vec<TypeParameter>,
@@ -41,6 +42,7 @@ pub(super) fn typed_adt_decl(
         name: input.name,
         visibility: input.visibility,
         opaque: input.opaque,
+        newtype: input.newtype,
         type_parameters: input.type_parameters,
         variants,
         origin: input.origin,

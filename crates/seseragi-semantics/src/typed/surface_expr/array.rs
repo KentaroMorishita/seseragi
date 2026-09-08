@@ -176,3 +176,125 @@ fn empty_collection(
     result.array_issue = issue;
     result
 }
+
+pub(super) fn type_index(
+    receiver: &SurfaceExpr,
+    index: &SurfaceExpr,
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    let expected_element = context.expected().and_then(|expected| match &expected.key {
+        SemanticTypeKey::NamedGeneric { name, arguments }
+            if name == "Maybe" && arguments.len() == 1 =>
+        {
+            Some(arguments[0].clone())
+        }
+        SemanticTypeKey::Adt { owner, arguments }
+            if arguments.len() == 1
+                && context.resolution.resolved().symbols.iter().any(|symbol| {
+                    symbol.id == *owner && symbol.canonical.as_deref() == Some("std/prelude::Maybe")
+                }) =>
+        {
+            Some(arguments[0].clone())
+        }
+        _ => None,
+    });
+    let expected = expected_element.map(|element| SemanticValueType {
+        type_ref: TypedType::Named {
+            name: "Array".to_owned(),
+            arguments: vec![element.type_ref.clone()],
+        },
+        key: SemanticTypeKey::NamedGeneric {
+            name: "Array".to_owned(),
+            arguments: vec![element],
+        },
+    });
+    let values = type_surface_expression(receiver, &context.with_expected(expected));
+    let offset = type_surface_expression(
+        index,
+        &context.with_expected(Some(SemanticValueType {
+            type_ref: TypedType::Named {
+                name: "Int".to_owned(),
+                arguments: vec![],
+            },
+            key: SemanticTypeKey::Other,
+        })),
+    );
+    let receiver_type = inferred_type_from_expr(&values.value);
+    let index_type = inferred_type_from_expr(&offset.value);
+    let element = match &values.semantic_type {
+        SemanticTypeKey::NamedGeneric { name, arguments }
+            if name == "Array" && arguments.len() == 1 =>
+        {
+            Some(arguments[0].clone())
+        }
+        _ => None,
+    };
+    let issue = if element.is_none() && values.semantic_type != SemanticTypeKey::Invalid {
+        Some(ArrayIssue::InvalidIndexReceiver {
+            receiver: receiver.span(),
+            actual: receiver_type,
+        })
+    } else if (index_type
+        != (TypedType::Named {
+            name: "Int".to_owned(),
+            arguments: vec![],
+        })
+        || offset.semantic_type != SemanticTypeKey::Other)
+        && offset.semantic_type != SemanticTypeKey::Invalid
+    {
+        Some(ArrayIssue::InvalidIndexType {
+            index: index.span(),
+            actual: index_type,
+        })
+    } else {
+        None
+    };
+    let element = element.unwrap_or(SemanticValueType {
+        type_ref: TypedType::Hole,
+        key: SemanticTypeKey::Invalid,
+    });
+    let type_ref = TypedType::Named {
+        name: "Maybe".to_owned(),
+        arguments: vec![element.type_ref.clone()],
+    };
+    let result_key = context
+        .resolution
+        .resolved()
+        .symbols
+        .iter()
+        .find(|symbol| symbol.canonical.as_deref() == Some("std/prelude::Maybe"))
+        .map_or_else(
+            || SemanticTypeKey::NamedGeneric {
+                name: "Maybe".to_owned(),
+                arguments: vec![element.clone()],
+            },
+            |symbol| SemanticTypeKey::Adt {
+                owner: symbol.id,
+                arguments: vec![element.clone()],
+            },
+        );
+    let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
+        TypedExpr::Call {
+            // Internal syntax intrinsic, not an additional standard module export.
+            // Receiver-first ABI preserves source evaluation order exactly once.
+            callee: "builtin::array-index".to_owned(),
+            arguments: vec![values.value.clone(), offset.value.clone()],
+            evidence: vec![],
+            deferred_evidence_parameters: vec![],
+            deferred_evidence_type_constructor_parameters: vec![],
+            trait_dispatch: None,
+            type_ref,
+            origin: span,
+        },
+        if issue.is_some() {
+            SemanticTypeKey::Invalid
+        } else {
+            result_key
+        },
+    );
+    result.array_issue = issue;
+    result.merge_issues_from(values);
+    result.merge_issues_from(offset);
+    result
+}

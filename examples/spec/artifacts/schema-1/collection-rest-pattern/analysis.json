@@ -143,7 +143,8 @@
       "definition": {
         "start": 47,
         "end": 51
-      }
+      },
+      "typeName": "Int -> Array<Int> -> Int"
     },
     {
       "id": 7,
@@ -155,7 +156,8 @@
       "definition": {
         "start": 52,
         "end": 57
-      }
+      },
+      "typeName": "Int"
     },
     {
       "id": 8,
@@ -167,7 +169,8 @@
       "definition": {
         "start": 66,
         "end": 70
-      }
+      },
+      "typeName": "Array<Int>"
     },
     {
       "id": 9,
@@ -242,7 +245,8 @@
       "definition": {
         "start": 248,
         "end": 252
-      }
+      },
+      "typeName": "Int -> List<Int> -> Int"
     },
     {
       "id": 15,
@@ -254,7 +258,8 @@
       "definition": {
         "start": 253,
         "end": 258
-      }
+      },
+      "typeName": "Int"
     },
     {
       "id": 16,
@@ -266,7 +271,8 @@
       "definition": {
         "start": 267,
         "end": 271
-      }
+      },
+      "typeName": "List<Int>"
     },
     {
       "id": 17,
@@ -802,6 +808,27 @@
     },
     {
       "range": {
+        "start": 47,
+        "end": 51
+      },
+      "type": "Int -> Array<Int> -> Int"
+    },
+    {
+      "range": {
+        "start": 52,
+        "end": 57
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 66,
+        "end": 70
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
         "start": 96,
         "end": 182
       },
@@ -852,6 +879,13 @@
     {
       "range": {
         "start": 152,
+        "end": 156
+      },
+      "type": "Int -> Array<Int> -> Int"
+    },
+    {
+      "range": {
+        "start": 152,
         "end": 176
       },
       "type": "Int"
@@ -883,6 +917,13 @@
         "end": 176
       },
       "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 186,
+        "end": 190
+      },
+      "type": "Int -> Array<Int> -> Int"
     },
     {
       "range": {
@@ -925,6 +966,27 @@
         "end": 403
       },
       "type": "Int"
+    },
+    {
+      "range": {
+        "start": 248,
+        "end": 252
+      },
+      "type": "Int -> List<Int> -> Int"
+    },
+    {
+      "range": {
+        "start": 253,
+        "end": 258
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 267,
+        "end": 271
+      },
+      "type": "List<Int>"
     },
     {
       "range": {
@@ -978,6 +1040,13 @@
     {
       "range": {
         "start": 354,
+        "end": 358
+      },
+      "type": "Int -> List<Int> -> Int"
+    },
+    {
+      "range": {
+        "start": 354,
         "end": 378
       },
       "type": "Int"
@@ -1009,6 +1078,13 @@
         "end": 378
       },
       "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 388,
+        "end": 392
+      },
+      "type": "Int -> List<Int> -> Int"
     },
     {
       "range": {
@@ -6992,6 +7068,61 @@
       "constraints": []
     },
     {
+      "identity": "std/math::acos",
+      "name": "acos",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "acos arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::asin",
+      "name": "asin",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "asin arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::atan",
+      "name": "atan",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "atan arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::atan2",
+      "name": "atan2",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "atan2 arg1: Float -> arg2: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::cbrt",
+      "name": "cbrt",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "cbrt arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/int::checkedAdd",
       "name": "checkedAdd",
       "module": "std/int",
@@ -7124,6 +7255,28 @@
       "constraints": []
     },
     {
+      "identity": "std/math::cos",
+      "name": "cos",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "cos arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::cosh",
+      "name": "cosh",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "cosh arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/decimal::divide",
       "name": "divide",
       "module": "std/decimal",
@@ -7142,6 +7295,28 @@
       "kind": "function",
       "signature": "divideExact arg1: Decimal -> arg2: Decimal -> Either<DecimalArithmeticError, Decimal>",
       "description": "Divides Decimals only when the exact result has a finite decimal expansion.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::e",
+      "name": "e",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "value",
+      "signature": "Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::exp",
+      "name": "exp",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "exp arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7245,6 +7420,17 @@
       "constraints": []
     },
     {
+      "identity": "std/math::hypot",
+      "name": "hypot",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "hypot arg1: Float -> arg2: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::ieeeEq",
       "name": "ieeeEq",
       "module": "std/float",
@@ -7296,6 +7482,39 @@
       "kind": "function",
       "signature": "isNegativeZero arg1: Float -> Bool",
       "description": "Parses, formats, classifies, or explicitly converts an IEEE 754 Float.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::log",
+      "name": "log",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "log arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::log10",
+      "name": "log10",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "log10 arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::log2",
+      "name": "log2",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "log2 arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7454,6 +7673,17 @@
       "constraints": []
     },
     {
+      "identity": "std/math::pi",
+      "name": "pi",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "value",
+      "signature": "Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::positiveInfinity",
       "name": "positiveInfinity",
       "module": "std/float",
@@ -7593,6 +7823,72 @@
       "kind": "function",
       "signature": "sign arg1: Int -> Int",
       "description": "Parses, formats, or computes with Int under the safe integer contract.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::sin",
+      "name": "sin",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "sin arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::sinh",
+      "name": "sinh",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "sinh arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::sqrt",
+      "name": "sqrt",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "sqrt arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::tan",
+      "name": "tan",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "tan arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::tanh",
+      "name": "tanh",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "tanh arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::tau",
+      "name": "tau",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "value",
+      "signature": "Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7743,6 +8039,19 @@
       ]
     },
     {
+      "identity": "std/prelude:::",
+      "name": ":",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "A : List<A> -> List<A>",
+      "description": "Persistent List cons. Precedence 4, right associative; evaluates head then tail once and shares the tail in O(1). The operator section (:) is a curried function.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::<",
       "name": "<",
       "module": "std/prelude",
@@ -7847,6 +8156,19 @@
       ]
     },
     {
+      "identity": "std/prelude::??",
+      "name": "??",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "Maybe<A> ?? A -> A",
+      "description": "Maybe fallback. Precedence 0, right-associative. Evaluates the left once; evaluates the fallback only for Nothing. Syntax only: no operator section or overload.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/path::AbsoluteChildPath",
       "name": "AbsoluteChildPath",
       "module": "std/path",
@@ -7897,6 +8219,39 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "AssertionFailed arg1: { message: String, expected: Maybe<String>, actual: Maybe<String> } -> TestFailure",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::Benchmark",
+      "name": "Benchmark",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Benchmark",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::BenchmarkEnvironment",
+      "name": "BenchmarkEnvironment",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "alias",
+      "signature": "BenchmarkEnvironment",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::BenchmarkFailure",
+      "name": "BenchmarkFailure",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "BenchmarkFailure",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -8776,6 +9131,17 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "TestFailure",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::ExplicitBenchmarkFailure",
+      "name": "ExplicitBenchmarkFailure",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ExplicitBenchmarkFailure arg1: String -> BenchmarkFailure",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -11968,6 +12334,30 @@
       "constraints": []
     },
     {
+      "identity": "std/benchmark::benchmark",
+      "name": "benchmark",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "benchmark arg1: String -> arg2: Effect<{ random: Random, console: Console, logger: Logger }, BenchmarkFailure, Unit> -> Benchmark",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::blackBox",
+      "name": "blackBox",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "blackBox<A> arg1: A -> A",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http/multipart::body",
       "name": "body",
       "module": "std/http/multipart",
@@ -12931,6 +13321,17 @@
       "constraints": []
     },
     {
+      "identity": "std/benchmark::fail",
+      "name": "fail",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "fail arg1: String -> Effect<{}, BenchmarkFailure, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/deferred::fail",
       "name": "fail",
       "module": "std/deferred",
@@ -13437,6 +13838,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "inDirectory arg1: Path -> arg2: Command -> Command",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::inputSize",
+      "name": "inputSize",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "inputSize arg1: Int -> arg2: Benchmark -> Benchmark",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -15701,6 +16113,17 @@
         "E",
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::suite",
+      "name": "suite",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "suite arg1: String -> arg2: Array<Benchmark> -> Benchmark",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {

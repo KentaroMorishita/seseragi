@@ -31,6 +31,7 @@ pub struct ProjectModuleInput {
     pub source: String,
     pub output_path: String,
     pub package_scope: Option<String>,
+    pub profile: seseragi_project::BuildProfile,
 }
 
 impl ProjectModuleInput {
@@ -46,7 +47,13 @@ impl ProjectModuleInput {
             source: source.into(),
             output_path: output_path.into(),
             package_scope: None,
+            profile: seseragi_project::BuildProfile::Development,
         }
+    }
+
+    pub fn with_profile(mut self, profile: seseragi_project::BuildProfile) -> Self {
+        self.profile = profile;
+        self
     }
 
     /// Assigns an opaque project-owned package scope for visibility linking.
@@ -79,6 +86,9 @@ pub struct ProjectModuleDiagnostics {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ProjectCompileError {
+    MixedProfiles {
+        module: String,
+    },
     Graph(ModuleGraphError<String>),
     DuplicateInput {
         module: String,
@@ -154,6 +164,22 @@ fn compile_project_inner(
         .map_err(ProjectCompileError::Graph)?;
     let inputs = validation::index_project_inputs(&order, input_iter)?;
     let mut frontend = analyze_project_frontend(&graph, &order, &inputs, false)?;
+    let project_newtypes = frontend
+        .analyzed
+        .values()
+        .flat_map(|analyzed| analyzed.typed_hir.declarations.iter())
+        .filter_map(|decl| match decl {
+            seseragi_semantics::TypedDecl::Adt {
+                newtype: true,
+                variants,
+                ..
+            } => Some(variants),
+            _ => None,
+        })
+        .flatten()
+        .map(|variant| variant.symbol.clone())
+        .collect::<std::collections::BTreeSet<_>>();
+
     if !frontend.diagnostics.is_empty() {
         return Err(ProjectCompileError::Diagnostics {
             modules: frontend.diagnostics,
@@ -195,6 +221,8 @@ fn compile_project_inner(
             &input.source,
             &output_plan,
             output_paths,
+            input.profile,
+            &project_newtypes,
         )
         .map_err(|error| ProjectCompileError::Compile {
             module: module.clone(),

@@ -38,7 +38,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::Unit { .. } => push_unique(requirements, "core.unit"),
         CoreExpr::Integer { .. } => push_unique(requirements, "core.int"),
         CoreExpr::Float64 { .. } => push_unique(requirements, "core.float64"),
-        CoreExpr::String { .. } => push_unique(requirements, "core.string"),
+        CoreExpr::String { .. } | CoreExpr::Char { .. } => push_unique(requirements, "core.string"),
         CoreExpr::Template { parts, .. } => {
             push_unique(requirements, "core.string");
             for part in parts {
@@ -290,6 +290,12 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 collect_evidence_runtime_requirements(evidence, requirements);
             }
             collect_type_runtime_requirement(type_ref, requirements);
+            if operator == ":" {
+                push_unique(
+                    requirements,
+                    crate::list_ops::runtime_list_cons_operation().runtime_feature,
+                );
+            }
             if let Some(operation) = runtime_range_operation(operator) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = int_operation {
@@ -445,11 +451,15 @@ fn collect_statement_runtime_requirements(
             collect_expr_runtime_requirements(value, requirements);
         }
         CoreStatement::LocalFunction {
+            return_type,
             constraints,
             parameters,
             body,
             ..
         } => {
+            if let Some(return_type) = return_type {
+                collect_type_runtime_requirement(return_type, requirements);
+            }
             for constraint in constraints {
                 for argument in &constraint.arguments {
                     collect_type_runtime_requirement(argument, requirements);
@@ -523,6 +533,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         | CoreExpr::Integer { .. }
         | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
+        | CoreExpr::Char { .. }
         | CoreExpr::Boolean { .. } => {}
         CoreExpr::Template { parts, .. } => {
             for part in parts {
@@ -917,6 +928,16 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 .flatten();
             if int_operation.is_none() {
                 collect_evidence_runtime_imports(evidence, imports);
+            }
+            if operator == ":" {
+                let operation = crate::list_ops::runtime_list_cons_operation();
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
             }
             if let Some(operation) = runtime_range_operation(operator) {
                 push_import_unique(

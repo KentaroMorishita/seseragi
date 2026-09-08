@@ -87,6 +87,7 @@ const ROUTES: &[RouteDefinition] = &[
             "std/big-int",
             "std/decimal",
             "std/float",
+            "std/math",
             "std/array",
             "std/collection",
             "std/iterator",
@@ -219,6 +220,12 @@ const ROUTES: &[RouteDefinition] = &[
         modules: &["std/entropy"],
     },
     RouteDefinition {
+        id: "benchmark-runner-project",
+        evidence: "examples/spec/fixtures/projects/benchmark-discovery",
+        products: &["cli-benchmark"],
+        modules: &["std/benchmark"],
+    },
+    RouteDefinition {
         id: "test-runner-project",
         evidence: "examples/spec/fixtures/projects/test-discovery",
         products: &["cli-test"],
@@ -334,7 +341,18 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 59);
+        assert_eq!(surface.modules.len(), 61);
+        assert!(surface
+            .modules
+            .iter()
+            .any(|module| module.specifier == "std/benchmark"));
+        let math = surface
+            .modules
+            .iter()
+            .find(|module| module.specifier == "std/math")
+            .unwrap();
+        assert_eq!(math.targets, ["process", "browser"]);
+        assert!(math.capability_services.is_empty());
         assert!(surface
             .modules
             .iter()

@@ -55,6 +55,71 @@
                 ]
               }
             ]
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 0,
+            "endToken": 37,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 0,
+                "endToken": 23,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 23,
+                "endToken": 37,
+                "children": [
+                  {
+                    "kind": "complete-do-item",
+                    "startToken": 27,
+                    "endToken": 30,
+                    "children": [
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 27,
+                        "endToken": 30,
+                        "children": [
+                          {
+                            "kind": "complete-expression",
+                            "startToken": 27,
+                            "endToken": 28,
+                            "children": []
+                          },
+                          {
+                            "kind": "complete-expression",
+                            "startToken": 29,
+                            "endToken": 30,
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 32,
+                    "endToken": 35,
+                    "children": [
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 32,
+                        "endToken": 33,
+                        "children": []
+                      },
+                      {
+                        "kind": "complete-expression",
+                        "startToken": 34,
+                        "endToken": 35,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

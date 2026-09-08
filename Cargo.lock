@@ -641,6 +641,7 @@ dependencies = [
  "serde",
  "serde_json",
  "seseragi-driver",
+ "seseragi-project",
  "seseragi-semantics",
  "seseragi-syntax",
  "sha2",

@@ -1,6 +1,8 @@
 use std::path::Path;
 
-use crate::local_project::{compatible_targets, compile_path, LocalProjectCompilation};
+use crate::local_project::{
+    compatible_targets, compile_path_with_profile, LocalProjectCompilation,
+};
 use seseragi_driver::{compile_module, render_terminal_diagnostics, CompileInput};
 use seseragi_project::{select_project_target, ProjectCommand, ProjectTarget};
 use seseragi_runtime::{main_contract, BuildTarget};
@@ -9,6 +11,7 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
     let mut path = None;
     let mut output_directory = "dist".to_owned();
     let mut target = None;
+    let mut profile = None;
     let mut index = 0;
     while index < arguments.len() {
         match arguments[index].as_str() {
@@ -19,6 +22,15 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
                     .filter(|value| !value.is_empty())
                     .ok_or_else(|| "--out-dir requires a directory".to_owned())?
                     .clone();
+            }
+            "--profile" => {
+                if profile.is_some() {
+                    return Err("--profile may only be specified once".to_owned());
+                }
+                index += 1;
+                profile = Some(seseragi_project::BuildProfile::parse(
+                    arguments.get(index).ok_or("--profile requires a value")?,
+                )?);
             }
             "--target" => {
                 index += 1;
@@ -38,20 +50,26 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
         index += 1;
     }
     let path = path.ok_or_else(|| "build requires a source file or package path".to_owned())?;
-    build_path(Path::new(&path), Path::new(&output_directory), target)
+    build_path(
+        Path::new(&path),
+        Path::new(&output_directory),
+        target,
+        profile,
+    )
 }
 
-pub(crate) fn build_path(
+fn build_path(
     path: &Path,
     output_directory: &Path,
     target: Option<ProjectTarget>,
+    profile: Option<seseragi_project::BuildProfile>,
 ) -> Result<i32, String> {
     if let Some(package) = crate::local_project::containing_package(path) {
-        build_package(&package, output_directory, target)
+        build_package(&package, output_directory, target, profile)
     } else if path.is_dir() {
-        build_package(path, output_directory, target)
+        build_package(path, output_directory, target, profile)
     } else {
-        build_file(path, output_directory, target)
+        build_file(path, output_directory, target, profile)
     }
 }
 
@@ -59,6 +77,7 @@ fn build_file(
     path: &Path,
     output_directory: &Path,
     target: Option<ProjectTarget>,
+    profile: Option<seseragi_project::BuildProfile>,
 ) -> Result<i32, String> {
     if path.extension().and_then(|extension| extension.to_str()) != Some("ssrg") {
         return Err("build expects a .ssrg source file".to_owned());
@@ -66,14 +85,16 @@ fn build_file(
     let source = std::fs::read_to_string(path)
         .map_err(|error| format!("failed to read {}: {error}", path.display()))?;
     let source_name = path.to_string_lossy();
-    let compiled =
-        match compile_module(CompileInput::new(&source_name, "single-file/main", &source)) {
-            Ok(compiled) => compiled,
-            Err(diagnostics) => {
-                eprint!("{}", render_terminal_diagnostics(&diagnostics, &source));
-                return Ok(2);
-            }
-        };
+    let compiled = match compile_module(
+        CompileInput::new(&source_name, "single-file/main", &source)
+            .with_profile(profile.unwrap_or_default()),
+    ) {
+        Ok(compiled) => compiled,
+        Err(diagnostics) => {
+            eprint!("{}", render_terminal_diagnostics(&diagnostics, &source));
+            return Ok(2);
+        }
+    };
     if !compiled.diagnostics.diagnostics.is_empty() {
         eprint!(
             "{}",
@@ -100,12 +121,14 @@ fn build_package(
     path: &Path,
     output_directory: &Path,
     target: Option<ProjectTarget>,
+    profile: Option<seseragi_project::BuildProfile>,
 ) -> Result<i32, String> {
-    let compiled = match compile_path(
+    let compiled = match compile_path_with_profile(
         path,
         ProjectCommand::Build,
         target,
         seseragi_runtime::DiagnosticFormat::Text,
+        profile,
     )? {
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => return Ok(2),

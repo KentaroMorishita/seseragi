@@ -86,6 +86,7 @@ pub(super) fn resolve_import(
     };
     let root = match (current.root(), classified) {
         (ModuleRoot::Test, ImportSpecifier::Relative(_)) => ModuleRoot::Test,
+        (ModuleRoot::Benchmark, ImportSpecifier::Relative(_)) => ModuleRoot::Benchmark,
         (ModuleRoot::Generated, ImportSpecifier::Relative(_)) => ModuleRoot::Generated,
         (ModuleRoot::Generated, ImportSpecifier::SelfPackage(_)) => {
             return Err(ImportFailure::new(

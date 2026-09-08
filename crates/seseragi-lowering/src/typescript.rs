@@ -145,12 +145,16 @@ pub struct TypeScriptStruct {
     pub opaque: bool,
     pub type_parameters: Vec<TypeParameter>,
     pub fields: Vec<TypeScriptRecordTypeField>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub private_fields: Option<Vec<TypeScriptRecordTypeField>>,
     pub origin: SourceSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptAdt {
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub erased_newtype: bool,
     pub exported: bool,
     pub name: String,
     pub type_parameters: Vec<TypeParameter>,
@@ -186,6 +190,8 @@ pub struct TypeScriptTypeImport {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptSourceImport {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub reexports: Vec<TypeScriptSourceImportBinding>,
     pub module: String,
     pub specifier: String,
     /// Whether this group originated from a Seseragi source dependency edge
@@ -627,6 +633,10 @@ pub enum TypeScriptStatement {
         origin: SourceSpan,
     },
     LocalFunction {
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rec_group: Option<SourceSpan>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        return_type: Option<TypeScriptType>,
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<TypeParameter>,
@@ -647,7 +657,27 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
     module: CoreModule,
     plan: &TypeScriptOutputPlan,
 ) -> Result<TypeScriptModule, TypeScriptLoweringError> {
-    let module_imports = lower_module_imports(&module, plan)?;
+    lower_core_module_to_typescript_ir_with_options(
+        module,
+        plan,
+        &TypeScriptLoweringOptions::default(),
+    )
+}
+
+#[derive(Clone, Debug, Default)]
+pub struct TypeScriptLoweringOptions {
+    pub erased_newtype_constructors: std::collections::BTreeSet<String>,
+}
+
+pub fn lower_core_module_to_typescript_ir_with_options(
+    module: CoreModule,
+    plan: &TypeScriptOutputPlan,
+    options: &TypeScriptLoweringOptions,
+) -> Result<TypeScriptModule, TypeScriptLoweringError> {
+    let mut module_imports = lower_module_imports(&module, plan)?;
+    module_imports.type_names = module_imports
+        .type_names
+        .with_erased_newtypes(options.erased_newtype_constructors.clone());
     let foreign_opaque_names = foreign_opaque_type_names(&module.foreign_modules);
     let mut runtime_requirements = Vec::new();
     let mut imports = Vec::new();
@@ -804,6 +834,26 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
             name: local_name(&structure.symbol),
             brand: format!("__ssrg$brand${}", local_name(&structure.symbol)),
             opaque: structure.opaque,
+            private_fields: module_imports
+                .type_names
+                .has_private_representations()
+                .then(|| {
+                    structure
+                        .fields
+                        .iter()
+                        .map(|field| TypeScriptRecordTypeField {
+                            name: field.name.clone(),
+                            optional: false,
+                            type_ref: types::type_ref_from_core_type(
+                                &field.type_ref,
+                                &module_imports
+                                    .type_names
+                                    .with_parameters(&structure.type_parameters)
+                                    .with_private_representation(),
+                            ),
+                        })
+                        .collect()
+                }),
             type_parameters: structure.type_parameters.clone(),
             fields: structure
                 .fields

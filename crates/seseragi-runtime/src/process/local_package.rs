@@ -141,6 +141,75 @@ pub fn run_local_tests_in_directory(
     finish_run(result, &directory)
 }
 
+#[derive(Clone, Debug, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BenchmarkConfig {
+    pub warmup: u64,
+    pub samples: u64,
+    pub minimum_sample_ms: u64,
+    pub regression_threshold_percent: f64,
+    pub seed: String,
+    pub timeout_ms: u64,
+    pub cleanup_grace_ms: u64,
+}
+
+#[derive(Clone, Debug, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BenchmarkRunOptions {
+    pub config: BenchmarkConfig,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exact: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub baseline: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub save_baseline: Option<String>,
+    pub json: bool,
+    pub version: String,
+}
+
+pub fn run_local_benchmarks_in_directory(
+    project: &seseragi_driver::CompiledLocalBenchmarks,
+    application_directory: &Path,
+    options: &BenchmarkRunOptions,
+) -> Result<RunOutcome, RunError> {
+    let application_directory = absolute_application_directory(application_directory)?;
+    let directory = prepare_directory().map_err(RunError::Host)?;
+    let result = (|| {
+        stage_project_modules(&project.compiled, &directory).map_err(RunError::Host)?;
+        stage_foreign_host_directories(&project.foreign_host_directories, &directory)
+            .map_err(RunError::Host)?;
+        crate::stage_typescript_package(&directory).map_err(RunError::Host)?;
+        let mut source = String::from(
+            "import { runBenchmarkModules } from \"@seseragi/runtime/benchmark-host\";\ntry {\n",
+        );
+        let mut modules = Vec::new();
+        for (index, entry) in project.benchmark_modules.iter().enumerate() {
+            let module = &project.compiled.modules[&entry.module_id];
+            let path = canonical_output_path(&module.generated.metadata.outputs.typescript)
+                .map_err(RunError::Host)?;
+            let specifier = serde_json::to_string(&format!("./{}", path.to_string_lossy()))
+                .map_err(|error| RunError::Host(error.to_string()))?;
+            source.push_str(&format!(
+                "const {{ benchmarks: benchmark{index} }} = await import({specifier});\n"
+            ));
+            modules.push(format!(
+                "{{ name: {}, benchmarks: benchmark{index} }}",
+                serde_json::to_string(&entry.name)
+                    .map_err(|error| RunError::Host(error.to_string()))?
+            ));
+        }
+        let options =
+            serde_json::to_string(options).map_err(|error| RunError::Host(error.to_string()))?;
+        source.push_str(&format!("process.exit(await runBenchmarkModules([{}], {options}));\n}} catch (error) {{ console.error('benchmark discovery:', error); process.exit(2); }}\n", modules.join(", ")));
+        fs::write(directory.join("entry.ts"), source)
+            .map_err(|error| RunError::Host(error.to_string()))?;
+        run_target(&directory, Some(&application_directory))
+    })();
+    finish_run(result, &directory)
+}
+
 fn test_entry_source(
     project: &CompiledLocalTests,
     options: &TestRunOptions,

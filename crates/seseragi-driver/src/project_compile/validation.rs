@@ -10,9 +10,14 @@ pub(super) fn index_project_inputs(
     let graph_modules = order.iter().cloned().collect::<BTreeSet<_>>();
     let mut inputs = BTreeMap::new();
     let mut output_owners = BTreeMap::new();
+    let mut profile = None;
 
     for input in input_iter {
         let module = input.module_id.clone();
+        if profile.is_some_and(|selected| selected != input.profile) {
+            return Err(ProjectCompileError::MixedProfiles { module });
+        }
+        profile = Some(input.profile);
         if inputs.contains_key(&module) {
             return Err(ProjectCompileError::DuplicateInput { module });
         }
@@ -69,6 +74,19 @@ pub(super) fn ensure_graph_imports_match(
 mod tests {
     use super::*;
     use seseragi_syntax::parse_unlinked_module_interface;
+
+    #[test]
+    fn rejects_mixed_runtime_representations_in_one_graph() {
+        let inputs = [
+            ProjectModuleInput::new("a.ssrg", "a", "", "a.ts"),
+            ProjectModuleInput::new("b.ssrg", "b", "", "b.ts")
+                .with_profile(seseragi_project::BuildProfile::Release),
+        ];
+        assert!(matches!(
+            index_project_inputs(&["a".into(), "b".into()], inputs),
+            Err(ProjectCompileError::MixedProfiles { .. })
+        ));
+    }
 
     #[test]
     fn rejects_extra_project_input_and_global_output_collisions() {

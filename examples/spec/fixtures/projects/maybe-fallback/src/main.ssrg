@@ -1,0 +1,19 @@
+import { resolve } from "./domain"
+foreign "typescript" from "../host/probe.mjs" {
+  pure fn record value: Int -> Int
+  pure fn trace unit: Unit -> String
+  pure fn recordUnit unit: Unit -> Unit
+}
+fn absent unit: Unit -> Maybe<Int> = if record 2 == 2 then Nothing else Just 999
+let hit = Just (record 1) ?? record 10
+let miss = absent () ?? record 20
+let chained = Nothing ?? Just (record 3) ?? record 30
+let unit: Unit = Just () ?? recordUnit ()
+let cached: Maybe<String> = Nothing
+let requested: Maybe<String> = Just "request"
+pub effect fn main = do {
+  println $ show (hit, miss, chained, unit)
+  println $ cached ?? requested ?? "anonymous"
+  println $ show (resolve (Just 7) 9)
+  println (trace ())
+}

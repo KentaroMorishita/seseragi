@@ -138,7 +138,8 @@ pub(crate) fn check_typescript_runtime_package(
     {
         iterator::check_typescript_runtime_iterator(root)?;
     }
-    if runtime_helper_is_declared(abi, "core.list.from-array")
+    if runtime_helper_is_declared(abi, "core.list.cons")
+        || runtime_helper_is_declared(abi, "core.list.from-array")
         || runtime_helper_is_declared(abi, "core.list.reduce")
         || runtime_helper_is_declared(abi, "core.list.comprehend")
         || runtime_helper_is_declared(abi, "core.non-empty-list.singleton")

@@ -228,7 +228,7 @@ fn lower_pattern(
                 origin: source_span(source, origin),
             });
         }
-        TypedPattern::String { value, origin, .. } => {
+        TypedPattern::String { value, origin, .. } | TypedPattern::Char { value, origin, .. } => {
             tests.push(CoreDecisionTest::String {
                 path: path.clone(),
                 value,
@@ -343,6 +343,7 @@ fn typed_pattern_type(pattern: &TypedPattern) -> TypedType {
     match pattern {
         TypedPattern::Integer { type_ref, .. }
         | TypedPattern::String { type_ref, .. }
+        | TypedPattern::Char { type_ref, .. }
         | TypedPattern::Boolean { type_ref, .. }
         | TypedPattern::Wildcard { type_ref, .. }
         | TypedPattern::Binding { type_ref, .. }
@@ -359,6 +360,7 @@ fn typed_pattern_origin(pattern: &TypedPattern) -> ByteSpan {
     match pattern {
         TypedPattern::Integer { origin, .. }
         | TypedPattern::String { origin, .. }
+        | TypedPattern::Char { origin, .. }
         | TypedPattern::Boolean { origin, .. }
         | TypedPattern::Wildcard { origin, .. }
         | TypedPattern::Binding { origin, .. }
@@ -377,6 +379,7 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
         | TypedExpr::Integer { type_ref, .. }
         | TypedExpr::Float { type_ref, .. }
         | TypedExpr::String { type_ref, .. }
+        | TypedExpr::Char { type_ref, .. }
         | TypedExpr::Template { type_ref, .. }
         | TypedExpr::Boolean { type_ref, .. }
         | TypedExpr::Variable { type_ref, .. }
@@ -405,3 +408,54 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
 
 #[cfg(test)]
 mod tests;
+
+/// Reuse the decision backend so the scrutinee is evaluated once and fallback stays lazy.
+pub(super) fn lower_fallback(
+    source: &str,
+    left: TypedExpr,
+    right: TypedExpr,
+    result_type: TypedType,
+    span: ByteSpan,
+) -> CoreExpr {
+    let scrutinee_type = lower_typed_type(typed_expr_type(&left));
+    let type_ref = lower_typed_type(result_type);
+    let origin = source_span(source, span);
+    let name = "$ssrg$fallbackValue".to_owned();
+    CoreExpr::Decision {
+        scrutinee: Box::new(lower_expr(source, left)),
+        scrutinee_type,
+        exhaustive: true,
+        branches: vec![
+            CoreDecisionBranch {
+                tests: vec![CoreDecisionTest::Constructor {
+                    path: vec![],
+                    constructor: "std/prelude::Just".to_owned(),
+                    origin: origin.clone(),
+                }],
+                bindings: vec![CoreDecisionBinding {
+                    name: name.clone(),
+                    type_ref: type_ref.clone(),
+                    path: vec![CoreDecisionProjection::AdtPayload],
+                    origin: origin.clone(),
+                }],
+                guard: None,
+                value: CoreExpr::Variable {
+                    name,
+                    evidence: vec![],
+                    type_ref: type_ref.clone(),
+                    origin: origin.clone(),
+                },
+                origin: origin.clone(),
+            },
+            CoreDecisionBranch {
+                tests: vec![],
+                bindings: vec![],
+                guard: None,
+                value: lower_expr(source, right),
+                origin: origin.clone(),
+            },
+        ],
+        type_ref,
+        origin,
+    }
+}

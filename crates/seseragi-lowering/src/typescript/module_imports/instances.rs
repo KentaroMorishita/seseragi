@@ -74,6 +74,7 @@ pub(super) fn lower_imported_instance_imports(
             .position(|group| group.module == *provider_module)
             .unwrap_or_else(|| {
                 imports.push(TypeScriptSourceImport {
+                    reexports: Vec::new(),
                     module: provider_module.clone(),
                     specifier: specifier.to_owned(),
                     runtime_edge: false,
@@ -241,6 +242,7 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
         | CoreExpr::Integer { .. }
         | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
+        | CoreExpr::Char { .. }
         | CoreExpr::Boolean { .. } => {}
     }
 }

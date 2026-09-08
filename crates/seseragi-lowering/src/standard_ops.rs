@@ -8,6 +8,9 @@ use crate::sum_ops::{runtime_sum_operation, runtime_sum_operation_for_feature};
 pub(crate) fn runtime_standard_operation(
     name: &str,
 ) -> Option<&'static RuntimeCollectionOperation> {
+    if name == "std/prelude:::" {
+        return Some(&LIST_CONS);
+    }
     runtime_standard_collection_operation(name)
         .or_else(|| runtime_sum_operation(name))
         .or_else(|| {
@@ -21,6 +24,9 @@ pub(crate) fn runtime_standard_operation(
 pub(crate) fn runtime_standard_operation_for_feature(
     feature: &str,
 ) -> Option<RuntimeCollectionOperation> {
+    if feature == LIST_CONS.runtime_feature {
+        return Some(LIST_CONS);
+    }
     runtime_collection_operation_for_feature(feature)
         .or_else(|| runtime_sum_operation_for_feature(feature))
         .or_else(|| {
@@ -30,6 +36,15 @@ pub(crate) fn runtime_standard_operation_for_feature(
                 .map(|(_, operation)| *operation)
         })
 }
+
+const LIST_CONS: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    result_erased: false,
+    runtime_feature: "core.list.cons",
+    local_name: "_ssrg_list_cons",
+    module: "@seseragi/runtime/list",
+    export_name: "Cons",
+    source_arity: 2,
+};
 
 const TRANSFORMER_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
     (

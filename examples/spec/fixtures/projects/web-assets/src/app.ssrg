@@ -1,0 +1,102 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+
+struct StarterState { count: Int, }
+
+type StarterAction =
+  | Increment
+
+let pageStyle = html.style {
+  backgroundColor: "#eef2ff",
+  color: "#1e1b4b",
+  minHeight: "100vh",
+  padding: "1px"
+}
+
+let cardStyle = html.style {
+  backgroundColor: "#ffffff",
+  borderRadius: "24px",
+  boxShadow: "0 18px 50px #312e8130",
+  margin: "64px auto",
+  maxWidth: "520px",
+  padding: "40px"
+}
+
+let buttonStyle = html.style {
+  backgroundColor: "#4f46e5",
+  borderRadius: "12px",
+  color: "#ffffff",
+  fontWeight: "700",
+  padding: "12px 18px"
+}
+
+let imageStyle = html.style {
+  borderRadius: "16px",
+  height: "auto",
+  objectFit: "cover",
+  width: "100%"
+}
+
+fn update action: StarterAction -> state: StarterState -> StarterState = match action {
+  Increment -> StarterState { count: state.count + 1 }
+}
+
+fn dispatch state: MutableSignal<StarterState> -> action: StarterAction -> Task<Unit> =
+  signals.update (update action) state
+
+fn eyebrow -> html.Html<Task<Unit>> = html.p { children: "SESERAGI WEB STARTER" }
+
+fn heading -> html.Html<Task<Unit>> = html.h1 { children: "Hello from Seseragi" }
+
+fn count current: StarterState -> html.Html<Task<Unit>> = html.p {
+  children: `Count: ${current.count}`
+}
+
+fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> = html.img {
+  src: imageUrl,
+  alt: "朝の光が差し込む静かな作業机",
+  style: imageStyle,
+  width: 960,
+  height: 480,
+  loading: "eager"
+}
+
+fn card imageUrl: html.WebUrl
+  -> state: MutableSignal<StarterState>
+  -> current: StarterState
+  -> html.Html<Task<Unit>> =
+  html.section {
+    style: cardStyle,
+    children: [
+      heroImage imageUrl,
+      eyebrow (),
+      heading (),
+      count current,
+      html.button {
+        buttonType: "button",
+        onClick: dispatch state Increment,
+        style: buttonStyle,
+        children: "Count one more"
+      }
+    ]
+  }
+
+fn view imageUrl: html.WebUrl
+  -> state: MutableSignal<StarterState>
+  -> current: StarterState
+  -> html.Html<Task<Unit>> =
+  html.main {
+    style: pageStyle,
+    children: card imageUrl state current
+  }
+
+effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl value)
+
+pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String = do {
+  imageUrl <- parsedUrl "https://images.unsplash.com/photo-1499750310107-5fef28a66643?fit=crop&w=960&h=480&q=80"
+    |> mapError (\error: html.HtmlBuildError -> show error)
+  state <- signals.make $ StarterState { count: 0 }
+  succeed $ signals.map (view imageUrl state) state
+}

@@ -37,6 +37,7 @@ pub(super) fn register_linked_imports(
                         *origin,
                     );
                     resolved.push(ResolvedImport {
+                        reexported_as: None,
                         symbol,
                         specifier: dependency.specifier.clone(),
                         module: dependency.interface.module.clone(),
@@ -101,6 +102,7 @@ pub(super) fn register_linked_imports(
                         *origin,
                     );
                     resolved.push(ResolvedImport {
+                        reexported_as: None,
                         symbol,
                         specifier: dependency.specifier.clone(),
                         module: dependency.interface.module.clone(),
@@ -195,6 +197,7 @@ fn ensure_dependency_member(
         export.symbol.clone(),
     );
     resolved.push(ResolvedImport {
+        reexported_as: None,
         symbol,
         specifier: dependency.specifier.clone(),
         module: dependency.interface.module.clone(),
@@ -243,6 +246,7 @@ fn ensure_dependency_method(
         export.symbol.clone(),
     );
     resolved.push(ResolvedImport {
+        reexported_as: None,
         symbol,
         specifier: dependency.specifier.clone(),
         module: dependency.interface.module.clone(),

@@ -11,6 +11,14 @@ pub struct GeneratedModule {
     pub schema: u32,
     pub module: String,
     pub target: String,
+    #[serde(default = "development_profile")]
+    pub profile: String,
+    #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
+    pub inspection_roots: std::collections::BTreeMap<String, String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub newtype_constructors: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub effect_roots: Vec<String>,
     pub runtime: GeneratedRuntime,
     pub exports: Vec<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -62,6 +70,10 @@ pub(super) fn generated_module_for(
         schema: module.schema,
         module: module.module,
         target: "typescript-es2022".to_owned(),
+        profile: development_profile(),
+        inspection_roots: Default::default(),
+        newtype_constructors: Vec::new(),
+        effect_roots: Vec::new(),
         runtime: GeneratedRuntime {
             identity: "@seseragi/runtime".to_owned(),
             abi_major: 1,
@@ -89,7 +101,13 @@ fn generated_instance_from_typescript(instance: &TypeScriptInstance) -> Generate
 }
 
 fn module_exports(module: &TypeScriptModule) -> Vec<String> {
-    let mut exports = Vec::new();
+    let mut exports = module
+        .source_imports
+        .iter()
+        .flat_map(|import| &import.reexports)
+        .filter(|binding| !binding.type_only)
+        .map(|binding| binding.local.clone())
+        .collect::<Vec<_>>();
     for adt in &module.adts {
         for variant in &adt.variants {
             if variant.exported {
@@ -172,4 +190,8 @@ mod tests {
 
         assert!(json.get("instances").is_none());
     }
+}
+
+fn development_profile() -> String {
+    "development".to_owned()
 }

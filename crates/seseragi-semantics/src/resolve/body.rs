@@ -66,7 +66,19 @@ pub fn resolve_linked_module(
     resolver.issues.extend(dependency_instance_issues);
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
     register_foreign_namespaces(&mut resolver, &surface.foreign_modules);
-    let imports = imports::register_linked_imports(&mut resolver, &linked.dependencies);
+    let mut imports = imports::register_linked_imports(&mut resolver, &linked.dependencies);
+    for import in &mut imports {
+        import.reexported_as = linked
+            .interface
+            .exports
+            .iter()
+            .find(|export| {
+                export.symbol == import.export.symbol
+                    && export.namespace == import.export.namespace
+                    && export.name == import.local_name
+            })
+            .map(|export| export.name.clone());
+    }
     declarations::resolve_declarations(&mut resolver, &surface.declarations);
     finish_resolved_module(
         linked.interface,

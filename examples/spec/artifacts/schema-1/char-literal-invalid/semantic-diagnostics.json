@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-P0202",
+      "severity": "Error",
+      "messageKey": "literal.char-scalar-count",
+      "message": "Char literal must contain exactly one Unicode scalar value",
+      "primary": {
+        "start": 12,
+        "end": 14
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-P0202",
+      "severity": "Error",
+      "messageKey": "literal.char-scalar-count",
+      "message": "Char literal must contain exactly one Unicode scalar value",
+      "primary": {
+        "start": 30,
+        "end": 34
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d3",
+      "code": "SES-P0202",
+      "severity": "Error",
+      "messageKey": "literal.char-scalar-count",
+      "message": "Char literal must contain exactly one Unicode scalar value",
+      "primary": {
+        "start": 51,
+        "end": 62
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
+      "code": "SES-P0201",
+      "severity": "Error",
+      "messageKey": "literal.invalid-escape",
+      "message": "Literal contains an invalid or unsupported escape sequence",
+      "primary": {
+        "start": 80,
+        "end": 88
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Use a supported escape such as \\n, \\r, \\t, \\\\, a delimiter escape, or \\u{...}."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

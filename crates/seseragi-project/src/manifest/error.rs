@@ -56,6 +56,7 @@ pub enum ManifestError {
         value: String,
     },
     InvalidTestSetting(String),
+    InvalidBenchmarkSetting(String),
     ShutdownGraceWithForwardSignal,
 }
 
@@ -201,7 +202,9 @@ impl fmt::Display for ManifestError {
                     "{field} must be `entropy` or an Int, got `{value}`"
                 )
             }
-            Self::InvalidTestSetting(message) => formatter.write_str(message),
+            Self::InvalidTestSetting(message) | Self::InvalidBenchmarkSetting(message) => {
+                formatter.write_str(message)
+            }
             Self::ShutdownGraceWithForwardSignal => formatter
                 .write_str("run.shutdown_grace_ms is only valid when signal_mode is `cancel`"),
         }

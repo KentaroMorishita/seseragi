@@ -17,6 +17,7 @@ pub(super) fn collect_module_dependencies(resolved: &ResolvedModule) -> Vec<Type
                         && import.module == dependency.module
                 })
                 .map(|import| TypedModuleImport {
+                    reexported_as: import.reexported_as.clone(),
                     namespace: import.export.namespace.clone(),
                     imported: import.export.name.clone(),
                     local: import.local_name.clone(),
@@ -78,6 +79,7 @@ mod tests {
 
     fn import(in_scope: bool, local_name: &str) -> ResolvedImport {
         ResolvedImport {
+            reexported_as: None,
             symbol: crate::SymbolId(if in_scope { 1 } else { 2 }),
             specifier: "./domain".to_owned(),
             module: "fixture/game::domain".to_owned(),

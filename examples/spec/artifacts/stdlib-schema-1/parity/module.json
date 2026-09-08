@@ -37,6 +37,7 @@
         "std/big-int",
         "std/decimal",
         "std/float",
+        "std/math",
         "std/array",
         "std/collection",
         "std/iterator",
@@ -235,6 +236,16 @@
       ]
     },
     {
+      "id": "benchmark-runner-project",
+      "evidence": "examples/spec/fixtures/projects/benchmark-discovery",
+      "products": [
+        "cli-benchmark"
+      ],
+      "modules": [
+        "std/benchmark"
+      ]
+    },
+    {
       "id": "test-runner-project",
       "evidence": "examples/spec/fixtures/projects/test-discovery",
       "products": [
@@ -283,6 +294,16 @@
         "browser"
       ],
       "interfaceFingerprint": "fnv1a64:1fc7b2f3f52df4d3",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/math",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:357f89b97341f2c5",
       "implementation": "lowering-runtime",
       "route": "portable-project"
     },
@@ -466,6 +487,16 @@
       "interfaceFingerprint": "fnv1a64:7857d91272a6f840",
       "implementation": "lowering-runtime",
       "route": "websocket-provider-project"
+    },
+    {
+      "specifier": "std/benchmark",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:5773f89bd69c428e",
+      "implementation": "lowering-runtime",
+      "route": "benchmark-runner-project"
     },
     {
       "specifier": "std/big-int",

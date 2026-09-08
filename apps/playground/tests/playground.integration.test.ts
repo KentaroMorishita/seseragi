@@ -371,6 +371,8 @@ describe("Playground project compiler boundary", () => {
     "effect-until",
     "monoid-wrappers",
     "transformers",
+    "array-index",
+    "char-literal",
   ]) {
     test(`executes ${fixtureName} across named and namespace imports`, async () => {
       const fixture = new URL(
@@ -480,6 +482,7 @@ describe("Playground project compiler boundary", () => {
             "std/array",
             "std/bytes",
             "std/float",
+            "std/math",
             "std/int",
             "std/list",
             "std/map",
@@ -504,6 +507,8 @@ describe("Playground project compiler boundary", () => {
         "std/array::toList",
         "std/bytes::length",
         "std/float::toInt",
+        "std/math::pi",
+        "std/math::sin",
         "std/int::saturatingAdd",
         "std/list::length",
         "std/map::fromEntries",
@@ -1500,6 +1505,91 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
   })
 
+  test("executes local effect functions with capture and cold declarations", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/fixtures/projects/local-effect-fn/src/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("local-effect-fn.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing local effect entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({
+      stdout: "7\n(True, 9)\n1\n42\n(2, 3)",
+      debug: "()",
+    })
+  })
+
+  test("executes explicit recursive closure groups", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/fixtures/projects/local-rec/src/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("local-rec.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing recursive group entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({
+      stdout: "(True, True)\n7\n(True, 42)\n42\n7\n7",
+      debug: "()",
+    })
+  })
+
+  test("executes persistent List cons and operator sections through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/list-cons/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("list-cons.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing cons execution entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({
+      stdout: "`[Nothing, Just 1]\n`[1, 2, 3]\n`[0, 1, 2, 3]\n1\nTrue",
+      debug: "()",
+    })
+  })
+
+  test("executes right-associative Maybe fallback without evaluating the unused branch", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/maybe-fallback/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("maybe-fallback.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error("missing fallback execution entry")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: "request\n7\n8\n9", debug: "()" })
+  })
+
   test("executes Maybe/Either APIs and conditional Monoid through WASM", async () => {
     const source = await Bun.file(
       new URL(
@@ -1578,6 +1668,39 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
     const formatted = await format(source)
     expect(formatted.status).toBe("success")
+  })
+
+  test("executes opaque structs through a public facade without exposing fields", async () => {
+    const root = "../../../examples/spec/fixtures/projects/opaque-struct/"
+    const files = await Promise.all(
+      ["main", "domain", "facade"].map(async (name) => ({
+        path: `${name}.ssrg`,
+        source: await Bun.file(
+          new URL(`${root}src/${name}.ssrg`, import.meta.url)
+        ).text(),
+      }))
+    )
+    const expected = await Bun.file(
+      new URL(`${root}expected.stdout`, import.meta.url)
+    ).text()
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files,
+    })
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry.contract)
+      throw new Error("missing opaque struct execution entry")
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: expected.trimEnd(), debug: "()" })
   })
 
   test("executes imported Unicode APIs and enforces dependency guards in the browser runtime", async () => {

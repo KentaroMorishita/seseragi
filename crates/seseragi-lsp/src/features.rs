@@ -937,3 +937,31 @@ fn encoded_range(
         end: index.try_locate_encoded(end, encoding).ok()?,
     })
 }
+
+pub(crate) fn range_formatting(
+    document: &DocumentState,
+    range: crate::model::Range,
+    encoding: PositionEncoding,
+) -> Value {
+    let (Some(start), Some(end)) = (
+        document.byte_position(range.start, encoding),
+        document.byte_position(range.end, encoding),
+    ) else {
+        return json!([]);
+    };
+    let edits = seseragi_driver::format_module_range(
+        &document.analysis.source,
+        &document.source,
+        start..end,
+        Default::default(),
+    );
+    Value::Array(
+        edits
+            .into_iter()
+            .filter_map(|edit| {
+                range_json(&document.source, edit.range.start, edit.range.end, encoding)
+                    .map(|range| json!({"range": range, "newText": edit.text}))
+            })
+            .collect(),
+    )
+}

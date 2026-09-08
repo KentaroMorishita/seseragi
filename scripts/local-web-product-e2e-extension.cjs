@@ -74,7 +74,9 @@ function projectSourceHash(project) {
 
 function serveStatic(root) {
   const server = http.createServer((request, response) => {
-    const pathname = new URL(request.url, "http://127.0.0.1").pathname
+    const pathname = decodeURIComponent(
+      new URL(request.url, "http://127.0.0.1").pathname
+    )
     const requested = pathname === "/" ? "index.html" : pathname.slice(1)
     const file = path.resolve(root, requested)
     if (
@@ -91,6 +93,8 @@ function serveStatic(root) {
         ".html": "text/html",
         ".js": "text/javascript",
         ".map": "application/json",
+        ".svg": "image/svg+xml",
+        ".txt": "text/plain",
       }[extension] || "application/octet-stream"
     response.writeHead(200, { "content-type": contentType })
     fs.createReadStream(file).pipe(response)
@@ -171,7 +175,7 @@ async function run() {
       "VS Code development server",
       async () => (await responseText(devUrl)).status === 200
     )
-    const firstVersion = (await responseText(`${devUrl}__seseragi_dev/version`))
+    let firstVersion = (await responseText(`${devUrl}__seseragi_dev/version`))
       .text
     observe("dev", `running at ${devUrl}; reload ${firstVersion.trim()}`)
 
@@ -180,6 +184,21 @@ async function run() {
       viewport: { width: 1280, height: 900 },
     })
     await page.goto(devUrl)
+    if ((await page.title()) !== "Seseragi custom document")
+      throw new Error("custom dev title was lost")
+    if (
+      (await page
+        .locator('meta[name="description"]')
+        .getAttribute("content")) !==
+      "Custom Seseragi document and public assets"
+    )
+      throw new Error("custom metadata was lost")
+    if (
+      (await responseText(`${devUrl}images/read%20me.txt`)).text !==
+      "nested public asset\n"
+    )
+      throw new Error("nested public asset was not served")
+
     await page.getByText("Count: 0", { exact: true }).waitFor()
     await page.getByRole("button", { name: "Count one more" }).click()
     await page.getByText("Count: 1", { exact: true }).waitFor()
@@ -188,6 +207,27 @@ async function run() {
       fullPage: true,
     })
     observe("browser", "initial render and Signal interaction passed")
+
+    const indexPath = path.join(project, "web/index.html")
+    fs.writeFileSync(
+      indexPath,
+      fs
+        .readFileSync(indexPath, "utf8")
+        .replaceAll("Seseragi custom document", "Updated custom document")
+    )
+    fs.writeFileSync(path.join(project, "public/status"), "updated\n")
+    await waitFor(
+      "custom document and public asset rebuild",
+      async () =>
+        (await page.title()) === "Updated custom document" &&
+        (await responseText(`${devUrl}status`)).text === "updated\n"
+    )
+    observe(
+      "web-assets",
+      "custom metadata, nested asset and extensionless asset reload passed"
+    )
+
+    firstVersion = (await responseText(`${devUrl}__seseragi_dev/version`)).text
 
     const original = document.getText()
     const changed = original.replace(
@@ -307,6 +347,13 @@ async function run() {
     await page.close()
     page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
     await page.goto(productionServer.url)
+    if ((await page.title()) !== "Updated custom document")
+      throw new Error("custom production title was lost")
+    if (
+      (await responseText(`${productionServer.url}status`)).text !== "updated\n"
+    )
+      throw new Error("production public asset differs from dev")
+
     await page
       .getByText("Hello from my Seseragi app", { exact: true })
       .waitFor()

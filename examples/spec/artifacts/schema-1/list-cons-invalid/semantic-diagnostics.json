@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.argument-type-mismatch",
+      "message": "Argument type does not match the parameter type",
+      "primary": {
+        "start": 26,
+        "end": 27
+      },
+      "related": [
+        {
+          "message": "argument 2 expected List<Int>, received Int",
+          "primary": {
+            "start": 0,
+            "end": 27
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "argument 2 expected List<Int>, received Int",
+          "primary": {
+            "start": 0,
+            "end": 27
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "List<Int>",
+      "actualType": "Int",
+      "typeDifference": {
+        "expectedType": "List<Int>",
+        "actualType": "Int",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected List<Int>, actual Int",
+            "expectedType": "List<Int>",
+            "actualType": "Int"
+          }
+        ]
+      }
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "list.element-type-mismatch",
+      "message": "List element type mismatch",
+      "primary": {
+        "start": 62,
+        "end": 63
+      },
+      "related": [
+        {
+          "message": "element 1 expected Bool, received Int",
+          "primary": {
+            "start": 28,
+            "end": 64
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "element 1 expected Bool, received Int",
+          "primary": {
+            "start": 28,
+            "end": 64
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": "Bool",
+      "actualType": "Int",
+      "typeDifference": {
+        "expectedType": "Bool",
+        "actualType": "Int",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Bool, actual Int",
+            "expectedType": "Bool",
+            "actualType": "Int"
+          }
+        ]
+      }
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.argument-type-mismatch",
+      "message": "Argument type does not match the parameter type",
+      "primary": {
+        "start": 60,
+        "end": 64
+      },
+      "related": [
+        {
+          "message": "argument 2 expected List<Bool>, received List<unknown>",
+          "primary": {
+            "start": 28,
+            "end": 64
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "argument 2 expected List<Bool>, received List<unknown>",
+          "primary": {
+            "start": 28,
+            "end": 64
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "List<Bool>",
+      "actualType": "List<unknown>"
+    }
+  ]
+}

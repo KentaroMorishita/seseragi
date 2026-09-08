@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "module": "fixture/opaque-struct::main",
+  "target": "typescript-es2022",
+  "profile": "development",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.unit",
+      "core.int",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.string",
+      "core.bool.show",
+      "core.bool",
+      "core.int.show",
+      "core.array.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/opaque-struct/main.ts",
+    "sourceMap": "dist/opaque-struct/main.ts.map"
+  }
+}

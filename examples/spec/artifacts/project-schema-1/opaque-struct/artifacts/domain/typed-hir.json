@@ -1,0 +1,1002 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/opaque-struct::domain",
+  "instances": [
+    {
+      "identity": "Eq<fixture/opaque-struct::domain::Secret>",
+      "traitIdentity": "Eq",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/opaque-struct::domain::Secret"
+      ],
+      "typeIdentity": "fixture/opaque-struct::domain::Secret",
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 57
+      },
+      "implementation": {
+        "kind": "derived-structural",
+        "adtSymbol": "fixture/opaque-struct::domain::Secret",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "value",
+            "typeIdentity": "std/prelude::Int",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Eq"
+            }
+          }
+        ],
+        "transparentNewtype": false
+      }
+    },
+    {
+      "identity": "Show<fixture/opaque-struct::domain::Secret>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/opaque-struct::domain::Secret"
+      ],
+      "typeIdentity": "fixture/opaque-struct::domain::Secret",
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 57
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/opaque-struct::domain::Secret",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "value",
+            "typeIdentity": "std/prelude::Int",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::Int>"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "struct",
+      "symbol": "fixture/opaque-struct::domain::Secret",
+      "name": "Secret",
+      "visibility": "public",
+      "opaque": true,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 45,
+            "end": 50
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 57
+      }
+    },
+    {
+      "kind": "struct",
+      "symbol": "fixture/opaque-struct::domain::Box",
+      "name": "Box",
+      "visibility": "public",
+      "opaque": true,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 85,
+            "end": 90
+          }
+        }
+      ],
+      "origin": {
+        "start": 58,
+        "end": 95
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/opaque-struct::domain::create",
+      "visibility": "public",
+      "origin": {
+        "start": 96,
+        "end": 149
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 110,
+            "end": 115
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 142,
+                "end": 147
+              }
+            },
+            "origin": {
+              "start": 142,
+              "end": 147
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        },
+        "origin": {
+          "start": 133,
+          "end": 149
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/opaque-struct::domain::read",
+      "visibility": "public",
+      "origin": {
+        "start": 150,
+        "end": 198
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "secret",
+          "type": {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          },
+          "origin": {
+            "start": 162,
+            "end": 168
+          }
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "variable",
+          "name": "secret",
+          "type": {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          },
+          "origin": {
+            "start": 186,
+            "end": 192
+          }
+        },
+        "field": "value",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 186,
+          "end": 198
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/opaque-struct::domain::unpack",
+      "visibility": "public",
+      "origin": {
+        "start": 199,
+        "end": 277
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "secret",
+          "type": {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          },
+          "origin": {
+            "start": 213,
+            "end": 219
+          }
+        }
+      ],
+      "body": {
+        "kind": "block",
+        "statements": [
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "value",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 15,
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 252,
+                      "end": 257
+                    }
+                  },
+                  "origin": {
+                    "start": 252,
+                    "end": 257
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Secret",
+                "arguments": []
+              },
+              "origin": {
+                "start": 243,
+                "end": 259
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "secret",
+              "type": {
+                "kind": "named",
+                "name": "Secret",
+                "arguments": []
+              },
+              "origin": {
+                "start": 262,
+                "end": 268
+              }
+            },
+            "origin": {
+              "start": 238,
+              "end": 268
+            }
+          }
+        ],
+        "result": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 270,
+            "end": 275
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 237,
+          "end": 277
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/opaque-struct::domain::update",
+      "visibility": "public",
+      "origin": {
+        "start": 278,
+        "end": 349
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "secret",
+          "type": {
+            "kind": "named",
+            "name": "Secret",
+            "arguments": []
+          },
+          "origin": {
+            "start": 292,
+            "end": 298
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "variable",
+              "name": "secret",
+              "type": {
+                "kind": "named",
+                "name": "Secret",
+                "arguments": []
+              },
+              "origin": {
+                "start": 331,
+                "end": 337
+              }
+            },
+            "origin": {
+              "start": 328,
+              "end": 337
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "integer",
+              "value": "9",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 346,
+                "end": 347
+              }
+            },
+            "origin": {
+              "start": 339,
+              "end": 347
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        },
+        "origin": {
+          "start": 319,
+          "end": 349
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/opaque-struct::domain::box",
+      "visibility": "public",
+      "origin": {
+        "start": 350,
+        "end": 398
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 364,
+            "end": 369
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 391,
+                "end": 396
+              }
+            },
+            "origin": {
+              "start": 391,
+              "end": 396
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 385,
+          "end": 398
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/opaque-struct::domain::unbox",
+      "visibility": "public",
+      "origin": {
+        "start": 399,
+        "end": 472
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "boxed",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 415,
+            "end": 420
+          }
+        }
+      ],
+      "body": {
+        "kind": "block",
+        "statements": [
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "value",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 21,
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 448,
+                      "end": 453
+                    }
+                  },
+                  "origin": {
+                    "start": 448,
+                    "end": 453
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 442,
+                "end": 455
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "boxed",
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 458,
+                "end": 463
+              }
+            },
+            "origin": {
+              "start": 437,
+              "end": 463
+            }
+          }
+        ],
+        "result": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 465,
+            "end": 470
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 436,
+          "end": 472
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/opaque-struct::domain::nested",
+      "visibility": "public",
+      "origin": {
+        "start": 473,
+        "end": 571
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "boxed",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Secret",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 487,
+            "end": 492
+          }
+        }
+      ],
+      "body": {
+        "kind": "block",
+        "statements": [
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "value",
+                  "pattern": {
+                    "kind": "record",
+                    "fields": [
+                      {
+                        "name": "value",
+                        "pattern": {
+                          "kind": "binding",
+                          "symbol": 23,
+                          "name": "value",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 545,
+                            "end": 550
+                          }
+                        },
+                        "origin": {
+                          "start": 545,
+                          "end": 550
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Secret",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 536,
+                      "end": 552
+                    }
+                  },
+                  "origin": {
+                    "start": 529,
+                    "end": 552
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Secret",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 523,
+                "end": 554
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "boxed",
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Secret",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 557,
+                "end": 562
+              }
+            },
+            "origin": {
+              "start": 518,
+              "end": 562
+            }
+          }
+        ],
+        "result": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 564,
+            "end": 569
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 517,
+          "end": 571
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/opaque-struct::domain::collect",
+      "visibility": "public",
+      "origin": {
+        "start": 572,
+        "end": 665
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "secrets",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Secret",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 587,
+            "end": 594
+          }
+        }
+      ],
+      "body": {
+        "kind": "array-comprehension",
+        "element": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 629,
+            "end": 634
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "value",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 26,
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 646,
+                      "end": 651
+                    }
+                  },
+                  "origin": {
+                    "start": 646,
+                    "end": 651
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Secret",
+                "arguments": []
+              },
+              "origin": {
+                "start": 637,
+                "end": 653
+              }
+            },
+            "source": {
+              "kind": "variable",
+              "name": "secrets",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Secret",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 657,
+                "end": 664
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Iterable",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Secret",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Secret",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/array::Iterable"
+              }
+            },
+            "origin": {
+              "start": 637,
+              "end": 664
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 628,
+          "end": 665
+        }
+      }
+    }
+  ]
+}

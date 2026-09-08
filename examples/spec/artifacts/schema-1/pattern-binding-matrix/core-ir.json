@@ -54,6 +54,7 @@
       "name": "UserId",
       "visibility": "private",
       "opaque": false,
+      "newtype": true,
       "typeParameters": [],
       "variants": [
         {

@@ -2,6 +2,7 @@
   "schema": 1,
   "module": "artifact/top-level-binding",
   "target": "typescript-es2022",
+  "profile": "development",
   "runtime": {
     "identity": "@seseragi/runtime",
     "abiMajor": 1,

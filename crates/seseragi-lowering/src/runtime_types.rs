@@ -8,6 +8,18 @@ pub(crate) struct RuntimeTypeImport {
 
 const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
     RuntimeTypeImport {
+        canonical: "std/benchmark::Benchmark",
+        runtime_feature: "benchmark.tree.type",
+        module: "@seseragi/runtime/benchmark",
+        export_name: "Benchmark",
+    },
+    RuntimeTypeImport {
+        canonical: "std/benchmark::BenchmarkFailure",
+        runtime_feature: "benchmark.failure.type",
+        module: "@seseragi/runtime/benchmark",
+        export_name: "BenchmarkFailure",
+    },
+    RuntimeTypeImport {
         canonical: "std/transformer/maybe::MaybeT",
         runtime_feature: "core.transformer.maybe.type",
         module: "@seseragi/runtime/transformer",

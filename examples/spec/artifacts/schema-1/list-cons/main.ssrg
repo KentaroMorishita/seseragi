@@ -1,0 +1,14 @@
+fn prepend<A> head: A -> tail: List<A> -> List<A> = head : tail
+fn first values: List<Int> -> Int = match values {
+  `[head, ...tail] -> head
+  `[] -> 0
+}
+let values: List<Int> = 1 : 2 : 3 : `[]
+let withFour = (:) 4
+pub effect fn main = do {
+  println $ show (Nothing : `[Just 1])
+  println $ show values
+  println $ show (prepend 0 values)
+  println $ show (first values)
+  println $ show (withFour values == `[4, 1, 2, 3])
+}

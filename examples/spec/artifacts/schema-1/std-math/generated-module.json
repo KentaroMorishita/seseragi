@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "module": "artifact/std-math",
+  "target": "typescript-es2022",
+  "profile": "development",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.math.api.pi",
+      "core.math.api.e",
+      "core.math.api.tau",
+      "core.math.api.sin",
+      "core.math.api.cos",
+      "core.math.api.tan",
+      "core.math.api.asin",
+      "core.math.api.acos",
+      "core.math.api.atan",
+      "core.math.api.exp",
+      "core.math.api.log",
+      "core.math.api.log2",
+      "core.math.api.log10",
+      "core.math.api.sqrt",
+      "core.math.api.cbrt",
+      "core.math.api.sinh",
+      "core.math.api.cosh",
+      "core.math.api.tanh",
+      "core.math.api.atan2",
+      "core.float64",
+      "core.math.api.hypot"
+    ]
+  },
+  "exports": [
+    "constants",
+    "functions",
+    "partial",
+    "length",
+    "result"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

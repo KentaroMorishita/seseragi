@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/array-index@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/array-index@0.0.0#workspace:."
+name = "fixture/array-index"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:8018231e35f842e0296979d50463237bc20653beaa433006d2a3b1323fe601fc"
+content_digest = "sha256:b604631c4fc763f87eae447efe97c257cedc1ebff7e0190e5d7aad757c8c86e2"
+dependencies = []

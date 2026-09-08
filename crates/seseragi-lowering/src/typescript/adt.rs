@@ -16,6 +16,11 @@ pub(super) fn lower_core_adt_to_typescript(
     let exported = adt.visibility == Visibility::Public;
     let constructors_exported = exported && !adt.opaque;
     TypeScriptAdt {
+        erased_newtype: adt.newtype
+            && adt
+                .variants
+                .iter()
+                .any(|variant| imported_types.is_erased_newtype(&variant.symbol)),
         exported,
         name: local_name(&adt.symbol),
         type_parameters: adt.type_parameters,

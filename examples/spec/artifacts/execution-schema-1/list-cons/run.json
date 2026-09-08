@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "case": "list-cons",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/list-cons",
+    "export": "main",
+    "compiledModule": "../../schema-1/list-cons/generated-module.json",
+    "typedInterface": "../../schema-1/list-cons/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.list",
+      "core.int",
+      "core.list.cons",
+      "core.list.from-array",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.show",
+      "core.maybe.show",
+      "core.list.show",
+      "core.string",
+      "core.maybe",
+      "core.maybe.nothing",
+      "core.maybe.just",
+      "core.bool.show",
+      "core.int.eq-dictionary",
+      "core.list.eq-dictionary",
+      "core.bool"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises"
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 import {
@@ -167,6 +167,22 @@ async function main(): Promise<void> {
         fail(`generated ${source} differs from the canonical Web starter`)
       }
     }
+    const webFixture = path.join(
+      repositoryRoot,
+      "examples/spec/fixtures/projects/web-assets"
+    )
+    await cp(path.join(webFixture, "web"), path.join(project, "web"), {
+      recursive: true,
+    })
+    await cp(path.join(webFixture, "public"), path.join(project, "public"), {
+      recursive: true,
+    })
+    const manifestPath = path.join(project, "seseragi.toml")
+    await writeFile(
+      manifestPath,
+      `${await readFile(manifestPath, "utf8")}\n[web]\nindex = "web/index.html"\npublic = "public"\n`
+    )
+    run([cli, "lock", "update", project])
     const extensionsDirectory = path.join(temporary, "extensions")
     const userDataDirectory = path.join(temporary, "user-data")
     await mkdir(extensionsDirectory)

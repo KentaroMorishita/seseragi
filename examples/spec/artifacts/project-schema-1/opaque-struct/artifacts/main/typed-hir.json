@@ -1,0 +1,1089 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/opaque-struct::main",
+  "externalTypeBindings": [
+    {
+      "arity": 0,
+      "spelling": "Secret",
+      "canonical": "fixture/opaque-struct::domain::Secret",
+      "provider": {
+        "module": "fixture/opaque-struct::facade",
+        "export": "Secret"
+      }
+    },
+    {
+      "arity": 1,
+      "spelling": "Box",
+      "canonical": "fixture/opaque-struct::domain::Box",
+      "provider": {
+        "module": "fixture/opaque-struct::facade",
+        "export": "Box"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./facade",
+      "module": "fixture/opaque-struct::facade",
+      "origin": {
+        "start": 0,
+        "end": 117
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Secret",
+          "local": "Secret",
+          "canonical": "fixture/opaque-struct::domain::Secret",
+          "origin": {
+            "start": 11,
+            "end": 17
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Box",
+          "local": "Box",
+          "canonical": "fixture/opaque-struct::domain::Box",
+          "origin": {
+            "start": 21,
+            "end": 24
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "create",
+          "local": "create",
+          "canonical": "fixture/opaque-struct::domain::create",
+          "origin": {
+            "start": 28,
+            "end": 34
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "read",
+          "local": "read",
+          "canonical": "fixture/opaque-struct::domain::read",
+          "origin": {
+            "start": 38,
+            "end": 42
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "unpack",
+          "local": "unpack",
+          "canonical": "fixture/opaque-struct::domain::unpack",
+          "origin": {
+            "start": 46,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "update",
+          "local": "update",
+          "canonical": "fixture/opaque-struct::domain::update",
+          "origin": {
+            "start": 56,
+            "end": 62
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "box",
+          "local": "box",
+          "canonical": "fixture/opaque-struct::domain::box",
+          "origin": {
+            "start": 66,
+            "end": 69
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "unbox",
+          "local": "unbox",
+          "canonical": "fixture/opaque-struct::domain::unbox",
+          "origin": {
+            "start": 73,
+            "end": 78
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "nested",
+          "local": "nested",
+          "canonical": "fixture/opaque-struct::domain::nested",
+          "origin": {
+            "start": 82,
+            "end": 88
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "collect",
+          "local": "collect",
+          "canonical": "fixture/opaque-struct::domain::collect",
+          "origin": {
+            "start": 92,
+            "end": 99
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/opaque-struct::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 119,
+        "end": 434
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "block",
+        "statements": [
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 12,
+              "name": "secret",
+              "type": {
+                "kind": "external-named",
+                "name": "Secret",
+                "canonical": "fixture/opaque-struct::domain::Secret",
+                "arguments": []
+              },
+              "origin": {
+                "start": 148,
+                "end": 154
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "fixture/opaque-struct::domain::create",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "7",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 164,
+                    "end": 165
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "Secret",
+                "canonical": "fixture/opaque-struct::domain::Secret",
+                "arguments": []
+              },
+              "origin": {
+                "start": 157,
+                "end": 165
+              }
+            },
+            "origin": {
+              "start": 141,
+              "end": 165
+            }
+          }
+        ],
+        "result": {
+          "kind": "do-block",
+          "statements": [
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "effect-call",
+                "operation": "std/prelude::println",
+                "effect": {
+                  "environment": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                },
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "fixture/opaque-struct::domain::read",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "secret",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "Secret",
+                          "canonical": "fixture/opaque-struct::domain::Secret",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 192,
+                          "end": 198
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 187,
+                      "end": 198
+                    }
+                  }
+                ],
+                "origin": {
+                  "start": 177,
+                  "end": 198
+                }
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "effect-call",
+                "operation": "std/prelude::println",
+                "effect": {
+                  "environment": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                },
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "fixture/opaque-struct::domain::unpack",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "secret",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "Secret",
+                          "canonical": "fixture/opaque-struct::domain::Secret",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 220,
+                          "end": 226
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 213,
+                      "end": 226
+                    }
+                  }
+                ],
+                "origin": {
+                  "start": 203,
+                  "end": 226
+                }
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "effect-call",
+                "operation": "std/prelude::println",
+                "effect": {
+                  "environment": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                },
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "std/prelude::Show::show",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "secret",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "Secret",
+                          "canonical": "fixture/opaque-struct::domain::Secret",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 246,
+                          "end": 252
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "Secret",
+                              "canonical": "fixture/opaque-struct::domain::Secret",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "imported",
+                          "identity": "Show<fixture/opaque-struct::domain::Secret>",
+                          "providerModule": "fixture/opaque-struct::domain"
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "std/prelude::Show",
+                      "method": "show"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 241,
+                      "end": 252
+                    }
+                  }
+                ],
+                "origin": {
+                  "start": 231,
+                  "end": 252
+                }
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "effect-call",
+                "operation": "std/prelude::println",
+                "effect": {
+                  "environment": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                },
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "std/prelude::Show::show",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "==",
+                        "left": {
+                          "kind": "variable",
+                          "name": "secret",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Secret",
+                            "canonical": "fixture/opaque-struct::domain::Secret",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 273,
+                            "end": 279
+                          }
+                        },
+                        "right": {
+                          "kind": "call",
+                          "callee": "fixture/opaque-struct::domain::create",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "7",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 290,
+                                "end": 291
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Secret",
+                            "canonical": "fixture/opaque-struct::domain::Secret",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 283,
+                            "end": 291
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Eq",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "Secret",
+                                  "canonical": "fixture/opaque-struct::domain::Secret",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "imported",
+                              "identity": "Eq<fixture/opaque-struct::domain::Secret>",
+                              "providerModule": "fixture/opaque-struct::domain"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 273,
+                          "end": 291
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Bool",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Bool>"
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "std/prelude::Show",
+                      "method": "show"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 267,
+                      "end": 292
+                    }
+                  }
+                ],
+                "origin": {
+                  "start": 257,
+                  "end": 292
+                }
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "effect-call",
+                "operation": "std/prelude::println",
+                "effect": {
+                  "environment": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                },
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "fixture/opaque-struct::domain::unbox",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "fixture/opaque-struct::domain::box",
+                        "arguments": [
+                          {
+                            "kind": "integer",
+                            "value": "42",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 318,
+                              "end": 320
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "external-named",
+                          "name": "Box",
+                          "canonical": "fixture/opaque-struct::domain::Box",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 314,
+                          "end": 320
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 307,
+                      "end": 321
+                    }
+                  }
+                ],
+                "origin": {
+                  "start": 297,
+                  "end": 321
+                }
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "effect-call",
+                "operation": "std/prelude::println",
+                "effect": {
+                  "environment": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                },
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "fixture/opaque-struct::domain::nested",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "fixture/opaque-struct::domain::box",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "secret",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "Secret",
+                              "canonical": "fixture/opaque-struct::domain::Secret",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 348,
+                              "end": 354
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "external-named",
+                          "name": "Box",
+                          "canonical": "fixture/opaque-struct::domain::Box",
+                          "arguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "Secret",
+                              "canonical": "fixture/opaque-struct::domain::Secret",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 344,
+                          "end": 354
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 336,
+                      "end": 355
+                    }
+                  }
+                ],
+                "origin": {
+                  "start": 326,
+                  "end": 355
+                }
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "kind": "effect-call",
+                "operation": "std/prelude::println",
+                "effect": {
+                  "environment": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "failure": {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                },
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "std/prelude::Show::show",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "fixture/opaque-struct::domain::collect",
+                        "arguments": [
+                          {
+                            "kind": "array",
+                            "elements": [
+                              {
+                                "kind": "variable",
+                                "name": "secret",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Secret",
+                                  "canonical": "fixture/opaque-struct::domain::Secret",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 385,
+                                  "end": 391
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "named",
+                              "name": "Array",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "Secret",
+                                  "canonical": "fixture/opaque-struct::domain::Secret",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "start": 384,
+                              "end": 392
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 376,
+                          "end": 392
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Array",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/array::Show",
+                          "typeArguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ],
+                          "evidenceArguments": [
+                            {
+                              "constraint": {
+                                "name": "Show",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "Show<std/prelude::Int>"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "traitDispatch": {
+                      "traitIdentity": "std/prelude::Show",
+                      "method": "show"
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 370,
+                      "end": 393
+                    }
+                  }
+                ],
+                "origin": {
+                  "start": 360,
+                  "end": 393
+                }
+              }
+            }
+          ],
+          "result": {
+            "kind": "effect-call",
+            "operation": "std/prelude::println",
+            "effect": {
+              "environment": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            },
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/opaque-struct::domain::read",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "fixture/opaque-struct::domain::update",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "secret",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "Secret",
+                          "canonical": "fixture/opaque-struct::domain::Secret",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 421,
+                          "end": 427
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "external-named",
+                      "name": "Secret",
+                      "canonical": "fixture/opaque-struct::domain::Secret",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 414,
+                      "end": 427
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 408,
+                  "end": 428
+                }
+              }
+            ],
+            "origin": {
+              "start": 398,
+              "end": 428
+            }
+          },
+          "origin": {
+            "start": 168,
+            "end": 432
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 140,
+          "end": 434
+        }
+      }
+    }
+  ]
+}

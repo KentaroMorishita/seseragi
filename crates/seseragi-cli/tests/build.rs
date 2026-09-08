@@ -832,10 +832,10 @@ fn documents_build_in_cli_help() {
 
     assert_eq!(output.status.code(), Some(0));
     assert!(String::from_utf8_lossy(&output.stdout).contains(
-        "seseragi build path/to/app.ssrg [--target process|web] [--out-dir path/to/dist]"
+        "seseragi build path/to/app.ssrg [--target process|web] [--profile development|release] [--out-dir path/to/dist]"
     ));
     assert!(String::from_utf8_lossy(&output.stdout).contains(
-        "seseragi build path/to/package [--target process|web] [--out-dir path/to/dist]"
+        "seseragi build path/to/package [--target process|web] [--profile development|release] [--out-dir path/to/dist]"
     ));
 }
 
@@ -863,4 +863,70 @@ fn reports_version_commit_and_channel() {
     assert_eq!(metadata["version"], env!("CARGO_PKG_VERSION"));
     assert!(metadata["commit"].is_string());
     assert!(metadata["target"].is_string());
+}
+
+#[test]
+fn builds_custom_document_and_public_assets_without_rewriting_generated_outputs() {
+    let directory = test_directory("custom-web-assets");
+    let project = locked_copy(
+        &repository_root().join("examples/spec/fixtures/projects/web-assets"),
+        &directory,
+        "project",
+    );
+    let output_directory = directory.join("output");
+    let build = || {
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["build", "--target", "web"])
+            .arg(&project)
+            .arg("--out-dir")
+            .arg(&output_directory)
+            .output()
+            .unwrap()
+    };
+    let result = build();
+    assert!(
+        result.status.success(),
+        "{}",
+        String::from_utf8_lossy(&result.stderr)
+    );
+    let first = files_in(&output_directory);
+    let html = String::from_utf8(first["index.html"].clone()).unwrap();
+    assert!(html.contains("<title>Seseragi custom document</title>"));
+    assert!(html.contains("name=\"description\""));
+    assert!(html.contains("./images/favicon.svg"));
+    assert!(html.contains("./assets/app.js") && html.contains("./assets/app.css"));
+    assert!(!html.contains("<!-- seseragi:"));
+    assert_eq!(first["images/read me.txt"], b"nested public asset\n");
+    assert_eq!(first["status"], b"ready\n");
+    let result = build();
+    assert!(result.status.success());
+    assert_eq!(first, files_in(&output_directory));
+
+    fs::remove_file(project.join("public/status")).unwrap();
+    let index = project.join("web/index.html");
+    fs::write(
+        &index,
+        fs::read_to_string(&index)
+            .unwrap()
+            .replace("Seseragi custom document", "Updated document"),
+    )
+    .unwrap();
+    assert!(
+        !build().status.success(),
+        "asset edits invalidate the production lock"
+    );
+    assert_eq!(first, files_in(&output_directory));
+    update_lock(&project);
+    assert!(build().status.success());
+    assert!(!output_directory.join("status").exists());
+    assert!(fs::read_to_string(output_directory.join("index.html"))
+        .unwrap()
+        .contains("Updated document"));
+    let previous = files_in(&output_directory);
+    fs::write(project.join("public/index.html"), "collision").unwrap();
+    let result = build();
+    assert!(!result.status.success());
+    assert!(String::from_utf8_lossy(&result.stderr).contains("reserved Web output"));
+    assert_eq!(previous, files_in(&output_directory));
+    fs::remove_dir_all(directory).unwrap();
 }

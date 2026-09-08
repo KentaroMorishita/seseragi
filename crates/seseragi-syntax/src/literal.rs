@@ -8,6 +8,7 @@ pub struct LiteralDecodeError {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum LiteralContext {
     String,
+    Char,
     Template,
 }
 
@@ -21,6 +22,18 @@ pub fn decode_string_literal(raw: &str) -> Result<String, LiteralDecodeError> {
         });
     };
     decode_text(content, LiteralContext::String).map_err(|error| LiteralDecodeError {
+        range: error.range.start + 1..error.range.end + 1,
+    })
+}
+
+/// Decode escapes while preserving Char's single-scalar validation for diagnostics.
+pub fn decode_char_literal(raw: &str) -> Result<String, LiteralDecodeError> {
+    let Some(content) = raw.strip_prefix('\'').and_then(|s| s.strip_suffix('\'')) else {
+        return Err(LiteralDecodeError {
+            range: 0..raw.len(),
+        });
+    };
+    decode_text(content, LiteralContext::Char).map_err(|error| LiteralDecodeError {
         range: error.range.start + 1..error.range.end + 1,
     })
 }
@@ -68,6 +81,7 @@ fn decode_text(raw: &str, context: LiteralContext) -> Result<String, LiteralDeco
             'r' => decoded.push('\r'),
             't' => decoded.push('\t'),
             '0' => decoded.push('\0'),
+            '\'' if context == LiteralContext::Char => decoded.push('\''),
             '"' if context == LiteralContext::String => decoded.push('"'),
             '`' if context == LiteralContext::Template => decoded.push('`'),
             '$' if context == LiteralContext::Template && raw[cursor..].starts_with('{') => {

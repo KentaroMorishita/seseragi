@@ -78,6 +78,7 @@ pub(super) fn lower_external_type_imports(
             .position(|group| group.module == provider_module)
             .unwrap_or_else(|| {
                 imports.push(TypeScriptSourceImport {
+                    reexports: Vec::new(),
                     module: provider_module.to_owned(),
                     specifier: specifier.to_owned(),
                     runtime_edge: false,

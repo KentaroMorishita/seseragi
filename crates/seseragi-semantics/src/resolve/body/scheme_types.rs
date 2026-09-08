@@ -134,7 +134,14 @@ fn push_candidate(
     candidate: ExternalTypeBinding,
 ) {
     let same_spelling = candidates.entry(candidate.spelling.clone()).or_default();
-    if !same_spelling.contains(&candidate) {
+    // A re-export and its dependency import name the same type identity.
+    // Prefer the exported route (inserted first), retaining its known arity.
+    if let Some(existing) = same_spelling
+        .iter_mut()
+        .find(|binding| binding.canonical == candidate.canonical)
+    {
+        existing.arity = existing.arity.or(candidate.arity);
+    } else {
         same_spelling.push(candidate);
     }
 }

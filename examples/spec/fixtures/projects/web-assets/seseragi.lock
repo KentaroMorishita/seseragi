@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/web-assets@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/web-assets@0.0.0#workspace:."
+name = "fixture/web-assets"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:540ff0a6d7cac76d43faf81e35c3ab06ea7a036326f7c5aaa351334ec406bc91"
+content_digest = "sha256:ba03f7072758ab1ccb22597791c2fbc9d4c98d5490ffc8b05caa4eb1bce49a03"
+dependencies = []

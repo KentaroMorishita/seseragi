@@ -1,0 +1,1839 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 14,
+        "end": 18
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "outer",
+              "nameSpan": {
+                "start": 29,
+                "end": 34
+              },
+              "span": {
+                "start": 29,
+                "end": 34
+              }
+            },
+            "value": {
+              "kind": "integer",
+              "raw": "7",
+              "span": {
+                "start": 37,
+                "end": 38
+              }
+            },
+            "span": {
+              "start": 22,
+              "end": 38
+            }
+          },
+          {
+            "kind": "function",
+            "name": "first",
+            "nameSpan": {
+              "start": 44,
+              "end": 49
+            },
+            "parameters": [],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 53,
+                "end": 56
+              }
+            },
+            "value": {
+              "kind": "integer",
+              "raw": "99",
+              "span": {
+                "start": 59,
+                "end": 61
+              }
+            },
+            "span": {
+              "start": 39,
+              "end": 61
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "even",
+            "nameSpan": {
+              "start": 77,
+              "end": 81
+            },
+            "parameters": [
+              {
+                "name": "n",
+                "nameSpan": {
+                  "start": 82,
+                  "end": 83
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 85,
+                    "end": 88
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Bool",
+              "span": {
+                "start": 92,
+                "end": 96
+              }
+            },
+            "value": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "operatorSpan": {
+                  "start": 104,
+                  "end": 106
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "n",
+                  "span": {
+                    "start": 102,
+                    "end": 103
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "0",
+                  "span": {
+                    "start": 107,
+                    "end": 108
+                  }
+                },
+                "span": {
+                  "start": 102,
+                  "end": 108
+                }
+              },
+              "thenBranch": {
+                "kind": "boolean",
+                "value": true,
+                "span": {
+                  "start": 114,
+                  "end": 118
+                }
+              },
+              "elseBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "odd",
+                  "span": {
+                    "start": 124,
+                    "end": 127
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "-",
+                    "operatorSpan": {
+                      "start": 131,
+                      "end": 132
+                    },
+                    "left": {
+                      "kind": "name",
+                      "name": "n",
+                      "span": {
+                        "start": 129,
+                        "end": 130
+                      }
+                    },
+                    "right": {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 133,
+                        "end": 134
+                      }
+                    },
+                    "span": {
+                      "start": 129,
+                      "end": 134
+                    }
+                  },
+                  "span": {
+                    "start": 128,
+                    "end": 135
+                  }
+                },
+                "span": {
+                  "start": 124,
+                  "end": 135
+                }
+              },
+              "span": {
+                "start": 99,
+                "end": 135
+              }
+            },
+            "span": {
+              "start": 69,
+              "end": 135
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "odd",
+            "nameSpan": {
+              "start": 143,
+              "end": 146
+            },
+            "parameters": [
+              {
+                "name": "n",
+                "nameSpan": {
+                  "start": 147,
+                  "end": 148
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 150,
+                    "end": 153
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Bool",
+              "span": {
+                "start": 157,
+                "end": 161
+              }
+            },
+            "value": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "operatorSpan": {
+                  "start": 169,
+                  "end": 171
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "n",
+                  "span": {
+                    "start": 167,
+                    "end": 168
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "0",
+                  "span": {
+                    "start": 172,
+                    "end": 173
+                  }
+                },
+                "span": {
+                  "start": 167,
+                  "end": 173
+                }
+              },
+              "thenBranch": {
+                "kind": "boolean",
+                "value": false,
+                "span": {
+                  "start": 179,
+                  "end": 184
+                }
+              },
+              "elseBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "even",
+                  "span": {
+                    "start": 190,
+                    "end": 194
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "-",
+                    "operatorSpan": {
+                      "start": 198,
+                      "end": 199
+                    },
+                    "left": {
+                      "kind": "name",
+                      "name": "n",
+                      "span": {
+                        "start": 196,
+                        "end": 197
+                      }
+                    },
+                    "right": {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 200,
+                        "end": 201
+                      }
+                    },
+                    "span": {
+                      "start": 196,
+                      "end": 201
+                    }
+                  },
+                  "span": {
+                    "start": 195,
+                    "end": 202
+                  }
+                },
+                "span": {
+                  "start": 190,
+                  "end": 202
+                }
+              },
+              "span": {
+                "start": 164,
+                "end": 202
+              }
+            },
+            "span": {
+              "start": 136,
+              "end": 202
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "first",
+            "nameSpan": {
+              "start": 210,
+              "end": 215
+            },
+            "parameters": [
+              {
+                "name": "n",
+                "nameSpan": {
+                  "start": 216,
+                  "end": 217
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 219,
+                    "end": 222
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 226,
+                "end": 229
+              }
+            },
+            "value": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "operatorSpan": {
+                  "start": 237,
+                  "end": 239
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "n",
+                  "span": {
+                    "start": 235,
+                    "end": 236
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "0",
+                  "span": {
+                    "start": 240,
+                    "end": 241
+                  }
+                },
+                "span": {
+                  "start": 235,
+                  "end": 241
+                }
+              },
+              "thenBranch": {
+                "kind": "name",
+                "name": "outer",
+                "span": {
+                  "start": 247,
+                  "end": 252
+                }
+              },
+              "elseBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "second",
+                  "span": {
+                    "start": 258,
+                    "end": 264
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "-",
+                    "operatorSpan": {
+                      "start": 268,
+                      "end": 269
+                    },
+                    "left": {
+                      "kind": "name",
+                      "name": "n",
+                      "span": {
+                        "start": 266,
+                        "end": 267
+                      }
+                    },
+                    "right": {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 270,
+                        "end": 271
+                      }
+                    },
+                    "span": {
+                      "start": 266,
+                      "end": 271
+                    }
+                  },
+                  "span": {
+                    "start": 265,
+                    "end": 272
+                  }
+                },
+                "span": {
+                  "start": 258,
+                  "end": 272
+                }
+              },
+              "span": {
+                "start": 232,
+                "end": 272
+              }
+            },
+            "span": {
+              "start": 203,
+              "end": 272
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "second",
+            "nameSpan": {
+              "start": 280,
+              "end": 286
+            },
+            "parameters": [
+              {
+                "name": "n",
+                "nameSpan": {
+                  "start": 287,
+                  "end": 288
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 290,
+                    "end": 293
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 297,
+                "end": 300
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "third",
+                "span": {
+                  "start": 303,
+                  "end": 308
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "n",
+                "span": {
+                  "start": 309,
+                  "end": 310
+                }
+              },
+              "span": {
+                "start": 303,
+                "end": 310
+              }
+            },
+            "span": {
+              "start": 273,
+              "end": 310
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "third",
+            "nameSpan": {
+              "start": 318,
+              "end": 323
+            },
+            "parameters": [
+              {
+                "name": "n",
+                "nameSpan": {
+                  "start": 324,
+                  "end": 325
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 327,
+                    "end": 330
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 334,
+                "end": 337
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "first",
+                "span": {
+                  "start": 340,
+                  "end": 345
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "n",
+                "span": {
+                  "start": 346,
+                  "end": 347
+                }
+              },
+              "span": {
+                "start": 340,
+                "end": 347
+              }
+            },
+            "span": {
+              "start": 311,
+              "end": 347
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "identity",
+            "nameSpan": {
+              "start": 355,
+              "end": 363
+            },
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "nameSpan": {
+                  "start": 367,
+                  "end": 372
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "span": {
+                    "start": 374,
+                    "end": 375
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 379,
+                "end": 380
+              }
+            },
+            "value": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 383,
+                "end": 388
+              }
+            },
+            "span": {
+              "start": 348,
+              "end": 388
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "render",
+            "nameSpan": {
+              "start": 396,
+              "end": 402
+            },
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "nameSpan": {
+                  "start": 406,
+                  "end": 411
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "span": {
+                    "start": 413,
+                    "end": 414
+                  }
+                }
+              },
+              {
+                "name": "n",
+                "nameSpan": {
+                  "start": 418,
+                  "end": 419
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 421,
+                    "end": 424
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "String",
+              "span": {
+                "start": 428,
+                "end": 434
+              }
+            },
+            "constraints": [
+              {
+                "name": "Show",
+                "nameSpan": {
+                  "start": 441,
+                  "end": 445
+                },
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "span": {
+                      "start": 446,
+                      "end": 447
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 441,
+                  "end": 448
+                }
+              }
+            ],
+            "value": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "operatorSpan": {
+                  "start": 462,
+                  "end": 464
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "n",
+                  "span": {
+                    "start": 460,
+                    "end": 461
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "0",
+                  "span": {
+                    "start": 465,
+                    "end": 466
+                  }
+                },
+                "span": {
+                  "start": 460,
+                  "end": 466
+                }
+              },
+              "thenBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "show",
+                  "span": {
+                    "start": 472,
+                    "end": 476
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "value",
+                  "span": {
+                    "start": 477,
+                    "end": 482
+                  }
+                },
+                "span": {
+                  "start": 472,
+                  "end": 482
+                }
+              },
+              "elseBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "renderNext",
+                    "span": {
+                      "start": 488,
+                      "end": 498
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "value",
+                    "span": {
+                      "start": 499,
+                      "end": 504
+                    }
+                  },
+                  "span": {
+                    "start": 488,
+                    "end": 504
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "-",
+                    "operatorSpan": {
+                      "start": 508,
+                      "end": 509
+                    },
+                    "left": {
+                      "kind": "name",
+                      "name": "n",
+                      "span": {
+                        "start": 506,
+                        "end": 507
+                      }
+                    },
+                    "right": {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 510,
+                        "end": 511
+                      }
+                    },
+                    "span": {
+                      "start": 506,
+                      "end": 511
+                    }
+                  },
+                  "span": {
+                    "start": 505,
+                    "end": 512
+                  }
+                },
+                "span": {
+                  "start": 488,
+                  "end": 512
+                }
+              },
+              "span": {
+                "start": 457,
+                "end": 512
+              }
+            },
+            "span": {
+              "start": 389,
+              "end": 512
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "renderNext",
+            "nameSpan": {
+              "start": 520,
+              "end": 530
+            },
+            "typeParameters": [
+              "B"
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "nameSpan": {
+                  "start": 534,
+                  "end": 539
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "B",
+                  "span": {
+                    "start": 541,
+                    "end": 542
+                  }
+                }
+              },
+              {
+                "name": "n",
+                "nameSpan": {
+                  "start": 546,
+                  "end": 547
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 549,
+                    "end": 552
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "String",
+              "span": {
+                "start": 556,
+                "end": 562
+              }
+            },
+            "constraints": [
+              {
+                "name": "Show",
+                "nameSpan": {
+                  "start": 569,
+                  "end": 573
+                },
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "B",
+                    "span": {
+                      "start": 574,
+                      "end": 575
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 569,
+                  "end": 576
+                }
+              }
+            ],
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "render",
+                  "span": {
+                    "start": 579,
+                    "end": 585
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "value",
+                  "span": {
+                    "start": 586,
+                    "end": 591
+                  }
+                },
+                "span": {
+                  "start": 579,
+                  "end": 591
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "n",
+                "span": {
+                  "start": 592,
+                  "end": 593
+                }
+              },
+              "span": {
+                "start": 579,
+                "end": 593
+              }
+            },
+            "span": {
+              "start": 513,
+              "end": 593
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "count",
+            "nameSpan": {
+              "start": 601,
+              "end": 606
+            },
+            "parameters": [
+              {
+                "name": "n",
+                "nameSpan": {
+                  "start": 607,
+                  "end": 608
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 610,
+                    "end": 613
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 617,
+                "end": 620
+              }
+            },
+            "value": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "operatorSpan": {
+                  "start": 628,
+                  "end": 630
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "n",
+                  "span": {
+                    "start": 626,
+                    "end": 627
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "0",
+                  "span": {
+                    "start": 631,
+                    "end": 632
+                  }
+                },
+                "span": {
+                  "start": 626,
+                  "end": 632
+                }
+              },
+              "thenBranch": {
+                "kind": "name",
+                "name": "outer",
+                "span": {
+                  "start": 638,
+                  "end": 643
+                }
+              },
+              "elseBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "count",
+                  "span": {
+                    "start": 649,
+                    "end": 654
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "-",
+                    "operatorSpan": {
+                      "start": 658,
+                      "end": 659
+                    },
+                    "left": {
+                      "kind": "name",
+                      "name": "n",
+                      "span": {
+                        "start": 656,
+                        "end": 657
+                      }
+                    },
+                    "right": {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 660,
+                        "end": 661
+                      }
+                    },
+                    "span": {
+                      "start": 656,
+                      "end": 661
+                    }
+                  },
+                  "span": {
+                    "start": 655,
+                    "end": 662
+                  }
+                },
+                "span": {
+                  "start": 649,
+                  "end": 662
+                }
+              },
+              "span": {
+                "start": 623,
+                "end": 662
+              }
+            },
+            "span": {
+              "start": 594,
+              "end": 662
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "cold",
+            "nameSpan": {
+              "start": 677,
+              "end": 681
+            },
+            "parameters": [],
+            "effect": {
+              "inferred": false,
+              "requirements": [
+                {
+                  "kind": "field",
+                  "name": "console",
+                  "nameSpan": {
+                    "start": 695,
+                    "end": 702
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "span": {
+                      "start": 704,
+                      "end": 711
+                    }
+                  },
+                  "span": {
+                    "start": 695,
+                    "end": 711
+                  }
+                }
+              ],
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "span": {
+                  "start": 718,
+                  "end": 730
+                }
+              }
+            },
+            "returnType": {
+              "kind": "named",
+              "name": "Unit",
+              "span": {
+                "start": 685,
+                "end": 689
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 739,
+                  "end": 746
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"must stay cold\"",
+                "span": {
+                  "start": 747,
+                  "end": 763
+                }
+              },
+              "span": {
+                "start": 739,
+                "end": 763
+              }
+            },
+            "span": {
+              "start": 663,
+              "end": 763
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "left",
+            "nameSpan": {
+              "start": 778,
+              "end": 782
+            },
+            "parameters": [
+              {
+                "name": "n",
+                "nameSpan": {
+                  "start": 783,
+                  "end": 784
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 786,
+                    "end": 789
+                  }
+                }
+              }
+            ],
+            "effect": {
+              "inferred": false,
+              "requirements": [],
+              "failure": null
+            },
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 793,
+                "end": 796
+              }
+            },
+            "value": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "operatorSpan": {
+                  "start": 804,
+                  "end": 806
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "n",
+                  "span": {
+                    "start": 802,
+                    "end": 803
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "0",
+                  "span": {
+                    "start": 807,
+                    "end": 808
+                  }
+                },
+                "span": {
+                  "start": 802,
+                  "end": 808
+                }
+              },
+              "thenBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "pure",
+                  "span": {
+                    "start": 814,
+                    "end": 818
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "outer",
+                  "span": {
+                    "start": 819,
+                    "end": 824
+                  }
+                },
+                "span": {
+                  "start": 814,
+                  "end": 824
+                }
+              },
+              "elseBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "right",
+                  "span": {
+                    "start": 830,
+                    "end": 835
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "-",
+                    "operatorSpan": {
+                      "start": 839,
+                      "end": 840
+                    },
+                    "left": {
+                      "kind": "name",
+                      "name": "n",
+                      "span": {
+                        "start": 837,
+                        "end": 838
+                      }
+                    },
+                    "right": {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 841,
+                        "end": 842
+                      }
+                    },
+                    "span": {
+                      "start": 837,
+                      "end": 842
+                    }
+                  },
+                  "span": {
+                    "start": 836,
+                    "end": 843
+                  }
+                },
+                "span": {
+                  "start": 830,
+                  "end": 843
+                }
+              },
+              "span": {
+                "start": 799,
+                "end": 843
+              }
+            },
+            "span": {
+              "start": 764,
+              "end": 843
+            }
+          },
+          {
+            "kind": "function",
+            "recGroup": {
+              "start": 64,
+              "end": 890
+            },
+            "name": "right",
+            "nameSpan": {
+              "start": 858,
+              "end": 863
+            },
+            "parameters": [
+              {
+                "name": "n",
+                "nameSpan": {
+                  "start": 864,
+                  "end": 865
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 867,
+                    "end": 870
+                  }
+                }
+              }
+            ],
+            "effect": {
+              "inferred": false,
+              "requirements": [],
+              "failure": null
+            },
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 874,
+                "end": 877
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "left",
+                "span": {
+                  "start": 880,
+                  "end": 884
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "n",
+                "span": {
+                  "start": 885,
+                  "end": 886
+                }
+              },
+              "span": {
+                "start": 880,
+                "end": 886
+              }
+            },
+            "span": {
+              "start": 844,
+              "end": 886
+            }
+          }
+        ],
+        "result": {
+          "kind": "do",
+          "items": [
+            {
+              "kind": "expression",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "println",
+                  "span": {
+                    "start": 902,
+                    "end": 909
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 912,
+                      "end": 916
+                    }
+                  },
+                  "argument": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "even",
+                          "span": {
+                            "start": 918,
+                            "end": 922
+                          }
+                        },
+                        "argument": {
+                          "kind": "integer",
+                          "raw": "8",
+                          "span": {
+                            "start": 923,
+                            "end": 924
+                          }
+                        },
+                        "span": {
+                          "start": 918,
+                          "end": 924
+                        }
+                      },
+                      {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "odd",
+                          "span": {
+                            "start": 926,
+                            "end": 929
+                          }
+                        },
+                        "argument": {
+                          "kind": "integer",
+                          "raw": "9",
+                          "span": {
+                            "start": 930,
+                            "end": 931
+                          }
+                        },
+                        "span": {
+                          "start": 926,
+                          "end": 931
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 917,
+                      "end": 932
+                    }
+                  },
+                  "span": {
+                    "start": 912,
+                    "end": 932
+                  }
+                },
+                "span": {
+                  "start": 902,
+                  "end": 932
+                }
+              },
+              "span": {
+                "start": 902,
+                "end": 932
+              }
+            },
+            {
+              "kind": "expression",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "println",
+                  "span": {
+                    "start": 937,
+                    "end": 944
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "first",
+                    "span": {
+                      "start": 947,
+                      "end": 952
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "3",
+                    "span": {
+                      "start": 953,
+                      "end": 954
+                    }
+                  },
+                  "span": {
+                    "start": 947,
+                    "end": 954
+                  }
+                },
+                "span": {
+                  "start": 937,
+                  "end": 954
+                }
+              },
+              "span": {
+                "start": 937,
+                "end": 954
+              }
+            },
+            {
+              "kind": "expression",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "println",
+                  "span": {
+                    "start": 959,
+                    "end": 966
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 969,
+                      "end": 973
+                    }
+                  },
+                  "argument": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "identity",
+                          "span": {
+                            "start": 975,
+                            "end": 983
+                          }
+                        },
+                        "argument": {
+                          "kind": "boolean",
+                          "value": true,
+                          "span": {
+                            "start": 984,
+                            "end": 988
+                          }
+                        },
+                        "span": {
+                          "start": 975,
+                          "end": 988
+                        }
+                      },
+                      {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "identity",
+                          "span": {
+                            "start": 990,
+                            "end": 998
+                          }
+                        },
+                        "argument": {
+                          "kind": "integer",
+                          "raw": "42",
+                          "span": {
+                            "start": 999,
+                            "end": 1001
+                          }
+                        },
+                        "span": {
+                          "start": 990,
+                          "end": 1001
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 974,
+                      "end": 1002
+                    }
+                  },
+                  "span": {
+                    "start": 969,
+                    "end": 1002
+                  }
+                },
+                "span": {
+                  "start": 959,
+                  "end": 1002
+                }
+              },
+              "span": {
+                "start": 959,
+                "end": 1002
+              }
+            },
+            {
+              "kind": "expression",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "println",
+                  "span": {
+                    "start": 1007,
+                    "end": 1014
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "render",
+                      "span": {
+                        "start": 1017,
+                        "end": 1023
+                      }
+                    },
+                    "argument": {
+                      "kind": "integer",
+                      "raw": "42",
+                      "span": {
+                        "start": 1024,
+                        "end": 1026
+                      }
+                    },
+                    "span": {
+                      "start": 1017,
+                      "end": 1026
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "3",
+                    "span": {
+                      "start": 1027,
+                      "end": 1028
+                    }
+                  },
+                  "span": {
+                    "start": 1017,
+                    "end": 1028
+                  }
+                },
+                "span": {
+                  "start": 1007,
+                  "end": 1028
+                }
+              },
+              "span": {
+                "start": 1007,
+                "end": 1028
+              }
+            },
+            {
+              "kind": "expression",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "println",
+                  "span": {
+                    "start": 1033,
+                    "end": 1040
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "count",
+                    "span": {
+                      "start": 1043,
+                      "end": 1048
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "100000",
+                    "span": {
+                      "start": 1049,
+                      "end": 1055
+                    }
+                  },
+                  "span": {
+                    "start": 1043,
+                    "end": 1055
+                  }
+                },
+                "span": {
+                  "start": 1033,
+                  "end": 1055
+                }
+              },
+              "span": {
+                "start": 1033,
+                "end": 1055
+              }
+            },
+            {
+              "kind": "bind",
+              "pattern": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 1060,
+                  "end": 1065
+                },
+                "span": {
+                  "start": 1060,
+                  "end": 1065
+                }
+              },
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "left",
+                  "span": {
+                    "start": 1069,
+                    "end": 1073
+                  }
+                },
+                "argument": {
+                  "kind": "integer",
+                  "raw": "3",
+                  "span": {
+                    "start": 1074,
+                    "end": 1075
+                  }
+                },
+                "span": {
+                  "start": 1069,
+                  "end": 1075
+                }
+              },
+              "span": {
+                "start": 1060,
+                "end": 1075
+              }
+            }
+          ],
+          "result": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "println",
+              "span": {
+                "start": 1080,
+                "end": 1087
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 1088,
+                "end": 1093
+              }
+            },
+            "span": {
+              "start": 1080,
+              "end": 1093
+            }
+          },
+          "span": {
+            "start": 893,
+            "end": 1097
+          }
+        },
+        "span": {
+          "start": 21,
+          "end": 1099
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 1099
+      }
+    }
+  ]
+}

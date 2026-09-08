@@ -1113,6 +1113,14 @@ fn driver_failure(error: ProjectCompileError, paths: &BTreeMap<String, String>) 
                 })
                 .collect(),
         ),
+        ProjectCompileError::MixedProfiles { module } => {
+            ProjectFailure::problem(ProjectProblem::file(
+                "SES-K0001",
+                "project modules must use the same build profile".to_owned(),
+                path_for_module(paths, &module),
+                None,
+            ))
+        }
         ProjectCompileError::Graph(error) => graph_failure(error, paths),
         ProjectCompileError::Link { module, errors } => ProjectFailure {
             diagnostics: Vec::new(),
