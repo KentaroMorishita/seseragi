@@ -2677,6 +2677,206 @@
       }
     },
     {
+      "id": "core.math.api.pi",
+      "kind": "runtime-binding",
+      "typescript": "number",
+      "boundary": "Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "pi"
+      }
+    },
+    {
+      "id": "core.math.api.e",
+      "kind": "runtime-binding",
+      "typescript": "number",
+      "boundary": "Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "e"
+      }
+    },
+    {
+      "id": "core.math.api.tau",
+      "kind": "runtime-binding",
+      "typescript": "number",
+      "boundary": "Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "tau"
+      }
+    },
+    {
+      "id": "core.math.api.sin",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "sin"
+      }
+    },
+    {
+      "id": "core.math.api.cos",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "cos"
+      }
+    },
+    {
+      "id": "core.math.api.tan",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "tan"
+      }
+    },
+    {
+      "id": "core.math.api.asin",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "asin"
+      }
+    },
+    {
+      "id": "core.math.api.acos",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "acos"
+      }
+    },
+    {
+      "id": "core.math.api.atan",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "atan"
+      }
+    },
+    {
+      "id": "core.math.api.atan2",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "atan2"
+      }
+    },
+    {
+      "id": "core.math.api.exp",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "exp"
+      }
+    },
+    {
+      "id": "core.math.api.log",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "log"
+      }
+    },
+    {
+      "id": "core.math.api.log2",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "log2"
+      }
+    },
+    {
+      "id": "core.math.api.log10",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "log10"
+      }
+    },
+    {
+      "id": "core.math.api.sqrt",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "sqrt"
+      }
+    },
+    {
+      "id": "core.math.api.cbrt",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "cbrt"
+      }
+    },
+    {
+      "id": "core.math.api.hypot",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "hypot"
+      }
+    },
+    {
+      "id": "core.math.api.sinh",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "sinh"
+      }
+    },
+    {
+      "id": "core.math.api.cosh",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "cosh"
+      }
+    },
+    {
+      "id": "core.math.api.tanh",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/math",
+        "export": "tanh"
+      }
+    },
+    {
       "id": "core.float64.api.nan",
       "kind": "runtime-helper",
       "typescript": "function",

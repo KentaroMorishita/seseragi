@@ -37,6 +37,7 @@
         "std/big-int",
         "std/decimal",
         "std/float",
+        "std/math",
         "std/array",
         "std/collection",
         "std/iterator",
@@ -283,6 +284,16 @@
         "browser"
       ],
       "interfaceFingerprint": "fnv1a64:1fc7b2f3f52df4d3",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/math",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:357f89b97341f2c5",
       "implementation": "lowering-runtime",
       "route": "portable-project"
     },

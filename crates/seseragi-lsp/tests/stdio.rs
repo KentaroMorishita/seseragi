@@ -1584,6 +1584,12 @@ fn binary_exposes_portable_standard_metadata_from_the_parity_package() {
             PositionEncoding::Utf16,
         )
         .unwrap();
+    let math_position = LineIndex::new(&source)
+        .try_locate_encoded(
+            source.find("math.pi").unwrap() + "math.".len(),
+            PositionEncoding::Utf16,
+        )
+        .unwrap();
     let root_uri = file_uri(&package);
     let main_uri = file_uri(&main_path);
     let input = [
@@ -1618,6 +1624,18 @@ fn binary_exposes_portable_standard_metadata_from_the_parity_package() {
                 "line": iterator_position.line, "character": iterator_position.character
             }}
         }),
+        json!({
+            "jsonrpc": "2.0", "id": 6, "method": "textDocument/hover",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": math_position.line, "character": math_position.character
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 7, "method": "textDocument/completion",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": math_position.line, "character": math_position.character
+            }}
+        }),
         json!({"jsonrpc": "2.0", "id": 4, "method": "shutdown"}),
         json!({"jsonrpc": "2.0", "method": "exit"}),
     ];
@@ -1640,6 +1658,15 @@ fn binary_exposes_portable_standard_metadata_from_the_parity_package() {
         "{iterator_hover}"
     );
     assert!(iterator_hover.contains("Iterator"), "{iterator_hover}");
+    let math_hover = response(&messages, 6)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(
+        math_hover.contains("std/math::pi") && math_hover.contains("Float"),
+        "{math_hover}"
+    );
+    let math_completions = response(&messages, 7)["result"].as_array().unwrap();
+    assert!(math_completions.iter().any(|item| item["label"] == "atan2"));
     let completions = response(&messages, 3)["result"].as_array().unwrap();
     let length = completions
         .iter()

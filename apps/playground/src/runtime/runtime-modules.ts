@@ -48,55 +48,56 @@ import * as module43 from "../../../../runtime/ts/src/iterator.ts"
 import * as module44 from "../../../../runtime/ts/src/json.ts"
 import * as module45 from "../../../../runtime/ts/src/list.ts"
 import * as module46 from "../../../../runtime/ts/src/map.ts"
-import * as module47 from "../../../../runtime/ts/src/multipart.ts"
-import * as module48 from "../../../../runtime/ts/src/navigation.ts"
-import * as module49 from "../../../../runtime/ts/src/number.ts"
-import * as module50 from "../../../../runtime/ts/src/path.ts"
-import * as module51 from "../../../../runtime/ts/src/postgres.ts"
-import * as module52 from "../../../../runtime/ts/src/provider.ts"
-import * as module53 from "../../../../runtime/ts/src/provider-child-process.ts"
-import * as module54 from "../../../../runtime/ts/src/provider-clock.ts"
-import * as module55 from "../../../../runtime/ts/src/provider-conformance.ts"
-import * as module56 from "../../../../runtime/ts/src/provider-entropy.ts"
-import * as module57 from "../../../../runtime/ts/src/provider-filesystem.ts"
-import * as module58 from "../../../../runtime/ts/src/provider-http-client.ts"
-import * as module59 from "../../../../runtime/ts/src/provider-http-server.ts"
-import * as module60 from "../../../../runtime/ts/src/provider-navigation.ts"
-import * as module61 from "../../../../runtime/ts/src/provider-package.ts"
-import * as module62 from "../../../../runtime/ts/src/provider-postgres.ts"
-import * as module63 from "../../../../runtime/ts/src/provider-random.ts"
-import * as module64 from "../../../../runtime/ts/src/provider-sqlite.ts"
-import * as module65 from "../../../../runtime/ts/src/provider-storage.ts"
-import * as module66 from "../../../../runtime/ts/src/provider-timezones.ts"
-import * as module67 from "../../../../runtime/ts/src/provider-websocket.ts"
-import * as module68 from "../../../../runtime/ts/src/provider-websocket-server.ts"
-import * as module69 from "../../../../runtime/ts/src/queue.ts"
-import * as module70 from "../../../../runtime/ts/src/random.ts"
-import * as module71 from "../../../../runtime/ts/src/range.ts"
-import * as module72 from "../../../../runtime/ts/src/ref.ts"
-import * as module73 from "../../../../runtime/ts/src/regex.ts"
-import * as module74 from "../../../../runtime/ts/src/semaphore.ts"
-import * as module75 from "../../../../runtime/ts/src/service.ts"
-import * as module76 from "../../../../runtime/ts/src/set.ts"
-import * as module77 from "../../../../runtime/ts/src/show.ts"
-import * as module78 from "../../../../runtime/ts/src/signal.ts"
-import * as module79 from "../../../../runtime/ts/src/sqlite.ts"
-import * as module80 from "../../../../runtime/ts/src/sse.ts"
-import * as module81 from "../../../../runtime/ts/src/storage.ts"
-import * as module82 from "../../../../runtime/ts/src/stream.ts"
-import * as module83 from "../../../../runtime/ts/src/string.ts"
-import * as module84 from "../../../../runtime/ts/src/sum.ts"
-import * as module85 from "../../../../runtime/ts/src/test.ts"
-import * as module86 from "../../../../runtime/ts/src/text.ts"
-import * as module87 from "../../../../runtime/ts/src/time.ts"
-import * as module88 from "../../../../runtime/ts/src/timezone-rules.js"
-import * as module89 from "../../../../runtime/ts/src/transformer.ts"
-import * as module90 from "../../../../runtime/ts/src/unicode.ts"
-import * as module91 from "../../../../runtime/ts/src/unicode-version.ts"
-import * as module92 from "../../../../runtime/ts/src/validation.ts"
-import * as module93 from "../../../../runtime/ts/src/web-file.ts"
-import * as module94 from "../../../../runtime/ts/src/websocket.ts"
-import * as module95 from "../../../../runtime/ts/src/websocket-host-provider.ts"
+import * as module47 from "../../../../runtime/ts/src/math.ts"
+import * as module48 from "../../../../runtime/ts/src/multipart.ts"
+import * as module49 from "../../../../runtime/ts/src/navigation.ts"
+import * as module50 from "../../../../runtime/ts/src/number.ts"
+import * as module51 from "../../../../runtime/ts/src/path.ts"
+import * as module52 from "../../../../runtime/ts/src/postgres.ts"
+import * as module53 from "../../../../runtime/ts/src/provider.ts"
+import * as module54 from "../../../../runtime/ts/src/provider-child-process.ts"
+import * as module55 from "../../../../runtime/ts/src/provider-clock.ts"
+import * as module56 from "../../../../runtime/ts/src/provider-conformance.ts"
+import * as module57 from "../../../../runtime/ts/src/provider-entropy.ts"
+import * as module58 from "../../../../runtime/ts/src/provider-filesystem.ts"
+import * as module59 from "../../../../runtime/ts/src/provider-http-client.ts"
+import * as module60 from "../../../../runtime/ts/src/provider-http-server.ts"
+import * as module61 from "../../../../runtime/ts/src/provider-navigation.ts"
+import * as module62 from "../../../../runtime/ts/src/provider-package.ts"
+import * as module63 from "../../../../runtime/ts/src/provider-postgres.ts"
+import * as module64 from "../../../../runtime/ts/src/provider-random.ts"
+import * as module65 from "../../../../runtime/ts/src/provider-sqlite.ts"
+import * as module66 from "../../../../runtime/ts/src/provider-storage.ts"
+import * as module67 from "../../../../runtime/ts/src/provider-timezones.ts"
+import * as module68 from "../../../../runtime/ts/src/provider-websocket.ts"
+import * as module69 from "../../../../runtime/ts/src/provider-websocket-server.ts"
+import * as module70 from "../../../../runtime/ts/src/queue.ts"
+import * as module71 from "../../../../runtime/ts/src/random.ts"
+import * as module72 from "../../../../runtime/ts/src/range.ts"
+import * as module73 from "../../../../runtime/ts/src/ref.ts"
+import * as module74 from "../../../../runtime/ts/src/regex.ts"
+import * as module75 from "../../../../runtime/ts/src/semaphore.ts"
+import * as module76 from "../../../../runtime/ts/src/service.ts"
+import * as module77 from "../../../../runtime/ts/src/set.ts"
+import * as module78 from "../../../../runtime/ts/src/show.ts"
+import * as module79 from "../../../../runtime/ts/src/signal.ts"
+import * as module80 from "../../../../runtime/ts/src/sqlite.ts"
+import * as module81 from "../../../../runtime/ts/src/sse.ts"
+import * as module82 from "../../../../runtime/ts/src/storage.ts"
+import * as module83 from "../../../../runtime/ts/src/stream.ts"
+import * as module84 from "../../../../runtime/ts/src/string.ts"
+import * as module85 from "../../../../runtime/ts/src/sum.ts"
+import * as module86 from "../../../../runtime/ts/src/test.ts"
+import * as module87 from "../../../../runtime/ts/src/text.ts"
+import * as module88 from "../../../../runtime/ts/src/time.ts"
+import * as module89 from "../../../../runtime/ts/src/timezone-rules.js"
+import * as module90 from "../../../../runtime/ts/src/transformer.ts"
+import * as module91 from "../../../../runtime/ts/src/unicode.ts"
+import * as module92 from "../../../../runtime/ts/src/unicode-version.ts"
+import * as module93 from "../../../../runtime/ts/src/validation.ts"
+import * as module94 from "../../../../runtime/ts/src/web-file.ts"
+import * as module95 from "../../../../runtime/ts/src/websocket.ts"
+import * as module96 from "../../../../runtime/ts/src/websocket-host-provider.ts"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": module8,
@@ -140,56 +141,57 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/list": module45,
   "@seseragi/runtime/logger": module13,
   "@seseragi/runtime/map": module46,
-  "@seseragi/runtime/multipart": module47,
-  "@seseragi/runtime/navigation": module48,
-  "@seseragi/runtime/number": module49,
-  "@seseragi/runtime/path": module50,
-  "@seseragi/runtime/postgres": module51,
-  "@seseragi/runtime/provider": module52,
-  "@seseragi/runtime/provider-child-process": module53,
-  "@seseragi/runtime/provider-clock": module54,
-  "@seseragi/runtime/provider-conformance": module55,
-  "@seseragi/runtime/provider-entropy": module56,
-  "@seseragi/runtime/provider-filesystem": module57,
-  "@seseragi/runtime/provider-http-client": module58,
-  "@seseragi/runtime/provider-http-server": module59,
-  "@seseragi/runtime/provider-navigation": module60,
-  "@seseragi/runtime/provider-package": module61,
-  "@seseragi/runtime/provider-postgres": module62,
-  "@seseragi/runtime/provider-random": module63,
-  "@seseragi/runtime/provider-sqlite": module64,
-  "@seseragi/runtime/provider-storage": module65,
-  "@seseragi/runtime/provider-timezones": module66,
-  "@seseragi/runtime/provider-websocket": module67,
-  "@seseragi/runtime/provider-websocket-server": module68,
-  "@seseragi/runtime/queue": module69,
-  "@seseragi/runtime/random": module70,
-  "@seseragi/runtime/range": module71,
-  "@seseragi/runtime/ref": module72,
-  "@seseragi/runtime/regex": module73,
-  "@seseragi/runtime/semaphore": module74,
-  "@seseragi/runtime/service": module75,
-  "@seseragi/runtime/set": module76,
-  "@seseragi/runtime/show": module77,
-  "@seseragi/runtime/signal": module78,
-  "@seseragi/runtime/sqlite": module79,
-  "@seseragi/runtime/sse": module80,
+  "@seseragi/runtime/math": module47,
+  "@seseragi/runtime/multipart": module48,
+  "@seseragi/runtime/navigation": module49,
+  "@seseragi/runtime/number": module50,
+  "@seseragi/runtime/path": module51,
+  "@seseragi/runtime/postgres": module52,
+  "@seseragi/runtime/provider": module53,
+  "@seseragi/runtime/provider-child-process": module54,
+  "@seseragi/runtime/provider-clock": module55,
+  "@seseragi/runtime/provider-conformance": module56,
+  "@seseragi/runtime/provider-entropy": module57,
+  "@seseragi/runtime/provider-filesystem": module58,
+  "@seseragi/runtime/provider-http-client": module59,
+  "@seseragi/runtime/provider-http-server": module60,
+  "@seseragi/runtime/provider-navigation": module61,
+  "@seseragi/runtime/provider-package": module62,
+  "@seseragi/runtime/provider-postgres": module63,
+  "@seseragi/runtime/provider-random": module64,
+  "@seseragi/runtime/provider-sqlite": module65,
+  "@seseragi/runtime/provider-storage": module66,
+  "@seseragi/runtime/provider-timezones": module67,
+  "@seseragi/runtime/provider-websocket": module68,
+  "@seseragi/runtime/provider-websocket-server": module69,
+  "@seseragi/runtime/queue": module70,
+  "@seseragi/runtime/random": module71,
+  "@seseragi/runtime/range": module72,
+  "@seseragi/runtime/ref": module73,
+  "@seseragi/runtime/regex": module74,
+  "@seseragi/runtime/semaphore": module75,
+  "@seseragi/runtime/service": module76,
+  "@seseragi/runtime/set": module77,
+  "@seseragi/runtime/show": module78,
+  "@seseragi/runtime/signal": module79,
+  "@seseragi/runtime/sqlite": module80,
+  "@seseragi/runtime/sse": module81,
   "@seseragi/runtime/stdin": module20,
-  "@seseragi/runtime/storage": module81,
-  "@seseragi/runtime/stream": module82,
-  "@seseragi/runtime/string": module83,
-  "@seseragi/runtime/sum": module84,
-  "@seseragi/runtime/test": module85,
-  "@seseragi/runtime/text": module86,
-  "@seseragi/runtime/time": module87,
-  "@seseragi/runtime/timezone-rules": module88,
-  "@seseragi/runtime/transformer": module89,
-  "@seseragi/runtime/unicode": module90,
-  "@seseragi/runtime/unicode-version": module91,
-  "@seseragi/runtime/validation": module92,
-  "@seseragi/runtime/web-file": module93,
-  "@seseragi/runtime/websocket": module94,
-  "@seseragi/runtime/websocket-host-provider": module95,
+  "@seseragi/runtime/storage": module82,
+  "@seseragi/runtime/stream": module83,
+  "@seseragi/runtime/string": module84,
+  "@seseragi/runtime/sum": module85,
+  "@seseragi/runtime/test": module86,
+  "@seseragi/runtime/text": module87,
+  "@seseragi/runtime/time": module88,
+  "@seseragi/runtime/timezone-rules": module89,
+  "@seseragi/runtime/transformer": module90,
+  "@seseragi/runtime/unicode": module91,
+  "@seseragi/runtime/unicode-version": module92,
+  "@seseragi/runtime/validation": module93,
+  "@seseragi/runtime/web-file": module94,
+  "@seseragi/runtime/websocket": module95,
+  "@seseragi/runtime/websocket-host-provider": module96,
   "seseragi/runtime-browser/clock": module0,
   "seseragi/runtime-browser/entropy": module1,
   "seseragi/runtime-browser/http-client": module2,

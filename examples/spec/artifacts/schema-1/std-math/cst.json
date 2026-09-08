@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 217,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 12,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 12,
+        "endToken": 34,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 34,
+        "endToken": 61,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 34,
+            "endToken": 35,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 36,
+            "endToken": 61,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 61,
+        "endToken": 170,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 61,
+            "endToken": 62,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 63,
+            "endToken": 170,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 170,
+        "endToken": 189,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 170,
+            "endToken": 171,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 172,
+            "endToken": 189,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 189,
+        "endToken": 205,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 189,
+            "endToken": 190,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 191,
+            "endToken": 205,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 205,
+        "endToken": 217,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 205,
+            "endToken": 206,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 207,
+            "endToken": 217,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

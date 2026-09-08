@@ -93,6 +93,10 @@
       "types": "./src/number.ts",
       "default": "./src/number.ts"
     },
+    "./math": {
+      "types": "./src/math.ts",
+      "default": "./src/math.ts"
+    },
     "./float": {
       "types": "./src/float.ts",
       "default": "./src/float.ts"

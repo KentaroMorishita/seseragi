@@ -14,6 +14,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/big-int",
     "std/decimal",
     "std/float",
+    "std/math",
     "std/array",
     "std/collection",
     "std/iterator",

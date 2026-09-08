@@ -2186,6 +2186,577 @@
       }
     },
     {
+      "specifier": "std/math",
+      "identity": "std/math",
+      "status": "available",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/math",
+        "source": "std/math.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/math::pi",
+            "namespace": "value",
+            "name": "pi",
+            "visibility": "public",
+            "declarationKind": "value",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/math::e",
+            "namespace": "value",
+            "name": "e",
+            "visibility": "public",
+            "declarationKind": "value",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/math::tau",
+            "namespace": "value",
+            "name": "tau",
+            "visibility": "public",
+            "declarationKind": "value",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/math::sin",
+            "namespace": "value",
+            "name": "sin",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::cos",
+            "namespace": "value",
+            "name": "cos",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::tan",
+            "namespace": "value",
+            "name": "tan",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::asin",
+            "namespace": "value",
+            "name": "asin",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::acos",
+            "namespace": "value",
+            "name": "acos",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::atan",
+            "namespace": "value",
+            "name": "atan",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::exp",
+            "namespace": "value",
+            "name": "exp",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::log",
+            "namespace": "value",
+            "name": "log",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::log2",
+            "namespace": "value",
+            "name": "log2",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::log10",
+            "namespace": "value",
+            "name": "log10",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::sqrt",
+            "namespace": "value",
+            "name": "sqrt",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::cbrt",
+            "namespace": "value",
+            "name": "cbrt",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::sinh",
+            "namespace": "value",
+            "name": "sinh",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::cosh",
+            "namespace": "value",
+            "name": "cosh",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::tanh",
+            "namespace": "value",
+            "name": "tanh",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::atan2",
+            "namespace": "value",
+            "name": "atan2",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/math::hypot",
+            "namespace": "value",
+            "name": "hypot",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
       "specifier": "std/array",
       "identity": "std/array",
       "status": "available",

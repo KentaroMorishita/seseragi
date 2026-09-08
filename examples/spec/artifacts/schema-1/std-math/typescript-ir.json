@@ -1,0 +1,343 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/std-math",
+  "runtimeRequirements": [
+    "core.math.api.pi",
+    "core.math.api.e",
+    "core.math.api.tau",
+    "core.math.api.sin",
+    "core.math.api.cos",
+    "core.math.api.tan",
+    "core.math.api.asin",
+    "core.math.api.acos",
+    "core.math.api.atan",
+    "core.math.api.exp",
+    "core.math.api.log",
+    "core.math.api.log2",
+    "core.math.api.log10",
+    "core.math.api.sqrt",
+    "core.math.api.cbrt",
+    "core.math.api.sinh",
+    "core.math.api.cosh",
+    "core.math.api.tanh",
+    "core.math.api.atan2",
+    "core.float64",
+    "core.math.api.hypot"
+  ],
+  "imports": [
+    {
+      "feature": "core.math.api.pi",
+      "local": "_ssrg_math_pi"
+    },
+    {
+      "feature": "core.math.api.e",
+      "local": "_ssrg_math_e"
+    },
+    {
+      "feature": "core.math.api.tau",
+      "local": "_ssrg_math_tau"
+    },
+    {
+      "feature": "core.math.api.sin",
+      "local": "_ssrg_math_sin"
+    },
+    {
+      "feature": "core.math.api.cos",
+      "local": "_ssrg_math_cos"
+    },
+    {
+      "feature": "core.math.api.tan",
+      "local": "_ssrg_math_tan"
+    },
+    {
+      "feature": "core.math.api.asin",
+      "local": "_ssrg_math_asin"
+    },
+    {
+      "feature": "core.math.api.acos",
+      "local": "_ssrg_math_acos"
+    },
+    {
+      "feature": "core.math.api.atan",
+      "local": "_ssrg_math_atan"
+    },
+    {
+      "feature": "core.math.api.exp",
+      "local": "_ssrg_math_exp"
+    },
+    {
+      "feature": "core.math.api.log",
+      "local": "_ssrg_math_log"
+    },
+    {
+      "feature": "core.math.api.log2",
+      "local": "_ssrg_math_log2"
+    },
+    {
+      "feature": "core.math.api.log10",
+      "local": "_ssrg_math_log10"
+    },
+    {
+      "feature": "core.math.api.sqrt",
+      "local": "_ssrg_math_sqrt"
+    },
+    {
+      "feature": "core.math.api.cbrt",
+      "local": "_ssrg_math_cbrt"
+    },
+    {
+      "feature": "core.math.api.sinh",
+      "local": "_ssrg_math_sinh"
+    },
+    {
+      "feature": "core.math.api.cosh",
+      "local": "_ssrg_math_cosh"
+    },
+    {
+      "feature": "core.math.api.tanh",
+      "local": "_ssrg_math_tanh"
+    },
+    {
+      "feature": "core.math.api.atan2",
+      "local": "_ssrg_math_atan2"
+    },
+    {
+      "feature": "core.math.api.hypot",
+      "local": "_ssrg_math_hypot"
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "constants",
+      "type": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_pi"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_e"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_tau"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_pi"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 93,
+        "end": 156
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "functions",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "function",
+          "parameter": {
+            "kind": "number"
+          },
+          "result": {
+            "kind": "number"
+          }
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_sin"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_cos"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_tan"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_asin"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_acos"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_atan"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_exp"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_log"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_log2"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_log10"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_sqrt"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_cbrt"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_sinh"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_cosh"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_math_tanh"
+          }
+        ],
+        "elementType": {
+          "kind": "function",
+          "parameter": {
+            "kind": "number"
+          },
+          "result": {
+            "kind": "number"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 157,
+        "end": 388
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "partial",
+      "type": {
+        "kind": "function",
+        "parameter": {
+          "kind": "number"
+        },
+        "result": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "lambda",
+        "parameter": "__ssrg$numeric$partial$0: number",
+        "body": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_math_atan2",
+          "arguments": [
+            {
+              "kind": "number",
+              "value": "1.0"
+            },
+            {
+              "kind": "identifier",
+              "name": "__ssrg$numeric$partial$0"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 389,
+        "end": 432
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "length",
+      "type": {
+        "kind": "number"
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_math_hypot",
+        "arguments": [
+          {
+            "kind": "number",
+            "value": "3.0"
+          },
+          {
+            "kind": "number",
+            "value": "4.0"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 433,
+        "end": 468
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "result",
+      "type": {
+        "kind": "number"
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "partial",
+        "arguments": [
+          {
+            "kind": "number",
+            "value": "1.0"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 469,
+        "end": 497
+      }
+    }
+  ]
+}

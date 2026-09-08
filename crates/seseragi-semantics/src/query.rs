@@ -1459,7 +1459,9 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
 
 fn standard_category(name: &str, module: &str) -> &'static str {
     match module {
-        "std/number" | "std/int" | "std/big-int" | "std/decimal" | "std/float" => "Number",
+        "std/number" | "std/int" | "std/big-int" | "std/decimal" | "std/float" | "std/math" => {
+            "Number"
+        }
         "std/array" | "std/list" | "std/collection" => "Collection",
         "std/maybe" => "Maybe",
         "std/either" => "Either",
@@ -2066,6 +2068,9 @@ fn module_description(module: &str, export: &InterfaceExport) -> &'static str {
             "Parses, formats, or computes with Int under the safe integer contract."
         }
         ("std/int", _) => "Type from the checked safe integer surface.",
+        ("std/math", _) => {
+            "Pure portable mathematics on Float; angles are radians and atan2 takes y then x."
+        }
         ("std/float", "value") => {
             "Parses, formats, classifies, or explicitly converts an IEEE 754 Float."
         }

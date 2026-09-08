@@ -34,6 +34,19 @@ macro_rules! float_operation {
     };
 }
 
+macro_rules! math_operation {
+    ($name:literal) => {
+        RuntimeNumericOperation {
+            canonical: concat!("std/math::", $name),
+            runtime_feature: concat!("core.math.api.", $name),
+            local_name: concat!("_ssrg_math_", $name),
+            module: "@seseragi/runtime/math",
+            export_name: $name,
+            source_map_name: $name,
+        }
+    };
+}
+
 macro_rules! big_int_operation {
     ($name:literal, $feature:literal) => {
         RuntimeNumericOperation {
@@ -74,6 +87,26 @@ macro_rules! number_operation {
 }
 
 const OPERATIONS: &[RuntimeNumericOperation] = &[
+    math_operation!("pi"),
+    math_operation!("e"),
+    math_operation!("tau"),
+    math_operation!("sin"),
+    math_operation!("cos"),
+    math_operation!("tan"),
+    math_operation!("asin"),
+    math_operation!("acos"),
+    math_operation!("atan"),
+    math_operation!("atan2"),
+    math_operation!("exp"),
+    math_operation!("log"),
+    math_operation!("log2"),
+    math_operation!("log10"),
+    math_operation!("sqrt"),
+    math_operation!("cbrt"),
+    math_operation!("hypot"),
+    math_operation!("sinh"),
+    math_operation!("cosh"),
+    math_operation!("tanh"),
     number_operation!("HalfEven", "core.number.rounding.half-even"),
     number_operation!("HalfUp", "core.number.rounding.half-up"),
     number_operation!("TowardZero", "core.number.rounding.toward-zero"),

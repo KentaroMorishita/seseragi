@@ -7100,6 +7100,61 @@
       "constraints": []
     },
     {
+      "identity": "std/math::acos",
+      "name": "acos",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "acos arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::asin",
+      "name": "asin",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "asin arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::atan",
+      "name": "atan",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "atan arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::atan2",
+      "name": "atan2",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "atan2 arg1: Float -> arg2: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::cbrt",
+      "name": "cbrt",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "cbrt arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/int::checkedAdd",
       "name": "checkedAdd",
       "module": "std/int",
@@ -7232,6 +7287,28 @@
       "constraints": []
     },
     {
+      "identity": "std/math::cos",
+      "name": "cos",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "cos arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::cosh",
+      "name": "cosh",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "cosh arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/decimal::divide",
       "name": "divide",
       "module": "std/decimal",
@@ -7250,6 +7327,28 @@
       "kind": "function",
       "signature": "divideExact arg1: Decimal -> arg2: Decimal -> Either<DecimalArithmeticError, Decimal>",
       "description": "Divides Decimals only when the exact result has a finite decimal expansion.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::e",
+      "name": "e",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "value",
+      "signature": "Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::exp",
+      "name": "exp",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "exp arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7353,6 +7452,17 @@
       "constraints": []
     },
     {
+      "identity": "std/math::hypot",
+      "name": "hypot",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "hypot arg1: Float -> arg2: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::ieeeEq",
       "name": "ieeeEq",
       "module": "std/float",
@@ -7404,6 +7514,39 @@
       "kind": "function",
       "signature": "isNegativeZero arg1: Float -> Bool",
       "description": "Parses, formats, classifies, or explicitly converts an IEEE 754 Float.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::log",
+      "name": "log",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "log arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::log10",
+      "name": "log10",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "log10 arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::log2",
+      "name": "log2",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "log2 arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7562,6 +7705,17 @@
       "constraints": []
     },
     {
+      "identity": "std/math::pi",
+      "name": "pi",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "value",
+      "signature": "Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/float::positiveInfinity",
       "name": "positiveInfinity",
       "module": "std/float",
@@ -7701,6 +7855,72 @@
       "kind": "function",
       "signature": "sign arg1: Int -> Int",
       "description": "Parses, formats, or computes with Int under the safe integer contract.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::sin",
+      "name": "sin",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "sin arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::sinh",
+      "name": "sinh",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "sinh arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::sqrt",
+      "name": "sqrt",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "sqrt arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::tan",
+      "name": "tan",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "tan arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::tanh",
+      "name": "tanh",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "function",
+      "signature": "tanh arg1: Float -> Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/math::tau",
+      "name": "tau",
+      "module": "std/math",
+      "category": "Number",
+      "kind": "value",
+      "signature": "Float",
+      "description": "Pure portable mathematics on Float; angles are radians and atan2 takes y then x.",
       "typeParameters": [],
       "constraints": []
     },
