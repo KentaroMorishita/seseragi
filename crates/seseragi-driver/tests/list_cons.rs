@@ -84,3 +84,16 @@ fn cons_infers_nullary_head_and_empty_collection_from_tail() {
     let result = compile_module(CompileInput::new("infer.ssrg", "fixture/cons", source));
     assert!(result.is_ok(), "{result:#?}");
 }
+
+#[test]
+fn cons_infers_nested_nullary_elements_and_preserves_generic_identity() {
+    for source in [
+        "pub let values = (Nothing, 1) : `[(Just 2, 3)]",
+        "pub let values = { value: Nothing } : `[{ value: Just 2 }]",
+        "fn prepend<A> head: A -> List<A> = head : `[]",
+        "pub let values: List<Maybe<Int>> = Nothing : `[]",
+    ] {
+        let result = compile_module(CompileInput::new("nested.ssrg", "fixture/cons", source));
+        assert!(result.is_ok(), "{source}\n{result:#?}");
+    }
+}

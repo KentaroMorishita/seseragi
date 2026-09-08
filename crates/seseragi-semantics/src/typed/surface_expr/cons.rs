@@ -45,10 +45,31 @@ fn needs_element_expectation(value: &SemanticValueType) -> bool {
         | SemanticTypeKey::ExternalNominal { arguments, .. } => {
             arguments.iter().any(needs_element_expectation)
         }
-        SemanticTypeKey::Other => {
-            matches!(&value.type_ref, TypedType::Named { name, arguments } if arguments.is_empty() && !crate::prelude::is_standalone_symbol(crate::SymbolNamespace::Type, name))
-        }
+        SemanticTypeKey::Tuple(keys) => match &value.type_ref {
+            TypedType::Tuple { elements } => elements.iter().zip(keys).any(|(type_ref, key)| {
+                needs_element_expectation(&SemanticValueType {
+                    type_ref: type_ref.clone(),
+                    key: key.clone(),
+                })
+            }),
+            _ => false,
+        },
+        SemanticTypeKey::Other => type_needs_expectation(&value.type_ref),
         _ => false,
+    }
+}
+
+fn type_needs_expectation(type_ref: &TypedType) -> bool {
+    match type_ref {
+        TypedType::Named { name, arguments } => {
+            (arguments.is_empty()
+                && !crate::prelude::is_standalone_symbol(crate::SymbolNamespace::Type, name))
+                || arguments.iter().any(type_needs_expectation)
+        }
+        TypedType::Record { fields, .. } => fields
+            .iter()
+            .any(|field| type_needs_expectation(&field.type_ref)),
+        _ => typed_type_contains_hole(type_ref),
     }
 }
 

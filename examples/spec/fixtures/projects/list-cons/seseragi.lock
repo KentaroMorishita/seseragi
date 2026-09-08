@@ -12,7 +12,7 @@ version = "0.0.0"
 source_kind = "workspace"
 source = "."
 manifest_digest = "sha256:5111d650bd6836b3cc6b8b26e1c2b9167cfb855f164e9731381219bfe92e4b7d"
-content_digest = "sha256:f07ef6b43f752cadb6f4e05d3818f99dd9e9dacce08ac530c6843324af1f0cbd"
+content_digest = "sha256:bb9045204d11d1c88859bcf7e6aa5310628567aa80ea5ef363e314e72583c8e3"
 dependencies = []
 
 [[foreign_modules]]
