@@ -9131,6 +9131,39 @@
       "constraints": []
     },
     {
+      "identity": "std/benchmark::Benchmark",
+      "name": "Benchmark",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Benchmark",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::BenchmarkEnvironment",
+      "name": "BenchmarkEnvironment",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "alias",
+      "signature": "BenchmarkEnvironment",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::BenchmarkFailure",
+      "name": "BenchmarkFailure",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "BenchmarkFailure",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/file::Blob",
       "name": "Blob",
       "module": "std/web/file",
@@ -10005,6 +10038,17 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "TestFailure",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::ExplicitBenchmarkFailure",
+      "name": "ExplicitBenchmarkFailure",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ExplicitBenchmarkFailure arg1: String -> BenchmarkFailure",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -13197,6 +13241,30 @@
       "constraints": []
     },
     {
+      "identity": "std/benchmark::benchmark",
+      "name": "benchmark",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "benchmark arg1: String -> arg2: Effect<{ random: Random, console: Console, logger: Logger }, BenchmarkFailure, Unit> -> Benchmark",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::blackBox",
+      "name": "blackBox",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "blackBox<A> arg1: A -> A",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http/multipart::body",
       "name": "body",
       "module": "std/http/multipart",
@@ -14160,6 +14228,17 @@
       "constraints": []
     },
     {
+      "identity": "std/benchmark::fail",
+      "name": "fail",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "fail arg1: String -> Effect<{}, BenchmarkFailure, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/deferred::fail",
       "name": "fail",
       "module": "std/deferred",
@@ -14666,6 +14745,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "inDirectory arg1: Path -> arg2: Command -> Command",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::inputSize",
+      "name": "inputSize",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "inputSize arg1: Int -> arg2: Benchmark -> Benchmark",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -16930,6 +17020,17 @@
         "E",
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/benchmark::suite",
+      "name": "suite",
+      "module": "std/benchmark",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "suite arg1: String -> arg2: Array<Benchmark> -> Benchmark",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {

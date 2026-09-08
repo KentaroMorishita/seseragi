@@ -39,6 +39,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/stdin",
     "std/effect",
     "std/test",
+    "std/benchmark",
     "std/deferred",
     "std/queue",
     "std/semaphore",

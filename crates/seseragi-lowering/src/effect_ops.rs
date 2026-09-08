@@ -23,6 +23,48 @@ macro_rules! surface_operation {
 
 const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
     surface_operation!(
+        "std/benchmark::ExplicitBenchmarkFailure",
+        "benchmark.failure.explicit",
+        "_ssrg_benchmark_ExplicitBenchmarkFailure",
+        "@seseragi/runtime/benchmark",
+        "ExplicitBenchmarkFailure"
+    ),
+    surface_operation!(
+        "std/benchmark::benchmark",
+        "benchmark.tree.case",
+        "_ssrg_benchmark_benchmark",
+        "@seseragi/runtime/benchmark",
+        "benchmark"
+    ),
+    surface_operation!(
+        "std/benchmark::suite",
+        "benchmark.tree.suite",
+        "_ssrg_benchmark_suite",
+        "@seseragi/runtime/benchmark",
+        "suite"
+    ),
+    surface_operation!(
+        "std/benchmark::inputSize",
+        "benchmark.tree.input-size",
+        "_ssrg_benchmark_inputSize",
+        "@seseragi/runtime/benchmark",
+        "inputSize"
+    ),
+    surface_operation!(
+        "std/benchmark::blackBox",
+        "benchmark.black-box",
+        "_ssrg_benchmark_blackBox",
+        "@seseragi/runtime/benchmark",
+        "blackBox"
+    ),
+    surface_operation!(
+        "std/benchmark::fail",
+        "benchmark.fail",
+        "_ssrg_benchmark_fail",
+        "@seseragi/runtime/benchmark",
+        "fail"
+    ),
+    surface_operation!(
         "std/test::AssertionFailed",
         "test.failure.assertion",
         "_ssrg_test_AssertionFailed",

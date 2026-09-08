@@ -56294,11 +56294,390 @@
     {
       "specifier": "std/benchmark",
       "identity": "std/benchmark",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/benchmark",
+        "source": "std/benchmark.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/benchmark::BenchmarkEnvironment",
+            "namespace": "type",
+            "name": "BenchmarkEnvironment",
+            "visibility": "public",
+            "declarationKind": "alias",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "BenchmarkEnvironment",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "random",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Random",
+                    "canonical": "std/random::Random",
+                    "providerModule": "std/random",
+                    "providerExport": "Random",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Console",
+                    "canonical": "std/prelude::Console",
+                    "providerModule": "std/prelude",
+                    "providerExport": "Console",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "logger",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Logger",
+                    "canonical": "std/log::Logger",
+                    "providerModule": "std/log",
+                    "providerExport": "Logger",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/benchmark::BenchmarkFailure",
+            "namespace": "type",
+            "name": "BenchmarkFailure",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "BenchmarkFailure",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/benchmark::ExplicitBenchmarkFailure",
+            "namespace": "value",
+            "name": "ExplicitBenchmarkFailure",
+            "constructorOf": "std/benchmark::BenchmarkFailure",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "BenchmarkFailure",
+                  "canonical": "std/benchmark::BenchmarkFailure",
+                  "providerModule": "std/benchmark",
+                  "providerExport": "BenchmarkFailure",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/benchmark::Benchmark",
+            "namespace": "type",
+            "name": "Benchmark",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Benchmark",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/benchmark::benchmark",
+            "namespace": "value",
+            "name": "benchmark",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "random",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "Random",
+                              "canonical": "std/random::Random",
+                              "providerModule": "std/random",
+                              "providerExport": "Random",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "console",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "Console",
+                              "canonical": "std/prelude::Console",
+                              "providerModule": "std/prelude",
+                              "providerExport": "Console",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "logger",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "Logger",
+                              "canonical": "std/log::Logger",
+                              "providerModule": "std/log",
+                              "providerExport": "Logger",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "BenchmarkFailure",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Benchmark",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/benchmark::suite",
+            "namespace": "value",
+            "name": "suite",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Benchmark",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Benchmark",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/benchmark::inputSize",
+            "namespace": "value",
+            "name": "inputSize",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Benchmark",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Benchmark",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/benchmark::blackBox",
+            "namespace": "value",
+            "name": "blackBox",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/benchmark::fail",
+            "namespace": "value",
+            "name": "fail",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "BenchmarkFailure",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/big-int",

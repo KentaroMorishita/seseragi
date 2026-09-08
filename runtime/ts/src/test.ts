@@ -323,7 +323,7 @@ function flatten(
   })
 }
 
-function validateName(kind: string, value: string): void {
+export function validateName(kind: string, value: string): void {
   if (value.length === 0 || value.includes("::") || /[\r\n]/u.test(value)) {
     throw new Error(`${kind} name is not canonical: ${JSON.stringify(value)}`)
   }
@@ -397,9 +397,9 @@ async function runCase(
       }
 }
 
-function testEnvironment(
-  seed: number,
-  index: number,
+export function testEnvironment(
+  seed: number | string,
+  index: number | string,
   output: { stdout: string; stderr: string }
 ): TestEnvironment {
   let instant = 0n

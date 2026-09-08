@@ -220,6 +220,12 @@ const ROUTES: &[RouteDefinition] = &[
         modules: &["std/entropy"],
     },
     RouteDefinition {
+        id: "benchmark-runner-project",
+        evidence: "examples/spec/fixtures/projects/benchmark-discovery",
+        products: &["cli-benchmark"],
+        modules: &["std/benchmark"],
+    },
+    RouteDefinition {
         id: "test-runner-project",
         evidence: "examples/spec/fixtures/projects/test-discovery",
         products: &["cli-test"],

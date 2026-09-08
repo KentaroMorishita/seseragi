@@ -1,0 +1,66 @@
+import * as benchmark from "std/benchmark"
+import * as effects from "std/effect"
+import * as arrays from "std/array"
+import * as json from "std/json"
+
+foreign "typescript" from "../host/copy.mjs" {
+  pure fn copyProbe values: Array<Int> -> Int
+}
+
+fn add left: Int -> right: Int -> Int = left + right
+fn genericEqual<A> left: A -> right: A -> Bool where Eq<A> = left == right
+fn specializedEqual left: Int -> right: Int -> Bool = left == right
+fn tail remaining: Int -> total: Int -> Int =
+  if remaining <= 0 then total else tail (remaining - 1) (total + 1)
+fn decode text: String -> Either<json.JsonReadError, Int> = json.decodeString text
+let values = [1, 2, 3, 4, 5]
+let linked = `[1, 2, 3, 4, 5]
+let partial = add 1
+fn pipeline input: Array<Int> -> Int =
+  input
+  |> map (\x -> x + 1)
+  |> arrays.filter (\x -> x > 2)
+  |> reduce 0 (+)
+
+pub let benchmarks: benchmark.Benchmark =
+  benchmark.suite "quality" [benchmark.benchmark "saturated-call" (effects.defer (\_ -> {
+        let result = benchmark.blackBox (add 1 2)
+        effects.succeed ()
+  })), benchmark.benchmark "partial-call" (effects.defer (\_ -> {
+        let result = benchmark.blackBox (partial 2)
+        effects.succeed ()
+  })), benchmark.benchmark "generic-trait-call" (effects.defer (\_ -> {
+        let result = benchmark.blackBox (genericEqual 1 1)
+        effects.succeed ()
+  })), benchmark.benchmark "specialized-trait-call" (effects.defer (\_ -> {
+        let result = benchmark.blackBox (specializedEqual 1 1)
+        effects.succeed ()
+  })), benchmark.benchmark "array-pipeline" (effects.defer (\_ -> {
+        let result = benchmark.blackBox (pipeline values)
+        effects.succeed ()
+  }))
+    |> benchmark.inputSize 5, benchmark.benchmark "list-traversal" (effects.defer (\_ -> {
+        let result = benchmark.blackBox (reduce 0 (+) linked)
+        effects.succeed ()
+  }))
+    |> benchmark.inputSize 5, benchmark.benchmark "self-tail-100000" (effects.defer (\_ -> {
+        let result = benchmark.blackBox (tail 100000 0)
+        effects.succeed ()
+  }))
+    |> benchmark.inputSize 100000, benchmark.benchmark "json-codec" (effects.defer (\_ -> {
+        let result = benchmark.blackBox (decode (json.encodeString 42))
+        effects.succeed ()
+  })), benchmark.benchmark "foreign-array-copy" (effects.defer (\_ -> {
+        let result = benchmark.blackBox (copyProbe values)
+        if values == [
+          1,
+          2,
+          3,
+          4,
+          5
+        ] then
+          effects.succeed ()
+        else
+          benchmark.fail "foreign copy mutated source" }))
+          |> benchmark.inputSize 5,
+]

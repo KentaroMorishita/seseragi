@@ -385,6 +385,23 @@
     "./transformer": {
       "types": "./src/transformer.ts",
       "default": "./src/transformer.ts"
+    },
+    "./benchmark": {
+      "types": "./src/benchmark.ts",
+      "default": "./src/benchmark.ts"
+    },
+    "./benchmark-runner": {
+      "types": "./src/benchmark-runner.ts",
+      "default": "./src/benchmark-runner.ts"
+    },
+    "./benchmark-baseline": {
+      "types": "./src/benchmark-baseline.ts",
+      "default": "./src/benchmark-baseline.ts"
+    },
+    "./benchmark-host": {
+      "types": "./src/benchmark-host.ts",
+      "browser": null,
+      "default": "./src/benchmark-host.ts"
     }
   },
   "license": "Apache-2.0"

@@ -5,7 +5,7 @@
     "web-assets": { "availability": "current", "phase": "run", "runners": ["cli-build"], "evidence": ["crates/seseragi-cli/tests/build.rs", "crates/seseragi-cli/tests/dev.rs"] },
     "array-index": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "char-literal": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
-    "benchmark-discovery": { "availability": "contract-only", "phase": "tooling", "runners": ["planned-tooling"] },
+    "benchmark-discovery": { "availability": "current", "phase": "tooling", "runners": ["cli-benchmark"], "evidence": ["crates/seseragi-cli/tests/benchmark.rs"] },
     "child-process-captured": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "cli-build-nested": { "availability": "current", "phase": "run", "runners": ["cli-build", "cli-run"], "evidence": ["crates/seseragi-cli/tests/build.rs"] },
     "doc-tests": { "availability": "current", "phase": "tooling", "runners": ["cli-doc"], "evidence": ["crates/seseragi-cli/tests/doc.rs"] },

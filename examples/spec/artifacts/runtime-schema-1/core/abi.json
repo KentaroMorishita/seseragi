@@ -5,6 +5,16 @@
   "unicodeVersion": "17.0.0",
   "targetFamily": "typescript",
   "features": [
+{"id": "benchmark.failure.explicit", "kind": "runtime-helper", "typescript": "function", "boundary": "Pure Benchmark value construction; runner owns execution and measurement. blackBox preserves identity and is an optimization barrier.", "import": {"module": "@seseragi/runtime/benchmark", "export": "ExplicitBenchmarkFailure"}},
+{"id": "benchmark.tree.case", "kind": "runtime-helper", "typescript": "function", "boundary": "Pure Benchmark value construction; runner owns execution and measurement. blackBox preserves identity and is an optimization barrier.", "import": {"module": "@seseragi/runtime/benchmark", "export": "benchmark"}},
+{"id": "benchmark.tree.suite", "kind": "runtime-helper", "typescript": "function", "boundary": "Pure Benchmark value construction; runner owns execution and measurement. blackBox preserves identity and is an optimization barrier.", "import": {"module": "@seseragi/runtime/benchmark", "export": "suite"}},
+{"id": "benchmark.tree.input-size", "kind": "runtime-helper", "typescript": "function", "boundary": "Pure Benchmark value construction; runner owns execution and measurement. blackBox preserves identity and is an optimization barrier.", "import": {"module": "@seseragi/runtime/benchmark", "export": "inputSize"}},
+{"id": "benchmark.black-box", "kind": "runtime-helper", "typescript": "function", "boundary": "Pure Benchmark value construction; runner owns execution and measurement. blackBox preserves identity and is an optimization barrier.", "import": {"module": "@seseragi/runtime/benchmark", "export": "blackBox"}},
+{"id": "benchmark.fail", "kind": "runtime-helper", "typescript": "function", "boundary": "Pure Benchmark value construction; runner owns execution and measurement. blackBox preserves identity and is an optimization barrier.", "import": {"module": "@seseragi/runtime/benchmark", "export": "fail"}},
+{"id": "benchmark.failure.eq", "kind": "runtime-helper", "typescript": "dictionary", "boundary": "Pure Benchmark value construction; runner owns execution and measurement. blackBox preserves identity and is an optimization barrier.", "import": {"module": "@seseragi/runtime/benchmark", "export": "benchmarkFailureEq"}},
+{"id": "benchmark.failure.show", "kind": "runtime-helper", "typescript": "dictionary", "boundary": "Pure Benchmark value construction; runner owns execution and measurement. blackBox preserves identity and is an optimization barrier.", "import": {"module": "@seseragi/runtime/benchmark", "export": "benchmarkFailureShow"}},
+{"id": "benchmark.tree.type", "kind": "value-representation", "typescript": "readonly opaque value", "boundary": "Benchmark runner ABI", "typeIdentity": "std/benchmark::Benchmark", "typeImport": {"module": "@seseragi/runtime/benchmark", "export": "Benchmark"}, "import": null},
+{"id": "benchmark.failure.type", "kind": "value-representation", "typescript": "readonly opaque value", "boundary": "Benchmark runner ABI", "typeIdentity": "std/benchmark::BenchmarkFailure", "typeImport": {"module": "@seseragi/runtime/benchmark", "export": "BenchmarkFailure"}, "import": null},
     {
       "id": "core.array.index",
       "kind": "runtime-helper",

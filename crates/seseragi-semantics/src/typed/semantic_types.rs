@@ -369,7 +369,9 @@ fn semantic_effect_arguments_are_compatible(
     // Effects that need fewer services can run in a host that supplies the
     // wider expected environment. Failure and success remain covariant.
     semantic_values_are_compatible(actual_environment, expected_environment)
-        && semantic_values_are_compatible(expected_failure, actual_failure)
+        && ((matches!(actual_failure.key, SemanticTypeKey::Other)
+            && matches!(&actual_failure.type_ref, TypedType::Named { name, arguments } if name == "Never" && arguments.is_empty()))
+            || semantic_values_are_compatible(expected_failure, actual_failure))
         && semantic_values_are_compatible(expected_success, actual_success)
 }
 
@@ -479,7 +481,8 @@ fn structural_effect_arguments_are_compatible(
         return type_arguments_are_compatible(expected, actual);
     };
     structural_types_are_compatible(actual_environment, expected_environment)
-        && structural_types_are_compatible(expected_failure, actual_failure)
+        && (matches!(actual_failure, TypedType::Named { name, arguments } if name == "Never" && arguments.is_empty())
+            || structural_types_are_compatible(expected_failure, actual_failure))
         && structural_types_are_compatible(expected_success, actual_success)
 }
 

@@ -177,6 +177,7 @@ run_rust_checks() {
 
 run_conformance_checks() {
   require_root_tools
+  require_root_tools
   require_playground_tools
   echo "Checking project fixture roles and availability..."
   bun run fixtures:check
@@ -189,6 +190,8 @@ run_conformance_checks() {
   "$PLAYGROUND_TSC" --noEmit -p "$ROOT/runtime/providers/tsconfig.json"
   echo "Testing the foreign TypeScript runtime boundary..."
   bun test runtime/ts/tests/foreign.test.ts
+  bun test runtime/ts/tests/benchmark.test.ts runtime/ts/tests/benchmark-host.test.ts runtime/ts/tests/benchmark-quality.test.ts
+  "$BIOME" lint runtime/ts/src/benchmark.ts runtime/ts/src/benchmark-runner.ts runtime/ts/src/benchmark-baseline.ts runtime/ts/src/benchmark-host.ts runtime/ts/fixtures/benchmark-quality runtime/ts/tests/benchmark.test.ts runtime/ts/tests/benchmark-host.test.ts runtime/ts/tests/benchmark-quality.test.ts
   echo "Testing release output shapes and stack-safe Effect binds..."
   bun test scripts/release-shapes.test.ts runtime/ts/tests/effect-stack.test.ts runtime/ts/tests/effect-until.test.ts
   echo "Testing the Traversable runtime boundary..."

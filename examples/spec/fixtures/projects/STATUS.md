@@ -3,13 +3,14 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (75)
+## Current product-route fixtures (76)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
 | `web-assets` | `run` | `cli-build` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/dev.rs` |
 | `array-index` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `char-literal` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `benchmark-discovery` | `tooling` | `cli-benchmark` | `crates/seseragi-cli/tests/benchmark.rs` |
 | `child-process-captured` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `cli-build-nested` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs` |
 | `doc-tests` | `tooling` | `cli-doc` | `crates/seseragi-cli/tests/doc.rs` |
@@ -83,11 +84,10 @@
 | `test-discovery` | `test` | `cli-test` | `crates/seseragi-cli/src/test.rs` |
 | `typeclass-operator-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 
-## Contract-only fixtures (13)
+## Contract-only fixtures (12)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
-| `benchmark-discovery` | `tooling` | `planned-tooling` | - |
 | `http-non-success-response` | `run` | `planned-conformance` | - |
 | `http-stream-events` | `run` | `planned-conformance` | - |
 | `imported-derived-show-debug` | `run` | `planned-conformance` | - |

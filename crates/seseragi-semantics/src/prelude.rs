@@ -455,6 +455,20 @@ const fn method(
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     PreludeStandardInstance {
+        trait_name: "Eq",
+        type_name: "BenchmarkFailure",
+        type_canonical: Some("std/benchmark::BenchmarkFailure"),
+        type_arity: 0,
+        identity: "std/benchmark::EqBenchmarkFailure",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "BenchmarkFailure",
+        type_canonical: Some("std/benchmark::BenchmarkFailure"),
+        type_arity: 0,
+        identity: "Show<std/benchmark::BenchmarkFailure>",
+    },
+    PreludeStandardInstance {
         trait_name: "Functor",
         type_name: "MaybeT",
         type_canonical: Some("std/transformer/maybe::MaybeT"),

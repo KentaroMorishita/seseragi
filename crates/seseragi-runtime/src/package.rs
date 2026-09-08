@@ -3,6 +3,22 @@ use std::path::Path;
 
 const FILES: &[(&str, &str)] = &[
     (
+        "src/benchmark-runner.ts",
+        include_str!("../../../runtime/ts/src/benchmark-runner.ts"),
+    ),
+    (
+        "src/benchmark-baseline.ts",
+        include_str!("../../../runtime/ts/src/benchmark-baseline.ts"),
+    ),
+    (
+        "src/benchmark-host.ts",
+        include_str!("../../../runtime/ts/src/benchmark-host.ts"),
+    ),
+    (
+        "src/benchmark.ts",
+        include_str!("../../../runtime/ts/src/benchmark.ts"),
+    ),
+    (
         "UNICODE-LICENSE",
         include_str!("../../../runtime/ts/UNICODE-LICENSE"),
     ),

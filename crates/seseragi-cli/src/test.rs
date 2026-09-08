@@ -81,9 +81,17 @@ fn render_compile_error(
     project: &seseragi_project::LoadedLocalTests,
     error: LocalTestCompileError,
 ) -> Result<i32, String> {
+    render_tool_compile_error("test", project, error)
+}
+
+pub(crate) fn render_tool_compile_error(
+    tool: &str,
+    project: &seseragi_project::LoadedLocalTests,
+    error: LocalTestCompileError,
+) -> Result<i32, String> {
     match error {
         LocalTestCompileError::Discovery { module, reason } => {
-            Err(format!("test discovery failed for {module}: {reason}"))
+            Err(format!("{tool} discovery failed for {module}: {reason}"))
         }
         LocalTestCompileError::Compile(error) => {
             let diagnostics = match error.error() {
@@ -107,7 +115,7 @@ fn render_compile_error(
                 return Ok(2);
             }
             Err(format!(
-                "test compiler rejected package: {:?}",
+                "{tool} compiler rejected package: {:?}",
                 error.error()
             ))
         }

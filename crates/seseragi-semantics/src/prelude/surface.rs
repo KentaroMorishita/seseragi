@@ -509,7 +509,7 @@ mod tests {
                 .count(),
             24
         );
-        assert_eq!(surface.instances.len(), 299);
+        assert_eq!(surface.instances.len(), 301);
         assert_eq!(surface.builtin_instances.len(), 44);
         for identity in [
             "std/maybe::Eq",
@@ -550,7 +550,7 @@ mod tests {
             .iter()
             .filter(|row| row.status == StandardInstanceAuditStatus::SpecifiedAndImplemented)
             .collect::<Vec<_>>();
-        assert_eq!(implemented.len(), 299 + 44 + 12);
+        assert_eq!(implemented.len(), 301 + 44 + 12);
         for instance in SPECIAL_STANDARD_INSTANCES {
             assert!(implemented
                 .iter()
