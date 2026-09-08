@@ -4,7 +4,9 @@
 
 ### Changed
 
-- #581 【O01 / hotfix】Web devのasset削除監視raceを解消
+- Complete the O01 language stack: Array indexing with Maybe results, Char literals, right-associative Maybe fallback, List cons, local effect functions, local recursive groups, and opaque structs (#393, #513, #343, #298, #345, #346, #347).
+- Add std/math, custom Web documents and public assets, LSP range formatting, a verified Linux glibc 2.34 baseline, development/release profiles, and the canonical benchmark runner (#406, #529, #337, #530, #342, #321).
+- Resolve terminal validation findings in HKT lexical identity, standard API and Playground runtime contracts, inline lambda formatting, benchmark duration assertions, and dev asset deletion monitoring (#575, #577, #578, #579, #580, #581).
 ## [0.61.6] - 2026-09-07
 
 ### Changed
