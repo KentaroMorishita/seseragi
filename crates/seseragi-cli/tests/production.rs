@@ -141,6 +141,31 @@ fn release_removes_dead_modules_and_declarations_before_bundling() {
         after["reachability"]["retained"]
     );
     assert_eq!(execute(&package.join("release")).stdout, b"42\n");
+    // Make the previously dead math feature observable. Its new runtime cost
+    // must now be attributable to a retained declaration and runtime module.
+    fs::write(package.join("src/main.ssrg"), "import { answer, anotherDeadExport } from \"./values\"\npub effect fn main = do {\n  println $ show (answer 6)\n  println $ show (anotherDeadExport 0.5)\n}\n").unwrap();
+    command(&["lock", "update"], &package);
+    command(
+        &["build", ".", "--profile", "release", "--out-dir", "release"],
+        &package,
+    );
+    let needed = manifest(&package.join("release"));
+    assert!(needed["reachability"]["retained"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|entry| entry["declaration"] == "anotherDeadExport"));
+    assert!(needed["runtimeRetention"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|entry| entry["module"] == "@seseragi/runtime/math"));
+    assert_ne!(after["runtimeRetention"], needed["runtimeRetention"]);
+    assert!(
+        needed["sizes"]["minifiedJavascriptBytes"].as_u64().unwrap()
+            > after["sizes"]["minifiedJavascriptBytes"].as_u64().unwrap()
+    );
+    assert_ne!(execute(&package.join("release")).stdout, b"42\n");
     fs::remove_dir_all(temp).unwrap();
 }
 

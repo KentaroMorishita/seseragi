@@ -10,6 +10,8 @@ export type Budget = {
   requiredRuntime: string[]
   forbiddenRuntime: string[]
   forbiddenDeclarations?: string[]
+  allowedRuntime?: string[]
+  allowedModules?: string[]
 }
 export type Manifest = {
   schema: number
@@ -66,6 +68,18 @@ export function validateShape(manifest: Manifest, budget: Budget): void {
     "runtime retention evidence unavailable"
   )
   const runtime = new Set(manifest.runtimeRetention.map((item) => item.module))
+  if (budget.allowedRuntime)
+    requireValue(
+      [...runtime].every((module) => budget.allowedRuntime!.includes(module)),
+      "runtime outside first-party baseline"
+    )
+  if (budget.allowedModules)
+    requireValue(
+      manifest.generatedModules.every((module) =>
+        budget.allowedModules!.includes(module.module)
+      ),
+      "source module outside first-party baseline"
+    )
   for (const required of budget.requiredRuntime)
     requireValue(
       runtime.has(required),

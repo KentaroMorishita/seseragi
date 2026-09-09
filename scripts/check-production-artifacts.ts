@@ -81,6 +81,29 @@ for (const budget of budgets) {
         stderr: "pipe",
       })
       if (result.exitCode !== 0) throw new Error(result.stderr.toString())
+      const development = join(output, `${budget.id}-development`)
+      run([
+        "build",
+        entry,
+        "--profile",
+        "development",
+        "--out-dir",
+        development,
+      ])
+      const developmentManifest = JSON.parse(
+        readFileSync(join(development, "artifact-manifest.json"), "utf8")
+      )
+      const developmentResult = Bun.spawnSync(
+        ["bun", developmentManifest.entry],
+        { cwd: development, stdout: "pipe", stderr: "pipe" }
+      )
+      if (
+        developmentResult.exitCode !== result.exitCode ||
+        !developmentResult.stdout.equals(result.stdout) ||
+        !developmentResult.stderr.equals(result.stderr)
+      )
+        throw new Error("development/release observable behavior mismatch")
+      rmSync(development, { recursive: true, force: true })
     }
     report.push({
       id: budget.id,

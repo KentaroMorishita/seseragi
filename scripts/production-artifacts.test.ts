@@ -131,3 +131,13 @@ test("checks real file digest, complete inventory, and manifest identity", () =>
     rmSync(directory, { recursive: true, force: true })
   }
 })
+
+test("dogfood baseline rejects extra runtime and source modules within byte budget", () => {
+  const m = fixture()
+  expect(() => validateShape(m, { ...budget, allowedRuntime: [] })).toThrow(
+    "runtime outside"
+  )
+  expect(() => validateShape(m, { ...budget, allowedModules: [] })).toThrow(
+    "source module outside"
+  )
+})
