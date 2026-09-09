@@ -13,6 +13,7 @@ mod numeric_ops;
 mod prelude_ops;
 mod provider_service_ops;
 mod range_ops;
+mod reachability;
 mod regex_ops;
 mod runtime_modules;
 mod runtime_types;
@@ -24,6 +25,7 @@ mod sum_ops;
 mod text_ops;
 mod trait_method_ops;
 mod typescript;
+pub use reachability::{retain_application, ApplicationReachability, RetainedDeclaration};
 mod web_html_ops;
 
 pub use core::{

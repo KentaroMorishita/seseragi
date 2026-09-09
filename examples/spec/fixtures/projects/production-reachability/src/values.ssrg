@@ -1,0 +1,9 @@
+fn helper value: Int -> Int = value * 7
+
+fn countdown value: Int -> Int = if value <= 0 then 0 else countdown (value - 1)
+
+pub fn answer value: Int -> Int = helper value + countdown value
+
+pub fn unusedExport value: Int -> Int = value * 999
+
+fn unusedPrivate value: Int -> Int = value * 888

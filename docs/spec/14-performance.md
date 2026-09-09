@@ -346,3 +346,30 @@ stage未実施のsizeは`null`で、実施して0 byteだった結果と区別�
 minifyとruntime retention解析が未実施の場合、その成功をmanifestから主張しません。
 source-map policyは現に配布するmapを記述し、`omit`の場合mapを必要とする配布契約はありません。
 profileによってobservable semanticsを変えない14.11の契約を引き継ぎます。
+
+## 14.14 application reachability
+
+releaseの`build`は、解決済みcompiler IRのsource-import planを使って、entryの`main`と
+entry contractが参照するfailure-display辞書をrootにした固定点到達解析を行います。
+publicであるだけの関数・値、未使用import先、未使用private helperはrootになりません。
+再exportはprovider/exportのedgeとして追跡し、再帰や循環edgeも各nodeを一度だけ訪問します。
+これはmodule import cycleを言語として新たに許可するものではありません。
+
+到達解析はemission前のapplication出力graphだけを変更し、frontend diagnostics・HIR・
+LSP visibilityを変更しません。developmentは従来の生成形を保ちます。nominal typeと
+そのconstructor群は表現を壊さない単位で保持し、選択辞書のbody・payload辞書・type参照を
+追跡します。foreign moduleのload/initializer最適化は対象外で、そのmoduleのsurfaceと
+依存edgeを保守的に保持します。外部side-effectをpureと推測しません。
+
+manifestのoptional `reachability`は`roots`、`retained`、`eliminatedModules`、
+`eliminatedDeclarations`を記録します。各retained要素は`module`、`declaration`、
+`reason`を持ち、順序は論理identity順です。inspection metadataは残った関数を説明するだけで、
+到達解析のrootにはしません。generated runtime importも到達codeに合わせて絞りますが、
+辞書emitterの暗黙helperとtype-only requirementは保守的に残し、final runtime retentionとは
+区別します。
+
+dead declaration追加で、retained codeの生成byte数とretained inventoryは増えません。
+eliminated countは実際の解析結果を反映し、emitするsource mapの`sourcesContent`は元sourceを
+保存するため、debug mapのbyte数とartifact identityは変わり得ます。これをcode retentionの
+増加と混同しません。canonical fixtureは`production-reachability`で、named再export、private
+helper、self recursion、unused exported/private declaration、unused imported siblingを検証します。

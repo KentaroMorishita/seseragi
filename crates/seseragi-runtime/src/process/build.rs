@@ -120,6 +120,10 @@ pub fn build_main_with_options(
 ) -> Result<(), BuildError> {
     let contract = main_contract(compiled).map_err(BuildError::InvalidEntry)?;
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
+    let id = compiled.generated.metadata.module.clone();
+    let mut application = std::collections::BTreeMap::from([(id.clone(), compiled.clone())]);
+    let reachability = optimize_application(&mut application, &id, &contract);
+    let compiled = application.get(&id).expect("application root retained");
     publish_build(output_directory, |staging| {
         match target {
             BuildTarget::Process => stage_main_program(compiled, &contract, &staging, options)?,
@@ -162,6 +166,7 @@ pub fn build_main_with_options(
             target,
             &compiled.generated.metadata.module,
             std::iter::once(compiled),
+            reachability,
         )
     })
 }
@@ -187,7 +192,7 @@ pub fn build_local_project_with_options(
     target: BuildTarget,
     options: ProcessRunOptions,
 ) -> Result<(), BuildError> {
-    let entry = project
+    let _entry = project
         .compiled
         .modules
         .get(&project.entry_module)
@@ -195,6 +200,22 @@ pub fn build_local_project_with_options(
     let contract = project_main_contract(&project.compiled, &project.entry_module)
         .map_err(BuildError::InvalidEntry)?;
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
+    let mut application = project.clone();
+    let reachability = optimize_application(
+        &mut application.compiled.modules,
+        &project.entry_module,
+        &contract,
+    );
+    application
+        .compiled
+        .order
+        .retain(|id| application.compiled.modules.contains_key(id));
+    let project = &application;
+    let entry = project
+        .compiled
+        .modules
+        .get(&project.entry_module)
+        .expect("application root retained");
     publish_build(output_directory, |staging| {
         stage_project_modules(&project.compiled, staging)?;
         stage_foreign_host_directories(&project.foreign_host_directories, staging)?;
@@ -271,6 +292,7 @@ pub fn build_local_project_with_options(
             target,
             &project.entry_module,
             project.compiled.modules.values(),
+            reachability,
         )
     })
 }
@@ -726,4 +748,64 @@ mod tests {
         assert!(!is_managed_build(&root));
         fs::remove_dir_all(root).unwrap();
     }
+}
+
+fn optimize_application(
+    modules: &mut std::collections::BTreeMap<String, CompiledModule>,
+    entry: &str,
+    contract: &crate::MainContract,
+) -> Option<seseragi_driver::ApplicationReachability> {
+    if modules.get(entry)?.generated.metadata.profile != "release" {
+        return None;
+    }
+    let mut roots = vec![(entry.to_owned(), "main".to_owned())];
+    fn dictionary_roots(
+        modules: &std::collections::BTreeMap<String, CompiledModule>,
+        entry: &str,
+        module: &str,
+        export: &str,
+        arguments: &[crate::DisplayDictionary],
+        roots: &mut Vec<(String, String)>,
+    ) {
+        let id = if module == "./main.ts" {
+            Some(entry.to_owned())
+        } else {
+            modules
+                .iter()
+                .find(|(_, compiled)| {
+                    compiled
+                        .generated
+                        .metadata
+                        .outputs
+                        .typescript
+                        .trim_start_matches("./")
+                        == module.trim_start_matches("./")
+                })
+                .map(|(id, _)| id.clone())
+        };
+        if let Some(id) = id {
+            roots.push((id, export.to_owned()));
+        }
+        for argument in arguments {
+            dictionary_roots(
+                modules,
+                entry,
+                &argument.module,
+                &argument.export,
+                &argument.arguments,
+                roots,
+            );
+        }
+    }
+    if let crate::FailureRenderer::Show {
+        module,
+        export,
+        arguments,
+    } = &contract.failure_renderer
+    {
+        dictionary_roots(modules, entry, module, export, arguments, &mut roots);
+    }
+    roots.sort();
+    roots.dedup();
+    Some(seseragi_driver::retain_application_outputs(modules, &roots))
 }

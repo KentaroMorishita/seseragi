@@ -29,6 +29,7 @@ pub struct ArtifactManifest {
     /// None means retention analysis has not been performed. An empty result
     /// is only valid after analysis proves that no runtime module is retained.
     pub runtime_retention: Option<Vec<RetainedRuntimeModule>>,
+    pub reachability: Option<seseragi_driver::ApplicationReachability>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -95,6 +96,7 @@ pub(crate) fn write_manifest<'a>(
     target: crate::BuildTarget,
     entry_module: &str,
     modules: impl Iterator<Item = &'a seseragi_driver::CompiledModule>,
+    reachability: Option<seseragi_driver::ApplicationReachability>,
 ) -> Result<(), String> {
     use sha2::{Digest, Sha256};
     let modules = modules.collect::<Vec<_>>();
@@ -182,6 +184,7 @@ pub(crate) fn write_manifest<'a>(
             ArtifactSourceMap::Emit { files: maps }
         },
         runtime_retention: None,
+        reachability,
     };
     // Hash canonical compact schema-order JSON with an empty buildId. This is
     // an artifact identity, not a claim to identify every unused source input.
