@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.9] - 2026-09-09
+
+### Changed
+
+- #587 O02 hotfix: restore WASM boundary and terminal gate integration
 ## [0.61.8] - 2026-09-08
 
 ### Fixed
