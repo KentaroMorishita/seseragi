@@ -7,6 +7,29 @@
 use serde::{Deserialize, Serialize};
 use seseragi_project::BuildProfile;
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum SourceMapPolicy {
+    Emit,
+    Omit,
+}
+#[derive(Clone, Copy, Debug, Default)]
+pub struct ArtifactOptions {
+    pub source_map: Option<SourceMapPolicy>,
+    pub minify: Option<bool>,
+}
+impl ArtifactOptions {
+    pub(crate) fn source_map(self, profile: &str) -> SourceMapPolicy {
+        self.source_map.unwrap_or(if profile == "release" {
+            SourceMapPolicy::Omit
+        } else {
+            SourceMapPolicy::Emit
+        })
+    }
+    pub(crate) fn minify(self, profile: &str) -> bool {
+        self.minify.unwrap_or(profile == "release")
+    }
+}
+
 pub const ARTIFACT_MANIFEST_FILE: &str = "artifact-manifest.json";
 pub const ARTIFACT_MANIFEST_SCHEMA: u32 = 1;
 
@@ -103,6 +126,8 @@ pub struct ArtifactBundle {
 struct BundleEvidence {
     runtime: Vec<RetainedRuntimeModule>,
     bundles: Vec<ArtifactBundle>,
+    unminified_bytes: Option<u64>,
+    minified_bytes: Option<u64>,
 }
 
 /// Describe the completed staging directory before its atomic publication.
@@ -145,7 +170,22 @@ pub(crate) fn write_manifest<'a>(
     files.sort_by(|left, right| left.path.cmp(&right.path));
     let maps = files
         .iter()
-        .filter(|file| file.path.ends_with(".map"))
+        .filter(|file| match target {
+            crate::BuildTarget::Web => file.path == "assets/app.js.map",
+            crate::BuildTarget::Process => {
+                file.path == "entry.js.map"
+                    || file.path == "main.ts.map"
+                    || modules.iter().any(|module| {
+                        module
+                            .generated
+                            .metadata
+                            .outputs
+                            .source_map
+                            .trim_start_matches("./")
+                            == file.path
+                    })
+            }
+        })
         .map(|file| file.path.clone())
         .collect::<Vec<_>>();
     let executable = if target == crate::BuildTarget::Web {
@@ -208,8 +248,13 @@ pub(crate) fn write_manifest<'a>(
                 .iter()
                 .map(|module| module.typescript_bytes)
                 .sum(),
-            bundled_javascript_bytes,
-            minified_javascript_bytes: None,
+            bundled_javascript_bytes: evidence
+                .as_ref()
+                .and_then(|evidence| evidence.unminified_bytes)
+                .or(bundled_javascript_bytes),
+            minified_javascript_bytes: evidence
+                .as_ref()
+                .and_then(|evidence| evidence.minified_bytes),
         },
         generated_modules,
         files,
@@ -364,5 +409,7 @@ fn read_bundle_retention(
             })
             .collect(),
         bundles,
+        unminified_bytes: metadata["seseragiUnminifiedBytes"].as_u64(),
+        minified_bytes: metadata["seseragiMinifiedBytes"].as_u64(),
     }))
 }

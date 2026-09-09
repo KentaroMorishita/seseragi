@@ -412,3 +412,19 @@ codeを寄与した論理Seseragi `modules`を記録します。size/digestは�
 固有のchunk IDやinternal absolute pathをpublic identityにしません。bundlerのraw metafileは
 staging内だけで消費して削除し、productへ公開しません。source-only/type-only moduleが最終
 bundleで0 byteとなっても、これをcompiler reachabilityの失敗とは扱いません。
+
+## 14.17 minification and source-map policy
+
+releaseのfirst-party bundleはminifyを適用します。`bundledJavascriptBytes`は同じcompiler出力から
+測定したminify前の長さ、`minifiedJavascriptBytes`は最終fileの長さです。developmentはminifyせず、
+後者は`null`です。minify有無だけを変えた同一compiled programの実行とstartup順序を検証します。
+
+`seseragi build --source-map emit|omit`でmap配布を明示できます。既定はdevelopmentがemit、
+releaseがomitです。emitは外部`.js.map`とsourceMappingURLを生成し、bundle/minifierのJS→TS mapを
+compilerのTS→Seseragi mapと合成します。sourceRootは空、application sourceは`seseragi://`の
+論理identity、runtime/glueはそれぞれ`seseragi-runtime://` / `seseragi-generated://`で表します。
+source contentはUTF-8を保持します。compiler mapがない生成glue位置を架空のSeseragi位置へ
+割り当てず、mappingの粒度はcompilerの既存source-span契約に従います。
+
+omitではcompiler/bundler mapとsourceMappingURLを配布しません。sourceから選択したruntime
+診断境界はmap配布設定と独立して保持します。foreign process stagingのminifyは本契約の対象外です。

@@ -95,7 +95,17 @@ fn release_removes_dead_modules_and_declarations_before_bundling() {
         .unwrap();
         assert_eq!(source.contains("unusedExport"), profile == "development");
         assert_eq!(source.contains("unusedPrivate"), profile == "development");
-        assert!(source.contains("helper") && source.contains("countdown"));
+        if profile == "development" {
+            assert!(source.contains("helper") && source.contains("countdown"));
+        } else {
+            for name in ["helper", "countdown"] {
+                assert!(inventory["reachability"]["retained"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|entry| entry["declaration"] == name));
+            }
+        }
         if profile == "release" {
             assert!(
                 inventory["reachability"]["eliminatedDeclarations"]
@@ -207,5 +217,74 @@ fn bundled_process_retains_failure_dictionary_and_excludes_unrelated_runtime() {
         .unwrap();
     assert_eq!(result.status.code(), Some(1));
     assert!(String::from_utf8_lossy(&result.stderr).contains("Broken"));
+    fs::remove_dir_all(temp).unwrap();
+}
+
+#[test]
+fn release_minifies_and_composes_optional_source_maps() {
+    let temp = temporary("source-maps");
+    let package = temp.join("package");
+    copy(
+        &root().join("examples/spec/fixtures/projects/production-reachability"),
+        &package,
+    );
+    let source = package.join("src/values.ssrg");
+    let text = fs::read_to_string(&source).unwrap() + "\n// 雪とUnicode source content\n";
+    fs::write(source, text).unwrap();
+    command(&["lock", "update"], &package);
+    for policy in ["emit", "omit"] {
+        command(
+            &[
+                "build",
+                ".",
+                "--profile",
+                "release",
+                "--source-map",
+                policy,
+                "--out-dir",
+                policy,
+            ],
+            &package,
+        );
+        let output = package.join(policy);
+        let inventory = manifest(&output);
+        assert_eq!(inventory["sourceMap"]["policy"], policy);
+        assert!(
+            inventory["sizes"]["minifiedJavascriptBytes"]
+                .as_u64()
+                .unwrap()
+                < inventory["sizes"]["bundledJavascriptBytes"]
+                    .as_u64()
+                    .unwrap()
+        );
+        assert_eq!(execute(&output).stdout, b"42\n");
+        if policy == "emit" {
+            let map: serde_json::Value =
+                serde_json::from_slice(&fs::read(output.join("entry.js.map")).unwrap()).unwrap();
+            assert!(map["sources"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|source| source
+                    .as_str()
+                    .unwrap()
+                    .starts_with("seseragi://fixture/production-reachability")));
+            assert!(map["sourcesContent"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|source| source.as_str().unwrap().contains("雪とUnicode")));
+            assert!(map["sources"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .all(|source| !source.as_str().unwrap().starts_with('/')));
+        } else {
+            assert!(!output.join("entry.js.map").exists());
+            assert!(!fs::read_to_string(output.join("entry.js"))
+                .unwrap()
+                .contains("sourceMappingURL"));
+        }
+    }
     fs::remove_dir_all(temp).unwrap();
 }

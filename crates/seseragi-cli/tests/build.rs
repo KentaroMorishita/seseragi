@@ -834,10 +834,10 @@ fn documents_build_in_cli_help() {
 
     assert_eq!(output.status.code(), Some(0));
     assert!(String::from_utf8_lossy(&output.stdout).contains(
-        "seseragi build path/to/app.ssrg [--target process|web] [--profile development|release] [--out-dir path/to/dist]"
+        "seseragi build path/to/app.ssrg [--target process|web] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]"
     ));
     assert!(String::from_utf8_lossy(&output.stdout).contains(
-        "seseragi build path/to/package [--target process|web] [--profile development|release] [--out-dir path/to/dist]"
+        "seseragi build path/to/package [--target process|web] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]"
     ));
 }
 
@@ -1001,8 +1001,14 @@ fn artifact_manifest_tracks_outputs_and_is_independent_of_build_location() {
                     manifest["runtimeRetention"].is_null(),
                     target == "process" && profile == "development"
                 );
-                assert!(manifest["sizes"]["minifiedJavascriptBytes"].is_null());
-                assert_eq!(manifest["sourceMap"]["policy"], "emit");
+                assert_eq!(
+                    manifest["sizes"]["minifiedJavascriptBytes"].is_null(),
+                    profile != "release"
+                );
+                assert_eq!(
+                    manifest["sourceMap"]["policy"],
+                    if profile == "release" { "omit" } else { "emit" }
+                );
                 assert!(manifest["generatedModules"].as_array().unwrap().len() > 1);
                 let entries = manifest["files"].as_array().unwrap();
                 assert_eq!(entries.len(), files.len());
@@ -1026,7 +1032,11 @@ fn artifact_manifest_tracks_outputs_and_is_independent_of_build_location() {
                     }
                     assert!(!files.contains_key(".seseragi-bundle-meta.json"));
                     assert_eq!(
-                        manifest["sizes"]["bundledJavascriptBytes"],
+                        manifest["sizes"][if profile == "release" {
+                            "minifiedJavascriptBytes"
+                        } else {
+                            "bundledJavascriptBytes"
+                        }],
                         files[manifest["entry"].as_str().unwrap()].len() as u64
                     );
                 } else {

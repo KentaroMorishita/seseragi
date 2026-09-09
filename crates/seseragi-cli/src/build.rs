@@ -12,6 +12,7 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
     let mut output_directory = "dist".to_owned();
     let mut target = None;
     let mut profile = None;
+    let mut source_map = None;
     let mut index = 0;
     while index < arguments.len() {
         match arguments[index].as_str() {
@@ -31,6 +32,17 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
                 profile = Some(seseragi_project::BuildProfile::parse(
                     arguments.get(index).ok_or("--profile requires a value")?,
                 )?);
+            }
+            "--source-map" => {
+                if source_map.is_some() {
+                    return Err("--source-map may only be specified once".to_owned());
+                }
+                index += 1;
+                source_map = Some(match arguments.get(index).map(String::as_str) {
+                    Some("emit") => seseragi_runtime::artifact::SourceMapPolicy::Emit,
+                    Some("omit") => seseragi_runtime::artifact::SourceMapPolicy::Omit,
+                    _ => return Err("--source-map requires emit or omit".to_owned()),
+                });
             }
             "--target" => {
                 index += 1;
@@ -55,6 +67,7 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
         Path::new(&output_directory),
         target,
         profile,
+        source_map,
     )
 }
 
@@ -63,13 +76,14 @@ fn build_path(
     output_directory: &Path,
     target: Option<ProjectTarget>,
     profile: Option<seseragi_project::BuildProfile>,
+    source_map: Option<seseragi_runtime::artifact::SourceMapPolicy>,
 ) -> Result<i32, String> {
     if let Some(package) = crate::local_project::containing_package(path) {
-        build_package(&package, output_directory, target, profile)
+        build_package(&package, output_directory, target, profile, source_map)
     } else if path.is_dir() {
-        build_package(path, output_directory, target, profile)
+        build_package(path, output_directory, target, profile, source_map)
     } else {
-        build_file(path, output_directory, target, profile)
+        build_file(path, output_directory, target, profile, source_map)
     }
 }
 
@@ -78,6 +92,7 @@ fn build_file(
     output_directory: &Path,
     target: Option<ProjectTarget>,
     profile: Option<seseragi_project::BuildProfile>,
+    source_map: Option<seseragi_runtime::artifact::SourceMapPolicy>,
 ) -> Result<i32, String> {
     if path.extension().and_then(|extension| extension.to_str()) != Some("ssrg") {
         return Err("build expects a .ssrg source file".to_owned());
@@ -111,8 +126,17 @@ fn build_file(
         target.is_none().then_some(compatible.as_slice()),
     )
     .map_err(|error| error.to_string())?;
-    seseragi_runtime::build_main(&compiled, output_directory, build_target(selection.target))
-        .map_err(|error| error.to_string())?;
+    seseragi_runtime::build_main_with_artifact_options(
+        &compiled,
+        output_directory,
+        build_target(selection.target),
+        seseragi_runtime::ProcessRunOptions::default(),
+        seseragi_runtime::artifact::ArtifactOptions {
+            source_map,
+            minify: None,
+        },
+    )
+    .map_err(|error| error.to_string())?;
     println!("Built {} -> {}", path.display(), output_directory.display());
     Ok(0)
 }
@@ -122,6 +146,7 @@ fn build_package(
     output_directory: &Path,
     target: Option<ProjectTarget>,
     profile: Option<seseragi_project::BuildProfile>,
+    source_map: Option<seseragi_runtime::artifact::SourceMapPolicy>,
 ) -> Result<i32, String> {
     let compiled = match compile_path_with_profile(
         path,
@@ -133,11 +158,15 @@ fn build_package(
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => return Ok(2),
     };
-    seseragi_runtime::build_local_project_with_options(
+    seseragi_runtime::build_local_project_with_artifact_options(
         &compiled.compiled,
         output_directory,
         build_target(compiled.target),
         compiled.process_run_options,
+        seseragi_runtime::artifact::ArtifactOptions {
+            source_map,
+            minify: None,
+        },
     )
     .map_err(|error| error.to_string())?;
     println!("Built {} -> {}", path.display(), output_directory.display());
