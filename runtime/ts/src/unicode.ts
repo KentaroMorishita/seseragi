@@ -11,10 +11,18 @@ import { UNICODE_VERSION } from "./unicode-version-data"
 export type NormalizationForm = {
   readonly tag: "NFC" | "NFD" | "NFKC" | "NFKD"
 }
-export const NFC: NormalizationForm = Object.freeze({ tag: "NFC" })
-export const NFD: NormalizationForm = Object.freeze({ tag: "NFD" })
-export const NFKC: NormalizationForm = Object.freeze({ tag: "NFKC" })
-export const NFKD: NormalizationForm = Object.freeze({ tag: "NFKD" })
+export const NFC: NormalizationForm = /* @__PURE__ */ Object.freeze({
+  tag: "NFC",
+})
+export const NFD: NormalizationForm = /* @__PURE__ */ Object.freeze({
+  tag: "NFD",
+})
+export const NFKC: NormalizationForm = /* @__PURE__ */ Object.freeze({
+  tag: "NFKC",
+})
+export const NFKD: NormalizationForm = /* @__PURE__ */ Object.freeze({
+  tag: "NFKD",
+})
 
 export type UnicodeGeneralCategory = {
   readonly tag: (typeof CATEGORY_NAMES)[number]
@@ -72,20 +80,21 @@ export const isMark = (value: string): boolean => {
 export const simpleCaseFold = simpleFold
 export const fullCaseFold = fullFold
 
-export const normalizationFormEq: Eq<NormalizationForm> = Object.freeze({
-  eq: (left: NormalizationForm) => (right: NormalizationForm) =>
-    left.tag === right.tag,
-})
+export const normalizationFormEq: Eq<NormalizationForm> =
+  /* @__PURE__ */ Object.freeze({
+    eq: (left: NormalizationForm) => (right: NormalizationForm) =>
+      left.tag === right.tag,
+  })
 
 export const unicodeGeneralCategoryEq: Eq<UnicodeGeneralCategory> =
-  Object.freeze({
+  /* @__PURE__ */ Object.freeze({
     eq: (left: UnicodeGeneralCategory) => (right: UnicodeGeneralCategory) =>
       left.tag === right.tag,
   })
 
 /** Declaration order in spec 10.8, not host collation or localized category names. */
 export const unicodeGeneralCategoryOrd: Ord<UnicodeGeneralCategory> &
-  Eq<UnicodeGeneralCategory> = Object.freeze({
+  Eq<UnicodeGeneralCategory> = /* @__PURE__ */ Object.freeze({
   ...unicodeGeneralCategoryEq,
   compare:
     (left: UnicodeGeneralCategory) => (right: UnicodeGeneralCategory) => {

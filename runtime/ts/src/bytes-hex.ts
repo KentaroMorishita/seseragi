@@ -63,13 +63,14 @@ function utf8Length(text: string): number {
   return length
 }
 
-export const hexDecodeErrorEq: Eq<HexDecodeError> = Object.freeze({
-  eq:
-    (left) =>
-    (right): boolean =>
-      left.tag === right.tag &&
-      (left.tag === "OddHexLength"
-        ? right.tag === "OddHexLength" && left.value === right.value
-        : right.tag === "InvalidHexDigit" &&
-          left.value.offset === right.value.offset),
-})
+export const hexDecodeErrorEq: Eq<HexDecodeError> =
+  /* @__PURE__ */ Object.freeze({
+    eq:
+      (left) =>
+      (right): boolean =>
+        left.tag === right.tag &&
+        (left.tag === "OddHexLength"
+          ? right.tag === "OddHexLength" && left.value === right.value
+          : right.tag === "InvalidHexDigit" &&
+            left.value.offset === right.value.offset),
+  })

@@ -1,0 +1,1488 @@
+{
+  "schema": 1,
+  "fixtures": [
+    {
+      "id": "minimal",
+      "source": "examples/spec/fixtures/production/minimal.ssrg",
+      "target": "process",
+      "buildId": "3fe76c1fafa306628b8d99ea2caf371f8091c21277f49868f94043c08342faf4",
+      "sizes": {
+        "generatedTypescriptBytes": 290,
+        "bundledJavascriptBytes": 25705,
+        "minifiedJavascriptBytes": 10988
+      },
+      "sourceMap": {
+        "policy": "omit"
+      },
+      "modules": [
+        "single-file/main"
+      ],
+      "runtime": [
+        {
+          "module": "@seseragi/runtime/cleanup-defect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/clock-value",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/collection",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/effect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/hash",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/int",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/list",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/map",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/path",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/process",
+          "reasons": [
+            "entry-owned-behavior",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/stream",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/sum",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/traversable",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version-data",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "console",
+      "source": "examples/samples/hello-world/main.ssrg",
+      "target": "process",
+      "buildId": "4dff3b5cce4ae59f2f600bbdc96e34bd43aefab70be2ebb717702721c56a776a",
+      "sizes": {
+        "generatedTypescriptBytes": 302,
+        "bundledJavascriptBytes": 88395,
+        "minifiedJavascriptBytes": 37947
+      },
+      "sourceMap": {
+        "policy": "omit"
+      },
+      "modules": [
+        "single-file/main"
+      ],
+      "runtime": [
+        {
+          "module": "@seseragi/runtime/cleanup-defect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/clock-value",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/collection",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/console",
+          "reasons": [
+            "entry-owned-behavior",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/console-service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/decimal",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/effect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/equality",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/hash",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/int",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/list",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/map",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/path",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/persistent-index",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/process",
+          "reasons": [
+            "entry-owned-behavior",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/set",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/show",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/stream",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/sum",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/traversable",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version-data",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "collections",
+      "source": "examples/samples/collections/main.ssrg",
+      "target": "process",
+      "buildId": "23b4b88918cc2237cd955510f2ed5f88d6692b80ff2602f6c513f580aae6db59",
+      "sizes": {
+        "generatedTypescriptBytes": 2390,
+        "bundledJavascriptBytes": 91946,
+        "minifiedJavascriptBytes": 39347
+      },
+      "sourceMap": {
+        "policy": "omit"
+      },
+      "modules": [
+        "single-file/main"
+      ],
+      "runtime": [
+        {
+          "module": "@seseragi/runtime/array",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/cleanup-defect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/clock-value",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/collection",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/console",
+          "reasons": [
+            "entry-owned-behavior",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/console-service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/decimal",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/effect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/equality",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/hash",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/int",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/list",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/map",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/path",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/persistent-index",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/process",
+          "reasons": [
+            "entry-owned-behavior",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/set",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/show",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/stream",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/sum",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/traversable",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version-data",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reachability",
+      "source": "examples/spec/fixtures/projects/production-reachability",
+      "target": "process",
+      "buildId": "c35d21ae851282c38879976d7dc2ed24ca560884134df578f8d42bbe3d773a9d",
+      "sizes": {
+        "generatedTypescriptBytes": 1688,
+        "bundledJavascriptBytes": 89677,
+        "minifiedJavascriptBytes": 38346
+      },
+      "sourceMap": {
+        "policy": "omit"
+      },
+      "modules": [
+        "fixture/production-reachability@0.0.0::facade",
+        "fixture/production-reachability@0.0.0::main",
+        "fixture/production-reachability@0.0.0::values"
+      ],
+      "runtime": [
+        {
+          "module": "@seseragi/runtime/cleanup-defect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/clock-value",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/collection",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/console",
+          "reasons": [
+            "entry-owned-behavior",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/console-service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/decimal",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/effect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/equality",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/hash",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/int",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/list",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/map",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/path",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/persistent-index",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/process",
+          "reasons": [
+            "entry-owned-behavior",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/set",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/show",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/stream",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/sum",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/traversable",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version-data",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "web-starter",
+      "source": "examples/samples/web-starter",
+      "target": "web",
+      "buildId": "76192bf1989b6a32a25d220ad0c7facd5d51776022404e51994caf112232c5e6",
+      "sizes": {
+        "generatedTypescriptBytes": 5338,
+        "bundledJavascriptBytes": 1235973,
+        "minifiedJavascriptBytes": 1043791
+      },
+      "sourceMap": {
+        "policy": "omit"
+      },
+      "modules": [
+        "samples/web-starter@0.0.0::app",
+        "samples/web-starter@0.0.0::main"
+      ],
+      "runtime": [
+        {
+          "module": "@seseragi/runtime/browser/console",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/dom",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/host",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/ime-input",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/logger",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/providers",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/stdin",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/bytes",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/cleanup-defect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/clock-value",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/collection",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/console-service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/decimal",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/dom",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/effect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/entropy",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/equality",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/hash",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/html",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/http-client",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/int",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/list",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/logger-service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/map",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/navigation",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/path",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/persistent-index",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-clock",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-entropy",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-http-client",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-navigation",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-package",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-random",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-storage",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-timezones",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-websocket",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/random",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/set",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/show",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/signal",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/stdin-service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/storage",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/stream",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/sum",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/time",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/timezone-rules.js",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/traversable",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version-data",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/web-file",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/websocket",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "flow-app",
+      "source": "examples/samples/project-flow-app",
+      "target": "web",
+      "buildId": "ee8b78c88134c751fdd12797a11eee5337d64970e65823b05e92e5c98b4476ae",
+      "sizes": {
+        "generatedTypescriptBytes": 33589,
+        "bundledJavascriptBytes": 1254813,
+        "minifiedJavascriptBytes": 1053176
+      },
+      "sourceMap": {
+        "policy": "omit"
+      },
+      "modules": [
+        "samples/project-flow-app@0.0.0::app",
+        "samples/project-flow-app@0.0.0::focus/model",
+        "samples/project-flow-app@0.0.0::focus/view",
+        "samples/project-flow-app@0.0.0::main",
+        "samples/project-flow-app@0.0.0::notes/form",
+        "samples/project-flow-app@0.0.0::notes/model",
+        "samples/project-flow-app@0.0.0::notes/view",
+        "samples/project-flow-app@0.0.0::ui/components",
+        "samples/project-flow-app@0.0.0::ui/styles"
+      ],
+      "runtime": [
+        {
+          "module": "@seseragi/runtime/array",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/console",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/dom",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/host",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/ime-input",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/logger",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/providers",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/browser/stdin",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/bytes",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/cleanup-defect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/clock-value",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/collection",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/console-service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/decimal",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/dom",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/effect",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/entropy",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/equality",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/hash",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/html",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/http-client",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/int",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/list",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/logger-service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/map",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/navigation",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/path",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/persistent-index",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-clock",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-entropy",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-http-client",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-navigation",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-package",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-random",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-storage",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-timezones",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/provider-websocket",
+          "reasons": [
+            "provider-resource-bootstrap",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/random",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/set",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/show",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/signal",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/stdin-service",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/storage",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/stream",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/sum",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/time",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/timezone-rules.js",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/traversable",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/unicode-version-data",
+          "reasons": [
+            "startup-required-initializer",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/web-file",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        },
+        {
+          "module": "@seseragi/runtime/websocket",
+          "reasons": [
+            "pure-helper",
+            "referenced-by-bundled-code"
+          ]
+        }
+      ]
+    }
+  ],
+  "failures": [],
+  "environment": {
+    "compilerRuntimeVersion": "0.61.8",
+    "bunVersion": "1.3.9",
+    "platform": "darwin-arm64",
+    "purpose": "O02 Impl checkpoint measurements; not canonical release evidence"
+  }
+}

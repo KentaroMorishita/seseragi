@@ -43,17 +43,19 @@ export type CleanupMode =
   | Readonly<{ readonly tag: "ClearRenderedDom" }>
   | Readonly<{ readonly tag: "PreserveRenderedDom" }>
 
-export const FreshMount: HydrationMode = Object.freeze({ tag: "FreshMount" })
-export const HydrateStrict: HydrationMode = Object.freeze({
+export const FreshMount: HydrationMode = /* @__PURE__ */ Object.freeze({
+  tag: "FreshMount",
+})
+export const HydrateStrict: HydrationMode = /* @__PURE__ */ Object.freeze({
   tag: "HydrateStrict",
 })
-export const HydrateOrReplace: HydrationMode = Object.freeze({
+export const HydrateOrReplace: HydrationMode = /* @__PURE__ */ Object.freeze({
   tag: "HydrateOrReplace",
 })
-export const ClearRenderedDom: CleanupMode = Object.freeze({
+export const ClearRenderedDom: CleanupMode = /* @__PURE__ */ Object.freeze({
   tag: "ClearRenderedDom",
 })
-export const PreserveRenderedDom: CleanupMode = Object.freeze({
+export const PreserveRenderedDom: CleanupMode = /* @__PURE__ */ Object.freeze({
   tag: "PreserveRenderedDom",
 })
 
@@ -87,7 +89,7 @@ export const InvalidSelector = (value: string): DomError =>
   Object.freeze({ tag: "InvalidSelector", value })
 export const DomTargetNotFound = (value: string): DomError =>
   Object.freeze({ tag: "DomTargetNotFound", value })
-export const DomTargetAlreadyMounted: DomError = Object.freeze({
+export const DomTargetAlreadyMounted: DomError = /* @__PURE__ */ Object.freeze({
   tag: "DomTargetAlreadyMounted",
 })
 export const HydrationMismatch = (value: {
@@ -97,7 +99,7 @@ export const HydrationMismatch = (value: {
 }): DomError => Object.freeze({ tag: "HydrationMismatch", value })
 export const DomEventQueueOverflow = (value: number): DomError =>
   Object.freeze({ tag: "DomEventQueueOverflow", value })
-export const DomTargetRemoved: DomError = Object.freeze({
+export const DomTargetRemoved: DomError = /* @__PURE__ */ Object.freeze({
   tag: "DomTargetRemoved",
 })
 export const DomOperationFailed = (value: string): DomError =>

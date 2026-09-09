@@ -1,0 +1,4 @@
+import { answer } from "./facade"
+import { unusedSibling } from "./unused"
+
+pub effect fn main -> Unit with Console fails ConsoleError = println $ `${answer 6}`

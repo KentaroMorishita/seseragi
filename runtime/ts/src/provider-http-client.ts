@@ -17,40 +17,41 @@ import {
 } from "./provider"
 import type { LoadedProviderEntry } from "./provider-package"
 
-const requestType = Object.freeze({
+const requestType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/http::ClientRequest",
 } as const)
-const responseType = Object.freeze({
+const responseType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/http::ClientResponse",
 } as const)
-const errorType = Object.freeze({
+const errorType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/http::HttpError",
 } as const)
-const streamRequestType = Object.freeze({
+const streamRequestType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/http::ClientStreamRequest",
 } as const)
-const eventType = Object.freeze({
+const eventType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/http::HttpEvent",
 } as const)
-const sendContract: ProviderOperationContract = Object.freeze({
+const sendContract: ProviderOperationContract = /* @__PURE__ */ Object.freeze({
   identity: "std/http::HttpClient#send",
   kind: "one-shot",
   input: requestType,
   success: responseType,
   failure: errorType,
 })
-const exchangeContract: ProviderOperationContract = Object.freeze({
-  identity: "std/http::HttpClient#exchange",
-  kind: "subscription",
-  input: streamRequestType,
-  success: eventType,
-  failure: errorType,
-})
+const exchangeContract: ProviderOperationContract =
+  /* @__PURE__ */ Object.freeze({
+    identity: "std/http::HttpClient#exchange",
+    kind: "subscription",
+    input: streamRequestType,
+    success: eventType,
+    failure: errorType,
+  })
 const codecs = new ProviderCodecRegistry([
   { identity: requestType.identity, encode: snapshotRequest, decode: (v) => v },
   {

@@ -8,7 +8,7 @@ export function NonPositiveSize(value: number): SizeError {
   return Object.freeze({ tag: "NonPositiveSize", value })
 }
 
-export const sizeErrorEq = Object.freeze({
+export const sizeErrorEq = /* @__PURE__ */ Object.freeze({
   eq:
     (left: SizeError) =>
     (right: SizeError): boolean =>

@@ -5,6 +5,8 @@
 //! never derives logical identity from a physical path.
 
 mod analyze;
+mod application;
+pub use application::{retain_application_outputs, ApplicationReachability};
 mod compile;
 mod dependencies;
 mod format;

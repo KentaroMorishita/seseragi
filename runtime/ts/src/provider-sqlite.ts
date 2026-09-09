@@ -38,8 +38,11 @@ const executeResultType = named("seseragi/sqlite::ExecuteResult")
 const errorType = named("seseragi/sqlite::Error")
 const databaseType = named("seseragi/sqlite::Database")
 const transactionType = named("seseragi/sqlite::Transaction")
-const unit = Object.freeze({ kind: "unit" } as const)
-const int = Object.freeze({ kind: "primitive", name: "int" } as const)
+const unit = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
+const int = /* @__PURE__ */ Object.freeze({
+  kind: "primitive",
+  name: "int",
+} as const)
 const record = (
   fields: ReadonlyArray<
     Readonly<{
@@ -61,7 +64,7 @@ const operation = (
     success,
     failure: errorType,
   })
-const contracts = Object.freeze({
+const contracts = /* @__PURE__ */ Object.freeze({
   openMemory: operation("openMemory", "resource", int, databaseType),
   openFile: operation("openFile", "resource", fileConfigType, databaseType),
   query: operation(

@@ -94,17 +94,22 @@ export type StdinError =
   | StdinLineTooLong
   | StdinPositionOverflow
 
-export const StdinUnavailable: StdinUnavailable = Object.freeze({
-  tag: "StdinUnavailable",
-})
+export const StdinUnavailable: StdinUnavailable = /* @__PURE__ */ Object.freeze(
+  {
+    tag: "StdinUnavailable",
+  }
+)
 
-export const StdinReadFailure: StdinReadFailure = Object.freeze({
-  tag: "StdinReadFailure",
-})
+export const StdinReadFailure: StdinReadFailure = /* @__PURE__ */ Object.freeze(
+  {
+    tag: "StdinReadFailure",
+  }
+)
 
-export const ConcurrentStdinRead: ConcurrentStdinRead = Object.freeze({
-  tag: "ConcurrentStdinRead",
-})
+export const ConcurrentStdinRead: ConcurrentStdinRead =
+  /* @__PURE__ */ Object.freeze({
+    tag: "ConcurrentStdinRead",
+  })
 
 export const InvalidStdinUtf8 = (
   value: Readonly<{ readonly offset: number }>
@@ -114,9 +119,10 @@ export const StdinLineTooLong = (
   value: Readonly<{ readonly limitBytes: number }>
 ): StdinLineTooLong => ({ tag: "StdinLineTooLong", value })
 
-export const StdinPositionOverflow: StdinPositionOverflow = Object.freeze({
-  tag: "StdinPositionOverflow",
-})
+export const StdinPositionOverflow: StdinPositionOverflow =
+  /* @__PURE__ */ Object.freeze({
+    tag: "StdinPositionOverflow",
+  })
 
 export type Stdin = Readonly<{
   readChunk: (

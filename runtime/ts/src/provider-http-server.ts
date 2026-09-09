@@ -21,30 +21,32 @@ import {
 import type { LoadedProviderEntry } from "./provider-package"
 import type { ServiceResult } from "./service"
 
-const listenRequest = Object.freeze({
+const listenRequest = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/http/server::ListenRequest",
 } as const)
-const serverHandle = Object.freeze({
+const serverHandle = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/http/server::ServerHandle",
 } as const)
-const serverError = Object.freeze({
+const serverError = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/http/server::ServerError",
 } as const)
-const unit = Object.freeze({ kind: "unit" } as const)
-const never = Object.freeze({ kind: "never" } as const)
+const unit = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
+const never = /* @__PURE__ */ Object.freeze({ kind: "never" } as const)
 
-const listenContract: ProviderOperationContract = Object.freeze({
-  identity: "std/http/server::HttpServer#listen",
-  kind: "resource",
-  input: listenRequest,
-  success: serverHandle,
-  failure: serverError,
-})
+const listenContract: ProviderOperationContract = /* @__PURE__ */ Object.freeze(
+  {
+    identity: "std/http/server::HttpServer#listen",
+    kind: "resource",
+    input: listenRequest,
+    success: serverHandle,
+    failure: serverError,
+  }
+)
 
-const closeContract: ProviderOperationContract = Object.freeze({
+const closeContract: ProviderOperationContract = /* @__PURE__ */ Object.freeze({
   identity: "std/http/server::HttpServer#close",
   kind: "one-shot",
   input: serverHandle,

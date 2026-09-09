@@ -55,27 +55,27 @@ const requireScalar = (value: string): string => {
 }
 
 /** Standard `Hash<Int>` dictionary. */
-export const intHash: Hash<number> = Object.freeze({
+export const intHash: Hash<number> = /* @__PURE__ */ Object.freeze({
   hash: (value: number): number => assertInt(value),
 })
 
 /** Standard `Hash<Bool>` dictionary. */
-export const boolHash: Hash<boolean> = Object.freeze({
+export const boolHash: Hash<boolean> = /* @__PURE__ */ Object.freeze({
   hash: (value: boolean): number => (value ? 1 : 0),
 })
 
 /** Standard `Hash<Char>` dictionary. */
-export const charHash: Hash<string> = Object.freeze({
+export const charHash: Hash<string> = /* @__PURE__ */ Object.freeze({
   hash: (value: string): number => hashScalarSequence(requireScalar(value)),
 })
 
 /** Standard `Hash<String>` dictionary. */
-export const stringHash: Hash<string> = Object.freeze({
+export const stringHash: Hash<string> = /* @__PURE__ */ Object.freeze({
   hash: hashScalarSequence,
 })
 
 /** Standard `Hash<Unit>` dictionary. */
-export const unitHash: Hash<Unit> = Object.freeze({
+export const unitHash: Hash<Unit> = /* @__PURE__ */ Object.freeze({
   hash: (_value: Unit): number => 0,
 })
 

@@ -3,14 +3,14 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (77)
+## Current product-route fixtures (78)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
-| `web-assets` | `run` | `cli-build` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/dev.rs` |
 | `array-index` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
-| `char-literal` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `benchmark-discovery` | `tooling` | `cli-benchmark` | `crates/seseragi-cli/tests/benchmark.rs` |
+| `callable-values` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `char-literal` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `child-process-captured` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `cli-build-nested` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs` |
 | `doc-tests` | `tooling` | `cli-doc` | `crates/seseragi-cli/tests/doc.rs` |
@@ -26,37 +26,35 @@
 | `dts-overload-selection` | `convert` | `cli-dts` | `crates/seseragi-cli/tests/dts.rs` |
 | `dts-unsupported-any` | `diagnostic` | `cli-dts` | `crates/seseragi-cli/tests/dts.rs` |
 | `effect-concurrency-primitives` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
-| `effect-until` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
-| `monoid-wrappers` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
-| `transformers` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `effect-match` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `effect-resource-scope` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `effect-stream-simultaneous-failure` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `effect-tail-recursion` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `effect-temporal-control` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `effect-until` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `entry-rooted-runtime` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `file-multipart-browser-e2e` | `run` | `cli-build` | `apps/playground/tests/file-multipart-browser.test.ts` |
 | `file-target-mismatch` | `diagnostic` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `filesystem-temporary-cleanup` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
-| `effect-match` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `foreign-failure-phases` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-pure-load` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-string-scalars` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
-| `local-effect-fn` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
-| `local-rec` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
-| `opaque-struct` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
-| `list-cons` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
-| `maybe-fallback` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-task-load` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-task-single-flight` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `foreign-web-load` | `run` | `cli-build` | `crates/seseragi-cli/tests/build.rs` |
-| `imported-derived-json-codecs` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `hkt-erasure` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
-| `callable-values` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
-| `inline-polymorphic-inference` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `imported-derived-json-codecs` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `imported-derived-structural` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `inline-polymorphic-inference` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `list-cons` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `local-effect-fn` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `local-rec` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `logical-short-circuit` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `maybe-fallback` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `module-generic-nominal-identity` | `run` | `wasm-project` | `apps/playground/tests/playground.integration.test.ts` |
+| `monoid-wrappers` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `namespaced-reduce-rejection` | `diagnostic` | `cli-build`, `wasm-project` | `crates/seseragi-cli/tests/build.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `opaque-struct` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `package-path-dependency` | `run` | `project-loader` | `crates/seseragi-project/src/local_project/tests.rs`<br>`crates/seseragi-driver/src/local_project.rs` |
 | `package-path-dependency-basic` | `run` | `cli-run`, `project-loader` | `crates/seseragi-cli/tests/run.rs`<br>`crates/seseragi-driver/src/local_project.rs` |
 | `package-stale-lock` | `diagnostic` | `project-loader` | `crates/seseragi-project/src/lockfile/tests.rs` |
@@ -64,26 +62,29 @@
 | `performance-release-shapes` | `compile` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/profiles.rs` |
 | `performance-stack-safety` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/profiles.rs` |
 | `postgres-application` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs` |
-| `sqlite-application` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs` |
 | `prelude-reduce-lambda` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `process-shutdown-cancel` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `process-shutdown-forward` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `production-reachability` | `run` | `cli-build` | `crates/seseragi-cli/tests/production.rs` |
 | `provider-http-client-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `provider-http-server-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `provider-websocket-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `random-seed` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `random-shuffle` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
-| `timezones-dst` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `source-map-rejection` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
-| `standard-evidence-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `sqlite-application` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs` |
 | `sse-server-client-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `standard-evidence-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `std-parity-portable` | `run` | `cli-build`, `cli-run`, `lsp-project`, `wasm-project` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs`<br>`crates/seseragi-lsp/tests/stdio.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `std-parity-target` | `diagnostic` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `stdin-lines` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `stream-cold-resource` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `struct-field-generic-identity` | `run` | `wasm-project` | `apps/playground/tests/playground.integration.test.ts` |
-| `std-parity-portable` | `run` | `cli-build`, `cli-run`, `lsp-project`, `wasm-project` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs`<br>`crates/seseragi-lsp/tests/stdio.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
-| `std-parity-target` | `diagnostic` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `test-discovery` | `test` | `cli-test` | `crates/seseragi-cli/src/test.rs` |
+| `timezones-dst` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `transformers` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `typeclass-operator-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `web-assets` | `run` | `cli-build` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/dev.rs` |
 
 ## Contract-only fixtures (12)
 

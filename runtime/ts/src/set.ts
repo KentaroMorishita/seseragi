@@ -139,8 +139,8 @@ export function iterate<A>(values: Set<A>): Iterator<A> {
   return stepper(maps.iterate(values[valuesKey]))
 }
 
-export const setIterable = Object.freeze({ iterate })
-export const setReducible = Object.freeze({
+export const setIterable = /* @__PURE__ */ Object.freeze({ iterate })
+export const setReducible = /* @__PURE__ */ Object.freeze({
   reduce:
     <B>(initial: B) =>
     <A>(step: (accumulator: B) => (value: A) => B) =>

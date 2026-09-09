@@ -12,7 +12,7 @@ export type BrowserClockHost = Readonly<{
   clearTimer: (timer: unknown) => void
 }>
 
-const liveHost: BrowserClockHost = Object.freeze({
+const liveHost: BrowserClockHost = /* @__PURE__ */ Object.freeze({
   monotonicNow: () => BigInt(Math.floor(performance.now() * 1_000_000)),
   setTimer: (callback, milliseconds) => setTimeout(callback, milliseconds),
   clearTimer: (timer) => clearTimeout(timer as ReturnType<typeof setTimeout>),

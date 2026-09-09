@@ -532,14 +532,14 @@ export function runForEach<Environment, Failure, Value>(
   })
 }
 
-export const streamFunctor = Object.freeze({
+export const streamFunctor = /* @__PURE__ */ Object.freeze({
   map:
     <Value, Result>(mapper: (value: Value) => Result) =>
     <Environment, Failure>(source: Stream<Environment, Failure, Value>) =>
       map(mapper, source),
 })
 
-export const streamApplicative = Object.freeze({
+export const streamApplicative = /* @__PURE__ */ Object.freeze({
   ...streamFunctor,
   pure: singleton,
   apply:
@@ -550,7 +550,7 @@ export const streamApplicative = Object.freeze({
       flatMap((mapper) => map(mapper, values), functions),
 })
 
-export const streamMonad = Object.freeze({
+export const streamMonad = /* @__PURE__ */ Object.freeze({
   ...streamApplicative,
   flatMap:
     <Environment, Failure, Value, Result>(

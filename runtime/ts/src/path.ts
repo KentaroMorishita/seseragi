@@ -31,16 +31,21 @@ export type PathError =
   | InvalidPathSegment
   | AbsoluteChildPath
 
-export const EmptyPath: EmptyPath = Object.freeze({ tag: "EmptyPath" })
-export const InvalidDriveRoot: InvalidDriveRoot = Object.freeze({
-  tag: "InvalidDriveRoot",
+export const EmptyPath: EmptyPath = /* @__PURE__ */ Object.freeze({
+  tag: "EmptyPath",
 })
-export const InvalidUncRoot: InvalidUncRoot = Object.freeze({
+export const InvalidDriveRoot: InvalidDriveRoot = /* @__PURE__ */ Object.freeze(
+  {
+    tag: "InvalidDriveRoot",
+  }
+)
+export const InvalidUncRoot: InvalidUncRoot = /* @__PURE__ */ Object.freeze({
   tag: "InvalidUncRoot",
 })
-export const AbsoluteChildPath: AbsoluteChildPath = Object.freeze({
-  tag: "AbsoluteChildPath",
-})
+export const AbsoluteChildPath: AbsoluteChildPath =
+  /* @__PURE__ */ Object.freeze({
+    tag: "AbsoluteChildPath",
+  })
 
 export function PathContainsNul(value: {
   readonly offset: number

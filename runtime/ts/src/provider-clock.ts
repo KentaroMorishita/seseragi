@@ -14,18 +14,18 @@ import {
 } from "./provider"
 import type { LoadedProviderEntry } from "./provider-package"
 
-const unit = Object.freeze({ kind: "unit" } as const)
-const never = Object.freeze({ kind: "never" } as const)
-const duration = Object.freeze({
+const unit = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
+const never = /* @__PURE__ */ Object.freeze({ kind: "never" } as const)
+const duration = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/time::Duration",
 } as const)
-const instant = Object.freeze({
+const instant = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/time::Instant",
 } as const)
 
-const nowContract: ProviderOperationContract = Object.freeze({
+const nowContract: ProviderOperationContract = /* @__PURE__ */ Object.freeze({
   identity: "std/clock::Clock#now",
   kind: "one-shot",
   input: unit,
@@ -33,7 +33,7 @@ const nowContract: ProviderOperationContract = Object.freeze({
   failure: never,
 })
 
-const sleepContract: ProviderOperationContract = Object.freeze({
+const sleepContract: ProviderOperationContract = /* @__PURE__ */ Object.freeze({
   identity: "std/clock::Clock#sleep",
   kind: "one-shot",
   input: duration,

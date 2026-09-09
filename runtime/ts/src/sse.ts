@@ -191,12 +191,12 @@ export const SseUnexpectedStatus = (value: number): SseParseError =>
   Object.freeze({ tag: "SseUnexpectedStatus", value })
 export const SseInvalidContentType = (value: string): SseParseError =>
   Object.freeze({ tag: "SseInvalidContentType", value })
-export const SseInvalidUtf8: SseParseError = Object.freeze({
+export const SseInvalidUtf8: SseParseError = /* @__PURE__ */ Object.freeze({
   tag: "SseInvalidUtf8",
 })
 export const SseEventTooLarge = (value: number): SseParseError =>
   Object.freeze({ tag: "SseEventTooLarge", value })
-export const SseMalformedId: SseParseError = Object.freeze({
+export const SseMalformedId: SseParseError = /* @__PURE__ */ Object.freeze({
   tag: "SseMalformedId",
 })
 export const SseMalformedRetry = (value: string): SseParseError =>

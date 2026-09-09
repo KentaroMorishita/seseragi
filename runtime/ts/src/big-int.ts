@@ -36,7 +36,7 @@ export type BigIntConversionError = Readonly<{
 
 const asBigInt = (value: bigint): BigInt => value as BigInt
 
-export const EmptyBigInt: BigIntParseError = Object.freeze({
+export const EmptyBigInt: BigIntParseError = /* @__PURE__ */ Object.freeze({
   tag: "EmptyBigInt",
 })
 
@@ -49,18 +49,20 @@ export const InvalidBigIntDigit = (
   value: Readonly<{ readonly offset: number; readonly radix: number }>
 ): BigIntParseError => ({ tag: "InvalidBigIntDigit", value })
 
-export const BigIntDivisionByZero: BigIntDivisionError = Object.freeze({
-  tag: "BigIntDivisionByZero",
-})
+export const BigIntDivisionByZero: BigIntDivisionError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "BigIntDivisionByZero",
+  })
 
 export const NegativeBigIntExponent = (value: number): BigIntPowerError => ({
   tag: "NegativeBigIntExponent",
   value,
 })
 
-export const BigIntOutsideIntRange: BigIntConversionError = Object.freeze({
-  tag: "BigIntOutsideIntRange",
-})
+export const BigIntOutsideIntRange: BigIntConversionError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "BigIntOutsideIntRange",
+  })
 
 export function parse(text: string): Either<BigIntParseError, BigInt> {
   return parseInteger(10, text, true)
@@ -169,20 +171,21 @@ export function sign(value: BigInt): number {
   return value < 0n ? -1 : value > 0n ? 1 : 0
 }
 
-export const bigIntEq: Eq<BigInt> = Object.freeze({
+export const bigIntEq: Eq<BigInt> = /* @__PURE__ */ Object.freeze({
   eq:
     (left) =>
     (right): boolean =>
       left === right,
 })
 
-export const bigIntOrd: Ord<BigInt> & Eq<BigInt> = Object.freeze({
-  ...bigIntEq,
-  compare: (left) => (right) =>
-    left < right ? Less : left > right ? Greater : Equal,
-})
+export const bigIntOrd: Ord<BigInt> & Eq<BigInt> =
+  /* @__PURE__ */ Object.freeze({
+    ...bigIntEq,
+    compare: (left) => (right) =>
+      left < right ? Less : left > right ? Greater : Equal,
+  })
 
-export const bigIntHash: Hash<BigInt> = Object.freeze({
+export const bigIntHash: Hash<BigInt> = /* @__PURE__ */ Object.freeze({
   hash: (value): number => {
     let magnitude = value < 0n ? -value : value
     let state = Math.imul(0x811c9dc5 ^ (value < 0n ? 1 : 0), 0x01000193)
@@ -194,100 +197,102 @@ export const bigIntHash: Hash<BigInt> = Object.freeze({
   },
 })
 
-export const bigIntZero = Object.freeze({
+export const bigIntZero = /* @__PURE__ */ Object.freeze({
   zero: (_unit: Unit): BigInt => asBigInt(0n),
 })
 
-export const bigIntOne = Object.freeze({
+export const bigIntOne = /* @__PURE__ */ Object.freeze({
   one: (_unit: Unit): BigInt => asBigInt(1n),
 })
 
-export const bigIntAdd = Object.freeze({
+export const bigIntAdd = /* @__PURE__ */ Object.freeze({
   add:
     (left: BigInt) =>
     (right: BigInt): BigInt =>
       add(left, right),
 })
 
-export const bigIntSub = Object.freeze({
+export const bigIntSub = /* @__PURE__ */ Object.freeze({
   sub:
     (left: BigInt) =>
     (right: BigInt): BigInt =>
       subtract(left, right),
 })
 
-export const bigIntMul = Object.freeze({
+export const bigIntMul = /* @__PURE__ */ Object.freeze({
   mul:
     (left: BigInt) =>
     (right: BigInt): BigInt =>
       multiply(left, right),
 })
 
-export const bigIntDiv = Object.freeze({
+export const bigIntDiv = /* @__PURE__ */ Object.freeze({
   div:
     (left: BigInt) =>
     (right: BigInt): BigInt =>
       divide(left, right),
 })
 
-export const bigIntRem = Object.freeze({
+export const bigIntRem = /* @__PURE__ */ Object.freeze({
   rem:
     (left: BigInt) =>
     (right: BigInt): BigInt =>
       remainder(left, right),
 })
 
-export const bigIntPow = Object.freeze({
+export const bigIntPow = /* @__PURE__ */ Object.freeze({
   pow:
     (base: BigInt) =>
     (exponent: number): BigInt =>
       power(base, exponent),
 })
 
-export const bigIntParseErrorEq: Eq<BigIntParseError> = Object.freeze({
-  eq:
-    (left) =>
-    (right): boolean => {
-      if (left.tag !== right.tag) return false
-      switch (left.tag) {
-        case "EmptyBigInt":
-          return true
-        case "InvalidBigIntRadix":
-          return (
-            right.tag === "InvalidBigIntRadix" && left.value === right.value
-          )
-        case "InvalidBigIntDigit":
-          return (
-            right.tag === "InvalidBigIntDigit" &&
-            left.value.offset === right.value.offset &&
-            left.value.radix === right.value.radix
-          )
-      }
-    },
-})
+export const bigIntParseErrorEq: Eq<BigIntParseError> =
+  /* @__PURE__ */ Object.freeze({
+    eq:
+      (left) =>
+      (right): boolean => {
+        if (left.tag !== right.tag) return false
+        switch (left.tag) {
+          case "EmptyBigInt":
+            return true
+          case "InvalidBigIntRadix":
+            return (
+              right.tag === "InvalidBigIntRadix" && left.value === right.value
+            )
+          case "InvalidBigIntDigit":
+            return (
+              right.tag === "InvalidBigIntDigit" &&
+              left.value.offset === right.value.offset &&
+              left.value.radix === right.value.radix
+            )
+        }
+      },
+  })
 
-export const bigIntDivisionErrorEq: Eq<BigIntDivisionError> = Object.freeze({
-  eq:
-    (_left) =>
-    (_right): boolean =>
-      true,
-})
-
-export const bigIntPowerErrorEq: Eq<BigIntPowerError> = Object.freeze({
-  eq:
-    (left) =>
-    (right): boolean =>
-      left.value === right.value,
-})
-
-export const bigIntConversionErrorEq: Eq<BigIntConversionError> = Object.freeze(
-  {
+export const bigIntDivisionErrorEq: Eq<BigIntDivisionError> =
+  /* @__PURE__ */ Object.freeze({
     eq:
       (_left) =>
       (_right): boolean =>
         true,
-  }
-)
+  })
+
+export const bigIntPowerErrorEq: Eq<BigIntPowerError> =
+  /* @__PURE__ */ Object.freeze({
+    eq:
+      (left) =>
+      (right): boolean =>
+        left.value === right.value,
+  })
+
+export const bigIntConversionErrorEq: Eq<BigIntConversionError> =
+  /* @__PURE__ */ Object.freeze({
+    eq:
+      (_left) =>
+      (_right): boolean =>
+        true,
+  })
 
 function parseInteger(
   radix: number,

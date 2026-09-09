@@ -19,21 +19,24 @@ import {
 } from "./provider"
 import type { LoadedProviderEntry } from "./provider-package"
 
-const unit = Object.freeze({ kind: "unit" } as const)
-const stringType = Object.freeze({ kind: "primitive", name: "string" } as const)
-const areaType = Object.freeze({
+const unit = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
+const stringType = /* @__PURE__ */ Object.freeze({
+  kind: "primitive",
+  name: "string",
+} as const)
+const areaType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/web/storage::StorageArea",
 } as const)
-const lookupType = Object.freeze({
+const lookupType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/web/storage::StorageLookup",
 } as const)
-const storageErrorType = Object.freeze({
+const storageErrorType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/web/storage::StorageError",
 } as const)
-const stringArrayType = Object.freeze({
+const stringArrayType = /* @__PURE__ */ Object.freeze({
   kind: "array",
   items: stringType,
 } as const)
