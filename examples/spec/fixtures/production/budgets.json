@@ -1,0 +1,104 @@
+[
+  {
+    "id": "minimal",
+    "source": "examples/spec/fixtures/production/minimal.ssrg",
+    "target": "process",
+    "maxMinifiedBytes": 15000,
+    "requiredRuntime": [
+      "@seseragi/runtime/hash",
+      "@seseragi/runtime/unicode-version"
+    ],
+    "forbiddenRuntime": [
+      "/provider-postgres",
+      "/provider-sqlite",
+      "/browser/dom",
+      "/random"
+    ],
+    "forbiddenDeclarations": []
+  },
+  {
+    "id": "console",
+    "source": "examples/samples/hello-world/main.ssrg",
+    "target": "process",
+    "maxMinifiedBytes": 50000,
+    "requiredRuntime": [
+      "@seseragi/runtime/hash",
+      "@seseragi/runtime/unicode-version"
+    ],
+    "forbiddenRuntime": [
+      "/provider-postgres",
+      "/provider-sqlite",
+      "/browser/dom",
+      "/random"
+    ],
+    "forbiddenDeclarations": []
+  },
+  {
+    "id": "collections",
+    "source": "examples/samples/collections/main.ssrg",
+    "target": "process",
+    "maxMinifiedBytes": 50000,
+    "requiredRuntime": [
+      "@seseragi/runtime/hash",
+      "@seseragi/runtime/unicode-version"
+    ],
+    "forbiddenRuntime": [
+      "/provider-postgres",
+      "/provider-sqlite",
+      "/browser/dom",
+      "/random"
+    ],
+    "forbiddenDeclarations": []
+  },
+  {
+    "id": "reachability",
+    "source": "examples/spec/fixtures/projects/production-reachability",
+    "target": "process",
+    "maxMinifiedBytes": 50000,
+    "requiredRuntime": [
+      "@seseragi/runtime/hash",
+      "@seseragi/runtime/unicode-version"
+    ],
+    "forbiddenRuntime": [
+      "/provider-postgres",
+      "/provider-sqlite",
+      "/browser/dom",
+      "/random"
+    ],
+    "forbiddenDeclarations": [
+      "unusedExport",
+      "unusedPrivate",
+      "unusedSibling"
+    ]
+  },
+  {
+    "id": "web-starter",
+    "source": "examples/samples/web-starter",
+    "target": "web",
+    "maxMinifiedBytes": 1300000,
+    "requiredRuntime": [
+      "@seseragi/runtime/hash",
+      "@seseragi/runtime/unicode-version"
+    ],
+    "forbiddenRuntime": [
+      "/provider-postgres",
+      "/provider-sqlite"
+    ],
+    "forbiddenDeclarations": []
+  },
+  {
+    "id": "flow-app",
+    "source": "examples/samples/project-flow-app",
+    "target": "web",
+    "maxMinifiedBytes": 1350000,
+    "requiredRuntime": [
+      "@seseragi/runtime/hash",
+      "@seseragi/runtime/unicode-version"
+    ],
+    "forbiddenRuntime": [
+      "/provider-postgres",
+      "/provider-sqlite"
+    ],
+    "forbiddenDeclarations": []
+  }
+]

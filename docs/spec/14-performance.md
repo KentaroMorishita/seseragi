@@ -428,3 +428,28 @@ source contentはUTF-8を保持します。compiler mapがない生成glue位置
 
 omitではcompiler/bundler mapとsourceMappingURLを配布しません。sourceから選択したruntime
 診断境界はmap配布設定と独立して保持します。foreign process stagingのminifyは本契約の対象外です。
+
+
+### 14.18 Production artifact regression gate
+
+`bun run check:production` builds six first-party representative applications in
+release/omit mode. It checks semantic shape independently from tolerant byte
+budgets in `examples/spec/fixtures/production/budgets.json`: required startup
+initializers, forbidden runtime modules, dead declarations/exports, bundle/module
+provenance, source-map absence, complete file inventory and SHA-256 digests.
+A repeated build in another output directory must reproduce the build identity.
+The CLI regression adds an unused module and an unused math-backed export and
+requires identical emitted files, sizes, and runtime retention. Mutation tests
+prove missing initializers and shape violations fail the gate.
+
+Budgets are upper limits, not exact-size snapshots; deterministic comparisons
+apply within the same compiler/runtime/bundler environment. Current Web bundles
+retain the shared browser provider dispatcher and its adapters, including the
+timezone database. These are reachable bootstrap dependencies, not external npm
+application dependencies. Their cost must remain visible until a separate
+provider-specialization change proves safe removal. The gate does not substitute
+for #342 compiler-stage semantic shape tests, which remain required.
+
+The full and release source gates execute this lane. Reports under
+`target/production-artifacts/report.json` include actual sizes, retained source
+modules and runtime modules with reasons; generated outputs are not committed.

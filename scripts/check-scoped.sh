@@ -28,13 +28,14 @@ check_step() {
 
 usage() {
   cat <<'EOF'
-Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|wasm|extension|release|release-gate|release-gate-after-wasm|full> [args...]
+Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|production|wasm|extension|release|release-gate|release-gate-after-wasm|full> [args...]
 
 Scoped lanes:
   sample       Native CLI samples, every sample compile/format, and manifest freshness
   playground   Sample checks plus Playground lint, tests, typecheck, and Vite build
   rust         Rust format and workspace (or forwarded target) tests
   conformance  Canonical conformance fixtures (optional path arguments)
+  production   First-party production artifact shape, budgets, and identity
   wasm         Regenerate committed Playground WASM and require no diff
   extension    Extension lint, tests, and local-platform package verification
   release      Version source, generated package metadata, and release contract tests
@@ -86,6 +87,13 @@ run_sample_compiler_checks() {
   pushd apps/playground >/dev/null
     check_step bun test tests/sample-compilation.test.ts
   popd >/dev/null
+}
+
+run_production_checks() {
+  cargo build --locked -p seseragi-cli || return $?
+  cargo test --locked -p seseragi-cli --test production || return $?
+  bun test scripts/production-artifacts.test.ts || return $?
+  bun scripts/check-production-artifacts.ts
 }
 
 run_sample_base_checks() {
@@ -408,6 +416,7 @@ run_full_checks() {
   check_step run_cargo_tests
 
   run_conformance_checks
+  check_step run_production_checks
   run_native_sample_checks
   if [[ "$wasm_mode" == "check" ]]; then
     run_wasm_checks
@@ -469,6 +478,9 @@ case "$lane" in
     ;;
   conformance)
     run_conformance_checks "$@"
+    ;;
+  production)
+    run_production_checks
     ;;
   wasm)
     (($# == 0)) || {
