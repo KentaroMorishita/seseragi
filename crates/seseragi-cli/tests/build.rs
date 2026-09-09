@@ -225,6 +225,7 @@ fn builds_self_contained_web_outputs_for_single_files_and_projects() {
                 "assets/app.js",
                 "assets/app.js.map",
                 "index.html",
+                "runtime-notices.txt",
             ]
         );
         let marker =
@@ -1011,6 +1012,19 @@ fn artifact_manifest_tracks_outputs_and_is_independent_of_build_location() {
                     assert_eq!(entry["sha256"], format!("{:x}", Sha256::digest(content)));
                 }
                 if target == "web" || profile == "release" {
+                    let bundles = manifest["bundles"].as_array().unwrap();
+                    assert_eq!(bundles.len(), 1);
+                    assert_eq!(bundles[0]["path"], manifest["entry"]);
+                    assert_eq!(bundles[0]["entry"], true);
+                    assert!(!bundles[0]["modules"].as_array().unwrap().is_empty());
+                    for module in bundles[0]["modules"].as_array().unwrap() {
+                        assert!(manifest["generatedModules"]
+                            .as_array()
+                            .unwrap()
+                            .iter()
+                            .any(|generated| &generated["module"] == module));
+                    }
+                    assert!(!files.contains_key(".seseragi-bundle-meta.json"));
                     assert_eq!(
                         manifest["sizes"]["bundledJavascriptBytes"],
                         files[manifest["entry"].as_str().unwrap()].len() as u64

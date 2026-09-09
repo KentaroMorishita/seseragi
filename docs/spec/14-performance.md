@@ -398,3 +398,17 @@ input evidenceで保持されたruntime sourceだけを列挙し、分類と`ref
 `provenance.bundlerVersion`はbundleを実施したtool version、未実施なら`null`です。
 process bundleの実行entryはmanifestから読み、内部ownership markerも同じentryを指します。
 compiler生成形・型の検査は配布bundleとは独立したcompiler-stage artifactへ適用します。
+
+## 14.16 production bundle layout
+
+Web/processは同じbundler invocation境界を使い、compilerが選択したsource graphとofficial
+runtimeからapplication entryを生成します。first-party process releaseのentryは`entry.js`、
+Webは`assets/app.js`で、現在の意味論に不要な任意chunk分割は追加しません。Web documentとpublic
+assetは既存のpathを保ち、`runtime-notices.txt`は予約済みの配布fileとしてnoticeを保持します。
+
+manifestのoptional `bundles`は、各出力の`path`、entryかどうかの`entry`、実際にそのbundleへ
+codeを寄与した論理Seseragi `modules`を記録します。size/digestは同じpathの`files` entryと
+対応づけます。compiler inventory、最終bundleへの寄与、runtime retentionを区別し、bundler
+固有のchunk IDやinternal absolute pathをpublic identityにしません。bundlerのraw metafileは
+staging内だけで消費して削除し、productへ公開しません。source-only/type-only moduleが最終
+bundleで0 byteとなっても、これをcompiler reachabilityの失敗とは扱いません。

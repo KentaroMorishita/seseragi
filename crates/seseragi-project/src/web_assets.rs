@@ -167,6 +167,7 @@ fn register_output(
                 | "assets"
                 | ".seseragi-build.json"
                 | "artifact-manifest.json"
+                | "runtime-notices.txt"
                 | "__seseragi_dev"
         )
     ) {
@@ -261,6 +262,7 @@ mod tests {
             "ASSETS",
             ".seseragi-build.json",
             "artifact-manifest.json",
+            "runtime-notices.txt",
             "__seseragi_dev",
         ] {
             fs::write(root.0.join("public").join(name), "bad").unwrap();

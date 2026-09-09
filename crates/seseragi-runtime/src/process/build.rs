@@ -331,25 +331,12 @@ fn finish_web_build(
     .map_err(|error| format!("failed to stage browser entry: {error}"))?;
     fs::create_dir(staging.join("assets"))
         .map_err(|error| format!("failed to create web assets directory: {error}"))?;
-    let output = Command::new("bun")
-        .args([
-            "build",
-            "entry.ts",
-            "--target=browser",
-            "--outdir=assets",
-            "--entry-naming=app.js",
-            "--sourcemap=linked",
-            "--metafile=.seseragi-bundle-meta.json",
-        ])
-        .current_dir(staging)
-        .output()
-        .map_err(|error| format!("failed to launch Bun browser bundler: {error}"))?;
-    if !output.status.success() {
-        return Err(format!(
-            "browser bundle failed:\n{}",
-            String::from_utf8_lossy(&output.stderr).trim_end()
-        ));
-    }
+    bundle_program(staging, BuildTarget::Web, "assets/app.js")?;
+    fs::write(
+        staging.join("runtime-notices.txt"),
+        include_str!("../../../../runtime/ts/THIRD_PARTY_NOTICES.txt"),
+    )
+    .map_err(|error| error.to_string())?;
     let web_assets = web
         .map(|(root, config)| seseragi_project::load_web_assets(root, config))
         .transpose()
@@ -833,24 +820,7 @@ fn optimize_application(
 }
 
 fn finish_process_release(staging: &Path) -> Result<(), String> {
-    let result = Command::new("bun")
-        .args([
-            "build",
-            "entry.ts",
-            "--target=bun",
-            "--outfile=entry.js",
-            "--sourcemap=linked",
-            "--metafile=.seseragi-bundle-meta.json",
-        ])
-        .current_dir(staging)
-        .output()
-        .map_err(|error| format!("failed to launch production bundler: {error}"))?;
-    if !result.status.success() {
-        return Err(format!(
-            "production bundle failed: {}",
-            String::from_utf8_lossy(&result.stderr)
-        ));
-    }
+    bundle_program(staging, BuildTarget::Process, "entry.js")?;
     let marker_path = staging.join(BUILD_MARKER_NAME);
     let mut marker: serde_json::Value =
         serde_json::from_slice(&fs::read(&marker_path).map_err(|error| error.to_string())?)
@@ -880,5 +850,47 @@ fn finish_process_release(staging: &Path) -> Result<(), String> {
     for path in ["dist", "node_modules"] {
         remove_optional_directory(&staging.join(path))?;
     }
+    Ok(())
+}
+
+fn bundle_program(staging: &Path, target: BuildTarget, output_path: &str) -> Result<(), String> {
+    let output_path = Path::new(output_path);
+    let output_directory = output_path
+        .parent()
+        .filter(|path| !path.as_os_str().is_empty())
+        .unwrap_or_else(|| Path::new("."));
+    let output_name = output_path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or("invalid bundle output path")?;
+    let result = Command::new("bun")
+        .args([
+            "build",
+            "entry.ts",
+            if target == BuildTarget::Web {
+                "--target=browser"
+            } else {
+                "--target=bun"
+            },
+            &format!("--outdir={}", output_directory.display()),
+            &format!("--entry-naming={output_name}"),
+            "--sourcemap=linked",
+            "--metafile=.seseragi-bundle-meta.json",
+        ])
+        .current_dir(staging)
+        .output()
+        .map_err(|error| format!("failed to launch production bundler: {error}"))?;
+    if !result.status.success() {
+        return Err(format!(
+            "production bundle failed: {}",
+            String::from_utf8_lossy(&result.stderr)
+        ));
+    }
+    let metadata_path = staging.join(".seseragi-bundle-meta.json");
+    let mut metadata: serde_json::Value =
+        serde_json::from_slice(&fs::read(&metadata_path).map_err(|error| error.to_string())?)
+            .map_err(|error| error.to_string())?;
+    metadata["seseragiOutputDirectory"] = path_string(output_directory).into();
+    write_json(&metadata_path, "bundle evidence", &metadata)?;
     Ok(())
 }

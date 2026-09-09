@@ -30,6 +30,7 @@ pub struct ArtifactManifest {
     /// is only valid after analysis proves that no runtime module is retained.
     pub runtime_retention: Option<Vec<RetainedRuntimeModule>>,
     pub reachability: Option<seseragi_driver::ApplicationReachability>,
+    pub bundles: Option<Vec<ArtifactBundle>>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -91,6 +92,19 @@ pub struct RetainedRuntimeModule {
     pub reasons: Vec<String>,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ArtifactBundle {
+    pub path: String,
+    pub entry: bool,
+    pub modules: Vec<String>,
+}
+
+struct BundleEvidence {
+    runtime: Vec<RetainedRuntimeModule>,
+    bundles: Vec<ArtifactBundle>,
+}
+
 /// Describe the completed staging directory before its atomic publication.
 pub(crate) fn write_manifest<'a>(
     directory: &std::path::Path,
@@ -125,7 +139,7 @@ pub(crate) fn write_manifest<'a>(
         })
         .collect::<Vec<_>>();
     generated_modules.sort_by(|left, right| left.module.cmp(&right.module));
-    let runtime_retention = read_bundle_retention(directory)?;
+    let evidence = read_bundle_retention(directory, &modules)?;
     let mut files = Vec::new();
     inventory(directory, directory, &mut files)?;
     files.sort_by(|left, right| left.path.cmp(&right.path));
@@ -204,7 +218,8 @@ pub(crate) fn write_manifest<'a>(
         } else {
             ArtifactSourceMap::Emit { files: maps }
         },
-        runtime_retention,
+        runtime_retention: evidence.as_ref().map(|evidence| evidence.runtime.clone()),
+        bundles: evidence.map(|evidence| evidence.bundles),
         reachability,
     };
     // Hash canonical compact schema-order JSON with an empty buildId. This is
@@ -255,7 +270,8 @@ fn inventory(
 const BUNDLE_METADATA: &str = ".seseragi-bundle-meta.json";
 fn read_bundle_retention(
     directory: &std::path::Path,
-) -> Result<Option<Vec<RetainedRuntimeModule>>, String> {
+    modules: &[&seseragi_driver::CompiledModule],
+) -> Result<Option<BundleEvidence>, String> {
     let path = directory.join(BUNDLE_METADATA);
     if !path.exists() {
         return Ok(None);
@@ -271,10 +287,26 @@ fn read_bundle_retention(
     let outputs = metadata["outputs"]
         .as_object()
         .ok_or("bundler omitted output evidence")?;
-    for output in outputs.values() {
+    let mut bundles = Vec::new();
+    for (output_path, output) in outputs {
         let inputs = output["inputs"]
             .as_object()
             .ok_or("bundler omitted retained input evidence")?;
+        let base = metadata["seseragiOutputDirectory"]
+            .as_str()
+            .unwrap_or(".")
+            .trim_start_matches("./");
+        let relative = output_path.trim_start_matches("./");
+        let output_path = if base.is_empty() || base == "." {
+            relative.to_owned()
+        } else {
+            format!("{base}/{relative}")
+        };
+
+        if output_path.starts_with('/') || output_path.split('/').any(|part| part == "..") {
+            return Err("bundler output path escaped artifact root".to_owned());
+        }
+        let mut source_modules = Vec::new();
         for (path, evidence) in inputs {
             if evidence["bytesInOutput"]
                 .as_u64()
@@ -284,6 +316,18 @@ fn read_bundle_retention(
                 continue;
             }
             let path = path.trim_start_matches("./");
+            if let Some(module) = modules.iter().find(|module| {
+                module
+                    .generated
+                    .metadata
+                    .outputs
+                    .typescript
+                    .trim_start_matches("./")
+                    == path
+            }) {
+                source_modules.push(module.generated.metadata.module.clone());
+            }
+
             if let Some(source) = path.strip_prefix("node_modules/@seseragi/runtime/") {
                 let class = contract["modules"][source]
                     .as_str()
@@ -302,14 +346,23 @@ fn read_bundle_retention(
                 );
             }
         }
+        source_modules.sort();
+        source_modules.dedup();
+        bundles.push(ArtifactBundle {
+            path: output_path,
+            entry: output["entryPoint"].is_string(),
+            modules: source_modules,
+        });
     }
-    Ok(Some(
-        retained
+    bundles.sort_by(|left, right| left.path.cmp(&right.path));
+    Ok(Some(BundleEvidence {
+        runtime: retained
             .into_iter()
             .map(|(module, class)| RetainedRuntimeModule {
                 module,
                 reasons: vec![class, "referenced-by-bundled-code".to_owned()],
             })
             .collect(),
-    ))
+        bundles,
+    }))
 }
