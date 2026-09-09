@@ -220,6 +220,7 @@ fn builds_self_contained_web_outputs_for_single_files_and_projects() {
             first_files.keys().cloned().collect::<Vec<_>>(),
             [
                 ".seseragi-build.json",
+                "artifact-manifest.json",
                 "assets/app.css",
                 "assets/app.js",
                 "assets/app.js.map",
@@ -923,10 +924,105 @@ fn builds_custom_document_and_public_assets_without_rewriting_generated_outputs(
         .unwrap()
         .contains("Updated document"));
     let previous = files_in(&output_directory);
+    let old_manifest: serde_json::Value =
+        serde_json::from_slice(&first["artifact-manifest.json"]).unwrap();
+    let new_manifest: serde_json::Value =
+        serde_json::from_slice(&previous["artifact-manifest.json"]).unwrap();
+    assert_ne!(
+        old_manifest["provenance"]["buildId"],
+        new_manifest["provenance"]["buildId"]
+    );
+    fs::write(project.join("public/artifact-manifest.json"), "collision").unwrap();
+    let result = build();
+    assert!(!result.status.success());
+    assert!(String::from_utf8_lossy(&result.stderr).contains("reserved Web output"));
+    assert_eq!(previous, files_in(&output_directory));
+    fs::remove_file(project.join("public/artifact-manifest.json")).unwrap();
     fs::write(project.join("public/index.html"), "collision").unwrap();
     let result = build();
     assert!(!result.status.success());
     assert!(String::from_utf8_lossy(&result.stderr).contains("reserved Web output"));
     assert_eq!(previous, files_in(&output_directory));
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn artifact_manifest_tracks_outputs_and_is_independent_of_build_location() {
+    use sha2::{Digest, Sha256};
+    let directory = test_directory("artifact-manifest");
+    for (target, fixture) in [
+        ("web", "crates/seseragi-cli/tests/fixtures/web-project"),
+        (
+            "process",
+            "examples/spec/fixtures/projects/cli-build-nested",
+        ),
+    ] {
+        let package = locked_copy(&repository_root().join(fixture), &directory, target);
+        for profile in ["development", "release"] {
+            let mut previous = None;
+            for location in ["first", "different-output"] {
+                let build_package = if location == "different-output" {
+                    locked_copy(
+                        &package,
+                        &directory,
+                        &format!("relocated-{target}-{profile}"),
+                    )
+                } else {
+                    package.clone()
+                };
+                let output_dir = directory.join(format!("{target}-{profile}-{location}"));
+                let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                    .arg("build")
+                    .arg(&build_package)
+                    .args(["--target", target, "--profile", profile, "--out-dir"])
+                    .arg(&output_dir)
+                    .output()
+                    .unwrap();
+                assert!(
+                    output.status.success(),
+                    "{}",
+                    String::from_utf8_lossy(&output.stderr)
+                );
+                let mut files = files_in(&output_dir);
+                let bytes = files.remove("artifact-manifest.json").unwrap();
+                let manifest: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+                let mut model: seseragi_runtime::artifact::ArtifactManifest =
+                    serde_json::from_slice(&bytes).unwrap();
+                let build_id = std::mem::take(&mut model.provenance.build_id);
+                assert_eq!(
+                    build_id,
+                    format!("{:x}", Sha256::digest(serde_json::to_vec(&model).unwrap()))
+                );
+                assert_eq!(manifest["schema"], 1);
+                assert_eq!(manifest["target"], target);
+                assert_eq!(manifest["profile"], profile);
+                assert!(manifest["runtimeRetention"].is_null());
+                assert!(manifest["sizes"]["minifiedJavascriptBytes"].is_null());
+                assert_eq!(manifest["sourceMap"]["policy"], "emit");
+                assert!(manifest["generatedModules"].as_array().unwrap().len() > 1);
+                let entries = manifest["files"].as_array().unwrap();
+                assert_eq!(entries.len(), files.len());
+                for (entry, (path, content)) in entries.iter().zip(&files) {
+                    assert_eq!(entry["path"], *path);
+                    assert_eq!(entry["bytes"], content.len() as u64);
+                    assert_eq!(entry["sha256"], format!("{:x}", Sha256::digest(content)));
+                }
+                if target == "web" {
+                    assert_eq!(
+                        manifest["sizes"]["bundledJavascriptBytes"],
+                        files["assets/app.js"].len() as u64
+                    );
+                } else {
+                    assert!(manifest["sizes"]["bundledJavascriptBytes"].is_null());
+                }
+                let text = String::from_utf8(bytes.clone()).unwrap();
+                assert!(!text.contains(directory.to_str().unwrap()));
+                if let Some(previous) = previous {
+                    assert_eq!(bytes, previous);
+                }
+                previous = Some(bytes);
+            }
+        }
+    }
     fs::remove_dir_all(directory).unwrap();
 }

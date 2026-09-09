@@ -162,7 +162,13 @@ fn register_output(
     let key = seseragi_syntax::unicode::lowercase(output);
     if matches!(
         key.split('/').next(),
-        Some("index.html" | "assets" | ".seseragi-build.json" | "__seseragi_dev")
+        Some(
+            "index.html"
+                | "assets"
+                | ".seseragi-build.json"
+                | "artifact-manifest.json"
+                | "__seseragi_dev"
+        )
     ) {
         return Err(WebAssetError(format!(
             "public asset `{output}` collides with reserved Web output"
@@ -254,6 +260,7 @@ mod tests {
             "index.html",
             "ASSETS",
             ".seseragi-build.json",
+            "artifact-manifest.json",
             "__seseragi_dev",
         ] {
             fs::write(root.0.join("public").join(name), "bad").unwrap();

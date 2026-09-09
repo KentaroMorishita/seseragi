@@ -298,3 +298,51 @@ compiler境界の最低suiteは`benchmark-discovery/benchmarks/quality.ssrg`、r
 最適化を要求するための`inline`、ownership、borrow、unsafeなどのsource annotationは現時点で追加しません。
 profileとbenchmarkで解決できない実測上の問題があり、意味論上の必要性を説明できた場合だけ、独立した言語機能として
 検討します。
+
+
+## 14.13 production artifact manifest
+
+`seseragi build`は両profile・両targetで、公開する出力directoryの直下に
+`artifact-manifest.json`を生成します。`.seseragi-build.json`は既存directoryの
+置換許可を判定する内部ownership markerであり、product manifestとは別です。
+manifest生成に失敗したbuildは既存artifactを置換しません。
+
+schema 1の型は `crates/seseragi-runtime/src/artifact.rs` のSerde modelを正本とします。
+JSONのfieldはcamelCaseです。
+
+| field | 契約 |
+| --- | --- |
+| `schema` | `1`。互換でない変更はschemaを上げる |
+| `profile` / `target` | `development` または `release` / `process` または `web` |
+| `entryModule` | compiler graphの論理entry module identity |
+| `entry` | artifact rootからの実行entry相対path。現行processは`entry.ts`、Webは`assets/app.js` |
+| `provenance` | `compilerVersion`、実際にembeddedされたruntime packageの`runtimeVersion`、`buildId` |
+| `generatedModules` | compilerが生成したmodule inventory。各要素は`module`、`exports`、`runtimeRequirements`、UTF-8の`typescriptBytes` |
+| `files` | manifest自身を除く全公開fileの`path`、`bytes`、小文字hexの`sha256`。ownership marker、asset、mapも含む |
+| `sizes` | `generatedTypescriptBytes`、`bundledJavascriptBytes`、`minifiedJavascriptBytes` |
+| `sourceMap` | `{ "policy": "emit", "files": [...] }` または `{ "policy": "omit" }` |
+| `runtimeRetention` | 解析未実施なら`null`。解析済みなら`module`とsemanticな`reasons`の配列 |
+
+module inventoryはmodule identity順、exports / runtime requirementsは重複のない辞書順、
+file inventoryは相対path順です。path区切りは`/`で、host絶対path、時刻、temporary staging
+identityをmanifestへ書きません。`artifact-manifest.json`は予約pathであり、public assetとの
+衝突はbuild errorです。symlink等の非regular fileをinventoryへ暗黙追従しません。
+
+`buildId`はartifact identityです。`provenance.buildId`を空文字にしたschema modelを
+field宣言順のcompact UTF-8 JSONへserializeし、そのSHA-256を小文字hexで記録します。
+file digestを含むため出力内容の変更も反映します。同一source / lock / compiler / runtime /
+実際のbundler toolchain / target / profile / assetsからのbuildは、source directory・出力先・
+staging directoryによらず同じmanifestを生成します。未使用inputを含めたsource cache keyや
+署名としての用途は保証しません。bundler versionを跨ぐbyte identityも保証しません。
+
+`generatedModules`は最終bundleのretention解析結果ではありません。bundlerが消したmoduleを
+compiler inventoryから推測して取り除かず、後続のsemantic reachability / runtime retention
+結果は専用fieldで追加します。既存fieldの意味を変えないoptional fieldはschema 1に追加可能で、
+consumerは未知fieldを無視します。runtime reasonはbundler chunk IDや内部pass名ではなく、
+意味上の必要性を表す拡張可能な文字列です。未知reasonを除去可能という意味で扱いません。
+
+stage未実施のsizeは`null`で、実施して0 byteだった結果と区別します。現行Web buildの
+`bundledJavascriptBytes`は実際の`assets/app.js`の長さで、process buildでは`null`です。
+minifyとruntime retention解析が未実施の場合、その成功をmanifestから主張しません。
+source-map policyは現に配布するmapを記述し、`omit`の場合mapを必要とする配布契約はありません。
+profileによってobservable semanticsを変えない14.11の契約を引き継ぎます。

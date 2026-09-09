@@ -524,6 +524,7 @@ dependencies = [
  "seseragi-release",
  "seseragi-runtime",
  "seseragi-syntax",
+ "sha2",
 ]
 
 [[package]]

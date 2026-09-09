@@ -157,7 +157,12 @@ pub fn build_main_with_options(
                 options,
             )?,
         }
-        Ok(())
+        crate::artifact::write_manifest(
+            staging,
+            target,
+            &compiled.generated.metadata.module,
+            std::iter::once(compiled),
+        )
     })
 }
 
@@ -260,7 +265,13 @@ pub fn build_local_project_with_options(
                 project.compiled.provider_resolution.as_ref(),
                 options,
             ),
-        }
+        }?;
+        crate::artifact::write_manifest(
+            staging,
+            target,
+            &project.entry_module,
+            project.compiled.modules.values(),
+        )
     })
 }
 
