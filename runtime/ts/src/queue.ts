@@ -19,7 +19,9 @@ export function NonPositiveCapacity(value: number): QueueCreateError {
   return Object.freeze({ tag: "NonPositiveCapacity", value })
 }
 
-export const QueueClosed: QueueClosed = Object.freeze({ tag: "QueueClosed" })
+export const QueueClosed: QueueClosed = /* @__PURE__ */ Object.freeze({
+  tag: "QueueClosed",
+})
 
 const queueBrand: unique symbol = Symbol("seseragi.queue")
 

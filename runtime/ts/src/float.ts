@@ -15,11 +15,11 @@ import {
 } from "./sum"
 import type { Unit } from "./effect"
 
-export const floatZero = Object.freeze({
+export const floatZero = /* @__PURE__ */ Object.freeze({
   zero: (_unit: Unit): number => 0,
 })
 
-export const floatOne = Object.freeze({
+export const floatOne = /* @__PURE__ */ Object.freeze({
   one: (_unit: Unit): number => 1,
 })
 
@@ -31,24 +31,29 @@ export type FloatParseError =
     }>
   | Readonly<{ readonly tag: "FloatParseOverflow" }>
 
-export const EmptyFloat: FloatParseError = Object.freeze({ tag: "EmptyFloat" })
+export const EmptyFloat: FloatParseError = /* @__PURE__ */ Object.freeze({
+  tag: "EmptyFloat",
+})
 export const InvalidFloat = (
   value: Readonly<{ readonly offset: number }>
 ): FloatParseError => ({ tag: "InvalidFloat", value })
-export const FloatParseOverflow: FloatParseError = Object.freeze({
-  tag: "FloatParseOverflow",
-})
+export const FloatParseOverflow: FloatParseError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "FloatParseOverflow",
+  })
 
 export type FloatConversionError =
   | Readonly<{ readonly tag: "FloatNotFinite" }>
   | Readonly<{ readonly tag: "FloatOutsideIntRange" }>
 
-export const FloatNotFinite: FloatConversionError = Object.freeze({
-  tag: "FloatNotFinite",
-})
-export const FloatOutsideIntRange: FloatConversionError = Object.freeze({
-  tag: "FloatOutsideIntRange",
-})
+export const FloatNotFinite: FloatConversionError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "FloatNotFinite",
+  })
+export const FloatOutsideIntRange: FloatConversionError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "FloatOutsideIntRange",
+  })
 
 export function nan(_unit: undefined): number {
   return Number.NaN
@@ -170,42 +175,42 @@ export function power(exponent: number, base: number): number {
   return base ** exponent
 }
 
-export const floatAdd = Object.freeze({
+export const floatAdd = /* @__PURE__ */ Object.freeze({
   add:
     (left: number) =>
     (right: number): number =>
       left + right,
 })
 
-export const floatSub = Object.freeze({
+export const floatSub = /* @__PURE__ */ Object.freeze({
   sub:
     (left: number) =>
     (right: number): number =>
       left - right,
 })
 
-export const floatMul = Object.freeze({
+export const floatMul = /* @__PURE__ */ Object.freeze({
   mul:
     (left: number) =>
     (right: number): number =>
       left * right,
 })
 
-export const floatDiv = Object.freeze({
+export const floatDiv = /* @__PURE__ */ Object.freeze({
   div:
     (left: number) =>
     (right: number): number =>
       left / right,
 })
 
-export const floatRem = Object.freeze({
+export const floatRem = /* @__PURE__ */ Object.freeze({
   rem:
     (left: number) =>
     (right: number): number =>
       left % right,
 })
 
-export const floatPow = Object.freeze({
+export const floatPow = /* @__PURE__ */ Object.freeze({
   pow:
     (base: number) =>
     (exponent: number): number =>

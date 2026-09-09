@@ -17,18 +17,36 @@ import {
 import type { LoadedProviderEntry } from "./provider-package"
 import { serviceFailure, serviceSuccess } from "./service"
 
-const unit = Object.freeze({ kind: "unit" } as const)
-const never = Object.freeze({ kind: "never" } as const)
-const bool = Object.freeze({ kind: "primitive", name: "bool" } as const)
-const bytes = Object.freeze({ kind: "primitive", name: "bytes" } as const)
-const float = Object.freeze({ kind: "primitive", name: "float" } as const)
-const int = Object.freeze({ kind: "primitive", name: "int" } as const)
-const string = Object.freeze({ kind: "primitive", name: "string" } as const)
-const rangeFailure = Object.freeze({
+const unit = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
+const never = /* @__PURE__ */ Object.freeze({ kind: "never" } as const)
+const bool = /* @__PURE__ */ Object.freeze({
+  kind: "primitive",
+  name: "bool",
+} as const)
+const bytes = /* @__PURE__ */ Object.freeze({
+  kind: "primitive",
+  name: "bytes",
+} as const)
+const float = /* @__PURE__ */ Object.freeze({
+  kind: "primitive",
+  name: "float",
+} as const)
+const int = /* @__PURE__ */ Object.freeze({
+  kind: "primitive",
+  name: "int",
+} as const)
+const string = /* @__PURE__ */ Object.freeze({
+  kind: "primitive",
+  name: "string",
+} as const)
+const rangeFailure = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/random::RandomRangeError",
 } as const)
-const intArray = Object.freeze({ kind: "array", items: int } as const)
+const intArray = /* @__PURE__ */ Object.freeze({
+  kind: "array",
+  items: int,
+} as const)
 
 const contract = (
   name: string,
@@ -44,7 +62,7 @@ const contract = (
     failure,
   })
 
-const operations = Object.freeze({
+const operations = /* @__PURE__ */ Object.freeze({
   algorithmId: contract("algorithmId", unit, string),
   nextBool: contract("nextBool", unit, bool),
   nextInt: contract("nextInt", unit, int),

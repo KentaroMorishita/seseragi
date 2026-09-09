@@ -52,7 +52,7 @@ fn manifest(output: &Path) -> serde_json::Value {
 }
 fn execute(output: &Path) -> std::process::Output {
     let output = Command::new("bun")
-        .arg("entry.ts")
+        .arg(manifest(output)["entry"].as_str().unwrap())
         .current_dir(output)
         .output()
         .unwrap();
@@ -87,9 +87,11 @@ fn release_removes_dead_modules_and_declarations_before_bundling() {
                 .any(|module| module["module"].as_str().unwrap().ends_with("::unused")),
             profile == "development"
         );
-        let source = fs::read_to_string(
-            output.join("dist/packages/fixture/production-reachability/0.0.0/values.ts"),
-        )
+        let source = fs::read_to_string(output.join(if profile == "release" {
+            "entry.js"
+        } else {
+            "dist/packages/fixture/production-reachability/0.0.0/values.ts"
+        }))
         .unwrap();
         assert_eq!(source.contains("unusedExport"), profile == "development");
         assert_eq!(source.contains("unusedPrivate"), profile == "development");
@@ -152,5 +154,58 @@ fn release_application_matches_development_for_existing_semantic_fixtures() {
         }
         assert_eq!(outputs[0], outputs[1], "{fixture}");
     }
+    fs::remove_dir_all(temp).unwrap();
+}
+
+#[test]
+fn bundled_process_retains_failure_dictionary_and_excludes_unrelated_runtime() {
+    let temp = temporary("runtime-retention");
+    fs::write(temp.join("main.ssrg"), "pub type Failure deriving Show =\n  | Broken\npub effect fn main -> Unit\nfails Failure = fail Broken\n").unwrap();
+    command(
+        &[
+            "build",
+            "main.ssrg",
+            "--profile",
+            "release",
+            "--out-dir",
+            "release",
+        ],
+        &temp,
+    );
+    let output = temp.join("release");
+    let inventory = manifest(&output);
+    assert_eq!(inventory["entry"], "entry.js");
+    assert!(!output.join("node_modules").exists());
+    let runtime = inventory["runtimeRetention"].as_array().unwrap();
+    for required in [
+        "@seseragi/runtime/hash",
+        "@seseragi/runtime/unicode-version",
+    ] {
+        assert!(
+            runtime.iter().any(|module| module["module"] == required),
+            "{required}"
+        );
+    }
+    for forbidden in [
+        "/dom",
+        "/random",
+        "/provider-sqlite",
+        "/provider-postgres",
+        "/test",
+    ] {
+        assert!(
+            !runtime
+                .iter()
+                .any(|module| module["module"].as_str().unwrap().ends_with(forbidden)),
+            "{forbidden}"
+        );
+    }
+    let result = Command::new("bun")
+        .arg("entry.js")
+        .current_dir(&output)
+        .output()
+        .unwrap();
+    assert_eq!(result.status.code(), Some(1));
+    assert!(String::from_utf8_lossy(&result.stderr).contains("Broken"));
     fs::remove_dir_all(temp).unwrap();
 }

@@ -17,33 +17,38 @@ import {
 import type { LoadedProviderEntry } from "./provider-package"
 import { serviceFailure, serviceSuccess } from "./service"
 
-const unit = Object.freeze({ kind: "unit" } as const)
-const never = Object.freeze({ kind: "never" } as const)
-const string = Object.freeze({ kind: "primitive", name: "string" } as const)
-const timeZone = Object.freeze({
+const unit = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
+const never = /* @__PURE__ */ Object.freeze({ kind: "never" } as const)
+const string = /* @__PURE__ */ Object.freeze({
+  kind: "primitive",
+  name: "string",
+} as const)
+const timeZone = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/time::TimeZone",
 } as const)
-const timeZoneError = Object.freeze({
+const timeZoneError = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/time::TimeZoneError",
 } as const)
 
-const databaseVersionContract: ProviderOperationContract = Object.freeze({
-  identity: "std/time::TimeZones#databaseVersion",
-  kind: "one-shot",
-  input: unit,
-  success: string,
-  failure: never,
-})
+const databaseVersionContract: ProviderOperationContract =
+  /* @__PURE__ */ Object.freeze({
+    identity: "std/time::TimeZones#databaseVersion",
+    kind: "one-shot",
+    input: unit,
+    success: string,
+    failure: never,
+  })
 
-const loadTimeZoneContract: ProviderOperationContract = Object.freeze({
-  identity: "std/time::TimeZones#loadTimeZone",
-  kind: "one-shot",
-  input: string,
-  success: timeZone,
-  failure: timeZoneError,
-})
+const loadTimeZoneContract: ProviderOperationContract =
+  /* @__PURE__ */ Object.freeze({
+    identity: "std/time::TimeZones#loadTimeZone",
+    kind: "one-shot",
+    input: string,
+    success: timeZone,
+    failure: timeZoneError,
+  })
 
 const codecs = new ProviderCodecRegistry([
   {

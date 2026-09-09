@@ -224,13 +224,21 @@ export const options: Method = method("OPTIONS")
 export const connect: Method = method("CONNECT")
 export const trace: Method = method("TRACE")
 
-export const HttpVersionUnknown: HttpVersion = Object.freeze({
+export const HttpVersionUnknown: HttpVersion = /* @__PURE__ */ Object.freeze({
   tag: "HttpVersionUnknown",
 })
-export const Http1_0: HttpVersion = Object.freeze({ tag: "Http1_0" })
-export const Http1_1: HttpVersion = Object.freeze({ tag: "Http1_1" })
-export const Http2: HttpVersion = Object.freeze({ tag: "Http2" })
-export const Http3: HttpVersion = Object.freeze({ tag: "Http3" })
+export const Http1_0: HttpVersion = /* @__PURE__ */ Object.freeze({
+  tag: "Http1_0",
+})
+export const Http1_1: HttpVersion = /* @__PURE__ */ Object.freeze({
+  tag: "Http1_1",
+})
+export const Http2: HttpVersion = /* @__PURE__ */ Object.freeze({
+  tag: "Http2",
+})
+export const Http3: HttpVersion = /* @__PURE__ */ Object.freeze({
+  tag: "Http3",
+})
 
 export const InformationalResponse = (value: ResponseHead): HttpEvent =>
   Object.freeze({ tag: "InformationalResponse", value })
@@ -261,12 +269,14 @@ export const InvalidHttpUrl = (value: {
 }): InvalidHttpUrl => Object.freeze({ tag: "InvalidHttpUrl", value })
 export const UnsupportedHttpScheme = (value: string): UnsupportedHttpScheme =>
   Object.freeze({ tag: "UnsupportedHttpScheme", value })
-export const HttpUrlContainsUserInfo: HttpUrlContainsUserInfo = Object.freeze({
-  tag: "HttpUrlContainsUserInfo",
-})
-export const HttpUrlContainsFragment: HttpUrlContainsFragment = Object.freeze({
-  tag: "HttpUrlContainsFragment",
-})
+export const HttpUrlContainsUserInfo: HttpUrlContainsUserInfo =
+  /* @__PURE__ */ Object.freeze({
+    tag: "HttpUrlContainsUserInfo",
+  })
+export const HttpUrlContainsFragment: HttpUrlContainsFragment =
+  /* @__PURE__ */ Object.freeze({
+    tag: "HttpUrlContainsFragment",
+  })
 export const InvalidHttpMethod = (value: string): InvalidHttpMethod =>
   Object.freeze({ tag: "InvalidHttpMethod", value })
 export const InvalidHeaderName = (value: string): InvalidHeaderName =>
@@ -301,9 +311,10 @@ export const HttpResponseBodyLimitExceeded = (value: {
   readonly limitBytes: number
 }): HttpResponseBodyLimitExceeded =>
   Object.freeze({ tag: "HttpResponseBodyLimitExceeded", value })
-export const HttpClientUnavailable: HttpClientUnavailable = Object.freeze({
-  tag: "HttpClientUnavailable",
-})
+export const HttpClientUnavailable: HttpClientUnavailable =
+  /* @__PURE__ */ Object.freeze({
+    tag: "HttpClientUnavailable",
+  })
 
 export function customMethod(text: string): Either<HttpBuildError, Method> {
   return tokenPattern.test(text) && text === text.toUpperCase()

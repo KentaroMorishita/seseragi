@@ -315,7 +315,7 @@ JSONのfieldはcamelCaseです。
 | `schema` | `1`。互換でない変更はschemaを上げる |
 | `profile` / `target` | `development` または `release` / `process` または `web` |
 | `entryModule` | compiler graphの論理entry module identity |
-| `entry` | artifact rootからの実行entry相対path。現行processは`entry.ts`、Webは`assets/app.js` |
+| `entry` | artifact rootからの実行entry相対path。process developmentは`entry.ts`、first-party releaseは`entry.js`、Webは`assets/app.js` |
 | `provenance` | `compilerVersion`、実際にembeddedされたruntime packageの`runtimeVersion`、`buildId` |
 | `generatedModules` | compilerが生成したmodule inventory。各要素は`module`、`exports`、`runtimeRequirements`、UTF-8の`typescriptBytes` |
 | `files` | manifest自身を除く全公開fileの`path`、`bytes`、小文字hexの`sha256`。ownership marker、asset、mapも含む |
@@ -342,7 +342,7 @@ consumerは未知fieldを無視します。runtime reasonはbundler chunk IDや�
 意味上の必要性を表す拡張可能な文字列です。未知reasonを除去可能という意味で扱いません。
 
 stage未実施のsizeは`null`で、実施して0 byteだった結果と区別します。現行Web buildの
-`bundledJavascriptBytes`は実際の`assets/app.js`の長さで、process buildでは`null`です。
+`bundledJavascriptBytes`は実際の`assets/app.js`の長さで、bundleしないprocess buildでは`null`です。
 minifyとruntime retention解析が未実施の場合、その成功をmanifestから主張しません。
 source-map policyは現に配布するmapを記述し、`omit`の場合mapを必要とする配布契約はありません。
 profileによってobservable semanticsを変えない14.11の契約を引き継ぎます。
@@ -373,3 +373,28 @@ eliminated countは実際の解析結果を反映し、emitするsource mapの`s
 保存するため、debug mapのbyte数とartifact identityは変わり得ます。これをcode retentionの
 増加と混同しません。canonical fixtureは`production-reachability`で、named再export、private
 helper、self recursion、unused exported/private declaration、unused imported siblingを検証します。
+
+## 14.15 official runtime retention
+
+`runtime/ts/retention.json`はembedded runtime sourceを漏れなく分類します。
+`pure-helper`、`startup-required-initializer`、`provider-resource-bootstrap`、
+`entry-owned-behavior`を区別し、未知のembedded sourceを無条件pureにしません。
+分類は必要性を説明する契約であり、module全体へ一律`sideEffects: false`を付けません。
+純粋なtop-level `Object.freeze`とShow/Debug辞書factoryの呼出しには、使用されない結果を
+除去できるannotationを付けます。実際のstartup呼出しやprovider生成を同じ扱いにしません。
+
+`processHashSeed`はapplicationのdynamic importより前に呼び、各生成moduleの
+`assertUnicodeVersion`はsource initializerより前に呼びます。これらをmetadataだけのrootに
+置き換えません。timezone rulesの登録もinitializerとして扱います。minify/bundle後も
+seed設定とentropy失敗がapplication評価より先であることを実行fixtureで検証します。
+
+first-party process releaseはruntimeを含む`entry.js`を生成し、staged runtime/sourceを配布物から
+除去します。development processは`entry.ts`とstaged runtimeを保ちます。foreign host/packageの
+bundlingはこの段階の対象外で、そうしたprocess buildは従来のstaged出力を保持します。
+Webは既存の`assets/app.js`を使います。bundleを実施した場合、manifestは実際のbundler output
+input evidenceで保持されたruntime sourceだけを列挙し、分類と`referenced-by-bundled-code`の理由を
+記録します。読み込んだだけのinput一覧を保持結果に流用しません。未知runtime sourceはbuild errorです。
+
+`provenance.bundlerVersion`はbundleを実施したtool version、未実施なら`null`です。
+process bundleの実行entryはmanifestから読み、内部ownership markerも同じentryを指します。
+compiler生成形・型の検査は配布bundleとは独立したcompiler-stage artifactへ適用します。

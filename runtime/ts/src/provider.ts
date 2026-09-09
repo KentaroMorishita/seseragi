@@ -4,7 +4,7 @@ import {
   throwIfCancelled,
 } from "./effect"
 
-export const providerRuntimeAbi = Object.freeze({
+export const providerRuntimeAbi = /* @__PURE__ */ Object.freeze({
   identity: "seseragi/provider-abi/typescript",
   backend: "typescript",
   abiMajor: 1,

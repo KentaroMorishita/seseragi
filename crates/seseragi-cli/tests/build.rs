@@ -996,7 +996,10 @@ fn artifact_manifest_tracks_outputs_and_is_independent_of_build_location() {
                 assert_eq!(manifest["schema"], 1);
                 assert_eq!(manifest["target"], target);
                 assert_eq!(manifest["profile"], profile);
-                assert!(manifest["runtimeRetention"].is_null());
+                assert_eq!(
+                    manifest["runtimeRetention"].is_null(),
+                    target == "process" && profile == "development"
+                );
                 assert!(manifest["sizes"]["minifiedJavascriptBytes"].is_null());
                 assert_eq!(manifest["sourceMap"]["policy"], "emit");
                 assert!(manifest["generatedModules"].as_array().unwrap().len() > 1);
@@ -1007,10 +1010,10 @@ fn artifact_manifest_tracks_outputs_and_is_independent_of_build_location() {
                     assert_eq!(entry["bytes"], content.len() as u64);
                     assert_eq!(entry["sha256"], format!("{:x}", Sha256::digest(content)));
                 }
-                if target == "web" {
+                if target == "web" || profile == "release" {
                     assert_eq!(
                         manifest["sizes"]["bundledJavascriptBytes"],
-                        files["assets/app.js"].len() as u64
+                        files[manifest["entry"].as_str().unwrap()].len() as u64
                     );
                 } else {
                     assert!(manifest["sizes"]["bundledJavascriptBytes"].is_null());

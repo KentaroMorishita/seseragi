@@ -398,7 +398,7 @@ export function flatMap<
   return bound
 }
 
-export const effectFunctor = Object.freeze({
+export const effectFunctor = /* @__PURE__ */ Object.freeze({
   map:
     <Value, Result>(f: (value: Value) => Result) =>
     <Environment, Failure>(
@@ -415,7 +415,7 @@ export const effectFunctor = Object.freeze({
     },
 })
 
-export const effectApplicative = Object.freeze({
+export const effectApplicative = /* @__PURE__ */ Object.freeze({
   ...effectFunctor,
   pure: succeed,
   apply:
@@ -428,7 +428,7 @@ export const effectApplicative = Object.freeze({
       flatMap(functions, (f) => effectFunctor.map(f)(values)),
 })
 
-export const effectMonad = Object.freeze({
+export const effectMonad = /* @__PURE__ */ Object.freeze({
   ...effectApplicative,
   flatMap:
     <Value, NextEnvironment, NextFailure, Result>(
@@ -643,7 +643,7 @@ export function FiberFailed<Failure>(value: Failure): FiberFailed<Failure> {
   return Object.freeze({ tag: "FiberFailed", value })
 }
 
-export const FiberCancelled: FiberCancelled = Object.freeze({
+export const FiberCancelled: FiberCancelled = /* @__PURE__ */ Object.freeze({
   tag: "FiberCancelled",
 })
 
@@ -990,8 +990,12 @@ async function traverseParallelValues<Environment, Failure, Element, Success>(
 
 /** Explicit normal-success control for sequential Effect traversal. */
 export type LoopControl = Readonly<{ tag: "Continue" } | { tag: "Break" }>
-export const Continue: LoopControl = Object.freeze({ tag: "Continue" })
-export const Break: LoopControl = Object.freeze({ tag: "Break" })
+export const Continue: LoopControl = /* @__PURE__ */ Object.freeze({
+  tag: "Continue",
+})
+export const Break: LoopControl = /* @__PURE__ */ Object.freeze({
+  tag: "Break",
+})
 
 export function forEachUntil<Collection, Environment, Failure, Element>(
   action: (value: Element) => Effect<Environment, Failure, LoopControl>,
@@ -1085,7 +1089,7 @@ export type Schedule<Input> = Readonly<{
   readonly decide: (observation: number, input: Input) => ScheduleDecision
 }>
 
-export const ScheduleStop: ScheduleStop = Object.freeze({
+export const ScheduleStop: ScheduleStop = /* @__PURE__ */ Object.freeze({
   tag: "ScheduleStop",
 })
 

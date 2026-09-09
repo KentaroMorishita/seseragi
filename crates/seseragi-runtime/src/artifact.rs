@@ -46,6 +46,7 @@ pub struct ArtifactProvenance {
     pub runtime_version: String,
     /// Deterministic digest assigned by the canonical artifact producer.
     pub build_id: String,
+    pub bundler_version: Option<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -124,6 +125,7 @@ pub(crate) fn write_manifest<'a>(
         })
         .collect::<Vec<_>>();
     generated_modules.sort_by(|left, right| left.module.cmp(&right.module));
+    let runtime_retention = read_bundle_retention(directory)?;
     let mut files = Vec::new();
     inventory(directory, directory, &mut files)?;
     files.sort_by(|left, right| left.path.cmp(&right.path));
@@ -132,11 +134,18 @@ pub(crate) fn write_manifest<'a>(
         .filter(|file| file.path.ends_with(".map"))
         .map(|file| file.path.clone())
         .collect::<Vec<_>>();
-    let bundled_javascript_bytes = if target == crate::BuildTarget::Web {
+    let executable = if target == crate::BuildTarget::Web {
+        "assets/app.js"
+    } else if directory.join("entry.js").is_file() {
+        "entry.js"
+    } else {
+        "entry.ts"
+    };
+    let bundled_javascript_bytes = if executable.ends_with(".js") {
         Some(
             files
                 .iter()
-                .find(|file| file.path == "assets/app.js")
+                .find(|file| file.path == executable)
                 .ok_or("web artifact omitted its JavaScript entry")?
                 .bytes,
         )
@@ -154,12 +163,7 @@ pub(crate) fn write_manifest<'a>(
             crate::BuildTarget::Web => ArtifactTarget::Web,
         },
         entry_module: entry_module.to_owned(),
-        entry: if target == crate::BuildTarget::Web {
-            "assets/app.js"
-        } else {
-            "entry.ts"
-        }
-        .to_owned(),
+        entry: executable.to_owned(),
         provenance: ArtifactProvenance {
             compiler_version: env!("CARGO_PKG_VERSION").to_owned(),
             runtime_version: runtime_package["version"]
@@ -167,6 +171,23 @@ pub(crate) fn write_manifest<'a>(
                 .ok_or("runtime package omitted version")?
                 .to_owned(),
             build_id: String::new(),
+            bundler_version: if bundled_javascript_bytes.is_some() {
+                let output = std::process::Command::new("bun")
+                    .arg("--version")
+                    .output()
+                    .map_err(|error| error.to_string())?;
+                if !output.status.success() {
+                    return Err("failed to identify bundler version".to_owned());
+                }
+                Some(
+                    String::from_utf8(output.stdout)
+                        .map_err(|error| error.to_string())?
+                        .trim()
+                        .to_owned(),
+                )
+            } else {
+                None
+            },
         },
         sizes: ArtifactSizes {
             generated_typescript_bytes: generated_modules
@@ -183,7 +204,7 @@ pub(crate) fn write_manifest<'a>(
         } else {
             ArtifactSourceMap::Emit { files: maps }
         },
-        runtime_retention: None,
+        runtime_retention,
         reachability,
     };
     // Hash canonical compact schema-order JSON with an empty buildId. This is
@@ -229,4 +250,66 @@ fn inventory(
         }
     }
     Ok(())
+}
+
+const BUNDLE_METADATA: &str = ".seseragi-bundle-meta.json";
+fn read_bundle_retention(
+    directory: &std::path::Path,
+) -> Result<Option<Vec<RetainedRuntimeModule>>, String> {
+    let path = directory.join(BUNDLE_METADATA);
+    if !path.exists() {
+        return Ok(None);
+    }
+    let metadata: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&path).map_err(|error| error.to_string())?)
+            .map_err(|error| error.to_string())?;
+    std::fs::remove_file(path).map_err(|error| error.to_string())?;
+    let contract: serde_json::Value =
+        serde_json::from_str(include_str!("../../../runtime/ts/retention.json"))
+            .map_err(|error| error.to_string())?;
+    let mut retained = std::collections::BTreeMap::new();
+    let outputs = metadata["outputs"]
+        .as_object()
+        .ok_or("bundler omitted output evidence")?;
+    for output in outputs.values() {
+        let inputs = output["inputs"]
+            .as_object()
+            .ok_or("bundler omitted retained input evidence")?;
+        for (path, evidence) in inputs {
+            if evidence["bytesInOutput"]
+                .as_u64()
+                .ok_or("bundler omitted retained byte evidence")?
+                == 0
+            {
+                continue;
+            }
+            let path = path.trim_start_matches("./");
+            if let Some(source) = path.strip_prefix("node_modules/@seseragi/runtime/") {
+                let class = contract["modules"][source]
+                    .as_str()
+                    .ok_or_else(|| format!("runtime retention contract omitted {source}"))?;
+                retained.insert(
+                    format!(
+                        "@seseragi/runtime/{}",
+                        source.trim_start_matches("src/").trim_end_matches(".ts")
+                    ),
+                    class.to_owned(),
+                );
+            } else if let Some(source) = path.strip_prefix("node_modules/seseragi/") {
+                retained.insert(
+                    format!("seseragi/{}", source.trim_end_matches(".ts")),
+                    "provider-resource-bootstrap".to_owned(),
+                );
+            }
+        }
+    }
+    Ok(Some(
+        retained
+            .into_iter()
+            .map(|(module, class)| RetainedRuntimeModule {
+                module,
+                reasons: vec![class, "referenced-by-bundled-code".to_owned()],
+            })
+            .collect(),
+    ))
 }

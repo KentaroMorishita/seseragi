@@ -21,28 +21,30 @@ import {
   webSocketFailure,
 } from "./websocket"
 
-const serverHandleType = Object.freeze({
+const serverHandleType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/websocket/server::ServerHandle",
 } as const)
-const errorType = Object.freeze({
+const errorType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/websocket::WebSocketError",
 } as const)
-const unit = Object.freeze({ kind: "unit" } as const)
-const never = Object.freeze({ kind: "never" } as const)
+const unit = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
+const never = /* @__PURE__ */ Object.freeze({ kind: "never" } as const)
 
-const listenContract: ProviderOperationContract = Object.freeze({
-  identity: "std/websocket/server::WebSocketServer#listen",
-  kind: "resource",
-  input: {
-    kind: "named" as const,
-    identity: "std/websocket/server::ListenRequest",
-  },
-  success: serverHandleType,
-  failure: errorType,
-})
-const closeContract: ProviderOperationContract = Object.freeze({
+const listenContract: ProviderOperationContract = /* @__PURE__ */ Object.freeze(
+  {
+    identity: "std/websocket/server::WebSocketServer#listen",
+    kind: "resource",
+    input: {
+      kind: "named" as const,
+      identity: "std/websocket/server::ListenRequest",
+    },
+    success: serverHandleType,
+    failure: errorType,
+  }
+)
+const closeContract: ProviderOperationContract = /* @__PURE__ */ Object.freeze({
   identity: "std/websocket/server::WebSocketServer#closeServer",
   kind: "one-shot",
   input: serverHandleType,

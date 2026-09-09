@@ -161,6 +161,12 @@ pub fn build_main_with_options(
                 options,
             )?,
         }
+        if target == BuildTarget::Process
+            && compiled.generated.metadata.profile == "release"
+            && compiled.typescript_ir.foreign_modules.is_empty()
+        {
+            finish_process_release(staging)?;
+        }
         crate::artifact::write_manifest(
             staging,
             target,
@@ -287,6 +293,17 @@ pub fn build_local_project_with_options(
                 options,
             ),
         }?;
+        if target == BuildTarget::Process
+            && entry.generated.metadata.profile == "release"
+            && project.foreign_host_directories.is_empty()
+            && project
+                .compiled
+                .modules
+                .values()
+                .all(|module| module.typescript_ir.foreign_modules.is_empty())
+        {
+            finish_process_release(staging)?;
+        }
         crate::artifact::write_manifest(
             staging,
             target,
@@ -322,6 +339,7 @@ fn finish_web_build(
             "--outdir=assets",
             "--entry-naming=app.js",
             "--sourcemap=linked",
+            "--metafile=.seseragi-bundle-meta.json",
         ])
         .current_dir(staging)
         .output()
@@ -624,6 +642,10 @@ fn is_managed_build(output_directory: &Path) -> bool {
                     && ownership.runtime == "node_modules/@seseragi/runtime"
                     && matches!(ownership.target.as_deref(), None | Some("process"))
                     && matches!(ownership.kind.as_str(), "single-file" | "local-project"))
+                    || (ownership.entry == "entry.js"
+                        && ownership.runtime == "bundled"
+                        && ownership.target.as_deref() == Some("process")
+                        && matches!(ownership.kind.as_str(), "single-file" | "local-project"))
                     || (ownership.entry == "assets/app.js"
                         && ownership.runtime == "bundled"
                         && ownership.target.as_deref() == Some("web")
@@ -808,4 +830,55 @@ fn optimize_application(
     roots.sort();
     roots.dedup();
     Some(seseragi_driver::retain_application_outputs(modules, &roots))
+}
+
+fn finish_process_release(staging: &Path) -> Result<(), String> {
+    let result = Command::new("bun")
+        .args([
+            "build",
+            "entry.ts",
+            "--target=bun",
+            "--outfile=entry.js",
+            "--sourcemap=linked",
+            "--metafile=.seseragi-bundle-meta.json",
+        ])
+        .current_dir(staging)
+        .output()
+        .map_err(|error| format!("failed to launch production bundler: {error}"))?;
+    if !result.status.success() {
+        return Err(format!(
+            "production bundle failed: {}",
+            String::from_utf8_lossy(&result.stderr)
+        ));
+    }
+    let marker_path = staging.join(BUILD_MARKER_NAME);
+    let mut marker: serde_json::Value =
+        serde_json::from_slice(&fs::read(&marker_path).map_err(|error| error.to_string())?)
+            .map_err(|error| error.to_string())?;
+    marker["entry"] = "entry.js".into();
+    marker["runtime"] = "bundled".into();
+    // The ownership marker is not the generated-module inventory contract.
+    if let Some(marker) = marker.as_object_mut() {
+        for field in ["modules", "module", "metadata"] {
+            marker.remove(field);
+        }
+    }
+    write_json(&marker_path, "production ownership marker", &marker)?;
+    fs::write(
+        staging.join("runtime-notices.txt"),
+        include_str!("../../../../runtime/ts/THIRD_PARTY_NOTICES.txt"),
+    )
+    .map_err(|error| error.to_string())?;
+    for path in [
+        "entry.ts",
+        "main.ts",
+        "main.ts.map",
+        "generated-module.json",
+    ] {
+        remove_optional_file(&staging.join(path))?;
+    }
+    for path in ["dist", "node_modules"] {
+        remove_optional_directory(&staging.join(path))?;
+    }
+    Ok(())
 }

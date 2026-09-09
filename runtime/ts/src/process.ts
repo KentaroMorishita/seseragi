@@ -35,12 +35,16 @@ export type ProcessSignal =
   | User1
   | User2
 
-export const Interrupt: Interrupt = Object.freeze({ tag: "Interrupt" })
-export const Terminate: Terminate = Object.freeze({ tag: "Terminate" })
-export const Hangup: Hangup = Object.freeze({ tag: "Hangup" })
-export const Quit: Quit = Object.freeze({ tag: "Quit" })
-export const User1: User1 = Object.freeze({ tag: "User1" })
-export const User2: User2 = Object.freeze({ tag: "User2" })
+export const Interrupt: Interrupt = /* @__PURE__ */ Object.freeze({
+  tag: "Interrupt",
+})
+export const Terminate: Terminate = /* @__PURE__ */ Object.freeze({
+  tag: "Terminate",
+})
+export const Hangup: Hangup = /* @__PURE__ */ Object.freeze({ tag: "Hangup" })
+export const Quit: Quit = /* @__PURE__ */ Object.freeze({ tag: "Quit" })
+export const User1: User1 = /* @__PURE__ */ Object.freeze({ tag: "User1" })
+export const User2: User2 = /* @__PURE__ */ Object.freeze({ tag: "User2" })
 
 export type UnsupportedProcessSignal = Readonly<{
   readonly tag: "UnsupportedProcessSignal"
@@ -103,7 +107,7 @@ export function InvalidEnvironmentEncoding(
 }
 
 export const CurrentDirectoryUnavailable: CurrentDirectoryUnavailable =
-  Object.freeze({ tag: "CurrentDirectoryUnavailable" })
+  /* @__PURE__ */ Object.freeze({ tag: "CurrentDirectoryUnavailable" })
 
 export function processArguments(
   _unit?: Unit

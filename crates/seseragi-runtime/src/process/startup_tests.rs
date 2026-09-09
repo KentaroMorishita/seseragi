@@ -9,7 +9,7 @@ impl Drop for Fixture {
     }
 }
 
-fn execute_startup(browser: bool, seed: RandomSeed) -> std::process::Output {
+fn execute_startup(browser: bool, seed: RandomSeed, bundled: bool) -> std::process::Output {
     let fixture = Fixture(prepare_directory().unwrap());
     crate::stage_typescript_package(&fixture.0).unwrap();
     fs::write(
@@ -40,9 +40,35 @@ fn execute_startup(browser: bool, seed: RandomSeed) -> std::process::Output {
         format!("Object.defineProperty(globalThis, 'crypto', {{ value: undefined }});\n{source}"),
     )
     .unwrap();
+    if bundled {
+        let output = Command::new("bun")
+            .args([
+                "build",
+                "entry.ts",
+                if browser {
+                    "--target=browser"
+                } else {
+                    "--target=bun"
+                },
+                "--outfile=entry.js",
+                "--minify",
+            ])
+            .current_dir(&fixture.0)
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
     Command::new("bun")
         .arg("run")
-        .arg(fixture.0.join("entry.ts"))
+        .arg(
+            fixture
+                .0
+                .join(if bundled { "entry.js" } else { "entry.ts" }),
+        )
         .current_dir(&fixture.0)
         .output()
         .unwrap()
@@ -58,7 +84,7 @@ fn process_and_web_fixed_seeds_precede_top_level_map_initialization() {
         (true, i64::MIN),
         (true, i64::MAX),
     ] {
-        let output = execute_startup(browser, RandomSeed::Fixed(seed));
+        let output = execute_startup(browser, RandomSeed::Fixed(seed), false);
         assert_eq!(
             String::from_utf8_lossy(&output.stdout),
             format!("application:{seed}\n")
@@ -70,10 +96,23 @@ fn process_and_web_fixed_seeds_precede_top_level_map_initialization() {
 #[test]
 fn missing_entropy_stops_process_and_web_before_any_application_code() {
     for browser in [false, true] {
-        let output = execute_startup(browser, RandomSeed::Entropy);
+        let output = execute_startup(browser, RandomSeed::Entropy, false);
         assert!(!output.status.success());
         assert!(output.stdout.is_empty(), "application must not evaluate");
         assert!(String::from_utf8_lossy(&output.stderr).contains("secure entropy is unavailable"));
         assert!(!String::from_utf8_lossy(&output.stderr).contains("application fixture boundary"));
+    }
+}
+
+#[test]
+fn bundling_and_minification_preserve_seed_before_application_and_entropy_failure() {
+    for browser in [false, true] {
+        let fixed = execute_startup(browser, RandomSeed::Fixed(-31), true);
+        assert_eq!(String::from_utf8_lossy(&fixed.stdout), "application:-31\n");
+        assert!(String::from_utf8_lossy(&fixed.stderr).contains("application fixture boundary"));
+        let entropy = execute_startup(browser, RandomSeed::Entropy, true);
+        assert!(!entropy.status.success());
+        assert!(entropy.stdout.is_empty());
+        assert!(String::from_utf8_lossy(&entropy.stderr).contains("secure entropy is unavailable"));
     }
 }

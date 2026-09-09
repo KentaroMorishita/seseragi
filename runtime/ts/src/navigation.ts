@@ -51,9 +51,11 @@ export const InvalidUrl = (value: { offset: number }): UrlBuildError =>
 export const UnsupportedUrlScheme = (value: string): UrlBuildError =>
   Object.freeze({ tag: "UnsupportedUrlScheme", value })
 
-export const UrlContainsUserInfo: UrlBuildError = Object.freeze({
-  tag: "UrlContainsUserInfo",
-})
+export const UrlContainsUserInfo: UrlBuildError = /* @__PURE__ */ Object.freeze(
+  {
+    tag: "UrlContainsUserInfo",
+  }
+)
 
 export const InvalidPercentEncoding = (value: {
   offset: number

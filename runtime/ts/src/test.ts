@@ -1,5 +1,9 @@
 import { fromUint8Array, type Bytes } from "./bytes"
-import { createInstant, durationNanoseconds, type Duration } from "./clock-value"
+import {
+  createInstant,
+  durationNanoseconds,
+  type Duration,
+} from "./clock-value"
 import type { Clock } from "./clock"
 import type { Console } from "./console-service"
 import {
@@ -32,7 +36,10 @@ export type TestFailure =
       }>
     }>
   | Readonly<{ readonly tag: "ExpectedTypedFailure" }>
-  | Readonly<{ readonly tag: "TypedFailureDidNotMatch"; readonly value: string }>
+  | Readonly<{
+      readonly tag: "TypedFailureDidNotMatch"
+      readonly value: string
+    }>
   | Readonly<{ readonly tag: "ExplicitTestFailure"; readonly value: string }>
 
 export const AssertionFailed = (value: {
@@ -41,7 +48,7 @@ export const AssertionFailed = (value: {
   readonly actual: Maybe<string>
 }): TestFailure => Object.freeze({ tag: "AssertionFailed", value })
 
-export const ExpectedTypedFailure: TestFailure = Object.freeze({
+export const ExpectedTypedFailure: TestFailure = /* @__PURE__ */ Object.freeze({
   tag: "ExpectedTypedFailure",
 })
 
@@ -92,7 +99,11 @@ export function test(
 }
 
 export function suite(name: string, children: ReadonlyArray<Test>): Test {
-  return Object.freeze({ kind: "suite", name, children: Object.freeze([...children]) })
+  return Object.freeze({
+    kind: "suite",
+    name,
+    children: Object.freeze([...children]),
+  })
 }
 
 export function skip(reason: string, child: Test): Test {
@@ -184,7 +195,10 @@ export function expectFailure<Environment, Failure, Success>(
   }
 }
 
-export type TestModule = Readonly<{ readonly name: string; readonly tests: Test }>
+export type TestModule = Readonly<{
+  readonly name: string
+  readonly tests: Test
+}>
 
 export type TestRunOptions = Readonly<{
   readonly filter?: string
@@ -259,7 +273,9 @@ export async function runTestModules(
       process.stdout.write(`PASS ${result.name}\n`)
     } else if (result.status === "skipped") {
       skipped += 1
-      process.stdout.write(`SKIP ${result.name} -- ${result.reason ?? "skipped"}\n`)
+      process.stdout.write(
+        `SKIP ${result.name} -- ${result.reason ?? "skipped"}\n`
+      )
     } else {
       failed += 1
       process.stdout.write(`FAIL ${result.name}\n`)
@@ -274,7 +290,9 @@ export async function runTestModules(
       process.stderr.write(`${result.name} stderr:\n${result.stderr}`)
     }
   }
-  process.stdout.write(`${passed} passed; ${failed} failed; ${skipped} skipped\n`)
+  process.stdout.write(
+    `${passed} passed; ${failed} failed; ${skipped} skipped\n`
+  )
   return failed === 0 ? 0 : 1
 }
 
@@ -286,7 +304,8 @@ function discover(modules: ReadonlyArray<TestModule>): FlatCase[] {
   }
   const names = new Set<string>()
   for (const entry of cases) {
-    if (names.has(entry.name)) throw new Error(`duplicate test name ${entry.name}`)
+    if (names.has(entry.name))
+      throw new Error(`duplicate test name ${entry.name}`)
     names.add(entry.name)
   }
   return cases
@@ -300,7 +319,12 @@ function flatten(
 ): void {
   if (tree.kind === "skip") {
     validateName("skip reason", tree.reason)
-    flatten(tree.child, parents, { ...inherited, skipReason: tree.reason }, cases)
+    flatten(
+      tree.child,
+      parents,
+      { ...inherited, skipReason: tree.reason },
+      cases
+    )
     return
   }
   if (tree.kind === "timeout") {
@@ -361,7 +385,9 @@ async function runCase(
     return {
       status: "failed",
       name: entry.name,
-      detail: clean ? `timed out after ${timeoutMs} ms` : "resource leak after timeout",
+      detail: clean
+        ? `timed out after ${timeoutMs} ms`
+        : "resource leak after timeout",
       ...output,
     }
   }
@@ -403,7 +429,9 @@ export function testEnvironment(
   output: { stdout: string; stderr: string }
 ): TestEnvironment {
   let instant = 0n
-  let state = (BigInt(seed) ^ (BigInt(index) + 0x9e3779b97f4a7c15n)) & 0xffff_ffff_ffff_ffffn
+  let state =
+    (BigInt(seed) ^ (BigInt(index) + 0x9e3779b97f4a7c15n)) &
+    0xffff_ffff_ffff_ffffn
   const next = (): bigint => {
     state ^= state << 13n
     state ^= state >> 7n
@@ -445,7 +473,9 @@ export function testEnvironment(
       if (probability < 0 || probability > 1 || !Number.isFinite(probability)) {
         return serviceFailure(InvalidProbability(probability))
       }
-      return serviceSuccess(Number(next() >> 11n) / 9_007_199_254_740_992 < probability)
+      return serviceSuccess(
+        Number(next() >> 11n) / 9_007_199_254_740_992 < probability
+      )
     },
     async randomBytes(size) {
       const bytes = new Uint8Array(size)
@@ -498,7 +528,10 @@ export function testEnvironment(
   return Object.freeze({ clock, random, console, logger })
 }
 
-async function within(source: Promise<void>, timeoutMs: number): Promise<boolean> {
+async function within(
+  source: Promise<void>,
+  timeoutMs: number
+): Promise<boolean> {
   let timer: ReturnType<typeof setTimeout> | undefined
   const expired = new Promise<false>((resolve) => {
     timer = setTimeout(() => resolve(false), timeoutMs)
@@ -514,8 +547,14 @@ function renderFailure(failure: TestFailure): string {
   if (failure.tag === "TypedFailureDidNotMatch") {
     return `typed failure did not match: ${failure.value}`
   }
-  const expected = failure.value.expected.tag === "Just" ? `; expected ${failure.value.expected.value}` : ""
-  const actual = failure.value.actual.tag === "Just" ? `; actual ${failure.value.actual.value}` : ""
+  const expected =
+    failure.value.expected.tag === "Just"
+      ? `; expected ${failure.value.expected.value}`
+      : ""
+  const actual =
+    failure.value.actual.tag === "Just"
+      ? `; actual ${failure.value.actual.value}`
+      : ""
   return `${failure.value.message}${expected}${actual}`
 }
 
