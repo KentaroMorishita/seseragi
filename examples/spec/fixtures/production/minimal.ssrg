@@ -1,0 +1,3 @@
+import * as effects from "std/effect"
+
+pub effect fn main -> Unit = effects.succeed ()

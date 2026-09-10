@@ -27,10 +27,10 @@ export const EntropySizeTooLarge = (value: number): EntropyConfigError => ({
   tag: "EntropySizeTooLarge",
   value,
 })
-export const EntropyUnavailable: EntropyError = Object.freeze({
+export const EntropyUnavailable: EntropyError = /* @__PURE__ */ Object.freeze({
   tag: "EntropyUnavailable",
 })
-export const EntropyReadFailure: EntropyError = Object.freeze({
+export const EntropyReadFailure: EntropyError = /* @__PURE__ */ Object.freeze({
   tag: "EntropyReadFailure",
 })
 

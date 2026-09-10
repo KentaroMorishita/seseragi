@@ -39,7 +39,7 @@ export type NonEmptyList<A> = Readonly<{
   readonly tail: List<A>
 }>
 
-export const Empty: Empty = Object.freeze({ tag: "Empty" })
+export const Empty: Empty = /* @__PURE__ */ Object.freeze({ tag: "Empty" })
 
 export const empty = <A>(_unit?: Unit): List<A> => Empty
 
@@ -341,7 +341,7 @@ export const nonEmptyListOrd = <Value>(
   })
 
 /** Runtime dictionary for the standard `Semigroup<List<A>>` instance. */
-export const listSemigroup = Object.freeze({
+export const listSemigroup = /* @__PURE__ */ Object.freeze({
   append:
     <A>(left: List<A>) =>
     (right: List<A>): List<A> =>
@@ -349,7 +349,7 @@ export const listSemigroup = Object.freeze({
 })
 
 /** Runtime dictionary for source-order `Semigroup<NonEmptyList<A>>`. */
-export const nonEmptyListSemigroup = Object.freeze({
+export const nonEmptyListSemigroup = /* @__PURE__ */ Object.freeze({
   append:
     <A>(left: NonEmptyList<A>) =>
     (right: NonEmptyList<A>): NonEmptyList<A> =>
@@ -357,7 +357,7 @@ export const nonEmptyListSemigroup = Object.freeze({
 })
 
 /** Runtime dictionary for the standard `Monoid<List<A>>` instance. */
-export const listMonoid = Object.freeze({
+export const listMonoid = /* @__PURE__ */ Object.freeze({
   ...listSemigroup,
   empty: <A>(_unit: Unit): List<A> => Empty,
 })
@@ -377,7 +377,7 @@ export function reduce<A, B>(
   return accumulator
 }
 
-export const listReducible = Object.freeze({
+export const listReducible = /* @__PURE__ */ Object.freeze({
   reduce:
     <A, B>(initial: B) =>
     (step: (accumulator: B) => (value: A) => B) =>
@@ -385,7 +385,7 @@ export const listReducible = Object.freeze({
       reduce(initial, step, values),
 })
 
-export const nonEmptyListReducible = Object.freeze({
+export const nonEmptyListReducible = /* @__PURE__ */ Object.freeze({
   reduce:
     <B>(initial: B) =>
     <A>(step: (accumulator: B) => (value: A) => B) =>
@@ -402,11 +402,11 @@ function listIterator<A>(values: List<A>): SeseragiIterator<A> {
   }
 }
 
-export const listIterable = Object.freeze({
+export const listIterable = /* @__PURE__ */ Object.freeze({
   iterate: <A>(values: List<A>): SeseragiIterator<A> => listIterator(values),
 })
 
-export const nonEmptyListIterable = Object.freeze({
+export const nonEmptyListIterable = /* @__PURE__ */ Object.freeze({
   iterate: <A>(values: NonEmptyList<A>): SeseragiIterator<A> =>
     listIterator(toListNonEmpty(values)),
 })
@@ -603,7 +603,7 @@ function appendToArray<A>(values: List<A>, result: A[]): void {
   }
 }
 
-export const listFunctor = Object.freeze({
+export const listFunctor = /* @__PURE__ */ Object.freeze({
   map:
     <Value, Result>(f: (value: Value) => Result) =>
     (values: List<Value>): List<Result> => {
@@ -617,7 +617,7 @@ export const listFunctor = Object.freeze({
     },
 })
 
-export const listApplicative = Object.freeze({
+export const listApplicative = /* @__PURE__ */ Object.freeze({
   ...listFunctor,
   pure: <Value>(value: Value): List<Value> => Cons(value, Empty),
   apply:
@@ -637,7 +637,7 @@ export const listApplicative = Object.freeze({
     },
 })
 
-export const listMonad = Object.freeze({
+export const listMonad = /* @__PURE__ */ Object.freeze({
   ...listApplicative,
   flatMap:
     <Value, Result>(f: (value: Value) => List<Result>) =>
@@ -652,7 +652,7 @@ export const listMonad = Object.freeze({
     },
 })
 
-export const listTraversable = Object.freeze({
+export const listTraversable = /* @__PURE__ */ Object.freeze({
   ...listFunctor,
   traverse:
     <Value, Result>(f: (value: Value) => unknown) =>
@@ -679,14 +679,14 @@ function appendNonEmptyToArray<A>(values: NonEmptyList<A>, result: A[]): void {
   appendToArray(values.tail, result)
 }
 
-export const nonEmptyListFunctor = Object.freeze({
+export const nonEmptyListFunctor = /* @__PURE__ */ Object.freeze({
   map:
     <Value, Result>(f: (value: Value) => Result) =>
     (values: NonEmptyList<Value>): NonEmptyList<Result> =>
       NonEmptyList(f(values.head), listFunctor.map(f)(values.tail)),
 })
 
-export const nonEmptyListApplicative = Object.freeze({
+export const nonEmptyListApplicative = /* @__PURE__ */ Object.freeze({
   ...nonEmptyListFunctor,
   pure: <Value>(value: Value): NonEmptyList<Value> => singleton(value),
   apply:
@@ -706,7 +706,7 @@ export const nonEmptyListApplicative = Object.freeze({
     },
 })
 
-export const nonEmptyListMonad = Object.freeze({
+export const nonEmptyListMonad = /* @__PURE__ */ Object.freeze({
   ...nonEmptyListApplicative,
   flatMap:
     <Value, Result>(f: (value: Value) => NonEmptyList<Result>) =>
@@ -721,7 +721,7 @@ export const nonEmptyListMonad = Object.freeze({
     },
 })
 
-export const nonEmptyListTraversable = Object.freeze({
+export const nonEmptyListTraversable = /* @__PURE__ */ Object.freeze({
   ...nonEmptyListFunctor,
   traverse:
     <Value, Result>(f: (value: Value) => unknown) =>

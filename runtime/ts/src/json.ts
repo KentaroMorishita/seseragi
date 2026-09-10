@@ -74,7 +74,7 @@ export type Encoder<A> = (value: A) => Json
 export type JsonEncode<A> = Readonly<{ readonly encodeJson: Encoder<A> }>
 export type JsonDecode<A> = Readonly<{ readonly decodeJson: Decoder<A> }>
 
-export const JsonNull: Json = Object.freeze({ tag: "JsonNull" })
+export const JsonNull: Json = /* @__PURE__ */ Object.freeze({ tag: "JsonNull" })
 export const JsonBool = (value: boolean): Json => ({ tag: "JsonBool", value })
 export const JsonNumber = (value: Decimal): Json => ({
   tag: "JsonNumber",
@@ -621,25 +621,29 @@ const expect =
       ? Right(project(value))
       : decodeError(ExpectedJsonType(tag))
 
-export const boolJsonEncode: JsonEncode<boolean> = Object.freeze({
-  encodeJson: JsonBool,
-})
-export const boolJsonDecode: JsonDecode<boolean> = Object.freeze({
-  decodeJson: expect(
-    "JsonBool",
-    (value) => (value as { value: boolean }).value
-  ),
-})
-export const stringJsonEncode: JsonEncode<string> = Object.freeze({
-  encodeJson: JsonString,
-})
-export const stringJsonDecode: JsonDecode<string> = Object.freeze({
-  decodeJson: expect(
-    "JsonString",
-    (value) => (value as { value: string }).value
-  ),
-})
-export const intJsonEncode: JsonEncode<number> = Object.freeze({
+export const boolJsonEncode: JsonEncode<boolean> =
+  /* @__PURE__ */ Object.freeze({
+    encodeJson: JsonBool,
+  })
+export const boolJsonDecode: JsonDecode<boolean> =
+  /* @__PURE__ */ Object.freeze({
+    decodeJson: expect(
+      "JsonBool",
+      (value) => (value as { value: boolean }).value
+    ),
+  })
+export const stringJsonEncode: JsonEncode<string> =
+  /* @__PURE__ */ Object.freeze({
+    encodeJson: JsonString,
+  })
+export const stringJsonDecode: JsonDecode<string> =
+  /* @__PURE__ */ Object.freeze({
+    decodeJson: expect(
+      "JsonString",
+      (value) => (value as { value: string }).value
+    ),
+  })
+export const intJsonEncode: JsonEncode<number> = /* @__PURE__ */ Object.freeze({
   encodeJson: (value) => JsonNumber(decimalFromInt(value)),
 })
 
@@ -651,35 +655,37 @@ function decimalToSafeInt(value: Decimal): Either<DecodeError, number> {
     : decodeError(InvalidJsonValue("integer is outside the safe Int range"))
 }
 
-export const intJsonDecode: JsonDecode<number> = Object.freeze({
+export const intJsonDecode: JsonDecode<number> = /* @__PURE__ */ Object.freeze({
   decodeJson: (value) => {
     if (value.tag !== "JsonNumber")
       return decodeError(ExpectedJsonType("number"))
     return decimalToSafeInt(value.value)
   },
 })
-export const decimalJsonEncode: JsonEncode<Decimal> = Object.freeze({
-  encodeJson: JsonNumber,
-})
-export const decimalJsonDecode: JsonDecode<Decimal> = Object.freeze({
-  decodeJson: (value) =>
-    value.tag === "JsonNumber"
-      ? Right(value.value)
-      : decodeError(ExpectedJsonType("number")),
-})
-export const unitJsonEncode: JsonEncode<Unit> = Object.freeze({
+export const decimalJsonEncode: JsonEncode<Decimal> =
+  /* @__PURE__ */ Object.freeze({
+    encodeJson: JsonNumber,
+  })
+export const decimalJsonDecode: JsonDecode<Decimal> =
+  /* @__PURE__ */ Object.freeze({
+    decodeJson: (value) =>
+      value.tag === "JsonNumber"
+        ? Right(value.value)
+        : decodeError(ExpectedJsonType("number")),
+  })
+export const unitJsonEncode: JsonEncode<Unit> = /* @__PURE__ */ Object.freeze({
   encodeJson: () => JsonNull,
 })
-export const unitJsonDecode: JsonDecode<Unit> = Object.freeze({
+export const unitJsonDecode: JsonDecode<Unit> = /* @__PURE__ */ Object.freeze({
   decodeJson: (value) =>
     value.tag === "JsonNull"
       ? Right(undefined)
       : decodeError(ExpectedJsonType("null")),
 })
-export const jsonJsonEncode: JsonEncode<Json> = Object.freeze({
+export const jsonJsonEncode: JsonEncode<Json> = /* @__PURE__ */ Object.freeze({
   encodeJson: (value) => value,
 })
-export const jsonJsonDecode: JsonDecode<Json> = Object.freeze({
+export const jsonJsonDecode: JsonDecode<Json> = /* @__PURE__ */ Object.freeze({
   decodeJson: Right,
 })
 

@@ -51,29 +51,35 @@ export const NonPositiveDecimalPrecision = (
   value: number
 ): DecimalContextError => ({ tag: "NonPositiveDecimalPrecision", value })
 
-export const DecimalDivisionByZero: DecimalArithmeticError = Object.freeze({
-  tag: "DecimalDivisionByZero",
-})
+export const DecimalDivisionByZero: DecimalArithmeticError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "DecimalDivisionByZero",
+  })
 
-export const NonTerminatingDecimal: DecimalArithmeticError = Object.freeze({
-  tag: "NonTerminatingDecimal",
-})
+export const NonTerminatingDecimal: DecimalArithmeticError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "NonTerminatingDecimal",
+  })
 
-export const DecimalNotIntegral: DecimalConversionError = Object.freeze({
-  tag: "DecimalNotIntegral",
-})
+export const DecimalNotIntegral: DecimalConversionError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "DecimalNotIntegral",
+  })
 
-export const DecimalOutsideIntRange: DecimalConversionError = Object.freeze({
-  tag: "DecimalOutsideIntRange",
-})
+export const DecimalOutsideIntRange: DecimalConversionError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "DecimalOutsideIntRange",
+  })
 
-export const DecimalOutsideFloatRange: DecimalConversionError = Object.freeze({
-  tag: "DecimalOutsideFloatRange",
-})
+export const DecimalOutsideFloatRange: DecimalConversionError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "DecimalOutsideFloatRange",
+  })
 
-export const FloatNotFinite: DecimalConversionError = Object.freeze({
-  tag: "FloatNotFinite",
-})
+export const FloatNotFinite: DecimalConversionError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "FloatNotFinite",
+  })
 
 export function parse(text: string): Either<DecimalParseError, Decimal> {
   const syntax = decimalSyntax(text)
@@ -284,22 +290,23 @@ export function quantize(
   return quantizeAtScale(BigInt(targetScale), mode, value)
 }
 
-export const decimalEq: Eq<Decimal> = Object.freeze({
+export const decimalEq: Eq<Decimal> = /* @__PURE__ */ Object.freeze({
   eq:
     (left) =>
     (right): boolean =>
       left.coefficient === right.coefficient && left.scale === right.scale,
 })
 
-export const decimalOrd: Ord<Decimal> & Eq<Decimal> = Object.freeze({
-  ...decimalEq,
-  compare: (left) => (right) => {
-    const result = compareDecimal(left, right)
-    return result < 0 ? Less : result > 0 ? Greater : Equal
-  },
-})
+export const decimalOrd: Ord<Decimal> & Eq<Decimal> =
+  /* @__PURE__ */ Object.freeze({
+    ...decimalEq,
+    compare: (left) => (right) => {
+      const result = compareDecimal(left, right)
+      return result < 0 ? Less : result > 0 ? Greater : Equal
+    },
+  })
 
-export const decimalHash: Hash<Decimal> = Object.freeze({
+export const decimalHash: Hash<Decimal> = /* @__PURE__ */ Object.freeze({
   hash: (value): number => {
     let state = hashBigInt(value.coefficient, 0x811c9dc5)
     state = hashBigInt(value.scale, state)
@@ -307,51 +314,53 @@ export const decimalHash: Hash<Decimal> = Object.freeze({
   },
 })
 
-export const decimalZero = Object.freeze({
+export const decimalZero = /* @__PURE__ */ Object.freeze({
   zero: (_unit: Unit): Decimal => ZERO,
 })
 
-export const decimalOne = Object.freeze({
+export const decimalOne = /* @__PURE__ */ Object.freeze({
   one: (_unit: Unit): Decimal => ONE,
 })
 
-export const decimalAdd = Object.freeze({
+export const decimalAdd = /* @__PURE__ */ Object.freeze({
   add:
     (left: Decimal) =>
     (right: Decimal): Decimal =>
       add(left, right),
 })
 
-export const decimalSub = Object.freeze({
+export const decimalSub = /* @__PURE__ */ Object.freeze({
   sub:
     (left: Decimal) =>
     (right: Decimal): Decimal =>
       subtract(left, right),
 })
 
-export const decimalMul = Object.freeze({
+export const decimalMul = /* @__PURE__ */ Object.freeze({
   mul:
     (left: Decimal) =>
     (right: Decimal): Decimal =>
       multiply(left, right),
 })
 
-export const decimalParseErrorEq: Eq<DecimalParseError> = Object.freeze({
-  eq:
-    (left) =>
-    (right): boolean =>
-      left.value.offset === right.value.offset,
-})
+export const decimalParseErrorEq: Eq<DecimalParseError> =
+  /* @__PURE__ */ Object.freeze({
+    eq:
+      (left) =>
+      (right): boolean =>
+        left.value.offset === right.value.offset,
+  })
 
-export const decimalContextErrorEq: Eq<DecimalContextError> = Object.freeze({
-  eq:
-    (left) =>
-    (right): boolean =>
-      left.value === right.value,
-})
+export const decimalContextErrorEq: Eq<DecimalContextError> =
+  /* @__PURE__ */ Object.freeze({
+    eq:
+      (left) =>
+      (right): boolean =>
+        left.value === right.value,
+  })
 
 export const decimalArithmeticErrorEq: Eq<DecimalArithmeticError> =
-  Object.freeze({
+  /* @__PURE__ */ Object.freeze({
     eq:
       (left) =>
       (right): boolean =>
@@ -359,7 +368,7 @@ export const decimalArithmeticErrorEq: Eq<DecimalArithmeticError> =
   })
 
 export const decimalConversionErrorEq: Eq<DecimalConversionError> =
-  Object.freeze({
+  /* @__PURE__ */ Object.freeze({
     eq:
       (left) =>
       (right): boolean =>

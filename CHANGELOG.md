@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.9] - 2026-09-10
+
+### Changed
+
+- #589 O02 hotfix: verify composed source maps in installed product E2E
 ## [0.61.8] - 2026-09-08
 
 ### Fixed

@@ -30,7 +30,7 @@ export {
   renderLogEvent,
 } from "./logger-service"
 
-export const liveLogger: Logger = Object.freeze({
+export const liveLogger: Logger = /* @__PURE__ */ Object.freeze({
   log(event) {
     return writeEvent(event)
   },

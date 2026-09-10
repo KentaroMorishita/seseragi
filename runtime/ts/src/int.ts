@@ -130,7 +130,9 @@ export type IntParseError =
     }>
   | Readonly<{ readonly tag: "IntOutsideRange" }>
 
-export const EmptyInt: IntParseError = Object.freeze({ tag: "EmptyInt" })
+export const EmptyInt: IntParseError = /* @__PURE__ */ Object.freeze({
+  tag: "EmptyInt",
+})
 export const InvalidIntRadix = (value: number): IntParseError => ({
   tag: "InvalidIntRadix",
   value,
@@ -138,14 +140,15 @@ export const InvalidIntRadix = (value: number): IntParseError => ({
 export const InvalidIntDigit = (
   value: Readonly<{ readonly offset: number; readonly radix: number }>
 ): IntParseError => ({ tag: "InvalidIntDigit", value })
-export const IntOutsideRange: IntParseError = Object.freeze({
+export const IntOutsideRange: IntParseError = /* @__PURE__ */ Object.freeze({
   tag: "IntOutsideRange",
 })
 
 export type IntDivisionError = Readonly<{ readonly tag: "IntDivisionByZero" }>
-export const IntDivisionByZero: IntDivisionError = Object.freeze({
-  tag: "IntDivisionByZero",
-})
+export const IntDivisionByZero: IntDivisionError =
+  /* @__PURE__ */ Object.freeze({
+    tag: "IntDivisionByZero",
+  })
 
 export type IntPowerError =
   | Readonly<{ readonly tag: "NegativeIntExponent"; readonly value: number }>
@@ -154,7 +157,7 @@ export const NegativeIntExponent = (value: number): IntPowerError => ({
   tag: "NegativeIntExponent",
   value,
 })
-export const IntPowerOverflow: IntPowerError = Object.freeze({
+export const IntPowerOverflow: IntPowerError = /* @__PURE__ */ Object.freeze({
   tag: "IntPowerOverflow",
 })
 

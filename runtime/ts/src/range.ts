@@ -39,7 +39,7 @@ export function reduce<B>(
   return accumulator
 }
 
-export const rangeReducible = Object.freeze({
+export const rangeReducible = /* @__PURE__ */ Object.freeze({
   reduce:
     <B>(initial: B) =>
     (step: (accumulator: B) => (value: number) => B) =>
@@ -69,7 +69,7 @@ function rangeIterator(
   }
 }
 
-export const rangeIterable = Object.freeze({
+export const rangeIterable = /* @__PURE__ */ Object.freeze({
   iterate: (range: IntRange): SeseragiIterator<number> =>
     range.start > range.end
       ? emptyIterator()

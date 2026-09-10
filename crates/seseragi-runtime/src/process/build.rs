@@ -118,8 +118,28 @@ pub fn build_main_with_options(
     target: BuildTarget,
     options: ProcessRunOptions,
 ) -> Result<(), BuildError> {
+    build_main_with_artifact_options(
+        compiled,
+        output_directory,
+        target,
+        options,
+        crate::artifact::ArtifactOptions::default(),
+    )
+}
+
+pub fn build_main_with_artifact_options(
+    compiled: &CompiledModule,
+    output_directory: &Path,
+    target: BuildTarget,
+    options: ProcessRunOptions,
+    artifact_options: crate::artifact::ArtifactOptions,
+) -> Result<(), BuildError> {
     let contract = main_contract(compiled).map_err(BuildError::InvalidEntry)?;
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
+    let id = compiled.generated.metadata.module.clone();
+    let mut application = std::collections::BTreeMap::from([(id.clone(), compiled.clone())]);
+    let reachability = optimize_application(&mut application, &id, &contract);
+    let compiled = application.get(&id).expect("application root retained");
     publish_build(output_directory, |staging| {
         match target {
             BuildTarget::Process => stage_main_program(compiled, &contract, &staging, options)?,
@@ -155,9 +175,28 @@ pub fn build_main_with_options(
                 None,
                 None,
                 options,
+                artifact_options,
             )?,
         }
-        Ok(())
+        if target == BuildTarget::Process
+            && compiled.generated.metadata.profile == "release"
+            && compiled.typescript_ir.foreign_modules.is_empty()
+        {
+            finish_process_release(staging, artifact_options)?;
+        }
+        if target == BuildTarget::Process
+            && artifact_options.source_map(&compiled.generated.metadata.profile)
+                == crate::artifact::SourceMapPolicy::Omit
+        {
+            remove_compiler_maps(staging)?;
+        }
+        crate::artifact::write_manifest(
+            staging,
+            target,
+            &compiled.generated.metadata.module,
+            std::iter::once(compiled),
+            reachability,
+        )
     })
 }
 
@@ -182,7 +221,23 @@ pub fn build_local_project_with_options(
     target: BuildTarget,
     options: ProcessRunOptions,
 ) -> Result<(), BuildError> {
-    let entry = project
+    build_local_project_with_artifact_options(
+        project,
+        output_directory,
+        target,
+        options,
+        crate::artifact::ArtifactOptions::default(),
+    )
+}
+
+pub fn build_local_project_with_artifact_options(
+    project: &CompiledLocalProject,
+    output_directory: &Path,
+    target: BuildTarget,
+    options: ProcessRunOptions,
+    artifact_options: crate::artifact::ArtifactOptions,
+) -> Result<(), BuildError> {
+    let _entry = project
         .compiled
         .modules
         .get(&project.entry_module)
@@ -190,6 +245,22 @@ pub fn build_local_project_with_options(
     let contract = project_main_contract(&project.compiled, &project.entry_module)
         .map_err(BuildError::InvalidEntry)?;
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
+    let mut application = project.clone();
+    let reachability = optimize_application(
+        &mut application.compiled.modules,
+        &project.entry_module,
+        &contract,
+    );
+    application
+        .compiled
+        .order
+        .retain(|id| application.compiled.modules.contains_key(id));
+    let project = &application;
+    let entry = project
+        .compiled
+        .modules
+        .get(&project.entry_module)
+        .expect("application root retained");
     publish_build(output_directory, |staging| {
         stage_project_modules(&project.compiled, staging)?;
         stage_foreign_host_directories(&project.foreign_host_directories, staging)?;
@@ -259,8 +330,33 @@ pub fn build_local_project_with_options(
                 project.web.as_ref(),
                 project.compiled.provider_resolution.as_ref(),
                 options,
+                artifact_options,
             ),
+        }?;
+        if target == BuildTarget::Process
+            && entry.generated.metadata.profile == "release"
+            && project.foreign_host_directories.is_empty()
+            && project
+                .compiled
+                .modules
+                .values()
+                .all(|module| module.typescript_ir.foreign_modules.is_empty())
+        {
+            finish_process_release(staging, artifact_options)?;
         }
+        if target == BuildTarget::Process
+            && artifact_options.source_map(&entry.generated.metadata.profile)
+                == crate::artifact::SourceMapPolicy::Omit
+        {
+            remove_compiler_maps(staging)?;
+        }
+        crate::artifact::write_manifest(
+            staging,
+            target,
+            &project.entry_module,
+            project.compiled.modules.values(),
+            reachability,
+        )
     })
 }
 
@@ -273,6 +369,7 @@ fn finish_web_build(
     web: Option<&(PathBuf, seseragi_project::ManifestWeb)>,
     providers: Option<&seseragi_driver::ProviderResolution>,
     options: ProcessRunOptions,
+    artifact_options: crate::artifact::ArtifactOptions,
 ) -> Result<(), String> {
     fs::write(
         staging.join("entry.ts"),
@@ -281,24 +378,18 @@ fn finish_web_build(
     .map_err(|error| format!("failed to stage browser entry: {error}"))?;
     fs::create_dir(staging.join("assets"))
         .map_err(|error| format!("failed to create web assets directory: {error}"))?;
-    let output = Command::new("bun")
-        .args([
-            "build",
-            "entry.ts",
-            "--target=browser",
-            "--outdir=assets",
-            "--entry-naming=app.js",
-            "--sourcemap=linked",
-        ])
-        .current_dir(staging)
-        .output()
-        .map_err(|error| format!("failed to launch Bun browser bundler: {error}"))?;
-    if !output.status.success() {
-        return Err(format!(
-            "browser bundle failed:\n{}",
-            String::from_utf8_lossy(&output.stderr).trim_end()
-        ));
-    }
+    bundle_program(
+        staging,
+        BuildTarget::Web,
+        "assets/app.js",
+        profile,
+        artifact_options,
+    )?;
+    fs::write(
+        staging.join("runtime-notices.txt"),
+        include_str!("../../../../runtime/ts/THIRD_PARTY_NOTICES.txt"),
+    )
+    .map_err(|error| error.to_string())?;
     let web_assets = web
         .map(|(root, config)| seseragi_project::load_web_assets(root, config))
         .transpose()
@@ -321,7 +412,9 @@ fn finish_web_build(
             profile: profile.to_owned(),
             target: BuildTarget::Web.marker_target(),
             entry: "assets/app.js",
-            source_map: "assets/app.js.map",
+            source_map: (artifact_options.source_map(profile)
+                == crate::artifact::SourceMapPolicy::Emit)
+                .then_some("assets/app.js.map"),
             runtime: "bundled",
         },
     )?;
@@ -424,7 +517,7 @@ struct WebBuildMarker {
     kind: &'static str,
     target: &'static str,
     entry: &'static str,
-    source_map: &'static str,
+    source_map: Option<&'static str>,
     runtime: &'static str,
 }
 
@@ -591,6 +684,10 @@ fn is_managed_build(output_directory: &Path) -> bool {
                     && ownership.runtime == "node_modules/@seseragi/runtime"
                     && matches!(ownership.target.as_deref(), None | Some("process"))
                     && matches!(ownership.kind.as_str(), "single-file" | "local-project"))
+                    || (ownership.entry == "entry.js"
+                        && ownership.runtime == "bundled"
+                        && ownership.target.as_deref() == Some("process")
+                        && matches!(ownership.kind.as_str(), "single-file" | "local-project"))
                     || (ownership.entry == "assets/app.js"
                         && ownership.runtime == "bundled"
                         && ownership.target.as_deref() == Some("web")
@@ -715,4 +812,206 @@ mod tests {
         assert!(!is_managed_build(&root));
         fs::remove_dir_all(root).unwrap();
     }
+}
+
+fn optimize_application(
+    modules: &mut std::collections::BTreeMap<String, CompiledModule>,
+    entry: &str,
+    contract: &crate::MainContract,
+) -> Option<seseragi_driver::ApplicationReachability> {
+    if modules.get(entry)?.generated.metadata.profile != "release" {
+        return None;
+    }
+    let mut roots = vec![(entry.to_owned(), "main".to_owned())];
+    fn dictionary_roots(
+        modules: &std::collections::BTreeMap<String, CompiledModule>,
+        entry: &str,
+        module: &str,
+        export: &str,
+        arguments: &[crate::DisplayDictionary],
+        roots: &mut Vec<(String, String)>,
+    ) {
+        let id = if module == "./main.ts" {
+            Some(entry.to_owned())
+        } else {
+            modules
+                .iter()
+                .find(|(_, compiled)| {
+                    compiled
+                        .generated
+                        .metadata
+                        .outputs
+                        .typescript
+                        .trim_start_matches("./")
+                        == module.trim_start_matches("./")
+                })
+                .map(|(id, _)| id.clone())
+        };
+        if let Some(id) = id {
+            roots.push((id, export.to_owned()));
+        }
+        for argument in arguments {
+            dictionary_roots(
+                modules,
+                entry,
+                &argument.module,
+                &argument.export,
+                &argument.arguments,
+                roots,
+            );
+        }
+    }
+    if let crate::FailureRenderer::Show {
+        module,
+        export,
+        arguments,
+    } = &contract.failure_renderer
+    {
+        dictionary_roots(modules, entry, module, export, arguments, &mut roots);
+    }
+    roots.sort();
+    roots.dedup();
+    Some(seseragi_driver::retain_application_outputs(modules, &roots))
+}
+
+fn finish_process_release(
+    staging: &Path,
+    artifact_options: crate::artifact::ArtifactOptions,
+) -> Result<(), String> {
+    bundle_program(
+        staging,
+        BuildTarget::Process,
+        "entry.js",
+        "release",
+        artifact_options,
+    )?;
+    let marker_path = staging.join(BUILD_MARKER_NAME);
+    let mut marker: serde_json::Value =
+        serde_json::from_slice(&fs::read(&marker_path).map_err(|error| error.to_string())?)
+            .map_err(|error| error.to_string())?;
+    marker["entry"] = "entry.js".into();
+    marker["runtime"] = "bundled".into();
+    // The ownership marker is not the generated-module inventory contract.
+    if let Some(marker) = marker.as_object_mut() {
+        for field in ["modules", "module", "metadata"] {
+            marker.remove(field);
+        }
+    }
+    write_json(&marker_path, "production ownership marker", &marker)?;
+    fs::write(
+        staging.join("runtime-notices.txt"),
+        include_str!("../../../../runtime/ts/THIRD_PARTY_NOTICES.txt"),
+    )
+    .map_err(|error| error.to_string())?;
+    for path in [
+        "entry.ts",
+        "main.ts",
+        "main.ts.map",
+        "generated-module.json",
+    ] {
+        remove_optional_file(&staging.join(path))?;
+    }
+    for path in ["dist", "node_modules"] {
+        remove_optional_directory(&staging.join(path))?;
+    }
+    Ok(())
+}
+
+fn bundle_program(
+    staging: &Path,
+    target: BuildTarget,
+    output_path: &str,
+    profile: &str,
+    options: crate::artifact::ArtifactOptions,
+) -> Result<(), String> {
+    let output_path = Path::new(output_path);
+    let output_directory = output_path
+        .parent()
+        .filter(|path| !path.as_os_str().is_empty())
+        .unwrap_or_else(|| Path::new("."));
+    let output_name = output_path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or("invalid bundle output path")?;
+    let emit = options.source_map(profile) == crate::artifact::SourceMapPolicy::Emit;
+    let invoke = |minify: bool| -> Result<(), String> {
+        let mut command = Command::new("bun");
+        command.args([
+            "build",
+            "entry.ts",
+            if target == BuildTarget::Web {
+                "--target=browser"
+            } else {
+                "--target=bun"
+            },
+            &format!("--outdir={}", output_directory.display()),
+            &format!("--entry-naming={output_name}"),
+            if emit {
+                "--sourcemap=linked"
+            } else {
+                "--sourcemap=none"
+            },
+            "--metafile=.seseragi-bundle-meta.json",
+        ]);
+        if minify {
+            command.arg("--minify");
+        }
+        let result = command
+            .current_dir(staging)
+            .output()
+            .map_err(|error| format!("failed to launch production bundler: {error}"))?;
+        if !result.status.success() {
+            return Err(format!(
+                "production bundle failed: {}",
+                String::from_utf8_lossy(&result.stderr)
+            ));
+        }
+        Ok(())
+    };
+    invoke(false)?;
+    let unminified = fs::metadata(staging.join(output_path))
+        .map_err(|error| error.to_string())?
+        .len();
+    let minified = if options.minify(profile) {
+        invoke(true)?;
+        Some(
+            fs::metadata(staging.join(output_path))
+                .map_err(|error| error.to_string())?
+                .len(),
+        )
+    } else {
+        None
+    };
+    if emit {
+        crate::source_maps::compose(staging, output_path)?;
+    }
+    let metadata_path = staging.join(".seseragi-bundle-meta.json");
+    let mut metadata: serde_json::Value =
+        serde_json::from_slice(&fs::read(&metadata_path).map_err(|error| error.to_string())?)
+            .map_err(|error| error.to_string())?;
+    metadata["seseragiOutputDirectory"] = path_string(output_directory).into();
+    metadata["seseragiUnminifiedBytes"] = unminified.into();
+    metadata["seseragiMinifiedBytes"] = minified
+        .map(serde_json::Value::from)
+        .unwrap_or(serde_json::Value::Null);
+    write_json(&metadata_path, "bundle evidence", &metadata)?;
+    Ok(())
+}
+fn remove_compiler_maps(staging: &Path) -> Result<(), String> {
+    fn remove(directory: &Path) -> Result<(), String> {
+        if !directory.exists() {
+            return Ok(());
+        }
+        for entry in fs::read_dir(directory).map_err(|error| error.to_string())? {
+            let path = entry.map_err(|error| error.to_string())?.path();
+            if path.is_dir() {
+                remove(&path)?;
+            } else if path.extension().is_some_and(|extension| extension == "map") {
+                fs::remove_file(path).map_err(|error| error.to_string())?;
+            }
+        }
+        Ok(())
+    }
+    remove_optional_file(&staging.join("main.ts.map"))?;
+    remove(&staging.join("dist"))
 }

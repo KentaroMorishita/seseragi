@@ -4,6 +4,7 @@ const http = require("node:http")
 const path = require("node:path")
 const { spawnSync } = require("node:child_process")
 const vscode = require("vscode")
+const { assertOriginalSourceMap } = require("./product-source-map.cjs")
 
 const timeoutMs = 30_000
 
@@ -319,15 +320,15 @@ async function run() {
     )
     const sourceMapFile = path.join(dist, "assets", "app.js.map")
     const sourceMap = JSON.parse(fs.readFileSync(sourceMapFile, "utf8"))
-    if (
-      !sourceMap.sources.some((source) =>
-        source.endsWith("hello-web/0.0.0/app.ts")
-      )
-    ) {
-      throw new Error(
-        "production source map does not name the generated app module"
-      )
-    }
+    const artifact = JSON.parse(
+      fs.readFileSync(path.join(dist, "artifact-manifest.json"), "utf8")
+    )
+    const appModule = artifact.generatedModules.find((module) =>
+      module.module.endsWith("::app")
+    )
+    if (!appModule)
+      throw new Error("production manifest is missing the app module")
+    assertOriginalSourceMap(sourceMap, appModule.module, changed)
     observe(
       "build",
       "VS Code command produced standalone dist with source maps"

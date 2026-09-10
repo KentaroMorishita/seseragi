@@ -3,6 +3,10 @@ use std::path::Path;
 
 const FILES: &[(&str, &str)] = &[
     (
+        "retention.json",
+        include_str!("../../../runtime/ts/retention.json"),
+    ),
+    (
         "src/benchmark-runner.ts",
         include_str!("../../../runtime/ts/src/benchmark-runner.ts"),
     ),
@@ -858,5 +862,36 @@ mod tests {
         assert!(providers.join("runtime-sqlite/adapter.ts").is_file());
         assert!(providers.join("runtime-sqlite/bun.ts").is_file());
         fs::remove_dir_all(root).unwrap();
+    }
+}
+
+#[cfg(test)]
+mod retention_tests {
+    #[test]
+    fn classifies_every_embedded_runtime_source() {
+        let contract: serde_json::Value =
+            serde_json::from_str(include_str!("../../../runtime/ts/retention.json")).unwrap();
+        for (path, _) in super::FILES {
+            if path.ends_with(".ts") || path.ends_with(".js") {
+                assert!(
+                    matches!(
+                        contract["modules"][*path].as_str(),
+                        Some(
+                            "pure-helper"
+                                | "startup-required-initializer"
+                                | "provider-resource-bootstrap"
+                                | "entry-owned-behavior"
+                        )
+                    ),
+                    "{path}"
+                );
+            }
+        }
+        for path in contract["modules"].as_object().unwrap().keys() {
+            assert!(
+                super::FILES.iter().any(|(embedded, _)| embedded == path),
+                "unembedded runtime contract {path}"
+            );
+        }
     }
 }

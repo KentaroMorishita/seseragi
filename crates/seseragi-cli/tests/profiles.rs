@@ -92,28 +92,30 @@ fn profiles_run_tail_recursion_and_effect_newtype_scenarios_in_fresh_processes()
                 arguments.extend(["--profile", profile]);
             }
             success(cli(&arguments, &temporary.0));
+            let inspection = temporary.0.join(format!("inspection-{profile}"));
+            inspect_compiler_outputs(&temporary.0, &inspection, profile);
             let metadata: serde_json::Value = serde_json::from_str(
-                &fs::read_to_string(temporary.0.join(profile).join("generated-module.json"))
-                    .unwrap(),
+                &fs::read_to_string(inspection.join("generated-module.json")).unwrap(),
             )
             .unwrap();
             assert_eq!(metadata["profile"], profile);
             if name != "effect-tail-recursion" {
-                check_types(&temporary.0.join(profile));
+                check_types(&inspection);
             }
             if expectation["shapes"].is_array() && profile == "release" {
                 let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
                 success(
                     Command::new("bun")
                         .arg(root.join("scripts/release-shapes.ts"))
-                        .arg(temporary.0.join(profile).join("generated-module.json"))
+                        .arg(inspection.join("generated-module.json"))
                         .arg(&expectation_path)
                         .output()
                         .unwrap(),
                 );
             }
             let output = Command::new("bun")
-                .args(["run", "entry.ts"])
+                .arg("run")
+                .arg(product_entry(&temporary.0.join(profile)))
                 .current_dir(temporary.0.join(profile))
                 .output()
                 .unwrap();
@@ -344,6 +346,76 @@ pub effect fn main = do {
             &["build", ".", "--profile", profile, "--out-dir", profile],
             &temporary.0,
         ));
-        check_types(&temporary.0.join(profile));
+        let inspection = temporary.0.join(format!("inspection-{profile}"));
+        inspect_compiler_outputs(&temporary.0, &inspection, profile);
+        check_types(&inspection);
+        assert_eq!(
+            success(
+                Command::new("bun")
+                    .arg(product_entry(&temporary.0.join(profile)))
+                    .current_dir(temporary.0.join(profile))
+                    .output()
+                    .unwrap()
+            ),
+            "UserId 42\n42\nUserId 42\n"
+        );
+    }
+}
+
+fn product_entry(directory: &Path) -> String {
+    let manifest: serde_json::Value =
+        serde_json::from_slice(&fs::read(directory.join("artifact-manifest.json")).unwrap())
+            .unwrap();
+    manifest["entry"].as_str().unwrap().to_owned()
+}
+
+// Compiler shape/type checks inspect the compiler stage independently of the
+// application packaging contract, which no longer publishes TypeScript.
+fn inspect_compiler_outputs(package: &Path, output: &Path, profile: &str) {
+    let profile = seseragi_project::BuildProfile::parse(profile).unwrap();
+    let modules = if package.join("seseragi.toml").exists() {
+        let loaded = seseragi_project::load_local_project(package).unwrap();
+        seseragi_driver::compile_local_project_with_profile(&loaded, Some(profile))
+            .unwrap()
+            .compiled
+            .modules
+            .into_values()
+            .collect::<Vec<_>>()
+    } else {
+        let source = fs::read_to_string(package.join("main.ssrg")).unwrap();
+        vec![seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("main.ssrg", "single-file/main", &source)
+                .with_profile(profile),
+        )
+        .unwrap()]
+    };
+    fs::create_dir_all(output).unwrap();
+    seseragi_runtime::stage_typescript_package(output).unwrap();
+    for module in modules {
+        let path = output.join(
+            module
+                .generated
+                .metadata
+                .outputs
+                .typescript
+                .trim_start_matches("./"),
+        );
+        fs::create_dir_all(path.parent().unwrap()).unwrap();
+        fs::write(&path, &module.generated.typescript).unwrap();
+        let metadata = if package.join("seseragi.toml").exists() {
+            path.with_extension("generated-module.json")
+        } else {
+            output.join("generated-module.json")
+        };
+        fs::write(
+            metadata,
+            serde_json::to_vec(&module.generated.metadata).unwrap(),
+        )
+        .unwrap();
+        fs::write(
+            output.join(&module.generated.metadata.outputs.source_map),
+            serde_json::to_vec(&module.generated.source_map).unwrap(),
+        )
+        .unwrap();
     }
 }

@@ -5,7 +5,7 @@ import {
   providerRuntimeAbi,
 } from "./provider"
 
-export const providerPackageRuntime = Object.freeze({
+export const providerPackageRuntime = /* @__PURE__ */ Object.freeze({
   identity: "seseragi/provider-package/typescript",
   version: 1,
   abi: providerRuntimeAbi,

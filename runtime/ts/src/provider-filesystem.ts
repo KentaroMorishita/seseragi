@@ -44,7 +44,7 @@ const temporaryHandleType = named("std/fs::TemporaryHandle")
 const errorType = named("std/fs::FileError")
 const metadataType = named("std/fs::ProviderFileMetadata")
 const directoryReadType = named("std/fs::ProviderDirectoryRead")
-const unitType = Object.freeze({ kind: "unit" } as const)
+const unitType = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
 const bytesType = primitive("bytes")
 const intType = primitive("int")
 const stringType = primitive("string")
@@ -64,7 +64,7 @@ function operation(
   })
 }
 
-const contracts = Object.freeze({
+const contracts = /* @__PURE__ */ Object.freeze({
   openRead: operation(
     "openRead",
     "resource",

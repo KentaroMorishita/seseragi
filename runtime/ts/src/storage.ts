@@ -7,8 +7,12 @@ export type StorageArea =
   | Readonly<{ readonly tag: "Local" }>
   | Readonly<{ readonly tag: "Session" }>
 
-export const Local: StorageArea = Object.freeze({ tag: "Local" })
-export const Session: StorageArea = Object.freeze({ tag: "Session" })
+export const Local: StorageArea = /* @__PURE__ */ Object.freeze({
+  tag: "Local",
+})
+export const Session: StorageArea = /* @__PURE__ */ Object.freeze({
+  tag: "Session",
+})
 
 export type StorageError =
   | Readonly<{

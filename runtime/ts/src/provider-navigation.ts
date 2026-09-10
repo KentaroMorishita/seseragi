@@ -16,17 +16,17 @@ import {
 } from "./provider"
 import type { LoadedProviderEntry } from "./provider-package"
 
-const unit = Object.freeze({ kind: "unit" } as const)
-const never = Object.freeze({ kind: "never" } as const)
-const url = Object.freeze({
+const unit = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
+const never = /* @__PURE__ */ Object.freeze({ kind: "never" } as const)
+const url = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/web/navigation::Url",
 } as const)
-const location = Object.freeze({
+const location = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/web/navigation::Location",
 } as const)
-const navigationError = Object.freeze({
+const navigationError = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/web/navigation::NavigationError",
 } as const)

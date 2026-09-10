@@ -49,7 +49,7 @@ export function fail(message: string): Effect<unknown, BenchmarkFailure, Unit> {
   return effectFail(ExplicitBenchmarkFailure(message))
 }
 
-export const benchmarkFailureEq = Object.freeze({
+export const benchmarkFailureEq = /* @__PURE__ */ Object.freeze({
   eq: (left: BenchmarkFailure) => (right: BenchmarkFailure) =>
     left.value === right.value,
 })
@@ -58,7 +58,7 @@ const failureDocument = (value: BenchmarkFailure) =>
     text("ExplicitBenchmarkFailure"),
     indent(concat([line, text(value.value)])),
   ])
-export const benchmarkFailureShow = Object.freeze({
+export const benchmarkFailureShow = /* @__PURE__ */ Object.freeze({
   show: (value: BenchmarkFailure) => renderDocument(failureDocument(value)),
   document: failureDocument,
 })
