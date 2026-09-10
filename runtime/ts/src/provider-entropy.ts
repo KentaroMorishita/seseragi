@@ -16,17 +16,18 @@ import {
 import type { LoadedProviderEntry } from "./provider-package"
 import { serviceFailure, serviceSuccess } from "./service"
 
-const errorType = Object.freeze({
+const errorType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/entropy::EntropyError",
 } as const)
-const secureBytesContract: ProviderOperationContract = Object.freeze({
-  identity: "std/entropy::Entropy#secureBytes",
-  kind: "one-shot",
-  input: { kind: "primitive", name: "int" } as const,
-  success: { kind: "primitive", name: "bytes" } as const,
-  failure: errorType,
-})
+const secureBytesContract: ProviderOperationContract =
+  /* @__PURE__ */ Object.freeze({
+    identity: "std/entropy::Entropy#secureBytes",
+    kind: "one-shot",
+    input: { kind: "primitive", name: "int" } as const,
+    success: { kind: "primitive", name: "bytes" } as const,
+    failure: errorType,
+  })
 const codecs = new ProviderCodecRegistry([
   {
     identity: errorType.identity,

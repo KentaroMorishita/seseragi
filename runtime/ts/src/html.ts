@@ -110,7 +110,7 @@ export type EventAction<Action> =
       readonly value: Action
     }>
 
-export const IgnoreEvent: EventAction<never> = Object.freeze({
+export const IgnoreEvent: EventAction<never> = /* @__PURE__ */ Object.freeze({
   tag: "IgnoreEvent",
 })
 export const Dispatch = <Action>(value: Action): EventAction<Action> =>

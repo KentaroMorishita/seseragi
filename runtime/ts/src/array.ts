@@ -152,14 +152,14 @@ export function windows<A>(
 }
 
 /** Runtime dictionary for the standard `Semigroup<Array<A>>` instance. */
-export const arraySemigroup = Object.freeze({
+export const arraySemigroup = /* @__PURE__ */ Object.freeze({
   append:
     <A>(left: ReadonlyArray<A>) =>
     (right: ReadonlyArray<A>): ReadonlyArray<A> => [...left, ...right],
 })
 
 /** Runtime dictionary for the standard `Monoid<Array<A>>` instance. */
-export const arrayMonoid = Object.freeze({
+export const arrayMonoid = /* @__PURE__ */ Object.freeze({
   ...arraySemigroup,
   empty: <A>(_unit: Unit): ReadonlyArray<A> => [],
 })
@@ -177,7 +177,7 @@ export function reduce<A, B>(
   return accumulator
 }
 
-export const arrayReducible = Object.freeze({
+export const arrayReducible = /* @__PURE__ */ Object.freeze({
   reduce:
     <A, B>(initial: B) =>
     (step: (accumulator: B) => (value: A) => B) =>
@@ -197,7 +197,7 @@ function arrayIterator<A>(
   }
 }
 
-export const arrayIterable = Object.freeze({
+export const arrayIterable = /* @__PURE__ */ Object.freeze({
   iterate: <A>(values: ReadonlyArray<A>): SeseragiIterator<A> =>
     arrayIterator(values, 0),
 })
@@ -338,14 +338,14 @@ export function collectFlatMap<A, B>(
   return result
 }
 
-export const arrayFunctor = Object.freeze({
+export const arrayFunctor = /* @__PURE__ */ Object.freeze({
   map:
     <Value, Result>(f: (value: Value) => Result) =>
     (values: ReadonlyArray<Value>): ReadonlyArray<Result> =>
       values.map(f),
 })
 
-export const arrayApplicative = Object.freeze({
+export const arrayApplicative = /* @__PURE__ */ Object.freeze({
   ...arrayFunctor,
   pure: <Value>(value: Value): ReadonlyArray<Value> => [value],
   apply:
@@ -361,7 +361,7 @@ export const arrayApplicative = Object.freeze({
     },
 })
 
-export const arrayMonad = Object.freeze({
+export const arrayMonad = /* @__PURE__ */ Object.freeze({
   ...arrayApplicative,
   flatMap:
     <Value, Result>(f: (value: Value) => ReadonlyArray<Result>) =>
@@ -374,7 +374,7 @@ export const arrayMonad = Object.freeze({
     },
 })
 
-export const arrayTraversable = Object.freeze({
+export const arrayTraversable = /* @__PURE__ */ Object.freeze({
   ...arrayFunctor,
   traverse:
     <Value, Result>(f: (value: Value) => unknown) =>

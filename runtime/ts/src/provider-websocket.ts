@@ -24,21 +24,24 @@ import {
   webSocketFailure,
 } from "./websocket"
 
-const handleType = Object.freeze({
+const handleType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/websocket::ConnectionHandle",
 } as const)
-const errorType = Object.freeze({
+const errorType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/websocket::WebSocketError",
 } as const)
-const messageType = Object.freeze({
+const messageType = /* @__PURE__ */ Object.freeze({
   kind: "named",
   identity: "std/websocket::WebSocketEvent",
 } as const)
-const unit = Object.freeze({ kind: "unit" } as const)
-const never = Object.freeze({ kind: "never" } as const)
-const string = Object.freeze({ kind: "primitive", name: "string" } as const)
+const unit = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
+const never = /* @__PURE__ */ Object.freeze({ kind: "never" } as const)
+const string = /* @__PURE__ */ Object.freeze({
+  kind: "primitive",
+  name: "string",
+} as const)
 
 const connectContract = contract(
   "std/websocket::WebSocketClient#connect",

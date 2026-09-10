@@ -298,3 +298,158 @@ compiler境界の最低suiteは`benchmark-discovery/benchmarks/quality.ssrg`、r
 最適化を要求するための`inline`、ownership、borrow、unsafeなどのsource annotationは現時点で追加しません。
 profileとbenchmarkで解決できない実測上の問題があり、意味論上の必要性を説明できた場合だけ、独立した言語機能として
 検討します。
+
+
+## 14.13 production artifact manifest
+
+`seseragi build`は両profile・両targetで、公開する出力directoryの直下に
+`artifact-manifest.json`を生成します。`.seseragi-build.json`は既存directoryの
+置換許可を判定する内部ownership markerであり、product manifestとは別です。
+manifest生成に失敗したbuildは既存artifactを置換しません。
+
+schema 1の型は `crates/seseragi-runtime/src/artifact.rs` のSerde modelを正本とします。
+JSONのfieldはcamelCaseです。
+
+| field | 契約 |
+| --- | --- |
+| `schema` | `1`。互換でない変更はschemaを上げる |
+| `profile` / `target` | `development` または `release` / `process` または `web` |
+| `entryModule` | compiler graphの論理entry module identity |
+| `entry` | artifact rootからの実行entry相対path。process developmentは`entry.ts`、first-party releaseは`entry.js`、Webは`assets/app.js` |
+| `provenance` | `compilerVersion`、実際にembeddedされたruntime packageの`runtimeVersion`、`buildId` |
+| `generatedModules` | compilerが生成したmodule inventory。各要素は`module`、`exports`、`runtimeRequirements`、UTF-8の`typescriptBytes` |
+| `files` | manifest自身を除く全公開fileの`path`、`bytes`、小文字hexの`sha256`。ownership marker、asset、mapも含む |
+| `sizes` | `generatedTypescriptBytes`、`bundledJavascriptBytes`、`minifiedJavascriptBytes` |
+| `sourceMap` | `{ "policy": "emit", "files": [...] }` または `{ "policy": "omit" }` |
+| `runtimeRetention` | 解析未実施なら`null`。解析済みなら`module`とsemanticな`reasons`の配列 |
+
+module inventoryはmodule identity順、exports / runtime requirementsは重複のない辞書順、
+file inventoryは相対path順です。path区切りは`/`で、host絶対path、時刻、temporary staging
+identityをmanifestへ書きません。`artifact-manifest.json`は予約pathであり、public assetとの
+衝突はbuild errorです。symlink等の非regular fileをinventoryへ暗黙追従しません。
+
+`buildId`はartifact identityです。`provenance.buildId`を空文字にしたschema modelを
+field宣言順のcompact UTF-8 JSONへserializeし、そのSHA-256を小文字hexで記録します。
+file digestを含むため出力内容の変更も反映します。同一source / lock / compiler / runtime /
+実際のbundler toolchain / target / profile / assetsからのbuildは、source directory・出力先・
+staging directoryによらず同じmanifestを生成します。未使用inputを含めたsource cache keyや
+署名としての用途は保証しません。bundler versionを跨ぐbyte identityも保証しません。
+
+`generatedModules`は最終bundleのretention解析結果ではありません。bundlerが消したmoduleを
+compiler inventoryから推測して取り除かず、後続のsemantic reachability / runtime retention
+結果は専用fieldで追加します。既存fieldの意味を変えないoptional fieldはschema 1に追加可能で、
+consumerは未知fieldを無視します。runtime reasonはbundler chunk IDや内部pass名ではなく、
+意味上の必要性を表す拡張可能な文字列です。未知reasonを除去可能という意味で扱いません。
+
+stage未実施のsizeは`null`で、実施して0 byteだった結果と区別します。現行Web buildの
+`bundledJavascriptBytes`は実際の`assets/app.js`の長さで、bundleしないprocess buildでは`null`です。
+minifyとruntime retention解析が未実施の場合、その成功をmanifestから主張しません。
+source-map policyは現に配布するmapを記述し、`omit`の場合mapを必要とする配布契約はありません。
+profileによってobservable semanticsを変えない14.11の契約を引き継ぎます。
+
+## 14.14 application reachability
+
+releaseの`build`は、解決済みcompiler IRのsource-import planを使って、entryの`main`と
+entry contractが参照するfailure-display辞書をrootにした固定点到達解析を行います。
+publicであるだけの関数・値、未使用import先、未使用private helperはrootになりません。
+再exportはprovider/exportのedgeとして追跡し、再帰や循環edgeも各nodeを一度だけ訪問します。
+これはmodule import cycleを言語として新たに許可するものではありません。
+
+到達解析はemission前のapplication出力graphだけを変更し、frontend diagnostics・HIR・
+LSP visibilityを変更しません。developmentは従来の生成形を保ちます。nominal typeと
+そのconstructor群は表現を壊さない単位で保持し、選択辞書のbody・payload辞書・type参照を
+追跡します。foreign moduleのload/initializer最適化は対象外で、そのmoduleのsurfaceと
+依存edgeを保守的に保持します。外部side-effectをpureと推測しません。
+
+manifestのoptional `reachability`は`roots`、`retained`、`eliminatedModules`、
+`eliminatedDeclarations`を記録します。各retained要素は`module`、`declaration`、
+`reason`を持ち、順序は論理identity順です。inspection metadataは残った関数を説明するだけで、
+到達解析のrootにはしません。generated runtime importも到達codeに合わせて絞りますが、
+辞書emitterの暗黙helperとtype-only requirementは保守的に残し、final runtime retentionとは
+区別します。
+
+dead declaration追加で、retained codeの生成byte数とretained inventoryは増えません。
+eliminated countは実際の解析結果を反映し、emitするsource mapの`sourcesContent`は元sourceを
+保存するため、debug mapのbyte数とartifact identityは変わり得ます。これをcode retentionの
+増加と混同しません。canonical fixtureは`production-reachability`で、named再export、private
+helper、self recursion、unused exported/private declaration、unused imported siblingを検証します。
+
+## 14.15 official runtime retention
+
+`runtime/ts/retention.json`はembedded runtime sourceを漏れなく分類します。
+`pure-helper`、`startup-required-initializer`、`provider-resource-bootstrap`、
+`entry-owned-behavior`を区別し、未知のembedded sourceを無条件pureにしません。
+分類は必要性を説明する契約であり、module全体へ一律`sideEffects: false`を付けません。
+純粋なtop-level `Object.freeze`とShow/Debug辞書factoryの呼出しには、使用されない結果を
+除去できるannotationを付けます。実際のstartup呼出しやprovider生成を同じ扱いにしません。
+
+`processHashSeed`はapplicationのdynamic importより前に呼び、各生成moduleの
+`assertUnicodeVersion`はsource initializerより前に呼びます。これらをmetadataだけのrootに
+置き換えません。timezone rulesの登録もinitializerとして扱います。minify/bundle後も
+seed設定とentropy失敗がapplication評価より先であることを実行fixtureで検証します。
+
+first-party process releaseはruntimeを含む`entry.js`を生成し、staged runtime/sourceを配布物から
+除去します。development processは`entry.ts`とstaged runtimeを保ちます。foreign host/packageの
+bundlingはこの段階の対象外で、そうしたprocess buildは従来のstaged出力を保持します。
+Webは既存の`assets/app.js`を使います。bundleを実施した場合、manifestは実際のbundler output
+input evidenceで保持されたruntime sourceだけを列挙し、分類と`referenced-by-bundled-code`の理由を
+記録します。読み込んだだけのinput一覧を保持結果に流用しません。未知runtime sourceはbuild errorです。
+
+`provenance.bundlerVersion`はbundleを実施したtool version、未実施なら`null`です。
+process bundleの実行entryはmanifestから読み、内部ownership markerも同じentryを指します。
+compiler生成形・型の検査は配布bundleとは独立したcompiler-stage artifactへ適用します。
+
+## 14.16 production bundle layout
+
+Web/processは同じbundler invocation境界を使い、compilerが選択したsource graphとofficial
+runtimeからapplication entryを生成します。first-party process releaseのentryは`entry.js`、
+Webは`assets/app.js`で、現在の意味論に不要な任意chunk分割は追加しません。Web documentとpublic
+assetは既存のpathを保ち、`runtime-notices.txt`は予約済みの配布fileとしてnoticeを保持します。
+
+manifestのoptional `bundles`は、各出力の`path`、entryかどうかの`entry`、実際にそのbundleへ
+codeを寄与した論理Seseragi `modules`を記録します。size/digestは同じpathの`files` entryと
+対応づけます。compiler inventory、最終bundleへの寄与、runtime retentionを区別し、bundler
+固有のchunk IDやinternal absolute pathをpublic identityにしません。bundlerのraw metafileは
+staging内だけで消費して削除し、productへ公開しません。source-only/type-only moduleが最終
+bundleで0 byteとなっても、これをcompiler reachabilityの失敗とは扱いません。
+
+## 14.17 minification and source-map policy
+
+releaseのfirst-party bundleはminifyを適用します。`bundledJavascriptBytes`は同じcompiler出力から
+測定したminify前の長さ、`minifiedJavascriptBytes`は最終fileの長さです。developmentはminifyせず、
+後者は`null`です。minify有無だけを変えた同一compiled programの実行とstartup順序を検証します。
+
+`seseragi build --source-map emit|omit`でmap配布を明示できます。既定はdevelopmentがemit、
+releaseがomitです。emitは外部`.js.map`とsourceMappingURLを生成し、bundle/minifierのJS→TS mapを
+compilerのTS→Seseragi mapと合成します。sourceRootは空、application sourceは`seseragi://`の
+論理identity、runtime/glueはそれぞれ`seseragi-runtime://` / `seseragi-generated://`で表します。
+source contentはUTF-8を保持します。compiler mapがない生成glue位置を架空のSeseragi位置へ
+割り当てず、mappingの粒度はcompilerの既存source-span契約に従います。
+
+omitではcompiler/bundler mapとsourceMappingURLを配布しません。sourceから選択したruntime
+診断境界はmap配布設定と独立して保持します。foreign process stagingのminifyは本契約の対象外です。
+
+
+### 14.18 Production artifact regression gate
+
+`bun run check:production` builds six first-party representative applications in
+release/omit mode. It checks semantic shape independently from tolerant byte
+budgets in `examples/spec/fixtures/production/budgets.json`: required startup
+initializers, forbidden runtime modules, dead declarations/exports, bundle/module
+provenance, source-map absence, complete file inventory and SHA-256 digests.
+A repeated build in another output directory must reproduce the build identity.
+The CLI regression adds an unused module and an unused math-backed export and
+requires identical emitted files, sizes, and runtime retention. Mutation tests
+prove missing initializers and shape violations fail the gate.
+
+Budgets are upper limits, not exact-size snapshots; deterministic comparisons
+apply within the same compiler/runtime/bundler environment. Current Web bundles
+retain the shared browser provider dispatcher and its adapters, including the
+timezone database. These are reachable bootstrap dependencies, not external npm
+application dependencies. Their cost must remain visible until a separate
+provider-specialization change proves safe removal. The gate does not substitute
+for #342 compiler-stage semantic shape tests, which remain required.
+
+The full and release source gates execute this lane. Reports under
+`target/production-artifacts/report.json` include actual sizes, retained source
+modules and runtime modules with reasons; generated outputs are not committed.

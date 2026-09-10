@@ -21,9 +21,10 @@ export function NegativeDuration(value: number): NegativeDuration {
   return Object.freeze({ tag: "NegativeDuration", value })
 }
 
-export const DurationOutsideRange: DurationOutsideRange = Object.freeze({
-  tag: "DurationOutsideRange",
-})
+export const DurationOutsideRange: DurationOutsideRange =
+  /* @__PURE__ */ Object.freeze({
+    tag: "DurationOutsideRange",
+  })
 
 export type Clock = Readonly<{
   now: (context: EffectContext) => Promise<Instant>

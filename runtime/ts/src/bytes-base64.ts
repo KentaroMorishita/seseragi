@@ -176,17 +176,20 @@ function utf8Length(text: string): number {
   return length
 }
 
-export const base64DecodeErrorEq: Eq<Base64DecodeError> = Object.freeze({
-  eq:
-    (left) =>
-    (right): boolean => {
-      if (left.tag !== right.tag) return false
-      if (left.tag === "InvalidBase64Length") {
-        return right.tag === "InvalidBase64Length" && left.value === right.value
-      }
-      return (
-        right.tag !== "InvalidBase64Length" &&
-        left.value.offset === right.value.offset
-      )
-    },
-})
+export const base64DecodeErrorEq: Eq<Base64DecodeError> =
+  /* @__PURE__ */ Object.freeze({
+    eq:
+      (left) =>
+      (right): boolean => {
+        if (left.tag !== right.tag) return false
+        if (left.tag === "InvalidBase64Length") {
+          return (
+            right.tag === "InvalidBase64Length" && left.value === right.value
+          )
+        }
+        return (
+          right.tag !== "InvalidBase64Length" &&
+          left.value.offset === right.value.offset
+        )
+      },
+  })

@@ -38,9 +38,15 @@ const errorType = named("seseragi/postgres::Error")
 const poolType = named("seseragi/postgres::Pool")
 const transactionType = named("seseragi/postgres::Transaction")
 const cursorType = named("seseragi/postgres::Cursor")
-const unit = Object.freeze({ kind: "unit" } as const)
-const int = Object.freeze({ kind: "primitive", name: "int" } as const)
-const rowsType = Object.freeze({ kind: "array", items: rowType } as const)
+const unit = /* @__PURE__ */ Object.freeze({ kind: "unit" } as const)
+const int = /* @__PURE__ */ Object.freeze({
+  kind: "primitive",
+  name: "int",
+} as const)
+const rowsType = /* @__PURE__ */ Object.freeze({
+  kind: "array",
+  items: rowType,
+} as const)
 const record = (
   fields: ReadonlyArray<
     Readonly<{
@@ -67,7 +73,7 @@ const operation = (
     success,
     failure: errorType,
   })
-const contracts = Object.freeze({
+const contracts = /* @__PURE__ */ Object.freeze({
   openPool: operation("openPool", "resource", configType, poolType),
   query: operation(
     "query",

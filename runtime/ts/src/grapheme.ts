@@ -18,7 +18,7 @@ export const InvalidGraphemeRange = (
   value: GraphemeSliceError["value"]
 ): GraphemeSliceError => ({ tag: "InvalidGraphemeRange", value })
 
-export const graphemeSliceErrorEq = Object.freeze({
+export const graphemeSliceErrorEq = /* @__PURE__ */ Object.freeze({
   eq: (left: GraphemeSliceError) => (right: GraphemeSliceError) =>
     left.value.start === right.value.start &&
     left.value.end === right.value.end &&

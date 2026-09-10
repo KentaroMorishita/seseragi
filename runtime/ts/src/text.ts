@@ -20,7 +20,7 @@ export const InvalidScalarRange = (
 
 export const isEmpty = (text: string): boolean => text.length === 0
 
-export const textSliceErrorEq = Object.freeze({
+export const textSliceErrorEq = /* @__PURE__ */ Object.freeze({
   eq: (left: TextSliceError) => (right: TextSliceError) =>
     left.value.start === right.value.start &&
     left.value.end === right.value.end &&

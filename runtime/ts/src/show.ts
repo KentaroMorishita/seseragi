@@ -138,7 +138,9 @@ export function text(value: string): RenderDocument {
   return Object.freeze({ kind: "text", value })
 }
 
-export const line: RenderDocument = Object.freeze({ kind: "line" })
+export const line: RenderDocument = /* @__PURE__ */ Object.freeze({
+  kind: "line",
+})
 
 export function concat(documents: readonly RenderDocument[]): RenderDocument {
   return Object.freeze({
@@ -258,22 +260,28 @@ export function boundedDebug<Value>(
 }
 
 /** String Show is identity: user-facing output does not add quotes. */
-export const stringShow = defineShow((value: string) => text(value))
+export const stringShow = /* @__PURE__ */ defineShow((value: string) =>
+  text(value)
+)
 
 /** Int Show uses the canonical signed base-10 spelling without separators. */
-export const intShow = defineShow((value: number) => text(value.toString(10)))
+export const intShow = /* @__PURE__ */ defineShow((value: number) =>
+  text(value.toString(10))
+)
 
 /** Int Debug uses the same canonical spelling as Show. */
-export const intDebug = defineDebug((value: number) => text(value.toString(10)))
+export const intDebug = /* @__PURE__ */ defineDebug((value: number) =>
+  text(value.toString(10))
+)
 
 /** BigInt Show uses the canonical signed base-10 spelling. */
-export const bigIntShow = defineShow((value: SeseragiBigInt) =>
+export const bigIntShow = /* @__PURE__ */ defineShow((value: SeseragiBigInt) =>
   text(value.toString(10))
 )
 
 /** BigInt Debug deliberately matches its canonical Show spelling. */
-export const bigIntDebug = defineDebug((value: SeseragiBigInt) =>
-  text(value.toString(10))
+export const bigIntDebug = /* @__PURE__ */ defineDebug(
+  (value: SeseragiBigInt) => text(value.toString(10))
 )
 
 function bigIntParseErrorDocument(error: BigIntParseError): RenderDocument {
@@ -290,64 +298,80 @@ function bigIntParseErrorDocument(error: BigIntParseError): RenderDocument {
   }
 }
 
-export const bigIntParseErrorShow = defineShow(bigIntParseErrorDocument)
-export const bigIntParseErrorDebug = defineDebug(bigIntParseErrorDocument)
+export const bigIntParseErrorShow = /* @__PURE__ */ defineShow(
+  bigIntParseErrorDocument
+)
+export const bigIntParseErrorDebug = /* @__PURE__ */ defineDebug(
+  bigIntParseErrorDocument
+)
 
-export const bigIntDivisionErrorShow = defineShow(
+export const bigIntDivisionErrorShow = /* @__PURE__ */ defineShow(
   (error: BigIntDivisionError) => text(error.tag)
 )
-export const bigIntDivisionErrorDebug = defineDebug(
+export const bigIntDivisionErrorDebug = /* @__PURE__ */ defineDebug(
   (error: BigIntDivisionError) => text(error.tag)
 )
 
 const bigIntPowerErrorDocument = (error: BigIntPowerError): RenderDocument =>
   constructorDocument(error.tag, showDocument(intShow, error.value))
 
-export const bigIntPowerErrorShow = defineShow(bigIntPowerErrorDocument)
-export const bigIntPowerErrorDebug = defineDebug(bigIntPowerErrorDocument)
+export const bigIntPowerErrorShow = /* @__PURE__ */ defineShow(
+  bigIntPowerErrorDocument
+)
+export const bigIntPowerErrorDebug = /* @__PURE__ */ defineDebug(
+  bigIntPowerErrorDocument
+)
 
-export const bigIntConversionErrorShow = defineShow(
+export const bigIntConversionErrorShow = /* @__PURE__ */ defineShow(
   (error: BigIntConversionError) => text(error.tag)
 )
-export const bigIntConversionErrorDebug = defineDebug(
+export const bigIntConversionErrorDebug = /* @__PURE__ */ defineDebug(
   (error: BigIntConversionError) => text(error.tag)
 )
 
 /** Decimal Show uses the canonical exact non-exponent spelling. */
-export const decimalShow: Show<Decimal> = defineShow((value: Decimal) =>
-  text(formatDecimal(value))
+export const decimalShow: Show<Decimal> = /* @__PURE__ */ defineShow(
+  (value: Decimal) => text(formatDecimal(value))
 )
 
 /** Decimal Debug deliberately matches its canonical Show spelling. */
-export const decimalDebug: Debug<Decimal> = defineDebug((value: Decimal) =>
-  text(formatDecimal(value))
+export const decimalDebug: Debug<Decimal> = /* @__PURE__ */ defineDebug(
+  (value: Decimal) => text(formatDecimal(value))
 )
 
 const decimalParseErrorDocument = (error: DecimalParseError): RenderDocument =>
   recordConstructorDocument(error.tag, [["offset", String(error.value.offset)]])
 
-export const decimalParseErrorShow = defineShow(decimalParseErrorDocument)
-export const decimalParseErrorDebug = defineDebug(decimalParseErrorDocument)
+export const decimalParseErrorShow = /* @__PURE__ */ defineShow(
+  decimalParseErrorDocument
+)
+export const decimalParseErrorDebug = /* @__PURE__ */ defineDebug(
+  decimalParseErrorDocument
+)
 
 const decimalContextErrorDocument = (
   error: DecimalContextError
 ): RenderDocument =>
   constructorDocument(error.tag, showDocument(intShow, error.value))
 
-export const decimalContextErrorShow = defineShow(decimalContextErrorDocument)
-export const decimalContextErrorDebug = defineDebug(decimalContextErrorDocument)
-
-export const decimalArithmeticErrorShow = defineShow(
-  (error: DecimalArithmeticError) => text(error.tag)
+export const decimalContextErrorShow = /* @__PURE__ */ defineShow(
+  decimalContextErrorDocument
 )
-export const decimalArithmeticErrorDebug = defineDebug(
-  (error: DecimalArithmeticError) => text(error.tag)
+export const decimalContextErrorDebug = /* @__PURE__ */ defineDebug(
+  decimalContextErrorDocument
 )
 
-export const decimalConversionErrorShow = defineShow(
+export const decimalArithmeticErrorShow = /* @__PURE__ */ defineShow(
+  (error: DecimalArithmeticError) => text(error.tag)
+)
+export const decimalArithmeticErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: DecimalArithmeticError) => text(error.tag)
+)
+
+export const decimalConversionErrorShow = /* @__PURE__ */ defineShow(
   (error: DecimalConversionError) => text(error.tag)
 )
-export const decimalConversionErrorDebug = defineDebug(
+export const decimalConversionErrorDebug = /* @__PURE__ */ defineDebug(
   (error: DecimalConversionError) => text(error.tag)
 )
 
@@ -355,11 +379,11 @@ export const decimalConversionErrorDebug = defineDebug(
  * Float display is the shortest decimal spelling that round-trips to the same
  * binary64 value while retaining an unambiguous Float spelling.
  */
-export const floatShow = defineShow((value: number) =>
+export const floatShow = /* @__PURE__ */ defineShow((value: number) =>
   text(canonicalFloat(value))
 )
 
-export const floatDebug = defineDebug((value: number) =>
+export const floatDebug = /* @__PURE__ */ defineDebug((value: number) =>
   text(canonicalFloat(value))
 )
 
@@ -367,35 +391,43 @@ export const floatDebug = defineDebug((value: number) =>
  * Never has no runtime inhabitants. These dictionaries exist so conditional
  * evidence such as Show<Maybe<Never>> can still be materialized.
  */
-export const neverShow = defineShow((value: never) => unreachableNever(value))
+export const neverShow = /* @__PURE__ */ defineShow((value: never) =>
+  unreachableNever(value)
+)
 
-export const neverDebug = defineDebug((value: never) => unreachableNever(value))
+export const neverDebug = /* @__PURE__ */ defineDebug((value: never) =>
+  unreachableNever(value)
+)
 
 /** Bool uses Seseragi's canonical constructor spelling. */
-export const boolShow = defineShow((value: boolean) =>
+export const boolShow = /* @__PURE__ */ defineShow((value: boolean) =>
   text(value ? "True" : "False")
 )
 
-export const boolDebug = defineDebug((value: boolean) =>
+export const boolDebug = /* @__PURE__ */ defineDebug((value: boolean) =>
   text(value ? "True" : "False")
 )
 
 /** Unit has one source-level spelling in both user and developer output. */
-export const unitShow = defineShow((_value: undefined) => text("()"))
+export const unitShow = /* @__PURE__ */ defineShow((_value: undefined) =>
+  text("()")
+)
 
-export const unitDebug = defineDebug((_value: undefined) => text("()"))
+export const unitDebug = /* @__PURE__ */ defineDebug((_value: undefined) =>
+  text("()")
+)
 
 /** Char Show emits the scalar; Char Debug emits a quoted, escaped literal. */
-export const charShow = defineShow((value: string) =>
+export const charShow = /* @__PURE__ */ defineShow((value: string) =>
   text(requireScalar(value))
 )
 
-export const charDebug = defineDebug((value: string) =>
+export const charDebug = /* @__PURE__ */ defineDebug((value: string) =>
   text(`'${escapeCharacter(requireScalar(value), "'")}'`)
 )
 
 /** String Debug is a quoted Seseragi literal with deterministic escapes. */
-export const stringDebug = defineDebug((value: string) =>
+export const stringDebug = /* @__PURE__ */ defineDebug((value: string) =>
   text(`"${escapeText(value, '"')}"`)
 )
 
@@ -725,11 +757,11 @@ export function recordDebug<Value extends object>(
 }
 
 /** Stable, user-facing rendering for the opaque Console failure boundary. */
-export const consoleErrorShow = defineShow((error: ConsoleError) =>
-  text(`ConsoleError: ${error.message}`)
+export const consoleErrorShow = /* @__PURE__ */ defineShow(
+  (error: ConsoleError) => text(`ConsoleError: ${error.message}`)
 )
 
-export const jsErrorShow = defineShow((error: JsError) =>
+export const jsErrorShow = /* @__PURE__ */ defineShow((error: JsError) =>
   text(`Js.Error(${error.phase}): ${error.message}`)
 )
 
@@ -738,86 +770,101 @@ export const jsErrorShow = defineShow((error: JsError) =>
  * redacts the host-provided message so it cannot become an accidental secret
  * or stack-trace channel.
  */
-export const consoleErrorDebug = defineDebug((_error: ConsoleError) =>
-  text('ConsoleError { message: "<redacted>" }')
+export const consoleErrorDebug = /* @__PURE__ */ defineDebug(
+  (_error: ConsoleError) => text('ConsoleError { message: "<redacted>" }')
 )
 
 /** Source-like rendering for the standard Stdin failure ADT. */
-export const stdinErrorShow = defineShow((error: StdinError) =>
+export const stdinErrorShow = /* @__PURE__ */ defineShow((error: StdinError) =>
   stdinErrorDocument(error)
 )
 
-export const stdinErrorDebug = defineDebug((error: StdinError) =>
-  stdinErrorDocument(error)
+export const stdinErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: StdinError) => stdinErrorDocument(error)
 )
 
-export const stdinConfigErrorShow = defineShow((error: StdinConfigError) =>
-  constructorDocument(error.tag, text(String(error.value)))
+export const stdinConfigErrorShow = /* @__PURE__ */ defineShow(
+  (error: StdinConfigError) =>
+    constructorDocument(error.tag, text(String(error.value)))
 )
 
-export const stdinConfigErrorDebug = defineDebug((error: StdinConfigError) =>
-  constructorDocument(error.tag, text(String(error.value)))
+export const stdinConfigErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: StdinConfigError) =>
+    constructorDocument(error.tag, text(String(error.value)))
 )
 
-export const logErrorShow = defineShow((error: LogError) =>
+export const logErrorShow = /* @__PURE__ */ defineShow((error: LogError) =>
   text(`LogError: ${error.message}`)
 )
 
-export const logErrorDebug = defineDebug((_error: LogError) =>
+export const logErrorDebug = /* @__PURE__ */ defineDebug((_error: LogError) =>
   text('LogError { message: "<redacted>" }')
 )
 
-export const processSignalShow = defineShow((signal: ProcessSignal) =>
-  text(signal.tag)
+export const processSignalShow = /* @__PURE__ */ defineShow(
+  (signal: ProcessSignal) => text(signal.tag)
 )
 
-export const processSignalDebug = defineDebug((signal: ProcessSignal) =>
-  text(signal.tag)
+export const processSignalDebug = /* @__PURE__ */ defineDebug(
+  (signal: ProcessSignal) => text(signal.tag)
 )
 
-export const processErrorShow = defineShow((error: ProcessError) =>
-  error.tag === "UnsupportedProcessSignal" ||
-  error.tag === "ReservedProcessSignal"
-    ? constructorDocument(
-        error.tag,
-        showDocument(processSignalShow, error.value)
-      )
-    : error.tag === "InvalidArgumentEncoding"
-      ? constructorDocument(error.tag, showDocument(intShow, error.value))
-      : error.tag === "InvalidEnvironmentName" ||
-          error.tag === "InvalidEnvironmentEncoding"
-        ? constructorDocument(error.tag, showDocument(stringShow, error.value))
-        : text(error.tag)
+export const processErrorShow = /* @__PURE__ */ defineShow(
+  (error: ProcessError) =>
+    error.tag === "UnsupportedProcessSignal" ||
+    error.tag === "ReservedProcessSignal"
+      ? constructorDocument(
+          error.tag,
+          showDocument(processSignalShow, error.value)
+        )
+      : error.tag === "InvalidArgumentEncoding"
+        ? constructorDocument(error.tag, showDocument(intShow, error.value))
+        : error.tag === "InvalidEnvironmentName" ||
+            error.tag === "InvalidEnvironmentEncoding"
+          ? constructorDocument(
+              error.tag,
+              showDocument(stringShow, error.value)
+            )
+          : text(error.tag)
 )
 
-export const processErrorDebug = defineDebug((error: ProcessError) =>
-  error.tag === "UnsupportedProcessSignal" ||
-  error.tag === "ReservedProcessSignal"
-    ? constructorDocument(
-        error.tag,
-        debugDocument(processSignalDebug, error.value)
-      )
-    : error.tag === "InvalidArgumentEncoding"
-      ? constructorDocument(error.tag, debugDocument(intDebug, error.value))
-      : error.tag === "InvalidEnvironmentName" ||
-          error.tag === "InvalidEnvironmentEncoding"
-        ? constructorDocument(
-            error.tag,
-            debugDocument(stringDebug, error.value)
-          )
-        : text(error.tag)
+export const processErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: ProcessError) =>
+    error.tag === "UnsupportedProcessSignal" ||
+    error.tag === "ReservedProcessSignal"
+      ? constructorDocument(
+          error.tag,
+          debugDocument(processSignalDebug, error.value)
+        )
+      : error.tag === "InvalidArgumentEncoding"
+        ? constructorDocument(error.tag, debugDocument(intDebug, error.value))
+        : error.tag === "InvalidEnvironmentName" ||
+            error.tag === "InvalidEnvironmentEncoding"
+          ? constructorDocument(
+              error.tag,
+              debugDocument(stringDebug, error.value)
+            )
+          : text(error.tag)
 )
 
-export const childProcessConfigErrorShow = defineShow(
+export const childProcessConfigErrorShow = /* @__PURE__ */ defineShow(
   childProcessConfigErrorDocument
 )
-export const childProcessConfigErrorDebug = defineDebug(
+export const childProcessConfigErrorDebug = /* @__PURE__ */ defineDebug(
   childProcessConfigErrorDocument
 )
-export const childProcessErrorShow = defineShow(childProcessErrorDocument)
-export const childProcessErrorDebug = defineDebug(childProcessErrorDocument)
-export const childExitStatusShow = defineShow(childExitStatusDocument)
-export const childExitStatusDebug = defineDebug(childExitStatusDocument)
+export const childProcessErrorShow = /* @__PURE__ */ defineShow(
+  childProcessErrorDocument
+)
+export const childProcessErrorDebug = /* @__PURE__ */ defineDebug(
+  childProcessErrorDocument
+)
+export const childExitStatusShow = /* @__PURE__ */ defineShow(
+  childExitStatusDocument
+)
+export const childExitStatusDebug = /* @__PURE__ */ defineDebug(
+  childExitStatusDocument
+)
 
 const randomRangeErrorDocument = (error: RandomRangeError): RenderDocument =>
   error.tag === "InvalidProbability"
@@ -835,14 +882,27 @@ const entropyConfigErrorDocument = (
 const entropyErrorDocument = (error: EntropyError): RenderDocument =>
   text(error.tag)
 
-export const randomRangeErrorShow = defineShow(randomRangeErrorDocument)
-export const randomRangeErrorDebug = defineDebug(randomRangeErrorDocument)
-export const randomConfigErrorShow = defineShow(randomConfigErrorDocument)
-export const randomConfigErrorDebug = defineDebug(randomConfigErrorDocument)
-export const entropyConfigErrorShow = defineShow(entropyConfigErrorDocument)
-export const entropyConfigErrorDebug = defineDebug(entropyConfigErrorDocument)
-export const entropyErrorShow = defineShow(entropyErrorDocument)
-export const entropyErrorDebug = defineDebug(entropyErrorDocument)
+export const randomRangeErrorShow = /* @__PURE__ */ defineShow(
+  randomRangeErrorDocument
+)
+export const randomRangeErrorDebug = /* @__PURE__ */ defineDebug(
+  randomRangeErrorDocument
+)
+export const randomConfigErrorShow = /* @__PURE__ */ defineShow(
+  randomConfigErrorDocument
+)
+export const randomConfigErrorDebug = /* @__PURE__ */ defineDebug(
+  randomConfigErrorDocument
+)
+export const entropyConfigErrorShow = /* @__PURE__ */ defineShow(
+  entropyConfigErrorDocument
+)
+export const entropyConfigErrorDebug = /* @__PURE__ */ defineDebug(
+  entropyConfigErrorDocument
+)
+export const entropyErrorShow = /* @__PURE__ */ defineShow(entropyErrorDocument)
+export const entropyErrorDebug =
+  /* @__PURE__ */ defineDebug(entropyErrorDocument)
 
 function childProcessConfigErrorDocument(
   error: ChildProcessConfigError
@@ -913,20 +973,20 @@ function childExitStatusDocument(status: ChildExitStatus): RenderDocument {
   }
 }
 
-export const byteErrorShow = defineShow((error: ByteError) =>
+export const byteErrorShow = /* @__PURE__ */ defineShow((error: ByteError) =>
   constructorDocument("ByteOutOfRange", text(String(error.value)))
 )
 
-export const byteErrorDebug = defineDebug((error: ByteError) =>
+export const byteErrorDebug = /* @__PURE__ */ defineDebug((error: ByteError) =>
   constructorDocument("ByteOutOfRange", text(String(error.value)))
 )
 
-export const bytesSliceErrorShow = defineShow((error: BytesSliceError) =>
-  bytesSliceErrorDocument(error)
+export const bytesSliceErrorShow = /* @__PURE__ */ defineShow(
+  (error: BytesSliceError) => bytesSliceErrorDocument(error)
 )
 
-export const bytesSliceErrorDebug = defineDebug((error: BytesSliceError) =>
-  bytesSliceErrorDocument(error)
+export const bytesSliceErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: BytesSliceError) => bytesSliceErrorDocument(error)
 )
 
 function bytesSliceErrorDocument(error: BytesSliceError): RenderDocument {
@@ -953,12 +1013,12 @@ function hexDecodeErrorDocument(error: HexDecodeError): RenderDocument {
     : offsetErrorDocument(error.tag, error.value.offset)
 }
 
-export const hexDecodeErrorShow = defineShow((error: HexDecodeError) =>
-  hexDecodeErrorDocument(error)
+export const hexDecodeErrorShow = /* @__PURE__ */ defineShow(
+  (error: HexDecodeError) => hexDecodeErrorDocument(error)
 )
 
-export const hexDecodeErrorDebug = defineDebug((error: HexDecodeError) =>
-  hexDecodeErrorDocument(error)
+export const hexDecodeErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: HexDecodeError) => hexDecodeErrorDocument(error)
 )
 
 function base64DecodeErrorDocument(error: Base64DecodeError): RenderDocument {
@@ -967,92 +1027,100 @@ function base64DecodeErrorDocument(error: Base64DecodeError): RenderDocument {
     : offsetErrorDocument(error.tag, error.value.offset)
 }
 
-export const base64DecodeErrorShow = defineShow((error: Base64DecodeError) =>
-  base64DecodeErrorDocument(error)
+export const base64DecodeErrorShow = /* @__PURE__ */ defineShow(
+  (error: Base64DecodeError) => base64DecodeErrorDocument(error)
 )
 
-export const base64DecodeErrorDebug = defineDebug((error: Base64DecodeError) =>
-  base64DecodeErrorDocument(error)
+export const base64DecodeErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: Base64DecodeError) => base64DecodeErrorDocument(error)
 )
 
-export const utf8DecodeErrorShow = defineShow((error: Utf8DecodeError) =>
-  utf8DecodeErrorDocument(error)
+export const utf8DecodeErrorShow = /* @__PURE__ */ defineShow(
+  (error: Utf8DecodeError) => utf8DecodeErrorDocument(error)
 )
 
-export const utf8DecodeErrorDebug = defineDebug((error: Utf8DecodeError) =>
-  utf8DecodeErrorDocument(error)
+export const utf8DecodeErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: Utf8DecodeError) => utf8DecodeErrorDocument(error)
 )
 
-export const scheduleErrorShow = defineShow((error: ScheduleError) =>
+export const scheduleErrorShow = /* @__PURE__ */ defineShow(
+  (error: ScheduleError) =>
+    constructorDocument(error.tag, showDocument(intShow, error.value))
+)
+
+export const scheduleErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: ScheduleError) =>
+    constructorDocument(error.tag, debugDocument(intDebug, error.value))
+)
+
+export const parallelismErrorShow = /* @__PURE__ */ defineShow(
+  (error: ParallelismError) =>
+    constructorDocument(error.tag, showDocument(intShow, error.value))
+)
+
+export const parallelismErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: ParallelismError) =>
+    constructorDocument(error.tag, debugDocument(intDebug, error.value))
+)
+
+export const sizeErrorShow = /* @__PURE__ */ defineShow((error: SizeError) =>
   constructorDocument(error.tag, showDocument(intShow, error.value))
 )
 
-export const scheduleErrorDebug = defineDebug((error: ScheduleError) =>
+export const sizeErrorDebug = /* @__PURE__ */ defineDebug((error: SizeError) =>
   constructorDocument(error.tag, debugDocument(intDebug, error.value))
 )
 
-export const parallelismErrorShow = defineShow((error: ParallelismError) =>
-  constructorDocument(error.tag, showDocument(intShow, error.value))
-)
-
-export const parallelismErrorDebug = defineDebug((error: ParallelismError) =>
-  constructorDocument(error.tag, debugDocument(intDebug, error.value))
-)
-
-export const sizeErrorShow = defineShow((error: SizeError) =>
-  constructorDocument(error.tag, showDocument(intShow, error.value))
-)
-
-export const sizeErrorDebug = defineDebug((error: SizeError) =>
-  constructorDocument(error.tag, debugDocument(intDebug, error.value))
-)
-
-export const bufferCapacityErrorShow = defineShow(
+export const bufferCapacityErrorShow = /* @__PURE__ */ defineShow(
   (error: BufferCapacityError) =>
     constructorDocument(error.tag, showDocument(intShow, error.value))
 )
 
-export const bufferCapacityErrorDebug = defineDebug(
+export const bufferCapacityErrorDebug = /* @__PURE__ */ defineDebug(
   (error: BufferCapacityError) =>
     constructorDocument(error.tag, debugDocument(intDebug, error.value))
 )
 
-export const queueCreateErrorShow = defineShow((error: QueueCreateError) =>
-  constructorDocument(error.tag, showDocument(intShow, error.value))
+export const queueCreateErrorShow = /* @__PURE__ */ defineShow(
+  (error: QueueCreateError) =>
+    constructorDocument(error.tag, showDocument(intShow, error.value))
 )
 
-export const queueCreateErrorDebug = defineDebug((error: QueueCreateError) =>
-  constructorDocument(error.tag, debugDocument(intDebug, error.value))
+export const queueCreateErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: QueueCreateError) =>
+    constructorDocument(error.tag, debugDocument(intDebug, error.value))
 )
 
-export const queueClosedShow = defineShow((error: QueueClosed) =>
-  text(error.tag)
+export const queueClosedShow = /* @__PURE__ */ defineShow(
+  (error: QueueClosed) => text(error.tag)
 )
 
-export const queueClosedDebug = defineDebug((error: QueueClosed) =>
-  text(error.tag)
+export const queueClosedDebug = /* @__PURE__ */ defineDebug(
+  (error: QueueClosed) => text(error.tag)
 )
 
-export const semaphoreCreateErrorShow = defineShow(
+export const semaphoreCreateErrorShow = /* @__PURE__ */ defineShow(
   (error: SemaphoreCreateError) =>
     constructorDocument(error.tag, showDocument(intShow, error.value))
 )
 
-export const semaphoreCreateErrorDebug = defineDebug(
+export const semaphoreCreateErrorDebug = /* @__PURE__ */ defineDebug(
   (error: SemaphoreCreateError) =>
     constructorDocument(error.tag, debugDocument(intDebug, error.value))
 )
 
-export const durationErrorShow = defineShow((error: DurationError) =>
-  error.tag === "NegativeDuration"
-    ? constructorDocument(error.tag, showDocument(intShow, error.value))
-    : text(error.tag)
+export const durationErrorShow = /* @__PURE__ */ defineShow(
+  (error: DurationError) =>
+    error.tag === "NegativeDuration"
+      ? constructorDocument(error.tag, showDocument(intShow, error.value))
+      : text(error.tag)
 )
 
-export const durationErrorDebug = defineDebug((error: DurationError) =>
-  error.tag === "NegativeDuration"
-    ? constructorDocument(error.tag, debugDocument(intDebug, error.value))
-    : text(error.tag)
+export const durationErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: DurationError) =>
+    error.tag === "NegativeDuration"
+      ? constructorDocument(error.tag, debugDocument(intDebug, error.value))
+      : text(error.tag)
 )
 
 function dateTimeErrorDocument(error: DateTimeError): RenderDocument {
@@ -1085,33 +1153,66 @@ function timeZoneErrorDocument(error: TimeZoneError): RenderDocument {
   }
 }
 
-export const dateTimeErrorShow = defineShow(dateTimeErrorDocument)
-export const dateTimeErrorDebug = defineDebug(dateTimeErrorDocument)
-export const timeZoneErrorShow = defineShow(timeZoneErrorDocument)
-export const timeZoneErrorDebug = defineDebug(timeZoneErrorDocument)
+export const dateTimeErrorShow = /* @__PURE__ */ defineShow(
+  dateTimeErrorDocument
+)
+export const dateTimeErrorDebug = /* @__PURE__ */ defineDebug(
+  dateTimeErrorDocument
+)
+export const timeZoneErrorShow = /* @__PURE__ */ defineShow(
+  timeZoneErrorDocument
+)
+export const timeZoneErrorDebug = /* @__PURE__ */ defineDebug(
+  timeZoneErrorDocument
+)
 
-export const pathErrorShow = defineShow(pathErrorDocument)
-export const pathErrorDebug = defineDebug(pathErrorDocument)
-export const fileTypeShow = defineShow((value: FileType) => text(value.tag))
-export const fileTypeDebug = defineDebug((value: FileType) => text(value.tag))
-export const fileSystemOperationShow = defineShow(
+export const pathErrorShow = /* @__PURE__ */ defineShow(pathErrorDocument)
+export const pathErrorDebug = /* @__PURE__ */ defineDebug(pathErrorDocument)
+export const fileTypeShow = /* @__PURE__ */ defineShow((value: FileType) =>
+  text(value.tag)
+)
+export const fileTypeDebug = /* @__PURE__ */ defineDebug((value: FileType) =>
+  text(value.tag)
+)
+export const fileSystemOperationShow = /* @__PURE__ */ defineShow(
   (value: FileSystemOperation) => text(value.tag)
 )
-export const fileSystemOperationDebug = defineDebug(
+export const fileSystemOperationDebug = /* @__PURE__ */ defineDebug(
   (value: FileSystemOperation) => text(value.tag)
 )
-export const fileSystemErrorKindShow = defineShow(fileSystemErrorKindDocument)
-export const fileSystemErrorKindDebug = defineDebug(fileSystemErrorKindDocument)
-export const fileSystemErrorShow = defineShow(fileSystemErrorDocument)
-export const fileSystemErrorDebug = defineDebug(fileSystemErrorDocument)
-export const fileMetadataShow = defineShow(fileMetadataDocument)
-export const fileMetadataDebug = defineDebug(fileMetadataDocument)
-export const directoryEntryShow = defineShow(directoryEntryDocument)
-export const directoryEntryDebug = defineDebug(directoryEntryDocument)
-export const writeModeShow = defineShow((value: WriteMode) => text(value.tag))
-export const writeModeDebug = defineDebug((value: WriteMode) => text(value.tag))
-export const fileTextErrorShow = defineShow(fileTextErrorDocument)
-export const fileTextErrorDebug = defineDebug(fileTextErrorDocument)
+export const fileSystemErrorKindShow = /* @__PURE__ */ defineShow(
+  fileSystemErrorKindDocument
+)
+export const fileSystemErrorKindDebug = /* @__PURE__ */ defineDebug(
+  fileSystemErrorKindDocument
+)
+export const fileSystemErrorShow = /* @__PURE__ */ defineShow(
+  fileSystemErrorDocument
+)
+export const fileSystemErrorDebug = /* @__PURE__ */ defineDebug(
+  fileSystemErrorDocument
+)
+export const fileMetadataShow = /* @__PURE__ */ defineShow(fileMetadataDocument)
+export const fileMetadataDebug =
+  /* @__PURE__ */ defineDebug(fileMetadataDocument)
+export const directoryEntryShow = /* @__PURE__ */ defineShow(
+  directoryEntryDocument
+)
+export const directoryEntryDebug = /* @__PURE__ */ defineDebug(
+  directoryEntryDocument
+)
+export const writeModeShow = /* @__PURE__ */ defineShow((value: WriteMode) =>
+  text(value.tag)
+)
+export const writeModeDebug = /* @__PURE__ */ defineDebug((value: WriteMode) =>
+  text(value.tag)
+)
+export const fileTextErrorShow = /* @__PURE__ */ defineShow(
+  fileTextErrorDocument
+)
+export const fileTextErrorDebug = /* @__PURE__ */ defineDebug(
+  fileTextErrorDocument
+)
 
 function pathErrorDocument(error: PathError): RenderDocument {
   switch (error.tag) {
@@ -1182,50 +1283,52 @@ function fileTextErrorDocument(value: FileTextError): RenderDocument {
     : constructorDocument(value.tag, utf8DecodeErrorDocument(value.value))
 }
 
-export const httpBuildErrorShow = defineShow((error: HttpBuildError) =>
-  httpBuildErrorDocument(error)
+export const httpBuildErrorShow = /* @__PURE__ */ defineShow(
+  (error: HttpBuildError) => httpBuildErrorDocument(error)
 )
 
-export const httpBuildErrorDebug = defineDebug((error: HttpBuildError) =>
-  httpBuildErrorDocument(error)
+export const httpBuildErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: HttpBuildError) => httpBuildErrorDocument(error)
 )
 
-export const httpErrorShow = defineShow((error: HttpError) =>
+export const httpErrorShow = /* @__PURE__ */ defineShow((error: HttpError) =>
   httpErrorDocument(error)
 )
 
-export const httpErrorDebug = defineDebug((error: HttpError) =>
+export const httpErrorDebug = /* @__PURE__ */ defineDebug((error: HttpError) =>
   httpErrorDocument(error)
 )
 
-export const urlBuildErrorShow = defineShow((error: UrlBuildError) =>
-  urlBuildErrorDocument(error)
+export const urlBuildErrorShow = /* @__PURE__ */ defineShow(
+  (error: UrlBuildError) => urlBuildErrorDocument(error)
 )
 
-export const urlBuildErrorDebug = defineDebug((error: UrlBuildError) =>
-  urlBuildErrorDocument(error)
+export const urlBuildErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: UrlBuildError) => urlBuildErrorDocument(error)
 )
 
-export const navigationErrorShow = defineShow((error: NavigationError) =>
-  navigationErrorDocument(error)
+export const navigationErrorShow = /* @__PURE__ */ defineShow(
+  (error: NavigationError) => navigationErrorDocument(error)
 )
 
-export const navigationErrorDebug = defineDebug((error: NavigationError) =>
-  navigationErrorDocument(error)
+export const navigationErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: NavigationError) => navigationErrorDocument(error)
 )
 
-export const storageAreaShow = defineShow((area: StorageArea) => text(area.tag))
-
-export const storageAreaDebug = defineDebug((area: StorageArea) =>
+export const storageAreaShow = /* @__PURE__ */ defineShow((area: StorageArea) =>
   text(area.tag)
 )
 
-export const storageErrorShow = defineShow((error: StorageError) =>
-  storageErrorDocument(error)
+export const storageAreaDebug = /* @__PURE__ */ defineDebug(
+  (area: StorageArea) => text(area.tag)
 )
 
-export const storageErrorDebug = defineDebug((error: StorageError) =>
-  storageErrorDocument(error)
+export const storageErrorShow = /* @__PURE__ */ defineShow(
+  (error: StorageError) => storageErrorDocument(error)
+)
+
+export const storageErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: StorageError) => storageErrorDocument(error)
 )
 
 function urlBuildErrorDocument(error: UrlBuildError): RenderDocument {
@@ -1343,28 +1446,26 @@ function textRangeErrorDocument(
   ])
 }
 
-export const textSliceErrorShow = defineShow<TextSliceError>(
+export const textSliceErrorShow = /* @__PURE__ */ defineShow<TextSliceError>(
   textRangeErrorDocument
 )
-export const textSliceErrorDebug = defineDebug<TextSliceError>(
+export const textSliceErrorDebug = /* @__PURE__ */ defineDebug<TextSliceError>(
   textRangeErrorDocument
 )
-export const graphemeSliceErrorShow = defineShow<GraphemeSliceError>(
-  textRangeErrorDocument
+export const graphemeSliceErrorShow =
+  /* @__PURE__ */ defineShow<GraphemeSliceError>(textRangeErrorDocument)
+export const graphemeSliceErrorDebug =
+  /* @__PURE__ */ defineDebug<GraphemeSliceError>(textRangeErrorDocument)
+export const normalizationFormShow = /* @__PURE__ */ defineShow(
+  (value: NormalizationForm) => text(value.tag)
 )
-export const graphemeSliceErrorDebug = defineDebug<GraphemeSliceError>(
-  textRangeErrorDocument
+export const normalizationFormDebug = /* @__PURE__ */ defineDebug(
+  (value: NormalizationForm) => text(value.tag)
 )
-export const normalizationFormShow = defineShow((value: NormalizationForm) =>
-  text(value.tag)
-)
-export const normalizationFormDebug = defineDebug((value: NormalizationForm) =>
-  text(value.tag)
-)
-export const unicodeGeneralCategoryShow = defineShow(
+export const unicodeGeneralCategoryShow = /* @__PURE__ */ defineShow(
   (value: UnicodeGeneralCategory) => text(value.tag)
 )
-export const unicodeGeneralCategoryDebug = defineDebug(
+export const unicodeGeneralCategoryDebug = /* @__PURE__ */ defineDebug(
   (value: UnicodeGeneralCategory) => text(value.tag)
 )
 
@@ -1409,10 +1510,10 @@ function regexCompileErrorKindDocument(
   }
 }
 
-export const regexCompileErrorKindShow = defineShow(
+export const regexCompileErrorKindShow = /* @__PURE__ */ defineShow(
   (value: RegexCompileErrorKind) => regexCompileErrorKindDocument(value, false)
 )
-export const regexCompileErrorKindDebug = defineDebug(
+export const regexCompileErrorKindDebug = /* @__PURE__ */ defineDebug(
   (value: RegexCompileErrorKind) => regexCompileErrorKindDocument(value, true)
 )
 
@@ -1426,11 +1527,11 @@ function regexCompileErrorDocument(
   ])
 }
 
-export const regexCompileErrorShow = defineShow((value: RegexCompileError) =>
-  regexCompileErrorDocument(value, false)
+export const regexCompileErrorShow = /* @__PURE__ */ defineShow(
+  (value: RegexCompileError) => regexCompileErrorDocument(value, false)
 )
-export const regexCompileErrorDebug = defineDebug((value: RegexCompileError) =>
-  regexCompileErrorDocument(value, true)
+export const regexCompileErrorDebug = /* @__PURE__ */ defineDebug(
+  (value: RegexCompileError) => regexCompileErrorDocument(value, true)
 )
 
 function regexOptionsDocument(value: RegexOptions): RenderDocument {
@@ -1441,8 +1542,9 @@ function regexOptionsDocument(value: RegexOptions): RenderDocument {
   ])
 }
 
-export const regexOptionsShow = defineShow(regexOptionsDocument)
-export const regexOptionsDebug = defineDebug(regexOptionsDocument)
+export const regexOptionsShow = /* @__PURE__ */ defineShow(regexOptionsDocument)
+export const regexOptionsDebug =
+  /* @__PURE__ */ defineDebug(regexOptionsDocument)
 
 function regexSpanDocument(value: RegexSpan): RenderDocument {
   return recordFieldsDocument("RegexSpan", [
@@ -1451,8 +1553,8 @@ function regexSpanDocument(value: RegexSpan): RenderDocument {
   ])
 }
 
-export const regexSpanShow = defineShow(regexSpanDocument)
-export const regexSpanDebug = defineDebug(regexSpanDocument)
+export const regexSpanShow = /* @__PURE__ */ defineShow(regexSpanDocument)
+export const regexSpanDebug = /* @__PURE__ */ defineDebug(regexSpanDocument)
 
 function regexCaptureDocument(
   value: RegexCapture,
@@ -1469,11 +1571,11 @@ function regexCaptureDocument(
   ])
 }
 
-export const regexCaptureShow = defineShow((value: RegexCapture) =>
-  regexCaptureDocument(value, false)
+export const regexCaptureShow = /* @__PURE__ */ defineShow(
+  (value: RegexCapture) => regexCaptureDocument(value, false)
 )
-export const regexCaptureDebug = defineDebug((value: RegexCapture) =>
-  regexCaptureDocument(value, true)
+export const regexCaptureDebug = /* @__PURE__ */ defineDebug(
+  (value: RegexCapture) => regexCaptureDocument(value, true)
 )
 
 function regexMatchDocument(value: RegexMatch, debug: boolean): RenderDocument {
@@ -1518,11 +1620,11 @@ function regexMatchDocument(value: RegexMatch, debug: boolean): RenderDocument {
   ])
 }
 
-export const regexMatchShow = defineShow((value: RegexMatch) =>
+export const regexMatchShow = /* @__PURE__ */ defineShow((value: RegexMatch) =>
   regexMatchDocument(value, false)
 )
-export const regexMatchDebug = defineDebug((value: RegexMatch) =>
-  regexMatchDocument(value, true)
+export const regexMatchDebug = /* @__PURE__ */ defineDebug(
+  (value: RegexMatch) => regexMatchDocument(value, true)
 )
 
 function utf8DecodeErrorDocument(error: Utf8DecodeError): RenderDocument {
@@ -1561,11 +1663,11 @@ function stdinErrorDocument(error: StdinError): RenderDocument {
   }
 }
 
-export const domErrorShow = defineShow((error: DomError) =>
+export const domErrorShow = /* @__PURE__ */ defineShow((error: DomError) =>
   domErrorDocument(error, (value) => showDocument(stringShow, value))
 )
 
-export const domErrorDebug = defineDebug((error: DomError) =>
+export const domErrorDebug = /* @__PURE__ */ defineDebug((error: DomError) =>
   domErrorDocument(error, (value) => debugDocument(stringDebug, value))
 )
 
@@ -1601,12 +1703,14 @@ export function domRuntimeErrorDebug<Failure>(
   )
 }
 
-export const htmlBuildErrorShow = defineShow((error: HtmlBuildError) =>
-  constructorDocument(error.tag, showDocument(stringShow, error.value))
+export const htmlBuildErrorShow = /* @__PURE__ */ defineShow(
+  (error: HtmlBuildError) =>
+    constructorDocument(error.tag, showDocument(stringShow, error.value))
 )
 
-export const htmlBuildErrorDebug = defineDebug((error: HtmlBuildError) =>
-  constructorDocument(error.tag, debugDocument(stringDebug, error.value))
+export const htmlBuildErrorDebug = /* @__PURE__ */ defineDebug(
+  (error: HtmlBuildError) =>
+    constructorDocument(error.tag, debugDocument(stringDebug, error.value))
 )
 
 function domErrorDocument(

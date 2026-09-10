@@ -29,7 +29,9 @@ export type Ordering =
   | { readonly tag: "Equal" }
   | { readonly tag: "Greater" }
 
-export const Nothing: Nothing = Object.freeze({ tag: "Nothing" })
+export const Nothing: Nothing = /* @__PURE__ */ Object.freeze({
+  tag: "Nothing",
+})
 
 export function Just<Value>(value: Value): Just<Value> {
   return { tag: "Just", value }
@@ -43,18 +45,20 @@ export function Right<Value>(value: Value): Right<Value> {
   return { tag: "Right", value }
 }
 
-export const Less: Ordering = Object.freeze({ tag: "Less" })
-export const Equal: Ordering = Object.freeze({ tag: "Equal" })
-export const Greater: Ordering = Object.freeze({ tag: "Greater" })
+export const Less: Ordering = /* @__PURE__ */ Object.freeze({ tag: "Less" })
+export const Equal: Ordering = /* @__PURE__ */ Object.freeze({ tag: "Equal" })
+export const Greater: Ordering = /* @__PURE__ */ Object.freeze({
+  tag: "Greater",
+})
 
-export const maybeFunctor = Object.freeze({
+export const maybeFunctor = /* @__PURE__ */ Object.freeze({
   map:
     <Value, Result>(f: (value: Value) => Result) =>
     (value: Maybe<Value>): Maybe<Result> =>
       value.tag === "Nothing" ? Nothing : Just(f(value.value)),
 })
 
-export const maybeApplicative = Object.freeze({
+export const maybeApplicative = /* @__PURE__ */ Object.freeze({
   ...maybeFunctor,
   pure: <Value>(value: Value): Maybe<Value> => Just(value),
   apply:
@@ -66,7 +70,7 @@ export const maybeApplicative = Object.freeze({
     },
 })
 
-export const maybeMonad = Object.freeze({
+export const maybeMonad = /* @__PURE__ */ Object.freeze({
   ...maybeApplicative,
   flatMap:
     <Value, Result>(f: (value: Value) => Maybe<Result>) =>
@@ -74,14 +78,14 @@ export const maybeMonad = Object.freeze({
       value.tag === "Nothing" ? Nothing : f(value.value),
 })
 
-export const eitherFunctor = Object.freeze({
+export const eitherFunctor = /* @__PURE__ */ Object.freeze({
   map:
     <Value, Result>(f: (value: Value) => Result) =>
     <Error>(value: Either<Error, Value>): Either<Error, Result> =>
       value.tag === "Left" ? value : Right(f(value.value)),
 })
 
-export const eitherApplicative = Object.freeze({
+export const eitherApplicative = /* @__PURE__ */ Object.freeze({
   ...eitherFunctor,
   pure: <Error, Value>(value: Value): Either<Error, Value> => Right(value),
   apply:
@@ -95,7 +99,7 @@ export const eitherApplicative = Object.freeze({
     },
 })
 
-export const eitherMonad = Object.freeze({
+export const eitherMonad = /* @__PURE__ */ Object.freeze({
   ...eitherApplicative,
   flatMap:
     <Error, Value, Result>(f: (value: Value) => Either<Error, Result>) =>

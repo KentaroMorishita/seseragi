@@ -481,9 +481,9 @@ export function distinct<Value>(
   })
 }
 
-export const signalFunctor = Object.freeze({ map })
+export const signalFunctor = /* @__PURE__ */ Object.freeze({ map })
 
-export const signalApplicative = Object.freeze({
+export const signalApplicative = /* @__PURE__ */ Object.freeze({
   ...signalFunctor,
   pure: constant,
   apply:

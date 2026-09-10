@@ -36,7 +36,7 @@ export const charEq = strictEq<string>()
 /** Standard `Eq<Unit>` dictionary. */
 export const unitEq = strictEq<undefined>()
 
-export const intOrd: Ord<number> & Eq<number> = Object.freeze({
+export const intOrd: Ord<number> & Eq<number> = /* @__PURE__ */ Object.freeze({
   ...intEq,
   compare:
     (left: number) =>
@@ -44,15 +44,16 @@ export const intOrd: Ord<number> & Eq<number> = Object.freeze({
       left < right ? Less : left > right ? Greater : Equal,
 })
 
-export const boolOrd: Ord<boolean> & Eq<boolean> = Object.freeze({
-  ...boolEq,
-  compare:
-    (left: boolean) =>
-    (right: boolean): Ordering =>
-      left === right ? Equal : left ? Greater : Less,
-})
+export const boolOrd: Ord<boolean> & Eq<boolean> =
+  /* @__PURE__ */ Object.freeze({
+    ...boolEq,
+    compare:
+      (left: boolean) =>
+      (right: boolean): Ordering =>
+        left === right ? Equal : left ? Greater : Less,
+  })
 
-export const charOrd: Ord<string> & Eq<string> = Object.freeze({
+export const charOrd: Ord<string> & Eq<string> = /* @__PURE__ */ Object.freeze({
   ...charEq,
   compare:
     (left: string) =>
@@ -61,31 +62,33 @@ export const charOrd: Ord<string> & Eq<string> = Object.freeze({
 })
 
 /** Unicode scalar lexicographic order, deliberately not UTF-16 code-unit order. */
-export const stringOrd: Ord<string> & Eq<string> = Object.freeze({
-  ...stringEq,
-  compare:
-    (left: string) =>
-    (right: string): Ordering => {
-      let a = 0
-      let b = 0
-      while (a < left.length && b < right.length) {
-        const x = left.codePointAt(a)!
-        const y = right.codePointAt(b)!
-        if (x !== y) return x < y ? Less : Greater
-        a += x > 0xffff ? 2 : 1
-        b += y > 0xffff ? 2 : 1
-      }
-      return a < left.length ? Greater : b < right.length ? Less : Equal
-    },
-})
+export const stringOrd: Ord<string> & Eq<string> =
+  /* @__PURE__ */ Object.freeze({
+    ...stringEq,
+    compare:
+      (left: string) =>
+      (right: string): Ordering => {
+        let a = 0
+        let b = 0
+        while (a < left.length && b < right.length) {
+          const x = left.codePointAt(a)!
+          const y = right.codePointAt(b)!
+          if (x !== y) return x < y ? Less : Greater
+          a += x > 0xffff ? 2 : 1
+          b += y > 0xffff ? 2 : 1
+        }
+        return a < left.length ? Greater : b < right.length ? Less : Equal
+      },
+  })
 
-export const unitOrd: Ord<undefined> & Eq<undefined> = Object.freeze({
-  ...unitEq,
-  compare:
-    (_left: undefined) =>
-    (_right: undefined): Ordering =>
-      Equal,
-})
+export const unitOrd: Ord<undefined> & Eq<undefined> =
+  /* @__PURE__ */ Object.freeze({
+    ...unitEq,
+    compare:
+      (_left: undefined) =>
+      (_right: undefined): Ordering =>
+        Equal,
+  })
 
 export const arrayEq = <Value>(element: Eq<Value>): Eq<ReadonlyArray<Value>> =>
   Object.freeze({

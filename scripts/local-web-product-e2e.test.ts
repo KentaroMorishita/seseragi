@@ -47,3 +47,33 @@ test("runs for pull requests and downloaded tag release artifacts", () => {
     "native-verify, vscode, vscode-legacy, wasm-runtime, local-web-product-e2e"
   )
 })
+
+const { assertOriginalSourceMap } = await import("./product-source-map.cjs")
+test("installed product requires original source content and a mapping to it", () => {
+  const map = {
+    version: 3,
+    sources: ["seseragi://hello-web@0.0.0::app"],
+    sourcesContent: ["original"],
+    mappings: "AAAA",
+  }
+  expect(() =>
+    assertOriginalSourceMap(map, "hello-web@0.0.0::app", "original")
+  ).not.toThrow()
+  expect(() =>
+    assertOriginalSourceMap(
+      { ...map, sources: ["hello-web/0.0.0/app.ts"] },
+      "hello-web@0.0.0::app",
+      "original"
+    )
+  ).toThrow("original Seseragi source")
+  expect(() =>
+    assertOriginalSourceMap(map, "hello-web@0.0.0::app", "stale")
+  ).toThrow("original Seseragi source")
+  expect(() =>
+    assertOriginalSourceMap(
+      { ...map, mappings: "A" },
+      "hello-web@0.0.0::app",
+      "original"
+    )
+  ).toThrow("no mappings")
+})

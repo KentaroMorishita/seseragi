@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/production-reachability@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/production-reachability@0.0.0#workspace:."
+name = "fixture/production-reachability"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:80376cfff64457533b8d0aa4e76c591a88e0b164b2ebb8e2cc22415c01a2c0ce"
+content_digest = "sha256:2529b69e0e298d499af217f3cd22637b24f527b40df99f98d4c550cb843a867b"
+dependencies = []

@@ -6,7 +6,7 @@ export type Iterator<A> = Readonly<{
 }>
 
 /** Iterators are Iterable, but not necessarily finite (and not Reducible). */
-export const iteratorIterable = Object.freeze({
+export const iteratorIterable = /* @__PURE__ */ Object.freeze({
   iterate: <A>(values: Iterator<A>): Iterator<A> => values,
 })
 

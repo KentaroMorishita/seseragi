@@ -55,7 +55,7 @@ export function toEither<E, A>(
   return value.tag === "Invalid" ? Left(value.value) : Right(value.value)
 }
 
-export const validationFunctor = Object.freeze({
+export const validationFunctor = /* @__PURE__ */ Object.freeze({
   map:
     <A, B>(f: (value: A) => B) =>
     <E>(value: Validation<E, A>): Validation<E, B> =>
@@ -89,7 +89,7 @@ function applyValidation<E, A, B>(wrapped: Validation<E, (value: A) => B>) {
   }
 }
 
-export const validationApplicative = Object.freeze({
+export const validationApplicative = /* @__PURE__ */ Object.freeze({
   ...validationFunctor,
   pure: Valid,
   apply: applyValidation,

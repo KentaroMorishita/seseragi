@@ -43,7 +43,7 @@ export type DomEventBindings<Action> = Readonly<{
   readonly handler: (id: string) => DomEventHandler<Action> | undefined
 }>
 
-export const BROWSER_DOM_EVENT_BINDINGS = Object.freeze([
+export const BROWSER_DOM_EVENT_BINDINGS = /* @__PURE__ */ Object.freeze([
   Object.freeze({ nativeKind: "click", handlerKind: "click", capture: false }),
   Object.freeze({
     nativeKind: "focusin",

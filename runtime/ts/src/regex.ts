@@ -161,24 +161,28 @@ export type Regex = Readonly<{
   options: RegexOptions
 }>
 
-export const UnexpectedRegexEnd: RegexCompileErrorKind = Object.freeze({
-  tag: "UnexpectedRegexEnd",
-})
+export const UnexpectedRegexEnd: RegexCompileErrorKind =
+  /* @__PURE__ */ Object.freeze({
+    tag: "UnexpectedRegexEnd",
+  })
 
 export const UnexpectedRegexToken = (value: string): RegexCompileErrorKind =>
   Object.freeze({ tag: "UnexpectedRegexToken", value })
 
-export const InvalidRegexEscape: RegexCompileErrorKind = Object.freeze({
-  tag: "InvalidRegexEscape",
-})
+export const InvalidRegexEscape: RegexCompileErrorKind =
+  /* @__PURE__ */ Object.freeze({
+    tag: "InvalidRegexEscape",
+  })
 
-export const InvalidRegexRange: RegexCompileErrorKind = Object.freeze({
-  tag: "InvalidRegexRange",
-})
+export const InvalidRegexRange: RegexCompileErrorKind =
+  /* @__PURE__ */ Object.freeze({
+    tag: "InvalidRegexRange",
+  })
 
-export const InvalidRegexQuantifier: RegexCompileErrorKind = Object.freeze({
-  tag: "InvalidRegexQuantifier",
-})
+export const InvalidRegexQuantifier: RegexCompileErrorKind =
+  /* @__PURE__ */ Object.freeze({
+    tag: "InvalidRegexQuantifier",
+  })
 
 export const DuplicateCaptureName = (value: string): RegexCompileErrorKind =>
   Object.freeze({ tag: "DuplicateCaptureName", value })
@@ -186,7 +190,7 @@ export const DuplicateCaptureName = (value: string): RegexCompileErrorKind =>
 export const UnsupportedRegexFeature = (value: string): RegexCompileErrorKind =>
   Object.freeze({ tag: "UnsupportedRegexFeature", value })
 
-const DEFAULT_OPTIONS: RegexOptions = Object.freeze({
+const DEFAULT_OPTIONS: RegexOptions = /* @__PURE__ */ Object.freeze({
   caseInsensitive: false,
   multiline: false,
   dotMatchesNewline: false,
@@ -731,66 +735,67 @@ function isCaptureNameContinue(point: number): boolean {
   return isCaptureNameStart(point) || isMark(point) || isDecimalNumber(point)
 }
 
-const CATEGORY_ALIASES: Readonly<Record<string, number>> = Object.freeze({
-  uppercaseletter: 0,
-  lu: 0,
-  lowercaseletter: 1,
-  ll: 1,
-  titlecaseletter: 2,
-  lt: 2,
-  modifierletter: 3,
-  lm: 3,
-  otherletter: 4,
-  lo: 4,
-  nonspacingmark: 5,
-  mn: 5,
-  spacingmark: 6,
-  mc: 6,
-  enclosingmark: 7,
-  me: 7,
-  decimalnumber: 8,
-  nd: 8,
-  letternumber: 9,
-  nl: 9,
-  othernumber: 10,
-  no: 10,
-  connectorpunctuation: 11,
-  pc: 11,
-  dashpunctuation: 12,
-  pd: 12,
-  openpunctuation: 13,
-  ps: 13,
-  closepunctuation: 14,
-  pe: 14,
-  initialpunctuation: 15,
-  pi: 15,
-  finalpunctuation: 16,
-  pf: 16,
-  otherpunctuation: 17,
-  po: 17,
-  mathsymbol: 18,
-  sm: 18,
-  currencysymbol: 19,
-  sc: 19,
-  modifiersymbol: 20,
-  sk: 20,
-  othersymbol: 21,
-  so: 21,
-  spaceseparator: 22,
-  zs: 22,
-  lineseparator: 23,
-  zl: 23,
-  paragraphseparator: 24,
-  zp: 24,
-  control: 25,
-  cc: 25,
-  format: 26,
-  cf: 26,
-  privateuse: 27,
-  co: 27,
-  unassigned: 28,
-  cn: 28,
-})
+const CATEGORY_ALIASES: Readonly<Record<string, number>> =
+  /* @__PURE__ */ Object.freeze({
+    uppercaseletter: 0,
+    lu: 0,
+    lowercaseletter: 1,
+    ll: 1,
+    titlecaseletter: 2,
+    lt: 2,
+    modifierletter: 3,
+    lm: 3,
+    otherletter: 4,
+    lo: 4,
+    nonspacingmark: 5,
+    mn: 5,
+    spacingmark: 6,
+    mc: 6,
+    enclosingmark: 7,
+    me: 7,
+    decimalnumber: 8,
+    nd: 8,
+    letternumber: 9,
+    nl: 9,
+    othernumber: 10,
+    no: 10,
+    connectorpunctuation: 11,
+    pc: 11,
+    dashpunctuation: 12,
+    pd: 12,
+    openpunctuation: 13,
+    ps: 13,
+    closepunctuation: 14,
+    pe: 14,
+    initialpunctuation: 15,
+    pi: 15,
+    finalpunctuation: 16,
+    pf: 16,
+    otherpunctuation: 17,
+    po: 17,
+    mathsymbol: 18,
+    sm: 18,
+    currencysymbol: 19,
+    sc: 19,
+    modifiersymbol: 20,
+    sk: 20,
+    othersymbol: 21,
+    so: 21,
+    spaceseparator: 22,
+    zs: 22,
+    lineseparator: 23,
+    zl: 23,
+    paragraphseparator: 24,
+    zp: 24,
+    control: 25,
+    cc: 25,
+    format: 26,
+    cf: 26,
+    privateuse: 27,
+    co: 27,
+    unassigned: 28,
+    cn: 28,
+  })
 
 function normalizePropertyName(name: string): string {
   let normalized = ""
@@ -1638,26 +1643,26 @@ function escapeRegex(text: string): string {
 
 export { escapeRegex as escape }
 
-export const regexCompileErrorKindEq: Eq<RegexCompileErrorKind> = Object.freeze(
-  {
+export const regexCompileErrorKindEq: Eq<RegexCompileErrorKind> =
+  /* @__PURE__ */ Object.freeze({
     eq:
       (left) =>
       (right): boolean =>
         left.tag === right.tag &&
         (!("value" in left) ||
           ("value" in right && left.value === right.value)),
-  }
-)
+  })
 
-export const regexCompileErrorEq: Eq<RegexCompileError> = Object.freeze({
-  eq:
-    (left) =>
-    (right): boolean =>
-      intEq.eq(left.offset)(right.offset) &&
-      regexCompileErrorKindEq.eq(left.kind)(right.kind),
-})
+export const regexCompileErrorEq: Eq<RegexCompileError> =
+  /* @__PURE__ */ Object.freeze({
+    eq:
+      (left) =>
+      (right): boolean =>
+        intEq.eq(left.offset)(right.offset) &&
+        regexCompileErrorKindEq.eq(left.kind)(right.kind),
+  })
 
-export const regexOptionsEq: Eq<RegexOptions> = Object.freeze({
+export const regexOptionsEq: Eq<RegexOptions> = /* @__PURE__ */ Object.freeze({
   eq:
     (left) =>
     (right): boolean =>
@@ -1666,28 +1671,29 @@ export const regexOptionsEq: Eq<RegexOptions> = Object.freeze({
       boolEq.eq(left.dotMatchesNewline)(right.dotMatchesNewline),
 })
 
-export const regexSpanEq: Eq<RegexSpan> = Object.freeze({
+export const regexSpanEq: Eq<RegexSpan> = /* @__PURE__ */ Object.freeze({
   eq:
     (left) =>
     (right): boolean =>
       intEq.eq(left.start)(right.start) && intEq.eq(left.end)(right.end),
 })
 
-export const regexSpanOrd: Ord<RegexSpan> & Eq<RegexSpan> = Object.freeze({
-  ...regexSpanEq,
-  compare: (left) => (right) =>
-    left.start < right.start
-      ? Less
-      : left.start > right.start
-        ? Greater
-        : left.end < right.end
-          ? Less
-          : left.end > right.end
-            ? Greater
-            : Equal,
-})
+export const regexSpanOrd: Ord<RegexSpan> & Eq<RegexSpan> =
+  /* @__PURE__ */ Object.freeze({
+    ...regexSpanEq,
+    compare: (left) => (right) =>
+      left.start < right.start
+        ? Less
+        : left.start > right.start
+          ? Greater
+          : left.end < right.end
+            ? Less
+            : left.end > right.end
+              ? Greater
+              : Equal,
+  })
 
-export const regexCaptureEq: Eq<RegexCapture> = Object.freeze({
+export const regexCaptureEq: Eq<RegexCapture> = /* @__PURE__ */ Object.freeze({
   eq:
     (left) =>
     (right): boolean =>
@@ -1695,7 +1701,7 @@ export const regexCaptureEq: Eq<RegexCapture> = Object.freeze({
       stringEq.eq(left.text)(right.text),
 })
 
-const maybeCaptureEq: Eq<Maybe<RegexCapture>> = Object.freeze({
+const maybeCaptureEq: Eq<Maybe<RegexCapture>> = /* @__PURE__ */ Object.freeze({
   eq:
     (left) =>
     (right): boolean =>
@@ -1704,7 +1710,7 @@ const maybeCaptureEq: Eq<Maybe<RegexCapture>> = Object.freeze({
         : right.tag === "Just" && regexCaptureEq.eq(left.value)(right.value),
 })
 
-export const regexMatchEq: Eq<RegexMatch> = Object.freeze({
+export const regexMatchEq: Eq<RegexMatch> = /* @__PURE__ */ Object.freeze({
   eq:
     (left) =>
     (right): boolean =>

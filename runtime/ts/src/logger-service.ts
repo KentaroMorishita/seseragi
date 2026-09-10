@@ -34,11 +34,21 @@ export type LoggerEnvironment = Readonly<{
   readonly logger: Logger
 }>
 
-export const LogTrace: LogLevel = Object.freeze({ tag: "LogTrace" })
-export const LogDebug: LogLevel = Object.freeze({ tag: "LogDebug" })
-export const LogInfo: LogLevel = Object.freeze({ tag: "LogInfo" })
-export const LogWarn: LogLevel = Object.freeze({ tag: "LogWarn" })
-export const LogFailure: LogLevel = Object.freeze({ tag: "LogFailure" })
+export const LogTrace: LogLevel = /* @__PURE__ */ Object.freeze({
+  tag: "LogTrace",
+})
+export const LogDebug: LogLevel = /* @__PURE__ */ Object.freeze({
+  tag: "LogDebug",
+})
+export const LogInfo: LogLevel = /* @__PURE__ */ Object.freeze({
+  tag: "LogInfo",
+})
+export const LogWarn: LogLevel = /* @__PURE__ */ Object.freeze({
+  tag: "LogWarn",
+})
+export const LogFailure: LogLevel = /* @__PURE__ */ Object.freeze({
+  tag: "LogFailure",
+})
 
 export const LogString = (value: string): LogValue => ({
   tag: "LogString",
