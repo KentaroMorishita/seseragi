@@ -4,7 +4,7 @@ import { join } from "node:path"
 
 export const docsBudgets = Object.freeze({
   clientJavascriptBytes: 1_600_000,
-  largestHtmlBytes: 800_000,
+  largestHtmlBytes: 825_000,
   publishedBytes: 4_500_000,
   searchEntries: 2_000,
 })

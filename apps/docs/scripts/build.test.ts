@@ -173,10 +173,10 @@ test("compiler-owned Reference metadata generates every module and public item",
     )
   )
   const reference = prepareReference(artifact, "/docs/")
-  expect(reference.manifest.modules).toBe(62)
-  expect(reference.manifest.items).toBe(1387)
-  expect(reference.pages).toHaveLength(63)
-  expect(new Set(reference.pages.map(({ route }) => route)).size).toBe(63)
+  expect(reference.manifest.modules).toBe(63)
+  expect(reference.manifest.items).toBe(1407)
+  expect(reference.pages).toHaveLength(64)
+  expect(new Set(reference.pages.map(({ route }) => route)).size).toBe(64)
   expect(reference.pages.filter(({ navigation }) => navigation)).toHaveLength(1)
   const effect = reference.pages.find(
     ({ route }) => route === "/docs/reference/std/effect/"
@@ -204,8 +204,8 @@ test("compiler-owned Reference metadata generates every module and public item",
     })
     expect(manifest.reference).toEqual({
       languageVersion: "0.1.0",
-      modules: 62,
-      items: 1387,
+      modules: 63,
+      items: 1407,
       source: "examples/spec/artifacts/stdlib-schema-1/reference/module.json",
       sha256: expect.any(String),
     })
@@ -337,7 +337,7 @@ test("search index is derived from page and compiler-owned Reference data", () =
   const authored = prepare([page], "/docs/").pages
   const reference = prepareReference(artifact, "/docs/").pages
   const entries = searchIndex([...authored, ...reference])
-  expect(entries).toHaveLength(1451)
+  expect(entries).toHaveLength(1472)
   expect(
     entries.find(({ route }) =>
       route.startsWith("/docs/reference/std/effect/#reference-")
