@@ -1,8 +1,14 @@
 {
   "schema": 1,
   "kind": "project",
-  "phase": "build",
-  "spec": ["13.4", "13.13"],
+  "phase": "compile",
+  "spec": [
+    "13.4",
+    "13.13"
+  ],
   "lock": "generate",
-  "differentialProfiles": ["development", "release"]
+  "differentialProfiles": [
+    "development",
+    "release"
+  ]
 }

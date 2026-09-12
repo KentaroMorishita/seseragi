@@ -5,7 +5,10 @@
     "array-index": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -14,19 +17,30 @@
     "benchmark-discovery": {
       "availability": "current",
       "phase": "tooling",
-      "runners": ["cli-benchmark"],
-      "evidence": ["crates/seseragi-cli/tests/benchmark.rs"]
+      "runners": [
+        "cli-benchmark"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/benchmark.rs"
+      ]
     },
     "callable-values": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "char-literal": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -35,97 +49,162 @@
     "child-process-captured": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "cli-build-nested": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build", "cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/build.rs"]
+      "runners": [
+        "cli-build",
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/build.rs"
+      ]
     },
     "doc-tests": {
       "availability": "current",
       "phase": "tooling",
-      "runners": ["cli-doc"],
-      "evidence": ["crates/seseragi-cli/tests/doc.rs"]
+      "runners": [
+        "cli-doc"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/doc.rs"
+      ]
     },
     "dom-hydration-mismatch": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build"],
-      "evidence": ["apps/playground/tests/dom-lifecycle-browser.test.ts"]
+      "runners": [
+        "cli-build"
+      ],
+      "evidence": [
+        "apps/playground/tests/dom-lifecycle-browser.test.ts"
+      ]
     },
     "dom-reactive-bindings": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build"],
-      "evidence": ["apps/playground/tests/dom-lifecycle-browser.test.ts"]
+      "runners": [
+        "cli-build"
+      ],
+      "evidence": [
+        "apps/playground/tests/dom-lifecycle-browser.test.ts"
+      ]
     },
     "dom-signal-lifecycle": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build"],
-      "evidence": ["apps/playground/tests/dom-lifecycle-browser.test.ts"]
+      "runners": [
+        "cli-build"
+      ],
+      "evidence": [
+        "apps/playground/tests/dom-lifecycle-browser.test.ts"
+      ]
     },
     "dts-basic-conversion": {
       "availability": "current",
       "phase": "convert",
-      "runners": ["cli-dts"],
-      "evidence": ["crates/seseragi-cli/tests/dts.rs"]
+      "runners": [
+        "cli-dts"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/dts.rs"
+      ]
     },
     "dts-callback-during-call": {
       "availability": "current",
       "phase": "convert",
-      "runners": ["cli-dts"],
-      "evidence": ["crates/seseragi-cli/tests/dts.rs"]
+      "runners": [
+        "cli-dts"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/dts.rs"
+      ]
     },
     "dts-callback-missing-release": {
       "availability": "current",
       "phase": "diagnostic",
-      "runners": ["cli-dts"],
-      "evidence": ["crates/seseragi-cli/tests/dts.rs"]
+      "runners": [
+        "cli-dts"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/dts.rs"
+      ]
     },
     "dts-declaration-merge": {
       "availability": "current",
       "phase": "convert",
-      "runners": ["cli-dts"],
-      "evidence": ["crates/seseragi-cli/tests/dts.rs"]
+      "runners": [
+        "cli-dts"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/dts.rs"
+      ]
     },
     "dts-generated-name": {
       "availability": "current",
       "phase": "convert",
-      "runners": ["cli-dts"],
-      "evidence": ["crates/seseragi-cli/tests/dts.rs"]
+      "runners": [
+        "cli-dts"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/dts.rs"
+      ]
     },
     "dts-namespace-runtime": {
       "availability": "current",
       "phase": "convert",
-      "runners": ["cli-dts", "cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/dts.rs"]
+      "runners": [
+        "cli-dts",
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/dts.rs"
+      ]
     },
     "dts-overload-selection": {
       "availability": "current",
       "phase": "convert",
-      "runners": ["cli-dts"],
-      "evidence": ["crates/seseragi-cli/tests/dts.rs"]
+      "runners": [
+        "cli-dts"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/dts.rs"
+      ]
     },
     "dts-unsupported-any": {
       "availability": "current",
       "phase": "diagnostic",
-      "runners": ["cli-dts"],
-      "evidence": ["crates/seseragi-cli/tests/dts.rs"]
+      "runners": [
+        "cli-dts"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/dts.rs"
+      ]
     },
     "effect-concurrency-primitives": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "effect-match": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -134,7 +213,10 @@
     "effect-resource-scope": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -143,7 +225,10 @@
     "effect-stream-simultaneous-failure": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -152,13 +237,20 @@
     "effect-tail-recursion": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "effect-temporal-control": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -167,7 +259,10 @@
     "effect-until": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -176,7 +271,10 @@
     "entry-rooted-runtime": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -185,94 +283,151 @@
     "file-multipart-browser-e2e": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build"],
-      "evidence": ["apps/playground/tests/file-multipart-browser.test.ts"]
+      "runners": [
+        "cli-build"
+      ],
+      "evidence": [
+        "apps/playground/tests/file-multipart-browser.test.ts"
+      ]
     },
     "file-target-mismatch": {
       "availability": "current",
       "phase": "diagnostic",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "filesystem-temporary-cleanup": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "foreign-failure-phases": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "foreign-pure-load": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "foreign-string-scalars": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "foreign-task-load": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "foreign-task-single-flight": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "foreign-web-load": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build"],
-      "evidence": ["crates/seseragi-cli/tests/build.rs"]
+      "runners": [
+        "cli-build"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/build.rs"
+      ]
     },
     "hkt-erasure": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "http-non-success-response": {
       "availability": "contract-only",
       "phase": "run",
-      "runners": ["planned-conformance"]
+      "runners": [
+        "planned-conformance"
+      ]
     },
     "http-stream-events": {
       "availability": "contract-only",
       "phase": "run",
-      "runners": ["planned-conformance"]
+      "runners": [
+        "planned-conformance"
+      ]
     },
     "imported-derived-json-codecs": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "imported-derived-show-debug": {
       "availability": "contract-only",
       "phase": "run",
-      "runners": ["planned-conformance"]
+      "runners": [
+        "planned-conformance"
+      ]
     },
     "imported-derived-structural": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "inline-polymorphic-inference": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -281,25 +436,40 @@
     "list-cons": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "local-effect-fn": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "local-rec": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "logical-short-circuit": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -308,34 +478,51 @@
     "maybe-fallback": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "module-generic-nominal-identity": {
       "availability": "current",
       "phase": "run",
-      "runners": ["wasm-project"],
-      "evidence": ["apps/playground/tests/playground.integration.test.ts"]
+      "runners": [
+        "wasm-project"
+      ],
+      "evidence": [
+        "apps/playground/tests/playground.integration.test.ts"
+      ]
     },
     "modules-cycle": {
       "availability": "contract-only",
       "phase": "diagnostic",
-      "runners": ["planned-conformance"]
+      "runners": [
+        "planned-conformance"
+      ]
     },
     "modules-private-access": {
       "availability": "contract-only",
       "phase": "diagnostic",
-      "runners": ["planned-conformance"]
+      "runners": [
+        "planned-conformance"
+      ]
     },
     "modules-reexport-run": {
       "availability": "contract-only",
       "phase": "run",
-      "runners": ["planned-conformance"]
+      "runners": [
+        "planned-conformance"
+      ]
     },
     "monoid-wrappers": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -344,7 +531,10 @@
     "namespaced-reduce-rejection": {
       "availability": "current",
       "phase": "diagnostic",
-      "runners": ["cli-build", "wasm-project"],
+      "runners": [
+        "cli-build",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/build.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -353,18 +543,26 @@
     "opaque-struct": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "package-invalid-manifest": {
       "availability": "contract-only",
       "phase": "diagnostic",
-      "runners": ["planned-conformance"]
+      "runners": [
+        "planned-conformance"
+      ]
     },
     "package-path-dependency": {
       "availability": "current",
       "phase": "run",
-      "runners": ["project-loader"],
+      "runners": [
+        "project-loader"
+      ],
       "evidence": [
         "crates/seseragi-project/src/local_project/tests.rs",
         "crates/seseragi-driver/src/local_project.rs"
@@ -373,7 +571,10 @@
     "package-path-dependency-basic": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "project-loader"],
+      "runners": [
+        "cli-run",
+        "project-loader"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "crates/seseragi-driver/src/local_project.rs"
@@ -382,36 +583,60 @@
     "package-stale-lock": {
       "availability": "current",
       "phase": "diagnostic",
-      "runners": ["project-loader"],
-      "evidence": ["crates/seseragi-project/src/lockfile/tests.rs"]
+      "runners": [
+        "project-loader"
+      ],
+      "evidence": [
+        "crates/seseragi-project/src/lockfile/tests.rs"
+      ]
     },
     "package-undeclared-dependency": {
       "availability": "contract-only",
       "phase": "diagnostic",
-      "runners": ["planned-conformance"]
+      "runners": [
+        "planned-conformance"
+      ]
     },
     "performance-profile-equivalence": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build", "cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/profiles.rs"]
+      "runners": [
+        "cli-build",
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/profiles.rs"
+      ]
     },
     "performance-release-shapes": {
       "availability": "current",
       "phase": "compile",
-      "runners": ["cli-build", "cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/profiles.rs"]
+      "runners": [
+        "cli-build",
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/profiles.rs"
+      ]
     },
     "performance-stack-safety": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build", "cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/profiles.rs"]
+      "runners": [
+        "cli-build",
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/profiles.rs"
+      ]
     },
     "postgres-application": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build", "cli-run"],
+      "runners": [
+        "cli-build",
+        "cli-run"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/build.rs",
         "crates/seseragi-cli/tests/run.rs"
@@ -420,7 +645,10 @@
     "prelude-reduce-lambda": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -429,49 +657,80 @@
     "process-shutdown-cancel": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "process-shutdown-forward": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "production-reachability": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build"],
-      "evidence": ["crates/seseragi-cli/tests/production.rs"]
+      "runners": [
+        "cli-build"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/production.rs"
+      ]
     },
     "provider-http-client-e2e": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "provider-http-server-e2e": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "provider-websocket-e2e": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "random-seed": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "random-shuffle": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -480,18 +739,27 @@
     "signal-transaction-lifetime": {
       "availability": "contract-only",
       "phase": "run",
-      "runners": ["planned-conformance"]
+      "runners": [
+        "planned-conformance"
+      ]
     },
     "source-map-rejection": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "sqlite-application": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build", "cli-run"],
+      "runners": [
+        "cli-build",
+        "cli-run"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/build.rs",
         "crates/seseragi-cli/tests/run.rs"
@@ -500,13 +768,20 @@
     "sse-server-client-e2e": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "standard-evidence-parity": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -515,7 +790,12 @@
     "std-parity-portable": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build", "cli-run", "lsp-project", "wasm-project"],
+      "runners": [
+        "cli-build",
+        "cli-run",
+        "lsp-project",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/build.rs",
         "crates/seseragi-cli/tests/run.rs",
@@ -526,7 +806,10 @@
     "std-parity-target": {
       "availability": "current",
       "phase": "diagnostic",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -535,13 +818,20 @@
     "stdin-lines": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "stream-cold-resource": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -550,30 +840,47 @@
     "struct-field-generic-identity": {
       "availability": "current",
       "phase": "run",
-      "runners": ["wasm-project"],
-      "evidence": ["apps/playground/tests/playground.integration.test.ts"]
+      "runners": [
+        "wasm-project"
+      ],
+      "evidence": [
+        "apps/playground/tests/playground.integration.test.ts"
+      ]
     },
     "target-capabilities": {
       "availability": "contract-only",
       "phase": "tooling",
-      "runners": ["planned-tooling"]
+      "runners": [
+        "planned-tooling"
+      ]
     },
     "test-discovery": {
       "availability": "current",
       "phase": "test",
-      "runners": ["cli-test"],
-      "evidence": ["crates/seseragi-cli/src/test.rs"]
+      "runners": [
+        "cli-test"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/src/test.rs"
+      ]
     },
     "timezones-dst": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run"],
-      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+      "runners": [
+        "cli-run"
+      ],
+      "evidence": [
+        "crates/seseragi-cli/tests/run.rs"
+      ]
     },
     "transformers": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -582,7 +889,10 @@
     "typeclass-operator-parity": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-run", "wasm-project"],
+      "runners": [
+        "cli-run",
+        "wasm-project"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/run.rs",
         "apps/playground/tests/playground.integration.test.ts"
@@ -591,20 +901,36 @@
     "typescript-abi-constrained": {
       "availability": "contract-only",
       "phase": "diagnostic",
-      "runners": ["planned-tooling"]
+      "runners": [
+        "planned-tooling"
+      ]
     },
     "typescript-abi-generic": {
       "availability": "contract-only",
       "phase": "tooling",
-      "runners": ["planned-tooling"]
+      "runners": [
+        "planned-tooling"
+      ]
     },
     "web-assets": {
       "availability": "current",
       "phase": "run",
-      "runners": ["cli-build"],
+      "runners": [
+        "cli-build"
+      ],
       "evidence": [
         "crates/seseragi-cli/tests/build.rs",
         "crates/seseragi-cli/tests/dev.rs"
+      ]
+    },
+    "web-scene-interaction": {
+      "availability": "current",
+      "phase": "compile",
+      "runners": [
+        "cli-build"
+      ],
+      "evidence": [
+        "apps/playground/tests/web-scene-interaction-browser.test.ts"
       ]
     }
   }
