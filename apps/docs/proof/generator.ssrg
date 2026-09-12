@@ -1,0 +1,20 @@
+import * as html from "std/web/html"
+
+type Action = | Unused
+
+fn page title: String -> text: String -> html.Html<Action> = html.html {
+  lang: "en",
+  children: [
+    html.head { children: [html.title { children: title }] },
+    html.body {
+      children: [html.main { children: [html.h1 { children: title }, html.p { children: text }] }]
+    }
+  ]
+}
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  println $
+    "<!doctype html>" + html.renderToString (page "Seseragi Docs" "Hello <Seseragi> & friends")
+  println $
+    "<!doctype html>" + html.renderToString (page "Language Guide" "Values & expressions")
+}

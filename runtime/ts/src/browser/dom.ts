@@ -1,5 +1,6 @@
 import {
   createDomMount,
+  createDomObservation,
   createDomTarget,
   type Dom,
   type DomBinding,
@@ -7,10 +8,12 @@ import {
   type DomDispatch,
   type DomError,
   type DomMount,
+  type DomObservation,
   type DomOptions,
   type DomRuntimeError,
   type DomTarget,
   domTargetValue,
+  type ElementRect,
 } from "../dom"
 import { type Unit, unit } from "../effect"
 import {
@@ -77,10 +80,21 @@ export const BROWSER_DOM_EVENT_BINDINGS = /* @__PURE__ */ Object.freeze([
     capture: false,
   }),
   Object.freeze({
+    nativeKind: "pointermove",
+    handlerKind: "pointermove",
+    capture: false,
+  }),
+  Object.freeze({
     nativeKind: "pointerup",
     handlerKind: "pointerup",
     capture: false,
   }),
+  Object.freeze({
+    nativeKind: "pointercancel",
+    handlerKind: "pointercancel",
+    capture: false,
+  }),
+  Object.freeze({ nativeKind: "wheel", handlerKind: "wheel", capture: false }),
   Object.freeze({
     nativeKind: "dblclick",
     handlerKind: "dblclick",
@@ -176,6 +190,128 @@ export function createBrowserDom(
         })
       }
       return serviceSuccess(createDomTarget(target))
+    },
+    capturePointer(target, pointerId) {
+      const element = domTargetValue(target)
+      if (!(element instanceof document.defaultView!.Element)) {
+        return serviceFailure<DomError>({
+          tag: "DomOperationFailed",
+          value: "invalid DOM target",
+        })
+      }
+      if (!element.isConnected) {
+        return serviceFailure<DomError>({ tag: "DomTargetRemoved" })
+      }
+      try {
+        element.setPointerCapture(pointerId)
+        return serviceSuccess(unit)
+      } catch (error) {
+        return serviceFailure(domOperationFailure(error))
+      }
+    },
+    releasePointer(target, pointerId) {
+      const element = domTargetValue(target)
+      if (!(element instanceof document.defaultView!.Element)) {
+        return serviceFailure<DomError>({
+          tag: "DomOperationFailed",
+          value: "invalid DOM target",
+        })
+      }
+      if (!element.isConnected) {
+        return serviceFailure<DomError>({ tag: "DomTargetRemoved" })
+      }
+      try {
+        element.releasePointerCapture(pointerId)
+        return serviceSuccess(unit)
+      } catch (error) {
+        return serviceFailure(domOperationFailure(error))
+      }
+    },
+    measure(target) {
+      const element = domTargetValue(target)
+      if (!(element instanceof document.defaultView!.Element)) {
+        return serviceFailure<DomError>({
+          tag: "DomOperationFailed",
+          value: "invalid DOM target",
+        })
+      }
+      if (!element.isConnected) {
+        return serviceFailure<DomError>({ tag: "DomTargetRemoved" })
+      }
+      return serviceSuccess(rectSnapshot(element.getBoundingClientRect()))
+    },
+    observeResize<Failure>(
+      target: DomTarget,
+      callback: (rect: ElementRect) => Promise<ServiceResult<Failure, Unit>>
+    ): ServiceResult<DomError, DomObservation<Failure>> {
+      const element = domTargetValue(target)
+      if (!(element instanceof document.defaultView!.Element)) {
+        return serviceFailure<DomError>({
+          tag: "DomOperationFailed",
+          value: "invalid DOM target",
+        })
+      }
+      if (!element.isConnected) {
+        return serviceFailure<DomError>({ tag: "DomTargetRemoved" })
+      }
+      const ResizeObserver = document.defaultView!.ResizeObserver
+      if (ResizeObserver === undefined) {
+        return serviceFailure<DomError>({
+          tag: "DomOperationFailed",
+          value: "ResizeObserver is unavailable",
+        })
+      }
+      let settled = false
+      let releaseCancellation: (() => void) | undefined
+      let resolveCompletion!: (result: ServiceResult<Failure, Unit>) => void
+      const completion = new Promise<ServiceResult<Failure, Unit>>(
+        (resolve) => {
+          resolveCompletion = resolve
+        }
+      )
+      let callbackQueue = Promise.resolve()
+      const observer = new ResizeObserver((entries) => {
+        if (settled) return
+        const entry = entries.find((candidate) => candidate.target === element)
+        if (entry === undefined) return
+        const snapshot = rectSnapshot(element.getBoundingClientRect())
+        callbackQueue = callbackQueue.then(async () => {
+          if (settled) return
+          const result = await callback(snapshot)
+          if (result.kind === "failure") finish(result)
+        })
+      })
+      const finish = (result: ServiceResult<Failure, Unit>): void => {
+        if (settled) return
+        settled = true
+        observer.disconnect()
+        releaseCancellation?.()
+        releaseCancellation = undefined
+        disposers.delete(dispose)
+        resolveCompletion(result)
+      }
+      const dispose = async (): Promise<void> => {
+        finish(serviceSuccess(unit))
+        await callbackQueue
+      }
+      observer.observe(element)
+      disposers.add(dispose)
+      return serviceSuccess(
+        createDomObservation<Failure>(
+          Object.freeze({
+            awaitResult: () => completion,
+            disconnect: dispose,
+            bindCancellation(release) {
+              if (settled) {
+                release()
+                return
+              }
+              releaseCancellation?.()
+              releaseCancellation = release
+            },
+          })
+        )
+      )
     },
     mount<Failure, Action>(
       options: DomOptions,
@@ -785,6 +921,19 @@ function domOperationFailure(error: unknown): DomError {
     tag: "DomOperationFailed",
     value: error instanceof Error ? error.message : String(error),
   }
+}
+
+function rectSnapshot(rect: DOMRectReadOnly): ElementRect {
+  return Object.freeze({
+    x: rect.x,
+    y: rect.y,
+    width: rect.width,
+    height: rect.height,
+    top: rect.top,
+    right: rect.right,
+    bottom: rect.bottom,
+    left: rect.left,
+  })
 }
 
 function bindingTarget(

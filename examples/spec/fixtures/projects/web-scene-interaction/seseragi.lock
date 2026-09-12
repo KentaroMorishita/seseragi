@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/web-scene-interaction@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/web-scene-interaction@0.0.0#workspace:."
+name = "fixture/web-scene-interaction"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:40e8193559211cdd13b405054f71d48d9f353ce6d723d2e2ad7beb0ed3b1b880"
+content_digest = "sha256:b67218ed39d4c94bfc6da92067b571c6f49837a4f84f63f31aff02e4da3f4ac4"
+dependencies = []

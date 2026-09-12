@@ -825,3 +825,67 @@ eventsは一件のdispatch Effectと、それが起こした全Signal transactio
 selectorが0件または複数件、event fieldの型違い、afterHtml不一致、program終了前の未送信event、expected resource数の
 不一致はfixture failureです。programがevent処理中に終了した場合はそのeventを完了させてcleanupを待ち、後続eventを
 送信しません。real browser、network、wall clockへfallbackせず、scenario外のhost mutationを生成しません。
+
+### Document metadata
+
+`html.meta`はchildrenを持たないvoid elementです。共通propsに加え、optionalな
+`charSet: String`、`name: String`、`content: String`、`httpEquiv: String`を受け取ります。
+SSR / DOMはこの順に`charset`、`name`、`content`、`http-equiv`へ投影し、attribute値を
+一度だけescapeします。省略したpropは出力しません。これらのattribute名はcustom
+`attribute`で再定義できません。viewport、description、文字encoding等のdocument
+metadataをpure Htmlのまま表現できます。
+
+## 13.13 SVG sceneとbrowser interaction capability
+
+`std/web/svg`はHTML tagとは別のnamespace-owned pure treeを提供します。`Svg<Action>`はhost
+`SVGElement`を保持せず、`svg`、`g`、`rect`、`path`、`circle`、`line`、`polyline`、`polygon`、
+`text`でsceneを構築します。`toHtml`だけがSVG rootを`Html<Action>`へ明示変換し、HTML moduleへ
+SVG tagを追加したり、任意tag名からnamespaceを推測したりしません。SSRとbrowser DOMは同じSVG
+markupを使い、browser parserが子孫へSVG namespaceを継承します。
+
+pointer lifecycleは`onPointerDown`、`onPointerMove`、`onPointerUp`、`onPointerCancel`を同じ
+immutable `PointerEvent` snapshotと`EventAction<Action>` contractで扱います。`onWheel`は次の
+snapshotを使います。
+
+```seseragi
+opaque struct WheelEvent {
+  deltaX: Float,
+  deltaY: Float,
+  deltaZ: Float,
+  deltaMode: Int,
+  clientX: Float,
+  clientY: Float,
+  altKey: Bool,
+  controlKey: Bool,
+  metaKey: Bool,
+  shiftKey: Bool
+}
+```
+
+wheel mapperはnative listener内で同期評価し、`DispatchPreventDefault`等のbrowser controlをActionの
+enqueue前に適用します。pointer move/cancelとwheel handlerはSSR attributeへ出力せず、mount中の
+delegated listener tableだけに存在します。
+
+`std/web/dom`はscene interactionに必要なhost操作を明示Effectとして提供します。
+
+```seseragi
+fn capturePointer target: DomTarget -> pointerId: Int
+  -> Effect<{ dom: Dom }, DomError, Unit>
+fn releasePointer target: DomTarget -> pointerId: Int
+  -> Effect<{ dom: Dom }, DomError, Unit>
+fn measure target: DomTarget
+  -> Effect<{ dom: Dom }, DomError, ElementRect>
+fn observeResize<R, Failure> target: DomTarget
+  -> callback: (ElementRect -> Effect<R, Failure, Unit>)
+  -> Effect<R & { dom: Dom }, DomError, DomObservation<Failure>>
+fn awaitObservation observation: DomObservation<Failure>
+  -> Effect<{}, Failure, Unit>
+fn disconnect observation: DomObservation<Failure>
+  -> Effect<{}, Never, Unit>
+```
+
+`ElementRect`は一回の`getBoundingClientRect`から`x`、`y`、`width`、`height`、`top`、`right`、
+`bottom`、`left`をimmutable snapshotにします。`observeResize`は一つの`DomTarget`だけを観測し、
+callbackを到着順に直列実行します。callback failureは`awaitObservation`のtyped failureになり、
+`disconnect`、Effect cancellation、browser host disposalのいずれでもobserverを一度だけ解除します。
+removed target、不正target、利用不能なResizeObserver、native DOM operation failureは`DomError`です。

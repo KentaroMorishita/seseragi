@@ -1,0 +1,202 @@
+import * as dom from "std/web/dom"
+import * as effects from "std/effect"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import * as svg from "std/web/svg"
+
+type Action =
+  | PointerStarted (Int, Float, Float)
+  | PointerMoved (Int, Float, Float)
+  | PointerEnded Int
+  | PointerCancelled Int
+  | Wheeled Float
+  | Resized dom.ElementRect
+  | Stop
+
+struct SceneState {
+  x: Float,
+  y: Float,
+  committedX: Float,
+  activePointers: Int,
+  zoom: Float,
+  cancelled: Bool,
+  width: Float,
+  height: Float
+}
+
+let initialState = SceneState {
+  x: 40.0,
+  y: 50.0,
+  committedX: 40.0,
+  activePointers: 0,
+  zoom: 1.0,
+  cancelled: False,
+  width: 0.0,
+  height: 0.0
+}
+
+fn pointerStarted event: html.PointerEvent -> html.EventAction<Action> =
+  html.DispatchPreventDefault (PointerStarted (
+    event.pointerId,
+    event.clientX,
+    event.clientY
+  ))
+
+fn pointerMoved event: html.PointerEvent -> html.EventAction<Action> =
+  html.DispatchPreventDefault (PointerMoved (
+    event.pointerId,
+    event.clientX,
+    event.clientY
+  ))
+
+fn pointerEnded event: html.PointerEvent -> html.EventAction<Action> =
+  html.Dispatch (PointerEnded event.pointerId)
+
+fn pointerCancelled event: html.PointerEvent -> html.EventAction<Action> =
+  html.Dispatch (PointerCancelled event.pointerId)
+
+fn wheeled event: html.WheelEvent -> html.EventAction<Action> =
+  html.DispatchPreventDefault (Wheeled event.deltaY)
+
+fn reduce action: Action -> state: SceneState -> SceneState = match action {
+  PointerStarted (_pointerId, clientX, clientY) -> SceneState {
+    ...state,
+    x: clientX,
+    y: clientY,
+    activePointers: state.activePointers + 1,
+    cancelled: False
+  }
+  PointerMoved (_pointerId, clientX, clientY) ->
+    if state.activePointers > 1 then
+      SceneState { ...state, zoom: state.zoom + 0.25 }
+    else
+      SceneState { ...state, x: clientX, y: clientY }
+  PointerEnded _pointerId -> SceneState {
+    ...state,
+    committedX: state.x,
+    activePointers:
+      if state.activePointers > 0 then
+        state.activePointers - 1
+      else
+        0
+  }
+  PointerCancelled _pointerId -> SceneState {
+    ...state,
+    x: state.committedX,
+    activePointers: 0,
+    cancelled: True
+  }
+  Wheeled deltaY -> SceneState { ...state, zoom: state.zoom - deltaY / 100.0 }
+  Resized rect -> SceneState { ...state, width: rect.width, height: rect.height }
+  Stop -> state
+}
+
+fn updateState state: signals.MutableSignal<SceneState>
+  -> action: Action
+  -> Effect<{ dom: dom.Dom }, dom.DomError, Unit> =
+  signals.update (reduce action) state
+  |> effects.mapError (\_never: Never -> dom.DomOperationFailed "unreachable")
+  |> effects.provideSome (\_environment: { dom: dom.Dom } -> {})
+
+fn dispatch state: signals.MutableSignal<SceneState>
+  -> action: Action
+  -> Effect<{ dom: dom.Dom }, dom.DomError, Unit> =
+  match action {
+    PointerStarted (pointerId, _x, _y) -> do {
+      target <- dom.query "#scene"
+      dom.capturePointer target pointerId
+      updateState state action
+    }
+    PointerEnded pointerId -> do {
+      target <- dom.query "#scene"
+      dom.releasePointer target pointerId
+      updateState state action
+    }
+    PointerCancelled pointerId -> do {
+      target <- dom.query "#scene"
+      dom.releasePointer target pointerId
+      updateState state action
+    }
+    Stop -> effects.fail (dom.DomOperationFailed "stop requested")
+    _ -> updateState state action
+  }
+
+fn status state: SceneState -> String =
+  "x=" + show state.x + ";y=" + show state.y + ";pointers=" + show state.activePointers + ";zoom=" + show state.zoom + ";cancelled=" + show state.cancelled + ";size=" + show state.width + "x" + show state.height
+
+fn scene unit: Unit -> html.Html<Action> = svg.svg {
+  id: "scene",
+  role: "application",
+  ariaLabel: "Interactive diagram scene",
+  viewBox: "0 0 400 200",
+  width: 320.0,
+  height: 200.0,
+  onPointerDown: pointerStarted,
+  onPointerMove: pointerMoved,
+  onPointerUp: pointerEnded,
+  onPointerCancel: pointerCancelled,
+  onWheel: wheeled,
+  children: [svg.g {
+    id: "camera",
+    children: [
+      svg.path {
+        id: "relation-hit-corridor",
+        d: "M 40 50 L 220 120",
+        fill: "none",
+        stroke: "transparent",
+        strokeWidth: "16"
+      },
+      svg.rect {
+        id: "node",
+        x: 20.0,
+        y: 30.0,
+        width: 80.0,
+        height: 40.0,
+        rx: 8.0,
+        fill: "#117f6b"
+      },
+      svg.text {
+        id: "label",
+        x: 60.0,
+        y: 50.0,
+        textAnchor: "middle",
+        dominantBaseline: "middle",
+        fill: "white",
+        children: "Seseragi"
+      }
+    ]
+  }]
+}
+  |> svg.toHtml
+
+fn content state: signals.MutableSignal<SceneState> -> dom.DomContent<Action> =
+  dom.content (html.div {
+    children: [
+      scene (),
+      html.p { id: "status", children: "starting" },
+      html.button { id: "stop", onClick: Stop, children: "stop" }
+    ]
+  }) [
+    dom.bindAttribute "#camera" "transform"
+      (signals.map (\value -> Just ("scale(" + show value.zoom + ")")) state),
+    dom.bindAttribute "#node" "x" (signals.map (\value -> Just (show value.x)) state),
+    dom.bindAttribute "#node" "y" (signals.map (\value -> Just (show value.y)) state),
+    dom.bindText "#status" (signals.map status state)
+  ]
+
+fn observe state: signals.MutableSignal<SceneState>
+  -> rect: dom.ElementRect
+  -> Effect<{ dom: dom.Dom }, dom.DomError, Unit> =
+  updateState state (Resized rect)
+
+pub effect fn main -> Unit with dom: dom.Dom fails dom.DomError = do {
+  root <- dom.query "#app"
+  state <- signals.make initialState
+  mounted <- dom.mountContent (dom.defaultOptions ()) root (dispatch state) (content state)
+  target <- dom.query "#scene"
+  initialRect <- dom.measure target
+  updateState state (Resized initialRect)
+  observation <- dom.observeResize target (observe state)
+  _result <- effects.attempt (dom.awaitMount mounted)
+  dom.disconnect observation
+}

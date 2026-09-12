@@ -64,6 +64,15 @@
     },
     {
       "arity": 0,
+      "spelling": "WheelEvent",
+      "canonical": "std/web/html::WheelEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "WheelEvent"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "ScrollEvent",
       "canonical": "std/web/html::ScrollEvent",
       "provider": {
@@ -1004,7 +1013,7 @@
               "symbol": "std/prelude::Left",
               "argument": {
                 "kind": "binding",
-                "symbol": 50,
+                "symbol": 51,
                 "name": "error",
                 "type": {
                   "kind": "external-named",
@@ -1103,7 +1112,7 @@
               "symbol": "std/prelude::Right",
               "argument": {
                 "kind": "binding",
-                "symbol": 53,
+                "symbol": 54,
                 "name": "markUrl",
                 "type": {
                   "kind": "external-named",
@@ -1302,7 +1311,7 @@
               "symbol": "std/prelude::Left",
               "argument": {
                 "kind": "binding",
-                "symbol": 56,
+                "symbol": 57,
                 "name": "error",
                 "type": {
                   "kind": "external-named",
@@ -1401,7 +1410,7 @@
               "symbol": "std/prelude::Right",
               "argument": {
                 "kind": "binding",
-                "symbol": 57,
+                "symbol": 58,
                 "name": "docsUrl",
                 "type": {
                   "kind": "external-named",
@@ -1689,7 +1698,7 @@
               "symbol": "std/prelude::Left",
               "argument": {
                 "kind": "binding",
-                "symbol": 60,
+                "symbol": 61,
                 "name": "error",
                 "type": {
                   "kind": "external-named",

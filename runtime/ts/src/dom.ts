@@ -27,6 +27,7 @@ import type { Maybe } from "./sum"
 
 const DOM_TARGET = Symbol("seseragi.dom-target")
 const DOM_MOUNT = Symbol("seseragi.dom-mount")
+const DOM_OBSERVATION = Symbol("seseragi.dom-observation")
 const DOM_CONTENT = Symbol("seseragi.dom-content")
 const DOM_BINDING = Symbol("seseragi.dom-binding")
 
@@ -115,6 +116,17 @@ export type DomDispatch<Failure, Action> = (
   action: Action
 ) => Promise<EffectResult<Failure, Unit>>
 
+export type ElementRect = Readonly<{
+  readonly x: number
+  readonly y: number
+  readonly width: number
+  readonly height: number
+  readonly top: number
+  readonly right: number
+  readonly bottom: number
+  readonly left: number
+}>
+
 type PhantomAction<Action> = Readonly<{ readonly __action?: Action }>
 
 export type DomContent<Action> = PhantomAction<Action> &
@@ -181,8 +193,33 @@ export type DomMount<Failure> = Readonly<{
   readonly [DOM_MOUNT]: DomMountControl<Failure>
 }>
 
+type DomObservationControl<Failure> = Readonly<{
+  readonly awaitResult: () => Promise<ServiceResult<Failure, Unit>>
+  readonly disconnect: () => Promise<void>
+  readonly bindCancellation: (release: () => void) => void
+}>
+
+export type DomObservation<Failure> = Readonly<{
+  readonly [DOM_OBSERVATION]: DomObservationControl<Failure>
+}>
+
 export type Dom = {
   readonly query: (selector: string) => ServiceOperation<DomError, DomTarget>
+  readonly capturePointer: (
+    target: DomTarget,
+    pointerId: number
+  ) => ServiceOperation<DomError, Unit>
+  readonly releasePointer: (
+    target: DomTarget,
+    pointerId: number
+  ) => ServiceOperation<DomError, Unit>
+  readonly measure: (
+    target: DomTarget
+  ) => ServiceOperation<DomError, ElementRect>
+  readonly observeResize: <Failure>(
+    target: DomTarget,
+    callback: (rect: ElementRect) => Promise<EffectResult<Failure, Unit>>
+  ) => ServiceOperation<DomError, DomObservation<Failure>>
   readonly mount: <Failure, Action>(
     options: DomOptions,
     target: DomTarget,
@@ -222,6 +259,70 @@ export function query(
   return serviceEffect((environment: DomEnvironment) =>
     environment.dom.query(selector)
   )
+}
+
+export function capturePointer(
+  target: DomTarget,
+  pointerId: number
+): Effect<DomEnvironment, DomError, Unit> {
+  return serviceEffect((environment: DomEnvironment) =>
+    environment.dom.capturePointer(target, pointerId)
+  )
+}
+
+export function releasePointer(
+  target: DomTarget,
+  pointerId: number
+): Effect<DomEnvironment, DomError, Unit> {
+  return serviceEffect((environment: DomEnvironment) =>
+    environment.dom.releasePointer(target, pointerId)
+  )
+}
+
+export function measure(
+  target: DomTarget
+): Effect<DomEnvironment, DomError, ElementRect> {
+  return serviceEffect((environment: DomEnvironment) =>
+    environment.dom.measure(target)
+  )
+}
+
+export function observeResize<Environment, Failure>(
+  target: DomTarget,
+  callback: (rect: ElementRect) => Effect<Environment, Failure, Unit>
+): Effect<DomRequirements<Environment>, DomError, DomObservation<Failure>> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    throwIfCancelled(activeContext)
+    const result = await environment.dom.observeResize(target, (rect) =>
+      runEffect(callback(rect), environment as Environment, activeContext)
+    )
+    if (result.kind === "failure") {
+      return fail(result.error)(environment, activeContext)
+    }
+    const observation = result.value
+    const release = activeContext.onCancel(() =>
+      domObservationControl(observation).disconnect()
+    )
+    domObservationControl(observation).bindCancellation(release)
+    throwIfCancelled(activeContext)
+    return observation
+  }
+}
+
+export function awaitObservation<Failure>(
+  observation: DomObservation<Failure>
+): Effect<{}, Failure, Unit> {
+  return serviceEffect(() => domObservationControl(observation).awaitResult())
+}
+
+export function disconnect<Failure>(
+  observation: DomObservation<Failure>
+): Effect<{}, never, Unit> {
+  return async () => {
+    await domObservationControl(observation).disconnect()
+    return unit
+  }
 }
 
 export function mount<Environment, Failure, Action>(
@@ -488,8 +589,21 @@ export function createDomMount<Failure>(
   return Object.freeze({ [DOM_MOUNT]: control })
 }
 
+/** Host-adapter boundary; never exposed as a Seseragi value constructor. */
+export function createDomObservation<Failure>(
+  control: DomObservationControl<Failure>
+): DomObservation<Failure> {
+  return Object.freeze({ [DOM_OBSERVATION]: control })
+}
+
 function domMountControl<Failure>(
   mounted: DomMount<Failure>
 ): DomMountControl<Failure> {
   return mounted[DOM_MOUNT]
+}
+
+function domObservationControl<Failure>(
+  observation: DomObservation<Failure>
+): DomObservationControl<Failure> {
+  return observation[DOM_OBSERVATION]
 }

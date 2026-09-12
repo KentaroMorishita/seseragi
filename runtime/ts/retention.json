@@ -93,6 +93,7 @@
     "src/stdin-service.ts": "pure-helper",
     "src/stdin.ts": "entry-owned-behavior",
     "src/storage.ts": "pure-helper",
+    "src/svg.ts": "pure-helper",
     "src/stream.ts": "pure-helper",
     "src/string.ts": "pure-helper",
     "src/sum.ts": "pure-helper",

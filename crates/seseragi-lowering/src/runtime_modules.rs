@@ -57,6 +57,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/entropy",
     "std/fs",
     "std/web/html",
+    "std/web/svg",
     "std/web/file",
     "std/web/navigation",
     "std/web/storage",
@@ -92,6 +93,7 @@ mod tests {
     #[test]
     fn recognizes_compiler_owned_runtime_modules() {
         assert!(is_runtime_provided_module("std/web/html"));
+        assert!(is_runtime_provided_module("std/web/svg"));
         assert!(is_runtime_provided_module("std/web/file"));
         assert!(is_runtime_provided_module("std/web/dom"));
         assert!(is_runtime_provided_module("std/signal"));

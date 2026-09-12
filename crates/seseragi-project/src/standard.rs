@@ -12,6 +12,7 @@ const ORIGIN: ByteSpan = ByteSpan { start: 0, end: 0 };
 pub enum StandardHtmlTagKind {
     Element,
     VoidElement,
+    Meta,
     Link,
     Anchor,
     Image,
@@ -58,7 +59,7 @@ pub const STANDARD_HTML_TAGS: &[StandardHtmlTag] = &[
     html_tag!("head", Element),
     html_tag!("body", Element),
     html_tag!("title", Element),
-    html_tag!("meta", VoidElement, void),
+    html_tag!("meta", Meta, void),
     html_tag!("link", Link, void),
     html_tag!("header", Element),
     html_tag!("footer", Element),
@@ -234,6 +235,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     available_module!("std/array", array_interface, PORTABLE_TARGETS),
     available_module!("std/list", list_interface, PORTABLE_TARGETS),
     available_module!("std/web/html", web_html_interface, PORTABLE_TARGETS),
+    available_module!("std/web/svg", web_svg_interface, PORTABLE_TARGETS),
     available_module!("std/web/file", web_file_interface, BROWSER_TARGET),
     available_module!(
         "std/web/navigation",
@@ -7975,6 +7977,20 @@ fn web_dom_interface() -> ModuleInterface {
     let signal_html = |action: &str| signal(html(action));
     let exports = vec![
         type_export(module, "Dom", 0, "opaque-type"),
+        public_record_type_export(
+            module,
+            "ElementRect",
+            [
+                required("x", named("Float")),
+                required("y", named("Float")),
+                required("width", named("Float")),
+                required("height", named("Float")),
+                required("top", named("Float")),
+                required("right", named("Float")),
+                required("bottom", named("Float")),
+                required("left", named("Float")),
+            ],
+        ),
         opaque_adt_type_export(module, "HydrationMode", []),
         constructor_export(module, "HydrationMode", "FreshMount", [], None),
         constructor_export(module, "HydrationMode", "HydrateStrict", [], None),
@@ -7993,6 +8009,7 @@ fn web_dom_interface() -> ModuleInterface {
         ),
         type_export(module, "DomTarget", 0, "opaque-type"),
         type_export(module, "DomMount", 1, "opaque-type"),
+        type_export(module, "DomObservation", 1, "opaque-type"),
         type_export(module, "DomContent", 1, "opaque-type"),
         type_export(module, "DomBinding", 1, "opaque-type"),
         opaque_adt_type_export(module, "DomError", []),
@@ -8071,6 +8088,68 @@ fn web_dom_interface() -> ModuleInterface {
                 named("DomError"),
                 named("DomTarget"),
             ),
+        ),
+        function_export(
+            module,
+            "capturePointer",
+            [],
+            Vec::new(),
+            vec![named("DomTarget"), named("Int")],
+            effect(dom_environment.clone(), named("DomError"), named("Unit")),
+        ),
+        function_export(
+            module,
+            "releasePointer",
+            [],
+            Vec::new(),
+            vec![named("DomTarget"), named("Int")],
+            effect(dom_environment.clone(), named("DomError"), named("Unit")),
+        ),
+        function_export(
+            module,
+            "measure",
+            [],
+            Vec::new(),
+            vec![named("DomTarget")],
+            effect(
+                dom_environment.clone(),
+                named("DomError"),
+                named("ElementRect"),
+            ),
+        ),
+        function_export(
+            module,
+            "observeResize",
+            ["R", "Failure"],
+            Vec::new(),
+            vec![
+                named("DomTarget"),
+                function_type(
+                    vec![named("ElementRect")],
+                    effect(named("R"), named("Failure"), named("Unit")),
+                ),
+            ],
+            effect(
+                with_dom(named("R")),
+                named("DomError"),
+                named_with("DomObservation", vec![named("Failure")]),
+            ),
+        ),
+        function_export(
+            module,
+            "awaitObservation",
+            ["Failure"],
+            Vec::new(),
+            vec![named_with("DomObservation", vec![named("Failure")])],
+            effect(record([]), named("Failure"), named("Unit")),
+        ),
+        function_export(
+            module,
+            "disconnect",
+            ["Failure"],
+            Vec::new(),
+            vec![named_with("DomObservation", vec![named("Failure")])],
+            effect(record([]), named("Never"), named("Unit")),
         ),
         function_export(
             module,
@@ -8721,6 +8800,145 @@ pub fn is_standard_module(specifier: &str) -> bool {
         .any(|module| module.specifier == specifier)
 }
 
+fn web_svg_interface() -> ModuleInterface {
+    let module = "std/web/svg";
+    let svg = || named_with("Svg", vec![named("Action")]);
+    let event_action = || {
+        external_type(
+            "EventAction",
+            "std/web/html::EventAction",
+            "std/web/html",
+            "EventAction",
+            vec![named("Action")],
+        )
+    };
+    let event = |name: &str| {
+        external_type(
+            name,
+            &format!("std/web/html::{name}"),
+            "std/web/html",
+            name,
+            Vec::new(),
+        )
+    };
+    let common_props = || {
+        vec![
+            optional("id", named("String")),
+            optional("class", named("String")),
+            optional("role", named("String")),
+            optional("ariaLabel", named("String")),
+            optional("transform", named("String")),
+            optional("fill", named("String")),
+            optional("stroke", named("String")),
+            optional("strokeWidth", named("String")),
+            optional("strokeLinecap", named("String")),
+            optional("strokeLinejoin", named("String")),
+            optional("pointerEvents", named("String")),
+            optional(
+                "onPointerDown",
+                function_type(vec![event("PointerEvent")], event_action()),
+            ),
+            optional(
+                "onPointerMove",
+                function_type(vec![event("PointerEvent")], event_action()),
+            ),
+            optional(
+                "onPointerUp",
+                function_type(vec![event("PointerEvent")], event_action()),
+            ),
+            optional(
+                "onPointerCancel",
+                function_type(vec![event("PointerEvent")], event_action()),
+            ),
+            optional(
+                "onWheel",
+                function_type(vec![event("WheelEvent")], event_action()),
+            ),
+        ]
+    };
+    let numeric_props = || {
+        [
+            "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "ry", "width", "height",
+            "opacity",
+        ]
+        .into_iter()
+        .map(|name| optional(name, named("Float")))
+        .collect::<Vec<_>>()
+    };
+    let container_props = |root: bool| {
+        let mut fields = common_props();
+        fields.extend(numeric_props());
+        if root {
+            fields.push(optional("viewBox", named("String")));
+            fields.push(optional("preserveAspectRatio", named("String")));
+        }
+        fields.push(required("children", named_with("Array", vec![svg()])));
+        record_vec(fields)
+    };
+    let leaf_props = |kind: &str| {
+        let mut fields = common_props();
+        fields.extend(numeric_props());
+        if kind == "path" {
+            fields.push(required("d", named("String")));
+        }
+        if kind == "polyline" || kind == "polygon" {
+            fields.push(required("points", named("String")));
+        }
+        record_vec(fields)
+    };
+    let mut text_props = common_props();
+    text_props.extend(numeric_props());
+    text_props.push(optional("textAnchor", named("String")));
+    text_props.push(optional("dominantBaseline", named("String")));
+    text_props.push(required("children", named("String")));
+
+    let mut exports = vec![type_export(module, "Svg", 1, "opaque-type")];
+    for (name, props) in [
+        ("svg", container_props(true)),
+        ("g", container_props(false)),
+        ("rect", leaf_props("rect")),
+        ("path", leaf_props("path")),
+        ("circle", leaf_props("circle")),
+        ("line", leaf_props("line")),
+        ("polyline", leaf_props("polyline")),
+        ("polygon", leaf_props("polygon")),
+        ("text", record_vec(text_props)),
+    ] {
+        exports.push(function_export(
+            module,
+            name,
+            ["Action"],
+            Vec::new(),
+            vec![props],
+            svg(),
+        ));
+    }
+    exports.push(function_export(
+        module,
+        "toHtml",
+        ["Action"],
+        Vec::new(),
+        vec![svg()],
+        external_type(
+            "Html",
+            "std/web/html::Html",
+            "std/web/html",
+            "Html",
+            vec![named("Action")],
+        ),
+    ));
+
+    ModuleInterface {
+        schema: 1,
+        module: module.to_owned(),
+        source: "std/web/svg.ssrg".to_owned(),
+        dependencies: Vec::new(),
+        exports,
+        operators: Vec::new(),
+        instances: Vec::new(),
+    }
+}
+
 fn web_html_interface() -> ModuleInterface {
     let mut exports = vec![
         type_export("std/web/html", "Html", 1, "opaque-type"),
@@ -8795,6 +9013,22 @@ fn web_html_interface() -> ModuleInterface {
                 required("clientX", named("Float")),
                 required("clientY", named("Float")),
                 required("pressure", named("Float")),
+                required("altKey", named("Bool")),
+                required("controlKey", named("Bool")),
+                required("metaKey", named("Bool")),
+                required("shiftKey", named("Bool")),
+            ],
+        ),
+        record_type_export(
+            "std/web/html",
+            "WheelEvent",
+            [
+                required("deltaX", named("Float")),
+                required("deltaY", named("Float")),
+                required("deltaZ", named("Float")),
+                required("deltaMode", named("Int")),
+                required("clientX", named("Float")),
+                required("clientY", named("Float")),
                 required("altKey", named("Bool")),
                 required("controlKey", named("Bool")),
                 required("metaKey", named("Bool")),
@@ -9177,6 +9411,7 @@ fn props_for_html_tag(tag: StandardHtmlTag) -> InterfaceType {
     match tag.kind {
         Kind::Element => element_props(),
         Kind::VoidElement => void_element_props(),
+        Kind::Meta => meta_props(),
         Kind::Link => link_props(),
         Kind::Anchor => anchor_props(),
         Kind::Image => image_props(),
@@ -9201,6 +9436,18 @@ fn element_props() -> InterfaceType {
 
 fn void_element_props() -> InterfaceType {
     record_vec(common_html_props())
+}
+
+fn meta_props() -> InterfaceType {
+    record_vec(with_fields(
+        common_html_props(),
+        [
+            optional("charSet", named("String")),
+            optional("name", named("String")),
+            optional("content", named("String")),
+            optional("httpEquiv", named("String")),
+        ],
+    ))
 }
 
 fn link_props() -> InterfaceType {
@@ -9446,8 +9693,20 @@ fn common_html_props() -> Vec<InterfaceRecordField> {
             function_type(vec![html_event_type("PointerEvent")], event_action_type()),
         ),
         optional(
+            "onPointerMove",
+            function_type(vec![html_event_type("PointerEvent")], event_action_type()),
+        ),
+        optional(
             "onPointerUp",
             function_type(vec![html_event_type("PointerEvent")], event_action_type()),
+        ),
+        optional(
+            "onPointerCancel",
+            function_type(vec![html_event_type("PointerEvent")], event_action_type()),
+        ),
+        optional(
+            "onWheel",
+            function_type(vec![html_event_type("WheelEvent")], event_action_type()),
         ),
         optional(
             "onDoubleClick",
@@ -11588,6 +11847,65 @@ mod tests {
                 .exports
                 .iter()
                 .any(|export| export.namespace == "value" && export.name == name));
+        }
+    }
+
+    #[test]
+    fn exposes_svg_scene_events_and_dom_geometry_as_separate_surfaces() {
+        let svg = standard_module_target("std/web/svg").expect("std/web/svg is available");
+        let svg_names = svg
+            .interface()
+            .exports
+            .iter()
+            .map(|export| export.name.as_str())
+            .collect::<Vec<_>>();
+        for name in [
+            "Svg", "svg", "g", "rect", "path", "circle", "line", "polyline", "polygon", "text",
+            "toHtml",
+        ] {
+            assert!(svg_names.contains(&name), "missing std/web/svg::{name}");
+        }
+
+        let html = standard_module_target("std/web/html").unwrap();
+        assert!(html
+            .interface()
+            .exports
+            .iter()
+            .any(|export| export.name == "WheelEvent"));
+        let div = html
+            .interface()
+            .exports
+            .iter()
+            .find(|export| export.namespace == "value" && export.name == "div")
+            .unwrap();
+        let InterfaceType::Function { parameter, .. } = &div.scheme.type_ref else {
+            panic!("std/web/html::div must be callable")
+        };
+        let InterfaceType::Record { fields, .. } = parameter.as_ref() else {
+            panic!("std/web/html::div must accept props")
+        };
+        for name in ["onPointerMove", "onPointerCancel", "onWheel"] {
+            assert!(fields.iter().any(|field| field.name == name));
+        }
+
+        let dom = standard_module_target("std/web/dom").unwrap();
+        let dom_names = dom
+            .interface()
+            .exports
+            .iter()
+            .map(|export| export.name.as_str())
+            .collect::<Vec<_>>();
+        for name in [
+            "ElementRect",
+            "DomObservation",
+            "capturePointer",
+            "releasePointer",
+            "measure",
+            "observeResize",
+            "awaitObservation",
+            "disconnect",
+        ] {
+            assert!(dom_names.contains(&name), "missing std/web/dom::{name}");
         }
     }
 }

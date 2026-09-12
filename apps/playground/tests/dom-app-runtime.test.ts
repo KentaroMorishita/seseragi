@@ -36,6 +36,24 @@ import { constant, type Signal } from "../../../runtime/ts/src/signal"
 type Mode = "Ready" | "Active"
 type Action = "Activate"
 
+const unusedSceneOperations: Pick<
+  Dom,
+  "capturePointer" | "releasePointer" | "measure" | "observeResize"
+> = {
+  capturePointer() {
+    throw new Error("capturePointer is unused")
+  },
+  releasePointer() {
+    throw new Error("releasePointer is unused")
+  },
+  measure() {
+    throw new Error("measure is unused")
+  },
+  observeResize() {
+    throw new Error("observeResize is unused")
+  },
+}
+
 function completedDomMount<Failure>(
   completion: ServiceResult<DomRuntimeError<Failure>, Unit>
 ): ServiceResult<DomError, DomMount<Failure>> {
@@ -66,6 +84,7 @@ describe("high-level DOM app runtime", () => {
     )
     const target = createDomTarget({ selector: "#app" })
     const service: Dom = {
+      ...unusedSceneOperations,
       query() {
         return serviceSuccess(target)
       },
@@ -105,6 +124,7 @@ describe("high-level DOM app runtime", () => {
   test("owns Signal setup and applies actions through a pure reducer", async () => {
     const snapshots: string[] = []
     const service: Dom = {
+      ...unusedSceneOperations,
       query(selector) {
         expect(selector).toBe("#app")
         return serviceSuccess(createDomTarget({ selector }))
@@ -153,6 +173,7 @@ describe("high-level DOM app runtime", () => {
 
   test("normalizes a missing target to a portable String failure", async () => {
     const service: Dom = {
+      ...unusedSceneOperations,
       query() {
         return serviceFailure({
           tag: "DomTargetNotFound",

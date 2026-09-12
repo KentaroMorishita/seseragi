@@ -1,0 +1,256 @@
+import * as arrays from "std/array"
+import * as effects from "std/effect"
+import * as html from "std/web/html"
+import * as json from "std/json"
+import * as inputs from "std/stdin"
+
+type Action = | Unused
+
+struct HighlightPart deriving JsonDecode { text: String, className: String }
+
+struct Block deriving JsonDecode {
+  kind: String,
+  text: String,
+  url: String,
+  identity: String,
+  name: String,
+  namespace: String,
+  itemKind: String,
+  typeParameters: Array<String>,
+  signature: Array<HighlightPart>,
+  description: String,
+  constraints: Array<String>,
+  anchorId: String,
+  copyText: String
+}
+
+struct Page deriving JsonDecode {
+  route: String,
+  title: String,
+  summary: String,
+  navigation: Bool,
+  blocks: Array<Block>
+}
+
+struct Output deriving JsonEncode { route: String, html: String }
+
+fn anchor label: String -> value: String -> className: String -> html.Html<Action> =
+  match html.parseWebUrl value {
+    Left error -> html.span { class: "docs-build-error", children: show error }
+    Right url -> html.a { href: url, class: className, children: label }
+  }
+
+fn brand base: String -> logo: String -> html.Html<Action> =
+  match (html.parseWebUrl base, html.parseWebUrl logo) {
+    (Right home, Right mark) -> html.a {
+      href: home,
+      class: "brand",
+      children: [
+        html.img { src: mark, alt: "" },
+        html.strong { children: "Seseragi" },
+        html.span { children: "Docs" }
+      ]
+    }
+    _ -> html.span { class: "docs-build-error", children: "Invalid brand URL" }
+  }
+
+fn resource relation: String -> value: String -> html.Html<Action> =
+  match html.parseWebUrl value {
+    Left error -> html.span { class: "docs-build-error", children: show error }
+    Right url -> html.link { rel: relation, href: url }
+  }
+
+fn charset -> html.Html<Action> = html.meta { charSet: "utf-8" }
+
+fn metadata key: String -> value: String -> html.Html<Action> = html.meta {
+  name: key,
+  content: value
+}
+
+fn copyButton value: String -> html.Html<Action> =
+  match html.attribute "data-copy-text" value {
+    Left error -> html.span { class: "docs-build-error", children: show error }
+    Right payload -> html.button {
+      buttonType: "button",
+      class: "copy-button",
+      attributes: [payload],
+      children: "コピー"
+    }
+  }
+
+fn renderBlock block: Block -> html.Html<Action> = match block.kind {
+  "paragraph" -> html.p { children: block.text }
+  "heading" -> html.h2 { children: block.text }
+  "terminal" -> html.section {
+    class: "code-example terminal-example",
+    children: [
+      html.div { class: "code-example-bar", children: "TERMINAL" },
+      html.pre { children: [html.code { children: block.text }] }
+    ]
+  }
+  "code" -> html.section {
+    class: "code-example",
+    children: [
+      html.div {
+        class: "code-example-bar",
+        children: [
+          html.span { children: "SESERAGI" },
+          html.div {
+            class: "code-actions",
+            children: [
+              copyButton block.copyText,
+              anchor "Playgroundで試す ↗" block.url "playground-link"
+            ]
+          }
+        ]
+      },
+      html.pre {
+        children: [html.code {
+          class: "seseragi-highlight",
+          children: [html.span { class: part.className, children: part.text } | part <- block.signature]
+        }]
+      }
+    ]
+  }
+  "reference" -> html.section {
+    id: block.anchorId,
+    class: "reference-item",
+    children: [
+      html.div {
+        class: "reference-heading",
+        children: [
+          html.h2 { children: block.name },
+          html.div {
+            class: "reference-actions",
+            children: [
+              html.span {
+                class: "reference-kind",
+                children: block.namespace + " · " + block.itemKind
+              },
+              copyButton block.copyText
+            ]
+          }
+        ]
+      },
+      html.p { class: "reference-identity", children: block.identity },
+      if arrays.isEmpty block.typeParameters then
+        html.span { children: "" }
+      else
+        html.p {
+          class: "reference-parameters",
+          children: "type " + join ", " block.typeParameters
+        },
+      html.pre {
+        children: [html.code {
+          class: "seseragi-highlight",
+          children: [html.span { class: part.className, children: part.text } | part <- block.signature]
+        }]
+      },
+      html.p { children: block.description },
+      if arrays.isEmpty block.constraints then
+        html.span { children: "" }
+      else
+        html.p { class: "reference-constraints", children: "where " + join ", " block.constraints }
+    ]
+  }
+  "link" -> html.p { children: [anchor block.text block.url ""] }
+  _ -> html.span { class: "docs-build-error", children: "Unknown content block" }
+}
+
+fn navigation pages: Array<Page> -> current: String -> html.Html<Action> = html.nav {
+  children: [anchor item.title item.route
+      (if item.route == current then
+        "current"
+      else
+        "") | item <- pages, item.navigation]
+}
+
+fn document pages: Array<Page>
+  -> origin: String
+  -> base: String
+  -> page: Page
+  -> String =
+  html.renderDocument (html.html {
+    lang: "ja",
+    children: [html.head {
+      children: [
+
+          charset (), metadata "viewport" "width=device-width, initial-scale=1", html.title { children: page.title + " · Seseragi" }, metadata "description" page.summary, resource "canonical" (origin + page.route), resource "stylesheet" (base + "assets/docs.css")
+        ]
+      }, html.body {
+        children: [
+          anchor "本文へ移動" "#content" "skip",
+          html.header {
+            children: [
+              brand base (base + "assets/seseragi-icon.svg"),
+              html.div { id: "docs-search", children: "" },
+              html.nav {
+                class: "product-nav",
+                children: [
+                  anchor "Playground" "https://seseragi.vercel.app/" "",
+                  anchor "Tour" "https://seseragi.vercel.app/tour/" ""
+                ]
+              }
+            ]
+          },
+          html.span { id: "docs-copy-status", class: "visually-hidden", role: "status", children: "" },
+          html.div {
+            class: "layout",
+            children: [
+              html.aside {
+                children: [
+                  html.p { class: "label", children: "ガイド" },
+                  navigation pages page.route
+                ]
+              },
+              html.main {
+                id: "content",
+                children: [
+                  html.p { class: "eyebrow", children: "SESERAGI / DOCS" },
+                  html.h1 { children: page.title },
+                  html.p { class: "lead", children: page.summary },
+                  html.article { children: [renderBlock block | block <- page.blocks] },
+                  html.footer { children: "Seseragi — 小さな式から、アプリケーションへ。" }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+)
+
+fn output pages: Array<Page> -> origin: String -> base: String -> Array<Output> =
+  [Output { route: page.route, html: document pages origin base page } | page <- pages]
+
+type GeneratorError deriving Show =
+  | InputFailure
+  | DecodeFailure
+  | ConsoleFailure ConsoleError
+
+fn decodePages encoded: String -> Either<json.JsonReadError, Array<Page>> =
+  json.decodeString encoded
+
+fn encodeOutput pages: Array<Page> -> origin: String -> base: String -> String =
+  json.encodeString (output pages origin base)
+
+fn requireInput value: Maybe<String> -> Either<GeneratorError, String> =
+  match value {
+    Nothing -> Left InputFailure
+    Just encoded -> Right encoded
+  }
+
+effect fn generate origin: String -> base: String -> Unit
+with Console, Stdin
+fails GeneratorError =
+  do {
+    limit <- inputs.lineLimit 67108864
+      |> effects.fromEither
+      |> effects.mapError (\_ -> InputFailure)
+    line <- inputs.readLineWith limit |> effects.mapError (\_ -> InputFailure)
+    encoded <- requireInput line |> effects.fromEither
+    pages <- decodePages encoded |> effects.fromEither |> effects.mapError (\_ -> DecodeFailure)
+    println (encodeOutput pages origin base)
+      |> effects.mapError ConsoleFailure
+  }

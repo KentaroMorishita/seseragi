@@ -49,10 +49,12 @@
     "test:local-web-e2e": "bun scripts/local-web-product-e2e.ts",
     "dev:playground": "cd apps/playground && bun run dev",
     "build:playground": "cd apps/playground && bun run build",
+    "build:docs:production": "bash apps/docs/scripts/production.sh",
     "build:playground:wasm": "./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
     "build:extension": "cd extensions/seseragi && bun install --frozen-lockfile && bun ../../scripts/check-extension-identity.ts && bun run package && bun run package:legacy",
     "check:production": "./scripts/check-scoped.sh production",
-    "check:production:browser": "bun scripts/check-production-browser.ts"
+    "check:production:browser": "bun scripts/check-production-browser.ts",
+    "check:docs": "bun apps/docs/scripts/check.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.1",

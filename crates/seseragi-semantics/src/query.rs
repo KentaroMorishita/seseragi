@@ -149,6 +149,32 @@ pub struct AnalysisReferenceItem {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct StandardReferenceSurface {
+    pub schema: u32,
+    pub kind: &'static str,
+    pub language_version: &'static str,
+    pub modules: Vec<StandardReferenceModule>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StandardReferenceModule {
+    pub specifier: String,
+    pub availability: &'static str,
+    pub targets: Vec<String>,
+    pub items: Vec<StandardReferenceItem>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StandardReferenceItem {
+    #[serde(flatten)]
+    pub reference: AnalysisReferenceItem,
+    pub namespace: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct AnalysisDocument {
     pub schema: u32,
     pub source: String,
@@ -1257,6 +1283,162 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
     items
 }
 
+/// Projects the compiler-owned module interfaces into the human-facing
+/// Reference catalog. Registry exports remain the coverage authority; display
+/// metadata is joined only by exact canonical identity and declaration kind.
+pub fn standard_reference_surface() -> Result<StandardReferenceSurface, String> {
+    let mut by_module = BTreeMap::<String, Vec<AnalysisReferenceItem>>::new();
+    let mut identities = BTreeSet::new();
+    for item in standard_library_catalog() {
+        if !identities.insert((
+            item.module.clone(),
+            item.identity.clone(),
+            item.kind.clone(),
+        )) {
+            return Err(format!(
+                "duplicate standard Reference identity/kind: {} ({}) in {}",
+                item.identity, item.kind, item.module
+            ));
+        }
+        by_module.entry(item.module.clone()).or_default().push(item);
+    }
+
+    let prelude = by_module
+        .remove("std/prelude")
+        .ok_or_else(|| "standard Reference is missing std/prelude".to_owned())?
+        .into_iter()
+        .map(|reference| {
+            let namespace = match reference.kind.as_str() {
+                "alias" | "type" => "type",
+                "trait" => "trait",
+                "operator" => "operator",
+                "constructor" | "function" => "value",
+                kind => return Err(format!("unknown prelude Reference kind: {kind}")),
+            };
+            Ok(StandardReferenceItem {
+                reference,
+                namespace: namespace.to_owned(),
+            })
+        })
+        .collect::<Result<Vec<_>, String>>()?;
+    let mut modules = vec![StandardReferenceModule {
+        specifier: "std/prelude".to_owned(),
+        availability: "implicit",
+        targets: vec!["process".to_owned(), "browser".to_owned()],
+        items: prelude,
+    }];
+
+    for module in seseragi_project::standard_module_registry_surface().modules {
+        let Some(interface) = module.public_interface else {
+            continue;
+        };
+        let catalog_items = by_module.remove(module.specifier).ok_or_else(|| {
+            format!(
+                "standard Reference is missing available module {}",
+                module.specifier
+            )
+        })?;
+        let expected = interface
+            .exports
+            .iter()
+            .map(|export| {
+                (
+                    export.symbol.as_str(),
+                    export
+                        .declaration_kind
+                        .as_deref()
+                        .unwrap_or(export.namespace.as_str()),
+                )
+            })
+            .collect::<BTreeSet<_>>();
+        let namespaces = interface
+            .exports
+            .iter()
+            .map(|export| {
+                (
+                    (
+                        export.symbol.as_str(),
+                        export
+                            .declaration_kind
+                            .as_deref()
+                            .unwrap_or(export.namespace.as_str()),
+                    ),
+                    export.namespace.as_str(),
+                )
+            })
+            .collect::<BTreeMap<_, _>>();
+        // Analysis can retain an alternate callable presentation for the same
+        // canonical symbol. The registry declaration kind selects the one public
+        // Reference entry; an unrelated catalog identity remains an error.
+        let items = catalog_items
+            .iter()
+            .filter(|item| expected.contains(&(item.identity.as_str(), item.kind.as_str())))
+            .map(|reference| StandardReferenceItem {
+                namespace: namespaces[&(reference.identity.as_str(), reference.kind.as_str())]
+                    .to_owned(),
+                reference: reference.clone(),
+            })
+            .collect::<Vec<_>>();
+        let actual = items
+            .iter()
+            .map(|item| {
+                (
+                    item.reference.identity.as_str(),
+                    item.reference.kind.as_str(),
+                )
+            })
+            .collect::<BTreeSet<_>>();
+        let unexpected = catalog_items
+            .iter()
+            .filter(|item| {
+                !expected
+                    .iter()
+                    .any(|(identity, _)| *identity == item.identity.as_str())
+            })
+            .map(|item| format!("{} ({})", item.identity, item.kind))
+            .collect::<Vec<_>>();
+        if expected != actual || !unexpected.is_empty() {
+            let render = |values: Vec<&(&str, &str)>| {
+                values
+                    .into_iter()
+                    .map(|(identity, kind)| format!("{identity} ({kind})"))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            };
+            let missing = render(expected.difference(&actual).collect::<Vec<_>>());
+            return Err(format!(
+                "standard Reference identity mismatch for {}: missing [{}], extra [{}]",
+                module.specifier,
+                missing,
+                unexpected.join(", ")
+            ));
+        }
+        modules.push(StandardReferenceModule {
+            specifier: module.specifier.to_owned(),
+            availability: "available",
+            targets: module
+                .targets
+                .iter()
+                .map(|target| (*target).to_owned())
+                .collect(),
+            items,
+        });
+    }
+    if !by_module.is_empty() {
+        return Err(format!(
+            "standard Reference contains unregistered modules: {}",
+            by_module.keys().cloned().collect::<Vec<_>>().join(", ")
+        ));
+    }
+
+    Ok(StandardReferenceSurface {
+        schema: 1,
+        kind: "standard-reference",
+        language_version: seseragi_project::IMPLEMENTED_LANGUAGE_VERSION,
+        modules,
+    })
+}
+
 fn reference_from_callable(callable: AnalysisCallable, category: &str) -> AnalysisReferenceItem {
     AnalysisReferenceItem {
         identity: callable.identity.clone(),
@@ -1472,6 +1654,7 @@ fn standard_category(name: &str, module: &str) -> &'static str {
         "std/text" => "Text",
         "std/signal" => "Signal",
         "std/web/html" => "HTML",
+        "std/web/svg" => "SVG",
         "std/web/dom" => "DOM",
         "std/effect" => "Effect",
         "std/prelude"
@@ -2010,6 +2193,9 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/web/html::PointerEvent" => {
             "Immutable pointer snapshot distinguishing mouse, touch, and pen input."
         }
+        "std/web/html::WheelEvent" => {
+            "Immutable wheel snapshot containing deltas, mode, coordinates, and modifiers."
+        }
         "std/web/html::ScrollEvent" => {
             "Immutable scroll snapshot containing the current element offsets."
         }
@@ -2026,6 +2212,18 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         }
         "std/web/html::DispatchPreventDefaultAndStop" => {
             "Prevents the browser default and stops propagation before dispatching an Action."
+        }
+        "std/web/dom::capturePointer" => {
+            "Captures a live pointer on an explicit DOM target through Effect."
+        }
+        "std/web/dom::releasePointer" => {
+            "Releases a captured pointer on an explicit DOM target through Effect."
+        }
+        "std/web/dom::measure" => {
+            "Snapshots an element bounding rectangle through the DOM capability."
+        }
+        "std/web/dom::observeResize" => {
+            "Observes element geometry with an explicit disposable resource lifecycle."
         }
         "std/web/html::form" => {
             "Creates a typed form whose onSubmit message prevents native page reload."
@@ -2083,6 +2281,10 @@ fn module_description(module: &str, export: &InterfaceExport) -> &'static str {
             "Creates or renders typed HTML through the standard HTML surface."
         }
         ("std/web/html", _) => "Type or trait from the standard HTML surface.",
+        ("std/web/svg", "value") => {
+            "Creates a pure namespaced SVG scene or explicitly bridges it to Html."
+        }
+        ("std/web/svg", _) => "Type from the standard SVG scene surface.",
         ("std/web/dom", "value") => {
             "Runs typed browser DOM behavior through the standard DOM surface."
         }
@@ -2685,5 +2887,30 @@ mod tests {
             "{:?}",
             traverse.constraints
         );
+    }
+
+    #[test]
+    fn standard_reference_covers_every_available_registry_export() {
+        let surface = standard_reference_surface().expect("Reference surface must reconcile");
+        assert_eq!(surface.modules.len(), 63);
+        let expected_exports = seseragi_project::standard_module_registry_surface()
+            .modules
+            .iter()
+            .filter_map(|module| module.public_interface.as_ref())
+            .map(|interface| interface.exports.len())
+            .sum::<usize>();
+        let reference_exports = surface
+            .modules
+            .iter()
+            .filter(|module| module.specifier != "std/prelude")
+            .map(|module| module.items.len())
+            .sum::<usize>();
+        assert_eq!(reference_exports, expected_exports);
+        assert!(surface.modules[0].items.len() > 80);
+        assert_eq!(surface.modules[0].specifier, "std/prelude");
+        assert!(surface
+            .modules
+            .iter()
+            .all(|module| module.specifier != "std/http/bun"));
     }
 }
