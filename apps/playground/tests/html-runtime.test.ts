@@ -1200,3 +1200,22 @@ describe("IME input coordination", () => {
     expect(ime.busy()).toBe(false)
   })
 })
+
+test("document metadata uses typed props with single escaping and reserved custom names", () => {
+  expect(renderToString(meta({ charSet: "utf-8" }))).toBe(
+    '<meta charset="utf-8">'
+  )
+  expect(
+    renderToString(
+      meta({ name: "description", content: '日本語 & <text> "quoted"' })
+    )
+  ).toBe(
+    '<meta name="description" content="日本語 &amp; &lt;text&gt; &quot;quoted&quot;">'
+  )
+  expect(
+    renderToString(meta({ httpEquiv: "content-language", content: "ja" }))
+  ).toBe('<meta content="ja" http-equiv="content-language">')
+  for (const name of ["charset", "name", "content", "http-equiv"]) {
+    expect(attribute(name, "value").tag).toBe("Left")
+  }
+})

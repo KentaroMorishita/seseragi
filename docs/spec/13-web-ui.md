@@ -825,3 +825,12 @@ eventsは一件のdispatch Effectと、それが起こした全Signal transactio
 selectorが0件または複数件、event fieldの型違い、afterHtml不一致、program終了前の未送信event、expected resource数の
 不一致はfixture failureです。programがevent処理中に終了した場合はそのeventを完了させてcleanupを待ち、後続eventを
 送信しません。real browser、network、wall clockへfallbackせず、scenario外のhost mutationを生成しません。
+
+### Document metadata
+
+`html.meta`はchildrenを持たないvoid elementです。共通propsに加え、optionalな
+`charSet: String`、`name: String`、`content: String`、`httpEquiv: String`を受け取ります。
+SSR / DOMはこの順に`charset`、`name`、`content`、`http-equiv`へ投影し、attribute値を
+一度だけescapeします。省略したpropは出力しません。これらのattribute名はcustom
+`attribute`で再定義できません。viewport、description、文字encoding等のdocument
+metadataをpure Htmlのまま表現できます。

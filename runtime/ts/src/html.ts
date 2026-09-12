@@ -288,6 +288,9 @@ const RESERVED_CUSTOM_ATTRIBUTE_NAMES = new Set([
   "mimetype",
   "multiple",
   "name",
+  "charset",
+  "content",
+  "http-equiv",
   "open",
   "pattern",
   "placeholder",
@@ -883,6 +886,12 @@ function renderAttributes(
   if (tagName === "video") {
     integerAttribute(attributes, "width", props.width)
     integerAttribute(attributes, "height", props.height)
+  }
+  if (tagName === "meta") {
+    stringAttribute(attributes, "charset", props.charSet)
+    stringAttribute(attributes, "name", props.name)
+    stringAttribute(attributes, "content", props.content)
+    stringAttribute(attributes, "http-equiv", props.httpEquiv)
   }
   if (tagName === "link") {
     stringAttribute(attributes, "rel", props.rel)

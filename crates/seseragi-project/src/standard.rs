@@ -12,6 +12,7 @@ const ORIGIN: ByteSpan = ByteSpan { start: 0, end: 0 };
 pub enum StandardHtmlTagKind {
     Element,
     VoidElement,
+    Meta,
     Link,
     Anchor,
     Image,
@@ -58,7 +59,7 @@ pub const STANDARD_HTML_TAGS: &[StandardHtmlTag] = &[
     html_tag!("head", Element),
     html_tag!("body", Element),
     html_tag!("title", Element),
-    html_tag!("meta", VoidElement, void),
+    html_tag!("meta", Meta, void),
     html_tag!("link", Link, void),
     html_tag!("header", Element),
     html_tag!("footer", Element),
@@ -9177,6 +9178,7 @@ fn props_for_html_tag(tag: StandardHtmlTag) -> InterfaceType {
     match tag.kind {
         Kind::Element => element_props(),
         Kind::VoidElement => void_element_props(),
+        Kind::Meta => meta_props(),
         Kind::Link => link_props(),
         Kind::Anchor => anchor_props(),
         Kind::Image => image_props(),
@@ -9201,6 +9203,18 @@ fn element_props() -> InterfaceType {
 
 fn void_element_props() -> InterfaceType {
     record_vec(common_html_props())
+}
+
+fn meta_props() -> InterfaceType {
+    record_vec(with_fields(
+        common_html_props(),
+        [
+            optional("charSet", named("String")),
+            optional("name", named("String")),
+            optional("content", named("String")),
+            optional("httpEquiv", named("String")),
+        ],
+    ))
 }
 
 fn link_props() -> InterfaceType {

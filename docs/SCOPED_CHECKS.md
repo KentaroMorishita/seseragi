@@ -13,6 +13,7 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 | Web UI browser review | `cd apps/playground && bun run test:visual` | Chromiumで全HTML sampleのviewport / interaction / image fallback / Code / Explorerを確認し、review PNGとHTML reportを出力 |
 | Rust / compiler / LSP workspace | `bun run check:rust` | Rust format、workspace test（対象crateだけなら `bun run check:rust -- -p <crate>`） |
 | production browser dogfood | `bun run check:production:browser` | canonical CLIでWeb starter / Flowをdevelopment/release buildし、Chromium操作・text/input値の一致、source-map defaults、JS例外を検証。Playground依存とChromiumの事前installが必要。full/release source gateにも含む |
+| Docs shell / content pipeline | `bun run check:docs` | Docs lint/typecheck、canonical CLI build、route/input拒否、development/release出力一致と再現性。`apps/docs/scripts/browser.ts`でJS無効の3 viewportを検証 |
 | production artifacts | `bun run check:production` | first-party 6 fixtureのrelease build、manifest shape、必要runtime、size budget、digest / identity / 再build、process実行。full / release source gateにも含む |
 | conformance fixture | `bun run check:conformance` | canonical conformance runner（対象rootを引数で限定可能） |
 | compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認 |

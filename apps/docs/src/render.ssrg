@@ -1,0 +1,138 @@
+import * as html from "std/web/html"
+import * as json from "std/json"
+
+type Action = | Unused
+
+struct HighlightPart { text: String, className: String }
+
+type Block =
+  | Paragraph String
+  | Heading String
+  | Code (Array<HighlightPart>, String)
+  | Link (String, String)
+
+struct Page { route: String, title: String, summary: String, blocks: Array<Block> }
+
+struct Output deriving JsonEncode { route: String, html: String }
+
+fn anchor label: String -> value: String -> className: String -> html.Html<Action> =
+  match html.parseWebUrl value {
+    Left error -> html.span { class: "docs-build-error", children: show error }
+    Right url -> html.a { href: url, class: className, children: label }
+  }
+
+fn brand base: String -> logo: String -> html.Html<Action> =
+  match (html.parseWebUrl base, html.parseWebUrl logo) {
+    (Right home, Right mark) -> html.a {
+      href: home,
+      class: "brand",
+      children: [
+        html.img { src: mark, alt: "" },
+        html.strong { children: "Seseragi" },
+        html.span { children: "Docs" }
+      ]
+    }
+    _ -> html.span { class: "docs-build-error", children: "Invalid brand URL" }
+  }
+
+fn resource relation: String -> value: String -> html.Html<Action> =
+  match html.parseWebUrl value {
+    Left error -> html.span { class: "docs-build-error", children: show error }
+    Right url -> html.link { rel: relation, href: url }
+  }
+
+fn charset -> html.Html<Action> = html.meta { charSet: "utf-8" }
+
+fn metadata key: String -> value: String -> html.Html<Action> = html.meta {
+  name: key,
+  content: value
+}
+
+fn renderBlock block: Block -> html.Html<Action> = match block {
+  Paragraph text -> html.p { children: text }
+  Heading text -> html.h2 { children: text }
+  Code (parts, playground) -> html.section {
+    class: "code-example",
+    children: [
+      html.div {
+        class: "code-example-bar",
+        children: [
+          html.span { children: "SESERAGI" },
+          anchor "Playgroundで試す ↗" playground "playground-link"
+        ]
+      },
+      html.pre {
+        children: [html.code {
+          class: "seseragi-highlight",
+          children: [html.span { class: part.className, children: part.text } | part <- parts]
+        }]
+      }
+    ]
+  }
+  Link (label, url) -> html.p { children: [anchor label url ""] }
+}
+
+fn navigation pages: Array<Page> -> current: String -> html.Html<Action> = html.nav {
+  children: [anchor item.title item.route
+      (if item.route == current then
+        "current"
+      else
+        "") | item <- pages]
+}
+
+fn document pages: Array<Page>
+  -> origin: String
+  -> base: String
+  -> page: Page
+  -> String =
+  html.renderDocument (html.html {
+    lang: "ja",
+    children: [html.head {
+      children: [
+
+          charset (), metadata "viewport" "width=device-width, initial-scale=1", html.title { children: page.title + " · Seseragi" }, metadata "description" page.summary, resource "canonical" (origin + page.route), resource "stylesheet" (base + "assets/docs.css")
+        ]
+      }, html.body {
+        children: [
+          anchor "本文へ移動" "#content" "skip",
+          html.header {
+            children: [
+              brand base (base + "assets/seseragi-icon.svg"),
+              html.nav {
+                class: "product-nav",
+                children: [
+                  anchor "Playground" "https://seseragi.vercel.app/" "",
+                  anchor "Tour" "https://seseragi.vercel.app/tour/" ""
+                ]
+              }
+            ]
+          },
+          html.div {
+            class: "layout",
+            children: [
+              html.aside {
+                children: [
+                  html.p { class: "label", children: "ガイド" },
+                  navigation pages page.route
+                ]
+              },
+              html.main {
+                id: "content",
+                children: [
+                  html.p { class: "eyebrow", children: "SESERAGI / DOCS" },
+                  html.h1 { children: page.title },
+                  html.p { class: "lead", children: page.summary },
+                  html.article { children: [renderBlock block | block <- page.blocks] },
+                  html.footer { children: "Seseragi — 小さな式から、アプリケーションへ。" }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+)
+
+fn output pages: Array<Page> -> origin: String -> base: String -> Array<Output> =
+  [Output { route: page.route, html: document pages origin base page } | page <- pages]

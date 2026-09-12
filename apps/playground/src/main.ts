@@ -78,6 +78,7 @@ import {
   workspaceProjectRequest,
   workspaceProjectRevision,
 } from "./workspace/project-request"
+import { sourceFromPlaygroundUrl } from "./workspace/source-link"
 
 type WorkspaceAnalysisResult = Readonly<{
   activeDocument?: AnalysisDocument
@@ -307,22 +308,30 @@ const restoredWorkspace = restoreWorkspace(localStorage, [
   ...samples,
   blankWorkspaceOrigin,
 ])
+const linkedSource = sourceFromPlaygroundUrl(window.location.href)
 const restoredBlank =
+  linkedSource === undefined &&
   restoredWorkspace.status === "restored" &&
   restoredWorkspace.sampleId === blankWorkspaceOrigin.id
 const restoredSample =
-  restoredWorkspace.status === "restored" && !restoredBlank
+  linkedSource === undefined &&
+  restoredWorkspace.status === "restored" &&
+  !restoredBlank
     ? samples.find(({ id }) => id === restoredWorkspace.sampleId)
     : undefined
 const initialSample = restoredBlank
   ? undefined
-  : (restoredSample ?? defaultSample)
+  : linkedSource === undefined
+    ? (restoredSample ?? defaultSample)
+    : undefined
 let workspaceState =
-  restoredWorkspace.status === "restored"
-    ? restoredWorkspace.workspace
-    : setWorkspaceExplorer(createWorkspace(defaultSample.workspace), {
-        width: readExplorerWidth(localStorage),
-      })
+  linkedSource !== undefined
+    ? createSingleFileWorkspace(linkedSource)
+    : restoredWorkspace.status === "restored"
+      ? restoredWorkspace.workspace
+      : setWorkspaceExplorer(createWorkspace(defaultSample.workspace), {
+          width: readExplorerWidth(localStorage),
+        })
 let applyingWorkspaceSource = false
 let outputMode: "text" | "html" = initialSample?.outputMode ?? "text"
 let htmlPreviewUrl: string | undefined

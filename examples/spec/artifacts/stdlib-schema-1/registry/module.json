@@ -14189,6 +14189,42 @@
                           ]
                         }
                       }
+                    },
+                    {
+                      "name": "charSet",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "content",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "httpEquiv",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
                     }
                   ]
                 },

@@ -333,7 +333,7 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:25e944a172c41a16",
+      "interfaceFingerprint": "fnv1a64:536e65d268fbdd22",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
     },

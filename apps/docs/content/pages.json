@@ -1,0 +1,101 @@
+[
+  {
+    "id": "home",
+    "route": "/",
+    "title": "Seseragiを使う",
+    "summary": "値を組み合わせ、境界を明確に。Seseragiでプログラムを書くためのガイドです。",
+    "blocks": [
+      { "kind": "heading", "text": "小さなプログラムから始める" },
+      {
+        "kind": "paragraph",
+        "text": "まずは関数と値に触れ、次にEffectで外の世界とつなぎます。コードを実行しながら学ぶTourと、必要な項目を引くこのガイドを使い分けてください。"
+      },
+      {
+        "kind": "link",
+        "text": "はじめてのプログラム",
+        "route": "/getting-started/"
+      },
+      { "kind": "heading", "text": "学び方を選ぶ" },
+      { "kind": "link", "text": "言語ガイド：値と関数", "route": "/language/" },
+      {
+        "kind": "link",
+        "text": "Concepts：pure HtmlとEffect",
+        "route": "/concepts/"
+      },
+      {
+        "kind": "link",
+        "text": "言語仕様を読む",
+        "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/README.md"
+      }
+    ]
+  },
+  {
+    "id": "getting-started",
+    "route": "/getting-started/",
+    "title": "はじめてのプログラム",
+    "summary": "CLIを用意して、ソースファイルを実行します。",
+    "blocks": [
+      {
+        "kind": "link",
+        "text": "CLIのインストール手順",
+        "url": "https://github.com/KentaroMorishita/seseragi#readme"
+      },
+      { "kind": "heading", "text": "値と関数を実行する" },
+      {
+        "kind": "paragraph",
+        "text": "下のコードをmain.ssrgとして保存し、seseragi run main.ssrgで実行します。fnで関数を定義し、mainのEffectで計算結果を出力します。"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/02-values-and-functions.ssrg"
+      },
+      {
+        "kind": "link",
+        "text": "Webアプリを作る手順",
+        "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/GETTING_STARTED.md"
+      }
+    ]
+  },
+  {
+    "id": "language",
+    "route": "/language/",
+    "title": "値と関数",
+    "summary": "letで値に名前をつけ、fnで計算を組み合わせます。",
+    "blocks": [
+      { "kind": "heading", "text": "関数を適用する" },
+      {
+        "kind": "paragraph",
+        "text": "関数と引数を空白で並べます。add 20 22は左から適用されます。複数の引数を持つ関数の型は、矢印でつながります。"
+      },
+      {
+        "kind": "link",
+        "text": "実行できる例に戻る",
+        "route": "/getting-started/"
+      },
+      { "kind": "heading", "text": "次に読む" },
+      {
+        "kind": "link",
+        "text": "式とデータの仕様",
+        "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/03-data-and-expressions.md"
+      }
+    ]
+  },
+  {
+    "id": "concepts",
+    "route": "/concepts/",
+    "title": "pure HtmlとEffect",
+    "summary": "ページを表す値と、外の世界に働きかける処理を分けます。",
+    "blocks": [
+      { "kind": "heading", "text": "HTMLも値として組み立てる" },
+      {
+        "kind": "paragraph",
+        "text": "pure Htmlを組み立てる関数はDOMを操作しません。renderToStringでHTML文字列へ変換できるため、ブラウザを使わずにページを生成できます。"
+      },
+      { "kind": "sample", "source": "examples/spec/lessons/27-pure-html.ssrg" },
+      {
+        "kind": "paragraph",
+        "text": "このDocsもbuild時にSeseragiでHTMLを生成します。本文とnavigationを読むためのJavaScriptは不要です。"
+      }
+    ]
+  }
+]
