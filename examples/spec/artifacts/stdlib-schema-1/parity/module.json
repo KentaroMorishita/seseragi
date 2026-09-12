@@ -60,7 +60,7 @@
     },
     {
       "id": "canonical-web-project",
-      "evidence": "examples/samples/project-flow-app",
+      "evidence": "examples/spec/fixtures/projects/web-scene-interaction",
       "products": [
         "cli-build",
         "lsp-project",
@@ -69,6 +69,7 @@
       ],
       "modules": [
         "std/web/html",
+        "std/web/svg",
         "std/web/dom",
         "std/signal"
       ]
@@ -333,7 +334,17 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:536e65d268fbdd22",
+      "interfaceFingerprint": "fnv1a64:02e298e9588fdfa4",
+      "implementation": "lowering-runtime",
+      "route": "canonical-web-project"
+    },
+    {
+      "specifier": "std/web/svg",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:4e72044866db7cac",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
     },
@@ -378,7 +389,7 @@
       "capabilityServices": [
         "std/web/dom::Dom"
       ],
-      "interfaceFingerprint": "fnv1a64:702e69e3152da9d9",
+      "interfaceFingerprint": "fnv1a64:aa322b2264fce046",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
     },

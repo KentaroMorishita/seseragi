@@ -10,6 +10,7 @@ pub(crate) struct RuntimeWebHtmlOperation {
 
 const MODULE: &str = "@seseragi/runtime/html";
 const DOM_MODULE: &str = "@seseragi/runtime/dom";
+const SVG_MODULE: &str = "@seseragi/runtime/svg";
 
 macro_rules! operation {
     ($name:literal, $feature:literal, $local:literal) => {
@@ -31,6 +32,19 @@ macro_rules! dom_operation {
             runtime_feature: $feature,
             local_name: $local,
             module: DOM_MODULE,
+            export_name: $name,
+            source_map_name: $name,
+        }
+    };
+}
+
+macro_rules! svg_operation {
+    ($name:literal, $feature:literal, $local:literal) => {
+        RuntimeWebHtmlOperation {
+            canonical: concat!("std/web/svg::", $name),
+            runtime_feature: $feature,
+            local_name: $local,
+            module: SVG_MODULE,
             export_name: $name,
             source_map_name: $name,
         }
@@ -165,6 +179,28 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
         "_ssrg_dom_defaultOptions"
     ),
     dom_operation!("query", "web.dom.query", "_ssrg_dom_query"),
+    dom_operation!(
+        "capturePointer",
+        "web.dom.capture-pointer",
+        "_ssrg_dom_capturePointer"
+    ),
+    dom_operation!(
+        "releasePointer",
+        "web.dom.release-pointer",
+        "_ssrg_dom_releasePointer"
+    ),
+    dom_operation!("measure", "web.dom.measure", "_ssrg_dom_measure"),
+    dom_operation!(
+        "observeResize",
+        "web.dom.observe-resize",
+        "_ssrg_dom_observeResize"
+    ),
+    dom_operation!(
+        "awaitObservation",
+        "web.dom.await-observation",
+        "_ssrg_dom_awaitObservation"
+    ),
+    dom_operation!("disconnect", "web.dom.disconnect", "_ssrg_dom_disconnect"),
     dom_operation!("mount", "web.dom.mount", "_ssrg_dom_mount"),
     dom_operation!("awaitMount", "web.dom.await-mount", "_ssrg_dom_awaitMount"),
     dom_operation!("unmount", "web.dom.unmount", "_ssrg_dom_unmount"),
@@ -258,6 +294,16 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
         "web.dom.dispatch-failure",
         "_ssrg_dom_DispatchFailure"
     ),
+    svg_operation!("svg", "web.svg.svg", "_ssrg_svg_svg"),
+    svg_operation!("g", "web.svg.g", "_ssrg_svg_g"),
+    svg_operation!("rect", "web.svg.rect", "_ssrg_svg_rect"),
+    svg_operation!("path", "web.svg.path", "_ssrg_svg_path"),
+    svg_operation!("circle", "web.svg.circle", "_ssrg_svg_circle"),
+    svg_operation!("line", "web.svg.line", "_ssrg_svg_line"),
+    svg_operation!("polyline", "web.svg.polyline", "_ssrg_svg_polyline"),
+    svg_operation!("polygon", "web.svg.polygon", "_ssrg_svg_polygon"),
+    svg_operation!("text", "web.svg.text", "_ssrg_svg_text"),
+    svg_operation!("toHtml", "web.svg.to-html", "_ssrg_svg_toHtml"),
 ];
 
 pub(crate) fn runtime_web_html_operation(canonical: &str) -> Option<RuntimeWebHtmlOperation> {

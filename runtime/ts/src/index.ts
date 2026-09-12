@@ -140,14 +140,17 @@ export type {
   DomEnvironment,
   DomError,
   DomMount,
+  DomObservation,
   DomOptions,
   DomRuntimeError,
   DomTarget,
+  ElementRect,
   HydrationMode,
 } from "./dom"
 export {
   app as runDomApp,
   awaitMount as awaitDomMount,
+  awaitObservation as awaitDomObservation,
   bindAttribute as bindDomAttribute,
   bindChecked as bindDomChecked,
   bindRegion as bindDomRegion,
@@ -155,16 +158,21 @@ export {
   bindText as bindDomText,
   bindValue as bindDomValue,
   ClearRenderedDom,
+  capturePointer,
   content as domContent,
   defaultOptions as defaultDomOptions,
+  disconnect as disconnectDomObservation,
   FreshMount,
   HydrateOrReplace,
   HydrateStrict,
   initialHtml as initialDomHtml,
+  measure as measureDom,
   mount as mountDom,
   mountContent as mountDomContent,
+  observeResize,
   PreserveRenderedDom,
   query as queryDom,
+  releasePointer,
   run as runDom,
   runContent as runDomContent,
   unmount as unmountDom,
@@ -316,6 +324,7 @@ export type {
   Style,
   Tag,
   WebUrl,
+  WheelEvent,
 } from "./html"
 export {
   a,
@@ -1066,6 +1075,8 @@ export {
   Nothing,
   Right,
 } from "./sum"
+export type { Svg } from "./svg"
+export * as svg from "./svg"
 export type { Utf8DecodeError } from "./text"
 export { decodeUtf8, decodeUtf8Lossy, encodeUtf8, InvalidUtf8 } from "./text"
 export * as webFile from "./web-file"

@@ -277,6 +277,10 @@
       "types": "./src/html.ts",
       "default": "./src/html.ts"
     },
+    "./svg": {
+      "types": "./src/svg.ts",
+      "default": "./src/svg.ts"
+    },
     "./http-server": {
       "types": "./src/http-server.ts",
       "default": "./src/http-server.ts"

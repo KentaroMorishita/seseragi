@@ -1654,6 +1654,7 @@ fn standard_category(name: &str, module: &str) -> &'static str {
         "std/text" => "Text",
         "std/signal" => "Signal",
         "std/web/html" => "HTML",
+        "std/web/svg" => "SVG",
         "std/web/dom" => "DOM",
         "std/effect" => "Effect",
         "std/prelude"
@@ -2192,6 +2193,9 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/web/html::PointerEvent" => {
             "Immutable pointer snapshot distinguishing mouse, touch, and pen input."
         }
+        "std/web/html::WheelEvent" => {
+            "Immutable wheel snapshot containing deltas, mode, coordinates, and modifiers."
+        }
         "std/web/html::ScrollEvent" => {
             "Immutable scroll snapshot containing the current element offsets."
         }
@@ -2208,6 +2212,18 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         }
         "std/web/html::DispatchPreventDefaultAndStop" => {
             "Prevents the browser default and stops propagation before dispatching an Action."
+        }
+        "std/web/dom::capturePointer" => {
+            "Captures a live pointer on an explicit DOM target through Effect."
+        }
+        "std/web/dom::releasePointer" => {
+            "Releases a captured pointer on an explicit DOM target through Effect."
+        }
+        "std/web/dom::measure" => {
+            "Snapshots an element bounding rectangle through the DOM capability."
+        }
+        "std/web/dom::observeResize" => {
+            "Observes element geometry with an explicit disposable resource lifecycle."
         }
         "std/web/html::form" => {
             "Creates a typed form whose onSubmit message prevents native page reload."
@@ -2265,6 +2281,10 @@ fn module_description(module: &str, export: &InterfaceExport) -> &'static str {
             "Creates or renders typed HTML through the standard HTML surface."
         }
         ("std/web/html", _) => "Type or trait from the standard HTML surface.",
+        ("std/web/svg", "value") => {
+            "Creates a pure namespaced SVG scene or explicitly bridges it to Html."
+        }
+        ("std/web/svg", _) => "Type from the standard SVG scene surface.",
         ("std/web/dom", "value") => {
             "Runs typed browser DOM behavior through the standard DOM surface."
         }
@@ -2872,7 +2892,7 @@ mod tests {
     #[test]
     fn standard_reference_covers_every_available_registry_export() {
         let surface = standard_reference_surface().expect("Reference surface must reconcile");
-        assert_eq!(surface.modules.len(), 62);
+        assert_eq!(surface.modules.len(), 63);
         let expected_exports = seseragi_project::standard_module_registry_surface()
             .modules
             .iter()

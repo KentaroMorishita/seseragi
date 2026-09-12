@@ -110,14 +110,14 @@ const ROUTES: &[RouteDefinition] = &[
     },
     RouteDefinition {
         id: "canonical-web-project",
-        evidence: "examples/samples/project-flow-app",
+        evidence: "examples/spec/fixtures/projects/web-scene-interaction",
         products: &[
             "cli-build",
             "lsp-project",
             "wasm-project",
             "playground-browser",
         ],
-        modules: &["std/web/html", "std/web/dom", "std/signal"],
+        modules: &["std/web/html", "std/web/svg", "std/web/dom", "std/signal"],
     },
     RouteDefinition {
         id: "browser-provider-project",
@@ -341,7 +341,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 61);
+        assert_eq!(surface.modules.len(), 62);
         assert!(surface
             .modules
             .iter()
