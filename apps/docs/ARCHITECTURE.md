@@ -3,7 +3,9 @@
 O03 phase A (#591) established this contract against released main
 `46b6e0cdd8cdee67d4a74f7add0c1e99e812b367` (v0.61.9). Phase C (#593)
 implements the static shell and authored-page pipeline; phase D (#594)
-implements the compiler-owned Reference pipeline described below.
+implements the compiler-owned Reference pipeline described below. Phase E
+(#595) fills the first human-facing Getting Started, Language, Concepts and
+Applications baseline from canonical repository sources.
 
 ## Sources and ownership
 

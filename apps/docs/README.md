@@ -1,9 +1,10 @@
 # Seseragi Docs application
 
-Phase C (#593) implements four static pages: home, Getting Started, values and
-functions, and pure Html/Effect. Phase D (#594) adds a generated API Reference
-landing page and one page for each public standard-library module. Search/copy
-enhancements and deploy remain O03 phases E–H.
+Phase C (#593) established the static shell. Phase D (#594) adds a generated API
+Reference landing page and one page for each public standard-library module.
+Phase E (#595) provides 15 human-facing pages across Getting Started, Language
+Guide, Concepts and Application Guide. Search/copy enhancements and deploy
+remain O03 phases F–H.
 
 The shell uses the same canonical `seseragi-icon.svg`, dark palette and syntax
 token colors as Playground. The icon is copied from `assets/brand/public/brand`
@@ -13,7 +14,9 @@ links to the canonical Playground with its exact verified source preloaded;
 reading and highlighting the page still require no client JavaScript.
 
 `content/pages.json` is the structured authoring input. Paragraphs, headings,
-links and canonical sample references are supported. The API Reference consumes
+terminal commands, links and canonical sample references are supported. Its 17
+executable blocks point to 17 distinct files in `examples/spec/lessons`; source
+text is never copied into content. The API Reference consumes
 `examples/spec/artifacts/stdlib-schema-1/reference/module.json`, which the
 compiler generates from the same module registry used for imports. The build
 rejects unknown targets or namespaces, unsafe or duplicate module routes, and
@@ -63,11 +66,11 @@ bun install --frozen-lockfile --cwd apps/playground
 SESERAGI_BIN="$PWD/target/debug/seseragi" bun apps/docs/scripts/browser.ts
 ```
 
-Set `DOCS_SCREENSHOTS` to retain review PNGs. Browser verification covers all 67
+Set `DOCS_SCREENSHOTS` to retain review PNGs. Browser verification covers all 78
 routes at 1280, 390 and 320 pixels with JavaScript disabled, authored and
-Reference navigation, canonical sample text, syntax highlighting, metadata, skip
-link and document overflow. It cleans its server, browser and generated site
-after verification.
+Reference navigation, every exact-source Playground URL, canonical sample text,
+syntax highlighting, metadata, skip link and document overflow. It cleans its
+server, browser and generated site after verification.
 
 ## Reproduced gap and fix
 

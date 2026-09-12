@@ -68,6 +68,13 @@ fn metadata key: String -> value: String -> html.Html<Action> = html.meta {
 fn renderBlock block: Block -> html.Html<Action> = match block.kind {
   "paragraph" -> html.p { children: block.text }
   "heading" -> html.h2 { children: block.text }
+  "terminal" -> html.section {
+    class: "code-example terminal-example",
+    children: [
+      html.div { class: "code-example-bar", children: "TERMINAL" },
+      html.pre { children: [html.code { children: block.text }] }
+    ]
+  }
   "code" -> html.section {
     class: "code-example",
     children: [

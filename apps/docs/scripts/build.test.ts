@@ -73,7 +73,10 @@ test("canonical builds preserve escaped multiline content, base paths and reprod
         ...page,
         id: "child",
         route: "/child/",
-        blocks: [{ kind: "link", text: "home", route: "/" }],
+        blocks: [
+          { kind: "terminal", text: "run <unsafe>&\nnext" },
+          { kind: "link", text: "home", route: "/" },
+        ],
       },
     ]
     const manifests = ["development", "release", "release"].map(
@@ -102,6 +105,9 @@ test("canonical builds preserve escaped multiline content, base paths and reprod
     )
     expect(html).not.toContain("<script")
     expect(html).toContain('src="/guide/assets/seseragi-icon.svg"')
+    expect(readFileSync(join(dir, "0/child/index.html"), "utf8")).toContain(
+      "run &lt;unsafe&gt;&amp;\nnext"
+    )
     expect(readFileSync(join(dir, "0/assets/seseragi-icon.svg"), "utf8")).toBe(
       readFileSync(
         resolve(
@@ -276,4 +282,36 @@ test("sample blocks use Playground highlighting and preserve the source link", (
       "utf8"
     )
   )
+})
+
+test("human-facing baseline keeps every executable block on canonical lessons", () => {
+  const content = JSON.parse(
+    readFileSync(resolve(import.meta.dir, "../content/pages.json"), "utf8")
+  )
+  const prepared = prepare(content, "/docs/")
+  expect(prepared.pages).toHaveLength(15)
+  expect(prepared.sources).toHaveLength(17)
+  expect(
+    prepared.sources.every(({ path }) =>
+      path.startsWith("examples/spec/lessons/")
+    )
+  ).toBe(true)
+  expect(new Set(prepared.sources.map(({ path }) => path)).size).toBe(17)
+  expect(
+    prepared.pages
+      .map(({ route }) => route)
+      .filter((route) =>
+        [
+          "/docs/getting-started/",
+          "/docs/language/",
+          "/docs/concepts/",
+          "/docs/applications/",
+        ].includes(route)
+      )
+  ).toHaveLength(4)
+  expect(
+    prepared.pages
+      .flatMap(({ blocks }) => blocks)
+      .filter(({ kind }) => kind === "terminal").length
+  ).toBe(5)
 })

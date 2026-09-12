@@ -26,7 +26,7 @@ export const digest = (value: string | Buffer) =>
   createHash("sha256").update(value).digest("hex")
 type HighlightPart = { text: string; className: string }
 type PreparedBlock = {
-  kind: "paragraph" | "heading" | "code" | "reference" | "link"
+  kind: "paragraph" | "heading" | "code" | "reference" | "link" | "terminal"
   text: string
   url: string
   identity: string
@@ -119,6 +119,8 @@ export function prepare(
           return block({ kind: "paragraph", text: text(entry.text) })
         case "heading":
           return block({ kind: "heading", text: text(entry.text) })
+        case "terminal":
+          return block({ kind: "terminal", text: text(entry.text) })
         case "sample": {
           const path = text(entry.source)
           assert.ok(

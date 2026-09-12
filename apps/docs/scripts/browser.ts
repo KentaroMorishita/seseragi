@@ -69,18 +69,33 @@ try {
             ),
             `Horizontal overflow at ${width}px: ${item.route}`
           )
+          const examples = page.locator(".code-example:not(.terminal-example)")
+          for (let index = 0; index < (await examples.count()); index++) {
+            const example = examples.nth(index)
+            const source = await example
+              .locator("code.seseragi-highlight")
+              .textContent()
+            const playground = await example
+              .getByRole("link", { name: "Playgroundで試す", exact: false })
+              .getAttribute("href")
+            assert.ok(playground)
+            assert.equal(sourceFromPlaygroundUrl(playground), source)
+          }
         }
         await page
           .locator("nav")
-          .getByRole("link", { name: "はじめてのプログラム", exact: true })
+          .getByRole("link", { name: "Getting Started", exact: true })
           .click()
         assert.ok(page.url().endsWith("/docs/getting-started/"))
         assert.equal(
-          await page.locator("pre code").textContent(),
+          await page
+            .locator("pre code.seseragi-highlight")
+            .first()
+            .textContent(),
           readFileSync(
             resolve(
               import.meta.dir,
-              "../../../examples/spec/lessons/02-values-and-functions.ssrg"
+              "../../../examples/spec/lessons/01-hello-world.ssrg"
             ),
             "utf8"
           )
@@ -88,12 +103,13 @@ try {
         const source = readFileSync(
           resolve(
             import.meta.dir,
-            "../../../examples/spec/lessons/02-values-and-functions.ssrg"
+            "../../../examples/spec/lessons/01-hello-world.ssrg"
           ),
           "utf8"
         )
         const playground = await page
           .getByRole("link", { name: "Playgroundで試す", exact: false })
+          .first()
           .getAttribute("href")
         assert.ok(playground)
         assert.equal(sourceFromPlaygroundUrl(playground), source)

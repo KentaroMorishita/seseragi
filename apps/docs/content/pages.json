@@ -3,28 +3,49 @@
     "id": "home",
     "route": "/",
     "title": "Seseragiを使う",
-    "summary": "値を組み合わせ、境界を明確に。Seseragiでプログラムを書くためのガイドです。",
+    "summary": "データの形から状態、UIまでを、ひとつの言語として組み立てるための公式ガイドです。",
     "blocks": [
-      { "kind": "heading", "text": "小さなプログラムから始める" },
+      { "kind": "heading", "text": "最初のprogramを動かす" },
       {
         "kind": "paragraph",
-        "text": "まずは関数と値に触れ、次にEffectで外の世界とつなぎます。コードを実行しながら学ぶTourと、必要な項目を引くこのガイドを使い分けてください。"
+        "text": "CLIをinstallし、Hello Worldを実行してから、同じtoolchainでWeb applicationの開発とproduction buildへ進みます。"
       },
       {
         "kind": "link",
-        "text": "はじめてのプログラム",
+        "text": "Getting Started",
         "route": "/getting-started/"
       },
-      { "kind": "heading", "text": "学び方を選ぶ" },
-      { "kind": "link", "text": "言語ガイド：値と関数", "route": "/language/" },
+      { "kind": "heading", "text": "目的から引く" },
+      { "kind": "link", "text": "Language Guide", "route": "/language/" },
+      { "kind": "link", "text": "Concepts", "route": "/concepts/" },
       {
         "kind": "link",
-        "text": "Concepts：pure HtmlとEffect",
-        "route": "/concepts/"
+        "text": "Application Guide",
+        "route": "/applications/"
+      },
+      { "kind": "heading", "text": "学び方を選ぶ" },
+      {
+        "kind": "paragraph",
+        "text": "Docsは必要な項目を参照する場所です。順番にcodeを動かすならTour、自由に編集するならPlayground、厳密な意味を確認するならSpecを使います。"
       },
       {
         "kind": "link",
-        "text": "言語仕様を読む",
+        "text": "A Tour of Seseragi",
+        "url": "https://seseragi.vercel.app/tour/"
+      },
+      {
+        "kind": "link",
+        "text": "Seseragi Playground",
+        "url": "https://seseragi.vercel.app/"
+      },
+      {
+        "kind": "link",
+        "text": "Seseragi Articles",
+        "url": "https://seseragi.vercel.app/deep-dive/"
+      },
+      {
+        "kind": "link",
+        "text": "言語仕様",
         "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/README.md"
       }
     ]
@@ -32,26 +53,55 @@
   {
     "id": "getting-started",
     "route": "/getting-started/",
-    "title": "はじめてのプログラム",
-    "summary": "CLIを用意して、ソースファイルを実行します。",
+    "title": "Getting Started",
+    "summary": "CLIのinstallから最初のWeb applicationのproduction buildまで進みます。",
     "blocks": [
-      {
-        "kind": "link",
-        "text": "CLIのインストール手順",
-        "url": "https://github.com/KentaroMorishita/seseragi#readme"
-      },
-      { "kind": "heading", "text": "値と関数を実行する" },
+      { "kind": "heading", "text": "1. CLIをinstallする" },
       {
         "kind": "paragraph",
-        "text": "下のコードをmain.ssrgとして保存し、seseragi run main.ssrgで実行します。fnで関数を定義し、mainのEffectで計算結果を出力します。"
+        "text": "hostにRustとBunを用意し、locked dependencyでCLIをinstallします。"
+      },
+      {
+        "kind": "terminal",
+        "text": "cargo install --git https://github.com/KentaroMorishita/seseragi --locked seseragi-cli\nseseragi --version"
+      },
+      { "kind": "heading", "text": "2. Hello Worldを実行する" },
+      {
+        "kind": "paragraph",
+        "text": "次のsourceをmain.ssrgとして保存します。外部へ出力するmainはEffectであり、Console capabilityを型として持ちます。"
       },
       {
         "kind": "sample",
-        "source": "examples/spec/lessons/02-values-and-functions.ssrg"
+        "source": "examples/spec/lessons/01-hello-world.ssrg"
+      },
+      { "kind": "terminal", "text": "seseragi run main.ssrg" },
+      { "kind": "heading", "text": "3. Web projectを作る" },
+      {
+        "kind": "paragraph",
+        "text": "new webはmanifest、lockfile、二つのSeseragi moduleを持つcanonical starterを生成します。project固有のpackage installは不要です。"
+      },
+      {
+        "kind": "terminal",
+        "text": "seseragi new web hello-web\ncd hello-web\nseseragi dev --open"
+      },
+      {
+        "kind": "paragraph",
+        "text": "sourceを保存すると再buildされます。manifestやdependency graphを変えた場合だけseseragi lock updateを明示的に実行します。"
+      },
+      { "kind": "heading", "text": "4. production buildを作る" },
+      { "kind": "terminal", "text": "seseragi build ." },
+      {
+        "kind": "paragraph",
+        "text": "dist/にはindex.html、bundled JavaScript、CSS、source mapが生成されます。このdirectoryをstatic serverへ配置できます。"
       },
       {
         "kind": "link",
-        "text": "Webアプリを作る手順",
+        "text": "Web applicationの詳しい手順",
+        "route": "/applications/web/"
+      },
+      {
+        "kind": "link",
+        "text": "VS Codeを含むrepository版手順",
         "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/GETTING_STARTED.md"
       }
     ]
@@ -59,42 +109,323 @@
   {
     "id": "language",
     "route": "/language/",
-    "title": "値と関数",
-    "summary": "letで値に名前をつけ、fnで計算を組み合わせます。",
+    "title": "Language Guide",
+    "summary": "値、data、collection、抽象化、Effectを実行可能な例からたどります。",
     "blocks": [
-      { "kind": "heading", "text": "関数を適用する" },
       {
         "kind": "paragraph",
-        "text": "関数と引数を空白で並べます。add 20 22は左から適用されます。複数の引数を持つ関数の型は、矢印でつながります。"
+        "text": "Seseragiのprogramはdeclarationとexpressionからできています。各code blockはrepositoryのcanonical lessonをbuild時に読み、同じsourceをPlaygroundへ渡します。"
       },
       {
         "kind": "link",
-        "text": "実行できる例に戻る",
-        "route": "/getting-started/"
+        "text": "値・関数・pipeline",
+        "route": "/language/values-and-functions/"
       },
-      { "kind": "heading", "text": "次に読む" },
       {
         "kind": "link",
-        "text": "式とデータの仕様",
+        "text": "ADT・record・pattern match",
+        "route": "/language/data-and-patterns/"
+      },
+      {
+        "kind": "link",
+        "text": "Array・List・comprehension",
+        "route": "/language/collections/"
+      },
+      {
+        "kind": "link",
+        "text": "generic・trait・operator",
+        "route": "/language/abstractions/"
+      },
+      {
+        "kind": "link",
+        "text": "Maybe・Either・Effect",
+        "route": "/language/effects/"
+      }
+    ]
+  },
+  {
+    "id": "language-values",
+    "route": "/language/values-and-functions/",
+    "title": "値・関数・pipeline",
+    "summary": "letで値を束縛し、curried functionとpipelineで計算を組み合わせます。",
+    "blocks": [
+      { "kind": "heading", "text": "空白で関数を適用する" },
+      {
+        "kind": "paragraph",
+        "text": "add 20 22はaddへ20、次に22を適用します。add 20も新しい関数値です。pipelineは左側の値を右側の関数へ渡します。"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/02-values-and-functions.ssrg"
+      },
+      {
+        "kind": "link",
+        "text": "構文の仕様",
+        "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/01-syntax.md"
+      }
+    ]
+  },
+  {
+    "id": "language-data",
+    "route": "/language/data-and-patterns/",
+    "title": "ADT・record・pattern match",
+    "summary": "dataの形を型にし、matchでcaseを取り出します。",
+    "blocks": [
+      { "kind": "heading", "text": "形を定義して分解する" },
+      {
+        "kind": "paragraph",
+        "text": "ADTは取り得るcaseをconstructorとして閉じます。matchはconstructorとpayloadを同時に確認します。record、struct、newtypeはstructuralまたはnominalな境界を作ります。"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/07-domain-types.ssrg"
+      },
+      {
+        "kind": "link",
+        "text": "データ・式・patternの仕様",
         "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/03-data-and-expressions.md"
+      }
+    ]
+  },
+  {
+    "id": "language-collections",
+    "route": "/language/collections/",
+    "title": "Array・List・comprehension",
+    "summary": "不変collectionを変換し、処理の順序を読みやすく保ちます。",
+    "blocks": [
+      { "kind": "heading", "text": "collectionを値として変換する" },
+      {
+        "kind": "paragraph",
+        "text": "ArrayとListは元の値を変更せず、新しいcollectionを返します。map、filter、reduceやcomprehensionをsource orderのまま組み立てます。"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/04-collections-and-pipelines.ssrg"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/12-comprehensions-and-patterns.ssrg"
+      }
+    ]
+  },
+  {
+    "id": "language-abstractions",
+    "route": "/language/abstractions/",
+    "title": "generic・trait・operator",
+    "summary": "型parameterとtrait evidenceで、具体的な型に閉じない処理を書きます。",
+    "blocks": [
+      { "kind": "heading", "text": "必要な操作をconstraintにする" },
+      {
+        "kind": "paragraph",
+        "text": "trait constraintはgeneric functionが必要とする操作をcompile時のevidenceとして要求します。standard operatorのoverloadもtrait instanceとして解決されます。"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/13-traits-and-custom-operators.ssrg"
+      },
+      {
+        "kind": "link",
+        "text": "型クラスの仕様",
+        "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/04-type-classes.md"
+      }
+    ]
+  },
+  {
+    "id": "language-effects",
+    "route": "/language/effects/",
+    "title": "Maybe・Either・Effect",
+    "summary": "値としての不在や失敗と、外部操作を行うEffectを型で区別します。",
+    "blocks": [
+      { "kind": "heading", "text": "失敗と外部操作を見える形にする" },
+      {
+        "kind": "paragraph",
+        "text": "Maybeは値がない可能性、Eitherは純粋な成功または失敗を表します。Effect<R, E, A>は必要なenvironment、typed failure、成功値を表します。"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/10-monad-and-do.ssrg"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/16-concurrency.ssrg"
+      },
+      {
+        "kind": "link",
+        "text": "Effectの仕様",
+        "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/05-effects.md"
       }
     ]
   },
   {
     "id": "concepts",
     "route": "/concepts/",
-    "title": "pure HtmlとEffect",
-    "summary": "ページを表す値と、外の世界に働きかける処理を分けます。",
+    "title": "Concepts",
+    "summary": "programの境界と状態の流れを考えるための概念を説明します。",
     "blocks": [
-      { "kind": "heading", "text": "HTMLも値として組み立てる" },
       {
         "kind": "paragraph",
-        "text": "pure Htmlを組み立てる関数はDOMを操作しません。renderToStringでHTML文字列へ変換できるため、ブラウザを使わずにページを生成できます。"
+        "text": "通常の値は不変です。外部状態を変える操作はEffectへ、時間とともに変わる値はSignalへ、UIの構造はpure Htmlへ分けます。"
       },
+      {
+        "kind": "link",
+        "text": "EffectとProvider",
+        "route": "/concepts/world-boundaries/"
+      },
+      {
+        "kind": "link",
+        "text": "Signalとpure Html",
+        "route": "/concepts/reactive-ui/"
+      }
+    ]
+  },
+  {
+    "id": "concepts-world",
+    "route": "/concepts/world-boundaries/",
+    "title": "EffectとProvider",
+    "summary": "Effectの型から、programが外の世界へ要求するものを読み取ります。",
+    "blocks": [
+      { "kind": "heading", "text": "world boundaryを型に残す" },
+      {
+        "kind": "paragraph",
+        "text": "EffectのRは必要なservice、Eは処理できるfailure、Aは成功値です。Providerはserviceを実行targetへ接続し、applicationはbackend固有identityではなくcapabilityを要求します。"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/18-resource-scope.ssrg"
+      },
+      {
+        "kind": "paragraph",
+        "text": "resourceはscopeへ登録し、成功、typed failure、cancellationのどの経路でも解放します。Effectを通常値として組み立てる段階では外部操作を始めません。"
+      },
+      {
+        "kind": "link",
+        "text": "Runtime Provider Contract",
+        "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/15-runtime-providers.md"
+      }
+    ]
+  },
+  {
+    "id": "concepts-ui",
+    "route": "/concepts/reactive-ui/",
+    "title": "Signalとpure Html",
+    "summary": "状態をSignalへ置き、UIを現在の値から作るpureなtreeとして表します。",
+    "blocks": [
+      { "kind": "heading", "text": "状態と表示を一方向につなぐ" },
+      {
+        "kind": "paragraph",
+        "text": "MutableSignalへactionを適用し、read-only Signalをcomponentへ渡します。HTML componentはpropsからHtmlを返し、DOM identityやlistenerの寿命はDom Effectが所有します。"
+      },
+      { "kind": "sample", "source": "examples/spec/lessons/15-signals.ssrg" },
       { "kind": "sample", "source": "examples/spec/lessons/27-pure-html.ssrg" },
       {
         "kind": "paragraph",
-        "text": "このDocsもbuild時にSeseragiでHTMLを生成します。本文とnavigationを読むためのJavaScriptは不要です。"
+        "text": "このDocsもpure Htmlをbuild時にdocumentへrenderします。本文とnavigationを読むためのclient JavaScriptは不要です。"
+      }
+    ]
+  },
+  {
+    "id": "applications",
+    "route": "/applications/",
+    "title": "Application Guide",
+    "summary": "Web、data codec、filesystemやtimeをstandard capabilityから組み立てます。",
+    "blocks": [
+      {
+        "kind": "paragraph",
+        "text": "applicationはpureなdomain logicとEffect boundaryを分け、必要なstandard moduleだけをimportします。正確なsignatureとtarget availabilityはAPI Referenceから確認できます。"
+      },
+      {
+        "kind": "link",
+        "text": "Web application",
+        "route": "/applications/web/"
+      },
+      {
+        "kind": "link",
+        "text": "JSON・Bytes・数値",
+        "route": "/applications/data/"
+      },
+      {
+        "kind": "link",
+        "text": "filesystem・time・process",
+        "route": "/applications/system/"
+      }
+    ]
+  },
+  {
+    "id": "applications-web",
+    "route": "/applications/web/",
+    "title": "Web application",
+    "summary": "pure Html、Signal、Dom Effectからbrowser applicationを作ります。",
+    "blocks": [
+      { "kind": "heading", "text": "projectをbrowser targetへ接続する" },
+      {
+        "kind": "paragraph",
+        "text": "Web projectはrun.target = webを持つmanifestとlocked dependency graphを使います。componentはHtml値を返し、entry moduleがSignalとDOM lifecycleを接続します。"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/30-interactive-dom.ssrg"
+      },
+      {
+        "kind": "terminal",
+        "text": "seseragi dev --open\n# edit src/**/*.ssrg\nseseragi build ."
+      },
+      {
+        "kind": "link",
+        "text": "Getting Startedへ戻る",
+        "route": "/getting-started/"
+      },
+      {
+        "kind": "link",
+        "text": "Web UIの仕様",
+        "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/13-web-ui.md"
+      }
+    ]
+  },
+  {
+    "id": "applications-data",
+    "route": "/applications/data/",
+    "title": "JSON・Bytes・数値",
+    "summary": "外部dataを明示的にdecodeし、用途に合う表現へ変換します。",
+    "blocks": [
+      { "kind": "heading", "text": "境界で検証する" },
+      {
+        "kind": "paragraph",
+        "text": "JSON decoderは構造とfieldを検証します。BytesとUTF-8の変換も明示的です。exact decimalが必要ならFloatへ暗黙変換せずDecimalを選びます。"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/26-json-codecs.ssrg"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/21-bytes-and-utf8.ssrg"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/22-decimal-arithmetic.ssrg"
+      }
+    ]
+  },
+  {
+    "id": "applications-system",
+    "route": "/applications/system/",
+    "title": "filesystem・time・process",
+    "summary": "process targetのserviceをEffectとして要求し、failureとresource lifetimeを扱います。",
+    "blocks": [
+      { "kind": "heading", "text": "host serviceを必要な場所だけへ渡す" },
+      {
+        "kind": "paragraph",
+        "text": "FileSystem、Clock、Processなどの操作はEffectを返します。browserで使えないmoduleはcompilerがtarget mismatchとして止めます。"
+      },
+      {
+        "kind": "sample",
+        "source": "examples/spec/lessons/25-filesystem.ssrg"
+      },
+      { "kind": "sample", "source": "examples/spec/lessons/24-timezones.ssrg" },
+      {
+        "kind": "link",
+        "text": "標準ライブラリ契約",
+        "url": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/09-standard-library.md"
       }
     ]
   }

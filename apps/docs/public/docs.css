@@ -227,6 +227,9 @@ pre {
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
+.terminal-example code {
+  color: #bde7d6;
+}
 .seseragi-highlight .tok-keyword {
   color: #c792ea;
 }
