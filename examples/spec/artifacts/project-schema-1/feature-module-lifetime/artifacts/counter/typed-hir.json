@@ -73,6 +73,15 @@
     },
     {
       "arity": 0,
+      "spelling": "WheelEvent",
+      "canonical": "std/web/html::WheelEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "WheelEvent"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "ScrollEvent",
       "canonical": "std/web/html::ScrollEvent",
       "provider": {
@@ -1600,7 +1609,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 59,
+              "symbol": 60,
               "name": "state",
               "type": {
                 "kind": "external-named",

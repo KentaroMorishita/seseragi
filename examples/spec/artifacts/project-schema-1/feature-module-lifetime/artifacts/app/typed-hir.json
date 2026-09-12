@@ -89,6 +89,15 @@
     },
     {
       "arity": 0,
+      "spelling": "WheelEvent",
+      "canonical": "std/web/html::WheelEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "WheelEvent"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "ScrollEvent",
       "canonical": "std/web/html::ScrollEvent",
       "provider": {
@@ -3799,7 +3808,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 104,
+              "symbol": 108,
               "name": "layout",
               "type": {
                 "kind": "external-named",
@@ -3942,7 +3951,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 105,
+              "symbol": 109,
               "name": "first",
               "type": {
                 "kind": "external-named",
@@ -4063,7 +4072,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 106,
+              "symbol": 110,
               "name": "second",
               "type": {
                 "kind": "external-named",
@@ -4184,7 +4193,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 107,
+              "symbol": 111,
               "name": "replacement",
               "type": {
                 "kind": "external-named",
@@ -4305,7 +4314,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 109,
+              "symbol": 113,
               "name": "panel",
               "type": {
                 "kind": "external-named",
@@ -4487,7 +4496,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 111,
+              "symbol": 115,
               "name": "layoutView",
               "type": {
                 "kind": "external-named",
@@ -4603,7 +4612,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 118,
+              "symbol": 122,
               "name": "content",
               "type": {
                 "kind": "external-named",
@@ -5627,7 +5636,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 122,
+              "symbol": 126,
               "name": "target",
               "type": {
                 "kind": "external-named",
