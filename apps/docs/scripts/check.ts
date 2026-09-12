@@ -20,6 +20,7 @@ for (const command of [
       "build.test.ts",
       "browser.ts",
       "check.ts",
+      "production.ts",
       "quality.ts",
     ].map((name) => `apps/docs/scripts/${name}`),
   ],

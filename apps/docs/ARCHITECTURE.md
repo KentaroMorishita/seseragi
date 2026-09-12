@@ -158,6 +158,16 @@ styles and reduced-motion behavior are part of the same quality boundary.
 6. G: link, SEO, accessibility, mobile and large-corpus regression gates.
 7. H: production/deploy reproducibility, measured costs and O04 handoff.
 
+Phase H packages the existing contracts rather than introducing another build
+path. `build:docs:production` compiles the repository CLI in release mode, runs
+the complete Docs build twice and requires byte-identical site manifests and
+tracked file inventories. The verified output is the only deploy root. The
+Playground keeps the repository root Vercel config; Docs has a separate local
+config for a separately linked project and uses Vercel's prebuilt preview then
+promotion flow. No deployment URL is considered official until #555 verifies
+the remote preview, promotes the same artifact and reads the canonical domain
+back.
+
 Only audited work is converted to queue leaves. Phase A verification checks the
 source inventory and self-reviews ownership, routes, escaping and truthful
 future boundaries. Subsequent implementation checks include source drift,

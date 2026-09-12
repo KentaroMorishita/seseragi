@@ -96,6 +96,41 @@ feedback, including the failure path. It also checks heading order, image text
 alternatives, sitemap coverage and the JavaScript-disabled accessibility tree.
 It cleans its server, browser and generated site after verification.
 
+## Production and Vercel handoff
+
+The canonical production command requires the intended public origin. The base
+defaults to `/`; each run requires a fresh output directory.
+
+```sh
+SESERAGI_DOCS_ORIGIN=https://docs.example.com \
+SESERAGI_DOCS_BASE=/ \
+SESERAGI_DOCS_OUTPUT="$PWD/target/docs-site" \
+bun run build:docs:production
+```
+
+This command builds the matching release CLI, runs two release-profile Docs
+builds, compares their complete manifests and published-file inventories, and
+moves one verified build into the requested output. The output contains only the
+84 recorded static files plus `site-manifest.json`; generator work directories
+are removed. An existing destination is rejected rather than deleted.
+
+The repository root `vercel.json` continues to own the Playground deployment.
+Docs uses `apps/docs/vercel.json` as a separate Vercel project configuration from
+the repository root:
+
+```sh
+vercel pull --yes --environment=preview --local-config apps/docs/vercel.json
+vercel build --local-config apps/docs/vercel.json
+vercel deploy --prebuilt --local-config apps/docs/vercel.json
+```
+
+Set `SESERAGI_DOCS_ORIGIN` and `SESERAGI_DOCS_BASE` in that project before the
+build. Link the repository as a multi-project repository and keep its project
+IDs/tokens outside source control. Promotion validates the preview URL, then uses
+`vercel promote` for the same artifact. The config serves trailing-slash static
+routes and adds CSP, clipboard, referrer and content-type headers; it has no SPA
+rewrite.
+
 ## Reproduced gap and fix
 
 The shell requires viewport and description metadata. On v0.61.9, `html.meta`
