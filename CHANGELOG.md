@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.61.10] - 2026-09-12
+
+### Changed
+
+- #597 O03 candidate: Ishikoridome dogfoodで露出したWeb scene interaction境界（SVG / pointer lifecycle / DOM measurement）
 ## [0.61.9] - 2026-09-10
 
 ### Changed

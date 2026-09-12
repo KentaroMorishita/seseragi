@@ -342,7 +342,9 @@ fn page stylesheet: html.WebUrl -> html.Html<Action> =
       html.head {
         children: [
           html.title { children: "Seseragi" },
-          html.meta { id: "metadata" },
+          html.meta { charSet: "utf-8" },
+          html.meta { name: "viewport", content: "width=device-width, initial-scale=1" },
+          html.meta { httpEquiv: "content-language", content: "ja" },
           html.link { rel: "stylesheet", href: stylesheet }
         ]
       },

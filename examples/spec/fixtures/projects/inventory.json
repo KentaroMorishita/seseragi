@@ -606,6 +606,12 @@
         "crates/seseragi-cli/tests/build.rs",
         "crates/seseragi-cli/tests/dev.rs"
       ]
+    },
+    "web-scene-interaction": {
+      "availability": "current",
+      "phase": "compile",
+      "runners": ["cli-build"],
+      "evidence": ["apps/playground/tests/web-scene-interaction-browser.test.ts"]
     }
   }
 }

@@ -590,6 +590,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "PointerEvent",
     },
     RuntimeTypeImport {
+        canonical: "std/web/html::WheelEvent",
+        runtime_feature: "web.html.wheel-event-type",
+        module: "@seseragi/runtime/html",
+        export_name: "WheelEvent",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/html::ScrollEvent",
         runtime_feature: "web.html.scroll-event-type",
         module: "@seseragi/runtime/html",
@@ -686,6 +692,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Dom",
     },
     RuntimeTypeImport {
+        canonical: "std/web/dom::ElementRect",
+        runtime_feature: "web.dom.element-rect-type",
+        module: "@seseragi/runtime/dom",
+        export_name: "ElementRect",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/dom::DomOptions",
         runtime_feature: "web.dom.options",
         module: "@seseragi/runtime/dom",
@@ -738,6 +750,18 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         runtime_feature: "web.dom.binding-type",
         module: "@seseragi/runtime/dom",
         export_name: "DomBinding",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/dom::DomObservation",
+        runtime_feature: "web.dom.observation-type",
+        module: "@seseragi/runtime/dom",
+        export_name: "DomObservation",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/svg::Svg",
+        runtime_feature: "web.svg.type",
+        module: "@seseragi/runtime/svg",
+        export_name: "Svg",
     },
     RuntimeTypeImport {
         canonical: "std/signal::Signal",

@@ -90,17 +90,18 @@ import * as module85 from "../../../../runtime/ts/src/storage.ts"
 import * as module86 from "../../../../runtime/ts/src/stream.ts"
 import * as module87 from "../../../../runtime/ts/src/string.ts"
 import * as module88 from "../../../../runtime/ts/src/sum.ts"
-import * as module89 from "../../../../runtime/ts/src/test.ts"
-import * as module90 from "../../../../runtime/ts/src/text.ts"
-import * as module91 from "../../../../runtime/ts/src/time.ts"
-import * as module92 from "../../../../runtime/ts/src/timezone-rules.js"
-import * as module93 from "../../../../runtime/ts/src/transformer.ts"
-import * as module94 from "../../../../runtime/ts/src/unicode.ts"
-import * as module95 from "../../../../runtime/ts/src/unicode-version.ts"
-import * as module96 from "../../../../runtime/ts/src/validation.ts"
-import * as module97 from "../../../../runtime/ts/src/web-file.ts"
-import * as module98 from "../../../../runtime/ts/src/websocket.ts"
-import * as module99 from "../../../../runtime/ts/src/websocket-host-provider.ts"
+import * as module89 from "../../../../runtime/ts/src/svg.ts"
+import * as module90 from "../../../../runtime/ts/src/test.ts"
+import * as module91 from "../../../../runtime/ts/src/text.ts"
+import * as module92 from "../../../../runtime/ts/src/time.ts"
+import * as module93 from "../../../../runtime/ts/src/timezone-rules.js"
+import * as module94 from "../../../../runtime/ts/src/transformer.ts"
+import * as module95 from "../../../../runtime/ts/src/unicode.ts"
+import * as module96 from "../../../../runtime/ts/src/unicode-version.ts"
+import * as module97 from "../../../../runtime/ts/src/validation.ts"
+import * as module98 from "../../../../runtime/ts/src/web-file.ts"
+import * as module99 from "../../../../runtime/ts/src/websocket.ts"
+import * as module100 from "../../../../runtime/ts/src/websocket-host-provider.ts"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": module8,
@@ -187,17 +188,18 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/stream": module86,
   "@seseragi/runtime/string": module87,
   "@seseragi/runtime/sum": module88,
-  "@seseragi/runtime/test": module89,
-  "@seseragi/runtime/text": module90,
-  "@seseragi/runtime/time": module91,
-  "@seseragi/runtime/timezone-rules": module92,
-  "@seseragi/runtime/transformer": module93,
-  "@seseragi/runtime/unicode": module94,
-  "@seseragi/runtime/unicode-version": module95,
-  "@seseragi/runtime/validation": module96,
-  "@seseragi/runtime/web-file": module97,
-  "@seseragi/runtime/websocket": module98,
-  "@seseragi/runtime/websocket-host-provider": module99,
+  "@seseragi/runtime/svg": module89,
+  "@seseragi/runtime/test": module90,
+  "@seseragi/runtime/text": module91,
+  "@seseragi/runtime/time": module92,
+  "@seseragi/runtime/timezone-rules": module93,
+  "@seseragi/runtime/transformer": module94,
+  "@seseragi/runtime/unicode": module95,
+  "@seseragi/runtime/unicode-version": module96,
+  "@seseragi/runtime/validation": module97,
+  "@seseragi/runtime/web-file": module98,
+  "@seseragi/runtime/websocket": module99,
+  "@seseragi/runtime/websocket-host-provider": module100,
   "seseragi/runtime-browser/clock": module0,
   "seseragi/runtime-browser/entropy": module1,
   "seseragi/runtime-browser/http-client": module2,

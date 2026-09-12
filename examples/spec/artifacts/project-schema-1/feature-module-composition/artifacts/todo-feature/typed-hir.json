@@ -89,6 +89,15 @@
     },
     {
       "arity": 0,
+      "spelling": "WheelEvent",
+      "canonical": "std/web/html::WheelEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "WheelEvent"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "ScrollEvent",
       "canonical": "std/web/html::ScrollEvent",
       "provider": {
@@ -546,7 +555,7 @@
               "symbol": "fixture/feature-module-composition::todo/feature::DraftChanged",
               "argument": {
                 "kind": "binding",
-                "symbol": 52,
+                "symbol": 53,
                 "name": "value",
                 "type": {
                   "kind": "named",
@@ -2431,7 +2440,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 73,
+              "symbol": 74,
               "name": "state",
               "type": {
                 "kind": "external-named",

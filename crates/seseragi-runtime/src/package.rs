@@ -331,6 +331,7 @@ const FILES: &[(&str, &str)] = &[
         "src/html.ts",
         include_str!("../../../runtime/ts/src/html.ts"),
     ),
+    ("src/svg.ts", include_str!("../../../runtime/ts/src/svg.ts")),
     (
         "src/multipart.ts",
         include_str!("../../../runtime/ts/src/multipart.ts"),

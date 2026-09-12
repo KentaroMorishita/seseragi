@@ -33,6 +33,9 @@ pub(crate) fn check_standard_library_case(case: &Path) -> Result<(), String> {
             }
             serde_json::to_value(surface)
         }
+        Some("reference") => seseragi_semantics::standard_reference_surface()
+            .map_err(|error| serde_json::Error::io(std::io::Error::other(error)))
+            .and_then(serde_json::to_value),
         _ => return Err("unknown standard library surface case".to_owned()),
     }
     .map_err(|error| format!("failed to encode standard module surface: {error}"))?;
@@ -55,6 +58,17 @@ mod tests {
             .parent()
             .unwrap();
         let case = root.join("examples/spec/artifacts/stdlib-schema-1/prelude");
+        assert_eq!(check_standard_library_case(&case), Ok(()));
+    }
+
+    #[test]
+    fn canonical_reference_artifact_matches_compiler_metadata() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap();
+        let case = root.join("examples/spec/artifacts/stdlib-schema-1/reference");
         assert_eq!(check_standard_library_case(&case), Ok(()));
     }
 

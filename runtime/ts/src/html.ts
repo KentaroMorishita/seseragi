@@ -26,6 +26,7 @@ type FragmentNode<Action> = PhantomAction<Action> &
 type ElementNode<Action> = PhantomAction<Action> &
   Readonly<{
     readonly [HTML_NODE]: "element"
+    readonly namespace: "html" | "svg"
     readonly tag: string
     readonly props: Readonly<Record<string, unknown>>
     readonly children: ReadonlyArray<Html<Action>>
@@ -83,6 +84,20 @@ export type PointerEvent = Readonly<{
   readonly clientX: number
   readonly clientY: number
   readonly pressure: number
+  readonly altKey: boolean
+  readonly controlKey: boolean
+  readonly metaKey: boolean
+  readonly shiftKey: boolean
+}>
+
+/** Immutable wheel snapshot. It never retains the host DOM event. */
+export type WheelEvent = Readonly<{
+  readonly deltaX: number
+  readonly deltaY: number
+  readonly deltaZ: number
+  readonly deltaMode: number
+  readonly clientX: number
+  readonly clientY: number
   readonly altKey: boolean
   readonly controlKey: boolean
   readonly metaKey: boolean
@@ -182,8 +197,16 @@ export type DomEventHandler<Action> =
       readonly map: (event: MouseEvent) => EventAction<Action>
     }>
   | Readonly<{
-      readonly kind: "pointerdown" | "pointerup"
+      readonly kind:
+        | "pointerdown"
+        | "pointermove"
+        | "pointerup"
+        | "pointercancel"
       readonly map: (event: PointerEvent) => EventAction<Action>
+    }>
+  | Readonly<{
+      readonly kind: "wheel"
+      readonly map: (event: WheelEvent) => EventAction<Action>
     }>
   | Readonly<{
       readonly kind: "scroll"
@@ -288,6 +311,9 @@ const RESERVED_CUSTOM_ATTRIBUTE_NAMES = new Set([
   "mimetype",
   "multiple",
   "name",
+  "charset",
+  "content",
+  "http-equiv",
   "open",
   "pattern",
   "placeholder",
@@ -445,6 +471,22 @@ type TagFunction = {
   ): Html<Action>
   <Action>(
     props: Readonly<{
+      onPointerMove: (event: PointerEvent) => EventAction<Action>
+    }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{
+      onPointerCancel: (event: PointerEvent) => EventAction<Action>
+    }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{ onWheel: (event: WheelEvent) => EventAction<Action> }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{
       onDoubleClick: (event: MouseEvent) => EventAction<Action>
     }> &
       Readonly<Record<string, unknown>>
@@ -463,11 +505,13 @@ type TagFunction = {
 }
 
 function tag(name: string): TagFunction {
-  return <Action>(props: unknown): Html<Action> => element(name, props, false)
+  return <Action>(props: unknown): Html<Action> =>
+    element("html", name, props, false)
 }
 
 function voidTag(name: string): TagFunction {
-  return <Action>(props: unknown): Html<Action> => element(name, props, true)
+  return <Action>(props: unknown): Html<Action> =>
+    element("html", name, props, true)
 }
 
 export const div = tag("div")
@@ -529,19 +573,32 @@ export const summary = tag("summary")
 export const dialog = tag("dialog")
 
 export function input<Action = never>(props: unknown): Html<Action> {
-  return element("input", props, true)
+  return element("html", "input", props, true)
 }
 
 export function textarea<Action = never>(props: unknown): Html<Action> {
   const record = expectProps(props)
-  return element("textarea", { ...record, children: record.value ?? "" }, false)
+  return element(
+    "html",
+    "textarea",
+    { ...record, children: record.value ?? "" },
+    false
+  )
 }
 
 export function custom<Action = never>(
   value: Tag,
   props: unknown
 ): Html<Action> {
-  return element(expectTag(value).name, props, false)
+  return element("html", expectTag(value).name, props, false)
+}
+
+/** Runtime boundary used only by std/web/svg. */
+export function createSvgElement<Action = never>(
+  name: string,
+  props: unknown
+): Html<Action> {
+  return element("svg", name, props, false)
 }
 
 export function renderToString<Action>(value: Html<Action>): string {
@@ -551,7 +608,11 @@ export function renderToString<Action>(value: Html<Action>): string {
     case "fragment":
       return value.children.map(renderToString).join("")
     case "element": {
-      const attributes = renderAttributes(value.tag, value.props)
+      const attributes = renderAttributes(
+        value.namespace,
+        value.tag,
+        value.props
+      )
       const opening = `<${value.tag}${attributes}>`
       if (value.voidElement) return opening
       return `${opening}${value.children.map(renderToString).join("")}</${value.tag}>`
@@ -593,7 +654,12 @@ function renderDomNode<Action>(
         eventHandlers,
         eventIdPrefix
       )
-      const attributes = renderAttributes(value.tag, value.props, markers)
+      const attributes = renderAttributes(
+        value.namespace,
+        value.tag,
+        value.props,
+        markers
+      )
       const opening = `<${value.tag}${attributes}>`
       if (value.voidElement) return opening
       return `${opening}${value.children
@@ -673,7 +739,9 @@ function registerDomEvents<Action>(
   }
   for (const [prop, kind] of [
     ["onPointerDown", "pointerdown"],
+    ["onPointerMove", "pointermove"],
     ["onPointerUp", "pointerup"],
+    ["onPointerCancel", "pointercancel"],
   ] as const) {
     if (Object.hasOwn(props, prop)) {
       register(kind, {
@@ -684,6 +752,15 @@ function registerDomEvents<Action>(
         ),
       })
     }
+  }
+  if (Object.hasOwn(props, "onWheel")) {
+    register("wheel", {
+      kind: "wheel",
+      map: expectEventMapper<WheelEvent, EventAction<Action>>(
+        "onWheel",
+        props.onWheel
+      ),
+    })
   }
   if (Object.hasOwn(props, "onScroll")) {
     register("scroll", {
@@ -725,6 +802,7 @@ function registerDomEvents<Action>(
 }
 
 function element<Action>(
+  namespace: "html" | "svg",
   name: string,
   value: unknown,
   voidElement: boolean
@@ -738,6 +816,7 @@ function element<Action>(
     : normalizeChildren<Action>(props.children)
   return Object.freeze({
     [HTML_NODE]: "element",
+    namespace,
     tag: name,
     props: Object.freeze({ ...props }),
     children,
@@ -773,6 +852,7 @@ function normalizeChildren<Action>(
 }
 
 function renderAttributes(
+  namespace: "html" | "svg",
   tagName: string,
   props: Readonly<Record<string, unknown>>,
   eventMarkers: Readonly<Record<string, string>> = {}
@@ -802,7 +882,10 @@ function renderAttributes(
     "mousedown",
     "mouseup",
     "pointerdown",
+    "pointermove",
     "pointerup",
+    "pointercancel",
+    "wheel",
     "dblclick",
     "contextmenu",
     "scroll",
@@ -814,6 +897,45 @@ function renderAttributes(
     const id = eventMarkers[kind]
     if (id !== undefined) {
       attributes.push(`data-ssrg-event-${kind}="${id}"`)
+    }
+  }
+
+  if (namespace === "svg") {
+    for (const [property, attribute] of [
+      ["viewBox", "viewBox"],
+      ["preserveAspectRatio", "preserveAspectRatio"],
+      ["transform", "transform"],
+      ["d", "d"],
+      ["points", "points"],
+      ["fill", "fill"],
+      ["stroke", "stroke"],
+      ["strokeWidth", "stroke-width"],
+      ["strokeLinecap", "stroke-linecap"],
+      ["strokeLinejoin", "stroke-linejoin"],
+      ["textAnchor", "text-anchor"],
+      ["dominantBaseline", "dominant-baseline"],
+      ["pointerEvents", "pointer-events"],
+      ["ariaLabel", "aria-label"],
+    ] as const) {
+      stringAttribute(attributes, attribute, props[property])
+    }
+    for (const property of [
+      "x",
+      "y",
+      "x1",
+      "y1",
+      "x2",
+      "y2",
+      "cx",
+      "cy",
+      "r",
+      "rx",
+      "ry",
+      "width",
+      "height",
+      "opacity",
+    ] as const) {
+      numberAttribute(attributes, property, props[property])
     }
   }
 
@@ -884,6 +1006,12 @@ function renderAttributes(
     integerAttribute(attributes, "width", props.width)
     integerAttribute(attributes, "height", props.height)
   }
+  if (tagName === "meta") {
+    stringAttribute(attributes, "charset", props.charSet)
+    stringAttribute(attributes, "name", props.name)
+    stringAttribute(attributes, "content", props.content)
+    stringAttribute(attributes, "http-equiv", props.httpEquiv)
+  }
   if (tagName === "link") {
     stringAttribute(attributes, "rel", props.rel)
     webUrlAttribute(attributes, "href", props.href)
@@ -950,8 +1078,12 @@ export function resolveDomEvent<Action>(
     case "contextmenu":
       return resolveEventAction(handler.map(mouseEventSnapshot(event)))
     case "pointerdown":
+    case "pointermove":
     case "pointerup":
+    case "pointercancel":
       return resolveEventAction(handler.map(pointerEventSnapshot(event)))
+    case "wheel":
+      return resolveEventAction(handler.map(wheelEventSnapshot(event)))
     case "scroll":
       return resolveEventAction(handler.map(scrollEventSnapshot(target)))
     case "input":
@@ -1060,6 +1192,21 @@ function pointerEventSnapshot(event: unknown): PointerEvent {
   })
 }
 
+function wheelEventSnapshot(event: unknown): WheelEvent {
+  return Object.freeze({
+    deltaX: eventTargetNumber("deltaX", event),
+    deltaY: eventTargetNumber("deltaY", event),
+    deltaZ: eventTargetNumber("deltaZ", event),
+    deltaMode: eventTargetNumber("deltaMode", event),
+    clientX: eventTargetNumber("clientX", event),
+    clientY: eventTargetNumber("clientY", event),
+    altKey: eventTargetBoolean("altKey", event),
+    controlKey: eventTargetBoolean("ctrlKey", event),
+    metaKey: eventTargetBoolean("metaKey", event),
+    shiftKey: eventTargetBoolean("shiftKey", event),
+  })
+}
+
 function scrollEventSnapshot(target: unknown): ScrollEvent {
   return Object.freeze({
     scrollLeft: eventTargetNumber("scrollLeft", target),
@@ -1159,6 +1306,14 @@ function integerAttribute(
     throw new TypeError(`HTML attribute ${name} must be an Int`)
   }
   output.push(`${name}="${value}"`)
+}
+
+function numberAttribute(output: string[], name: string, value: unknown): void {
+  if (value === undefined) return
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new TypeError(`SVG attribute ${name} must be a finite number`)
+  }
+  output.push(`${name}="${String(value)}"`)
 }
 
 function customAttributes(output: string[], value: unknown): void {
