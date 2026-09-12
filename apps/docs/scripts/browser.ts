@@ -56,7 +56,12 @@ try {
             await page.locator('meta[name="description"]').count(),
             1
           )
-          assert.equal(await page.locator("script").count(), 0)
+          assert.equal(await page.locator('script[type="module"]').count(), 2)
+          assert.equal(await page.locator("#docs-search").textContent(), "")
+          assert.equal(
+            await page.getByRole("button", { name: "コピー" }).count(),
+            0
+          )
           assert.equal(
             await page
               .locator('img[src="/docs/assets/seseragi-icon.svg"]')
@@ -147,8 +152,91 @@ try {
         assert.deepEqual(failures, [])
         await context.close()
       }
+      for (const width of [1280, 390]) {
+        const origin = `http://127.0.0.1:${server.port}`
+        const context = await browser.newContext({
+          viewport: { width, height: 900 },
+        })
+        await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+          origin,
+        })
+        const page = await context.newPage()
+        const failures: string[] = []
+        page.on("pageerror", (error) => failures.push(error.message))
+        page.on("response", (response) => {
+          if (response.status() >= 400) failures.push(response.url())
+        })
+        await page.goto(`${origin}/docs/getting-started/`)
+        assert.equal(
+          await page
+            .getByRole("button", { name: "コピー" })
+            .first()
+            .isVisible(),
+          true
+        )
+        const search = page.getByRole("searchbox", {
+          name: "ドキュメントを検索",
+        })
+        await search.focus()
+        await page.keyboard.type("std/effect::fail")
+        const result = page.getByRole("link", {
+          name: /std\/effect · fail/,
+        })
+        await result.waitFor()
+        await page.waitForTimeout(100)
+        assert.equal(
+          await page.evaluate(() => document.activeElement?.id),
+          "docs-search-input"
+        )
+        assert.ok((await result.textContent())?.includes("typed error"))
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `search-${width}.png`),
+            fullPage: true,
+          })
+        assert.ok(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth
+          ),
+          `Enabled-JS search overflow at ${width}px`
+        )
+        await page.keyboard.press("Tab")
+        const resultHref = await result.getAttribute("href")
+        assert.ok(
+          resultHref?.includes("/docs/reference/std/effect/#reference-")
+        )
+        assert.equal(
+          await page.locator(":focus").getAttribute("href"),
+          resultHref
+        )
+        await Promise.all([
+          page.waitForURL(/\/docs\/reference\/std\/effect\/#reference-/),
+          result.click(),
+        ])
+        assert.ok(page.url().includes("/docs/reference/std/effect/#reference-"))
+        assert.equal(await page.locator("h1").textContent(), "std/effect")
+
+        if (width === 1280) {
+          await page.goto(`${origin}/docs/getting-started/`)
+          const example = page
+            .locator(".code-example:not(.terminal-example)")
+            .first()
+          const expected = await example.locator("code").textContent()
+          await example.getByRole("button", { name: "コピー" }).click()
+          assert.equal(
+            await page.evaluate(() => navigator.clipboard.readText()),
+            expected
+          )
+          assert.equal(
+            await page.locator("#docs-copy-status").textContent(),
+            "コードをクリップボードへコピーしました"
+          )
+        }
+        assert.deepEqual(failures, [])
+        await context.close()
+      }
       console.log(
-        `Docs browser: ${manifest.pages.length} routes × 3 viewports; JS disabled; navigation, Reference, source, metadata, shared logo, highlighting, skip link and overflow passed`
+        `Docs browser: ${manifest.pages.length} routes × 3 static viewports plus enabled-JS desktop/mobile; navigation, search, copy, Reference, source, metadata, shared logo, highlighting, skip link and overflow passed`
       )
     } finally {
       await browser.close()

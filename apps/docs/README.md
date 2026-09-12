@@ -3,8 +3,8 @@
 Phase C (#593) established the static shell. Phase D (#594) adds a generated API
 Reference landing page and one page for each public standard-library module.
 Phase E (#595) provides 15 human-facing pages across Getting Started, Language
-Guide, Concepts and Application Guide. Search/copy enhancements and deploy
-remain O03 phases F–H.
+Guide, Concepts and Application Guide. Phase F (#596) adds generated search and
+copy enhancement. Combined quality and deploy remain O03 phases G–H.
 
 The shell uses the same canonical `seseragi-icon.svg`, dark palette and syntax
 token colors as Playground. The icon is copied from `assets/brand/public/brand`
@@ -12,6 +12,15 @@ during each build, so Docs cannot silently acquire a separate logo. Code example
 highlighted at build time with Playground's Seseragi highlighter. Every example
 links to the canonical Playground with its exact verified source preloaded;
 reading and highlighting the page still require no client JavaScript.
+
+The search index is derived from the same validated page and Reference records:
+there is no second route or symbol inventory. `src/search.ssrg` is compiled as a
+separate release-profile Web artifact and mounts only into `#docs-search`.
+Search result URLs preserve the configured base and stable Reference anchors.
+Copy buttons carry the exact canonical sample source or compiler-owned signature;
+a 724-byte browser adapter performs the clipboard write and reports success or
+failure through an accessible status region. Enhancement controls stay hidden
+when JavaScript is disabled, while every article and navigation link remains.
 
 `content/pages.json` is the structured authoring input. Paragraphs, headings,
 terminal commands, links and canonical sample references are supported. Its 17
@@ -52,8 +61,9 @@ up their own temporary output.
 
 The site manifest records page routes, canonical source digests, Reference
 language version/module/item counts and source digest, output bytes/digests
-(including the shared logo), client JavaScript cost and the full separate
-generator artifact manifest with provenance/retention measurements.
+(including the shared logo), the 1,465-entry generated search inventory, total
+client JavaScript cost, and full generator/search artifact manifests with
+provenance and retention measurements.
 It is a site inventory, not an alternative compiler artifact schema. No wall-clock
 time or temporary directory is part of the page output. Origin/base and source
 changes intentionally change output identity.
@@ -69,8 +79,10 @@ SESERAGI_BIN="$PWD/target/debug/seseragi" bun apps/docs/scripts/browser.ts
 Set `DOCS_SCREENSHOTS` to retain review PNGs. Browser verification covers all 78
 routes at 1280, 390 and 320 pixels with JavaScript disabled, authored and
 Reference navigation, every exact-source Playground URL, canonical sample text,
-syntax highlighting, metadata, skip link and document overflow. It cleans its
-server, browser and generated site after verification.
+syntax highlighting, metadata, skip link and document overflow. A second pass
+enables JavaScript at desktop/mobile widths and verifies search filtering,
+keyboard focus, base-aware Reference navigation, clipboard contents and status
+feedback. It cleans its server, browser and generated site after verification.
 
 ## Reproduced gap and fix
 

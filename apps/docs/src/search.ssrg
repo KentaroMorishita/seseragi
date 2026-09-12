@@ -1,0 +1,79 @@
+import * as arrays from "std/array"
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import * as text from "std/text"
+import { MutableSignal } from "std/signal"
+
+struct SearchEntry { title: String, summary: String, route: String, terms: String }
+
+type Action = | QueryChanged String
+
+let entries = [
+__SEARCH_ENTRIES__
+]
+
+fn queryAction event: html.InputEvent -> Action = QueryChanged event.value
+
+fn matches query: String -> entry: SearchEntry -> Bool =
+  text.contains query (text.toLower entry.terms)
+
+fn result entry: SearchEntry -> html.Html<Action> =
+  match html.parseWebUrl entry.route {
+    Left _ -> html.span { class: "docs-search-error", children: entry.title }
+    Right url -> html.a {
+      href: url,
+      class: "docs-search-result",
+      children: [
+        html.strong { children: entry.title },
+        html.span { children: entry.summary }
+      ]
+    }
+  }
+
+fn view query: String -> html.Html<Action> = {
+  let needle = text.toLower (text.trim query)
+  let found = arrays.filter (matches needle) entries
+  let visible = arrays.take 20 found
+  html.div {
+    class: "docs-search",
+    children: [
+      html.label { htmlFor: "docs-search-input", children: "ドキュメントを検索" },
+      html.input {
+        id: "docs-search-input",
+        key: "docs-search-input",
+        inputType: "search",
+        value: query,
+        placeholder: "Guide や API を検索",
+        autoComplete: "off",
+        onInput: queryAction
+      },
+      if text.isEmpty needle then
+        html.span { class: "docs-search-hint", children: "" }
+      else if arrays.isEmpty found then
+        html.p { class: "docs-search-empty", role: "status", children: "一致する項目はありません" }
+      else
+        html.div {
+          id: "docs-search-results",
+          class: "docs-search-results",
+          role: "status",
+          children: [result entry | entry <- visible]
+        }
+    ]
+  }
+}
+
+fn update action: Action -> _query: String -> String = match action {
+  QueryChanged query -> query
+}
+
+fn handle state: MutableSignal<String> -> action: Action -> Task<Unit> =
+  signals.update (update action) state
+
+pub effect fn main -> Unit with dom: dom.Dom fails String = do {
+  state <- signals.make ""
+  let content = signals.map view state
+  target <- dom.query "#docs-search" |> mapError (\error: dom.DomError -> show error)
+  dom.run (dom.defaultOptions ()) target (handle state) content
+    |> mapError (\error: dom.DomRuntimeError<Never> -> show error)
+}

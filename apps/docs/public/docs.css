@@ -39,6 +39,76 @@ header {
   background: rgba(10, 17, 15, 0.96);
   backdrop-filter: blur(16px);
 }
+#docs-search {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+}
+.docs-search label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.docs-search input {
+  width: 100%;
+  border: 1px solid #315047;
+  border-radius: 9px;
+  padding: 9px 12px;
+  color: #effaf6;
+  background: #0b1512;
+  font: inherit;
+}
+.docs-search input:focus-visible {
+  outline: 3px solid #89ddff;
+  outline-offset: 2px;
+}
+.docs-search-results,
+.docs-search-empty {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  left: 0;
+  width: min(520px, 80vw);
+  max-height: 65vh;
+  overflow: auto;
+  margin: 0;
+  border: 1px solid #315047;
+  border-radius: 10px;
+  padding: 8px;
+  background: #0b1512;
+  box-shadow: 0 18px 45px #0009;
+}
+.docs-search-result {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-radius: 7px;
+  padding: 8px 10px;
+  color: #dce9e4;
+  text-decoration: none;
+}
+.docs-search-result:hover,
+.docs-search-result:focus-visible {
+  background: #193027;
+}
+.docs-search-result span {
+  color: #9fb6ac;
+  font-size: 11px;
+}
+.docs-search-empty {
+  color: #9fb6ac;
+  font-size: 12px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
 .brand {
   display: flex;
   align-items: center;
@@ -208,6 +278,35 @@ article p {
   font-weight: 800;
   letter-spacing: 0.08em;
 }
+.code-actions,
+.reference-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.copy-button {
+  display: none;
+  border: 1px solid #315047;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #bde7d6;
+  background: #12221c;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.docs-enhanced .copy-button {
+  display: inline-block;
+}
+.copy-button:hover {
+  border-color: #64a88e;
+  background: #193027;
+}
+.copy-button:focus-visible {
+  outline: 3px solid #89ddff;
+  outline-offset: 2px;
+}
 pre {
   max-width: 100%;
   margin: 0;
@@ -279,6 +378,18 @@ footer {
   header {
     gap: 8px;
     padding: 12px 14px;
+  }
+  #docs-search {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+  }
+  header {
+    flex-wrap: wrap;
+  }
+  .docs-search-results,
+  .docs-search-empty {
+    width: 100%;
   }
   .brand {
     gap: 7px;

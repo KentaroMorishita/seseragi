@@ -5,7 +5,8 @@ O03 phase A (#591) established this contract against released main
 implements the static shell and authored-page pipeline; phase D (#594)
 implements the compiler-owned Reference pipeline described below. Phase E
 (#595) fills the first human-facing Getting Started, Language, Concepts and
-Applications baseline from canonical repository sources.
+Applications baseline from canonical repository sources. Phase F (#596) derives
+selective search and copy behavior from those same validated records.
 
 ## Sources and ownership
 
@@ -91,11 +92,24 @@ may validate inputs, invoke the canonical CLI and publish files. Page compositio
 and HTML rendering remain Seseragi application responsibilities. A reproduced
 limitation determines whether a compiler/build leaf is needed.
 
-No client bootstrap is emitted for a page needing only content and links.
-Search, navigation, copy and examples require explicit enhancement roots and
-separate measured client artifacts. Do not imply that renderToString preserves
-handlers or provides hydration. Browser behavior and production retention must
-be measured before choosing attachment boundaries.
+Client bootstrap exists only for the site-wide search root and copy controls;
+content, navigation, highlighting and Playground links remain static. These
+behaviors use separate measured client artifacts. Do not imply that
+renderToString preserves handlers or provides hydration. Browser behavior and
+production retention must be measured before choosing attachment boundaries.
+
+Phase F keeps the static article, navigation and Playground links intact. A
+release-profile Seseragi Web program mounts only at `#docs-search`; its generated
+entry list comes from the prepared authored pages and compiler-owned Reference
+blocks. The site manifest records the canonical JSON index digest and byte size
+from the same records; the client embeds that generated index without publishing
+a duplicate payload. Copy is a narrow browser adapter because the
+current Dom surface mounts rendered subtrees and does not expose imperative
+progressive listeners for existing static nodes. It receives only a validated
+`data-copy-text` payload, uses the platform clipboard, and updates one live
+status region. Both client files and the Web artifact retention report are
+accounted in `site-manifest.json`. With JavaScript disabled, their controls are
+absent from the accessibility tree and the complete static page remains usable.
 
 ## Generated Reference contract
 

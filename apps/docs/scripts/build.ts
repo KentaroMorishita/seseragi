@@ -37,6 +37,8 @@ type PreparedBlock = {
   signature: HighlightPart[]
   description: string
   constraints: string[]
+  anchorId: string
+  copyText: string
 }
 const block = (
   values: Pick<PreparedBlock, "kind"> & Partial<Omit<PreparedBlock, "kind">>
@@ -51,6 +53,8 @@ const block = (
   signature: [],
   description: "",
   constraints: [],
+  anchorId: "",
+  copyText: "",
   ...values,
 })
 export function route(value: string): string {
@@ -142,6 +146,7 @@ export function prepare(
             kind: "code",
             url: playgroundUrlForSource(playgroundOrigin, source),
             signature,
+            copyText: source,
           })
         }
         case "link": {
@@ -221,7 +226,7 @@ export function prepareReference(
     const identities = new Set<string>()
     const blocks = [
       block({ kind: "paragraph", text: `Targets: ${targets.join(", ")}` }),
-      ...module.items.map((rawItem) => {
+      ...module.items.map((rawItem, itemIndex) => {
         assert.ok(rawItem && typeof rawItem === "object")
         const item = rawItem as Record<string, unknown>
         const identity = text(item.identity)
@@ -268,6 +273,8 @@ export function prepareReference(
           signature: highlighted,
           description,
           constraints,
+          anchorId: `reference-${itemIndex + 1}`,
+          copyText: signature,
         })
       }),
     ]
@@ -303,6 +310,58 @@ export function prepareReference(
       ...provenance,
     },
   }
+}
+
+export type SearchEntry = {
+  title: string
+  summary: string
+  route: string
+  terms: string
+}
+
+export function searchIndex(
+  pages: ReturnType<typeof prepare>["pages"]
+): SearchEntry[] {
+  return pages.flatMap((page) => [
+    {
+      title: page.title,
+      summary: page.summary,
+      route: page.route,
+      terms: `${page.title} ${page.summary}`,
+    },
+    ...page.blocks
+      .filter((item) => item.kind === "reference")
+      .map((item) => ({
+        title: `${page.title} · ${item.name}`,
+        summary: item.description,
+        route: `${page.route}#${item.anchorId}`,
+        terms: [
+          page.title,
+          item.name,
+          item.identity,
+          item.itemKind,
+          item.namespace,
+          item.description,
+        ].join(" "),
+      })),
+  ])
+}
+
+function searchSource(entries: SearchEntry[]): string {
+  const template = readFileSync(join(app, "src/search.ssrg"), "utf8")
+  const marker = "__SEARCH_ENTRIES__"
+  assert.equal(
+    template.split(marker).length,
+    2,
+    "Search source marker mismatch"
+  )
+  const values = entries
+    .map(
+      (entry) =>
+        `  SearchEntry { title: ${literal(entry.title)}, summary: ${literal(entry.summary)}, route: ${literal(entry.route)}, terms: ${literal(entry.terms)} }`
+    )
+    .join(",\n")
+  return template.replace(marker, values)
 }
 function run(command: string[], cwd: string, input?: string): string {
   const [executable, ...args] = command
@@ -361,6 +420,8 @@ export function build(options: {
     pages: [...authored.pages, ...reference.pages],
     sources: authored.sources,
   }
+  const index = searchIndex(prepared.pages)
+  const encodedIndex = `${JSON.stringify(index)}\n`
   assert.equal(
     new Set(prepared.pages.map((page) => page.route)).size,
     prepared.pages.length,
@@ -401,6 +462,28 @@ export function build(options: {
     const manifest = JSON.parse(
       readFileSync(join(artifact, "artifact-manifest.json"), "utf8")
     )
+    const searchProject = join(temporary, "search.ssrg")
+    writeFileSync(searchProject, searchSource(index))
+    const searchArtifact = join(temporary, "search")
+    run(
+      [
+        process.env.SESERAGI_BIN ?? "seseragi",
+        "build",
+        searchProject,
+        "--target",
+        "web",
+        "--profile",
+        "release",
+        "--source-map",
+        "omit",
+        "--out-dir",
+        searchArtifact,
+      ],
+      root
+    )
+    const searchManifest = JSON.parse(
+      readFileSync(join(searchArtifact, "artifact-manifest.json"), "utf8")
+    )
     const records = JSON.parse(
       run(
         ["bun", manifest.entry],
@@ -438,9 +521,23 @@ export function build(options: {
         !record.html.includes('class="docs-build-error"'),
         `Renderer rejected URL or metadata: ${record.html}`
       )
-      write(`${record.route.slice(options.base.length)}index.html`, record.html)
+      const scripts = `<script type="module" src="${options.base}assets/search.js"></script><script type="module" src="${options.base}assets/copy.js"></script>`
+      assert.equal(
+        record.html.split("</body>").length,
+        2,
+        "Document body mismatch"
+      )
+      write(
+        `${record.route.slice(options.base.length)}index.html`,
+        record.html.replace("</body>", `${scripts}</body>`)
+      )
     }
     write("assets/docs.css", readFileSync(join(app, "public/docs.css"), "utf8"))
+    write(
+      "assets/search.js",
+      readFileSync(join(searchArtifact, searchManifest.entry), "utf8")
+    )
+    write("assets/copy.js", readFileSync(join(app, "public/copy.js"), "utf8"))
     const logo = readFileSync(
       join(root, "assets/brand/public/brand/seseragi-icon.svg"),
       "utf8"
@@ -453,8 +550,17 @@ export function build(options: {
       pages: prepared.pages.map(({ route, title }) => ({ route, title })),
       sources: prepared.sources,
       reference: reference.manifest,
+      search: {
+        entries: index.length,
+        source: "validated authored pages + compiler-owned Reference pages",
+        indexBytes: Buffer.byteLength(encodedIndex),
+        indexSha256: digest(encodedIndex),
+        artifact: searchManifest,
+      },
       files,
-      clientJavascriptBytes: 0,
+      clientJavascriptBytes: files
+        .filter((file) => file.path.endsWith(".js"))
+        .reduce((total, file) => total + file.bytes, 0),
       generator: manifest,
     }
     writeFileSync(

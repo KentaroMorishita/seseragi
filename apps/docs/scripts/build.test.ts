@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import { sourceFromPlaygroundUrl } from "../../playground/src/workspace/source-link"
-import { build, prepare, prepareReference, route } from "./build"
+import { build, prepare, prepareReference, route, searchIndex } from "./build"
 
 const page = {
   id: "home",
@@ -103,7 +103,14 @@ test("canonical builds preserve escaped multiline content, base paths and reprod
     expect(html).toContain(
       "改行\n&lt;script&gt;alert(1)&lt;/script&gt; &amp; 日本語"
     )
-    expect(html).not.toContain("<script")
+    expect(html).toContain(
+      '<script type="module" src="/guide/assets/search.js"></script>'
+    )
+    expect(html).toContain(
+      '<script type="module" src="/guide/assets/copy.js"></script>'
+    )
+    expect(manifests[0].clientJavascriptBytes).toBeGreaterThan(0)
+    expect(manifests[0].search.entries).toBe(2)
     expect(html).toContain('src="/guide/assets/seseragi-icon.svg"')
     expect(readFileSync(join(dir, "0/child/index.html"), "utf8")).toContain(
       "run &lt;unsafe&gt;&amp;\nnext"
@@ -282,6 +289,41 @@ test("sample blocks use Playground highlighting and preserve the source link", (
       "utf8"
     )
   )
+  expect(prepared.pages[0].blocks[0].copyText).toBe(
+    readFileSync(
+      resolve(
+        import.meta.dir,
+        "../../../examples/spec/lessons/02-values-and-functions.ssrg"
+      ),
+      "utf8"
+    )
+  )
+})
+
+test("search index is derived from page and compiler-owned Reference data", () => {
+  const artifact = JSON.parse(
+    readFileSync(
+      resolve(
+        import.meta.dir,
+        "../../../examples/spec/artifacts/stdlib-schema-1/reference/module.json"
+      ),
+      "utf8"
+    )
+  )
+  const authored = prepare([page], "/docs/").pages
+  const reference = prepareReference(artifact, "/docs/").pages
+  const entries = searchIndex([...authored, ...reference])
+  expect(entries).toHaveLength(1451)
+  expect(
+    entries.find(({ route }) =>
+      route.startsWith("/docs/reference/std/effect/#reference-")
+    )
+  ).toEqual({
+    title: expect.stringContaining("std/effect ·"),
+    summary: expect.any(String),
+    route: expect.stringContaining("/docs/reference/std/effect/#reference-"),
+    terms: expect.stringContaining("std/effect::"),
+  })
 })
 
 test("human-facing baseline keeps every executable block on canonical lessons", () => {

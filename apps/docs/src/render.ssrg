@@ -19,7 +19,9 @@ struct Block deriving JsonDecode {
   typeParameters: Array<String>,
   signature: Array<HighlightPart>,
   description: String,
-  constraints: Array<String>
+  constraints: Array<String>,
+  anchorId: String,
+  copyText: String
 }
 
 struct Page deriving JsonDecode {
@@ -65,6 +67,17 @@ fn metadata key: String -> value: String -> html.Html<Action> = html.meta {
   content: value
 }
 
+fn copyButton value: String -> html.Html<Action> =
+  match html.attribute "data-copy-text" value {
+    Left error -> html.span { class: "docs-build-error", children: show error }
+    Right payload -> html.button {
+      buttonType: "button",
+      class: "copy-button",
+      attributes: [payload],
+      children: "コピー"
+    }
+  }
+
 fn renderBlock block: Block -> html.Html<Action> = match block.kind {
   "paragraph" -> html.p { children: block.text }
   "heading" -> html.h2 { children: block.text }
@@ -82,7 +95,13 @@ fn renderBlock block: Block -> html.Html<Action> = match block.kind {
         class: "code-example-bar",
         children: [
           html.span { children: "SESERAGI" },
-          anchor "Playgroundで試す ↗" block.url "playground-link"
+          html.div {
+            class: "code-actions",
+            children: [
+              copyButton block.copyText,
+              anchor "Playgroundで試す ↗" block.url "playground-link"
+            ]
+          }
         ]
       },
       html.pre {
@@ -94,15 +113,22 @@ fn renderBlock block: Block -> html.Html<Action> = match block.kind {
     ]
   }
   "reference" -> html.section {
+    id: block.anchorId,
     class: "reference-item",
     children: [
       html.div {
         class: "reference-heading",
         children: [
           html.h2 { children: block.name },
-          html.span {
-            class: "reference-kind",
-            children: block.namespace + " · " + block.itemKind
+          html.div {
+            class: "reference-actions",
+            children: [
+              html.span {
+                class: "reference-kind",
+                children: block.namespace + " · " + block.itemKind
+              },
+              copyButton block.copyText
+            ]
           }
         ]
       },
@@ -157,6 +183,7 @@ fn document pages: Array<Page>
           html.header {
             children: [
               brand base (base + "assets/seseragi-icon.svg"),
+              html.div { id: "docs-search", children: "" },
               html.nav {
                 class: "product-nav",
                 children: [
@@ -166,6 +193,7 @@ fn document pages: Array<Page>
               }
             ]
           },
+          html.span { id: "docs-copy-status", class: "visually-hidden", role: "status", children: "" },
           html.div {
             class: "layout",
             children: [
