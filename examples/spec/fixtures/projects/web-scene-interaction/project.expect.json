@@ -2,13 +2,7 @@
   "schema": 1,
   "kind": "project",
   "phase": "compile",
-  "spec": [
-    "13.4",
-    "13.13"
-  ],
+  "spec": ["13.4", "13.13"],
   "lock": "generate",
-  "differentialProfiles": [
-    "development",
-    "release"
-  ]
+  "differentialProfiles": ["development", "release"]
 }
