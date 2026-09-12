@@ -16,6 +16,16 @@ try {
     origin: "https://docs.example.com",
     base: "/docs/",
   })
+  assert.equal(manifest.pages.length, 78)
+  assert.equal(manifest.search.entries, 1465)
+  assert.ok(
+    manifest.clientJavascriptBytes <=
+      manifest.quality.budgets.clientJavascriptBytes
+  )
+  assert.ok(
+    manifest.quality.largestHtmlBytes <=
+      manifest.quality.budgets.largestHtmlBytes
+  )
   const server = Bun.serve({
     port: 0,
     hostname: "127.0.0.1",
@@ -33,6 +43,18 @@ try {
     },
   })
   try {
+    const origin = `http://127.0.0.1:${server.port}`
+    const sitemap = await (await fetch(`${origin}/docs/sitemap.xml`)).text()
+    assert.equal([...sitemap.matchAll(/<url>/g)].length, manifest.pages.length)
+    for (const item of manifest.pages)
+      assert.ok(
+        sitemap.includes(`<loc>https://docs.example.com${item.route}</loc>`)
+      )
+    const robots = await (await fetch(`${origin}/docs/robots.txt`)).text()
+    assert.ok(robots.includes("Allow: /docs/"))
+    assert.ok(
+      robots.includes("Sitemap: https://docs.example.com/docs/sitemap.xml")
+    )
     const browser = await chromium.launch()
     try {
       for (const width of [1280, 390, 320]) {
@@ -50,6 +72,9 @@ try {
           await page.goto(`http://127.0.0.1:${server.port}${item.route}`)
           assert.equal(await page.locator("h1").textContent(), item.title)
           assert.equal(await page.locator("main").count(), 1)
+          assert.equal(await page.locator("h1").count(), 1)
+          assert.equal(await page.locator("html").getAttribute("lang"), "ja")
+          assert.ok((await page.title()).endsWith(" · Seseragi"))
           assert.equal(await page.locator('meta[name="viewport"]').count(), 1)
           assert.equal(await page.locator('meta[charset="utf-8"]').count(), 1)
           assert.equal(
@@ -62,6 +87,21 @@ try {
             await page.getByRole("button", { name: "コピー" }).count(),
             0
           )
+          assert.equal(
+            await page.locator("img:not([alt])").count(),
+            0,
+            `Image without alt: ${item.route}`
+          )
+          const headingRanks = await page
+            .locator("h1, h2, h3, h4, h5, h6")
+            .evaluateAll((headings) =>
+              headings.map((heading) => Number(heading.tagName.slice(1)))
+            )
+          for (let index = 1; index < headingRanks.length; index++)
+            assert.ok(
+              headingRanks[index] <= headingRanks[index - 1] + 1,
+              `Skipped heading level: ${item.route}`
+            )
           assert.equal(
             await page
               .locator('img[src="/docs/assets/seseragi-icon.svg"]')
@@ -153,7 +193,6 @@ try {
         await context.close()
       }
       for (const width of [1280, 390]) {
-        const origin = `http://127.0.0.1:${server.port}`
         const context = await browser.newContext({
           viewport: { width, height: 900 },
         })
@@ -183,6 +222,10 @@ try {
           name: /std\/effect · fail/,
         })
         await result.waitFor()
+        assert.equal(
+          await page.locator("#docs-search-results").getAttribute("role"),
+          "status"
+        )
         await page.waitForTimeout(100)
         assert.equal(
           await page.evaluate(() => document.activeElement?.id),
@@ -231,12 +274,74 @@ try {
             await page.locator("#docs-copy-status").textContent(),
             "コードをクリップボードへコピーしました"
           )
+          assert.equal(
+            await example.getByRole("button").getAttribute("type"),
+            "button"
+          )
+          await context.addInitScript(() => {
+            Object.defineProperty(navigator, "clipboard", {
+              configurable: true,
+              value: { writeText: () => Promise.reject(new Error("denied")) },
+            })
+          })
+          await page.goto(`${origin}/docs/reference/std/effect/`)
+          await page
+            .locator(".reference-item")
+            .first()
+            .getByRole("button", { name: "コピー" })
+            .click()
+          assert.equal(
+            await page.locator("#docs-copy-status").textContent(),
+            "コピーできませんでした"
+          )
         }
         assert.deepEqual(failures, [])
         await context.close()
       }
+      {
+        const context = await browser.newContext({
+          viewport: { width: 390, height: 900 },
+          forcedColors: "active",
+          reducedMotion: "reduce",
+        })
+        const page = await context.newPage()
+        await page.goto(`${origin}/docs/getting-started/`)
+        const search = page.getByRole("searchbox", {
+          name: "ドキュメントを検索",
+        })
+        await search.focus()
+        assert.equal(
+          await page.evaluate(
+            () => matchMedia("(prefers-reduced-motion: reduce)").matches
+          ),
+          true
+        )
+        assert.equal(
+          await page.evaluate(
+            () => matchMedia("(forced-colors: active)").matches
+          ),
+          true
+        )
+        assert.notEqual(
+          await search.evaluate(
+            (element) => getComputedStyle(element).outlineStyle
+          ),
+          "none"
+        )
+        assert.ok(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth
+          )
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, "forced-colors-390.png"),
+            fullPage: true,
+          })
+        await context.close()
+      }
       console.log(
-        `Docs browser: ${manifest.pages.length} routes × 3 static viewports plus enabled-JS desktop/mobile; navigation, search, copy, Reference, source, metadata, shared logo, highlighting, skip link and overflow passed`
+        `Docs browser: ${manifest.pages.length} routes × 3 static viewports plus enabled-JS desktop/mobile and forced-color/reduced-motion; navigation, search, copy, Reference, source, metadata, shared logo, highlighting, skip link and overflow passed`
       )
     } finally {
       await browser.close()

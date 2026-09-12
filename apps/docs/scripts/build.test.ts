@@ -1,9 +1,10 @@
 import { expect, test } from "bun:test"
-import { mkdtempSync, readFileSync, rmSync } from "node:fs"
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import { sourceFromPlaygroundUrl } from "../../playground/src/workspace/source-link"
 import { build, prepare, prepareReference, route, searchIndex } from "./build"
+import { validatePublishedSite } from "./quality"
 
 const page = {
   id: "home",
@@ -111,6 +112,14 @@ test("canonical builds preserve escaped multiline content, base paths and reprod
     )
     expect(manifests[0].clientJavascriptBytes).toBeGreaterThan(0)
     expect(manifests[0].search.entries).toBe(2)
+    expect(manifests[0].quality.largestHtmlBytes).toBeGreaterThan(0)
+    expect(manifests[0].quality.publishedBytes).toBeGreaterThan(0)
+    expect(readFileSync(join(dir, "0/robots.txt"), "utf8")).toContain(
+      "Sitemap: https://docs.example.com/guide/sitemap.xml"
+    )
+    expect(readFileSync(join(dir, "0/sitemap.xml"), "utf8")).toContain(
+      "<loc>https://docs.example.com/guide/child/</loc>"
+    )
     expect(html).toContain('src="/guide/assets/seseragi-icon.svg"')
     expect(readFileSync(join(dir, "0/child/index.html"), "utf8")).toContain(
       "run &lt;unsafe&gt;&amp;\nnext"
@@ -124,6 +133,21 @@ test("canonical builds preserve escaped multiline content, base paths and reprod
         "utf8"
       )
     )
+    writeFileSync(
+      join(dir, "0/index.html"),
+      html.replace('href="/guide/child/"', 'href="/guide/missing/"')
+    )
+    expect(() =>
+      validatePublishedSite({
+        root: join(dir, "0"),
+        origin: "https://docs.example.com",
+        base: "/guide/",
+        pages: manifests[0].pages,
+        files: manifests[0].files,
+        clientJavascriptBytes: manifests[0].clientJavascriptBytes,
+        searchEntries: manifests[0].search.entries,
+      })
+    ).toThrow("missing target")
     expect(() =>
       build({
         out: join(dir, "0"),

@@ -6,7 +6,9 @@ implements the static shell and authored-page pipeline; phase D (#594)
 implements the compiler-owned Reference pipeline described below. Phase E
 (#595) fills the first human-facing Getting Started, Language, Concepts and
 Applications baseline from canonical repository sources. Phase F (#596) derives
-selective search and copy behavior from those same validated records.
+selective search and copy behavior from those same validated records. Phase G
+(#598) makes metadata, link integrity, accessibility and current corpus budgets
+part of the staged publication contract.
 
 ## Sources and ownership
 
@@ -126,6 +128,25 @@ versioned Reference artifact. The conformance freshness gate regenerates it and
 compares exact bytes. The Docs build validates that artifact, then sends typed
 JSON to the Seseragi page renderer. This keeps signatures and public export
 coverage attached to the compiler instead of copying analysis fixture JSON.
+
+## Combined quality gate
+
+SEO files derive only from the prepared route table and explicit deployment
+inputs. `sitemap.xml` lists every canonical page and `robots.txt` points to that
+base-aware sitemap. Before the staging directory is renamed, the quality checker
+resolves every same-origin `href` and `src` to a generated page or asset and
+validates fragments against unique IDs in the target document. Each page must
+retain Japanese language metadata, one title/description/canonical URL, one main
+landmark and one h1.
+
+The F checkpoint supplies initial upper bounds rather than silently floating
+budgets: 1,600,000 client JavaScript bytes, 800,000 bytes for one HTML page,
+4,500,000 published bytes and 2,000 search entries. Legitimate growth changes
+these constants with review evidence. Browser QA checks all 78 pages at 1280,
+390 and 320 pixels without JavaScript, then exercises search and copy at desktop
+and mobile widths with JavaScript. Heading order, alt text, keyboard focus,
+clipboard success/failure status, internal fragment navigation, forced-color
+styles and reduced-motion behavior are part of the same quality boundary.
 
 ## Ordered lookahead and verification
 

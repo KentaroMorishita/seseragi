@@ -15,6 +15,7 @@ import { tmpdir } from "node:os"
 import { dirname, join, relative, resolve } from "node:path"
 import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
 import { playgroundUrlForSource } from "../../playground/src/workspace/source-link"
+import { robots, sitemap, validatePublishedSite } from "./quality"
 
 const app = resolve(import.meta.dir, "..")
 const root = resolve(app, "../..")
@@ -543,6 +544,20 @@ export function build(options: {
       "utf8"
     )
     write("assets/seseragi-icon.svg", logo)
+    write("sitemap.xml", sitemap(options.origin, prepared.pages))
+    write("robots.txt", robots(options.origin, options.base))
+    const clientJavascriptBytes = files
+      .filter((file) => file.path.endsWith(".js"))
+      .reduce((total, file) => total + file.bytes, 0)
+    const quality = validatePublishedSite({
+      root: staging,
+      origin: options.origin,
+      base: options.base,
+      pages: prepared.pages,
+      files,
+      clientJavascriptBytes,
+      searchEntries: index.length,
+    })
     const siteManifest = {
       schema: 1,
       origin: options.origin,
@@ -558,9 +573,8 @@ export function build(options: {
         artifact: searchManifest,
       },
       files,
-      clientJavascriptBytes: files
-        .filter((file) => file.path.endsWith(".js"))
-        .reduce((total, file) => total + file.bytes, 0),
+      clientJavascriptBytes,
+      quality,
       generator: manifest,
     }
     writeFileSync(

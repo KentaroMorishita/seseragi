@@ -15,9 +15,13 @@ for (const command of [
     "Preserve",
     "--moduleResolution",
     "Bundler",
-    ...["build.ts", "build.test.ts", "browser.ts", "check.ts"].map(
-      (name) => `apps/docs/scripts/${name}`
-    ),
+    ...[
+      "build.ts",
+      "build.test.ts",
+      "browser.ts",
+      "check.ts",
+      "quality.ts",
+    ].map((name) => `apps/docs/scripts/${name}`),
   ],
 ]) {
   const checked = Bun.spawnSync(command, {

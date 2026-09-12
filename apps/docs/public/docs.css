@@ -374,6 +374,28 @@ footer {
 .skip:focus {
   top: 8px;
 }
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+@media (forced-colors: active) {
+  .code-example,
+  .reference-item,
+  .copy-button,
+  .playground-link,
+  .product-nav a,
+  .docs-search input,
+  .docs-search-results,
+  .docs-search-empty {
+    border-color: CanvasText;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  .docs-search input:focus-visible {
+    outline-color: Highlight;
+  }
+}
 @media (max-width: 700px) {
   header {
     gap: 8px;

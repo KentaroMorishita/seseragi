@@ -4,7 +4,8 @@ Phase C (#593) established the static shell. Phase D (#594) adds a generated API
 Reference landing page and one page for each public standard-library module.
 Phase E (#595) provides 15 human-facing pages across Getting Started, Language
 Guide, Concepts and Application Guide. Phase F (#596) adds generated search and
-copy enhancement. Combined quality and deploy remain O03 phases G–H.
+copy enhancement. Phase G (#598) adds the combined quality gate. Production
+deployment remains phase H.
 
 The shell uses the same canonical `seseragi-icon.svg`, dark palette and syntax
 token colors as Playground. The icon is copied from `assets/brand/public/brand`
@@ -18,9 +19,18 @@ there is no second route or symbol inventory. `src/search.ssrg` is compiled as a
 separate release-profile Web artifact and mounts only into `#docs-search`.
 Search result URLs preserve the configured base and stable Reference anchors.
 Copy buttons carry the exact canonical sample source or compiler-owned signature;
-a 724-byte browser adapter performs the clipboard write and reports success or
+a 780-byte browser adapter performs the clipboard write and reports success or
 failure through an accessible status region. Enhancement controls stay hidden
 when JavaScript is disabled, while every article and navigation link remains.
+
+The staged build generates `sitemap.xml` and `robots.txt` from the validated
+route table and explicit origin/base. Before publication it resolves every
+same-site page, asset and fragment link against staged files, and checks each
+page's language, title, description, canonical URL, main landmark, h1 and unique
+IDs. The F measurements establish reviewable ceilings: 1,600,000 client
+JavaScript bytes, 800,000 bytes for the largest HTML page, 4,500,000 published
+bytes and 2,000 search entries. Crossing a ceiling fails the build so an
+intentional corpus or runtime increase must update the recorded decision.
 
 `content/pages.json` is the structured authoring input. Paragraphs, headings,
 terminal commands, links and canonical sample references are supported. Its 17
@@ -82,7 +92,9 @@ Reference navigation, every exact-source Playground URL, canonical sample text,
 syntax highlighting, metadata, skip link and document overflow. A second pass
 enables JavaScript at desktop/mobile widths and verifies search filtering,
 keyboard focus, base-aware Reference navigation, clipboard contents and status
-feedback. It cleans its server, browser and generated site after verification.
+feedback, including the failure path. It also checks heading order, image text
+alternatives, sitemap coverage and the JavaScript-disabled accessibility tree.
+It cleans its server, browser and generated site after verification.
 
 ## Reproduced gap and fix
 
