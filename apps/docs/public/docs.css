@@ -147,6 +147,55 @@ article p {
   border-radius: 10px;
   background: #0b1512;
 }
+.reference-item {
+  min-width: 0;
+  margin: 28px 0;
+  border: 1px solid #243a33;
+  border-radius: 10px;
+  padding: 18px;
+  background: #0b1512;
+}
+.reference-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.reference-heading h2 {
+  min-width: 0;
+  margin: 0 0 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+.reference-kind {
+  color: #7ed6ad;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.reference-identity {
+  margin: 0 0 12px;
+  color: #71877e;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.reference-item p {
+  margin-bottom: 0;
+}
+.reference-constraints {
+  color: #9fb6ac;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.reference-parameters {
+  color: #9fb6ac;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
 .code-example-bar {
   display: flex;
   justify-content: space-between;
@@ -168,6 +217,12 @@ pre {
   font-size: 13px;
   line-height: 1.75;
   white-space: pre;
+}
+.reference-item pre {
+  border: 1px solid #1d3029;
+  border-radius: 7px;
+  padding: 14px;
+  background: #08100e;
 }
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -256,7 +311,8 @@ footer {
     margin-bottom: 32px;
     font-size: 16px;
   }
-  pre {
+  .code-example pre,
+  .reference-item pre {
     padding: 16px;
   }
 }

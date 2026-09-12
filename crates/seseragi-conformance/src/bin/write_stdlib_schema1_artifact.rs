@@ -26,8 +26,13 @@ fn main() {
         Some("parity") => seseragi_conformance::standard_module_parity_surface()
             .map_err(|error| serde_json::Error::io(std::io::Error::other(error)))
             .and_then(|surface| serde_json::to_string_pretty(&surface)),
+        Some("reference") => seseragi_semantics::standard_reference_surface()
+            .map_err(|error| serde_json::Error::io(std::io::Error::other(error)))
+            .and_then(|surface| serde_json::to_string_pretty(&surface)),
         _ => {
-            eprintln!("standard library case must be named `prelude`, `registry`, or `parity`");
+            eprintln!(
+                "standard library case must be named `prelude`, `registry`, `parity`, or `reference`"
+            );
             std::process::exit(2);
         }
     }

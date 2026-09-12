@@ -66,7 +66,8 @@ try {
           assert.ok(
             await page.evaluate(
               () => document.documentElement.scrollWidth <= innerWidth
-            )
+            ),
+            `Horizontal overflow at ${width}px: ${item.route}`
           )
         }
         await page
@@ -109,11 +110,29 @@ try {
         assert.equal(await page.locator(":focus").textContent(), "本文へ移動")
         await page.keyboard.press("Enter")
         assert.ok(page.url().endsWith("#content"))
+        await page.goto(`http://127.0.0.1:${server.port}/docs/`)
+        await page
+          .locator("aside nav")
+          .getByRole("link", { name: "API Reference", exact: true })
+          .click()
+        await page
+          .getByRole("link", { name: "std/effect", exact: true })
+          .click()
+        assert.equal(await page.locator("h1").textContent(), "std/effect")
+        assert.ok((await page.locator(".reference-item").count()) > 0)
+        assert.ok(
+          (await page.locator(".reference-item .tok-keyword").count()) > 0
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `reference-${width}.png`),
+            fullPage: true,
+          })
         assert.deepEqual(failures, [])
         await context.close()
       }
       console.log(
-        "Docs browser: 4 routes × 3 viewports; JS disabled; navigation, source, metadata, skip link and overflow passed"
+        `Docs browser: ${manifest.pages.length} routes × 3 viewports; JS disabled; navigation, Reference, source, metadata, shared logo, highlighting, skip link and overflow passed`
       )
     } finally {
       await browser.close()

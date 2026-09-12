@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import { sourceFromPlaygroundUrl } from "../../playground/src/workspace/source-link"
-import { build, prepare, route } from "./build"
+import { build, prepare, prepareReference, route } from "./build"
 
 const page = {
   id: "home",
@@ -84,6 +84,7 @@ test("canonical builds preserve escaped multiline content, base paths and reprod
           base: "/guide/",
           profile: profile as "development" | "release",
           content,
+          reference: false,
         })
     )
     expect(manifests[0].files).toEqual(manifests[1].files)
@@ -116,11 +117,134 @@ test("canonical builds preserve escaped multiline content, base paths and reprod
         origin: "https://docs.example.com",
         base: "/",
         content,
+        reference: false,
       })
     ).toThrow("Output exists")
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
+})
+
+test("compiler-owned Reference metadata generates every module and public item", () => {
+  const artifact = JSON.parse(
+    readFileSync(
+      resolve(
+        import.meta.dir,
+        "../../../examples/spec/artifacts/stdlib-schema-1/reference/module.json"
+      ),
+      "utf8"
+    )
+  )
+  const reference = prepareReference(artifact, "/docs/")
+  expect(reference.manifest.modules).toBe(62)
+  expect(reference.manifest.items).toBe(1387)
+  expect(reference.pages).toHaveLength(63)
+  expect(new Set(reference.pages.map(({ route }) => route)).size).toBe(63)
+  expect(reference.pages.filter(({ navigation }) => navigation)).toHaveLength(1)
+  const effect = reference.pages.find(
+    ({ route }) => route === "/docs/reference/std/effect/"
+  )
+  expect(effect).toBeDefined()
+  expect(
+    effect!.blocks.filter((block) => block.identity === "std/effect::fail")
+  ).toHaveLength(1)
+  expect(
+    effect!.blocks.find((block) => block.identity === "std/effect::fail")
+      ?.itemKind
+  ).toBe("effect-function")
+  expect(
+    effect!.blocks.find((block) => block.identity === "std/effect::fail")
+      ?.namespace
+  ).toBe("value")
+
+  const dir = mkdtempSync(join(tmpdir(), "docs-reference-check-"))
+  try {
+    const manifest = build({
+      out: join(dir, "site"),
+      origin: "https://docs.example.com",
+      base: "/docs/",
+      content: [page],
+    })
+    expect(manifest.reference).toEqual({
+      languageVersion: "0.1.0",
+      modules: 62,
+      items: 1387,
+      source: "examples/spec/artifacts/stdlib-schema-1/reference/module.json",
+      sha256: expect.any(String),
+    })
+    const html = readFileSync(
+      join(dir, "site/reference/std/effect/index.html"),
+      "utf8"
+    )
+    expect(html).toContain("std/effect::fail")
+    expect(html).toContain("effect-function")
+    expect(html).toContain("Creates an Effect that fails with a typed error.")
+    expect(html).toContain("tok-keyword")
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test("Reference rejects unsafe modules, unsupported targets and duplicate exports", () => {
+  const item = {
+    identity: "std/example::value",
+    name: "value",
+    module: "std/example",
+    category: "Example",
+    namespace: "value",
+    kind: "function",
+    typeParameters: [],
+    signature: "fn value -> Int",
+    description: "A value.",
+    constraints: [],
+  }
+  const artifact = (overrides: Record<string, unknown> = {}) => ({
+    schema: 1,
+    kind: "standard-reference",
+    languageVersion: "0.1.0",
+    modules: [
+      {
+        specifier: "std/example",
+        availability: "available",
+        targets: ["process", "browser"],
+        items: [item],
+        ...overrides,
+      },
+    ],
+  })
+  expect(() =>
+    prepareReference(artifact({ specifier: "std/../escape" }), "/docs/")
+  ).toThrow()
+  expect(() =>
+    prepareReference(artifact({ targets: ["server"] }), "/docs/")
+  ).toThrow()
+  expect(() =>
+    prepareReference(artifact({ targets: ["browser", "browser"] }), "/docs/")
+  ).toThrow("Duplicate target")
+  expect(() =>
+    prepareReference(
+      artifact({ items: [{ ...item, module: "std/other" }] }),
+      "/docs/"
+    )
+  ).toThrow()
+  expect(() =>
+    prepareReference(
+      artifact({ items: [{ ...item, namespace: "scope" }] }),
+      "/docs/"
+    )
+  ).toThrow()
+  expect(() =>
+    prepareReference(artifact({ items: [item, item] }), "/docs/")
+  ).toThrow("Duplicate Reference item")
+  expect(() =>
+    prepareReference(
+      {
+        ...artifact(),
+        modules: [artifact().modules[0], artifact().modules[0]],
+      },
+      "/docs/"
+    )
+  ).toThrow("Duplicate Reference route")
 })
 
 test("sample blocks use Playground highlighting and preserve the source link", () => {
@@ -138,10 +262,12 @@ test("sample blocks use Playground highlighting and preserve the source link", (
     ],
     "/"
   )
-  expect(prepared.pages[0].blocks[0]).toContain("tok-keyword")
-  const encoded = prepared.pages[0].blocks[0].match(/https[^"]+/)?.[0]
-  expect(encoded).toBeDefined()
-  expect(sourceFromPlaygroundUrl(encoded!)).toBe(
+  expect(
+    prepared.pages[0].blocks[0].signature.some(({ className }) =>
+      className.includes("tok-keyword")
+    )
+  ).toBe(true)
+  expect(sourceFromPlaygroundUrl(prepared.pages[0].blocks[0].url)).toBe(
     readFileSync(
       resolve(
         import.meta.dir,

@@ -1,8 +1,9 @@
 # Seseragi Docs application
 
 Phase C (#593) implements four static pages: home, Getting Started, values and
-functions, and pure Html/Effect. The wider content baseline, generated API
-Reference, search/copy enhancements and deploy remain O03 phases D–H.
+functions, and pure Html/Effect. Phase D (#594) adds a generated API Reference
+landing page and one page for each public standard-library module. Search/copy
+enhancements and deploy remain O03 phases E–H.
 
 The shell uses the same canonical `seseragi-icon.svg`, dark palette and syntax
 token colors as Playground. The icon is copied from `assets/brand/public/brand`
@@ -12,11 +13,19 @@ links to the canonical Playground with its exact verified source preloaded;
 reading and highlighting the page still require no client JavaScript.
 
 `content/pages.json` is the structured authoring input. Paragraphs, headings,
-links and canonical sample references are supported. `src/render.ssrg` owns
-navigation, page composition and complete document rendering. `scripts/build.ts`
-validates input, generates only Seseragi data declarations, invokes the canonical
-process build and reads structured JSON page records. It never renders HTML.
-This extends the generator-command decision from #592 without adding a target.
+links and canonical sample references are supported. The API Reference consumes
+`examples/spec/artifacts/stdlib-schema-1/reference/module.json`, which the
+compiler generates from the same module registry used for imports. The build
+rejects unknown targets or namespaces, unsafe or duplicate module routes, and
+duplicate export identity/kind pairs. Namespace, declaration kind, type
+parameters and constraints remain compiler-owned. There is no handwritten
+signature inventory.
+
+`src/render.ssrg` owns navigation, page composition, Reference cards and complete
+document rendering. `scripts/build.ts` validates both inputs, invokes the
+canonical process build and sends typed JSON data to the generator over stdin.
+It reads structured JSON page records and never renders HTML. This extends the
+generator-command decision from #592 without adding a target.
 
 ## Build and check
 
@@ -38,9 +47,10 @@ output is never deleted or overwritten. Inputs and generated records are checked
 before the staged output directory is renamed into place. Failed builds clean
 up their own temporary output.
 
-The site manifest records page routes, canonical source digests, output
-bytes/digests (including the shared logo), client JavaScript cost and the full
-separate generator artifact manifest with provenance/retention measurements.
+The site manifest records page routes, canonical source digests, Reference
+language version/module/item counts and source digest, output bytes/digests
+(including the shared logo), client JavaScript cost and the full separate
+generator artifact manifest with provenance/retention measurements.
 It is a site inventory, not an alternative compiler artifact schema. No wall-clock
 time or temporary directory is part of the page output. Origin/base and source
 changes intentionally change output identity.
@@ -53,10 +63,11 @@ bun install --frozen-lockfile --cwd apps/playground
 SESERAGI_BIN="$PWD/target/debug/seseragi" bun apps/docs/scripts/browser.ts
 ```
 
-Set `DOCS_SCREENSHOTS` to retain review PNGs. Browser verification covers all four
-routes at 1280, 390 and 320 pixels with JavaScript disabled, link navigation,
-canonical sample text, metadata, skip link and document overflow. It cleans its
-server, browser and generated site after verification.
+Set `DOCS_SCREENSHOTS` to retain review PNGs. Browser verification covers all 67
+routes at 1280, 390 and 320 pixels with JavaScript disabled, authored and
+Reference navigation, canonical sample text, syntax highlighting, metadata, skip
+link and document overflow. It cleans its server, browser and generated site
+after verification.
 
 ## Reproduced gap and fix
 

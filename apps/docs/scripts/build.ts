@@ -1,4 +1,5 @@
 import assert from "node:assert/strict"
+import { spawnSync } from "node:child_process"
 import { createHash } from "node:crypto"
 import {
   existsSync,
@@ -17,8 +18,41 @@ import { playgroundUrlForSource } from "../../playground/src/workspace/source-li
 
 const app = resolve(import.meta.dir, "..")
 const root = resolve(app, "../..")
+const referenceArtifact = join(
+  root,
+  "examples/spec/artifacts/stdlib-schema-1/reference/module.json"
+)
 export const digest = (value: string | Buffer) =>
   createHash("sha256").update(value).digest("hex")
+type HighlightPart = { text: string; className: string }
+type PreparedBlock = {
+  kind: "paragraph" | "heading" | "code" | "reference" | "link"
+  text: string
+  url: string
+  identity: string
+  name: string
+  namespace: string
+  itemKind: string
+  typeParameters: string[]
+  signature: HighlightPart[]
+  description: string
+  constraints: string[]
+}
+const block = (
+  values: Pick<PreparedBlock, "kind"> & Partial<Omit<PreparedBlock, "kind">>
+): PreparedBlock => ({
+  text: "",
+  url: "",
+  identity: "",
+  name: "",
+  namespace: "",
+  itemKind: "",
+  typeParameters: [],
+  signature: [],
+  description: "",
+  constraints: [],
+  ...values,
+})
 export function route(value: string): string {
   assert.equal(typeof value, "string")
   assert.ok(
@@ -78,15 +112,15 @@ export function prepare(
   const sources: { path: string; sha256: string }[] = []
   const pages = input.map((page) => {
     assert.ok(Array.isArray(page.blocks), "Blocks required")
-    const blocks = page.blocks.map((block: Record<string, unknown>) => {
-      assert.ok(block && typeof block === "object")
-      switch (block.kind) {
+    const blocks = page.blocks.map((entry: Record<string, unknown>) => {
+      assert.ok(entry && typeof entry === "object")
+      switch (entry.kind) {
         case "paragraph":
-          return `Paragraph ${literal(text(block.text))}`
+          return block({ kind: "paragraph", text: text(entry.text) })
         case "heading":
-          return `Heading ${literal(text(block.text))}`
+          return block({ kind: "heading", text: text(entry.text) })
         case "sample": {
-          const path = text(block.source)
+          const path = text(entry.source)
           assert.ok(
             /^examples\/spec\/[a-zA-Z0-9_./-]+\.ssrg$/.test(path) &&
               !path.split("/").includes(".."),
@@ -99,24 +133,27 @@ export function prepare(
           )
           const source = readFileSync(absolute, "utf8")
           sources.push({ path, sha256: digest(source) })
-          const parts = highlightSeseragi(source).map(
-            ({ text: part, classes }) =>
-              `HighlightPart { text: ${literal(part)}, className: ${literal(classes)} }`
+          const signature = highlightSeseragi(source).map(
+            ({ text: part, classes }) => ({ text: part, className: classes })
           )
-          return `Code ([${parts.join(",")}], ${literal(playgroundUrlForSource(playgroundOrigin, source))})`
+          return block({
+            kind: "code",
+            url: playgroundUrlForSource(playgroundOrigin, source),
+            signature,
+          })
         }
         case "link": {
           assert.ok(
-            (block.route === undefined) !== (block.url === undefined),
+            (entry.route === undefined) !== (entry.url === undefined),
             "Choose route or URL"
           )
           let url: string
-          if (block.route !== undefined) {
-            const target = route(text(block.route))
+          if (entry.route !== undefined) {
+            const target = route(text(entry.route))
             assert.ok(routes.has(target), `Unknown route: ${target}`)
             url = base + target.slice(1)
           } else {
-            url = text(block.url)
+            url = text(entry.url)
             const parsed = new URL(url)
             assert.ok(
               parsed.protocol === "https:" &&
@@ -125,25 +162,158 @@ export function prepare(
               "Unsafe URL"
             )
           }
-          return `Link (${literal(text(block.text))}, ${literal(url)})`
+          return block({ kind: "link", text: text(entry.text), url })
         }
         default:
-          throw new Error(`Unknown block: ${block.kind}`)
+          throw new Error(`Unknown block: ${entry.kind}`)
       }
     })
     return {
       route: base + page.route.slice(1),
       title: text(page.title),
       summary: text(page.summary),
+      navigation: true,
       blocks,
     }
   })
   return { pages, sources }
 }
-function run(command: string[], cwd: string): string {
-  const result = Bun.spawnSync(command, { cwd, stdout: "pipe", stderr: "pipe" })
-  assert.equal(result.exitCode, 0, result.stderr.toString())
-  return result.stdout.toString()
+
+export function prepareReference(
+  input: unknown,
+  base: string,
+  provenance = {
+    source: "inline",
+    sha256: digest(JSON.stringify(input)),
+  }
+) {
+  assert.ok(input && typeof input === "object")
+  const surface = input as Record<string, unknown>
+  assert.equal(surface.schema, 1)
+  assert.equal(surface.kind, "standard-reference")
+  const languageVersion = text(surface.languageVersion)
+  assert.ok(Array.isArray(surface.modules) && surface.modules.length > 0)
+  const routes = new Set<string>()
+  let itemCount = 0
+  const modulePages = surface.modules.map((rawModule) => {
+    assert.ok(rawModule && typeof rawModule === "object")
+    const module = rawModule as Record<string, unknown>
+    const specifier = text(module.specifier)
+    assert.ok(/^std\/[a-z0-9]+(?:[/-][a-z0-9]+)*$/.test(specifier))
+    const moduleRoute = route(`/reference/${specifier}/`)
+    assert.ok(
+      !routes.has(moduleRoute),
+      `Duplicate Reference route: ${moduleRoute}`
+    )
+    routes.add(moduleRoute)
+    assert.ok(
+      module.availability === "implicit" || module.availability === "available"
+    )
+    assert.ok(Array.isArray(module.targets) && module.targets.length > 0)
+    const targets = module.targets.map(text)
+    assert.ok(
+      targets.every((target) => ["process", "browser"].includes(target))
+    )
+    assert.equal(new Set(targets).size, targets.length, "Duplicate target")
+    assert.ok(Array.isArray(module.items) && module.items.length > 0)
+    const identities = new Set<string>()
+    const blocks = [
+      block({ kind: "paragraph", text: `Targets: ${targets.join(", ")}` }),
+      ...module.items.map((rawItem) => {
+        assert.ok(rawItem && typeof rawItem === "object")
+        const item = rawItem as Record<string, unknown>
+        const identity = text(item.identity)
+        const kind = text(item.kind)
+        assert.equal(text(item.module), specifier)
+        text(item.category)
+        assert.ok(
+          [
+            "alias",
+            "constructor",
+            "effect-function",
+            "function",
+            "opaque-struct",
+            "opaque-type",
+            "operator",
+            "struct",
+            "trait",
+            "type",
+            "value",
+          ].includes(kind)
+        )
+        const namespace = text(item.namespace)
+        assert.ok(["value", "type", "trait", "operator"].includes(namespace))
+        const key = `${identity}\0${kind}`
+        assert.ok(!identities.has(key), `Duplicate Reference item: ${identity}`)
+        identities.add(key)
+        const signature = text(item.signature)
+        const description = text(item.description)
+        assert.ok(Array.isArray(item.typeParameters))
+        const typeParameters = item.typeParameters.map(text)
+        assert.ok(Array.isArray(item.constraints))
+        const constraints = item.constraints.map(text)
+        itemCount++
+        const highlighted = highlightSeseragi(signature).map(
+          ({ text: part, classes }) => ({ text: part, className: classes })
+        )
+        return block({
+          kind: "reference",
+          identity,
+          name: text(item.name),
+          namespace,
+          itemKind: kind,
+          typeParameters,
+          signature: highlighted,
+          description,
+          constraints,
+        })
+      }),
+    ]
+    return {
+      route: base + moduleRoute.slice(1),
+      title: specifier,
+      summary: `${specifier} の compiler-owned API Reference。`,
+      navigation: false,
+      blocks,
+    }
+  })
+  const landing = {
+    route: `${base}reference/`,
+    title: "API Reference",
+    summary: `Seseragi ${languageVersion} の公開標準ライブラリ。`,
+    navigation: true,
+    blocks: [
+      block({
+        kind: "paragraph",
+        text: "署名と公開範囲は compiler-owned module metadata から生成されています。",
+      }),
+      ...modulePages.map((page) =>
+        block({ kind: "link", text: page.title, url: page.route })
+      ),
+    ],
+  }
+  return {
+    pages: [landing, ...modulePages],
+    manifest: {
+      languageVersion,
+      modules: modulePages.length,
+      items: itemCount,
+      ...provenance,
+    },
+  }
+}
+function run(command: string[], cwd: string, input?: string): string {
+  const [executable, ...args] = command
+  assert.ok(executable, "Command required")
+  const result = spawnSync(executable, args, {
+    cwd,
+    input,
+    encoding: "utf8",
+    maxBuffer: 128 * 1024 * 1024,
+  })
+  if (result.error) throw result.error
+  assert.equal(result.status, 0, result.stderr)
+  return result.stdout
 }
 export function build(options: {
   out: string
@@ -151,6 +321,7 @@ export function build(options: {
   base: string
   profile?: "development" | "release"
   content?: unknown
+  reference?: unknown | false
   playgroundOrigin?: string
 }) {
   const origin = new URL(options.origin)
@@ -161,11 +332,37 @@ export function build(options: {
       !origin.password,
     "Expected origin without path"
   )
-  const prepared = prepare(
+  const authored = prepare(
     options.content ??
       JSON.parse(readFileSync(join(app, "content/pages.json"), "utf8")),
     options.base,
     options.playgroundOrigin
+  )
+  const referenceRaw = readFileSync(referenceArtifact, "utf8")
+  const reference =
+    options.reference === false
+      ? { pages: [], manifest: undefined }
+      : prepareReference(
+          options.reference ?? JSON.parse(referenceRaw),
+          options.base,
+          options.reference === undefined
+            ? {
+                source: relative(root, referenceArtifact),
+                sha256: digest(referenceRaw),
+              }
+            : {
+                source: "inline",
+                sha256: digest(JSON.stringify(options.reference)),
+              }
+        )
+  const prepared = {
+    pages: [...authored.pages, ...reference.pages],
+    sources: authored.sources,
+  }
+  assert.equal(
+    new Set(prepared.pages.map((page) => page.route)).size,
+    prepared.pages.length,
+    "Authored and Reference routes overlap"
   )
   const destination = resolve(options.out)
   assert.ok(
@@ -178,13 +375,9 @@ export function build(options: {
   try {
     const source = join(temporary, "main.ssrg")
     const renderer = readFileSync(join(app, "src/render.ssrg"), "utf8")
-    const values = prepared.pages.map(
-      (p) =>
-        `Page { route: ${literal(p.route)}, title: ${literal(p.title)}, summary: ${literal(p.summary)}, blocks: [${p.blocks.join(",")}] }`
-    )
     writeFileSync(
       source,
-      `${renderer}\nlet pages: Array<Page> = [${values.join(",")} ]\npub effect fn main -> Unit with Console fails ConsoleError =\n  println $ json.encodeString (output pages ${literal(options.origin)} ${literal(options.base)})\n`
+      `${renderer}\npub effect fn main -> Unit with Console, Stdin fails GeneratorError =\n  generate ${literal(options.origin)} ${literal(options.base)}\n`
     )
     const artifact = join(temporary, "generator")
     run(
@@ -206,7 +399,13 @@ export function build(options: {
     const manifest = JSON.parse(
       readFileSync(join(artifact, "artifact-manifest.json"), "utf8")
     )
-    const records = JSON.parse(run(["bun", manifest.entry], artifact))
+    const records = JSON.parse(
+      run(
+        ["bun", manifest.entry],
+        artifact,
+        `${JSON.stringify(prepared.pages)}\n`
+      )
+    )
     assert.ok(
       Array.isArray(records) && records.length === prepared.pages.length,
       "Generator page count mismatch"
@@ -251,6 +450,7 @@ export function build(options: {
       base: options.base,
       pages: prepared.pages.map(({ route, title }) => ({ route, title })),
       sources: prepared.sources,
+      reference: reference.manifest,
       files,
       clientJavascriptBytes: 0,
       generator: manifest,

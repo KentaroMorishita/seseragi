@@ -1,17 +1,34 @@
+import * as arrays from "std/array"
+import * as effects from "std/effect"
 import * as html from "std/web/html"
 import * as json from "std/json"
+import * as inputs from "std/stdin"
 
 type Action = | Unused
 
-struct HighlightPart { text: String, className: String }
+struct HighlightPart deriving JsonDecode { text: String, className: String }
 
-type Block =
-  | Paragraph String
-  | Heading String
-  | Code (Array<HighlightPart>, String)
-  | Link (String, String)
+struct Block deriving JsonDecode {
+  kind: String,
+  text: String,
+  url: String,
+  identity: String,
+  name: String,
+  namespace: String,
+  itemKind: String,
+  typeParameters: Array<String>,
+  signature: Array<HighlightPart>,
+  description: String,
+  constraints: Array<String>
+}
 
-struct Page { route: String, title: String, summary: String, blocks: Array<Block> }
+struct Page deriving JsonDecode {
+  route: String,
+  title: String,
+  summary: String,
+  navigation: Bool,
+  blocks: Array<Block>
+}
 
 struct Output deriving JsonEncode { route: String, html: String }
 
@@ -48,28 +65,63 @@ fn metadata key: String -> value: String -> html.Html<Action> = html.meta {
   content: value
 }
 
-fn renderBlock block: Block -> html.Html<Action> = match block {
-  Paragraph text -> html.p { children: text }
-  Heading text -> html.h2 { children: text }
-  Code (parts, playground) -> html.section {
+fn renderBlock block: Block -> html.Html<Action> = match block.kind {
+  "paragraph" -> html.p { children: block.text }
+  "heading" -> html.h2 { children: block.text }
+  "code" -> html.section {
     class: "code-example",
     children: [
       html.div {
         class: "code-example-bar",
         children: [
           html.span { children: "SESERAGI" },
-          anchor "Playgroundで試す ↗" playground "playground-link"
+          anchor "Playgroundで試す ↗" block.url "playground-link"
         ]
       },
       html.pre {
         children: [html.code {
           class: "seseragi-highlight",
-          children: [html.span { class: part.className, children: part.text } | part <- parts]
+          children: [html.span { class: part.className, children: part.text } | part <- block.signature]
         }]
       }
     ]
   }
-  Link (label, url) -> html.p { children: [anchor label url ""] }
+  "reference" -> html.section {
+    class: "reference-item",
+    children: [
+      html.div {
+        class: "reference-heading",
+        children: [
+          html.h2 { children: block.name },
+          html.span {
+            class: "reference-kind",
+            children: block.namespace + " · " + block.itemKind
+          }
+        ]
+      },
+      html.p { class: "reference-identity", children: block.identity },
+      if arrays.isEmpty block.typeParameters then
+        html.span { children: "" }
+      else
+        html.p {
+          class: "reference-parameters",
+          children: "type " + join ", " block.typeParameters
+        },
+      html.pre {
+        children: [html.code {
+          class: "seseragi-highlight",
+          children: [html.span { class: part.className, children: part.text } | part <- block.signature]
+        }]
+      },
+      html.p { children: block.description },
+      if arrays.isEmpty block.constraints then
+        html.span { children: "" }
+      else
+        html.p { class: "reference-constraints", children: "where " + join ", " block.constraints }
+    ]
+  }
+  "link" -> html.p { children: [anchor block.text block.url ""] }
+  _ -> html.span { class: "docs-build-error", children: "Unknown content block" }
 }
 
 fn navigation pages: Array<Page> -> current: String -> html.Html<Action> = html.nav {
@@ -77,7 +129,7 @@ fn navigation pages: Array<Page> -> current: String -> html.Html<Action> = html.
       (if item.route == current then
         "current"
       else
-        "") | item <- pages]
+        "") | item <- pages, item.navigation]
 }
 
 fn document pages: Array<Page>
@@ -136,3 +188,34 @@ fn document pages: Array<Page>
 
 fn output pages: Array<Page> -> origin: String -> base: String -> Array<Output> =
   [Output { route: page.route, html: document pages origin base page } | page <- pages]
+
+type GeneratorError deriving Show =
+  | InputFailure
+  | DecodeFailure
+  | ConsoleFailure ConsoleError
+
+fn decodePages encoded: String -> Either<json.JsonReadError, Array<Page>> =
+  json.decodeString encoded
+
+fn encodeOutput pages: Array<Page> -> origin: String -> base: String -> String =
+  json.encodeString (output pages origin base)
+
+fn requireInput value: Maybe<String> -> Either<GeneratorError, String> =
+  match value {
+    Nothing -> Left InputFailure
+    Just encoded -> Right encoded
+  }
+
+effect fn generate origin: String -> base: String -> Unit
+with Console, Stdin
+fails GeneratorError =
+  do {
+    limit <- inputs.lineLimit 67108864
+      |> effects.fromEither
+      |> effects.mapError (\_ -> InputFailure)
+    line <- inputs.readLineWith limit |> effects.mapError (\_ -> InputFailure)
+    encoded <- requireInput line |> effects.fromEither
+    pages <- decodePages encoded |> effects.fromEither |> effects.mapError (\_ -> DecodeFailure)
+    println (encodeOutput pages origin base)
+      |> effects.mapError ConsoleFailure
+  }

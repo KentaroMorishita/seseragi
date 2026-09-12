@@ -1,9 +1,9 @@
 # Official Docs: content and application contract
 
-O03 phase A (#591), audited against released main
-`46b6e0cdd8cdee67d4a74f7add0c1e99e812b367` (v0.61.9).
-This is the implementation contract for subsequent leaves, not a claim that the
-site or the proposed pipelines have been implemented.
+O03 phase A (#591) established this contract against released main
+`46b6e0cdd8cdee67d4a74f7add0c1e99e812b367` (v0.61.9). Phase C (#593)
+implements the static shell and authored-page pipeline; phase D (#594)
+implements the compiler-owned Reference pipeline described below.
 
 ## Sources and ownership
 
@@ -50,9 +50,9 @@ API signature becomes authoritative through publication on Docs.
 
 Author prose under `apps/docs/content/`; keep Seseragi rendering/components under
 `apps/docs/src/`. Generated files go into ignored build output, never hand-edited
-source. The concrete content encoding is selected during the shell leaf after
-static-output proof; Markdown is a preferred authoring input, not a requirement
-for an unimplemented Seseragi Markdown parser.
+source. Authored pages use validated structured JSON selected during the shell
+leaf after static-output proof. Markdown remains a possible later authoring
+input, not a requirement for a Seseragi Markdown parser.
 
 Each page has a stable id, unique route, title, summary, section and ordered
 content blocks. Each executable example references a repository-relative
@@ -105,10 +105,11 @@ since and deprecation require a field-by-field producer audit: absent data is
 unavailable, never a fabricated version or an inferred description. Project
 linking interfaces alone do not prove a complete documentation export command.
 
-The Reference leaf must demonstrate a real producer → JSON → page pipeline and
-freshness failure after a public API change. If the existing CLI lacks export,
-add the narrow compiler-owned tooling boundary with fixtures; copying checked-in
-analysis fixture JSON is not a current Reference pipeline.
+Phase D uses the standard module registry and canonical query metadata to emit a
+versioned Reference artifact. The conformance freshness gate regenerates it and
+compares exact bytes. The Docs build validates that artifact, then sends typed
+JSON to the Seseragi page renderer. This keeps signatures and public export
+coverage attached to the compiler instead of copying analysis fixture JSON.
 
 ## Ordered lookahead and verification
 
