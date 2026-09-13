@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.11] - 2026-09-13
+
+### Fixed
+
+- #602 formatterがネストした`match`の別armを結合せず、record field内のinline `match`を一回で収束させる
+
 ## [0.61.10] - 2026-09-12
 
 ### Changed

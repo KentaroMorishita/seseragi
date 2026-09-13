@@ -10,7 +10,9 @@ pub(super) fn format_valid_module(
     let source_lines = source_lines(&tokens.tokens);
     let token_lines = token_line_map(&source_lines, tokens.tokens.len());
     let angles = angle_tokens(&tokens.tokens);
-    let delimiters = Delimiters::new(&tokens.tokens, &angles);
+    let mut match_body_braces = HashSet::new();
+    collect_match_body_braces(&cst.root, &tokens.tokens, &mut match_body_braces);
+    let delimiters = Delimiters::new(&tokens.tokens, &angles, &match_body_braces);
     let member_bodies = member_body_map(&tokens.tokens);
     let lines = logical_lines(
         &source_lines,
@@ -161,6 +163,30 @@ fn collect_statement_blocks(node: &CstNode, tokens: &[Token], blocks: &mut HashS
     }
 }
 
+fn collect_match_body_braces(node: &CstNode, tokens: &[Token], braces: &mut HashSet<usize>) {
+    if node.kind == "complete-expression"
+        && (node.start_token..node.end_token)
+            .find(|index| !is_trivia(tokens[*index].kind))
+            .is_some_and(|index| tokens[index].kind == TokenKind::KeywordMatch)
+    {
+        if let Some(first_arm) = node
+            .children
+            .iter()
+            .find(|child| child.kind == "complete-arm")
+        {
+            if let Some(open) = (node.start_token..first_arm.start_token)
+                .rev()
+                .find(|index| tokens[*index].kind == TokenKind::PunctuationBraceLeft)
+            {
+                braces.insert(open);
+            }
+        }
+    }
+    for child in &node.children {
+        collect_match_body_braces(child, tokens, braces);
+    }
+}
+
 #[derive(Clone, Debug)]
 enum LogicalLine {
     Blank,
@@ -246,7 +272,9 @@ fn should_join(
                 .matching(**index)
                 .is_some_and(|close| close > previous)
     }) {
-        return delimiters.joinable_open(*open);
+        return delimiters.joinable_open(*open)
+            || previous_token.kind == TokenKind::PunctuationSemicolon
+                && delimiters.match_body_open(*open);
     }
 
     if following_token.raw == "|" {
@@ -1352,11 +1380,12 @@ fn angle_tokens(tokens: &[Token]) -> HashSet<usize> {
 struct Delimiters {
     matching: Vec<Option<usize>>,
     joinable: HashSet<usize>,
+    match_bodies: HashSet<usize>,
     branch_depth: Vec<usize>,
 }
 
 impl Delimiters {
-    fn new(tokens: &[Token], angles: &HashSet<usize>) -> Self {
+    fn new(tokens: &[Token], angles: &HashSet<usize>, match_body_braces: &HashSet<usize>) -> Self {
         let mut matching = vec![None; tokens.len()];
         let mut stack: Vec<usize> = Vec::new();
         for (index, token) in tokens.iter().enumerate() {
@@ -1380,9 +1409,10 @@ impl Delimiters {
                 .map(|close| (open, close))
         }) {
             let kind = tokens[open].kind;
-            if !matches!(kind, TokenKind::PunctuationBraceLeft)
-                || has_direct_comma_in_range(open, close, tokens, &matching, angles)
-                || is_record_like_brace(open, tokens)
+            if !match_body_braces.contains(&open)
+                && (!matches!(kind, TokenKind::PunctuationBraceLeft)
+                    || has_direct_comma_in_range(open, close, tokens, &matching, angles)
+                    || is_record_like_brace(open, tokens))
             {
                 joinable.insert(open);
             }
@@ -1420,6 +1450,7 @@ impl Delimiters {
         Self {
             matching,
             joinable,
+            match_bodies: match_body_braces.clone(),
             branch_depth,
         }
     }
@@ -1430,6 +1461,10 @@ impl Delimiters {
 
     fn joinable_open(&self, index: usize) -> bool {
         self.joinable.contains(&index)
+    }
+
+    fn match_body_open(&self, index: usize) -> bool {
+        self.match_bodies.contains(&index)
     }
 
     fn branch_depth(&self, index: usize) -> usize {

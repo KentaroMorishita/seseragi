@@ -1852,6 +1852,30 @@ fn formats_dogfood_indentation_and_converges() {
     );
 }
 
+#[test]
+fn formats_match_regression_fixtures_and_converges() {
+    for (input, expected) in [
+        (
+            include_str!(
+                "../../seseragi-formatter/tests/fixtures/nested-match-arm-boundaries.input.ssrg"
+            ),
+            include_str!(
+                "../../seseragi-formatter/tests/fixtures/nested-match-arm-boundaries.expected.ssrg"
+            ),
+        ),
+        (
+            include_str!(
+                "../../seseragi-formatter/tests/fixtures/record-field-inline-match.input.ssrg"
+            ),
+            include_str!(
+                "../../seseragi-formatter/tests/fixtures/record-field-inline-match.expected.ssrg"
+            ),
+        ),
+    ] {
+        assert_file_formatting(input, expected);
+    }
+}
+
 fn assert_file_formatting(source: &str, expected: &str) {
     let unique = SystemTime::now()
         .duration_since(UNIX_EPOCH)
