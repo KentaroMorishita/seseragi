@@ -1,5 +1,5 @@
-name: Orchestration work-item
-description: 実行順が確定しており、OxxのImpl queueへ登録する独立work-item
+name: Roadmap work-item
+description: 独立して設計・実装・検証する価値がある作業
 title: ""
 labels:
   - "role: work-item"
@@ -7,20 +7,15 @@ body:
   - type: markdown
     attributes:
       value: |
-        **作成前に #559 → #512 → 対象Oxx root → Impl queue → 関連Epic を確認してください。**
-        work-itemはIssue作成後、同じturn/sessionで対応Impl queueへexact Issue番号を挿入して初めて有効です。
+        作成前に #559 のCurrent Roadmapと既存Issueを確認してください。
+        細かい作業をIssue化すること自体を進捗にせず、独立したacceptanceがある場合だけwork-itemを作ります。
 
-  - type: dropdown
-    id: orchestration
+  - type: input
+    id: roadmap
     attributes:
-      label: Orchestration
-      description: 所属する上位Orchestration。Issue作成後に同名Oxx labelが必要です。
-      options:
-        - O01
-        - O02
-        - O03
-        - O04
-        - O05
+      label: Roadmap item
+      description: 関連するRoadmap ID / root Issue。該当しなければ none。
+      placeholder: "q1 / #601 / none"
     validations:
       required: true
 
@@ -28,7 +23,7 @@ body:
     id: kind
     attributes:
       label: Kind
-      description: 主な技術/成果物領域。必要なら作成後に追加kindを付与できます。
+      description: 主な技術/成果物領域。
       options:
         - compiler
         - runtime
@@ -40,37 +35,19 @@ body:
       required: true
 
   - type: input
-    id: root
-    attributes:
-      label: Orchestration root
-      description: 対象Oxx root Issue番号（例 #549）
-      placeholder: "#549"
-    validations:
-      required: true
-
-  - type: input
-    id: impl_queue
-    attributes:
-      label: Impl queue
-      description: 実行順SSOTとなるImpl queue Issue番号（例 #291）
-      placeholder: "#291"
-    validations:
-      required: true
-
-  - type: input
     id: epic
     attributes:
-      label: Epic
-      description: 該当する場合のみ。なければ none。
-      placeholder: "#352 / none"
+      label: Epic / Parent
+      description: 関連するまとまりがあれば指定。なければ none。
+      placeholder: "#464 / none"
     validations:
       required: true
 
   - type: textarea
-    id: discovery
+    id: evidence
     attributes:
       label: 発見経路 / Evidence
-      description: 再現、dogfood、spec gap、dependencyなど、このIssueが実在する根拠。
+      description: 再現、dogfood、spec gap、dependencyなど、この作業が実在する根拠。
     validations:
       required: true
 
@@ -78,26 +55,24 @@ body:
     id: scope
     attributes:
       label: Scope / Acceptance
-      description: 何を直し、何を満たせばImpl-readyか。Non-goalsも必要なら記載。
+      description: 何を直し、何を満たせば完了か。必要ならNon-goalsも記載。
     validations:
       required: true
 
   - type: textarea
-    id: order
+    id: priority
     attributes:
-      label: Queue位置の理由
-      description: どのleafの前後へ置くか、そのdependency/priority理由。順番未確定ならwork-itemではなくcandidateを使ってください。
+      label: Priority / Dependency
+      description: 今やる理由、前提Issue、後続への影響。特になければ none。
     validations:
       required: true
 
   - type: checkboxes
-    id: contract
+    id: sanity
     attributes:
-      label: Operating contract
+      label: Sanity check
       options:
-        - label: "#512 を読み、このIssueが独立work-itemであることを確認した"
+        - label: "#559 と既存Issueを確認し、重複していない"
           required: true
-        - label: "Issue作成後、同じturn/sessionでOxx labelとImpl queue entryを同期する"
-          required: true
-        - label: "queue位置を安全に決められない場合はcandidateへ変更する"
+        - label: "独立Issueにするだけの明確なScope / Acceptanceがある"
           required: true
