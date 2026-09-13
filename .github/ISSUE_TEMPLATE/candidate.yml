@@ -1,5 +1,5 @@
-name: Orchestration candidate
-description: 実在Gap/提案だが、まだImpl queueの実行位置を確定していない候補
+name: Roadmap candidate
+description: 実在するGapや提案だが、まだ実行優先度やScopeを確定していない候補
 title: ""
 labels:
   - "role: candidate"
@@ -7,19 +7,15 @@ body:
   - type: markdown
     attributes:
       value: |
-        **candidateは実装開始対象ではありません。**
-        #559 → #512 → 対象Oxx rootを確認し、実行順を確定した時点でwork-itemへ昇格してください。
+        candidateはまだ実装開始対象ではありません。
+        #559 のCurrent Roadmapと既存Issueを確認し、必要性とScopeが固まったらwork-itemまたはRoadmap TODOへ昇格します。
 
-  - type: dropdown
-    id: orchestration
+  - type: input
+    id: roadmap
     attributes:
-      label: Orchestration
-      options:
-        - O01
-        - O02
-        - O03
-        - O04
-        - O05
+      label: Related Roadmap item
+      description: 関連するRoadmap ID / root Issue。未分類なら none。
+      placeholder: "q2 / #552 / none"
     validations:
       required: true
 
@@ -34,23 +30,6 @@ body:
         - testing
         - docs
         - spec
-    validations:
-      required: true
-
-  - type: input
-    id: root
-    attributes:
-      label: Orchestration root
-      placeholder: "#549"
-    validations:
-      required: true
-
-  - type: input
-    id: impl_queue
-    attributes:
-      label: Impl queue
-      description: 所属先のImpl queue。candidateの間はこのqueueへentryを追加しません。
-      placeholder: "#291"
     validations:
       required: true
 
@@ -70,14 +49,20 @@ body:
     validations:
       required: true
 
-  - type: checkboxes
-    id: contract
+  - type: textarea
+    id: decision
     attributes:
-      label: Operating contract
+      label: 昇格条件
+      description: 何が分かればwork-item / Roadmap TODOとして実行開始できるか。
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: sanity
+    attributes:
+      label: Sanity check
       options:
-        - label: "#512 を読み、現時点ではqueue位置を確定していないcandidateであることを確認した"
+        - label: "#559 と既存Issueを確認し、重複していない"
           required: true
-        - label: "candidateの間は実装/Promotionを開始しない"
-          required: true
-        - label: "昇格時はwork-item relabelとImpl queue挿入を同じ更新で行う"
+        - label: "現時点では実行優先度またはScopeが未確定である"
           required: true
