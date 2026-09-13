@@ -19,6 +19,7 @@ jobs:
             const { owner, repo } = context.repo
             const marker = '<!-- seseragi-issue-contract -->'
             const intakeCutover = new Date('2026-09-06T00:15:00Z')
+            const priorityTodoCutover = 'O04'
             const knownKinds = new Set(['compiler', 'runtime', 'tooling', 'testing', 'docs', 'spec'])
             const knownRoles = new Set([
               'role: orchestration',
@@ -30,20 +31,35 @@ jobs:
               'role: subtask',
             ])
 
+            const legacyRegistry = new Map([
+              ['O01', { root: 549, impl: 291, promotion: 546 }],
+              ['O02', { root: 550, impl: 518, promotion: 554 }],
+              ['O03', { root: 551, impl: 533, promotion: 555 }],
+            ])
+
             const { data: indexIssue } = await github.rest.issues.get({ owner, repo, issue_number: 559 })
             const registry = new Map()
             for (const line of (indexIssue.body || '').split('\n')) {
-              const m = line.match(/^\|\s*(O\d{2})\s*\|[^|]*\|\s*#(\d+)\s*\|\s*#(\d+)\s*\|\s*#(\d+)\s*\|/)
+              const m = line.match(/^\|\s*(O\d{2})\s*\|[^|]*\|\s*#(\d+)\s*\|/u)
               if (!m) continue
-              registry.set(m[1], { root: Number(m[2]), impl: Number(m[3]), promotion: Number(m[4]) })
+              registry.set(m[1], { root: Number(m[2]) })
             }
-            if (registry.size === 0) throw new Error('#559 Orchestration registry could not be parsed')
+            if (registry.size === 0) throw new Error('#559 Roadmap registry could not be parsed')
+
+            for (const [oid, legacy] of legacyRegistry) {
+              const current = registry.get(oid)
+              if (current) registry.set(oid, { ...current, ...legacy })
+            }
 
             const oLabels = new Set(registry.keys())
             const queueCache = new Map()
+            async function getIssue(number) {
+              const { data } = await github.rest.issues.get({ owner, repo, issue_number: number })
+              return data
+            }
             async function getQueueBody(number) {
               if (queueCache.has(number)) return queueCache.get(number)
-              const { data } = await github.rest.issues.get({ owner, repo, issue_number: number })
+              const data = await getIssue(number)
               const body = data.body || ''
               queueCache.set(number, body)
               return body
@@ -52,12 +68,22 @@ jobs:
             function labelNames(issue) {
               return (issue.labels || []).map(l => typeof l === 'string' ? l : l.name)
             }
-
+            function isModern(oid) {
+              return oid && Number(oid.slice(1)) >= Number(priorityTodoCutover.slice(1))
+            }
             function headingValue(body, heading) {
               const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
               const re = new RegExp(`###\\s+${escaped}\\s*\\n+([^\\n]+)`, 'i')
               const m = (body || '').match(re)
               return m ? m[1].trim() : null
+            }
+            function queueEntries(body, issueNumber) {
+              const re = new RegExp(`(^|\\n)\\s*-\\s*\\[([ xX])\\]\\s*#${issueNumber}(?=\\D|$)`, 'g')
+              return [...body.matchAll(re)].map(m => ({ checked: m[2].toLowerCase() === 'x' }))
+            }
+            function referencesIssue(body, issueNumber) {
+              const re = new RegExp(`(^|\\D)#${issueNumber}(?=\\D|$)`)
+              return re.test(body || '')
             }
 
             async function normalizeFormLabels(issue) {
@@ -81,15 +107,71 @@ jobs:
 
               if (toAdd.length) {
                 await github.rest.issues.addLabels({ owner, repo, issue_number: issue.number, labels: toAdd })
-                const { data: fresh } = await github.rest.issues.get({ owner, repo, issue_number: issue.number })
-                return fresh
+                return await getIssue(issue.number)
               }
               return issue
             }
 
-            function queueEntries(body, issueNumber) {
-              const re = new RegExp(`(^|\\n)\\s*-\\s*\\[([ xX])\\]\\s*#${issueNumber}(?=\\D|$)`, 'g')
-              return [...body.matchAll(re)].map(m => ({ checked: m[2].toLowerCase() === 'x' }))
+            async function validateLegacy(issue, role, oid, reg, labels, violations) {
+              if (!reg?.impl || !reg?.promotion) return
+
+              if (role === 'role: queue') {
+                const queueLabels = labels.filter(name => name === 'queue: implementation' || name === 'queue: promotion')
+                if (queueLabels.length !== 1) {
+                  violations.push(`legacy queue role requires exactly one queue:* label; found ${queueLabels.join(', ') || 'none'}`)
+                } else if (queueLabels[0] === 'queue: implementation' && issue.number !== reg.impl) {
+                  violations.push(`${oid} implementation queue must be #${reg.impl}`)
+                } else if (queueLabels[0] === 'queue: promotion' && issue.number !== reg.promotion) {
+                  violations.push(`${oid} promotion queue must be #${reg.promotion}`)
+                }
+              }
+
+              if (['role: work-item', 'role: candidate', 'role: subtask'].includes(role)) {
+                const implBody = await getQueueBody(reg.impl)
+                const entries = queueEntries(implBody, issue.number)
+                if (role === 'role: work-item') {
+                  if (entries.length !== 1) violations.push(`work-item must appear exactly once in ${oid} legacy Impl queue #${reg.impl}; found ${entries.length}`)
+                  if (labels.includes('stage: promotion-ready')) {
+                    if (entries.length !== 1 || !entries[0].checked) violations.push('promotion-ready requires checked legacy Impl entry')
+                    const promotionBody = await getQueueBody(reg.promotion)
+                    const promotionEntries = queueEntries(promotionBody, issue.number)
+                    if (promotionEntries.length !== 1) violations.push(`promotion-ready requires one legacy Promotion entry in #${reg.promotion}`)
+                  }
+                } else if (entries.length !== 0) {
+                  violations.push(`${role.replace('role: ', '')} must not have an independent legacy Impl entry`)
+                }
+              }
+            }
+
+            async function validateModern(issue, role, oid, reg, labels, violations) {
+              if (role === 'role: queue') {
+                violations.push(`${oid} uses Priority TODO + Batch Release; role: queue is legacy-only`)
+              }
+              if (labels.includes('stage: promotion-ready')) {
+                violations.push(`${oid} does not use stage: promotion-ready`)
+              }
+
+              if (role === 'role: work-item' || role === 'role: epic') {
+                const root = await getIssue(reg.root)
+                if (!referencesIssue(root.body || '', issue.number)) {
+                  violations.push(`${role.replace('role: ', '')} must be referenced from ${oid} root #${reg.root}`)
+                }
+              }
+
+              if (role === 'role: subtask') {
+                const explicitParent = (issue.body || '').match(/Parent work-item:\s*#(\d+)/i)
+                const formParent = headingValue(issue.body || '', 'Parent work-item')
+                const formParentMatch = formParent ? formParent.match(/#(\d+)/) : null
+                const parentNumber = explicitParent ? Number(explicitParent[1]) : formParentMatch ? Number(formParentMatch[1]) : null
+                if (!parentNumber) {
+                  violations.push('subtask must identify Parent work-item: #N')
+                } else {
+                  const parent = await getIssue(parentNumber)
+                  const parentLabels = labelNames(parent)
+                  if (!parentLabels.includes('role: work-item')) violations.push(`parent #${parentNumber} must be role: work-item`)
+                  if (!parentLabels.includes(oid)) violations.push(`parent #${parentNumber} must belong to ${oid}`)
+                }
+              }
             }
 
             async function validateIssue(original) {
@@ -106,75 +188,32 @@ jobs:
               }
 
               if (role === 'role: control') {
-                if (memberships.length !== 0) violations.push(`cross-Orchestration control must not carry Oxx membership; found ${memberships.join(', ')}`)
-              } else if (role) {
-                if (memberships.length !== 1) violations.push(`exactly one Oxx membership is required; found ${memberships.length ? memberships.join(', ') : 'none'}`)
+                if (memberships.length !== 0) violations.push(`shared control must not carry Oxx membership; found ${memberships.join(', ')}`)
+              } else if (role && memberships.length !== 1) {
+                violations.push(`exactly one Oxx membership is required; found ${memberships.length ? memberships.join(', ') : 'none'}`)
               }
 
               const oid = memberships.length === 1 ? memberships[0] : null
               const reg = oid ? registry.get(oid) : null
 
-              if (['role: epic', 'role: work-item', 'role: candidate', 'role: subtask'].includes(role)) {
-                if (kindLabels.length < 1) violations.push('at least one kind:* label is required')
+              if (['role: epic', 'role: work-item', 'role: candidate', 'role: subtask'].includes(role) && kindLabels.length < 1) {
+                violations.push('at least one kind:* label is required')
               }
 
               if (role === 'role: orchestration' && reg && issue.number !== reg.root) {
                 violations.push(`${oid} root must be #${reg.root}, not #${issue.number}`)
               }
 
-              if (role === 'role: queue' && reg) {
-                const queueLabels = labels.filter(name => name === 'queue: implementation' || name === 'queue: promotion')
-                if (queueLabels.length !== 1) {
-                  violations.push(`queue role requires exactly one queue:* label; found ${queueLabels.join(', ') || 'none'}`)
-                } else if (queueLabels[0] === 'queue: implementation' && issue.number !== reg.impl) {
-                  violations.push(`${oid} implementation queue must be #${reg.impl}`)
-                } else if (queueLabels[0] === 'queue: promotion' && issue.number !== reg.promotion) {
-                  violations.push(`${oid} promotion queue must be #${reg.promotion}`)
-                }
+              if (oid && reg) {
+                if (isModern(oid)) await validateModern(issue, role, oid, reg, labels, violations)
+                else await validateLegacy(issue, role, oid, reg, labels, violations)
               }
 
-              if (reg && ['role: work-item', 'role: candidate', 'role: subtask'].includes(role)) {
-                const implBody = await getQueueBody(reg.impl)
-                const entries = queueEntries(implBody, issue.number)
-
-                if (role === 'role: work-item') {
-                  if (entries.length !== 1) violations.push(`work-item must appear exactly once as a checkbox in ${oid} Impl queue #${reg.impl}; found ${entries.length}`)
-
-                  if (labels.includes('stage: promotion-ready')) {
-                    if (entries.length !== 1 || !entries[0].checked) violations.push('promotion-ready requires a checked [x] Impl queue entry')
-                    const promotionBody = await getQueueBody(reg.promotion)
-                    const promotionEntries = queueEntries(promotionBody, issue.number)
-                    if (promotionEntries.length !== 1) violations.push(`promotion-ready requires exactly one entry in paired Promotion queue #${reg.promotion}; found ${promotionEntries.length}`)
-                  }
-                } else {
-                  if (entries.length !== 0) violations.push(`${role.replace('role: ', '')} must not have an independent Impl queue entry; found ${entries.length}`)
-                  if (labels.includes('stage: promotion-ready')) violations.push(`${role.replace('role: ', '')} cannot be promotion-ready`)
-                }
-
-                if (role === 'role: subtask') {
-                  const explicitParent = (issue.body || '').match(/Parent work-item:\s*#(\d+)/i)
-                  const formParent = headingValue(issue.body || '', 'Parent work-item')
-                  const formParentMatch = formParent ? formParent.match(/#(\d+)/) : null
-                  const parentNumber = explicitParent ? Number(explicitParent[1]) : formParentMatch ? Number(formParentMatch[1]) : null
-                  if (!parentNumber) {
-                    violations.push('subtask body must identify `Parent work-item: #N` or the Parent work-item form field')
-                  } else {
-                    const { data: parent } = await github.rest.issues.get({ owner, repo, issue_number: parentNumber })
-                    const parentLabels = labelNames(parent)
-                    if (!parentLabels.includes('role: work-item')) violations.push(`parent #${parentNumber} must be role: work-item`)
-                    if (!parentLabels.includes(oid)) violations.push(`parent #${parentNumber} must belong to the same ${oid}`)
-                    const parentEntries = queueEntries(implBody, parentNumber)
-                    if (parentEntries.length !== 1) violations.push(`parent #${parentNumber} must be queued exactly once in #${reg.impl}`)
-                  }
-                }
-              }
-
-              if (new Date(issue.created_at) >= intakeCutover && role !== 'role: control') {
+              if (new Date(issue.created_at) >= intakeCutover && role && !['role: control', 'role: orchestration'].includes(role)) {
                 const body = issue.body || ''
                 if (!body.includes('#512')) violations.push('new Issue must reference canonical operating contract #512')
-                if (reg && ['role: work-item', 'role: candidate', 'role: subtask'].includes(role)) {
-                  if (!body.includes(`#${reg.root}`)) violations.push(`new ${role.replace('role: ', '')} must reference Orchestration root #${reg.root}`)
-                  if (!body.includes(`#${reg.impl}`)) violations.push(`new ${role.replace('role: ', '')} must reference Impl queue #${reg.impl}`)
+                if (reg && isModern(oid) && ['role: work-item', 'role: candidate', 'role: subtask', 'role: epic'].includes(role)) {
+                  if (!body.includes(`#${reg.root}`)) violations.push(`new ${role.replace('role: ', '')} must reference ${oid} root #${reg.root}`)
                 }
               }
 
@@ -189,12 +228,9 @@ jobs:
                 return
               }
 
-              const body = `${marker}\n## Issue Contract violation\n\nこのIssueは現在、Orchestration運用契約を満たしていません。修正されるまで実装/Promotion開始対象として扱わないでください。\n\n${violations.map(v => `- ${v}`).join('\n')}\n\n参照: #559 → #512 → 対象Oxx root → Impl queue。`
-              if (existing) {
-                await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body })
-              } else {
-                await github.rest.issues.createComment({ owner, repo, issue_number: issue.number, body })
-              }
+              const body = `${marker}\n## Issue Contract violation\n\nこのIssueは現在のRoadmap運用契約を満たしていません。修正されるまで実装開始対象として扱わないでください。\n\n${violations.map(v => `- ${v}`).join('\n')}\n\n参照: #559 → #512 → 対象Oxx root。`
+              if (existing) await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body })
+              else await github.rest.issues.createComment({ owner, repo, issue_number: issue.number, body })
             }
 
             let targets = []
@@ -204,18 +240,10 @@ jobs:
             } else {
               const eventIssue = context.payload.issue
               if (!eventIssue) throw new Error('issue event payload missing')
-              const names = labelNames(eventIssue)
-              const memberships = names.filter(name => oLabels.has(name))
-              const isQueue = names.includes('role: queue')
               const auditAll = eventIssue.number === 512 || eventIssue.number === 559
-
               if (auditAll) {
                 targets = await github.paginate(github.rest.issues.listForRepo, { owner, repo, state: 'open', per_page: 100 })
                 targets = targets.filter(i => !i.pull_request)
-              } else if (isQueue && memberships.length === 1) {
-                const oid = memberships[0]
-                const all = await github.paginate(github.rest.issues.listForRepo, { owner, repo, state: 'open', per_page: 100 })
-                targets = all.filter(i => !i.pull_request && labelNames(i).includes(oid))
               } else {
                 targets = [eventIssue]
               }
@@ -231,4 +259,4 @@ jobs:
               }
             }
 
-            if (failureCount) core.setFailed(`${failureCount} Issue(s) violate the Orchestration issue contract`)
+            if (failureCount) core.setFailed(`${failureCount} Issue(s) violate the Roadmap issue contract`)
