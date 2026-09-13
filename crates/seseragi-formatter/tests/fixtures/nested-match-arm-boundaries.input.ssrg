@@ -1,0 +1,8 @@
+fn selected id:Int -> diagram:Diagram -> Maybe<Table> =
+  match arrays.head diagram.tables {
+    Nothing -> Nothing
+    Just _ -> match arrays.find (\table -> table.id == id) diagram.tables {
+      Nothing -> Nothing
+      Just table -> Just table
+    }
+  }

@@ -70,7 +70,7 @@ pub fn format_cst_with_options(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use seseragi_syntax::{lex, parse_cst_from_tokens};
+    use seseragi_syntax::{lex, parse_cst_from_tokens, TokenKind};
 
     fn format(source: &str) -> FormattedSource {
         let tokens = lex("main.ssrg", source);
@@ -82,6 +82,68 @@ mod tests {
         let tokens = lex("main.ssrg", source);
         let cst = parse_cst_from_tokens(tokens.clone());
         format_cst_with_options(&tokens, &cst, FormatOptions::new(line_width))
+    }
+
+    fn assert_safe_and_converged_fixture(input: &str, expected: &str) {
+        let original_tokens = lex("input.ssrg", input);
+        let original_cst = parse_cst_from_tokens(original_tokens.clone());
+        assert!(original_cst.errors.is_empty(), "{:#?}", original_cst.errors);
+        assert!(
+            original_cst.missing.is_empty(),
+            "{:#?}",
+            original_cst.missing
+        );
+
+        let first = format(input);
+        assert_eq!(first.text, expected);
+
+        let formatted_tokens = lex("formatted.ssrg", &first.text);
+        let formatted_cst = parse_cst_from_tokens(formatted_tokens.clone());
+        assert!(
+            formatted_cst.errors.is_empty(),
+            "{:#?}",
+            formatted_cst.errors
+        );
+        assert!(
+            formatted_cst.missing.is_empty(),
+            "{:#?}",
+            formatted_cst.missing
+        );
+
+        let non_trivia = |tokens: &TokenStream| {
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| {
+                    !matches!(
+                        token.kind,
+                        TokenKind::TriviaSpace | TokenKind::TriviaNewline | TokenKind::Eof
+                    )
+                })
+                .map(|token| (token.kind, token.raw.clone()))
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(non_trivia(&formatted_tokens), non_trivia(&original_tokens));
+
+        let second = format(&first.text);
+        assert!(!second.changed, "{}", second.text);
+        assert_eq!(second.text, first.text);
+    }
+
+    #[test]
+    fn preserves_nested_match_arm_boundaries() {
+        assert_safe_and_converged_fixture(
+            include_str!("../tests/fixtures/nested-match-arm-boundaries.input.ssrg"),
+            include_str!("../tests/fixtures/nested-match-arm-boundaries.expected.ssrg"),
+        );
+    }
+
+    #[test]
+    fn converges_record_field_inline_match_in_one_pass() {
+        assert_safe_and_converged_fixture(
+            include_str!("../tests/fixtures/record-field-inline-match.input.ssrg"),
+            include_str!("../tests/fixtures/record-field-inline-match.expected.ssrg"),
+        );
     }
 
     #[test]

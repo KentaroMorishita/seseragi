@@ -1,0 +1,5 @@
+fn fromGroup value: Group -> Result = {
+  id: value.id,
+  color: match value.color { Just color -> color; Nothing -> 0 - 1 },
+  width: value.width
+}

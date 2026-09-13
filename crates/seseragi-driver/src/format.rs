@@ -98,6 +98,36 @@ mod tests {
                 .expect("formatted source remains valid");
         assert!(!converged.changed, "{}", converged.text);
     }
+
+    #[test]
+    fn preserves_match_regressions_through_the_shared_driver() {
+        for (input, expected) in [
+            (
+                include_str!(
+                    "../../seseragi-formatter/tests/fixtures/nested-match-arm-boundaries.input.ssrg"
+                ),
+                include_str!(
+                    "../../seseragi-formatter/tests/fixtures/nested-match-arm-boundaries.expected.ssrg"
+                ),
+            ),
+            (
+                include_str!(
+                    "../../seseragi-formatter/tests/fixtures/record-field-inline-match.input.ssrg"
+                ),
+                include_str!(
+                    "../../seseragi-formatter/tests/fixtures/record-field-inline-match.expected.ssrg"
+                ),
+            ),
+        ] {
+            let first = format_module("regression.ssrg", input).expect("valid fixture");
+            assert_eq!(first.text, expected);
+
+            let second =
+                format_module("regression.ssrg", &first.text).expect("formatted fixture is valid");
+            assert!(!second.changed, "{}", second.text);
+            assert_eq!(second.text, first.text);
+        }
+    }
 }
 
 /// Formats complete nodes intersecting a byte range and verifies that layout
