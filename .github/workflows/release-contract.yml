@@ -5,20 +5,7 @@ on:
     paths:
       - ".github/workflows/release-contract.yml"
       - ".github/workflows/release.yml"
-      - "Cargo.toml"
-      - "Cargo.lock"
-      - "rust-toolchain.toml"
-      - "package.json"
-      - "runtime/ts/package.json"
-      - "apps/playground/package.json"
-      - "apps/playground/src/wasm/pkg/package.json"
-      - "extensions/seseragi/**"
-      - "extensions/seseragi-legacy/**"
-      - "crates/**/Cargo.toml"
-      - "crates/seseragi-release/**"
-      - "crates/seseragi-cli/**"
-      - "crates/seseragi-lsp/**"
-      - "crates/seseragi-wasm/**"
+      - ".github/workflows/release-readiness.yml"
       - "scripts/release-contract.ts"
       - "scripts/release-contract.test.ts"
       - "scripts/release-gate.ts"
@@ -29,35 +16,20 @@ on:
       - "scripts/release-promotion.test.ts"
       - "scripts/native-release.ts"
       - "scripts/native-release.test.ts"
-      - "scripts/local-dogfood.ts"
-      - "scripts/local-dogfood.test.ts"
-      - "scripts/local-web-product-e2e.ts"
-      - "scripts/local-web-product-e2e-extension.cjs"
-      - "scripts/local-web-product-e2e.test.ts"
-      - "scripts/fixtures/local-web-e2e-driver/**"
-      - "scripts/check-extension-identity.ts"
       - "scripts/check-scoped.sh"
-      - "CHANGELOG.md"
-      - "docs/RELEASE.md"
+      - "package.json"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "runtime/ts/package.json"
+      - "apps/playground/package.json"
+      - "extensions/seseragi/package.json"
+      - "extensions/seseragi-legacy/package.json"
   push:
     branches: [main]
     paths:
       - ".github/workflows/release-contract.yml"
       - ".github/workflows/release.yml"
-      - "Cargo.toml"
-      - "Cargo.lock"
-      - "rust-toolchain.toml"
-      - "package.json"
-      - "runtime/ts/package.json"
-      - "apps/playground/package.json"
-      - "apps/playground/src/wasm/pkg/package.json"
-      - "extensions/seseragi/**"
-      - "extensions/seseragi-legacy/**"
-      - "crates/**/Cargo.toml"
-      - "crates/seseragi-release/**"
-      - "crates/seseragi-cli/**"
-      - "crates/seseragi-lsp/**"
-      - "crates/seseragi-wasm/**"
+      - ".github/workflows/release-readiness.yml"
       - "scripts/release-contract.ts"
       - "scripts/release-contract.test.ts"
       - "scripts/release-gate.ts"
@@ -68,37 +40,27 @@ on:
       - "scripts/release-promotion.test.ts"
       - "scripts/native-release.ts"
       - "scripts/native-release.test.ts"
-      - "scripts/local-dogfood.ts"
-      - "scripts/local-dogfood.test.ts"
-      - "scripts/local-web-product-e2e.ts"
-      - "scripts/local-web-product-e2e-extension.cjs"
-      - "scripts/local-web-product-e2e.test.ts"
-      - "scripts/fixtures/local-web-e2e-driver/**"
-      - "scripts/check-extension-identity.ts"
       - "scripts/check-scoped.sh"
-      - "CHANGELOG.md"
-      - "docs/RELEASE.md"
-  workflow_dispatch:
+      - "package.json"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "runtime/ts/package.json"
+      - "apps/playground/package.json"
+      - "extensions/seseragi/package.json"
+      - "extensions/seseragi-legacy/package.json"
 
 permissions:
   contents: read
 
 jobs:
-  check:
+  contract:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: 1.97.1
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.9
-      - name: Install root dependencies
-        run: bun install --frozen-lockfile
-      - name: Check canonical version metadata
-        run: bun run check:release
-      - name: Exercise CLI and LSP version contracts
-        run: cargo test -p seseragi-release -p seseragi-cli -p seseragi-lsp
+      - run: bun install --frozen-lockfile
+      - run: bun test scripts/release-contract.test.ts scripts/release-gate.test.ts scripts/release-readiness.test.ts scripts/release-promotion.test.ts scripts/native-release.test.ts
+      - run: bun scripts/release-contract.ts check
+      - run: bun scripts/release-readiness.ts check
