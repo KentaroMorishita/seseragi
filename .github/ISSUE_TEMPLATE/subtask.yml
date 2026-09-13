@@ -1,5 +1,5 @@
-name: Orchestration subtask
-description: 既存のqueued work-itemに従属し、独立queue位置を持たない作業
+name: Work-item subtask
+description: 既存work-itemに従属し、独立したRoadmap位置やreleaseを持たない作業
 title: ""
 labels:
   - "role: subtask"
@@ -7,21 +7,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        subtaskは親work-itemのordering / checkpoint / Promotion / releaseに従属します。
-        独立した順序やreleaseが必要ならsubtaskではなくwork-itemへ昇格してください。
-
-  - type: dropdown
-    id: orchestration
-    attributes:
-      label: Orchestration
-      options:
-        - O01
-        - O02
-        - O03
-        - O04
-        - O05
-    validations:
-      required: true
+        subtaskは親work-itemのScope / Acceptanceに従属します。
+        独立した優先順位・acceptance・releaseが必要ならwork-itemへ昇格してください。
 
   - type: dropdown
     id: kind
@@ -38,27 +25,11 @@ body:
       required: true
 
   - type: input
-    id: root
-    attributes:
-      label: Orchestration root
-      placeholder: "#549"
-    validations:
-      required: true
-
-  - type: input
-    id: impl_queue
-    attributes:
-      label: Impl queue
-      placeholder: "#291"
-    validations:
-      required: true
-
-  - type: input
     id: parent
     attributes:
       label: Parent work-item
-      description: 同じOxxに属し、Impl queueへ登録済みの親work-item。
-      placeholder: "#502"
+      description: このsubtaskが従属するwork-item。
+      placeholder: "#470"
     validations:
       required: true
 
@@ -66,18 +37,16 @@ body:
     id: scope
     attributes:
       label: 従属Scope / Acceptance
-      description: 親のどのacceptanceを補助する作業か。独立releaseを持たない理由も明記。
+      description: 親のどのacceptanceを補助する作業か。独立Issueにしない理由も明記。
     validations:
       required: true
 
   - type: checkboxes
-    id: contract
+    id: sanity
     attributes:
-      label: Operating contract
+      label: Sanity check
       options:
-        - label: "#512 を読み、親work-itemが同じOxxのImpl queueへ登録済みであることを確認した"
+        - label: "親work-itemのScope内に収まる"
           required: true
-        - label: "このsubtask自体には独立Impl/Promotion entryを作らない"
-          required: true
-        - label: "独立したordering/releaseが必要になったらwork-itemへ昇格する"
+        - label: "独立した優先順位やreleaseを必要としない"
           required: true
