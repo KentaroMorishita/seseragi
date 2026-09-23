@@ -18,22 +18,53 @@ fn impossible failure: Never -> DispatchError =
 
 let noBindings: Array<dom.DomBinding<Action>> = []
 
+fn startPointer event: html.PointerEvent -> html.EventAction<Action> =
+  html.IgnoreEvent
+  |> html.capturePointer event
+  |> html.suppressCompatibilityClick event
+
 fn region active: Bool -> dom.DomContent<Action> =
   if active then
     dom.content
-      (html.button {
-        id: "region-action",
-        onClick: RegionIncrement,
-        children: "old region"
-      })
+      (html.fragment [
+        html.button {
+          key: "alpha",
+          id: "region-alpha",
+          onClick: RegionIncrement,
+          onPointerDown: startPointer,
+          children: "alpha"
+        },
+        html.button {
+          key: "beta",
+          id: "region-beta",
+          onClick: RegionIncrement,
+          children: "beta"
+        }
+      ])
       noBindings
   else
     dom.content
-      (html.button {
-        id: "region-action",
-        onClick: RegionIncrement,
-        children: "new region"
-      })
+      (html.fragment [
+        html.button {
+          key: "beta",
+          id: "region-beta",
+          onClick: RegionIncrement,
+          children: "beta moved"
+        },
+        html.button {
+          key: "gamma",
+          id: "region-gamma",
+          onClick: RegionIncrement,
+          children: "gamma inserted"
+        },
+        html.button {
+          key: "alpha",
+          id: "region-alpha",
+          onClick: RegionIncrement,
+          onPointerDown: startPointer,
+          children: "alpha moved"
+        }
+      ])
       noBindings
 
 fn initialView -> html.Html<Action> = html.div {
@@ -61,11 +92,21 @@ fn initialView -> html.Html<Action> = html.div {
     },
     html.div {
       id: "region",
-      children: html.button {
-        id: "region-action",
-        onClick: RegionIncrement,
-        children: "old region"
-      }
+      children: [
+        html.button {
+          key: "alpha",
+          id: "region-alpha",
+          onClick: RegionIncrement,
+          onPointerDown: startPointer,
+          children: "alpha"
+        },
+        html.button {
+          key: "beta",
+          id: "region-beta",
+          onClick: RegionIncrement,
+          children: "beta"
+        }
+      ]
     },
     html.button { id: "increment", onClick: Increment, children: "+" },
     html.button { id: "toggle", onClick: Toggle, children: "toggle" },

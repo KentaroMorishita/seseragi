@@ -18,6 +18,7 @@
     {
       "module": "fixture/imported-constrained-function::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "describe",

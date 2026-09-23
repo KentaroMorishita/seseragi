@@ -19,6 +19,15 @@
     },
     {
       "arity": 0,
+      "spelling": "ElementRef",
+      "canonical": "std/web/html::ElementRef",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ElementRef"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "Attribute",
       "canonical": "std/web/html::Attribute",
       "provider": {

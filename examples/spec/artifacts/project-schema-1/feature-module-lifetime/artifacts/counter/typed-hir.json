@@ -19,6 +19,15 @@
     },
     {
       "arity": 0,
+      "spelling": "ElementRef",
+      "canonical": "std/web/html::ElementRef",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ElementRef"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "Style",
       "canonical": "std/web/html::Style",
       "provider": {
@@ -1609,7 +1618,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 60,
+              "symbol": 61,
               "name": "state",
               "type": {
                 "kind": "external-named",

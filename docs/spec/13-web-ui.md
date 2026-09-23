@@ -33,6 +33,9 @@ cardを呼ぶだけではDOM、global state、subscriptionへ触れません。�
 
 ```seseragi
 opaque type Html<Action>
+opaque type ElementRef
+
+fn elementRef name: String -> ElementRef
 
 trait IntoChildren<C, Action> {
   fn intoChildren value: C -> Array<Html<Action>>
@@ -59,6 +62,11 @@ String instanceは型parameter Actionについてparametricなので、eventを�
 任意値をshowしてtextへ暗黙変換しません。数値などは `text $ show value` と明示します。Array内でStringとHtmlを
 arbitrary unionにせず、混在する場合はStringを `text` で包みます。
 
+`ElementRef`はpure tree内の一Elementとbinding planが共有するlogical identityです。host Node、selector、mount lifetimeは
+保持しません。`elementRef "status"`のようなmodule-localなlogical nameからpureに生成し、HTML / SVG propsの
+`elementRef`へ渡します。同じnameは同じlogical identityを表し、同じrefを一つのrender treeで複数Elementへ置くことは
+できません。runtime連番やcomponent call順からidentityを暗黙生成しません。
+
 ## 13.3 props record
 
 共通propsはoptional structural record fieldを使います。`children`だけはrequiredで、String、単一Html、Array、List、
@@ -70,6 +78,7 @@ HTMLのclass属性はSeseragiでも`class`をcanonical field名とし、renderer
 
 ```seseragi
 alias ElementProps<Action, C> = {
+  elementRef?: ElementRef,
   id?: String,
   class?: String,
   title?: String,
@@ -433,6 +442,7 @@ opaque struct PointerEvent {
   pointerId: Int,
   pointerType: String,
   isPrimary: Bool,
+  activePointerCount: Int,
   button: Int,
   clientX: Float,
   clientY: Float,
@@ -454,6 +464,10 @@ type EventAction<Action> =
   | DispatchPreventDefault Action
   | DispatchStopPropagation Action
   | DispatchPreventDefaultAndStop Action
+
+fn capturePointer event: PointerEvent -> action: EventAction<Action> -> EventAction<Action>
+fn releasePointer event: PointerEvent -> action: EventAction<Action> -> EventAction<Action>
+fn suppressCompatibilityClick event: PointerEvent -> action: EventAction<Action> -> EventAction<Action>
 ```
 
 `onFocus: action`と`onBlur: action`は、bubbleする`focusin` / `focusout`をruntime内で正規化してActionをqueueへ
@@ -465,10 +479,19 @@ mapperへ渡します。snapshotはhost DOM Eventを保持せず、currentTarget
 `pointerType`はbrowserのPointer Events contractを保った`"mouse"`、`"touch"`、`"pen"`を通常値とします。runtimeは
 pointer eventをmouse eventへ合成し直さず、同じpointer snapshot contractをdesktop browserとiOS Safariで使います。
 pointer eventを提供しないbrowserではpointer handlerは発火せず、click / mouse handlerのcontractは独立して維持します。
+`activePointerCount`はmount単位のactive pointer数です。pointerdown snapshotには現在のpointerを含み、pointerup / pointercancel
+snapshotでは現在のpointerを除きます。mouse / touch / penを同じledgerで数え、pointer IDごとに独立して管理します。
 scroll eventはbubbleしないためDOM rootのcapture listenerで観測しますが、mapperへ渡すoffsetはmarkerを持つcurrent targetの値です。
 
-event mapperはnative listener内で同期的に一度だけ評価します。結果が`IgnoreEvent`ならbrowser制御もAction dispatchも行いません。
+event mapperはnative listener内で同期的に一度だけ評価します。modifierを付けない`IgnoreEvent`ならbrowser制御も
+Action dispatchも行いません。
 ほかのconstructorでは、指定された`preventDefault`、`stopPropagation`の順に同期実行してからActionをqueueへ入れます。
+pointer handlerではmapperが受け取った`PointerEvent`を渡して`capturePointer` / `releasePointer`をEventActionへ合成できます。
+非pointer mapperはこの引数を作れないため、誤用は型検査で拒否します。runtimeは
+`preventDefault`、`stopPropagation`、pointer control、Action enqueueの順に、すべてnative event dispatch中に実行します。
+capture対象はhandler markerを持つlogical current targetで、selector、host Event、host Elementを公開しません。
+これらのmodifierをkeyboard、mouse、wheel等の非pointer handlerから返すことはruntime contract違反です。
+`suppressCompatibilityClick`は同じpointer lifecycleの終了後500ms以内に届くcompatibility clickを一度だけ抑制します。
 `onClick: action`は互換性のため直接Actionを受け取り、`preventClickDefault`と`stopClickPropagation`の省略値はfalseです。
 これらのclick制御fieldは`onClick`が存在するときだけ使います。`onSubmit`は従来どおり常にdefaultを同期的に防ぎます。
 Actionとして`Task<Unit>`を使う場合も同じ契約です。SSRはevent handlerや制御fieldをattributeへ出力しません。
@@ -525,9 +548,9 @@ Html treeはnamespace、tag、normalized props、ordered childrenを持ちます
 runtime treeに残らず、component local stateやmount hookを暗黙生成しません。
 
 keyはparent直下のstructural regionがidentityを対応付けるためのhintで、HTML attributeではありません。pure treeと
-SSRはkeyを保持または無視できます。keyの一意性、keyed nodeの移動、keyがないnodeの対応規則はglobal Html treeの
-semanticsではなく、reactive structural regionを定義する13.10の拡張surfaceが所有します。keyをglobal ID、CSS
-selector、component identity、component stateの暗黙identityとして使いません。
+DOM snapshotはkeyを保持しますが、SSR出力には含めません。keyの一意性、keyed nodeの移動、keyがないnodeの対応規則は
+global Html treeのsemanticsではなく、reactive structural regionを定義する13.10の拡張surfaceが所有します。keyを
+global ID、CSS selector、component identity、component stateの暗黙identityとして使いません。
 
 ### 13.6.1 stateful featureのmodule所有境界
 
@@ -618,6 +641,7 @@ opaque type DomTarget
 opaque type DomMount<E>
 opaque type DomContent<Action>
 opaque type DomBinding<Action>
+opaque type BindingTarget<Action, Value>
 
 fn defaultOptions -> DomOptions
 fn query selector: String
@@ -642,6 +666,33 @@ fn content<Action>
   -> bindings: Array<DomBinding<Action>>
   -> DomContent<Action>
 fn initialHtml<Action> content: DomContent<Action> -> Html<Action>
+fn bind<Action, Value>
+  target: BindingTarget<Action, Value>
+  -> source: Signal<Value>
+  -> DomBinding<Action>
+fn textTarget<Action> element: ElementRef -> BindingTarget<Action, String>
+fn attributeTarget<Action>
+  element: ElementRef -> name: String -> BindingTarget<Action, Maybe<String>>
+fn booleanAttributeTarget<Action>
+  element: ElementRef -> name: String -> BindingTarget<Action, Bool>
+fn ariaBooleanTarget<Action>
+  element: ElementRef -> name: String -> BindingTarget<Action, Bool>
+fn classTarget<Action> element: ElementRef -> BindingTarget<Action, String>
+fn titleTarget<Action> element: ElementRef -> BindingTarget<Action, String>
+fn hiddenTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn disabledTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn inertTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn ariaLabelTarget<Action> element: ElementRef -> BindingTarget<Action, String>
+fn ariaBusyTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn ariaExpandedTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn ariaHiddenTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn ariaSelectedTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn valueTarget<Action> element: ElementRef -> BindingTarget<Action, String>
+fn checkedTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn styleTarget<Action>
+  element: ElementRef -> name: String -> BindingTarget<Action, Maybe<String>>
+fn regionTarget<Action>
+  element: ElementRef -> BindingTarget<Action, DomContent<Action>>
 fn bindText<Action>
   selector: String -> source: Signal<String> -> DomBinding<Action>
 fn bindAttribute<Action>
@@ -735,6 +786,17 @@ canonical surfaceは、pure Html / SSRを維持したまま`DomContent<Action>`�
 `renderToString` / `renderDocument`へ渡せます。client hydrationは同じserialized stateからDomContentを再構築し、
 initial Html照合後にbindingを接続します。Html値の内部へSignal、subscription、host Nodeを格納しません。
 
+型付きbindingのcanonical入口は`bind target source`です。`BindingTarget<Action, Value>`はlogical `ElementRef`、sink種別、
+必要ならElement namespace / tag制約を持つopaque capabilityで、`Signal<Value>`との`Value`一致を型検査します。たとえば
+`hiddenTarget`は`Bool`、`textTarget`は`String`、`attributeTarget`と`styleTarget`は`Maybe<String>`を要求します。
+HTML boolean attributeはTrueでpresence、Falseでabsence、ARIA booleanは`"true"` / `"false"`として反映します。
+`checkedTarget`はinput checked property、`valueTarget`はinput / textarea / select value propertyを所有します。
+
+このsurfaceをtrait methodや`F<_>`へ一般化しません。targetは更新規約を値としてすでに保持しており、trait dictionaryを重ねても
+instance選択による別実装を増やさないためです。またbindingのpublication、transaction、subscription cleanupは`Signal`固有の
+contractであり、Functorである任意の`F<_>`へ拡張できません。同じlifecycle contractを持つsource familyまたはuser-defined
+sinkの実需要が成立した場合にだけ、別Issueでtrait / HKT境界を定義します。
+
 更新単位は次の三種類です。
 
 - static DOM: mount後に値更新を購読しないclosed subtree。
@@ -742,10 +804,11 @@ initial Html照合後にbindingを接続します。Html値の内部へSignal、
   Signal値を反映するbinding。
 - structural region: `bindRegion`が条件分岐やcollection等、指定Elementのchild構造を所有するregion。
 
-各selectorは現在のDomContent scopeのroot Elementから相対評価し、exactly oneのdescendant Elementへ解決します。不正、
-0件、複数件、binding種別とElementの不一致、invalid attribute / style nameは`DomOperationFailed`でmountContentを失敗
-させ、途中で登録したbindingを解除します。selectorはscope外へ出ず、region内の同名selectorは親scopeとidentityを共有
-しません。
+typed targetのElementRefと互換surfaceのselectorは、現在のDomContent scopeでexactly oneのdescendant Elementへ解決します。
+ElementRefの欠落・重複、selectorの不正・0件・複数件、binding種別とElement namespace / tagの不一致、invalid attribute /
+style nameは`DomOperationFailed`でmountContentを失敗させ、途中で登録したbindingを解除します。selectorはscope外へ出ず、
+region内の同名selectorは親scopeとidentityを共有しません。`bindText`、`bindAttribute`、`bindValue`、`bindChecked`、
+`bindStyle`、`bindRegion`は互換surfaceとして同じ実行planへlowerします。
 
 bindTextは対象Elementのtext content、bindAttributeは指定attribute、bindValueはinput / textarea / selectのvalue
 property、bindCheckedはinputのchecked property、bindStyleは一つのCSS propertyだけを所有します。MaybeのNothingは
@@ -757,8 +820,22 @@ bindRegionのSignal値は入れ子の`DomContent<Action>`です。region target 
 current contentのinitial Htmlへ切り替え、入れ子bindingとevent handlerを同じscopeへ接続します。切替時は旧contentの
 subscriptionとevent bindingを解除してから新contentを接続し、region外node identityとlistenerを維持します。initial
 attachment時に既存childrenがinitial Htmlと一致する場合はnodeを再利用します。現surfaceはregion-local childrenを一つの
-structural valueとして扱い、`key`によるcollection diffを行いません。将来keyed collection surfaceを追加する場合もkeyは
-そのregion内のsibling identityだけを表し、global component / state identityにはなりません。
+structural valueとして扱いますが、direct childrenがすべて`key`を持つ場合はregion-local keyed collectionとしてbounded
+reconciliationを行います。keyが一つもない場合は従来どおりcoarse replacementです。一つでもkeyがある場合はすべてのdirect
+childがkey付きElementでなければならず、空key、重複key、keyed / unkeyed混在は`DomOperationFailed`です。
+
+keyは現在のregion内だけで一意なsibling identityです。同じkeyかつ同じnamespace / tagのElementはinsert、remove、move、
+attribute / child更新をまたいでhost node identityを維持し、期待順へ既存nodeを移動します。同じkeyでもnamespaceまたはtagが
+変わる場合は別nodeへ置換します。retained nodeのevent markerは現在のhandler tableへ更新し、focus、text selection、IME、
+pointer captureはそのnodeが保持される限り維持します。削除・置換nodeのcaptureと旧region scopeのbinding、listener、
+subscription、nested resourceは新scopeを接続する前に一度だけcleanupします。
+
+SSRはkeyをattributeへ出しません。DOM backendはhydration時に一致したdirect childへ内部key markerを対応付けるため、最初の
+collection updateからserver node identityを再利用できます。このmarkerはselector、global ID、component / hidden state identity
+ではなく、region reconciliation専用です。keyed reconciliationはdirect siblingを一回走査し、retained nodeを必要な場合に一度
+moveするbounded algorithmであり、arbitrary whole-tree minimum editを保証しません。
+SVG ElementをtargetにするregionはfragmentをSVG namespace contextで構築し、insert / replace後もdirect childと子孫の
+namespaceを維持します。SVG fragmentだけをHTML parserへ渡してHTML unknown elementへ変換しません。
 
 Signal subscriberは5.13のtransaction commit後のstable valueだけを受け取ります。同一transactionの中間値をDOMへ
 公開しません。`Signal.distinct`が同値publicationを止めた場合はbinding callbackもDOM writeも発生せず、callbackが
@@ -770,6 +847,46 @@ unmount、root cancellation、target removal、dispatch failure後は新規publi
 作りません。region Html内のevent handlerが変わる場合はdelegated listenerを増やさずregion-local handler tableだけを
 入れ替え、旧handlerへ到達できないようにします。global virtual tree、component hook、component call順から作るhidden
 stateは導入しません。
+
+browser DOM adapterはdevelopment / test hostから明示されたcallbackがある場合だけschema 1のbinding traceを生成します。
+traceはrun-localな`sequence`、`mountId`、`scopeId`、`bindingId`、Signal notification中だけ存在する
+`transactionId`、binding kind、logical selector / ElementRef、解決したnodeのrun-local ID / namespace / tagを持ちます。
+初期snapshotの`transactionId`はnullです。applicationの値、event payload、Signal値、host Node、stack traceは記録しません。
+
+binding updateは`write`、`equal-skip`、`deferred`のoutcomeと、text / attribute / property / style write、insert / move /
+remove / replaceの件数を持ちます。scope attach / cleanupはその時点のmount-local active subscription / listener数を持ち、
+terminal cleanupは両方0まで戻ります。IDと件数はdiagnosticでありprogramから参照するidentityではありません。
+callbackを省略したproduction pathはtrace objectを生成せず、callback自身のfailureもevent順、DOM write、cleanup、typed
+failureを変えません。
+Inspectorを追加する場合もこのschemaを入力とし、別のPlayground専用semanticsを定義しません。
+
+### Large scene application pattern
+
+canvas、diagram、data gridのように高頻度のleaf更新とcollection更新が共存するapplicationは、同じModel Signalを
+一つのcoarse regionへ直接流しません。rootごとにlogical `ElementRef`を一度作り、cameraの`viewBox`、選択class、
+ARIA、form property等はtyped targetへ、childrenの追加・削除・並替えだけをkeyed regionへ流します。
+node描画に必要なprojectionがcamera stateを含まない場合は、そのprojectionへ`Signal.distinct`を適用します。
+これによりcamera publicationはleaf writeだけを起こし、structural regionのcallbackにも到達しません。
+
+```seseragi
+let sceneRef = html.elementRef "scene"
+let cameraRef = html.elementRef "camera"
+let nodeRef = html.elementRef "node"
+
+let bindings = [
+  dom.bind (svg.viewBoxTarget sceneRef) (signals.map viewBox model),
+  dom.bind (svg.transformTarget cameraRef) (signals.map cameraTransform model),
+  dom.bind (svg.xTarget nodeRef) (signals.map nodeX nodeModel),
+  dom.bind (dom.regionTarget cameraRef) (signals.map keyedChildren nodeStructure)
+]
+```
+
+`BindingTarget<Action, Value>`自体がsinkの値型、namespace / tag制約、write規約を保持するため、このcompositionへ
+binding traitや任意`F<_>`のHKT layerを追加しません。複数source familyやuser-defined sinkの実需要がない限り、
+plainなtarget値とSignal projectionの組合せをapplication boundaryとします。実行可能な
+`examples/spec/fixtures/projects/web-scene-interaction`はtyped SVG leaf、event-time pointer control、stable rootの
+最小例です。large collectionのidentity契約はkeyed region fixtures、実運用のmutation / latencyはconsumer側の
+browser gateで検証します。
 
 互換用coarse updateはmanaged childrenを置換してもよく、一般のDOM node identityを保証しません。ただしevent受付と
 subscriptionの所有権を二重化せず、IME composition中の入力を破棄せず、対応するcontrolled controlを識別できる場合は
@@ -843,6 +960,14 @@ metadataをpure Htmlのまま表現できます。
 SVG tagを追加したり、任意tag名からnamespaceを推測したりしません。SSRとbrowser DOMは同じSVG
 markupを使い、browser parserが子孫へSVG namespaceを継承します。
 
+reactive SVG attributeは同じ`ElementRef`と`dom.bind`を使います。`viewBoxTarget`、`transformTarget`、
+`pathDataTarget`、`pointsTarget`、`fillTarget`、`strokeTarget`、`strokeWidthTarget`、
+`pointerEventsTarget`、`ariaLabelTarget`は`String` Signal、`xTarget`、`yTarget`、`x1Target`、
+`y1Target`、`x2Target`、`y2Target`、`cxTarget`、`cyTarget`、`radiusTarget`、`rxTarget`、
+`ryTarget`、`widthTarget`、`heightTarget`、`opacityTarget`はfiniteな`Float` Signalを要求します。
+各targetはSVG namespaceを検証し、tag固有attributeは`svg`、`path`、`polyline` / `polygon`の
+対象tagも検証します。
+
 pointer lifecycleは`onPointerDown`、`onPointerMove`、`onPointerUp`、`onPointerCancel`を同じ
 immutable `PointerEvent` snapshotと`EventAction<Action>` contractで扱います。`onWheel`は次の
 snapshotを使います。
@@ -866,6 +991,12 @@ wheel mapperはnative listener内で同期評価し、`DispatchPreventDefault`�
 enqueue前に適用します。pointer move/cancelとwheel handlerはSSR attributeへ出力せず、mount中の
 delegated listener tableだけに存在します。
 
+pointer captureはevent-time controlです。`html.capturePointer`を付けたpointerdownはAction queueを待たずcurrent targetへ
+captureを設定します。`html.releasePointer`は同じdispatch中に明示解除し、pointerup / pointercancelではmodifierの有無にかかわらず
+mountが残存captureを解除します。`lostpointercapture`、captured targetのremoval / replacement、mount unmountでもpointer ledgerと
+capture ownershipを破棄します。targetが接続中ならnative releaseを一度だけ試み、既にbrowserがcaptureを失った場合は二重releaseしません。
+複数pointerのcaptureとclick抑制tokenはpointer IDごとに分離します。
+
 `std/web/dom`はscene interactionに必要なhost操作を明示Effectとして提供します。
 
 ```seseragi
@@ -883,6 +1014,10 @@ fn awaitObservation observation: DomObservation<Failure>
 fn disconnect observation: DomObservation<Failure>
   -> Effect<{}, Never, Unit>
 ```
+
+`dom.capturePointer` / `dom.releasePointer`は既存のEffect APIとして互換維持します。外部commandやnative dispatchと同じtickで
+完了する必要がない操作には引き続き使えますが、event Action queue後に実行されるためpointerdownの同期captureには使いません。
+pointer gesture開始には`html.capturePointer`を使い、Effect APIを同期制御の代替として扱わないことが移行contractです。
 
 `ElementRect`は一回の`getBoundingClientRect`から`x`、`y`、`width`、`height`、`top`、`right`、
 `bottom`、`left`をimmutable snapshotにします。`observeResize`は一つの`DomTarget`だけを観測し、

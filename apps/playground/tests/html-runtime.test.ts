@@ -15,6 +15,7 @@ import {
   body,
   br,
   button,
+  capturePointer,
   type ChangeEvent,
   caption,
   code,
@@ -28,11 +29,14 @@ import {
   dialog,
   div,
   domEventPreventsDefault,
+  elementRef,
   em,
+  type EventAction,
   type FileChangeEvent,
   fieldset,
   footer,
   form,
+  fragment,
   h1,
   h2,
   h3,
@@ -65,14 +69,17 @@ import {
   renderDocument,
   renderForDom,
   renderToString,
+  releasePointer,
   resolveDomEvent,
   type ScrollEvent,
   select,
   small,
   source,
+  span,
   strong,
   style,
   summary,
+  suppressCompatibilityClick,
   table,
   tbody,
   td,
@@ -97,6 +104,42 @@ function webUrl(value: string): WebUrl {
 }
 
 describe("HTML browser runtime", () => {
+  test("keeps logical element references out of SSR and unique in DOM output", () => {
+    const reference = elementRef("card")
+    const node = div({
+      elementRef: reference,
+      class: "card",
+      children: "Referenced",
+    })
+
+    expect(renderToString(node)).toBe('<div class="card">Referenced</div>')
+    expect(renderForDom(node).html).toMatch(
+      '<div data-ssrg-ref="card" class="card">Referenced</div>'
+    )
+    expect(renderToString(node)).not.toContain("data-ssrg-ref")
+
+    expect(() =>
+      renderForDom(
+        fragment([
+          span({ elementRef: reference, children: "first" }),
+          span({
+            elementRef: elementRef("card"),
+            children: "duplicate",
+          }),
+        ])
+      )
+    ).toThrow("HTML ElementRef may identify only one node per tree")
+  })
+
+  test("keeps region-local keys out of SSR and marks only DOM snapshots", () => {
+    const node = div({ key: 'table-"osaka"', children: "Osaka" })
+
+    expect(renderToString(node)).toBe("<div>Osaka</div>")
+    expect(renderForDom(node).html).toBe(
+      '<div data-ssrg-key="table-&quot;osaka&quot;">Osaka</div>'
+    )
+  })
+
   test("renders the canonical class prop for SSR and DOM", () => {
     const node = div({ class: "card featured", children: "Styled" })
 
@@ -1074,6 +1117,81 @@ describe("HTML browser runtime", () => {
     )
     expect(ignored.kind).toBe("ignore")
     expect(order).toHaveLength(4)
+  })
+
+  test("composes pointer controls and applies them before enqueue", () => {
+    const order: string[] = []
+    let publicAction: EventAction<string> | undefined
+    let pointerSnapshot: PointerEvent | undefined
+    const rendered = renderForDom(
+      div<string>({
+        onPointerDown: (event) => {
+          const action = suppressCompatibilityClick(
+            event,
+            capturePointer(
+              event,
+              DispatchPreventDefaultAndStop(
+                `start:${event.pointerId}:${event.activePointerCount}`
+              )
+            )
+          )
+          publicAction = action
+          pointerSnapshot = event
+          return action
+        },
+        onPointerUp: (event: PointerEvent) =>
+          releasePointer(event, Dispatch("end")),
+        children: "Controlled pointer",
+      })
+    )
+    const down = resolveDomEvent(
+      rendered.eventHandlers.get("0")!,
+      {},
+      {
+        pointerId: 7,
+        pointerType: "pen",
+        isPrimary: true,
+        button: 0,
+        clientX: 0,
+        clientY: 0,
+        pressure: 0.5,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: false,
+      },
+      { activePointerCount: 2 }
+    )
+    expect(publicAction).toEqual({
+      tag: "DispatchPreventDefaultAndStop",
+      value: "start:7:2",
+    })
+    expect(() =>
+      capturePointer({ ...pointerSnapshot! }, publicAction!)
+    ).toThrow("DOM event controls must use one PointerEvent snapshot")
+    expect(down).toMatchObject({
+      kind: "dispatch",
+      action: "start:7:2",
+      preventDefault: true,
+      stopPropagation: true,
+      pointerControl: "capture",
+      suppressCompatibilityClick: true,
+    })
+    applyDomEventResolution(
+      {
+        preventDefault: () => order.push("preventDefault"),
+        stopPropagation: () => order.push("stopPropagation"),
+      },
+      down,
+      (action) => order.push(`enqueue:${action}`),
+      (resolution) => order.push(`control:${resolution.pointerControl}`)
+    )
+    expect(order).toEqual([
+      "preventDefault",
+      "stopPropagation",
+      "control:capture",
+      "enqueue:start:7:2",
+    ])
   })
 
   test("captures scroll events and preserves click control compatibility", () => {

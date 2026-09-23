@@ -23,6 +23,7 @@
     {
       "module": "fixture/imported-custom-infix-operator::operators",
       "specifier": "./operators.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "__ssrg$operator$3c5e3e",

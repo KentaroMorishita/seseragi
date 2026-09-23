@@ -7,6 +7,7 @@ import {
   map,
   planSet,
   planUpdate,
+  publicationIdForInstrumentation,
   read,
   set,
   signalApplicative,
@@ -99,6 +100,28 @@ describe("Signal browser runtime", () => {
     await unsubscribe(subscription)({})
     await set(3, source)({})
     expect(observed).toEqual([0, 1, 2])
+  })
+
+  test("exposes only the run-local publication identity during notification", async () => {
+    const source = await make(0)({})
+    const publications: Array<number | undefined> = []
+    const subscription = await subscribe(
+      (value: number) => (environment) => {
+        publications.push(publicationIdForInstrumentation())
+        return value === 1 ? set(2, source)(environment) : undefined
+      },
+      source
+    )({})
+
+    expect(publicationIdForInstrumentation()).toBeUndefined()
+    await set(1, source)({})
+
+    expect(publications[0]).toBeUndefined()
+    expect(publications[1]).toBeNumber()
+    expect(publications[2]).toBeNumber()
+    expect(publications[1]).not.toBe(publications[2])
+    expect(publicationIdForInstrumentation()).toBeUndefined()
+    await unsubscribe(subscription)({})
   })
 
   test("stops a defective observer after notifying the others", async () => {

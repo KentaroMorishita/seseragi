@@ -50,6 +50,7 @@
     {
       "module": "fixture/rps-cli-split::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "decide",

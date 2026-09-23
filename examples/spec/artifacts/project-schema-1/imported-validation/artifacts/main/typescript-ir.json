@@ -123,6 +123,7 @@
     {
       "module": "fixture/imported-validation::operations",
       "specifier": "./operations.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "combine",

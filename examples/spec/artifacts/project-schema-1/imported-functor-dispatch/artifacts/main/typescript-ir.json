@@ -25,6 +25,7 @@
     {
       "module": "fixture/imported-functor-dispatch::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "incrementAll",

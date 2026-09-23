@@ -53,14 +53,24 @@ test("owns mount, hydration, coarse updates, cancellation, and cleanup in a brow
   }
   const page = await browser.newPage()
   const errors: string[] = []
-  page.on("pageerror", (error) => errors.push(error.message))
+  let rejectPageError: ((error: Error) => void) | undefined
+  const pageError = new Promise<never>((_resolve, reject) => {
+    rejectPageError = reject
+  })
+  page.on("pageerror", (error) => {
+    errors.push(error.message)
+    rejectPageError?.(error)
+  })
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text())
   })
   await page.goto(`http://127.0.0.1:${server.port}`)
-  await page.waitForFunction(
-    () => document.documentElement.dataset.domLifecycle === "complete"
-  )
+  await Promise.race([
+    page.waitForFunction(
+      () => document.documentElement.dataset.domLifecycle === "complete"
+    ),
+    pageError,
+  ])
   expect(errors).toEqual([])
   expect(
     await page.evaluate(
@@ -93,6 +103,17 @@ test("owns mount, hydration, coarse updates, cancellation, and cleanup in a brow
     reactiveDistinctSkippedWrite: true,
     reactiveHydrationPreservedIdentity: true,
     reactiveUnmountStoppedUpdates: true,
+    keyedRegionHydrationPreservedIdentity: true,
+    keyedRegionPreservedIdentity: true,
+    keyedRegionFocusSelection: true,
+    keyedRegionBoundedMutations: true,
+    keyedRegionCleanup: true,
+    keyedRegionDiagnostics: true,
+    keyedSvgNamespacePreserved: true,
+    typedBindingPreservedHydrationIdentity: true,
+    typedBindingValuesUpdated: true,
+    typedBindingMissingRefRejected: true,
+    typedBindingKindMismatchRejected: true,
     cancellationReleasedTarget: true,
     targetRemoval: "DomTargetRemoved",
   })
@@ -240,9 +261,26 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
       const state = window as typeof window & {
         reactiveStatic?: Element | null
         reactiveRegion?: Element | null
+        reactiveAlpha?: Element | null
+        reactiveBeta?: Element | null
+        reactiveRegionMutations?: MutationRecord[]
+        reactiveRegionObserver?: MutationObserver
+        reactivePointerId?: number
       }
       state.reactiveStatic = document.querySelector("#static")
       state.reactiveRegion = document.querySelector("#region")
+      state.reactiveAlpha = document.querySelector("#region-alpha")
+      state.reactiveBeta = document.querySelector("#region-beta")
+      state.reactiveAlpha?.addEventListener("pointerdown", (event) => {
+        state.reactivePointerId = (event as PointerEvent).pointerId
+      })
+      state.reactiveRegionMutations = []
+      state.reactiveRegionObserver = new MutationObserver((records) => {
+        state.reactiveRegionMutations?.push(...records)
+      })
+      state.reactiveRegionObserver.observe(state.reactiveRegion!, {
+        childList: true,
+      })
       const input = document.querySelector<HTMLInputElement>("#controlled")
       if (input === null) throw new Error("missing controlled input")
       input.focus()
@@ -286,22 +324,47 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
         }
       })
     ).toEqual({ focused: true, selectionStart: 1, selectionEnd: 1 })
-    await reactivePage.locator("#toggle").click()
+    await reactivePage.locator("#region-alpha").hover()
+    await reactivePage.mouse.down()
     await reactivePage.waitForFunction(
-      () => document.querySelector("#region")?.textContent === "new region"
+      () =>
+        (
+          window as typeof window & {
+            reactivePointerId?: number
+          }
+        ).reactivePointerId !== undefined
+    )
+    await reactivePage.evaluate(() => {
+      document.querySelector<HTMLButtonElement>("#toggle")?.click()
+    })
+    await reactivePage.waitForFunction(
+      () => document.querySelector("#region-gamma") !== null
     )
     expect(
       await reactivePage.evaluate(() => {
         const state = window as typeof window & {
           reactiveStatic?: Element | null
           reactiveRegion?: Element | null
+          reactiveAlpha?: Element | null
+          reactiveBeta?: Element | null
+          reactivePointerId?: number
         }
         return (
           state.reactiveStatic === document.querySelector("#static") &&
-          state.reactiveRegion === document.querySelector("#region")
+          state.reactiveRegion === document.querySelector("#region") &&
+          state.reactiveAlpha === document.querySelector("#region-alpha") &&
+          state.reactiveBeta === document.querySelector("#region-beta") &&
+          state.reactivePointerId !== undefined &&
+          (state.reactiveAlpha as Element).hasPointerCapture(
+            state.reactivePointerId
+          ) &&
+          [...document.querySelectorAll("#region > button")]
+            .map((element) => element.id)
+            .join(",") === "region-beta,region-gamma,region-alpha"
         )
       })
     ).toBe(true)
+    await reactivePage.mouse.up()
     expect(
       await reactivePage
         .locator("#styled")
@@ -309,10 +372,44 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
           getComputedStyle(element).getPropertyValue("color")
         )
     ).toBe("rgb(0, 0, 255)")
-    await reactivePage.locator("#region-action").click()
+    await reactivePage.locator("#region-beta").click()
     await reactivePage.waitForFunction(
       () => document.querySelector("#count")?.textContent === "12"
     )
+    await reactivePage.locator("#toggle").click()
+    await reactivePage.waitForFunction(
+      () => document.querySelector("#region-gamma") === null
+    )
+    expect(
+      await reactivePage.evaluate(() => {
+        const state = window as typeof window & {
+          reactiveAlpha?: Element | null
+          reactiveBeta?: Element | null
+          reactiveRegionMutations?: MutationRecord[]
+          reactiveRegionObserver?: MutationObserver
+        }
+        state.reactiveRegionObserver?.disconnect()
+        const alpha = state.reactiveAlpha
+        const beta = state.reactiveBeta
+        const mutations = state.reactiveRegionMutations ?? []
+        return (
+          alpha === document.querySelector("#region-alpha") &&
+          beta === document.querySelector("#region-beta") &&
+          [...document.querySelectorAll("#region > button")]
+            .map((element) => element.id)
+            .join(",") === "region-alpha,region-beta" &&
+          mutations.length > 0 &&
+          mutations.length <= 8 &&
+          !mutations.some(
+            (record) =>
+              alpha !== null &&
+              beta !== null &&
+              [...record.removedNodes].includes(alpha) &&
+              [...record.removedNodes].includes(beta)
+          )
+        )
+      })
+    ).toBe(true)
     await reactivePage.locator("#stop").click()
     await reactivePage.waitForFunction(
       () =>

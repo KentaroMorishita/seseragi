@@ -17,6 +17,7 @@
     {
       "module": "fixture/transitive-instance-dispatch::facade",
       "specifier": "./facade.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "active",

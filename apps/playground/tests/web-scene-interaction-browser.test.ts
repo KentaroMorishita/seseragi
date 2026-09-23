@@ -58,14 +58,27 @@ test("runs SVG drag, cancellation, wheel, pinch, resize, and cleanup", async () 
     const state = {
       captures: [] as number[],
       releases: [] as number[],
+      order: [] as string[],
+      suppressedClicks: 0,
       activeObservers: 0,
       resizeCallbacks: 0,
     }
     Object.defineProperty(window, "sceneAudit", { value: state })
     const nativeCapture = Element.prototype.setPointerCapture
     const nativeRelease = Element.prototype.releasePointerCapture
+    const nativePreventDefault = Event.prototype.preventDefault
+    const nativeStopPropagation = Event.prototype.stopPropagation
+    Event.prototype.preventDefault = function () {
+      if (this.type === "pointerdown") state.order.push("preventDefault")
+      nativePreventDefault.call(this)
+    }
+    Event.prototype.stopPropagation = function () {
+      if (this.type === "pointerdown") state.order.push("stopPropagation")
+      nativeStopPropagation.call(this)
+    }
     Element.prototype.setPointerCapture = function (pointerId: number) {
       state.captures.push(pointerId)
+      state.order.push("capture")
       try {
         nativeCapture.call(this, pointerId)
       } catch {
@@ -111,6 +124,22 @@ test("runs SVG drag, cancellation, wheel, pinch, resize, and cleanup", async () 
   await page.waitForFunction(() =>
     document.querySelector("#status")?.textContent?.includes("size=320")
   )
+  await page.evaluate(() => {
+    const audit = (
+      window as typeof window & {
+        sceneAudit: { order: string[]; suppressedClicks: number }
+      }
+    ).sceneAudit
+    document.querySelector("#scene")?.addEventListener("click", () => {
+      audit.suppressedClicks += 1
+    })
+    const status = document.querySelector("#status")
+    if (status !== null) {
+      new MutationObserver(() => audit.order.push("action")).observe(status, {
+        childList: true,
+      })
+    }
+  })
 
   expect(
     await page.locator("#scene").evaluate((element) => element.namespaceURI)
@@ -123,11 +152,12 @@ test("runs SVG drag, cancellation, wheel, pinch, resize, and cleanup", async () 
     type: string,
     pointerId: number,
     clientX: number,
-    clientY: number
+    clientY: number,
+    pointerType = "touch"
   ) => {
     await page.locator("#scene").dispatchEvent(type, {
       pointerId,
-      pointerType: "touch",
+      pointerType,
       isPrimary: pointerId === 1,
       clientX,
       clientY,
@@ -140,13 +170,39 @@ test("runs SVG drag, cancellation, wheel, pinch, resize, and cleanup", async () 
   await dispatchPointer("pointerdown", 1, 80, 70)
   await dispatchPointer("pointermove", 1, 130, 90)
   await dispatchPointer("pointerup", 1, 130, 90)
+  const clickAllowed = await page.locator("#scene").evaluate((element) =>
+    element.dispatchEvent(
+      new PointerEvent("click", {
+        pointerId: 1,
+        pointerType: "touch",
+        bubbles: true,
+        cancelable: true,
+      })
+    )
+  )
+  expect(clickAllowed).toBe(false)
   await page.waitForFunction(() =>
     document.querySelector("#status")?.textContent?.includes("x=130")
   )
+  const eventOrder = await page.evaluate(
+    () =>
+      (
+        window as typeof window & {
+          sceneAudit: { order: string[]; suppressedClicks: number }
+        }
+      ).sceneAudit
+  )
+  expect(eventOrder.order.slice(0, 4)).toEqual([
+    "preventDefault",
+    "stopPropagation",
+    "capture",
+    "action",
+  ])
+  expect(eventOrder.suppressedClicks).toBe(0)
 
-  await dispatchPointer("pointerdown", 1, 140, 90)
-  await dispatchPointer("pointermove", 1, 180, 90)
-  await dispatchPointer("pointercancel", 1, 180, 90)
+  await dispatchPointer("pointerdown", 1, 140, 90, "pen")
+  await dispatchPointer("pointermove", 1, 180, 90, "pen")
+  await dispatchPointer("pointercancel", 1, 180, 90, "pen")
   await page.waitForFunction(() => {
     const status = document.querySelector("#status")?.textContent ?? ""
     return status.includes("x=130") && status.includes("cancelled=True")
@@ -180,7 +236,26 @@ test("runs SVG drag, cancellation, wheel, pinch, resize, and cleanup", async () 
     document.querySelector("#status")?.textContent?.includes("size=480")
   )
 
-  await page.locator("#stop").click()
+  await dispatchPointer("pointerdown", 8, 150, 95)
+  await page.locator("#scene").dispatchEvent("lostpointercapture", {
+    pointerId: 8,
+    pointerType: "touch",
+    bubbles: true,
+  })
+  await dispatchPointer("pointerdown", 9, 155, 95, "mouse")
+  await page.locator("#scene").evaluate((scene) => {
+    scene.replaceWith(scene.cloneNode(true))
+  })
+  await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 0)))
+  await dispatchPointer("pointerdown", 9, 160, 95, "mouse")
+  await dispatchPointer("pointerup", 9, 160, 95, "mouse")
+  await page.waitForFunction(() =>
+    document.querySelector("#status")?.textContent?.includes("pointers=0")
+  )
+
+  await page
+    .locator("#stop")
+    .evaluate((element) => (element as HTMLButtonElement).click())
   await page.waitForFunction(
     () => document.documentElement.dataset.seseragiStatus === "completed"
   )
@@ -192,6 +267,8 @@ test("runs SVG drag, cancellation, wheel, pinch, resize, and cleanup", async () 
           sceneAudit: {
             captures: number[]
             releases: number[]
+            order: string[]
+            suppressedClicks: number
             activeObservers: number
             resizeCallbacks: number
           }
@@ -199,12 +276,14 @@ test("runs SVG drag, cancellation, wheel, pinch, resize, and cleanup", async () 
       ).sceneAudit
   )
   expect(audit).toEqual({
-    captures: [1, 1, 1, 2],
-    releases: [1, 1, 2, 1],
+    captures: [1, 1, 1, 2, 8, 9, 9],
+    releases: [1, 1, 2, 1, 9],
+    order: audit.order,
+    suppressedClicks: 0,
     activeObservers: 0,
     resizeCallbacks: audit.resizeCallbacks,
   })
   expect(audit.resizeCallbacks).toBeGreaterThanOrEqual(2)
   expect(errors).toEqual([])
   await page.close()
-}, 30_000)
+}, 60_000)

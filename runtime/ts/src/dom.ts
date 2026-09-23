@@ -10,7 +10,7 @@ import {
   type Unit,
   unit,
 } from "./effect"
-import type { Html } from "./html"
+import { type ElementRef, elementRefId, type Html } from "./html"
 import {
   type ServiceOperation,
   type ServiceResult,
@@ -30,6 +30,7 @@ const DOM_MOUNT = Symbol("seseragi.dom-mount")
 const DOM_OBSERVATION = Symbol("seseragi.dom-observation")
 const DOM_CONTENT = Symbol("seseragi.dom-content")
 const DOM_BINDING = Symbol("seseragi.dom-binding")
+const DOM_BINDING_TARGET = Symbol("seseragi.dom-binding-target")
 
 export type DomTarget = Readonly<{
   readonly [DOM_TARGET]: unknown
@@ -128,6 +129,40 @@ export type ElementRect = Readonly<{
 }>
 
 type PhantomAction<Action> = Readonly<{ readonly __action?: Action }>
+type PhantomValue<Value> = Readonly<{
+  readonly __bindingValue?: (value: Value) => Value
+}>
+
+export type BindingElementExpectation = Readonly<{
+  readonly namespace?: "html" | "svg"
+  readonly tags?: ReadonlyArray<string>
+}>
+
+type BindingTargetDescriptor = BindingElementExpectation &
+  (
+    | Readonly<{ readonly kind: "text" }>
+    | Readonly<{ readonly kind: "attribute"; readonly name: string }>
+    | Readonly<{ readonly kind: "string-attribute"; readonly name: string }>
+    | Readonly<{ readonly kind: "number-attribute"; readonly name: string }>
+    | Readonly<{ readonly kind: "boolean-attribute"; readonly name: string }>
+    | Readonly<{ readonly kind: "aria-boolean"; readonly name: string }>
+    | Readonly<{ readonly kind: "value" }>
+    | Readonly<{ readonly kind: "checked" }>
+    | Readonly<{ readonly kind: "style"; readonly name: string }>
+    | Readonly<{ readonly kind: "region" }>
+  )
+
+export type BindingTarget<Action, Value> = PhantomAction<Action> &
+  PhantomValue<Value> &
+  Readonly<{
+    readonly [DOM_BINDING_TARGET]: true
+    readonly reference: ElementRef
+    readonly descriptor: BindingTargetDescriptor
+  }>
+
+type DomBindingLocation =
+  | Readonly<{ readonly selector: string; readonly reference?: never }>
+  | Readonly<{ readonly selector?: never; readonly reference: ElementRef }>
 
 export type DomContent<Action> = PhantomAction<Action> &
   Readonly<{
@@ -137,6 +172,7 @@ export type DomContent<Action> = PhantomAction<Action> &
   }>
 
 export type DomBinding<Action> = PhantomAction<Action> &
+  DomBindingLocation &
   (
     | Readonly<{
         readonly [DOM_BINDING]: true
@@ -150,6 +186,34 @@ export type DomBinding<Action> = PhantomAction<Action> &
         readonly selector: string
         readonly name: string
         readonly source: Signal<Maybe<string>>
+      }>
+    | Readonly<{
+        readonly [DOM_BINDING]: true
+        readonly kind: "string-attribute"
+        readonly name: string
+        readonly source: Signal<string>
+        readonly expectation?: BindingElementExpectation
+      }>
+    | Readonly<{
+        readonly [DOM_BINDING]: true
+        readonly kind: "number-attribute"
+        readonly name: string
+        readonly source: Signal<number>
+        readonly expectation?: BindingElementExpectation
+      }>
+    | Readonly<{
+        readonly [DOM_BINDING]: true
+        readonly kind: "boolean-attribute"
+        readonly name: string
+        readonly source: Signal<boolean>
+        readonly expectation?: BindingElementExpectation
+      }>
+    | Readonly<{
+        readonly [DOM_BINDING]: true
+        readonly kind: "aria-boolean"
+        readonly name: string
+        readonly source: Signal<boolean>
+        readonly expectation?: BindingElementExpectation
       }>
     | Readonly<{
         readonly [DOM_BINDING]: true
@@ -382,6 +446,211 @@ export function content<Action>(
 
 export function initialHtml<Action>(value: DomContent<Action>): Html<Action> {
   return value.initial
+}
+
+function bindingTarget<Action, Value>(
+  reference: ElementRef,
+  descriptor: BindingTargetDescriptor
+): BindingTarget<Action, Value> {
+  elementRefId(reference)
+  return Object.freeze({
+    [DOM_BINDING_TARGET]: true as const,
+    reference,
+    descriptor: Object.freeze({
+      ...descriptor,
+      tags:
+        descriptor.tags === undefined
+          ? undefined
+          : Object.freeze([...descriptor.tags]),
+    }),
+  }) as BindingTarget<Action, Value>
+}
+
+function bindingTargetDescriptor<Action, Value>(
+  target: BindingTarget<Action, Value>
+): BindingTargetDescriptor {
+  if (
+    typeof target !== "object" ||
+    target === null ||
+    !(DOM_BINDING_TARGET in target)
+  ) {
+    throw new TypeError("DOM binding target must be created by std/web/dom")
+  }
+  return target.descriptor
+}
+
+export function bind<Action, Value>(
+  target: BindingTarget<Action, Value>,
+  source: Signal<Value>
+): DomBinding<Action> {
+  const descriptor = bindingTargetDescriptor(target)
+  return Object.freeze({
+    [DOM_BINDING]: true as const,
+    kind: descriptor.kind,
+    reference: target.reference,
+    ...(descriptor.kind === "attribute" ||
+    descriptor.kind === "string-attribute" ||
+    descriptor.kind === "number-attribute" ||
+    descriptor.kind === "boolean-attribute" ||
+    descriptor.kind === "aria-boolean" ||
+    descriptor.kind === "style"
+      ? { name: descriptor.name }
+      : {}),
+    ...(descriptor.namespace === undefined && descriptor.tags === undefined
+      ? {}
+      : {
+          expectation: Object.freeze({
+            namespace: descriptor.namespace,
+            tags: descriptor.tags,
+          }),
+        }),
+    source,
+  }) as DomBinding<Action>
+}
+
+export function textTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, string> {
+  return bindingTarget(reference, { kind: "text" })
+}
+
+export function attributeTarget<Action>(
+  reference: ElementRef,
+  name: string
+): BindingTarget<Action, Maybe<string>> {
+  return bindingTarget(reference, { kind: "attribute", name })
+}
+
+export function stringAttributeTarget<Action>(
+  reference: ElementRef,
+  name: string,
+  expectation: BindingElementExpectation = {}
+): BindingTarget<Action, string> {
+  return bindingTarget(reference, {
+    kind: "string-attribute",
+    name,
+    ...expectation,
+  })
+}
+
+export function numberAttributeTarget<Action>(
+  reference: ElementRef,
+  name: string,
+  expectation: BindingElementExpectation = {}
+): BindingTarget<Action, number> {
+  return bindingTarget(reference, {
+    kind: "number-attribute",
+    name,
+    ...expectation,
+  })
+}
+
+export function booleanAttributeTarget<Action>(
+  reference: ElementRef,
+  name: string,
+  expectation: BindingElementExpectation = {}
+): BindingTarget<Action, boolean> {
+  return bindingTarget(reference, {
+    kind: "boolean-attribute",
+    name,
+    ...expectation,
+  })
+}
+
+export function ariaBooleanTarget<Action>(
+  reference: ElementRef,
+  name: string
+): BindingTarget<Action, boolean> {
+  return bindingTarget(reference, { kind: "aria-boolean", name })
+}
+
+export function classTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, string> {
+  return stringAttributeTarget(reference, "class")
+}
+
+export function titleTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, string> {
+  return stringAttributeTarget(reference, "title", { namespace: "html" })
+}
+
+export function hiddenTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, boolean> {
+  return booleanAttributeTarget(reference, "hidden", { namespace: "html" })
+}
+
+export function disabledTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, boolean> {
+  return booleanAttributeTarget(reference, "disabled", { namespace: "html" })
+}
+
+export function inertTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, boolean> {
+  return booleanAttributeTarget(reference, "inert", { namespace: "html" })
+}
+
+export function ariaLabelTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, string> {
+  return stringAttributeTarget(reference, "aria-label")
+}
+
+export function ariaBusyTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, boolean> {
+  return ariaBooleanTarget(reference, "aria-busy")
+}
+
+export function ariaExpandedTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, boolean> {
+  return ariaBooleanTarget(reference, "aria-expanded")
+}
+
+export function ariaHiddenTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, boolean> {
+  return ariaBooleanTarget(reference, "aria-hidden")
+}
+
+export function ariaSelectedTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, boolean> {
+  return ariaBooleanTarget(reference, "aria-selected")
+}
+
+export function valueTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, string> {
+  return bindingTarget(reference, { kind: "value", namespace: "html" })
+}
+
+export function checkedTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, boolean> {
+  return bindingTarget(reference, {
+    kind: "checked",
+    namespace: "html",
+    tags: ["input"],
+  })
+}
+
+export function styleTarget<Action>(
+  reference: ElementRef,
+  name: string
+): BindingTarget<Action, Maybe<string>> {
+  return bindingTarget(reference, { kind: "style", name })
+}
+
+export function regionTarget<Action>(
+  reference: ElementRef
+): BindingTarget<Action, DomContent<Action>> {
+  return bindingTarget(reference, { kind: "region" })
 }
 
 export function bindText<Action>(

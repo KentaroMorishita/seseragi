@@ -53,6 +53,11 @@ macro_rules! svg_operation {
 
 const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
     operation!("style", "web.html.style", "_ssrg_html_style"),
+    operation!(
+        "elementRef",
+        "web.html.element-ref",
+        "_ssrg_html_elementRef"
+    ),
     operation!("customTag", "web.html.custom-tag", "_ssrg_html_customTag"),
     operation!("attribute", "web.html.attribute", "_ssrg_html_attribute"),
     operation!(
@@ -144,6 +149,21 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
         "_ssrg_html_DispatchPreventDefaultAndStop"
     ),
     operation!(
+        "capturePointer",
+        "web.html.event.capture-pointer",
+        "_ssrg_html_capturePointer"
+    ),
+    operation!(
+        "releasePointer",
+        "web.html.event.release-pointer",
+        "_ssrg_html_releasePointer"
+    ),
+    operation!(
+        "suppressCompatibilityClick",
+        "web.html.event.suppress-compatibility-click",
+        "_ssrg_html_suppressCompatibilityClick"
+    ),
+    operation!(
         "InvalidTagName",
         "web.html.error.invalid-tag-name",
         "_ssrg_html_InvalidTagName"
@@ -209,6 +229,93 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
         "initialHtml",
         "web.dom.initial-html",
         "_ssrg_dom_initialHtml"
+    ),
+    dom_operation!("bind", "web.dom.bind", "_ssrg_dom_bind"),
+    dom_operation!("textTarget", "web.dom.text-target", "_ssrg_dom_textTarget"),
+    dom_operation!(
+        "attributeTarget",
+        "web.dom.attribute-target",
+        "_ssrg_dom_attributeTarget"
+    ),
+    dom_operation!(
+        "booleanAttributeTarget",
+        "web.dom.boolean-attribute-target",
+        "_ssrg_dom_booleanAttributeTarget"
+    ),
+    dom_operation!(
+        "ariaBooleanTarget",
+        "web.dom.aria-boolean-target",
+        "_ssrg_dom_ariaBooleanTarget"
+    ),
+    dom_operation!(
+        "classTarget",
+        "web.dom.class-target",
+        "_ssrg_dom_classTarget"
+    ),
+    dom_operation!(
+        "titleTarget",
+        "web.dom.title-target",
+        "_ssrg_dom_titleTarget"
+    ),
+    dom_operation!(
+        "hiddenTarget",
+        "web.dom.hidden-target",
+        "_ssrg_dom_hiddenTarget"
+    ),
+    dom_operation!(
+        "disabledTarget",
+        "web.dom.disabled-target",
+        "_ssrg_dom_disabledTarget"
+    ),
+    dom_operation!(
+        "inertTarget",
+        "web.dom.inert-target",
+        "_ssrg_dom_inertTarget"
+    ),
+    dom_operation!(
+        "ariaLabelTarget",
+        "web.dom.aria-label-target",
+        "_ssrg_dom_ariaLabelTarget"
+    ),
+    dom_operation!(
+        "ariaBusyTarget",
+        "web.dom.aria-busy-target",
+        "_ssrg_dom_ariaBusyTarget"
+    ),
+    dom_operation!(
+        "ariaExpandedTarget",
+        "web.dom.aria-expanded-target",
+        "_ssrg_dom_ariaExpandedTarget"
+    ),
+    dom_operation!(
+        "ariaHiddenTarget",
+        "web.dom.aria-hidden-target",
+        "_ssrg_dom_ariaHiddenTarget"
+    ),
+    dom_operation!(
+        "ariaSelectedTarget",
+        "web.dom.aria-selected-target",
+        "_ssrg_dom_ariaSelectedTarget"
+    ),
+    dom_operation!(
+        "valueTarget",
+        "web.dom.value-target",
+        "_ssrg_dom_valueTarget"
+    ),
+    dom_operation!(
+        "checkedTarget",
+        "web.dom.checked-target",
+        "_ssrg_dom_checkedTarget"
+    ),
+    dom_operation!(
+        "styleTarget",
+        "web.dom.style-target",
+        "_ssrg_dom_styleTarget"
+    ),
+    dom_operation!(
+        "regionTarget",
+        "web.dom.region-target",
+        "_ssrg_dom_regionTarget"
     ),
     dom_operation!("bindText", "web.dom.bind-text", "_ssrg_dom_bindText"),
     dom_operation!(
@@ -293,6 +400,77 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
         "DispatchFailure",
         "web.dom.dispatch-failure",
         "_ssrg_dom_DispatchFailure"
+    ),
+    svg_operation!(
+        "viewBoxTarget",
+        "web.svg.view-box-target",
+        "_ssrg_svg_viewBoxTarget"
+    ),
+    svg_operation!(
+        "transformTarget",
+        "web.svg.transform-target",
+        "_ssrg_svg_transformTarget"
+    ),
+    svg_operation!(
+        "pathDataTarget",
+        "web.svg.path-data-target",
+        "_ssrg_svg_pathDataTarget"
+    ),
+    svg_operation!(
+        "pointsTarget",
+        "web.svg.points-target",
+        "_ssrg_svg_pointsTarget"
+    ),
+    svg_operation!("fillTarget", "web.svg.fill-target", "_ssrg_svg_fillTarget"),
+    svg_operation!(
+        "strokeTarget",
+        "web.svg.stroke-target",
+        "_ssrg_svg_strokeTarget"
+    ),
+    svg_operation!(
+        "strokeWidthTarget",
+        "web.svg.stroke-width-target",
+        "_ssrg_svg_strokeWidthTarget"
+    ),
+    svg_operation!(
+        "pointerEventsTarget",
+        "web.svg.pointer-events-target",
+        "_ssrg_svg_pointerEventsTarget"
+    ),
+    svg_operation!(
+        "ariaLabelTarget",
+        "web.svg.aria-label-target",
+        "_ssrg_svg_ariaLabelTarget"
+    ),
+    svg_operation!("xTarget", "web.svg.x-target", "_ssrg_svg_xTarget"),
+    svg_operation!("yTarget", "web.svg.y-target", "_ssrg_svg_yTarget"),
+    svg_operation!("x1Target", "web.svg.x1-target", "_ssrg_svg_x1Target"),
+    svg_operation!("y1Target", "web.svg.y1-target", "_ssrg_svg_y1Target"),
+    svg_operation!("x2Target", "web.svg.x2-target", "_ssrg_svg_x2Target"),
+    svg_operation!("y2Target", "web.svg.y2-target", "_ssrg_svg_y2Target"),
+    svg_operation!("cxTarget", "web.svg.cx-target", "_ssrg_svg_cxTarget"),
+    svg_operation!("cyTarget", "web.svg.cy-target", "_ssrg_svg_cyTarget"),
+    svg_operation!(
+        "radiusTarget",
+        "web.svg.radius-target",
+        "_ssrg_svg_radiusTarget"
+    ),
+    svg_operation!("rxTarget", "web.svg.rx-target", "_ssrg_svg_rxTarget"),
+    svg_operation!("ryTarget", "web.svg.ry-target", "_ssrg_svg_ryTarget"),
+    svg_operation!(
+        "widthTarget",
+        "web.svg.width-target",
+        "_ssrg_svg_widthTarget"
+    ),
+    svg_operation!(
+        "heightTarget",
+        "web.svg.height-target",
+        "_ssrg_svg_heightTarget"
+    ),
+    svg_operation!(
+        "opacityTarget",
+        "web.svg.opacity-target",
+        "_ssrg_svg_opacityTarget"
     ),
     svg_operation!("svg", "web.svg.svg", "_ssrg_svg_svg"),
     svg_operation!("g", "web.svg.g", "_ssrg_svg_g"),

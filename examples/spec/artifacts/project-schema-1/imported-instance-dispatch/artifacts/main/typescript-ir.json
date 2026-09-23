@@ -17,6 +17,7 @@
     {
       "module": "fixture/imported-instance-dispatch::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Active",

@@ -55,7 +55,7 @@ pub(super) fn lower_module_imports(
                     reexports: Vec::new(),
                     module: dependency.module.clone(),
                     specifier: specifier.to_owned(),
-                    runtime_edge: true,
+                    runtime_edge: dependency.imports.is_empty(),
                     bindings: Vec::new(),
                     origin: dependency.origin.clone(),
                 });
@@ -66,6 +66,7 @@ pub(super) fn lower_module_imports(
         for import in &dependency.imports {
             if let Some(exported) = &import.reexported_as {
                 if matches!(import.namespace.as_str(), "value" | "type") {
+                    group.runtime_edge |= import.namespace == "type";
                     group.reexports.push(TypeScriptSourceImportBinding {
                         imported: safe_identifier(&import.imported),
                         local: safe_identifier(exported),
@@ -143,6 +144,7 @@ pub(super) fn lower_module_imports(
                     );
                 }
                 "type" if referenced_types.names.contains(&import.local) => {
+                    group.runtime_edge = true;
                     let local = safe_identifier(&import.local);
                     if !used_types.insert(local.clone())
                         && !group.bindings.iter().any(|binding| {

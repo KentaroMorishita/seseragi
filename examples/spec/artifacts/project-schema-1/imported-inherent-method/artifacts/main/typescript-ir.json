@@ -28,6 +28,7 @@
     {
       "module": "fixture/imported-inherent-method::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "box",

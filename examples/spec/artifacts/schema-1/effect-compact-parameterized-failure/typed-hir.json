@@ -6,6 +6,15 @@
   "externalTypeBindings": [
     {
       "arity": 0,
+      "spelling": "ElementRef",
+      "canonical": "std/web/html::ElementRef",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ElementRef"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "Style",
       "canonical": "std/web/html::Style",
       "provider": {
@@ -538,7 +547,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 79,
+              "symbol": 83,
               "name": "content",
               "type": {
                 "kind": "external-named",
@@ -1009,7 +1018,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 83,
+              "symbol": 87,
               "name": "content",
               "type": {
                 "kind": "external-named",

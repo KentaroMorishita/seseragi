@@ -7975,6 +7975,18 @@ fn web_dom_interface() -> ModuleInterface {
         )
     };
     let signal_html = |action: &str| signal(html(action));
+    let element_ref = || {
+        external_type(
+            "ElementRef",
+            "std/web/html::ElementRef",
+            "std/web/html",
+            "ElementRef",
+            Vec::new(),
+        )
+    };
+    let binding_target = |action: InterfaceType, value: InterfaceType| {
+        named_with("BindingTarget", vec![action, value])
+    };
     let exports = vec![
         type_export(module, "Dom", 0, "opaque-type"),
         public_record_type_export(
@@ -8012,6 +8024,7 @@ fn web_dom_interface() -> ModuleInterface {
         type_export(module, "DomObservation", 1, "opaque-type"),
         type_export(module, "DomContent", 1, "opaque-type"),
         type_export(module, "DomBinding", 1, "opaque-type"),
+        type_export(module, "BindingTarget", 2, "opaque-type"),
         opaque_adt_type_export(module, "DomError", []),
         constructor_export(
             module,
@@ -8212,6 +8225,164 @@ fn web_dom_interface() -> ModuleInterface {
             Vec::new(),
             vec![named_with("DomContent", vec![named("Action")])],
             html("Action"),
+        ),
+        function_export(
+            module,
+            "bind",
+            ["Action", "Value"],
+            Vec::new(),
+            vec![
+                binding_target(named("Action"), named("Value")),
+                signal(named("Value")),
+            ],
+            named_with("DomBinding", vec![named("Action")]),
+        ),
+        function_export(
+            module,
+            "textTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("String")),
+        ),
+        function_export(
+            module,
+            "attributeTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref(), named("String")],
+            binding_target(named("Action"), named_with("Maybe", vec![named("String")])),
+        ),
+        function_export(
+            module,
+            "booleanAttributeTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref(), named("String")],
+            binding_target(named("Action"), named("Bool")),
+        ),
+        function_export(
+            module,
+            "ariaBooleanTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref(), named("String")],
+            binding_target(named("Action"), named("Bool")),
+        ),
+        function_export(
+            module,
+            "classTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("String")),
+        ),
+        function_export(
+            module,
+            "titleTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("String")),
+        ),
+        function_export(
+            module,
+            "hiddenTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("Bool")),
+        ),
+        function_export(
+            module,
+            "disabledTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("Bool")),
+        ),
+        function_export(
+            module,
+            "inertTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("Bool")),
+        ),
+        function_export(
+            module,
+            "ariaLabelTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("String")),
+        ),
+        function_export(
+            module,
+            "ariaBusyTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("Bool")),
+        ),
+        function_export(
+            module,
+            "ariaExpandedTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("Bool")),
+        ),
+        function_export(
+            module,
+            "ariaHiddenTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("Bool")),
+        ),
+        function_export(
+            module,
+            "ariaSelectedTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("Bool")),
+        ),
+        function_export(
+            module,
+            "valueTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("String")),
+        ),
+        function_export(
+            module,
+            "checkedTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(named("Action"), named("Bool")),
+        ),
+        function_export(
+            module,
+            "styleTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref(), named("String")],
+            binding_target(named("Action"), named_with("Maybe", vec![named("String")])),
+        ),
+        function_export(
+            module,
+            "regionTarget",
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(
+                named("Action"),
+                named_with("DomContent", vec![named("Action")]),
+            ),
         ),
         function_export(
             module,
@@ -8803,6 +8974,24 @@ pub fn is_standard_module(specifier: &str) -> bool {
 fn web_svg_interface() -> ModuleInterface {
     let module = "std/web/svg";
     let svg = || named_with("Svg", vec![named("Action")]);
+    let element_ref = || {
+        external_type(
+            "ElementRef",
+            "std/web/html::ElementRef",
+            "std/web/html",
+            "ElementRef",
+            Vec::new(),
+        )
+    };
+    let binding_target = |value: InterfaceType| {
+        external_type(
+            "BindingTarget",
+            "std/web/dom::BindingTarget",
+            "std/web/dom",
+            "BindingTarget",
+            vec![named("Action"), value],
+        )
+    };
     let event_action = || {
         external_type(
             "EventAction",
@@ -8823,6 +9012,7 @@ fn web_svg_interface() -> ModuleInterface {
     };
     let common_props = || {
         vec![
+            optional("elementRef", element_ref()),
             optional("id", named("String")),
             optional("class", named("String")),
             optional("role", named("String")),
@@ -8913,6 +9103,40 @@ fn web_svg_interface() -> ModuleInterface {
             svg(),
         ));
     }
+    for (name, value) in [
+        ("viewBoxTarget", named("String")),
+        ("transformTarget", named("String")),
+        ("pathDataTarget", named("String")),
+        ("pointsTarget", named("String")),
+        ("fillTarget", named("String")),
+        ("strokeTarget", named("String")),
+        ("strokeWidthTarget", named("String")),
+        ("pointerEventsTarget", named("String")),
+        ("ariaLabelTarget", named("String")),
+        ("xTarget", named("Float")),
+        ("yTarget", named("Float")),
+        ("x1Target", named("Float")),
+        ("y1Target", named("Float")),
+        ("x2Target", named("Float")),
+        ("y2Target", named("Float")),
+        ("cxTarget", named("Float")),
+        ("cyTarget", named("Float")),
+        ("radiusTarget", named("Float")),
+        ("rxTarget", named("Float")),
+        ("ryTarget", named("Float")),
+        ("widthTarget", named("Float")),
+        ("heightTarget", named("Float")),
+        ("opacityTarget", named("Float")),
+    ] {
+        exports.push(function_export(
+            module,
+            name,
+            ["Action"],
+            Vec::new(),
+            vec![element_ref()],
+            binding_target(value),
+        ));
+    }
     exports.push(function_export(
         module,
         "toHtml",
@@ -8942,6 +9166,7 @@ fn web_svg_interface() -> ModuleInterface {
 fn web_html_interface() -> ModuleInterface {
     let mut exports = vec![
         type_export("std/web/html", "Html", 1, "opaque-type"),
+        type_export("std/web/html", "ElementRef", 0, "opaque-type"),
         type_export("std/web/html", "Style", 0, "opaque-type"),
         type_export("std/web/html", "Tag", 0, "opaque-type"),
         type_export("std/web/html", "Attribute", 0, "opaque-type"),
@@ -9009,6 +9234,7 @@ fn web_html_interface() -> ModuleInterface {
                 required("pointerId", named("Int")),
                 required("pointerType", named("String")),
                 required("isPrimary", named("Bool")),
+                required("activePointerCount", named("Int")),
                 required("button", named("Int")),
                 required("clientX", named("Float")),
                 required("clientY", named("Float")),
@@ -9124,6 +9350,14 @@ fn web_html_interface() -> ModuleInterface {
         ),
         function_export(
             "std/web/html",
+            "elementRef",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            named("ElementRef"),
+        ),
+        function_export(
+            "std/web/html",
             "customTag",
             [],
             Vec::new(),
@@ -9145,6 +9379,39 @@ fn web_html_interface() -> ModuleInterface {
             Vec::new(),
             vec![named("String")],
             named_with("Either", vec![named("HtmlBuildError"), named("WebUrl")]),
+        ),
+        function_export(
+            "std/web/html",
+            "capturePointer",
+            ["Action"],
+            Vec::new(),
+            vec![
+                named("PointerEvent"),
+                named_with("EventAction", vec![named("Action")]),
+            ],
+            named_with("EventAction", vec![named("Action")]),
+        ),
+        function_export(
+            "std/web/html",
+            "releasePointer",
+            ["Action"],
+            Vec::new(),
+            vec![
+                named("PointerEvent"),
+                named_with("EventAction", vec![named("Action")]),
+            ],
+            named_with("EventAction", vec![named("Action")]),
+        ),
+        function_export(
+            "std/web/html",
+            "suppressCompatibilityClick",
+            ["Action"],
+            Vec::new(),
+            vec![
+                named("PointerEvent"),
+                named_with("EventAction", vec![named("Action")]),
+            ],
+            named_with("EventAction", vec![named("Action")]),
         ),
         function_export(
             "std/web/html",
@@ -9654,6 +9921,7 @@ fn open_element_props() -> InterfaceType {
 
 fn common_html_props() -> Vec<InterfaceRecordField> {
     vec![
+        optional("elementRef", named("ElementRef")),
         optional("id", named("String")),
         optional("class", named("String")),
         optional("title", named("String")),
@@ -9667,6 +9935,12 @@ fn common_html_props() -> Vec<InterfaceRecordField> {
         optional("dir", named("String")),
         optional("draggable", named("Bool")),
         optional("contentEditable", named("Bool")),
+        optional("inert", named("Bool")),
+        optional("ariaLabel", named("String")),
+        optional("ariaBusy", named("Bool")),
+        optional("ariaExpanded", named("Bool")),
+        optional("ariaHidden", named("Bool")),
+        optional("ariaSelected", named("Bool")),
         optional("onClick", named("Action")),
         optional("preventClickDefault", named("Bool")),
         optional("stopClickPropagation", named("Bool")),
@@ -11186,6 +11460,25 @@ mod tests {
             "unmount",
             "content",
             "initialHtml",
+            "bind",
+            "textTarget",
+            "attributeTarget",
+            "booleanAttributeTarget",
+            "ariaBooleanTarget",
+            "classTarget",
+            "titleTarget",
+            "hiddenTarget",
+            "disabledTarget",
+            "inertTarget",
+            "ariaLabelTarget",
+            "ariaBusyTarget",
+            "ariaExpandedTarget",
+            "ariaHiddenTarget",
+            "ariaSelectedTarget",
+            "valueTarget",
+            "checkedTarget",
+            "styleTarget",
+            "regionTarget",
             "bindText",
             "bindAttribute",
             "bindValue",
@@ -11210,6 +11503,7 @@ mod tests {
             "DomMount",
             "DomContent",
             "DomBinding",
+            "BindingTarget",
             "DomError",
             "DomRuntimeError",
         ] {
@@ -11860,13 +12154,60 @@ mod tests {
             .map(|export| export.name.as_str())
             .collect::<Vec<_>>();
         for name in [
-            "Svg", "svg", "g", "rect", "path", "circle", "line", "polyline", "polygon", "text",
+            "Svg",
+            "svg",
+            "g",
+            "rect",
+            "path",
+            "circle",
+            "line",
+            "polyline",
+            "polygon",
+            "text",
+            "viewBoxTarget",
+            "transformTarget",
+            "pathDataTarget",
+            "pointsTarget",
+            "fillTarget",
+            "strokeTarget",
+            "strokeWidthTarget",
+            "pointerEventsTarget",
+            "ariaLabelTarget",
+            "xTarget",
+            "yTarget",
+            "x1Target",
+            "y1Target",
+            "x2Target",
+            "y2Target",
+            "cxTarget",
+            "cyTarget",
+            "radiusTarget",
+            "rxTarget",
+            "ryTarget",
+            "widthTarget",
+            "heightTarget",
+            "opacityTarget",
             "toHtml",
         ] {
             assert!(svg_names.contains(&name), "missing std/web/svg::{name}");
         }
 
         let html = standard_module_target("std/web/html").unwrap();
+        for name in [
+            "ElementRef",
+            "elementRef",
+            "capturePointer",
+            "releasePointer",
+            "suppressCompatibilityClick",
+        ] {
+            assert!(
+                html.interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/web/html::{name}"
+            );
+        }
         assert!(html
             .interface()
             .exports

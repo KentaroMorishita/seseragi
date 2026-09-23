@@ -22,6 +22,7 @@
     {
       "module": "fixture/transitive-effect-failure::facade",
       "specifier": "./facade.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "rejectViaFacade",

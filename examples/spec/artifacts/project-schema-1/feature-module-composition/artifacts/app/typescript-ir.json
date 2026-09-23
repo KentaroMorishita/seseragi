@@ -135,6 +135,7 @@
     {
       "module": "fixture/feature-module-composition::counter",
       "specifier": "./counter.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "create",
@@ -158,6 +159,7 @@
     {
       "module": "fixture/feature-module-composition::todo/feature",
       "specifier": "./todo/feature.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "create",

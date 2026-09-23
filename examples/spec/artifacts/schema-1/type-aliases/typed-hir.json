@@ -27,6 +27,15 @@
     },
     {
       "arity": 0,
+      "spelling": "ElementRef",
+      "canonical": "std/web/html::ElementRef",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ElementRef"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "Style",
       "canonical": "std/web/html::Style",
       "provider": {
@@ -1760,7 +1769,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 92,
+              "symbol": 93,
               "name": "state",
               "type": {
                 "kind": "external-named",
@@ -1893,7 +1902,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 93,
+              "symbol": 94,
               "name": "rendered",
               "type": {
                 "kind": "external-named",
@@ -2009,7 +2018,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 94,
+              "symbol": 95,
               "name": "current",
               "type": {
                 "kind": "named",
@@ -2081,7 +2090,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 95,
+              "symbol": 96,
               "name": "values",
               "type": {
                 "kind": "record",

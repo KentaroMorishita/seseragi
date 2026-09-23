@@ -334,7 +334,7 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:02e298e9588fdfa4",
+      "interfaceFingerprint": "fnv1a64:01bfc385bcf4815c",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
     },
@@ -344,7 +344,7 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:4e72044866db7cac",
+      "interfaceFingerprint": "fnv1a64:835e70dad24429f8",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
     },
@@ -389,7 +389,7 @@
       "capabilityServices": [
         "std/web/dom::Dom"
       ],
-      "interfaceFingerprint": "fnv1a64:aa322b2264fce046",
+      "interfaceFingerprint": "fnv1a64:a62a2a55bdc1daeb",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
     },

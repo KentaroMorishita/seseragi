@@ -13,6 +13,7 @@ import { g, path, rect, svg, text, toHtml } from "../../../runtime/ts/src/svg"
 test("keeps SVG namespaced construction behind an explicit bridge", () => {
   const scene = svg({
     id: "scene",
+    ariaLabel: "Interactive scene",
     viewBox: "0 0 400 200",
     width: 400,
     height: 200,
@@ -34,7 +35,7 @@ test("keeps SVG namespaced construction behind an explicit bridge", () => {
   })
 
   expect(renderToString(toHtml(scene))).toBe(
-    '<svg id="scene" viewBox="0 0 400 200" width="400" height="200"><g transform="scale(1.25)"><path d="M 20 20 L 120 80" fill="none" stroke="transparent" stroke-width="16"></path><rect x="20" y="30" rx="8" width="80" height="40"></rect><text text-anchor="middle" x="60" y="50">node</text></g></svg>'
+    '<svg id="scene" aria-label="Interactive scene" viewBox="0 0 400 200" width="400" height="200"><g transform="scale(1.25)"><path d="M 20 20 L 120 80" fill="none" stroke="transparent" stroke-width="16"></path><rect x="20" y="30" rx="8" width="80" height="40"></rect><text text-anchor="middle" x="60" y="50">node</text></g></svg>'
   )
 })
 
@@ -80,7 +81,8 @@ test("snapshots move, cancel, and wheel events without retaining host events", (
         ctrlKey: true,
         metaKey: false,
         shiftKey: true,
-      }
+      },
+      { activePointerCount: 2 }
     )
   ).toMatchObject({
     kind: "dispatch",
@@ -89,6 +91,7 @@ test("snapshots move, cancel, and wheel events without retaining host events", (
       event: {
         pointerId: 7,
         pointerType: "pen",
+        activePointerCount: 2,
         clientX: 12,
         clientY: 34,
         pressure: 0.75,

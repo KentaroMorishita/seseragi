@@ -20,6 +20,7 @@ import {
   type DomEventHandler,
   type DomEventResolution,
   type DomRender,
+  elementRefId,
   type Html,
   messageFromDomEvent,
   renderForDom,
@@ -27,6 +28,7 @@ import {
 } from "../html"
 import { type ServiceResult, serviceFailure, serviceSuccess } from "../service"
 import {
+  publicationIdForInstrumentation,
   type Signal,
   type Subscription,
   subscribe,
@@ -38,6 +40,155 @@ export type BrowserDom = Readonly<{
   readonly service: Dom
   readonly dispose: () => Promise<void>
 }>
+
+export type BrowserDomMutationSummary = Readonly<{
+  readonly text: number
+  readonly attribute: number
+  readonly property: number
+  readonly style: number
+  readonly inserted: number
+  readonly moved: number
+  readonly removed: number
+  readonly replaced: number
+}>
+
+export type BrowserDomLogicalTarget = Readonly<{
+  readonly kind: "selector" | "reference"
+  readonly value: string
+}>
+
+export type BrowserDomResolvedTarget = Readonly<{
+  readonly nodeId: string
+  readonly namespace: "html" | "svg"
+  readonly tag: string
+}>
+
+export type BrowserDomTraceEvent =
+  | Readonly<{
+      readonly schema: 1
+      readonly sequence: number
+      readonly mountId: string
+      readonly scopeId: string
+      readonly transactionId: number | null
+      readonly activeSubscriptions: number
+      readonly activeListeners: number
+      readonly type: "scope"
+      readonly operation: "attach" | "cleanup"
+    }>
+  | Readonly<{
+      readonly schema: 1
+      readonly sequence: number
+      readonly mountId: string
+      readonly scopeId: string
+      readonly transactionId: number | null
+      readonly activeSubscriptions: number
+      readonly activeListeners: number
+      readonly type: "binding-resolved"
+      readonly bindingId: string
+      readonly bindingKind: DomBinding<unknown>["kind"]
+      readonly logicalTarget: BrowserDomLogicalTarget
+      readonly resolvedTarget: BrowserDomResolvedTarget
+    }>
+  | Readonly<{
+      readonly schema: 1
+      readonly sequence: number
+      readonly mountId: string
+      readonly scopeId: string
+      readonly transactionId: number | null
+      readonly activeSubscriptions: number
+      readonly activeListeners: number
+      readonly type: "binding-update"
+      readonly bindingId: string
+      readonly bindingKind: DomBinding<unknown>["kind"]
+      readonly logicalTarget: BrowserDomLogicalTarget
+      readonly resolvedTarget: BrowserDomResolvedTarget
+      readonly outcome: "write" | "equal-skip" | "deferred"
+      readonly mutations: BrowserDomMutationSummary
+    }>
+
+export type BrowserDomTrace = (event: BrowserDomTraceEvent) => void
+
+export type BrowserDomInstrumentation = Readonly<{
+  readonly trace: BrowserDomTrace
+}>
+
+type BrowserDomTraceInput<Trace = BrowserDomTraceEvent> =
+  Trace extends BrowserDomTraceEvent
+    ? Omit<Trace, "schema" | "sequence">
+    : never
+
+type BrowserDomLeafMutation = "text" | "attribute" | "property" | "style"
+type BrowserDomBindingApplication =
+  | "none"
+  | "deferred"
+  | BrowserDomLeafMutation
+  | BrowserDomMutationSummary
+
+type MutableDomMutationSummary = {
+  -readonly [Key in keyof BrowserDomMutationSummary]: number
+}
+
+const NO_DOM_MUTATIONS: BrowserDomMutationSummary =
+  /* @__PURE__ */
+  Object.freeze({
+    text: 0,
+    attribute: 0,
+    property: 0,
+    style: 0,
+    inserted: 0,
+    moved: 0,
+    removed: 0,
+    replaced: 0,
+  })
+
+function mutableDomMutations(): MutableDomMutationSummary {
+  return { ...NO_DOM_MUTATIONS }
+}
+
+function freezeDomMutations(
+  summary: MutableDomMutationSummary
+): BrowserDomMutationSummary {
+  return Object.freeze({ ...summary })
+}
+
+function bindingMutationSummary(
+  application: Exclude<BrowserDomBindingApplication, "deferred">
+): BrowserDomMutationSummary {
+  if (typeof application !== "string") return application
+  if (application === "none") return NO_DOM_MUTATIONS
+  return Object.freeze({ ...NO_DOM_MUTATIONS, [application]: 1 })
+}
+
+function hasDomMutations(summary: BrowserDomMutationSummary): boolean {
+  return Object.values(summary).some((count) => count > 0)
+}
+
+function logicalBindingTarget(
+  binding: DomBinding<unknown>
+): BrowserDomLogicalTarget {
+  if (binding.reference !== undefined) {
+    return Object.freeze({
+      kind: "reference" as const,
+      value: elementRefId(binding.reference),
+    })
+  }
+  return Object.freeze({
+    kind: "selector" as const,
+    value: binding.selector,
+  })
+}
+
+function resolvedBindingTarget(
+  target: Element,
+  identify: (target: Element) => string
+): BrowserDomResolvedTarget {
+  return Object.freeze({
+    nodeId: identify(target),
+    namespace:
+      target.namespaceURI === "http://www.w3.org/2000/svg" ? "svg" : "html",
+    tag: target.localName,
+  })
+}
 
 export type DomEventBindings<Action> = Readonly<{
   readonly replace: (render: DomRender<Action>) => void
@@ -127,11 +278,150 @@ export const BROWSER_DOM_EVENT_BINDINGS = /* @__PURE__ */ Object.freeze([
 export function applyDomEventResolution<Action>(
   event: Pick<Event, "preventDefault" | "stopPropagation">,
   resolution: DomEventResolution<Action>,
-  enqueue: (action: Action) => void
+  enqueue: (action: Action) => void,
+  applySynchronousControl: (
+    resolution: DomEventResolution<Action>
+  ) => void = () => {}
 ): void {
   if (resolution.preventDefault) event.preventDefault()
   if (resolution.stopPropagation) event.stopPropagation()
+  applySynchronousControl(resolution)
   if (resolution.kind === "dispatch") enqueue(resolution.action)
+}
+
+type PointerLifecycle = Readonly<{
+  readonly activeCount: () => number
+  readonly begin: (event: Event) => void
+  readonly end: (event: Event) => void
+  readonly applyControl: (
+    event: Event,
+    target: Element,
+    resolution: DomEventResolution<unknown>
+  ) => void
+  readonly finish: (event: Event) => void
+  readonly loseCapture: (event: Event) => void
+  readonly consumeCompatibilityClick: (event: Event) => boolean
+  readonly releaseWithin: (root: Element) => void
+  readonly prune: () => void
+  readonly clear: () => void
+}>
+
+function createPointerLifecycle(
+  document: Document,
+  mount: Element
+): PointerLifecycle {
+  const active = new Set<number>()
+  const captures = new Map<number, Element>()
+  const clickIntents = new Set<number>()
+  const pendingClicks = new Map<number, number>()
+
+  const pointerIdOf = (event: Event): number | undefined => {
+    const pointerId = (event as { readonly pointerId?: unknown }).pointerId
+    return typeof pointerId === "number" && Number.isInteger(pointerId)
+      ? pointerId
+      : undefined
+  }
+
+  const release = (pointerId: number): void => {
+    const target = captures.get(pointerId)
+    captures.delete(pointerId)
+    if (target === undefined) return
+    try {
+      if (target.isConnected) target.releasePointerCapture(pointerId)
+    } catch {
+      // Native capture can already be gone after removal or cancellation.
+    }
+  }
+
+  const forget = (pointerId: number): void => {
+    active.delete(pointerId)
+    clickIntents.delete(pointerId)
+    release(pointerId)
+  }
+
+  return Object.freeze({
+    activeCount: () => active.size,
+    begin(event) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId === undefined) return
+      const pendingClick = pendingClicks.get(pointerId)
+      if (pendingClick !== undefined) {
+        document.defaultView!.clearTimeout(pendingClick)
+        pendingClicks.delete(pointerId)
+      }
+      active.add(pointerId)
+    },
+    end(event) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId !== undefined) active.delete(pointerId)
+    },
+    applyControl(event, target, resolution) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId === undefined) return
+      if (resolution.pointerControl === "capture") {
+        const previous = captures.get(pointerId)
+        if (previous !== undefined && previous !== target) release(pointerId)
+        target.setPointerCapture(pointerId)
+        captures.set(pointerId, target)
+      } else if (resolution.pointerControl === "release") {
+        release(pointerId)
+      }
+      if (resolution.suppressCompatibilityClick === true) {
+        clickIntents.add(pointerId)
+      }
+    },
+    finish(event) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId === undefined) return
+      const suppressClick = clickIntents.delete(pointerId)
+      if (event.type === "pointerup" && suppressClick) {
+        const previous = pendingClicks.get(pointerId)
+        if (previous !== undefined) {
+          document.defaultView!.clearTimeout(previous)
+        }
+        const timer = document.defaultView!.setTimeout(() => {
+          pendingClicks.delete(pointerId)
+        }, 500)
+        pendingClicks.set(pointerId, timer)
+      }
+      release(pointerId)
+    },
+    loseCapture(event) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId === undefined) return
+      active.delete(pointerId)
+      clickIntents.delete(pointerId)
+      captures.delete(pointerId)
+    },
+    consumeCompatibilityClick(event) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId === undefined) return false
+      const timer = pendingClicks.get(pointerId)
+      if (timer === undefined) return false
+      document.defaultView!.clearTimeout(timer)
+      pendingClicks.delete(pointerId)
+      return true
+    },
+    releaseWithin(root) {
+      for (const [pointerId, target] of [...captures]) {
+        if (root === target || root.contains(target)) forget(pointerId)
+      }
+    },
+    prune() {
+      for (const [pointerId, target] of [...captures]) {
+        if (!target.isConnected || !mount.contains(target)) forget(pointerId)
+      }
+    },
+    clear() {
+      for (const pointerId of [...captures.keys()]) release(pointerId)
+      for (const timer of pendingClicks.values()) {
+        document.defaultView!.clearTimeout(timer)
+      }
+      active.clear()
+      clickIntents.clear()
+      pendingClicks.clear()
+    },
+  })
 }
 
 export function createDomEventBindings<Action>(): DomEventBindings<Action> {
@@ -167,10 +457,41 @@ export function createDomEventBindings<Action>(): DomEventBindings<Action> {
 
 export function createBrowserDom(
   document: Document,
-  mounted: () => void
+  mounted: () => void,
+  instrumentation?: BrowserDomInstrumentation
 ): BrowserDom {
+  const trace = instrumentation?.trace
   const activeTargets = new Set<Element>()
   const disposers = new Set<() => Promise<void>>()
+  const nodeIds = new WeakMap<Element, string>()
+  let nextMount = 0
+  let nextNode = 0
+  let nextTrace = 0
+
+  const nodeId = (element: Element): string => {
+    const existing = nodeIds.get(element)
+    if (existing !== undefined) return existing
+    const created = `node-${nextNode}`
+    nextNode += 1
+    nodeIds.set(element, created)
+    return created
+  }
+
+  const emit = (createEvent: () => BrowserDomTraceInput): void => {
+    if (trace === undefined) return
+    const event = createEvent()
+    const entry = Object.freeze({
+      schema: 1 as const,
+      sequence: nextTrace,
+      ...event,
+    }) as BrowserDomTraceEvent
+    nextTrace += 1
+    try {
+      trace(entry)
+    } catch {
+      // Development instrumentation cannot change DOM runtime semantics.
+    }
+  }
 
   const service: Dom = {
     query(selector) {
@@ -339,6 +660,8 @@ export function createBrowserDom(
         )
       }
       activeTargets.add(element)
+      const mountId = `mount-${nextMount}`
+      nextMount += 1
 
       return new Promise<ServiceResult<DomError, DomMount<Failure>>>(
         (resolveMount, rejectMount) => {
@@ -365,9 +688,13 @@ export function createBrowserDom(
           let initialRender = true
           let initialFailure: DomError | undefined
           let nextReactiveScope = 0
+          let activeSubscriptions = 0
+          let activeListeners = 0
           const bindings = createDomEventBindings<Action>()
           const ime = createImeInputCoordinator<HTMLElement>()
           const imeTimers = new Map<HTMLElement, number>()
+          const pointerLifecycle = createPointerLifecycle(document, element)
+
           const targetObserver = new document.defaultView!.MutationObserver(
             () => {
               if (!element.isConnected) {
@@ -377,7 +704,9 @@ export function createBrowserDom(
                     value: { tag: "DomTargetRemoved" },
                   })
                 )
+                return
               }
+              pointerLifecycle.prune()
             }
           )
 
@@ -394,6 +723,8 @@ export function createBrowserDom(
             reactiveCleanup = undefined
             if (subscription !== undefined) {
               await unsubscribe(subscription)({})
+              subscription = undefined
+              activeSubscriptions -= 1
             }
             for (const timer of imeTimers.values()) {
               document.defaultView!.clearTimeout(timer)
@@ -401,9 +732,21 @@ export function createBrowserDom(
             imeTimers.clear()
             deferredLeafWrites.clear()
             ime.reset()
+            pointerLifecycle.clear()
             for (const [kind, listener, capture] of listeners) {
               element.removeEventListener(kind, listener, capture)
             }
+            listeners.length = 0
+            activeListeners = 0
+            emit(() => ({
+              mountId,
+              scopeId: "root",
+              transactionId: publicationIdForInstrumentation() ?? null,
+              activeSubscriptions,
+              activeListeners,
+              type: "scope",
+              operation: "cleanup",
+            }))
             if (applyCleanup && options.cleanup.tag === "ClearRenderedDom") {
               element.replaceChildren()
             }
@@ -465,7 +808,22 @@ export function createBrowserDom(
           ): void => {
             element.addEventListener(kind, listener, capture)
             listeners.push([kind, listener, capture])
+            activeListeners += 1
           }
+
+          listen("pointerdown", pointerLifecycle.begin, true)
+          listen("pointerup", pointerLifecycle.end, true)
+          listen("pointercancel", pointerLifecycle.end, true)
+          listen("lostpointercapture", pointerLifecycle.loseCapture, true)
+          listen(
+            "click",
+            (event) => {
+              if (!pointerLifecycle.consumeCompatibilityClick(event)) return
+              event.preventDefault()
+              event.stopImmediatePropagation()
+            },
+            true
+          )
 
           const inputHandler = (
             control: HTMLElement
@@ -561,12 +919,21 @@ export function createBrowserDom(
               }
               if (handlerKind === "submit" && ime.busy()) commitCompositions()
               try {
-                const resolution = resolveDomEvent(handler, matched, event)
-                applyDomEventResolution(event, resolution, (action) =>
-                  enqueue(
-                    action,
-                    handlerKind === "submit" ? flushDeferredRender : undefined
-                  )
+                const resolution = resolveDomEvent(handler, matched, event, {
+                  activePointerCount: pointerLifecycle.activeCount(),
+                })
+                applyDomEventResolution(
+                  event,
+                  resolution,
+                  (action) =>
+                    enqueue(
+                      action,
+                      handlerKind === "submit" ? flushDeferredRender : undefined
+                    ),
+                  (resolved) => {
+                    if (!handlerKind.startsWith("pointer")) return
+                    pointerLifecycle.applyControl(event, matched, resolved)
+                  }
                 )
               } catch (error) {
                 void finishDefect(error)
@@ -574,6 +941,12 @@ export function createBrowserDom(
             }
             listen(nativeKind, listener, capture)
           }
+
+          // Terminal cleanup runs after the delegated mapper/control listener.
+          // This keeps prevent/stop -> explicit control -> enqueue -> fallback
+          // release deterministic while still cleaning pointers with no up handler.
+          listen("pointerup", pointerLifecycle.finish)
+          listen("pointercancel", pointerLifecycle.finish)
 
           for (const kind of [
             "compositionstart",
@@ -626,10 +999,11 @@ export function createBrowserDom(
             const focus = captureFocusedControl(element, document)
             const snapshot = renderForDom(tree)
             bindings.replace(snapshot)
-            const expected = domFragment(document, snapshot)
+            const expected = domFragment(document, snapshot, element)
             if (initialRender) {
               initialRender = false
               if (options.hydration.tag === "FreshMount") {
+                pointerLifecycle.releaseWithin(element)
                 element.replaceChildren(expected.cloneNode(true))
               } else {
                 const mismatch = firstDomMismatch(
@@ -650,6 +1024,7 @@ export function createBrowserDom(
                 attachHydratedChildren(element, expected)
               }
             } else {
+              pointerLifecycle.releaseWithin(element)
               element.replaceChildren(expected.cloneNode(true))
             }
             restoringFocus = true
@@ -663,7 +1038,8 @@ export function createBrowserDom(
           const attachContentScope = async (
             root: Element,
             value: DomContent<Action>,
-            renderInitial: boolean
+            renderInitial: boolean,
+            scopeMutations?: MutableDomMutationSummary
           ): Promise<() => Promise<void>> => {
             const scope = `reactive-${nextReactiveScope}`
             nextReactiveScope += 1
@@ -672,16 +1048,40 @@ export function createBrowserDom(
             let disposed = false
             if (renderInitial) {
               const snapshot = renderForDom(value.initial, `${scope}-`)
-              const expected = domFragment(document, snapshot)
-              const mismatch = firstDomMismatch(
-                root.childNodes,
-                expected.childNodes,
-                []
+              const expected = domFragment(document, snapshot, root)
+              const beforeRemove = (node: Node): void => {
+                if (node.nodeType === 1) {
+                  pointerLifecycle.releaseWithin(node as Element)
+                }
+              }
+              const keyed = reconcileKeyedRegionChildren(
+                root,
+                expected,
+                beforeRemove,
+                scopeMutations
               )
-              if (mismatch === undefined) {
-                attachHydratedChildren(root, expected)
-              } else {
-                root.replaceChildren(expected.cloneNode(true))
+              if (!keyed) {
+                const mismatch = firstDomMismatch(
+                  root.childNodes,
+                  expected.childNodes,
+                  []
+                )
+                if (mismatch === undefined) {
+                  attachHydratedChildren(
+                    root,
+                    expected,
+                    beforeRemove,
+                    scopeMutations
+                  )
+                } else {
+                  if (scopeMutations !== undefined) {
+                    scopeMutations.inserted += expected.childNodes.length
+                    scopeMutations.removed += root.childNodes.length
+                    scopeMutations.replaced += 1
+                  }
+                  pointerLifecycle.releaseWithin(root)
+                  root.replaceChildren(expected.cloneNode(true))
+                }
               }
               bindings.set(scope, snapshot)
             }
@@ -691,6 +1091,7 @@ export function createBrowserDom(
               disposed = true
               for (const active of subscriptions.splice(0)) {
                 await unsubscribe(active)({})
+                activeSubscriptions -= 1
               }
               for (const cleanup of [...childCleanups]) await cleanup()
               childCleanups.clear()
@@ -700,18 +1101,66 @@ export function createBrowserDom(
                 }
               })
               if (renderInitial) bindings.clear(scope)
+              emit(() => ({
+                mountId,
+                scopeId: scope,
+                transactionId: publicationIdForInstrumentation() ?? null,
+                activeSubscriptions,
+                activeListeners,
+                type: "scope",
+                operation: "cleanup",
+              }))
             }
 
             const own = async <Value>(
+              bindingId: string,
+              binding: DomBinding<Action>,
+              target: Element,
               source: Signal<Value>,
-              apply: (next: Value) => void | Promise<void>
+              apply: (
+                next: Value
+              ) =>
+                | BrowserDomBindingApplication
+                | Promise<BrowserDomBindingApplication>
             ): Promise<void> => {
+              const logicalTarget =
+                trace === undefined ? undefined : logicalBindingTarget(binding)
+              const resolvedTarget =
+                trace === undefined
+                  ? undefined
+                  : resolvedBindingTarget(target, nodeId)
               let attaching = true
               const active = await subscribe(
                 (next) => async () => {
                   if (disposed || settled) return unit
                   try {
-                    await apply(next)
+                    const applied = await apply(next)
+                    emit(() => {
+                      const mutations =
+                        applied === "deferred"
+                          ? NO_DOM_MUTATIONS
+                          : bindingMutationSummary(applied)
+                      return {
+                        mountId,
+                        scopeId: scope,
+                        transactionId:
+                          publicationIdForInstrumentation() ?? null,
+                        activeSubscriptions,
+                        activeListeners,
+                        type: "binding-update",
+                        bindingId,
+                        bindingKind: binding.kind,
+                        logicalTarget: logicalTarget!,
+                        resolvedTarget: resolvedTarget!,
+                        outcome:
+                          applied === "deferred"
+                            ? "deferred"
+                            : hasDomMutations(mutations)
+                              ? "write"
+                              : "equal-skip",
+                        mutations,
+                      }
+                    })
                   } catch (error) {
                     if (attaching) throw error
                     await finish(
@@ -731,69 +1180,152 @@ export function createBrowserDom(
                 return
               }
               subscriptions.push(active)
+              activeSubscriptions += 1
             }
 
             try {
-              const resolved = value.bindings.map((binding) => ({
+              const resolved = value.bindings.map((binding, index) => ({
                 binding,
+                bindingId: `${scope}-binding-${index}`,
                 target: bindingTarget(root, binding, document),
               }))
-              for (const { binding, target } of resolved) {
+              for (const { binding, bindingId, target } of resolved) {
+                emit(() => ({
+                  mountId,
+                  scopeId: scope,
+                  transactionId: publicationIdForInstrumentation() ?? null,
+                  activeSubscriptions,
+                  activeListeners,
+                  type: "binding-resolved",
+                  bindingId,
+                  bindingKind: binding.kind,
+                  logicalTarget: logicalBindingTarget(binding),
+                  resolvedTarget: resolvedBindingTarget(target, nodeId),
+                }))
+                const watch = <Value>(
+                  source: Signal<Value>,
+                  apply: (
+                    next: Value
+                  ) =>
+                    | BrowserDomBindingApplication
+                    | Promise<BrowserDomBindingApplication>
+                ) => own(bindingId, binding, target, source, apply)
                 switch (binding.kind) {
                   case "text":
-                    await own(binding.source, (next) => {
-                      if (target.textContent !== next) target.textContent = next
+                    await watch(binding.source, (next) => {
+                      if (target.textContent === next) return "none"
+                      target.textContent = next
+                      return "text"
                     })
                     break
                   case "attribute":
                     validateAttributeBindingName(binding.name)
-                    await own(binding.source, (next) => {
+                    await watch(binding.source, (next) => {
                       const value = next.tag === "Nothing" ? null : next.value
                       if (value === null) {
                         if (target.hasAttribute(binding.name)) {
                           target.removeAttribute(binding.name)
+                          return "attribute"
                         }
                       } else if (target.getAttribute(binding.name) !== value) {
                         target.setAttribute(binding.name, value)
+                        return "attribute"
                       }
+                      return "none"
+                    })
+                    break
+                  case "string-attribute":
+                    validateAttributeBindingName(binding.name)
+                    await watch(binding.source, (next) => {
+                      if (target.getAttribute(binding.name) !== next) {
+                        target.setAttribute(binding.name, next)
+                        return "attribute"
+                      }
+                      return "none"
+                    })
+                    break
+                  case "number-attribute":
+                    validateAttributeBindingName(binding.name)
+                    await watch(binding.source, (next) => {
+                      if (!Number.isFinite(next)) {
+                        throw new TypeError(
+                          `reactive DOM attribute ${binding.name} must be a finite number`
+                        )
+                      }
+                      const value = String(next)
+                      if (target.getAttribute(binding.name) !== value) {
+                        target.setAttribute(binding.name, value)
+                        return "attribute"
+                      }
+                      return "none"
+                    })
+                    break
+                  case "boolean-attribute":
+                    validateAttributeBindingName(binding.name)
+                    await watch(binding.source, (next) => {
+                      if (next) {
+                        if (!target.hasAttribute(binding.name)) {
+                          target.setAttribute(binding.name, "")
+                          return "attribute"
+                        }
+                      } else if (target.hasAttribute(binding.name)) {
+                        target.removeAttribute(binding.name)
+                        return "attribute"
+                      }
+                      return "none"
+                    })
+                    break
+                  case "aria-boolean":
+                    validateAttributeBindingName(binding.name)
+                    await watch(binding.source, (next) => {
+                      const value = String(next)
+                      if (target.getAttribute(binding.name) !== value) {
+                        target.setAttribute(binding.name, value)
+                        return "attribute"
+                      }
+                      return "none"
                     })
                     break
                   case "value": {
                     const control = valueControl(target, document)
-                    await own(binding.source, (next) => {
+                    await watch(binding.source, (next) => {
                       const write = () =>
                         updateControlValue(control, next, document)
                       if (ime.targets().includes(control)) {
                         deferredLeafWrites.set(control, write)
+                        return "deferred"
                       } else {
                         deferredLeafWrites.delete(control)
-                        write()
+                        return write() ? "property" : "none"
                       }
                     })
                     break
                   }
                   case "checked": {
                     const control = checkedControl(target, document)
-                    await own(binding.source, (next) => {
-                      if (control.checked !== next) control.checked = next
+                    await watch(binding.source, (next) => {
+                      if (control.checked === next) return "none"
+                      control.checked = next
+                      return "property"
                     })
                     break
                   }
                   case "style": {
                     validateStyleBindingName(binding.name)
                     const styled = styleTarget(target, document)
-                    await own(binding.source, (next) => {
+                    await watch(binding.source, (next) => {
                       const value = next.tag === "Nothing" ? "" : next.value
                       if (
                         styled.style.getPropertyValue(binding.name) === value
                       ) {
-                        return
+                        return "none"
                       }
                       if (next.tag === "Nothing") {
                         styled.style.removeProperty(binding.name)
                       } else {
                         styled.style.setProperty(binding.name, next.value)
                       }
+                      return "style"
                     })
                     break
                   }
@@ -805,19 +1337,34 @@ export function createBrowserDom(
                       if (cleanup !== undefined) await cleanup()
                     }
                     childCleanups.add(cleanupChild)
-                    await own(binding.source, async (next) => {
+                    await watch(binding.source, async (next) => {
                       await cleanupChild()
-                      if (disposed || settled) return
+                      if (disposed || settled) return "none"
+                      const mutations =
+                        trace === undefined ? undefined : mutableDomMutations()
                       childCleanup = await attachContentScope(
                         target,
                         next,
-                        true
+                        true,
+                        mutations
                       )
+                      return mutations === undefined
+                        ? NO_DOM_MUTATIONS
+                        : freezeDomMutations(mutations)
                     })
                     break
                   }
                 }
               }
+              emit(() => ({
+                mountId,
+                scopeId: scope,
+                transactionId: publicationIdForInstrumentation() ?? null,
+                activeSubscriptions,
+                activeListeners,
+                type: "scope",
+                operation: "attach",
+              }))
               return disposeScope
             } catch (error) {
               await disposeScope()
@@ -836,8 +1383,29 @@ export function createBrowserDom(
           )
             .then(async (activeSubscription) => {
               subscription = activeSubscription
+              activeSubscriptions += 1
+              emit(() => ({
+                mountId,
+                scopeId: "root",
+                transactionId: publicationIdForInstrumentation() ?? null,
+                activeSubscriptions,
+                activeListeners,
+                type: "scope",
+                operation: "attach",
+              }))
               if (settled) {
-                void unsubscribe(activeSubscription)({})
+                await unsubscribe(activeSubscription)({})
+                subscription = undefined
+                activeSubscriptions -= 1
+                emit(() => ({
+                  mountId,
+                  scopeId: "root",
+                  transactionId: publicationIdForInstrumentation() ?? null,
+                  activeSubscriptions,
+                  activeListeners,
+                  type: "scope",
+                  operation: "cleanup",
+                }))
                 return
               }
               if (initialFailure !== undefined) {
@@ -941,24 +1509,62 @@ function bindingTarget(
   binding: DomBinding<unknown>,
   document: Document
 ): Element {
-  let matches: NodeListOf<Element>
-  try {
-    matches = root.querySelectorAll(binding.selector)
-  } catch {
-    throw new Error(`invalid reactive DOM selector ${binding.selector}`)
+  let description: string
+  let matches: ReadonlyArray<Element>
+  if (binding.reference === undefined) {
+    description = `selector ${binding.selector}`
+    try {
+      matches = [...root.querySelectorAll(binding.selector)]
+    } catch {
+      throw new Error(`invalid reactive DOM selector ${binding.selector}`)
+    }
+  } else {
+    const id = elementRefId(binding.reference)
+    description = `ElementRef(${JSON.stringify(id)})`
+    matches = [...root.querySelectorAll("[data-ssrg-ref]")].filter(
+      (element) => element.getAttribute("data-ssrg-ref") === id
+    )
   }
   if (matches.length !== 1) {
     throw new Error(
-      `reactive DOM selector ${binding.selector} matched ${matches.length} elements`
+      `reactive DOM target ${description} matched ${matches.length} elements`
     )
   }
-  const target = matches.item(0)
+  const target = matches[0]
   if (!(target instanceof document.defaultView!.Element)) {
-    throw new Error(
-      `reactive DOM selector ${binding.selector} is not an Element`
-    )
+    throw new Error(`reactive DOM target ${description} is not an Element`)
+  }
+  if ("expectation" in binding && binding.expectation !== undefined) {
+    validateBindingElement(target, binding.expectation)
   }
   return target
+}
+
+function validateBindingElement(
+  target: Element,
+  expectation: Readonly<{
+    readonly namespace?: "html" | "svg"
+    readonly tags?: ReadonlyArray<string>
+  }>
+): void {
+  const namespace =
+    target.namespaceURI === "http://www.w3.org/2000/svg" ? "svg" : "html"
+  if (
+    expectation.namespace !== undefined &&
+    expectation.namespace !== namespace
+  ) {
+    throw new Error(
+      `reactive DOM target requires ${expectation.namespace} but found ${namespace}`
+    )
+  }
+  if (
+    expectation.tags !== undefined &&
+    !expectation.tags.includes(target.localName)
+  ) {
+    throw new Error(
+      `reactive DOM target requires ${expectation.tags.join(" or ")} but found ${target.localName}`
+    )
+  }
 }
 
 function validateAttributeBindingName(name: string): void {
@@ -1013,8 +1619,8 @@ function updateControlValue(
   control: ValueControl,
   value: string,
   document: Document
-): void {
-  if (control.value === value) return
+): boolean {
+  if (control.value === value) return false
   const selectable =
     control instanceof document.defaultView!.HTMLInputElement ||
     control instanceof document.defaultView!.HTMLTextAreaElement
@@ -1023,7 +1629,7 @@ function updateControlValue(
   const end = selectable ? control.selectionEnd : null
   const direction = selectable ? control.selectionDirection : null
   control.value = value
-  if (!focused || !selectable || start === null || end === null) return
+  if (!focused || !selectable || start === null || end === null) return true
   const limit = value.length
   try {
     control.setSelectionRange(
@@ -1034,15 +1640,124 @@ function updateControlValue(
   } catch {
     // Checked and non-text controls do not expose a text selection.
   }
+  return true
 }
 
 function domFragment<Action>(
   document: Document,
-  render: DomRender<Action>
+  render: DomRender<Action>,
+  context: Element
 ): DocumentFragment {
+  if (context.namespaceURI === "http://www.w3.org/2000/svg") {
+    const container = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    )
+    container.innerHTML = render.html
+    const fragment = document.createDocumentFragment()
+    fragment.append(...container.childNodes)
+    return fragment
+  }
   const template = document.createElement("template")
   template.innerHTML = render.html
   return template.content
+}
+
+const DOM_KEY_ATTRIBUTE = "data-ssrg-key"
+
+type KeyedRegionChild = Readonly<{
+  readonly key: string
+  readonly node: Element
+}>
+
+function keyedRegionChildren(
+  expected: Node
+): readonly KeyedRegionChild[] | undefined {
+  const children = [...expected.childNodes]
+  const keyedCount = children.filter(
+    (child) =>
+      child.nodeType === 1 && (child as Element).hasAttribute(DOM_KEY_ATTRIBUTE)
+  ).length
+  if (keyedCount === 0) return undefined
+  if (keyedCount !== children.length) {
+    throw new TypeError(
+      "keyed DOM region cannot mix keyed and unkeyed direct children"
+    )
+  }
+
+  const keys = new Set<string>()
+  return children.map((child) => {
+    const node = child as Element
+    const key = node.getAttribute(DOM_KEY_ATTRIBUTE) ?? ""
+    if (key.length === 0) {
+      throw new TypeError("keyed DOM region keys must be non-empty Strings")
+    }
+    if (keys.has(key)) {
+      throw new TypeError(
+        `keyed DOM region has duplicate key ${JSON.stringify(key)}`
+      )
+    }
+    keys.add(key)
+    return Object.freeze({ key, node })
+  })
+}
+
+/** Reconcile only region-local keyed siblings; nested trees stay positional. */
+function reconcileKeyedRegionChildren(
+  actual: Element,
+  expected: DocumentFragment,
+  beforeRemove: (node: Node) => void,
+  mutations?: MutableDomMutationSummary
+): boolean {
+  const expectedChildren = keyedRegionChildren(expected)
+  if (expectedChildren === undefined) return false
+
+  const actualByKey = new Map<string, Element>()
+  for (const child of [...actual.childNodes]) {
+    if (child.nodeType !== 1) continue
+    const element = child as Element
+    const key = element.getAttribute(DOM_KEY_ATTRIBUTE)
+    if (key === null) continue
+    if (actualByKey.has(key)) {
+      throw new TypeError(
+        `managed keyed DOM region has duplicate key ${JSON.stringify(key)}`
+      )
+    }
+    actualByKey.set(key, element)
+  }
+
+  const finalNodes = new Set<Node>()
+  let cursor = actual.firstChild
+  for (const { key, node: expectedChild } of expectedChildren) {
+    const candidate = actualByKey.get(key)
+    const retained =
+      candidate !== undefined && sameDomNodeKind(candidate, expectedChild)
+    const next = retained ? candidate : expectedChild.cloneNode(true)
+    actualByKey.delete(key)
+    if (retained) {
+      reconcileAttributes(candidate, expectedChild, mutations)
+      attachHydratedChildren(candidate, expectedChild, beforeRemove, mutations)
+    } else if (candidate !== undefined) {
+      if (mutations !== undefined) mutations.replaced += 1
+    }
+    if (next !== cursor) {
+      actual.insertBefore(next, cursor)
+      if (mutations !== undefined) {
+        if (retained) mutations.moved += 1
+        else mutations.inserted += 1
+      }
+    }
+    finalNodes.add(next)
+    cursor = next.nextSibling
+  }
+
+  for (const child of [...actual.childNodes]) {
+    if (finalNodes.has(child)) continue
+    beforeRemove(child)
+    child.remove()
+    if (mutations !== undefined) mutations.removed += 1
+  }
+  return true
 }
 
 function firstDomMismatch(
@@ -1131,7 +1846,12 @@ function sameDomAttributes(actual: Element, expected: Element): boolean {
 function comparableAttributes(element: Element): ReadonlyMap<string, string> {
   return new Map(
     [...element.attributes]
-      .filter(({ name }) => !name.startsWith("data-ssrg-event-"))
+      .filter(
+        ({ name }) =>
+          !name.startsWith("data-ssrg-event-") &&
+          name !== "data-ssrg-ref" &&
+          name !== DOM_KEY_ATTRIBUTE
+      )
       .map(({ name, value }) => [name, value])
   )
 }
@@ -1144,36 +1864,62 @@ function describeNode(node: Node | null): string {
 }
 
 /** Identity-preserving attachment for matching hydration and local regions. */
-function attachHydratedChildren(actual: Node, expected: Node): void {
+function attachHydratedChildren(
+  actual: Node,
+  expected: Node,
+  beforeRemove: (node: Node) => void = () => {},
+  mutations?: MutableDomMutationSummary
+): void {
   let index = 0
   while (index < expected.childNodes.length) {
     const expectedChild = expected.childNodes.item(index)
     const actualChild = actual.childNodes.item(index)
     if (actualChild === null) {
       actual.appendChild(expectedChild.cloneNode(true))
+      if (mutations !== undefined) mutations.inserted += 1
       index += 1
       continue
     }
     if (!sameDomNodeKind(actualChild, expectedChild)) {
+      beforeRemove(actualChild)
       actual.replaceChild(expectedChild.cloneNode(true), actualChild)
+      if (mutations !== undefined) {
+        mutations.inserted += 1
+        mutations.removed += 1
+        mutations.replaced += 1
+      }
       index += 1
       continue
     }
     if (actualChild.nodeType === 3) {
       if (actualChild.nodeValue !== expectedChild.nodeValue) {
         actualChild.nodeValue = expectedChild.nodeValue
+        if (mutations !== undefined) mutations.text += 1
       }
       index += 1
       continue
     }
     if (actualChild.nodeType === 1 && expectedChild.nodeType === 1) {
-      reconcileAttributes(actualChild as Element, expectedChild as Element)
-      attachHydratedChildren(actualChild, expectedChild)
+      reconcileAttributes(
+        actualChild as Element,
+        expectedChild as Element,
+        mutations
+      )
+      attachHydratedChildren(
+        actualChild,
+        expectedChild,
+        beforeRemove,
+        mutations
+      )
     }
     index += 1
   }
   while (actual.childNodes.length > expected.childNodes.length) {
-    actual.lastChild?.remove()
+    const child = actual.lastChild
+    if (child === null) break
+    beforeRemove(child)
+    child.remove()
+    if (mutations !== undefined) mutations.removed += 1
   }
 }
 
@@ -1188,14 +1934,24 @@ function sameDomNodeKind(actual: Node, expected: Node): boolean {
   )
 }
 
-function reconcileAttributes(actual: Element, expected: Element): void {
+function reconcileAttributes(
+  actual: Element,
+  expected: Element,
+  mutations?: MutableDomMutationSummary
+): void {
   const expectedNames = new Set<string>()
   for (const { name, value } of [...expected.attributes]) {
     expectedNames.add(name)
-    if (actual.getAttribute(name) !== value) actual.setAttribute(name, value)
+    if (actual.getAttribute(name) !== value) {
+      actual.setAttribute(name, value)
+      if (mutations !== undefined) mutations.attribute += 1
+    }
   }
   for (const { name } of [...actual.attributes]) {
-    if (!expectedNames.has(name)) actual.removeAttribute(name)
+    if (!expectedNames.has(name)) {
+      actual.removeAttribute(name)
+      if (mutations !== undefined) mutations.attribute += 1
+    }
   }
 }
 

@@ -30,6 +30,7 @@
     {
       "module": "fixture/imported-higher-order-functor::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "transform",
