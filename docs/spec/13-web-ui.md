@@ -33,6 +33,9 @@ cardを呼ぶだけではDOM、global state、subscriptionへ触れません。�
 
 ```seseragi
 opaque type Html<Action>
+opaque type ElementRef
+
+fn elementRef name: String -> ElementRef
 
 trait IntoChildren<C, Action> {
   fn intoChildren value: C -> Array<Html<Action>>
@@ -59,6 +62,11 @@ String instanceは型parameter Actionについてparametricなので、eventを�
 任意値をshowしてtextへ暗黙変換しません。数値などは `text $ show value` と明示します。Array内でStringとHtmlを
 arbitrary unionにせず、混在する場合はStringを `text` で包みます。
 
+`ElementRef`はpure tree内の一Elementとbinding planが共有するlogical identityです。host Node、selector、mount lifetimeは
+保持しません。`elementRef "status"`のようなmodule-localなlogical nameからpureに生成し、HTML / SVG propsの
+`elementRef`へ渡します。同じnameは同じlogical identityを表し、同じrefを一つのrender treeで複数Elementへ置くことは
+できません。runtime連番やcomponent call順からidentityを暗黙生成しません。
+
 ## 13.3 props record
 
 共通propsはoptional structural record fieldを使います。`children`だけはrequiredで、String、単一Html、Array、List、
@@ -70,6 +78,7 @@ HTMLのclass属性はSeseragiでも`class`をcanonical field名とし、renderer
 
 ```seseragi
 alias ElementProps<Action, C> = {
+  elementRef?: ElementRef,
   id?: String,
   class?: String,
   title?: String,
@@ -618,6 +627,7 @@ opaque type DomTarget
 opaque type DomMount<E>
 opaque type DomContent<Action>
 opaque type DomBinding<Action>
+opaque type BindingTarget<Action, Value>
 
 fn defaultOptions -> DomOptions
 fn query selector: String
@@ -642,6 +652,33 @@ fn content<Action>
   -> bindings: Array<DomBinding<Action>>
   -> DomContent<Action>
 fn initialHtml<Action> content: DomContent<Action> -> Html<Action>
+fn bind<Action, Value>
+  target: BindingTarget<Action, Value>
+  -> source: Signal<Value>
+  -> DomBinding<Action>
+fn textTarget<Action> element: ElementRef -> BindingTarget<Action, String>
+fn attributeTarget<Action>
+  element: ElementRef -> name: String -> BindingTarget<Action, Maybe<String>>
+fn booleanAttributeTarget<Action>
+  element: ElementRef -> name: String -> BindingTarget<Action, Bool>
+fn ariaBooleanTarget<Action>
+  element: ElementRef -> name: String -> BindingTarget<Action, Bool>
+fn classTarget<Action> element: ElementRef -> BindingTarget<Action, String>
+fn titleTarget<Action> element: ElementRef -> BindingTarget<Action, String>
+fn hiddenTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn disabledTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn inertTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn ariaLabelTarget<Action> element: ElementRef -> BindingTarget<Action, String>
+fn ariaBusyTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn ariaExpandedTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn ariaHiddenTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn ariaSelectedTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn valueTarget<Action> element: ElementRef -> BindingTarget<Action, String>
+fn checkedTarget<Action> element: ElementRef -> BindingTarget<Action, Bool>
+fn styleTarget<Action>
+  element: ElementRef -> name: String -> BindingTarget<Action, Maybe<String>>
+fn regionTarget<Action>
+  element: ElementRef -> BindingTarget<Action, DomContent<Action>>
 fn bindText<Action>
   selector: String -> source: Signal<String> -> DomBinding<Action>
 fn bindAttribute<Action>
@@ -735,6 +772,17 @@ canonical surfaceは、pure Html / SSRを維持したまま`DomContent<Action>`�
 `renderToString` / `renderDocument`へ渡せます。client hydrationは同じserialized stateからDomContentを再構築し、
 initial Html照合後にbindingを接続します。Html値の内部へSignal、subscription、host Nodeを格納しません。
 
+型付きbindingのcanonical入口は`bind target source`です。`BindingTarget<Action, Value>`はlogical `ElementRef`、sink種別、
+必要ならElement namespace / tag制約を持つopaque capabilityで、`Signal<Value>`との`Value`一致を型検査します。たとえば
+`hiddenTarget`は`Bool`、`textTarget`は`String`、`attributeTarget`と`styleTarget`は`Maybe<String>`を要求します。
+HTML boolean attributeはTrueでpresence、Falseでabsence、ARIA booleanは`"true"` / `"false"`として反映します。
+`checkedTarget`はinput checked property、`valueTarget`はinput / textarea / select value propertyを所有します。
+
+このsurfaceをtrait methodや`F<_>`へ一般化しません。targetは更新規約を値としてすでに保持しており、trait dictionaryを重ねても
+instance選択による別実装を増やさないためです。またbindingのpublication、transaction、subscription cleanupは`Signal`固有の
+contractであり、Functorである任意の`F<_>`へ拡張できません。同じlifecycle contractを持つsource familyまたはuser-defined
+sinkの実需要が成立した場合にだけ、別Issueでtrait / HKT境界を定義します。
+
 更新単位は次の三種類です。
 
 - static DOM: mount後に値更新を購読しないclosed subtree。
@@ -742,10 +790,11 @@ initial Html照合後にbindingを接続します。Html値の内部へSignal、
   Signal値を反映するbinding。
 - structural region: `bindRegion`が条件分岐やcollection等、指定Elementのchild構造を所有するregion。
 
-各selectorは現在のDomContent scopeのroot Elementから相対評価し、exactly oneのdescendant Elementへ解決します。不正、
-0件、複数件、binding種別とElementの不一致、invalid attribute / style nameは`DomOperationFailed`でmountContentを失敗
-させ、途中で登録したbindingを解除します。selectorはscope外へ出ず、region内の同名selectorは親scopeとidentityを共有
-しません。
+typed targetのElementRefと互換surfaceのselectorは、現在のDomContent scopeでexactly oneのdescendant Elementへ解決します。
+ElementRefの欠落・重複、selectorの不正・0件・複数件、binding種別とElement namespace / tagの不一致、invalid attribute /
+style nameは`DomOperationFailed`でmountContentを失敗させ、途中で登録したbindingを解除します。selectorはscope外へ出ず、
+region内の同名selectorは親scopeとidentityを共有しません。`bindText`、`bindAttribute`、`bindValue`、`bindChecked`、
+`bindStyle`、`bindRegion`は互換surfaceとして同じ実行planへlowerします。
 
 bindTextは対象Elementのtext content、bindAttributeは指定attribute、bindValueはinput / textarea / selectのvalue
 property、bindCheckedはinputのchecked property、bindStyleは一つのCSS propertyだけを所有します。MaybeのNothingは
@@ -842,6 +891,14 @@ metadataをpure Htmlのまま表現できます。
 `text`でsceneを構築します。`toHtml`だけがSVG rootを`Html<Action>`へ明示変換し、HTML moduleへ
 SVG tagを追加したり、任意tag名からnamespaceを推測したりしません。SSRとbrowser DOMは同じSVG
 markupを使い、browser parserが子孫へSVG namespaceを継承します。
+
+reactive SVG attributeは同じ`ElementRef`と`dom.bind`を使います。`viewBoxTarget`、`transformTarget`、
+`pathDataTarget`、`pointsTarget`、`fillTarget`、`strokeTarget`、`strokeWidthTarget`、
+`pointerEventsTarget`、`ariaLabelTarget`は`String` Signal、`xTarget`、`yTarget`、`x1Target`、
+`y1Target`、`x2Target`、`y2Target`、`cxTarget`、`cyTarget`、`radiusTarget`、`rxTarget`、
+`ryTarget`、`widthTarget`、`heightTarget`、`opacityTarget`はfiniteな`Float` Signalを要求します。
+各targetはSVG namespaceを検証し、tag固有attributeは`svg`、`path`、`polyline` / `polygon`の
+対象tagも検証します。
 
 pointer lifecycleは`onPointerDown`、`onPointerMove`、`onPointerUp`、`onPointerCancel`を同じ
 immutable `PointerEvent` snapshotと`EventAction<Action>` contractで扱います。`onWheel`は次の

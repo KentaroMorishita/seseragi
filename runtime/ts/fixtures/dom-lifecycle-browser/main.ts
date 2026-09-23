@@ -1,6 +1,8 @@
 import { createBrowserDom } from "../../src/browser/dom"
 import {
+  ariaExpandedTarget,
   awaitMount,
+  bind,
   bindAttribute,
   bindChecked,
   bindRegion,
@@ -12,12 +14,14 @@ import {
   type DomContent,
   type DomMount,
   defaultOptions,
+  disabledTarget,
   HydrateOrReplace,
   HydrateStrict,
   mount,
   mountContent,
   PreserveRenderedDom,
   content as reactiveContent,
+  textTarget,
   unmount,
 } from "../../src/dom"
 import { createEffectExecution, type Effect, run, unit } from "../../src/effect"
@@ -25,6 +29,7 @@ import {
   button,
   type ChangeEvent,
   div,
+  elementRef,
   fragment,
   input,
   option,
@@ -47,6 +52,7 @@ import {
   update,
 } from "../../src/signal"
 import { Just, type Maybe } from "../../src/sum"
+import { rect, svg, toHtml, viewBoxTarget, xTarget } from "../../src/svg"
 
 declare global {
   interface Window {
@@ -65,6 +71,10 @@ declare global {
       readonly reactiveDistinctSkippedWrite: boolean
       readonly reactiveHydrationPreservedIdentity: boolean
       readonly reactiveUnmountStoppedUpdates: boolean
+      readonly typedBindingPreservedHydrationIdentity: boolean
+      readonly typedBindingValuesUpdated: boolean
+      readonly typedBindingMissingRefRejected: boolean
+      readonly typedBindingKindMismatchRejected: boolean
       readonly cancellationReleasedTarget: boolean
       readonly targetRemoval: string
     }>
@@ -385,6 +395,139 @@ const reactiveUnmountStoppedUpdates = boundText.textContent === "one"
 distinctObserver.disconnect()
 transactionObserver.disconnect()
 
+const typedRoot = document.createElement("div")
+typedRoot.innerHTML =
+  '<div><span>zero</span><button aria-expanded="false" type="button">toggle</button><svg viewBox="0 0 10 10"><rect x="0" y="0" width="5" height="5"></rect></svg></div>'
+host.append(typedRoot)
+const typedTextElement = typedRoot.querySelector("span")
+const typedButtonElement = typedRoot.querySelector("button")
+const typedSvgElement = typedRoot.querySelector("svg")
+const typedRectElement = typedRoot.querySelector("rect")
+const typedTextRef = elementRef("typed-text")
+const typedButtonRef = elementRef("typed-button")
+const typedSvgRef = elementRef("typed-svg")
+const typedRectRef = elementRef("typed-rect")
+const typedTextSource = await effectValue<MutableSignal<string>>(make("zero"))
+const typedDisabledSource = await effectValue<MutableSignal<boolean>>(
+  make(false)
+)
+const typedExpandedSource = await effectValue<MutableSignal<boolean>>(
+  make(false)
+)
+const typedViewBoxSource = await effectValue<MutableSignal<string>>(
+  make("0 0 10 10")
+)
+const typedXSource = await effectValue<MutableSignal<number>>(make(0))
+const typedInitial = div<string>({
+  children: [
+    span({ elementRef: typedTextRef, children: "zero" }),
+    button({
+      elementRef: typedButtonRef,
+      ariaExpanded: false,
+      children: "toggle",
+    }),
+    toHtml(
+      svg({
+        elementRef: typedSvgRef,
+        viewBox: "0 0 10 10",
+        children: [
+          rect({
+            elementRef: typedRectRef,
+            x: 0,
+            y: 0,
+            width: 5,
+            height: 5,
+          }),
+        ],
+      })
+    ),
+  ],
+})
+const typedContent = reactiveContent<string>(typedInitial, [
+  bind(textTarget(typedTextRef), typedTextSource),
+  bind(disabledTarget(typedButtonRef), typedDisabledSource),
+  bind(ariaExpandedTarget(typedButtonRef), typedExpandedSource),
+  bind(viewBoxTarget(typedSvgRef), typedViewBoxSource),
+  bind(xTarget(typedRectRef), typedXSource),
+])
+const typedDom = createBrowserDom(document, () => undefined)
+const typedMounted = await run(
+  mountContent(
+    {
+      ...defaultOptions(unit),
+      hydration: HydrateStrict,
+      cleanup: PreserveRenderedDom,
+    },
+    createDomTarget(typedRoot),
+    () => async () => unit,
+    typedContent
+  ),
+  { dom: typedDom.service }
+)
+assert(
+  typedMounted.kind === "success",
+  `typed bindings must hydrate: ${JSON.stringify(typedMounted)}`
+)
+const typedBindingPreservedHydrationIdentity =
+  typedRoot.querySelector("span") === typedTextElement &&
+  typedRoot.querySelector("button") === typedButtonElement &&
+  typedRoot.querySelector("svg") === typedSvgElement &&
+  typedRoot.querySelector("rect") === typedRectElement
+await effectValue(update(() => "one", typedTextSource))
+await effectValue(update(() => true, typedDisabledSource))
+await effectValue(update(() => true, typedExpandedSource))
+await effectValue(update(() => "0 0 20 20", typedViewBoxSource))
+await effectValue(update(() => 7.5, typedXSource))
+const typedBindingValuesUpdated =
+  typedTextElement?.textContent === "one" &&
+  typedButtonElement?.hasAttribute("disabled") === true &&
+  typedButtonElement?.getAttribute("aria-expanded") === "true" &&
+  typedSvgElement?.getAttribute("viewBox") === "0 0 20 20" &&
+  typedRectElement?.getAttribute("x") === "7.5"
+await unmountTwice(typedMounted.value)
+
+async function rejectedTypedBinding(
+  referenceKind: "missing" | "mismatch"
+): Promise<string> {
+  const root = document.createElement("div")
+  host.append(root)
+  const reference = elementRef(`invalid-${referenceKind}`)
+  const source = await effectValue<MutableSignal<string>>(make("value"))
+  const initial =
+    referenceKind === "missing"
+      ? div<string>({ children: span({ children: "value" }) })
+      : div<string>({
+          children: span({ elementRef: reference, children: "value" }),
+        })
+  const binding =
+    referenceKind === "missing"
+      ? bind(textTarget(reference), source)
+      : bind(viewBoxTarget(reference), source)
+  const mounted = await run(
+    mountContent(
+      defaultOptions(unit),
+      createDomTarget(root),
+      () => async () => unit,
+      reactiveContent(initial, [binding])
+    ),
+    { dom: createBrowserDom(document, () => undefined).service }
+  )
+  assert(mounted.kind === "failure", "invalid typed binding must fail")
+  assert(
+    mounted.error.tag === "DomOperationFailed",
+    "typed binding must report a DOM operation failure"
+  )
+  return mounted.error.value
+}
+
+const missingRefFailure = await rejectedTypedBinding("missing")
+const kindMismatchFailure = await rejectedTypedBinding("mismatch")
+const typedBindingMissingRefRejected =
+  missingRefFailure.includes("matched 0 elements")
+const typedBindingKindMismatchRejected = kindMismatchFailure.includes(
+  "requires svg but found html"
+)
+
 const reactiveHydrationRoot = document.createElement("div")
 reactiveHydrationRoot.innerHTML =
   '<div><span id="hydrated-static">static</span><span id="hydrated-leaf">server</span></div>'
@@ -531,6 +674,10 @@ window.domLifecycleResult = Object.freeze({
   reactiveDistinctSkippedWrite,
   reactiveHydrationPreservedIdentity,
   reactiveUnmountStoppedUpdates,
+  typedBindingPreservedHydrationIdentity,
+  typedBindingValuesUpdated,
+  typedBindingMissingRefRejected,
+  typedBindingKindMismatchRejected,
   cancellationReleasedTarget,
   targetRemoval,
 })

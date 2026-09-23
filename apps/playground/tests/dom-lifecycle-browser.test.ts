@@ -53,14 +53,24 @@ test("owns mount, hydration, coarse updates, cancellation, and cleanup in a brow
   }
   const page = await browser.newPage()
   const errors: string[] = []
-  page.on("pageerror", (error) => errors.push(error.message))
+  let rejectPageError: ((error: Error) => void) | undefined
+  const pageError = new Promise<never>((_resolve, reject) => {
+    rejectPageError = reject
+  })
+  page.on("pageerror", (error) => {
+    errors.push(error.message)
+    rejectPageError?.(error)
+  })
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text())
   })
   await page.goto(`http://127.0.0.1:${server.port}`)
-  await page.waitForFunction(
-    () => document.documentElement.dataset.domLifecycle === "complete"
-  )
+  await Promise.race([
+    page.waitForFunction(
+      () => document.documentElement.dataset.domLifecycle === "complete"
+    ),
+    pageError,
+  ])
   expect(errors).toEqual([])
   expect(
     await page.evaluate(
@@ -93,6 +103,10 @@ test("owns mount, hydration, coarse updates, cancellation, and cleanup in a brow
     reactiveDistinctSkippedWrite: true,
     reactiveHydrationPreservedIdentity: true,
     reactiveUnmountStoppedUpdates: true,
+    typedBindingPreservedHydrationIdentity: true,
+    typedBindingValuesUpdated: true,
+    typedBindingMissingRefRejected: true,
+    typedBindingKindMismatchRejected: true,
     cancellationReleasedTarget: true,
     targetRemoval: "DomTargetRemoved",
   })

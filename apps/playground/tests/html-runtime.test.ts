@@ -28,11 +28,13 @@ import {
   dialog,
   div,
   domEventPreventsDefault,
+  elementRef,
   em,
   type FileChangeEvent,
   fieldset,
   footer,
   form,
+  fragment,
   h1,
   h2,
   h3,
@@ -70,6 +72,7 @@ import {
   select,
   small,
   source,
+  span,
   strong,
   style,
   summary,
@@ -97,6 +100,33 @@ function webUrl(value: string): WebUrl {
 }
 
 describe("HTML browser runtime", () => {
+  test("keeps logical element references out of SSR and unique in DOM output", () => {
+    const reference = elementRef("card")
+    const node = div({
+      elementRef: reference,
+      class: "card",
+      children: "Referenced",
+    })
+
+    expect(renderToString(node)).toBe('<div class="card">Referenced</div>')
+    expect(renderForDom(node).html).toMatch(
+      '<div data-ssrg-ref="card" class="card">Referenced</div>'
+    )
+    expect(renderToString(node)).not.toContain("data-ssrg-ref")
+
+    expect(() =>
+      renderForDom(
+        fragment([
+          span({ elementRef: reference, children: "first" }),
+          span({
+            elementRef: elementRef("card"),
+            children: "duplicate",
+          }),
+        ])
+      )
+    ).toThrow("HTML ElementRef may identify only one node per tree")
+  })
+
   test("renders the canonical class prop for SSR and DOM", () => {
     const node = div({ class: "card featured", children: "Styled" })
 

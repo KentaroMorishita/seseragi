@@ -6,6 +6,7 @@ const STYLE = Symbol("seseragi.style")
 const TAG = Symbol("seseragi.html.tag")
 const ATTRIBUTE = Symbol("seseragi.html.attribute")
 const WEB_URL = Symbol("seseragi.html.web-url")
+const ELEMENT_REF = Symbol("seseragi.html.element-ref")
 
 type PhantomAction<Action> = {
   readonly __action?: Action
@@ -38,6 +39,26 @@ export type Html<Action> =
   | TextNode<Action>
   | FragmentNode<Action>
   | ElementNode<Action>
+
+/** Pure logical identity shared by an Html node and its reactive bindings. */
+export type ElementRef = Readonly<{
+  readonly [ELEMENT_REF]: string
+}>
+
+export function elementRef(name: string): ElementRef {
+  if (typeof name !== "string" || name.length === 0) {
+    throw new TypeError("HTML ElementRef name must be a non-empty string")
+  }
+  return Object.freeze({ [ELEMENT_REF]: name })
+}
+
+/** Runtime-internal identity used by the DOM adapter. */
+export function elementRefId(value: ElementRef): string {
+  if (!isElementRef(value)) {
+    throw new TypeError("HTML ref must be created with html.elementRef")
+  }
+  return value[ELEMENT_REF]
+}
 
 /** Immutable text-input snapshot. It never exposes the host DOM event. */
 export type InputEvent = Readonly<{
@@ -319,6 +340,7 @@ const RESERVED_CUSTOM_ATTRIBUTE_NAMES = new Set([
   "placeholder",
   "readonly",
   "rel",
+  "elementref",
   "required",
   "role",
   "rows",
@@ -630,8 +652,9 @@ export function renderForDom<Action>(
   eventIdPrefix = ""
 ): DomRender<Action> {
   const eventHandlers = new Map<string, DomEventHandler<Action>>()
+  const elementRefs = new Set<string>()
   return Object.freeze({
-    html: renderDomNode(value, eventHandlers, eventIdPrefix),
+    html: renderDomNode(value, eventHandlers, elementRefs, eventIdPrefix),
     eventHandlers,
   })
 }
@@ -639,6 +662,7 @@ export function renderForDom<Action>(
 function renderDomNode<Action>(
   value: Html<Action>,
   eventHandlers: Map<string, DomEventHandler<Action>>,
+  elementRefs: Set<string>,
   eventIdPrefix: string
 ): string {
   switch (value[HTML_NODE]) {
@@ -646,7 +670,9 @@ function renderDomNode<Action>(
       return escapeText(value.value)
     case "fragment":
       return value.children
-        .map((child) => renderDomNode(child, eventHandlers, eventIdPrefix))
+        .map((child) =>
+          renderDomNode(child, eventHandlers, elementRefs, eventIdPrefix)
+        )
         .join("")
     case "element": {
       const markers = registerDomEvents(
@@ -658,15 +684,31 @@ function renderDomNode<Action>(
         value.namespace,
         value.tag,
         value.props,
-        markers
+        markers,
+        registerElementRef(value.props, elementRefs)
       )
       const opening = `<${value.tag}${attributes}>`
       if (value.voidElement) return opening
       return `${opening}${value.children
-        .map((child) => renderDomNode(child, eventHandlers, eventIdPrefix))
+        .map((child) =>
+          renderDomNode(child, eventHandlers, elementRefs, eventIdPrefix)
+        )
         .join("")}</${value.tag}>`
     }
   }
+}
+
+function registerElementRef(
+  props: Readonly<Record<string, unknown>>,
+  elementRefs: Set<string>
+): string | undefined {
+  if (!Object.hasOwn(props, "elementRef")) return undefined
+  const id = elementRefId(props.elementRef as ElementRef)
+  if (elementRefs.has(id)) {
+    throw new TypeError("HTML ElementRef may identify only one node per tree")
+  }
+  elementRefs.add(id)
+  return id
 }
 
 function registerDomEvents<Action>(
@@ -855,9 +897,13 @@ function renderAttributes(
   namespace: "html" | "svg",
   tagName: string,
   props: Readonly<Record<string, unknown>>,
-  eventMarkers: Readonly<Record<string, string>> = {}
+  eventMarkers: Readonly<Record<string, string>> = {},
+  elementRefMarker?: string
 ): string {
   const attributes: string[] = []
+  if (elementRefMarker !== undefined) {
+    attributes.push(`data-ssrg-ref="${escapeAttribute(elementRefMarker)}"`)
+  }
   stringAttribute(attributes, "id", props.id)
   stringAttribute(attributes, "class", props.class)
   stringAttribute(attributes, "title", props.title)
@@ -873,6 +919,12 @@ function renderAttributes(
     "contenteditable",
     props.contentEditable
   )
+  booleanAttribute(attributes, "inert", props.inert)
+  stringAttribute(attributes, "aria-label", props.ariaLabel)
+  enumeratedBooleanAttribute(attributes, "aria-busy", props.ariaBusy)
+  enumeratedBooleanAttribute(attributes, "aria-expanded", props.ariaExpanded)
+  enumeratedBooleanAttribute(attributes, "aria-hidden", props.ariaHidden)
+  enumeratedBooleanAttribute(attributes, "aria-selected", props.ariaSelected)
   for (const kind of [
     "click",
     "focus",
@@ -1450,6 +1502,10 @@ function isAttribute(value: unknown): value is Attribute {
 
 function isWebUrl(value: unknown): value is WebUrl {
   return typeof value === "object" && value !== null && WEB_URL in value
+}
+
+function isElementRef(value: unknown): value is ElementRef {
+  return typeof value === "object" && value !== null && ELEMENT_REF in value
 }
 
 function isHtml<Action>(value: unknown): value is Html<Action> {

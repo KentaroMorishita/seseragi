@@ -20,6 +20,7 @@ import {
   type DomEventHandler,
   type DomEventResolution,
   type DomRender,
+  elementRefId,
   type Html,
   messageFromDomEvent,
   renderForDom,
@@ -758,6 +759,49 @@ export function createBrowserDom(
                       }
                     })
                     break
+                  case "string-attribute":
+                    validateAttributeBindingName(binding.name)
+                    await own(binding.source, (next) => {
+                      if (target.getAttribute(binding.name) !== next) {
+                        target.setAttribute(binding.name, next)
+                      }
+                    })
+                    break
+                  case "number-attribute":
+                    validateAttributeBindingName(binding.name)
+                    await own(binding.source, (next) => {
+                      if (!Number.isFinite(next)) {
+                        throw new TypeError(
+                          `reactive DOM attribute ${binding.name} must be a finite number`
+                        )
+                      }
+                      const value = String(next)
+                      if (target.getAttribute(binding.name) !== value) {
+                        target.setAttribute(binding.name, value)
+                      }
+                    })
+                    break
+                  case "boolean-attribute":
+                    validateAttributeBindingName(binding.name)
+                    await own(binding.source, (next) => {
+                      if (next) {
+                        if (!target.hasAttribute(binding.name)) {
+                          target.setAttribute(binding.name, "")
+                        }
+                      } else if (target.hasAttribute(binding.name)) {
+                        target.removeAttribute(binding.name)
+                      }
+                    })
+                    break
+                  case "aria-boolean":
+                    validateAttributeBindingName(binding.name)
+                    await own(binding.source, (next) => {
+                      const value = String(next)
+                      if (target.getAttribute(binding.name) !== value) {
+                        target.setAttribute(binding.name, value)
+                      }
+                    })
+                    break
                   case "value": {
                     const control = valueControl(target, document)
                     await own(binding.source, (next) => {
@@ -941,24 +985,62 @@ function bindingTarget(
   binding: DomBinding<unknown>,
   document: Document
 ): Element {
-  let matches: NodeListOf<Element>
-  try {
-    matches = root.querySelectorAll(binding.selector)
-  } catch {
-    throw new Error(`invalid reactive DOM selector ${binding.selector}`)
+  let description: string
+  let matches: ReadonlyArray<Element>
+  if (binding.reference === undefined) {
+    description = `selector ${binding.selector}`
+    try {
+      matches = [...root.querySelectorAll(binding.selector)]
+    } catch {
+      throw new Error(`invalid reactive DOM selector ${binding.selector}`)
+    }
+  } else {
+    const id = elementRefId(binding.reference)
+    description = `ElementRef(${JSON.stringify(id)})`
+    matches = [...root.querySelectorAll("[data-ssrg-ref]")].filter(
+      (element) => element.getAttribute("data-ssrg-ref") === id
+    )
   }
   if (matches.length !== 1) {
     throw new Error(
-      `reactive DOM selector ${binding.selector} matched ${matches.length} elements`
+      `reactive DOM target ${description} matched ${matches.length} elements`
     )
   }
-  const target = matches.item(0)
+  const target = matches[0]
   if (!(target instanceof document.defaultView!.Element)) {
-    throw new Error(
-      `reactive DOM selector ${binding.selector} is not an Element`
-    )
+    throw new Error(`reactive DOM target ${description} is not an Element`)
+  }
+  if ("expectation" in binding && binding.expectation !== undefined) {
+    validateBindingElement(target, binding.expectation)
   }
   return target
+}
+
+function validateBindingElement(
+  target: Element,
+  expectation: Readonly<{
+    readonly namespace?: "html" | "svg"
+    readonly tags?: ReadonlyArray<string>
+  }>
+): void {
+  const namespace =
+    target.namespaceURI === "http://www.w3.org/2000/svg" ? "svg" : "html"
+  if (
+    expectation.namespace !== undefined &&
+    expectation.namespace !== namespace
+  ) {
+    throw new Error(
+      `reactive DOM target requires ${expectation.namespace} but found ${namespace}`
+    )
+  }
+  if (
+    expectation.tags !== undefined &&
+    !expectation.tags.includes(target.localName)
+  ) {
+    throw new Error(
+      `reactive DOM target requires ${expectation.tags.join(" or ")} but found ${target.localName}`
+    )
+  }
 }
 
 function validateAttributeBindingName(name: string): void {
@@ -1131,7 +1213,10 @@ function sameDomAttributes(actual: Element, expected: Element): boolean {
 function comparableAttributes(element: Element): ReadonlyMap<string, string> {
   return new Map(
     [...element.attributes]
-      .filter(({ name }) => !name.startsWith("data-ssrg-event-"))
+      .filter(
+        ({ name }) =>
+          !name.startsWith("data-ssrg-event-") && name !== "data-ssrg-ref"
+      )
       .map(({ name, value }) => [name, value])
   )
 }

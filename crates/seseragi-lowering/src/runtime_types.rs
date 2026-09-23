@@ -524,6 +524,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Html",
     },
     RuntimeTypeImport {
+        canonical: "std/web/html::ElementRef",
+        runtime_feature: "web.html.element-ref-type",
+        module: "@seseragi/runtime/html",
+        export_name: "ElementRef",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/html::Style",
         runtime_feature: "web.html.style-type",
         module: "@seseragi/runtime/html",
@@ -750,6 +756,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         runtime_feature: "web.dom.binding-type",
         module: "@seseragi/runtime/dom",
         export_name: "DomBinding",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/dom::BindingTarget",
+        runtime_feature: "web.dom.binding-target-type",
+        module: "@seseragi/runtime/dom",
+        export_name: "BindingTarget",
     },
     RuntimeTypeImport {
         canonical: "std/web/dom::DomObservation",
@@ -1492,6 +1504,17 @@ mod tests {
         assert_eq!(binding.runtime_feature, "web.dom.binding-type");
         assert_eq!(binding.module, "@seseragi/runtime/dom");
         assert_eq!(binding.export_name, "DomBinding");
+
+        let element_ref = runtime_type_import("std/web/html::ElementRef").unwrap();
+        assert_eq!(element_ref.runtime_feature, "web.html.element-ref-type");
+        assert_eq!(element_ref.module, "@seseragi/runtime/html");
+
+        let binding_target = runtime_type_import("std/web/dom::BindingTarget").unwrap();
+        assert_eq!(
+            binding_target.runtime_feature,
+            "web.dom.binding-target-type"
+        );
+        assert_eq!(binding_target.export_name, "BindingTarget");
 
         let nullable = runtime_type_import_for_surface("Js.Nullable").unwrap();
         assert_eq!(nullable.canonical, "std/prelude::Js.Nullable");
