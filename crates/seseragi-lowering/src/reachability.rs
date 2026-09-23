@@ -7,6 +7,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 type Node = (String, String);
 type Names = BTreeSet<String>;
+const MODULE_LOAD: &str = "$module-load";
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -131,6 +132,33 @@ pub fn retain_application(
             }
         }
     }
+    // Source imports carry module-initialization semantics even when every
+    // surviving binding is type-only. Model that edge separately from symbol
+    // reachability so release pruning cannot leave an import that points at an
+    // eliminated module. The synthetic node is intentionally not a definition:
+    // it retains the output file without polluting the public reachability
+    // report or keeping otherwise dead declarations in that module.
+    for (id, module) in modules.iter() {
+        let runtime_targets = module
+            .source_imports
+            .iter()
+            .filter(|import| import.runtime_edge)
+            .map(|import| (import.module.clone(), MODULE_LOAD.to_owned()))
+            .collect::<BTreeSet<_>>();
+        if runtime_targets.is_empty() {
+            continue;
+        }
+        edges
+            .entry((id.clone(), MODULE_LOAD.to_owned()))
+            .or_default()
+            .extend(runtime_targets.iter().cloned());
+        for definition in definitions.iter().filter(|(module, _)| module == id) {
+            edges
+                .entry(definition.clone())
+                .or_default()
+                .extend(runtime_targets.iter().cloned());
+        }
+    }
     let all_roots = roots
         .iter()
         .cloned()
@@ -184,7 +212,10 @@ pub fn retain_application(
         module.source_imports.retain_mut(|import| {
             import.bindings.retain(|binding| keep(&binding.local));
             import.reexports.retain(|binding| keep(&binding.local));
-            !import.bindings.is_empty() || !import.reexports.is_empty()
+            !import.bindings.is_empty()
+                || !import.reexports.is_empty()
+                || (import.runtime_edge
+                    && live.contains(&(import.module.clone(), MODULE_LOAD.to_owned())))
         });
         module.imports.retain(|import| keep(&import.local));
         // Type-only runtime features do not imply executable runtime retention.
@@ -602,6 +633,39 @@ mod tests {
         assert_eq!(report.eliminated_declarations, 2);
         assert_eq!(report.retained.len(), 2);
         assert!(modules.values().all(|module| module.functions.len() == 1));
+    }
+    #[test]
+    fn keeps_runtime_edge_targets_after_their_declarations_are_pruned() {
+        let mut main = module("main");
+        main.module = "main".to_owned();
+        let origin = match &main.functions[0] {
+            TypeScriptFunction::ConstFunction { origin, .. } => origin.clone(),
+        };
+        main.source_imports.push(TypeScriptSourceImport {
+            module: "types".to_owned(),
+            specifier: "./types.js".to_owned(),
+            runtime_edge: true,
+            bindings: vec![TypeScriptSourceImportBinding {
+                imported: "Model".to_owned(),
+                local: "Model".to_owned(),
+                source_local: "Model".to_owned(),
+                canonical: "types::Model".to_owned(),
+                type_only: true,
+                origin: origin.clone(),
+            }],
+            reexports: vec![],
+            origin,
+        });
+        let mut types = module("types");
+        types.module = "types".to_owned();
+        types.functions.clear();
+
+        let mut modules = BTreeMap::from([("main".to_owned(), main), ("types".to_owned(), types)]);
+        retain_application(&mut modules, &[("main".to_owned(), "main".to_owned())]);
+
+        assert!(modules.contains_key("types"));
+        assert_eq!(modules["main"].source_imports.len(), 1);
+        assert!(modules["types"].functions.is_empty());
     }
     #[test]
     fn local_initializer_keeps_an_outer_binding_with_the_same_spelling() {
