@@ -35,6 +35,15 @@
     },
     {
       "arity": 0,
+      "spelling": "ElementRef",
+      "canonical": "std/web/html::ElementRef",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ElementRef"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "Style",
       "canonical": "std/web/html::Style",
       "provider": {
@@ -555,7 +564,7 @@
               "symbol": "fixture/feature-module-composition::todo/feature::DraftChanged",
               "argument": {
                 "kind": "binding",
-                "symbol": 53,
+                "symbol": 54,
                 "name": "value",
                 "type": {
                   "kind": "named",
@@ -2440,7 +2449,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 74,
+              "symbol": 75,
               "name": "state",
               "type": {
                 "kind": "external-named",

@@ -10,6 +10,15 @@
     },
     {
       "arity": 0,
+      "spelling": "ElementRef",
+      "canonical": "std/web/html::ElementRef",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ElementRef"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "Style",
       "canonical": "std/web/html::Style",
       "provider": {
@@ -1013,7 +1022,7 @@
               "symbol": "std/prelude::Left",
               "argument": {
                 "kind": "binding",
-                "symbol": 51,
+                "symbol": 52,
                 "name": "error",
                 "type": {
                   "kind": "external-named",
@@ -1112,7 +1121,7 @@
               "symbol": "std/prelude::Right",
               "argument": {
                 "kind": "binding",
-                "symbol": 54,
+                "symbol": 55,
                 "name": "markUrl",
                 "type": {
                   "kind": "external-named",
@@ -1311,7 +1320,7 @@
               "symbol": "std/prelude::Left",
               "argument": {
                 "kind": "binding",
-                "symbol": 57,
+                "symbol": 58,
                 "name": "error",
                 "type": {
                   "kind": "external-named",
@@ -1410,7 +1419,7 @@
               "symbol": "std/prelude::Right",
               "argument": {
                 "kind": "binding",
-                "symbol": 58,
+                "symbol": 59,
                 "name": "docsUrl",
                 "type": {
                   "kind": "external-named",
@@ -1698,7 +1707,7 @@
               "symbol": "std/prelude::Left",
               "argument": {
                 "kind": "binding",
-                "symbol": 61,
+                "symbol": 62,
                 "name": "error",
                 "type": {
                   "kind": "external-named",

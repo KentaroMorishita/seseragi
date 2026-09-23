@@ -6,6 +6,15 @@
   "externalTypeBindings": [
     {
       "arity": 0,
+      "spelling": "ElementRef",
+      "canonical": "std/web/html::ElementRef",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ElementRef"
+      }
+    },
+    {
+      "arity": 0,
       "spelling": "Style",
       "canonical": "std/web/html::Style",
       "provider": {
@@ -485,7 +494,7 @@
               "symbol": "std/prelude::Just",
               "argument": {
                 "kind": "binding",
-                "symbol": 43,
+                "symbol": 44,
                 "name": "checked",
                 "type": {
                   "kind": "named",
