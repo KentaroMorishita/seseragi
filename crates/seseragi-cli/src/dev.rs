@@ -72,7 +72,7 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
 
         let next = watch_snapshot(&watch_roots)?;
         if next != files {
-            let rebuilt = match rebuild(&project, &output, &version) {
+            let mut rebuilt = match rebuild(&project, &output, &version) {
                 Ok(rebuilt) => rebuilt,
                 Err(error) => {
                     eprintln!("seseragi dev: {error}");
@@ -80,14 +80,30 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
                     false
                 }
             };
-            build_available = rebuilt || build_available;
             let (refreshed_roots, refresh_succeeded) = refresh_watch_roots(&project, &watch_roots);
+            let roots_changed = refreshed_roots != watch_roots;
             for root in refreshed_roots
                 .iter()
                 .filter(|root| !watch_roots.contains(root))
             {
                 println!("Watching {}", root.display());
             }
+            // A lockfile can become valid between a failed rebuild and graph
+            // refresh. When that refresh also discovers a new package root,
+            // rebuild once against the stable graph before consuming its
+            // snapshot; otherwise the dependency change has no later event to
+            // trigger recovery.
+            if !rebuilt && refresh_succeeded && roots_changed {
+                rebuilt = match rebuild(&project, &output, &version) {
+                    Ok(rebuilt) => rebuilt,
+                    Err(error) => {
+                        eprintln!("seseragi dev: {error}");
+                        eprintln!("Build failed");
+                        false
+                    }
+                };
+            }
+            build_available = rebuilt || build_available;
             watch_roots = refreshed_roots;
             if refresh_succeeded {
                 files = watch_snapshot(&watch_roots)?;
