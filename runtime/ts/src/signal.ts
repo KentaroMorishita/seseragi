@@ -58,6 +58,8 @@ type QueuedTransaction = {
 
 let signalEpoch = 0
 let publicationActive = false
+let publicationSequence = 0
+let activePublicationId: number | undefined
 const subscribedSignals = new Set<SignalState>()
 const publishedRevisions = new WeakMap<SignalState, number>()
 const queuedTransactions: QueuedTransaction[] = []
@@ -295,7 +297,14 @@ function publish(changed: ReadonlySet<SignalState>): Promise<Unit> | undefined {
   }
   signals.sort((left, right) => left.depth - right.depth)
   publicationActive = true
+  publicationSequence += 1
+  activePublicationId = publicationSequence
   return notifySubscribers(signals)
+}
+
+/** @internal Used only to correlate opt-in runtime instrumentation. */
+export function publicationIdForInstrumentation(): number | undefined {
+  return activePublicationId
 }
 
 function signalWasAffected(
@@ -352,6 +361,7 @@ async function finishPublication(initial: Promise<Unit>): Promise<Unit> {
     firstDefect = error
   } finally {
     publicationActive = false
+    activePublicationId = undefined
   }
 
   while (queuedTransactions.length > 0) {
@@ -369,6 +379,7 @@ async function finishPublication(initial: Promise<Unit>): Promise<Unit> {
       firstDefect ??= error
     } finally {
       publicationActive = false
+      activePublicationId = undefined
     }
   }
 

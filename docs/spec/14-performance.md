@@ -255,7 +255,7 @@ benchmarkの絶対値は言語conformanceではありません。baseline、tool
 - Arrayのmap / filter / reduce pipelineとList traversal
 - 100,000段以上のEffect bindとself tail recursion
 - Signal fan-out transactionとStream backpressure
-- JSON encode / decode、SSR、Signal-driven reactive leaf / structural region update
+- JSON encode / decode、SSR、Signal-driven reactive leaf / structural / keyed region / high-frequency leaf update
 - BytesとTypeScript foreign境界の意図的copy
 
 `seseragi benchmark` はbenchmark rootの `.ssrg` をcanonical module path順に列挙し、全moduleをcompileしてから
@@ -291,8 +291,13 @@ Bunとそのversionをmetadataへ記録します。`[build].profile` にかか�
 portable kernelは `@seseragi/runtime/benchmark-runner` の`runBenchmarks`です。browser hostはmonotonic clock、
 AbortSignal、adapter/host metadataを渡し、追加serviceを必要とするbodyにはhost側でserviceを解決します。
 CLIの`--target web`でbrowserを暗黙起動しません。process baselineとbrowser baselineは別の比較identityです。
-`runtime/ts/fixtures/benchmark-quality/browser.ts` と実Chromium testがreactive leaf / region / transaction / distinctを
-計測し、host所有のmountを終了時に解放します。mount準備とunmountはこの更新計測のsampleに含めません。
+`runtime/ts/fixtures/benchmark-quality/browser.ts` と実Chromium testがreactive leaf、coarse structural region、keyed
+insert / move / remove、transaction、distinct skip、pointer-likeな連続attribute updateを別caseとして計測し、host所有の
+mountを終了時に解放します。mount準備とunmountはこの更新計測のsampleに含めません。schema 1 binding traceで各caseの
+write / equal-skip、mutation種別、node replacement 0の境界、cleanup後active subscription / listener 0を
+machine-readableに固定します。
+実browser testの合否は不安定な絶対wall timeではなくこの意味的thresholdを使い、wall timeの退行は互換baselineとmanifestの
+`regression_threshold_percent`で判定します。
 compiler境界の最低suiteは`benchmark-discovery/benchmarks/quality.ssrg`、runtime境界は
 `runtime/ts/fixtures/benchmark-quality/portable.ts`です。絶対時間をtestの合否へ使わず、実行結果と計測契約を検証します。
 

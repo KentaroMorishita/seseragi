@@ -28,6 +28,7 @@ import {
 } from "../html"
 import { type ServiceResult, serviceFailure, serviceSuccess } from "../service"
 import {
+  publicationIdForInstrumentation,
   type Signal,
   type Subscription,
   subscribe,
@@ -39,6 +40,155 @@ export type BrowserDom = Readonly<{
   readonly service: Dom
   readonly dispose: () => Promise<void>
 }>
+
+export type BrowserDomMutationSummary = Readonly<{
+  readonly text: number
+  readonly attribute: number
+  readonly property: number
+  readonly style: number
+  readonly inserted: number
+  readonly moved: number
+  readonly removed: number
+  readonly replaced: number
+}>
+
+export type BrowserDomLogicalTarget = Readonly<{
+  readonly kind: "selector" | "reference"
+  readonly value: string
+}>
+
+export type BrowserDomResolvedTarget = Readonly<{
+  readonly nodeId: string
+  readonly namespace: "html" | "svg"
+  readonly tag: string
+}>
+
+export type BrowserDomTraceEvent =
+  | Readonly<{
+      readonly schema: 1
+      readonly sequence: number
+      readonly mountId: string
+      readonly scopeId: string
+      readonly transactionId: number | null
+      readonly activeSubscriptions: number
+      readonly activeListeners: number
+      readonly type: "scope"
+      readonly operation: "attach" | "cleanup"
+    }>
+  | Readonly<{
+      readonly schema: 1
+      readonly sequence: number
+      readonly mountId: string
+      readonly scopeId: string
+      readonly transactionId: number | null
+      readonly activeSubscriptions: number
+      readonly activeListeners: number
+      readonly type: "binding-resolved"
+      readonly bindingId: string
+      readonly bindingKind: DomBinding<unknown>["kind"]
+      readonly logicalTarget: BrowserDomLogicalTarget
+      readonly resolvedTarget: BrowserDomResolvedTarget
+    }>
+  | Readonly<{
+      readonly schema: 1
+      readonly sequence: number
+      readonly mountId: string
+      readonly scopeId: string
+      readonly transactionId: number | null
+      readonly activeSubscriptions: number
+      readonly activeListeners: number
+      readonly type: "binding-update"
+      readonly bindingId: string
+      readonly bindingKind: DomBinding<unknown>["kind"]
+      readonly logicalTarget: BrowserDomLogicalTarget
+      readonly resolvedTarget: BrowserDomResolvedTarget
+      readonly outcome: "write" | "equal-skip" | "deferred"
+      readonly mutations: BrowserDomMutationSummary
+    }>
+
+export type BrowserDomTrace = (event: BrowserDomTraceEvent) => void
+
+export type BrowserDomInstrumentation = Readonly<{
+  readonly trace: BrowserDomTrace
+}>
+
+type BrowserDomTraceInput<Trace = BrowserDomTraceEvent> =
+  Trace extends BrowserDomTraceEvent
+    ? Omit<Trace, "schema" | "sequence">
+    : never
+
+type BrowserDomLeafMutation = "text" | "attribute" | "property" | "style"
+type BrowserDomBindingApplication =
+  | "none"
+  | "deferred"
+  | BrowserDomLeafMutation
+  | BrowserDomMutationSummary
+
+type MutableDomMutationSummary = {
+  -readonly [Key in keyof BrowserDomMutationSummary]: number
+}
+
+const NO_DOM_MUTATIONS: BrowserDomMutationSummary =
+  /* @__PURE__ */
+  Object.freeze({
+    text: 0,
+    attribute: 0,
+    property: 0,
+    style: 0,
+    inserted: 0,
+    moved: 0,
+    removed: 0,
+    replaced: 0,
+  })
+
+function mutableDomMutations(): MutableDomMutationSummary {
+  return { ...NO_DOM_MUTATIONS }
+}
+
+function freezeDomMutations(
+  summary: MutableDomMutationSummary
+): BrowserDomMutationSummary {
+  return Object.freeze({ ...summary })
+}
+
+function bindingMutationSummary(
+  application: Exclude<BrowserDomBindingApplication, "deferred">
+): BrowserDomMutationSummary {
+  if (typeof application !== "string") return application
+  if (application === "none") return NO_DOM_MUTATIONS
+  return Object.freeze({ ...NO_DOM_MUTATIONS, [application]: 1 })
+}
+
+function hasDomMutations(summary: BrowserDomMutationSummary): boolean {
+  return Object.values(summary).some((count) => count > 0)
+}
+
+function logicalBindingTarget(
+  binding: DomBinding<unknown>
+): BrowserDomLogicalTarget {
+  if (binding.reference !== undefined) {
+    return Object.freeze({
+      kind: "reference" as const,
+      value: elementRefId(binding.reference),
+    })
+  }
+  return Object.freeze({
+    kind: "selector" as const,
+    value: binding.selector,
+  })
+}
+
+function resolvedBindingTarget(
+  target: Element,
+  identify: (target: Element) => string
+): BrowserDomResolvedTarget {
+  return Object.freeze({
+    nodeId: identify(target),
+    namespace:
+      target.namespaceURI === "http://www.w3.org/2000/svg" ? "svg" : "html",
+    tag: target.localName,
+  })
+}
 
 export type DomEventBindings<Action> = Readonly<{
   readonly replace: (render: DomRender<Action>) => void
@@ -307,10 +457,41 @@ export function createDomEventBindings<Action>(): DomEventBindings<Action> {
 
 export function createBrowserDom(
   document: Document,
-  mounted: () => void
+  mounted: () => void,
+  instrumentation?: BrowserDomInstrumentation
 ): BrowserDom {
+  const trace = instrumentation?.trace
   const activeTargets = new Set<Element>()
   const disposers = new Set<() => Promise<void>>()
+  const nodeIds = new WeakMap<Element, string>()
+  let nextMount = 0
+  let nextNode = 0
+  let nextTrace = 0
+
+  const nodeId = (element: Element): string => {
+    const existing = nodeIds.get(element)
+    if (existing !== undefined) return existing
+    const created = `node-${nextNode}`
+    nextNode += 1
+    nodeIds.set(element, created)
+    return created
+  }
+
+  const emit = (createEvent: () => BrowserDomTraceInput): void => {
+    if (trace === undefined) return
+    const event = createEvent()
+    const entry = Object.freeze({
+      schema: 1 as const,
+      sequence: nextTrace,
+      ...event,
+    }) as BrowserDomTraceEvent
+    nextTrace += 1
+    try {
+      trace(entry)
+    } catch {
+      // Development instrumentation cannot change DOM runtime semantics.
+    }
+  }
 
   const service: Dom = {
     query(selector) {
@@ -479,6 +660,8 @@ export function createBrowserDom(
         )
       }
       activeTargets.add(element)
+      const mountId = `mount-${nextMount}`
+      nextMount += 1
 
       return new Promise<ServiceResult<DomError, DomMount<Failure>>>(
         (resolveMount, rejectMount) => {
@@ -505,6 +688,8 @@ export function createBrowserDom(
           let initialRender = true
           let initialFailure: DomError | undefined
           let nextReactiveScope = 0
+          let activeSubscriptions = 0
+          let activeListeners = 0
           const bindings = createDomEventBindings<Action>()
           const ime = createImeInputCoordinator<HTMLElement>()
           const imeTimers = new Map<HTMLElement, number>()
@@ -538,6 +723,8 @@ export function createBrowserDom(
             reactiveCleanup = undefined
             if (subscription !== undefined) {
               await unsubscribe(subscription)({})
+              subscription = undefined
+              activeSubscriptions -= 1
             }
             for (const timer of imeTimers.values()) {
               document.defaultView!.clearTimeout(timer)
@@ -549,6 +736,17 @@ export function createBrowserDom(
             for (const [kind, listener, capture] of listeners) {
               element.removeEventListener(kind, listener, capture)
             }
+            listeners.length = 0
+            activeListeners = 0
+            emit(() => ({
+              mountId,
+              scopeId: "root",
+              transactionId: publicationIdForInstrumentation() ?? null,
+              activeSubscriptions,
+              activeListeners,
+              type: "scope",
+              operation: "cleanup",
+            }))
             if (applyCleanup && options.cleanup.tag === "ClearRenderedDom") {
               element.replaceChildren()
             }
@@ -610,6 +808,7 @@ export function createBrowserDom(
           ): void => {
             element.addEventListener(kind, listener, capture)
             listeners.push([kind, listener, capture])
+            activeListeners += 1
           }
 
           listen("pointerdown", pointerLifecycle.begin, true)
@@ -839,7 +1038,8 @@ export function createBrowserDom(
           const attachContentScope = async (
             root: Element,
             value: DomContent<Action>,
-            renderInitial: boolean
+            renderInitial: boolean,
+            scopeMutations?: MutableDomMutationSummary
           ): Promise<() => Promise<void>> => {
             const scope = `reactive-${nextReactiveScope}`
             nextReactiveScope += 1
@@ -854,15 +1054,31 @@ export function createBrowserDom(
                   pointerLifecycle.releaseWithin(node as Element)
                 }
               }
-              if (!reconcileKeyedRegionChildren(root, expected, beforeRemove)) {
+              const keyed = reconcileKeyedRegionChildren(
+                root,
+                expected,
+                beforeRemove,
+                scopeMutations
+              )
+              if (!keyed) {
                 const mismatch = firstDomMismatch(
                   root.childNodes,
                   expected.childNodes,
                   []
                 )
                 if (mismatch === undefined) {
-                  attachHydratedChildren(root, expected, beforeRemove)
+                  attachHydratedChildren(
+                    root,
+                    expected,
+                    beforeRemove,
+                    scopeMutations
+                  )
                 } else {
+                  if (scopeMutations !== undefined) {
+                    scopeMutations.inserted += expected.childNodes.length
+                    scopeMutations.removed += root.childNodes.length
+                    scopeMutations.replaced += 1
+                  }
                   pointerLifecycle.releaseWithin(root)
                   root.replaceChildren(expected.cloneNode(true))
                 }
@@ -875,6 +1091,7 @@ export function createBrowserDom(
               disposed = true
               for (const active of subscriptions.splice(0)) {
                 await unsubscribe(active)({})
+                activeSubscriptions -= 1
               }
               for (const cleanup of [...childCleanups]) await cleanup()
               childCleanups.clear()
@@ -884,18 +1101,66 @@ export function createBrowserDom(
                 }
               })
               if (renderInitial) bindings.clear(scope)
+              emit(() => ({
+                mountId,
+                scopeId: scope,
+                transactionId: publicationIdForInstrumentation() ?? null,
+                activeSubscriptions,
+                activeListeners,
+                type: "scope",
+                operation: "cleanup",
+              }))
             }
 
             const own = async <Value>(
+              bindingId: string,
+              binding: DomBinding<Action>,
+              target: Element,
               source: Signal<Value>,
-              apply: (next: Value) => void | Promise<void>
+              apply: (
+                next: Value
+              ) =>
+                | BrowserDomBindingApplication
+                | Promise<BrowserDomBindingApplication>
             ): Promise<void> => {
+              const logicalTarget =
+                trace === undefined ? undefined : logicalBindingTarget(binding)
+              const resolvedTarget =
+                trace === undefined
+                  ? undefined
+                  : resolvedBindingTarget(target, nodeId)
               let attaching = true
               const active = await subscribe(
                 (next) => async () => {
                   if (disposed || settled) return unit
                   try {
-                    await apply(next)
+                    const applied = await apply(next)
+                    emit(() => {
+                      const mutations =
+                        applied === "deferred"
+                          ? NO_DOM_MUTATIONS
+                          : bindingMutationSummary(applied)
+                      return {
+                        mountId,
+                        scopeId: scope,
+                        transactionId:
+                          publicationIdForInstrumentation() ?? null,
+                        activeSubscriptions,
+                        activeListeners,
+                        type: "binding-update",
+                        bindingId,
+                        bindingKind: binding.kind,
+                        logicalTarget: logicalTarget!,
+                        resolvedTarget: resolvedTarget!,
+                        outcome:
+                          applied === "deferred"
+                            ? "deferred"
+                            : hasDomMutations(mutations)
+                              ? "write"
+                              : "equal-skip",
+                        mutations,
+                      }
+                    })
                   } catch (error) {
                     if (attaching) throw error
                     await finish(
@@ -915,44 +1180,73 @@ export function createBrowserDom(
                 return
               }
               subscriptions.push(active)
+              activeSubscriptions += 1
             }
 
             try {
-              const resolved = value.bindings.map((binding) => ({
+              const resolved = value.bindings.map((binding, index) => ({
                 binding,
+                bindingId: `${scope}-binding-${index}`,
                 target: bindingTarget(root, binding, document),
               }))
-              for (const { binding, target } of resolved) {
+              for (const { binding, bindingId, target } of resolved) {
+                emit(() => ({
+                  mountId,
+                  scopeId: scope,
+                  transactionId: publicationIdForInstrumentation() ?? null,
+                  activeSubscriptions,
+                  activeListeners,
+                  type: "binding-resolved",
+                  bindingId,
+                  bindingKind: binding.kind,
+                  logicalTarget: logicalBindingTarget(binding),
+                  resolvedTarget: resolvedBindingTarget(target, nodeId),
+                }))
+                const watch = <Value>(
+                  source: Signal<Value>,
+                  apply: (
+                    next: Value
+                  ) =>
+                    | BrowserDomBindingApplication
+                    | Promise<BrowserDomBindingApplication>
+                ) => own(bindingId, binding, target, source, apply)
                 switch (binding.kind) {
                   case "text":
-                    await own(binding.source, (next) => {
-                      if (target.textContent !== next) target.textContent = next
+                    await watch(binding.source, (next) => {
+                      if (target.textContent === next) return "none"
+                      target.textContent = next
+                      return "text"
                     })
                     break
                   case "attribute":
                     validateAttributeBindingName(binding.name)
-                    await own(binding.source, (next) => {
+                    await watch(binding.source, (next) => {
                       const value = next.tag === "Nothing" ? null : next.value
                       if (value === null) {
                         if (target.hasAttribute(binding.name)) {
                           target.removeAttribute(binding.name)
+                          return "attribute"
                         }
                       } else if (target.getAttribute(binding.name) !== value) {
                         target.setAttribute(binding.name, value)
+                        return "attribute"
                       }
+                      return "none"
                     })
                     break
                   case "string-attribute":
                     validateAttributeBindingName(binding.name)
-                    await own(binding.source, (next) => {
+                    await watch(binding.source, (next) => {
                       if (target.getAttribute(binding.name) !== next) {
                         target.setAttribute(binding.name, next)
+                        return "attribute"
                       }
+                      return "none"
                     })
                     break
                   case "number-attribute":
                     validateAttributeBindingName(binding.name)
-                    await own(binding.source, (next) => {
+                    await watch(binding.source, (next) => {
                       if (!Number.isFinite(next)) {
                         throw new TypeError(
                           `reactive DOM attribute ${binding.name} must be a finite number`
@@ -961,66 +1255,77 @@ export function createBrowserDom(
                       const value = String(next)
                       if (target.getAttribute(binding.name) !== value) {
                         target.setAttribute(binding.name, value)
+                        return "attribute"
                       }
+                      return "none"
                     })
                     break
                   case "boolean-attribute":
                     validateAttributeBindingName(binding.name)
-                    await own(binding.source, (next) => {
+                    await watch(binding.source, (next) => {
                       if (next) {
                         if (!target.hasAttribute(binding.name)) {
                           target.setAttribute(binding.name, "")
+                          return "attribute"
                         }
                       } else if (target.hasAttribute(binding.name)) {
                         target.removeAttribute(binding.name)
+                        return "attribute"
                       }
+                      return "none"
                     })
                     break
                   case "aria-boolean":
                     validateAttributeBindingName(binding.name)
-                    await own(binding.source, (next) => {
+                    await watch(binding.source, (next) => {
                       const value = String(next)
                       if (target.getAttribute(binding.name) !== value) {
                         target.setAttribute(binding.name, value)
+                        return "attribute"
                       }
+                      return "none"
                     })
                     break
                   case "value": {
                     const control = valueControl(target, document)
-                    await own(binding.source, (next) => {
+                    await watch(binding.source, (next) => {
                       const write = () =>
                         updateControlValue(control, next, document)
                       if (ime.targets().includes(control)) {
                         deferredLeafWrites.set(control, write)
+                        return "deferred"
                       } else {
                         deferredLeafWrites.delete(control)
-                        write()
+                        return write() ? "property" : "none"
                       }
                     })
                     break
                   }
                   case "checked": {
                     const control = checkedControl(target, document)
-                    await own(binding.source, (next) => {
-                      if (control.checked !== next) control.checked = next
+                    await watch(binding.source, (next) => {
+                      if (control.checked === next) return "none"
+                      control.checked = next
+                      return "property"
                     })
                     break
                   }
                   case "style": {
                     validateStyleBindingName(binding.name)
                     const styled = styleTarget(target, document)
-                    await own(binding.source, (next) => {
+                    await watch(binding.source, (next) => {
                       const value = next.tag === "Nothing" ? "" : next.value
                       if (
                         styled.style.getPropertyValue(binding.name) === value
                       ) {
-                        return
+                        return "none"
                       }
                       if (next.tag === "Nothing") {
                         styled.style.removeProperty(binding.name)
                       } else {
                         styled.style.setProperty(binding.name, next.value)
                       }
+                      return "style"
                     })
                     break
                   }
@@ -1032,19 +1337,34 @@ export function createBrowserDom(
                       if (cleanup !== undefined) await cleanup()
                     }
                     childCleanups.add(cleanupChild)
-                    await own(binding.source, async (next) => {
+                    await watch(binding.source, async (next) => {
                       await cleanupChild()
-                      if (disposed || settled) return
+                      if (disposed || settled) return "none"
+                      const mutations =
+                        trace === undefined ? undefined : mutableDomMutations()
                       childCleanup = await attachContentScope(
                         target,
                         next,
-                        true
+                        true,
+                        mutations
                       )
+                      return mutations === undefined
+                        ? NO_DOM_MUTATIONS
+                        : freezeDomMutations(mutations)
                     })
                     break
                   }
                 }
               }
+              emit(() => ({
+                mountId,
+                scopeId: scope,
+                transactionId: publicationIdForInstrumentation() ?? null,
+                activeSubscriptions,
+                activeListeners,
+                type: "scope",
+                operation: "attach",
+              }))
               return disposeScope
             } catch (error) {
               await disposeScope()
@@ -1063,8 +1383,29 @@ export function createBrowserDom(
           )
             .then(async (activeSubscription) => {
               subscription = activeSubscription
+              activeSubscriptions += 1
+              emit(() => ({
+                mountId,
+                scopeId: "root",
+                transactionId: publicationIdForInstrumentation() ?? null,
+                activeSubscriptions,
+                activeListeners,
+                type: "scope",
+                operation: "attach",
+              }))
               if (settled) {
-                void unsubscribe(activeSubscription)({})
+                await unsubscribe(activeSubscription)({})
+                subscription = undefined
+                activeSubscriptions -= 1
+                emit(() => ({
+                  mountId,
+                  scopeId: "root",
+                  transactionId: publicationIdForInstrumentation() ?? null,
+                  activeSubscriptions,
+                  activeListeners,
+                  type: "scope",
+                  operation: "cleanup",
+                }))
                 return
               }
               if (initialFailure !== undefined) {
@@ -1278,8 +1619,8 @@ function updateControlValue(
   control: ValueControl,
   value: string,
   document: Document
-): void {
-  if (control.value === value) return
+): boolean {
+  if (control.value === value) return false
   const selectable =
     control instanceof document.defaultView!.HTMLInputElement ||
     control instanceof document.defaultView!.HTMLTextAreaElement
@@ -1288,7 +1629,7 @@ function updateControlValue(
   const end = selectable ? control.selectionEnd : null
   const direction = selectable ? control.selectionDirection : null
   control.value = value
-  if (!focused || !selectable || start === null || end === null) return
+  if (!focused || !selectable || start === null || end === null) return true
   const limit = value.length
   try {
     control.setSelectionRange(
@@ -1299,6 +1640,7 @@ function updateControlValue(
   } catch {
     // Checked and non-text controls do not expose a text selection.
   }
+  return true
 }
 
 function domFragment<Action>(
@@ -1353,7 +1695,8 @@ function keyedRegionChildren(
 function reconcileKeyedRegionChildren(
   actual: Element,
   expected: DocumentFragment,
-  beforeRemove: (node: Node) => void
+  beforeRemove: (node: Node) => void,
+  mutations?: MutableDomMutationSummary
 ): boolean {
   const expectedChildren = keyedRegionChildren(expected)
   if (expectedChildren === undefined) return false
@@ -1376,16 +1719,23 @@ function reconcileKeyedRegionChildren(
   let cursor = actual.firstChild
   for (const { key, node: expectedChild } of expectedChildren) {
     const candidate = actualByKey.get(key)
-    const next =
+    const retained =
       candidate !== undefined && sameDomNodeKind(candidate, expectedChild)
-        ? candidate
-        : expectedChild.cloneNode(true)
+    const next = retained ? candidate : expectedChild.cloneNode(true)
     actualByKey.delete(key)
-    if (next === candidate) {
-      reconcileAttributes(candidate, expectedChild)
-      attachHydratedChildren(candidate, expectedChild, beforeRemove)
+    if (retained) {
+      reconcileAttributes(candidate, expectedChild, mutations)
+      attachHydratedChildren(candidate, expectedChild, beforeRemove, mutations)
+    } else if (candidate !== undefined) {
+      if (mutations !== undefined) mutations.replaced += 1
     }
-    if (next !== cursor) actual.insertBefore(next, cursor)
+    if (next !== cursor) {
+      actual.insertBefore(next, cursor)
+      if (mutations !== undefined) {
+        if (retained) mutations.moved += 1
+        else mutations.inserted += 1
+      }
+    }
     finalNodes.add(next)
     cursor = next.nextSibling
   }
@@ -1394,6 +1744,7 @@ function reconcileKeyedRegionChildren(
     if (finalNodes.has(child)) continue
     beforeRemove(child)
     child.remove()
+    if (mutations !== undefined) mutations.removed += 1
   }
   return true
 }
@@ -1505,7 +1856,8 @@ function describeNode(node: Node | null): string {
 function attachHydratedChildren(
   actual: Node,
   expected: Node,
-  beforeRemove: (node: Node) => void = () => {}
+  beforeRemove: (node: Node) => void = () => {},
+  mutations?: MutableDomMutationSummary
 ): void {
   let index = 0
   while (index < expected.childNodes.length) {
@@ -1513,25 +1865,41 @@ function attachHydratedChildren(
     const actualChild = actual.childNodes.item(index)
     if (actualChild === null) {
       actual.appendChild(expectedChild.cloneNode(true))
+      if (mutations !== undefined) mutations.inserted += 1
       index += 1
       continue
     }
     if (!sameDomNodeKind(actualChild, expectedChild)) {
       beforeRemove(actualChild)
       actual.replaceChild(expectedChild.cloneNode(true), actualChild)
+      if (mutations !== undefined) {
+        mutations.inserted += 1
+        mutations.removed += 1
+        mutations.replaced += 1
+      }
       index += 1
       continue
     }
     if (actualChild.nodeType === 3) {
       if (actualChild.nodeValue !== expectedChild.nodeValue) {
         actualChild.nodeValue = expectedChild.nodeValue
+        if (mutations !== undefined) mutations.text += 1
       }
       index += 1
       continue
     }
     if (actualChild.nodeType === 1 && expectedChild.nodeType === 1) {
-      reconcileAttributes(actualChild as Element, expectedChild as Element)
-      attachHydratedChildren(actualChild, expectedChild, beforeRemove)
+      reconcileAttributes(
+        actualChild as Element,
+        expectedChild as Element,
+        mutations
+      )
+      attachHydratedChildren(
+        actualChild,
+        expectedChild,
+        beforeRemove,
+        mutations
+      )
     }
     index += 1
   }
@@ -1540,6 +1908,7 @@ function attachHydratedChildren(
     if (child === null) break
     beforeRemove(child)
     child.remove()
+    if (mutations !== undefined) mutations.removed += 1
   }
 }
 
@@ -1554,14 +1923,24 @@ function sameDomNodeKind(actual: Node, expected: Node): boolean {
   )
 }
 
-function reconcileAttributes(actual: Element, expected: Element): void {
+function reconcileAttributes(
+  actual: Element,
+  expected: Element,
+  mutations?: MutableDomMutationSummary
+): void {
   const expectedNames = new Set<string>()
   for (const { name, value } of [...expected.attributes]) {
     expectedNames.add(name)
-    if (actual.getAttribute(name) !== value) actual.setAttribute(name, value)
+    if (actual.getAttribute(name) !== value) {
+      actual.setAttribute(name, value)
+      if (mutations !== undefined) mutations.attribute += 1
+    }
   }
   for (const { name } of [...actual.attributes]) {
-    if (!expectedNames.has(name)) actual.removeAttribute(name)
+    if (!expectedNames.has(name)) {
+      actual.removeAttribute(name)
+      if (mutations !== undefined) mutations.attribute += 1
+    }
   }
 }
 

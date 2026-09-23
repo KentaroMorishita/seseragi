@@ -45,24 +45,45 @@ test("portable benchmark kernel measures reactive DOM and tears its host down", 
     browser = await chromium.launch()
     const page = await browser.newPage()
     const errors: string[] = []
-    page.on("pageerror", (error) => errors.push(error.message))
+    let rejectPageError: ((error: Error) => void) | undefined
+    const pageError = new Promise<never>((_resolve, reject) => {
+      rejectPageError = reject
+    })
+    page.on("pageerror", (error) => {
+      errors.push(error.message)
+      rejectPageError?.(error)
+    })
     await page.goto(`http://127.0.0.1:${server.port}`)
-    await page.waitForFunction(
-      () => document.documentElement.dataset.benchmark === "complete"
-    )
+    await Promise.race([
+      page.waitForFunction(
+        () => document.documentElement.dataset.benchmark === "complete"
+      ),
+      pageError,
+    ])
     expect(errors).toEqual([])
-    const report = await page.evaluate(
-      () =>
-        (
-          globalThis as typeof globalThis & {
-            benchmarkReport: {
-              cases: { status: string; samples: number[]; iterations: number }[]
-            }
-          }
-        ).benchmarkReport
-    )
-    expect(report.cases).toHaveLength(4)
-    for (const entry of report.cases) {
+    const result = await page.evaluate(() => {
+      const state = globalThis as typeof globalThis & {
+        benchmarkReport: {
+          cases: { status: string; samples: number[]; iterations: number }[]
+        }
+        benchmarkDomTrace: Array<{
+          schema: number
+          sequence: number
+          transactionId: number | null
+          activeSubscriptions: number
+          activeListeners: number
+          type: string
+          outcome?: string
+          mutations?: Record<string, number>
+        }>
+      }
+      return {
+        report: state.benchmarkReport,
+        trace: state.benchmarkDomTrace,
+      }
+    })
+    expect(result.report.cases).toHaveLength(6)
+    for (const entry of result.report.cases) {
       expect(entry.status).toBe("passed")
       expect(entry.samples).toHaveLength(3)
       expect(
@@ -71,6 +92,44 @@ test("portable benchmark kernel measures reactive DOM and tears its host down", 
         entry.samples.every((sample) => sample >= 1_000_000 / entry.iterations)
       ).toBe(true)
     }
+    expect(result.trace.length).toBeGreaterThan(0)
+    expect(
+      result.trace.every(
+        (event, index) => event.schema === 1 && event.sequence === index
+      )
+    ).toBe(true)
+    expect(
+      result.trace.some(
+        (event) =>
+          event.type === "binding-update" &&
+          event.transactionId !== null &&
+          event.outcome === "equal-skip"
+      )
+    ).toBe(true)
+    expect(
+      result.trace.some(
+        (event) =>
+          event.type === "binding-update" && event.mutations?.replaced === 1
+      )
+    ).toBe(true)
+    expect(
+      result.trace.some(
+        (event) =>
+          event.type === "binding-update" && event.mutations?.property === 1
+      )
+    ).toBe(true)
+    expect(
+      result.trace.some(
+        (event) =>
+          event.type === "binding-update" && event.mutations?.style === 1
+      )
+    ).toBe(true)
+    expect(result.trace.at(-1)).toMatchObject({
+      type: "scope",
+      operation: "cleanup",
+      activeSubscriptions: 0,
+      activeListeners: 0,
+    })
     expect(await page.locator("main").count()).toBe(0)
   } finally {
     await browser?.close()

@@ -846,6 +846,18 @@ unmount、root cancellation、target removal、dispatch failure後は新規publi
 入れ替え、旧handlerへ到達できないようにします。global virtual tree、component hook、component call順から作るhidden
 stateは導入しません。
 
+browser DOM adapterはdevelopment / test hostから明示されたcallbackがある場合だけschema 1のbinding traceを生成します。
+traceはrun-localな`sequence`、`mountId`、`scopeId`、`bindingId`、Signal notification中だけ存在する
+`transactionId`、binding kind、logical selector / ElementRef、解決したnodeのrun-local ID / namespace / tagを持ちます。
+初期snapshotの`transactionId`はnullです。applicationの値、event payload、Signal値、host Node、stack traceは記録しません。
+
+binding updateは`write`、`equal-skip`、`deferred`のoutcomeと、text / attribute / property / style write、insert / move /
+remove / replaceの件数を持ちます。scope attach / cleanupはその時点のmount-local active subscription / listener数を持ち、
+terminal cleanupは両方0まで戻ります。IDと件数はdiagnosticでありprogramから参照するidentityではありません。
+callbackを省略したproduction pathはtrace objectを生成せず、callback自身のfailureもevent順、DOM write、cleanup、typed
+failureを変えません。
+Inspectorを追加する場合もこのschemaを入力とし、別のPlayground専用semanticsを定義しません。
+
 互換用coarse updateはmanaged childrenを置換してもよく、一般のDOM node identityを保証しません。ただしevent受付と
 subscriptionの所有権を二重化せず、IME composition中の入力を破棄せず、対応するcontrolled controlを識別できる場合は
 focusとselectionを復元します。更新algorithmの違いでunmount、cancellation、cleanup、typed failureの意味を変えては
