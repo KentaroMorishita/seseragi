@@ -141,6 +141,7 @@
     {
       "module": "fixture/feature-module-lifetime::counter",
       "specifier": "./counter.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "create",

@@ -102,6 +102,7 @@
     {
       "module": "fixture/imported-maybe-either::operations",
       "specifier": "./operations.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "gather",

@@ -24,6 +24,7 @@
     {
       "module": "fixture/transitive-constrained-instance-dispatch::facade",
       "specifier": "./facade.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "report",

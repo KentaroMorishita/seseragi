@@ -10,6 +10,7 @@
     {
       "module": "fixture/imported-effect-console::effects",
       "specifier": "./effects.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "announce",

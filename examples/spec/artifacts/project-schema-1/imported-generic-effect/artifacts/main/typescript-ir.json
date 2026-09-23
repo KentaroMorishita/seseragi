@@ -17,6 +17,7 @@
     {
       "module": "fixture/imported-generic-effect::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "announce",

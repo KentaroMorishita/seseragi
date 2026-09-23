@@ -17,6 +17,7 @@
     {
       "module": "fixture/type-alias-modules::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "duplicate",

@@ -24,6 +24,7 @@
     {
       "module": "fixture/imported-constrained-instance-dispatch::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "report",

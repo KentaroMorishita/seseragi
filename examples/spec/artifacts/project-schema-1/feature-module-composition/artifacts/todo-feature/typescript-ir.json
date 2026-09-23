@@ -96,6 +96,7 @@
     {
       "module": "fixture/feature-module-composition::todo/form",
       "specifier": "./form.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "view",
@@ -119,6 +120,7 @@
     {
       "module": "fixture/feature-module-composition::todo/list",
       "specifier": "./list.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "view",

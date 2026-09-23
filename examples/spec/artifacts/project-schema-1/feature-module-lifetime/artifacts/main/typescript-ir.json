@@ -10,6 +10,7 @@
     {
       "module": "fixture/feature-module-lifetime::app",
       "specifier": "./app.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "start",
