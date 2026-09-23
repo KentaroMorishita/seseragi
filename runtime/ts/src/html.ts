@@ -1049,7 +1049,6 @@ function renderAttributes(
       ["textAnchor", "text-anchor"],
       ["dominantBaseline", "dominant-baseline"],
       ["pointerEvents", "pointer-events"],
-      ["ariaLabel", "aria-label"],
     ] as const) {
       stringAttribute(attributes, attribute, props[property])
     }
