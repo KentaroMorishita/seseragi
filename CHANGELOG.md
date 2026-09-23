@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.12] - 2026-09-23
+
+### Changed
+
+- #604 Web UI q0: `ElementRef`、型付きbinding target、細粒度更新、keyed region、pointer event control、DOM traceを一つの明示的なscene更新モデルとして追加
+
+### Fixed
+
+- release pruningが使用中のtype-only import先を保持しつつ、未使用の値importとそのモジュールを除去する
+
 ## [0.61.11] - 2026-09-13
 
 ### Fixed
