@@ -109,6 +109,7 @@ test("owns mount, hydration, coarse updates, cancellation, and cleanup in a brow
     keyedRegionBoundedMutations: true,
     keyedRegionCleanup: true,
     keyedRegionDiagnostics: true,
+    keyedSvgNamespacePreserved: true,
     typedBindingPreservedHydrationIdentity: true,
     typedBindingValuesUpdated: true,
     typedBindingMissingRefRejected: true,

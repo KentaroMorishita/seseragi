@@ -999,7 +999,7 @@ export function createBrowserDom(
             const focus = captureFocusedControl(element, document)
             const snapshot = renderForDom(tree)
             bindings.replace(snapshot)
-            const expected = domFragment(document, snapshot)
+            const expected = domFragment(document, snapshot, element)
             if (initialRender) {
               initialRender = false
               if (options.hydration.tag === "FreshMount") {
@@ -1048,7 +1048,7 @@ export function createBrowserDom(
             let disposed = false
             if (renderInitial) {
               const snapshot = renderForDom(value.initial, `${scope}-`)
-              const expected = domFragment(document, snapshot)
+              const expected = domFragment(document, snapshot, root)
               const beforeRemove = (node: Node): void => {
                 if (node.nodeType === 1) {
                   pointerLifecycle.releaseWithin(node as Element)
@@ -1645,8 +1645,19 @@ function updateControlValue(
 
 function domFragment<Action>(
   document: Document,
-  render: DomRender<Action>
+  render: DomRender<Action>,
+  context: Element
 ): DocumentFragment {
+  if (context.namespaceURI === "http://www.w3.org/2000/svg") {
+    const container = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    )
+    container.innerHTML = render.html
+    const fragment = document.createDocumentFragment()
+    fragment.append(...container.childNodes)
+    return fragment
+  }
   const template = document.createElement("template")
   template.innerHTML = render.html
   return template.content

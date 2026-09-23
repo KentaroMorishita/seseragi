@@ -834,6 +834,8 @@ SSRはkeyをattributeへ出しません。DOM backendはhydration時に一致し
 collection updateからserver node identityを再利用できます。このmarkerはselector、global ID、component / hidden state identity
 ではなく、region reconciliation専用です。keyed reconciliationはdirect siblingを一回走査し、retained nodeを必要な場合に一度
 moveするbounded algorithmであり、arbitrary whole-tree minimum editを保証しません。
+SVG ElementをtargetにするregionはfragmentをSVG namespace contextで構築し、insert / replace後もdirect childと子孫の
+namespaceを維持します。SVG fragmentだけをHTML parserへ渡してHTML unknown elementへ変換しません。
 
 Signal subscriberは5.13のtransaction commit後のstable valueだけを受け取ります。同一transactionの中間値をDOMへ
 公開しません。`Signal.distinct`が同値publicationを止めた場合はbinding callbackもDOM writeも発生せず、callbackが

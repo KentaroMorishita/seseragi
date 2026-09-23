@@ -52,7 +52,7 @@ import {
   update,
 } from "../../src/signal"
 import { Just, type Maybe } from "../../src/sum"
-import { rect, svg, toHtml, viewBoxTarget, xTarget } from "../../src/svg"
+import { g, rect, svg, toHtml, viewBoxTarget, xTarget } from "../../src/svg"
 
 declare global {
   interface Window {
@@ -77,6 +77,7 @@ declare global {
       readonly keyedRegionBoundedMutations: boolean
       readonly keyedRegionCleanup: boolean
       readonly keyedRegionDiagnostics: boolean
+      readonly keyedSvgNamespacePreserved: boolean
       readonly typedBindingPreservedHydrationIdentity: boolean
       readonly typedBindingValuesUpdated: boolean
       readonly typedBindingMissingRefRejected: boolean
@@ -579,6 +580,43 @@ const keyedRegionDiagnostics =
   duplicateKeyFailure.includes('duplicate key "same"') &&
   emptyKeyFailure.includes("keys must be non-empty Strings")
 
+const keyedSvgRoot = document.createElement("div")
+host.append(keyedSvgRoot)
+const keyedSvgChild = rect<string>({
+  key: "node",
+  id: "keyed-svg-node",
+  x: 1,
+  y: 2,
+  width: 3,
+  height: 4,
+})
+const keyedSvgRegion = reactiveContent<string>(
+  fragment([toHtml(keyedSvgChild)]),
+  []
+)
+const keyedSvgMounted = await run(
+  mountContent(
+    defaultOptions(unit),
+    createDomTarget(keyedSvgRoot),
+    () => async () => unit,
+    reactiveContent(
+      toHtml(
+        svg({
+          children: g({ id: "keyed-svg-region", children: [keyedSvgChild] }),
+        })
+      ),
+      [bindRegion<string>("#keyed-svg-region", constant(keyedSvgRegion))]
+    )
+  ),
+  { dom: createBrowserDom(document, () => undefined).service }
+)
+assert(keyedSvgMounted.kind === "success", "keyed SVG region must mount")
+const keyedSvgNode = keyedSvgRoot.querySelector("#keyed-svg-node")
+const keyedSvgNamespacePreserved =
+  keyedSvgNode?.namespaceURI === "http://www.w3.org/2000/svg" &&
+  keyedSvgNode.parentElement?.namespaceURI === "http://www.w3.org/2000/svg"
+await unmountTwice(keyedSvgMounted.value)
+
 const typedRoot = document.createElement("div")
 typedRoot.innerHTML =
   '<div><span>zero</span><button aria-expanded="false" type="button">toggle</button><svg viewBox="0 0 10 10"><rect x="0" y="0" width="5" height="5"></rect></svg></div>'
@@ -864,6 +902,7 @@ window.domLifecycleResult = Object.freeze({
   keyedRegionBoundedMutations,
   keyedRegionCleanup,
   keyedRegionDiagnostics,
+  keyedSvgNamespacePreserved,
   typedBindingPreservedHydrationIdentity,
   typedBindingValuesUpdated,
   typedBindingMissingRefRejected,
