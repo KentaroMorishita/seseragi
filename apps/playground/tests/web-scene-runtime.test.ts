@@ -80,7 +80,8 @@ test("snapshots move, cancel, and wheel events without retaining host events", (
         ctrlKey: true,
         metaKey: false,
         shiftKey: true,
-      }
+      },
+      { activePointerCount: 2 }
     )
   ).toMatchObject({
     kind: "dispatch",
@@ -89,6 +90,7 @@ test("snapshots move, cancel, and wheel events without retaining host events", (
       event: {
         pointerId: 7,
         pointerType: "pen",
+        activePointerCount: 2,
         clientX: 12,
         clientY: 34,
         pressure: 0.75,

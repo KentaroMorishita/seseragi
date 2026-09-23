@@ -128,11 +128,150 @@ export const BROWSER_DOM_EVENT_BINDINGS = /* @__PURE__ */ Object.freeze([
 export function applyDomEventResolution<Action>(
   event: Pick<Event, "preventDefault" | "stopPropagation">,
   resolution: DomEventResolution<Action>,
-  enqueue: (action: Action) => void
+  enqueue: (action: Action) => void,
+  applySynchronousControl: (
+    resolution: DomEventResolution<Action>
+  ) => void = () => {}
 ): void {
   if (resolution.preventDefault) event.preventDefault()
   if (resolution.stopPropagation) event.stopPropagation()
+  applySynchronousControl(resolution)
   if (resolution.kind === "dispatch") enqueue(resolution.action)
+}
+
+type PointerLifecycle = Readonly<{
+  readonly activeCount: () => number
+  readonly begin: (event: Event) => void
+  readonly end: (event: Event) => void
+  readonly applyControl: (
+    event: Event,
+    target: Element,
+    resolution: DomEventResolution<unknown>
+  ) => void
+  readonly finish: (event: Event) => void
+  readonly loseCapture: (event: Event) => void
+  readonly consumeCompatibilityClick: (event: Event) => boolean
+  readonly releaseWithin: (root: Element) => void
+  readonly prune: () => void
+  readonly clear: () => void
+}>
+
+function createPointerLifecycle(
+  document: Document,
+  mount: Element
+): PointerLifecycle {
+  const active = new Set<number>()
+  const captures = new Map<number, Element>()
+  const clickIntents = new Set<number>()
+  const pendingClicks = new Map<number, number>()
+
+  const pointerIdOf = (event: Event): number | undefined => {
+    const pointerId = (event as { readonly pointerId?: unknown }).pointerId
+    return typeof pointerId === "number" && Number.isInteger(pointerId)
+      ? pointerId
+      : undefined
+  }
+
+  const release = (pointerId: number): void => {
+    const target = captures.get(pointerId)
+    captures.delete(pointerId)
+    if (target === undefined) return
+    try {
+      if (target.isConnected) target.releasePointerCapture(pointerId)
+    } catch {
+      // Native capture can already be gone after removal or cancellation.
+    }
+  }
+
+  const forget = (pointerId: number): void => {
+    active.delete(pointerId)
+    clickIntents.delete(pointerId)
+    release(pointerId)
+  }
+
+  return Object.freeze({
+    activeCount: () => active.size,
+    begin(event) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId === undefined) return
+      const pendingClick = pendingClicks.get(pointerId)
+      if (pendingClick !== undefined) {
+        document.defaultView!.clearTimeout(pendingClick)
+        pendingClicks.delete(pointerId)
+      }
+      active.add(pointerId)
+    },
+    end(event) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId !== undefined) active.delete(pointerId)
+    },
+    applyControl(event, target, resolution) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId === undefined) return
+      if (resolution.pointerControl === "capture") {
+        const previous = captures.get(pointerId)
+        if (previous !== undefined && previous !== target) release(pointerId)
+        target.setPointerCapture(pointerId)
+        captures.set(pointerId, target)
+      } else if (resolution.pointerControl === "release") {
+        release(pointerId)
+      }
+      if (resolution.suppressCompatibilityClick === true) {
+        clickIntents.add(pointerId)
+      }
+    },
+    finish(event) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId === undefined) return
+      const suppressClick = clickIntents.delete(pointerId)
+      if (event.type === "pointerup" && suppressClick) {
+        const previous = pendingClicks.get(pointerId)
+        if (previous !== undefined) {
+          document.defaultView!.clearTimeout(previous)
+        }
+        const timer = document.defaultView!.setTimeout(() => {
+          pendingClicks.delete(pointerId)
+        }, 500)
+        pendingClicks.set(pointerId, timer)
+      }
+      release(pointerId)
+    },
+    loseCapture(event) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId === undefined) return
+      active.delete(pointerId)
+      clickIntents.delete(pointerId)
+      captures.delete(pointerId)
+    },
+    consumeCompatibilityClick(event) {
+      const pointerId = pointerIdOf(event)
+      if (pointerId === undefined) return false
+      const timer = pendingClicks.get(pointerId)
+      if (timer === undefined) return false
+      document.defaultView!.clearTimeout(timer)
+      pendingClicks.delete(pointerId)
+      return true
+    },
+    releaseWithin(root) {
+      for (const [pointerId, target] of [...captures]) {
+        if (root === target || root.contains(target)) forget(pointerId)
+      }
+    },
+    prune() {
+      for (const [pointerId, target] of [...captures]) {
+        if (!target.isConnected || !mount.contains(target)) forget(pointerId)
+      }
+    },
+    clear() {
+      for (const pointerId of [...captures.keys()]) release(pointerId)
+      for (const timer of pendingClicks.values()) {
+        document.defaultView!.clearTimeout(timer)
+      }
+      active.clear()
+      clickIntents.clear()
+      pendingClicks.clear()
+    },
+  })
 }
 
 export function createDomEventBindings<Action>(): DomEventBindings<Action> {
@@ -369,6 +508,8 @@ export function createBrowserDom(
           const bindings = createDomEventBindings<Action>()
           const ime = createImeInputCoordinator<HTMLElement>()
           const imeTimers = new Map<HTMLElement, number>()
+          const pointerLifecycle = createPointerLifecycle(document, element)
+
           const targetObserver = new document.defaultView!.MutationObserver(
             () => {
               if (!element.isConnected) {
@@ -378,7 +519,9 @@ export function createBrowserDom(
                     value: { tag: "DomTargetRemoved" },
                   })
                 )
+                return
               }
+              pointerLifecycle.prune()
             }
           )
 
@@ -402,6 +545,7 @@ export function createBrowserDom(
             imeTimers.clear()
             deferredLeafWrites.clear()
             ime.reset()
+            pointerLifecycle.clear()
             for (const [kind, listener, capture] of listeners) {
               element.removeEventListener(kind, listener, capture)
             }
@@ -467,6 +611,20 @@ export function createBrowserDom(
             element.addEventListener(kind, listener, capture)
             listeners.push([kind, listener, capture])
           }
+
+          listen("pointerdown", pointerLifecycle.begin, true)
+          listen("pointerup", pointerLifecycle.end, true)
+          listen("pointercancel", pointerLifecycle.end, true)
+          listen("lostpointercapture", pointerLifecycle.loseCapture, true)
+          listen(
+            "click",
+            (event) => {
+              if (!pointerLifecycle.consumeCompatibilityClick(event)) return
+              event.preventDefault()
+              event.stopImmediatePropagation()
+            },
+            true
+          )
 
           const inputHandler = (
             control: HTMLElement
@@ -562,12 +720,21 @@ export function createBrowserDom(
               }
               if (handlerKind === "submit" && ime.busy()) commitCompositions()
               try {
-                const resolution = resolveDomEvent(handler, matched, event)
-                applyDomEventResolution(event, resolution, (action) =>
-                  enqueue(
-                    action,
-                    handlerKind === "submit" ? flushDeferredRender : undefined
-                  )
+                const resolution = resolveDomEvent(handler, matched, event, {
+                  activePointerCount: pointerLifecycle.activeCount(),
+                })
+                applyDomEventResolution(
+                  event,
+                  resolution,
+                  (action) =>
+                    enqueue(
+                      action,
+                      handlerKind === "submit" ? flushDeferredRender : undefined
+                    ),
+                  (resolved) => {
+                    if (!handlerKind.startsWith("pointer")) return
+                    pointerLifecycle.applyControl(event, matched, resolved)
+                  }
                 )
               } catch (error) {
                 void finishDefect(error)
@@ -575,6 +742,12 @@ export function createBrowserDom(
             }
             listen(nativeKind, listener, capture)
           }
+
+          // Terminal cleanup runs after the delegated mapper/control listener.
+          // This keeps prevent/stop -> explicit control -> enqueue -> fallback
+          // release deterministic while still cleaning pointers with no up handler.
+          listen("pointerup", pointerLifecycle.finish)
+          listen("pointercancel", pointerLifecycle.finish)
 
           for (const kind of [
             "compositionstart",
@@ -631,6 +804,7 @@ export function createBrowserDom(
             if (initialRender) {
               initialRender = false
               if (options.hydration.tag === "FreshMount") {
+                pointerLifecycle.releaseWithin(element)
                 element.replaceChildren(expected.cloneNode(true))
               } else {
                 const mismatch = firstDomMismatch(
@@ -651,6 +825,7 @@ export function createBrowserDom(
                 attachHydratedChildren(element, expected)
               }
             } else {
+              pointerLifecycle.releaseWithin(element)
               element.replaceChildren(expected.cloneNode(true))
             }
             restoringFocus = true
@@ -682,6 +857,7 @@ export function createBrowserDom(
               if (mismatch === undefined) {
                 attachHydratedChildren(root, expected)
               } else {
+                pointerLifecycle.releaseWithin(root)
                 root.replaceChildren(expected.cloneNode(true))
               }
               bindings.set(scope, snapshot)

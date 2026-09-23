@@ -9234,6 +9234,7 @@ fn web_html_interface() -> ModuleInterface {
                 required("pointerId", named("Int")),
                 required("pointerType", named("String")),
                 required("isPrimary", named("Bool")),
+                required("activePointerCount", named("Int")),
                 required("button", named("Int")),
                 required("clientX", named("Float")),
                 required("clientY", named("Float")),
@@ -9378,6 +9379,39 @@ fn web_html_interface() -> ModuleInterface {
             Vec::new(),
             vec![named("String")],
             named_with("Either", vec![named("HtmlBuildError"), named("WebUrl")]),
+        ),
+        function_export(
+            "std/web/html",
+            "capturePointer",
+            ["Action"],
+            Vec::new(),
+            vec![
+                named("PointerEvent"),
+                named_with("EventAction", vec![named("Action")]),
+            ],
+            named_with("EventAction", vec![named("Action")]),
+        ),
+        function_export(
+            "std/web/html",
+            "releasePointer",
+            ["Action"],
+            Vec::new(),
+            vec![
+                named("PointerEvent"),
+                named_with("EventAction", vec![named("Action")]),
+            ],
+            named_with("EventAction", vec![named("Action")]),
+        ),
+        function_export(
+            "std/web/html",
+            "suppressCompatibilityClick",
+            ["Action"],
+            Vec::new(),
+            vec![
+                named("PointerEvent"),
+                named_with("EventAction", vec![named("Action")]),
+            ],
+            named_with("EventAction", vec![named("Action")]),
         ),
         function_export(
             "std/web/html",
@@ -12159,7 +12193,13 @@ mod tests {
         }
 
         let html = standard_module_target("std/web/html").unwrap();
-        for name in ["ElementRef", "elementRef"] {
+        for name in [
+            "ElementRef",
+            "elementRef",
+            "capturePointer",
+            "releasePointer",
+            "suppressCompatibilityClick",
+        ] {
             assert!(
                 html.interface()
                     .exports

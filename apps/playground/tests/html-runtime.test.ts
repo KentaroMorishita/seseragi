@@ -15,6 +15,7 @@ import {
   body,
   br,
   button,
+  capturePointer,
   type ChangeEvent,
   caption,
   code,
@@ -30,6 +31,7 @@ import {
   domEventPreventsDefault,
   elementRef,
   em,
+  type EventAction,
   type FileChangeEvent,
   fieldset,
   footer,
@@ -67,6 +69,7 @@ import {
   renderDocument,
   renderForDom,
   renderToString,
+  releasePointer,
   resolveDomEvent,
   type ScrollEvent,
   select,
@@ -76,6 +79,7 @@ import {
   strong,
   style,
   summary,
+  suppressCompatibilityClick,
   table,
   tbody,
   td,
@@ -1104,6 +1108,81 @@ describe("HTML browser runtime", () => {
     )
     expect(ignored.kind).toBe("ignore")
     expect(order).toHaveLength(4)
+  })
+
+  test("composes pointer controls and applies them before enqueue", () => {
+    const order: string[] = []
+    let publicAction: EventAction<string> | undefined
+    let pointerSnapshot: PointerEvent | undefined
+    const rendered = renderForDom(
+      div<string>({
+        onPointerDown: (event) => {
+          const action = suppressCompatibilityClick(
+            event,
+            capturePointer(
+              event,
+              DispatchPreventDefaultAndStop(
+                `start:${event.pointerId}:${event.activePointerCount}`
+              )
+            )
+          )
+          publicAction = action
+          pointerSnapshot = event
+          return action
+        },
+        onPointerUp: (event: PointerEvent) =>
+          releasePointer(event, Dispatch("end")),
+        children: "Controlled pointer",
+      })
+    )
+    const down = resolveDomEvent(
+      rendered.eventHandlers.get("0")!,
+      {},
+      {
+        pointerId: 7,
+        pointerType: "pen",
+        isPrimary: true,
+        button: 0,
+        clientX: 0,
+        clientY: 0,
+        pressure: 0.5,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: false,
+      },
+      { activePointerCount: 2 }
+    )
+    expect(publicAction).toEqual({
+      tag: "DispatchPreventDefaultAndStop",
+      value: "start:7:2",
+    })
+    expect(() =>
+      capturePointer({ ...pointerSnapshot! }, publicAction!)
+    ).toThrow("DOM event controls must use one PointerEvent snapshot")
+    expect(down).toMatchObject({
+      kind: "dispatch",
+      action: "start:7:2",
+      preventDefault: true,
+      stopPropagation: true,
+      pointerControl: "capture",
+      suppressCompatibilityClick: true,
+    })
+    applyDomEventResolution(
+      {
+        preventDefault: () => order.push("preventDefault"),
+        stopPropagation: () => order.push("stopPropagation"),
+      },
+      down,
+      (action) => order.push(`enqueue:${action}`),
+      (resolution) => order.push(`control:${resolution.pointerControl}`)
+    )
+    expect(order).toEqual([
+      "preventDefault",
+      "stopPropagation",
+      "control:capture",
+      "enqueue:start:7:2",
+    ])
   })
 
   test("captures scroll events and preserves click control compatibility", () => {

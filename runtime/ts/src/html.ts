@@ -101,6 +101,8 @@ export type PointerEvent = Readonly<{
   readonly pointerId: number
   readonly pointerType: string
   readonly isPrimary: boolean
+  /** Active pointers in this mount after applying the current lifecycle edge. */
+  readonly activePointerCount: number
   readonly button: number
   readonly clientX: number
   readonly clientY: number
@@ -146,6 +148,14 @@ export type EventAction<Action> =
       readonly value: Action
     }>
 
+type EventControl = Readonly<{
+  readonly event: PointerEvent
+  readonly pointerControl?: "capture" | "release"
+  readonly suppressCompatibilityClick?: true
+}>
+
+const eventControls = new WeakMap<object, EventControl>()
+
 export const IgnoreEvent: EventAction<never> = /* @__PURE__ */ Object.freeze({
   tag: "IgnoreEvent",
 })
@@ -163,6 +173,55 @@ export const DispatchPreventDefaultAndStop = <Action>(
   value: Action
 ): EventAction<Action> =>
   Object.freeze({ tag: "DispatchPreventDefaultAndStop", value })
+
+/** Capture this pointer on the logical event current target during dispatch. */
+export function capturePointer<Action>(
+  event: PointerEvent,
+  action: EventAction<Action>
+): EventAction<Action> {
+  return controlEvent(event, action, { pointerControl: "capture" })
+}
+
+/** Release this pointer from the logical event current target during dispatch. */
+export function releasePointer<Action>(
+  event: PointerEvent,
+  action: EventAction<Action>
+): EventAction<Action> {
+  return controlEvent(event, action, { pointerControl: "release" })
+}
+
+/** Suppress the compatibility click produced after this pointer lifecycle. */
+export function suppressCompatibilityClick<Action>(
+  event: PointerEvent,
+  action: EventAction<Action>
+): EventAction<Action> {
+  return controlEvent(event, action, { suppressCompatibilityClick: true })
+}
+
+function controlEvent<Action>(
+  event: PointerEvent,
+  action: EventAction<Action>,
+  control: Readonly<{
+    readonly pointerControl?: "capture" | "release"
+    readonly suppressCompatibilityClick?: true
+  }>
+): EventAction<Action> {
+  if (typeof action !== "object" || action === null) {
+    throw new TypeError("DOM event controls require html.EventAction")
+  }
+  eventTargetInt("pointerId", event)
+  const previous = eventControls.get(action)
+  if (previous !== undefined && previous.event !== event) {
+    throw new TypeError("DOM event controls must use one PointerEvent snapshot")
+  }
+  const controlled = Object.freeze({ ...action }) as EventAction<Action>
+  eventControls.set(controlled, {
+    ...previous,
+    event,
+    ...control,
+  })
+  return controlled
+}
 
 export type HtmlBuildError =
   | Readonly<{ readonly tag: "InvalidTagName"; readonly value: string }>
@@ -252,13 +311,21 @@ export type DomEventResolution<Action> =
       readonly kind: "ignore"
       readonly preventDefault: false
       readonly stopPropagation: false
+      readonly pointerControl?: "capture" | "release"
+      readonly suppressCompatibilityClick?: true
     }>
   | Readonly<{
       readonly kind: "dispatch"
       readonly action: Action
       readonly preventDefault: boolean
       readonly stopPropagation: boolean
+      readonly pointerControl?: "capture" | "release"
+      readonly suppressCompatibilityClick?: true
     }>
+
+export type DomEventContext = Readonly<{
+  readonly activePointerCount?: number
+}>
 
 export type DomRender<Action> = Readonly<{
   readonly html: string
@@ -1107,7 +1174,8 @@ export function messageFromDomEvent<Action>(
 export function resolveDomEvent<Action>(
   handler: DomEventHandler<Action>,
   target: unknown,
-  event: unknown = target
+  event: unknown = target,
+  context: DomEventContext = {}
 ): DomEventResolution<Action> {
   switch (handler.kind) {
     case "click":
@@ -1132,8 +1200,13 @@ export function resolveDomEvent<Action>(
     case "pointerdown":
     case "pointermove":
     case "pointerup":
-    case "pointercancel":
-      return resolveEventAction(handler.map(pointerEventSnapshot(event)))
+    case "pointercancel": {
+      const snapshot = pointerEventSnapshot(
+        event,
+        context.activePointerCount ?? 0
+      )
+      return resolveEventAction(handler.map(snapshot), snapshot)
+    }
     case "wheel":
       return resolveEventAction(handler.map(wheelEventSnapshot(event)))
     case "scroll":
@@ -1197,29 +1270,55 @@ function dispatchResolution<Action>(
 }
 
 function resolveEventAction<Action>(
-  value: EventAction<Action>
+  value: EventAction<Action>,
+  pointerEvent?: PointerEvent
 ): DomEventResolution<Action> {
   if (typeof value !== "object" || value === null) {
     throw new TypeError("DOM event mappers must return html.EventAction")
   }
+  let resolution: DomEventResolution<Action>
   switch (value.tag) {
     case "IgnoreEvent":
-      return Object.freeze({
+      resolution = Object.freeze({
         kind: "ignore",
         preventDefault: false,
         stopPropagation: false,
       })
+      break
     case "Dispatch":
-      return dispatchResolution(value.value)
+      resolution = dispatchResolution(value.value)
+      break
     case "DispatchPreventDefault":
-      return dispatchResolution(value.value, true)
+      resolution = dispatchResolution(value.value, true)
+      break
     case "DispatchStopPropagation":
-      return dispatchResolution(value.value, false, true)
+      resolution = dispatchResolution(value.value, false, true)
+      break
     case "DispatchPreventDefaultAndStop":
-      return dispatchResolution(value.value, true, true)
+      resolution = dispatchResolution(value.value, true, true)
+      break
     default:
       throw new TypeError("DOM event mapper returned an unknown EventAction")
   }
+  const control = eventControls.get(value)
+  if (control === undefined) return resolution
+  if (pointerEvent === undefined) {
+    throw new TypeError("pointer event controls require a pointer handler")
+  }
+  if (control.event !== pointerEvent) {
+    throw new TypeError(
+      "pointer event controls must use the current PointerEvent snapshot"
+    )
+  }
+  return Object.freeze({
+    ...resolution,
+    ...(control.pointerControl === undefined
+      ? {}
+      : { pointerControl: control.pointerControl }),
+    ...(control.suppressCompatibilityClick === true
+      ? { suppressCompatibilityClick: true as const }
+      : {}),
+  })
 }
 
 function mouseEventSnapshot(event: unknown): MouseEvent {
@@ -1231,11 +1330,15 @@ function mouseEventSnapshot(event: unknown): MouseEvent {
   })
 }
 
-function pointerEventSnapshot(event: unknown): PointerEvent {
+function pointerEventSnapshot(
+  event: unknown,
+  activePointerCount: number
+): PointerEvent {
   return Object.freeze({
     pointerId: eventTargetInt("pointerId", event),
     pointerType: eventTargetString("pointerType", event),
     isPrimary: eventTargetBoolean("isPrimary", event),
+    activePointerCount,
     button: eventTargetInt("button", event),
     clientX: eventTargetNumber("clientX", event),
     clientY: eventTargetNumber("clientY", event),

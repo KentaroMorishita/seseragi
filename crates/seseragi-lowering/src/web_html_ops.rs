@@ -149,6 +149,21 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
         "_ssrg_html_DispatchPreventDefaultAndStop"
     ),
     operation!(
+        "capturePointer",
+        "web.html.event.capture-pointer",
+        "_ssrg_html_capturePointer"
+    ),
+    operation!(
+        "releasePointer",
+        "web.html.event.release-pointer",
+        "_ssrg_html_releasePointer"
+    ),
+    operation!(
+        "suppressCompatibilityClick",
+        "web.html.event.suppress-compatibility-click",
+        "_ssrg_html_suppressCompatibilityClick"
+    ),
+    operation!(
         "InvalidTagName",
         "web.html.error.invalid-tag-name",
         "_ssrg_html_InvalidTagName"

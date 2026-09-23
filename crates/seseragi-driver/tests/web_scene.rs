@@ -16,8 +16,9 @@ fn compiles_svg_pointer_wheel_and_dom_measurement_from_one_standard_contract() {
     for expected in [
         "@seseragi/runtime/svg",
         "_ssrg_svg_toHtml",
-        "_ssrg_dom_capturePointer",
-        "_ssrg_dom_releasePointer",
+        "_ssrg_html_capturePointer",
+        "_ssrg_html_releasePointer",
+        "_ssrg_html_suppressCompatibilityClick",
         "_ssrg_dom_measure",
         "_ssrg_dom_observeResize",
         "_ssrg_dom_disconnect",
@@ -27,6 +28,8 @@ fn compiles_svg_pointer_wheel_and_dom_measurement_from_one_standard_contract() {
             "missing {expected}\n{typescript}"
         );
     }
+    assert!(!typescript.contains("_ssrg_dom_capturePointer"));
+    assert!(!typescript.contains("_ssrg_dom_releasePointer"));
 }
 
 #[test]
@@ -110,6 +113,7 @@ pub fn invalid source: signals.Signal<Bool> -> dom.DomBinding<Action> = {
   let target = html.elementRef "target"
   dom.bind (dom.textTarget target) source
 }
+
 "#;
     let diagnostics = compile_module(CompileInput::new(
         "invalid-typed-binding.ssrg",
@@ -125,6 +129,35 @@ pub fn invalid source: signals.Signal<Bool> -> dom.DomBinding<Action> = {
             .any(|diagnostic| diagnostic.code == "SES-T0101"),
         "{diagnostics:?}"
     );
+    assert!(diagnostics
+        .diagnostics
+        .iter()
+        .all(|diagnostic| diagnostic.code != "SES-P0001"));
+}
+
+#[test]
+fn rejects_pointer_control_from_a_non_pointer_event_mapper() {
+    let source = r#"
+import * as html from "std/web/html"
+
+type Action =
+  | Submitted
+
+pub fn invalid event: html.KeyboardEvent -> html.EventAction<Action> =
+  html.Dispatch Submitted
+  |> html.capturePointer event
+"#;
+    let diagnostics = compile_module(CompileInput::new(
+        "invalid-pointer-control.ssrg",
+        "fixture/invalid-pointer-control",
+        source,
+    ))
+    .expect_err("pointer control must require a PointerEvent snapshot");
+
+    assert!(diagnostics
+        .diagnostics
+        .iter()
+        .any(|diagnostic| diagnostic.code == "SES-T0101"));
     assert!(diagnostics
         .diagnostics
         .iter()

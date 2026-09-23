@@ -5,10 +5,10 @@ import * as signals from "std/signal"
 import * as svg from "std/web/svg"
 
 type Action =
-  | PointerStarted (Int, Float, Float)
+  | PointerStarted (Int, Float, Float, Int)
   | PointerMoved (Int, Float, Float)
-  | PointerEnded Int
-  | PointerCancelled Int
+  | PointerEnded (Int, Int)
+  | PointerCancelled (Int, Int)
   | Wheeled Float
   | Resized dom.ElementRect
   | Stop
@@ -36,11 +36,14 @@ let initialState = SceneState {
 }
 
 fn pointerStarted event: html.PointerEvent -> html.EventAction<Action> =
-  html.DispatchPreventDefault (PointerStarted (
+  html.DispatchPreventDefaultAndStop (PointerStarted (
     event.pointerId,
     event.clientX,
-    event.clientY
+    event.clientY,
+    event.activePointerCount
   ))
+  |> html.capturePointer event
+  |> html.suppressCompatibilityClick event
 
 fn pointerMoved event: html.PointerEvent -> html.EventAction<Action> =
   html.DispatchPreventDefault (PointerMoved (
@@ -50,20 +53,22 @@ fn pointerMoved event: html.PointerEvent -> html.EventAction<Action> =
   ))
 
 fn pointerEnded event: html.PointerEvent -> html.EventAction<Action> =
-  html.Dispatch (PointerEnded event.pointerId)
+  html.Dispatch (PointerEnded (event.pointerId, event.activePointerCount))
+  |> html.releasePointer event
 
 fn pointerCancelled event: html.PointerEvent -> html.EventAction<Action> =
-  html.Dispatch (PointerCancelled event.pointerId)
+  html.Dispatch (PointerCancelled (event.pointerId, event.activePointerCount))
+  |> html.releasePointer event
 
 fn wheeled event: html.WheelEvent -> html.EventAction<Action> =
   html.DispatchPreventDefault (Wheeled event.deltaY)
 
 fn reduce action: Action -> state: SceneState -> SceneState = match action {
-  PointerStarted (_pointerId, clientX, clientY) -> SceneState {
+  PointerStarted (_pointerId, clientX, clientY, activePointers) -> SceneState {
     ...state,
     x: clientX,
     y: clientY,
-    activePointers: state.activePointers + 1,
+    activePointers,
     cancelled: False
   }
   PointerMoved (_pointerId, clientX, clientY) ->
@@ -71,19 +76,15 @@ fn reduce action: Action -> state: SceneState -> SceneState = match action {
       SceneState { ...state, zoom: state.zoom + 0.25 }
     else
       SceneState { ...state, x: clientX, y: clientY }
-  PointerEnded _pointerId -> SceneState {
+  PointerEnded (_pointerId, activePointers) -> SceneState {
     ...state,
     committedX: state.x,
-    activePointers:
-      if state.activePointers > 0 then
-        state.activePointers - 1
-      else
-        0
+    activePointers
   }
-  PointerCancelled _pointerId -> SceneState {
+  PointerCancelled (_pointerId, activePointers) -> SceneState {
     ...state,
     x: state.committedX,
-    activePointers: 0,
+    activePointers,
     cancelled: True
   }
   Wheeled deltaY -> SceneState { ...state, zoom: state.zoom - deltaY / 100.0 }
@@ -102,21 +103,6 @@ fn dispatch state: signals.MutableSignal<SceneState>
   -> action: Action
   -> Effect<{ dom: dom.Dom }, dom.DomError, Unit> =
   match action {
-    PointerStarted (pointerId, _x, _y) -> do {
-      target <- dom.query "#scene"
-      dom.capturePointer target pointerId
-      updateState state action
-    }
-    PointerEnded pointerId -> do {
-      target <- dom.query "#scene"
-      dom.releasePointer target pointerId
-      updateState state action
-    }
-    PointerCancelled pointerId -> do {
-      target <- dom.query "#scene"
-      dom.releasePointer target pointerId
-      updateState state action
-    }
     Stop -> effects.fail (dom.DomOperationFailed "stop requested")
     _ -> updateState state action
   }

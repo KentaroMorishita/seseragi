@@ -442,6 +442,7 @@ opaque struct PointerEvent {
   pointerId: Int,
   pointerType: String,
   isPrimary: Bool,
+  activePointerCount: Int,
   button: Int,
   clientX: Float,
   clientY: Float,
@@ -463,6 +464,10 @@ type EventAction<Action> =
   | DispatchPreventDefault Action
   | DispatchStopPropagation Action
   | DispatchPreventDefaultAndStop Action
+
+fn capturePointer event: PointerEvent -> action: EventAction<Action> -> EventAction<Action>
+fn releasePointer event: PointerEvent -> action: EventAction<Action> -> EventAction<Action>
+fn suppressCompatibilityClick event: PointerEvent -> action: EventAction<Action> -> EventAction<Action>
 ```
 
 `onFocus: action`と`onBlur: action`は、bubbleする`focusin` / `focusout`をruntime内で正規化してActionをqueueへ
@@ -474,10 +479,19 @@ mapperへ渡します。snapshotはhost DOM Eventを保持せず、currentTarget
 `pointerType`はbrowserのPointer Events contractを保った`"mouse"`、`"touch"`、`"pen"`を通常値とします。runtimeは
 pointer eventをmouse eventへ合成し直さず、同じpointer snapshot contractをdesktop browserとiOS Safariで使います。
 pointer eventを提供しないbrowserではpointer handlerは発火せず、click / mouse handlerのcontractは独立して維持します。
+`activePointerCount`はmount単位のactive pointer数です。pointerdown snapshotには現在のpointerを含み、pointerup / pointercancel
+snapshotでは現在のpointerを除きます。mouse / touch / penを同じledgerで数え、pointer IDごとに独立して管理します。
 scroll eventはbubbleしないためDOM rootのcapture listenerで観測しますが、mapperへ渡すoffsetはmarkerを持つcurrent targetの値です。
 
-event mapperはnative listener内で同期的に一度だけ評価します。結果が`IgnoreEvent`ならbrowser制御もAction dispatchも行いません。
+event mapperはnative listener内で同期的に一度だけ評価します。modifierを付けない`IgnoreEvent`ならbrowser制御も
+Action dispatchも行いません。
 ほかのconstructorでは、指定された`preventDefault`、`stopPropagation`の順に同期実行してからActionをqueueへ入れます。
+pointer handlerではmapperが受け取った`PointerEvent`を渡して`capturePointer` / `releasePointer`をEventActionへ合成できます。
+非pointer mapperはこの引数を作れないため、誤用は型検査で拒否します。runtimeは
+`preventDefault`、`stopPropagation`、pointer control、Action enqueueの順に、すべてnative event dispatch中に実行します。
+capture対象はhandler markerを持つlogical current targetで、selector、host Event、host Elementを公開しません。
+これらのmodifierをkeyboard、mouse、wheel等の非pointer handlerから返すことはruntime contract違反です。
+`suppressCompatibilityClick`は同じpointer lifecycleの終了後500ms以内に届くcompatibility clickを一度だけ抑制します。
 `onClick: action`は互換性のため直接Actionを受け取り、`preventClickDefault`と`stopClickPropagation`の省略値はfalseです。
 これらのclick制御fieldは`onClick`が存在するときだけ使います。`onSubmit`は従来どおり常にdefaultを同期的に防ぎます。
 Actionとして`Task<Unit>`を使う場合も同じ契約です。SSRはevent handlerや制御fieldをattributeへ出力しません。
@@ -923,6 +937,12 @@ wheel mapperはnative listener内で同期評価し、`DispatchPreventDefault`�
 enqueue前に適用します。pointer move/cancelとwheel handlerはSSR attributeへ出力せず、mount中の
 delegated listener tableだけに存在します。
 
+pointer captureはevent-time controlです。`html.capturePointer`を付けたpointerdownはAction queueを待たずcurrent targetへ
+captureを設定します。`html.releasePointer`は同じdispatch中に明示解除し、pointerup / pointercancelではmodifierの有無にかかわらず
+mountが残存captureを解除します。`lostpointercapture`、captured targetのremoval / replacement、mount unmountでもpointer ledgerと
+capture ownershipを破棄します。targetが接続中ならnative releaseを一度だけ試み、既にbrowserがcaptureを失った場合は二重releaseしません。
+複数pointerのcaptureとclick抑制tokenはpointer IDごとに分離します。
+
 `std/web/dom`はscene interactionに必要なhost操作を明示Effectとして提供します。
 
 ```seseragi
@@ -940,6 +960,10 @@ fn awaitObservation observation: DomObservation<Failure>
 fn disconnect observation: DomObservation<Failure>
   -> Effect<{}, Never, Unit>
 ```
+
+`dom.capturePointer` / `dom.releasePointer`は既存のEffect APIとして互換維持します。外部commandやnative dispatchと同じtickで
+完了する必要がない操作には引き続き使えますが、event Action queue後に実行されるためpointerdownの同期captureには使いません。
+pointer gesture開始には`html.capturePointer`を使い、Effect APIを同期制御の代替として扱わないことが移行contractです。
 
 `ElementRect`は一回の`getBoundingClientRect`から`x`、`y`、`width`、`height`、`top`、`right`、
 `bottom`、`left`をimmutable snapshotにします。`observeResize`は一つの`DomTarget`だけを観測し、
