@@ -144,6 +144,7 @@ pub(super) fn lower_module_imports(
                     );
                 }
                 "type" if referenced_types.names.contains(&import.local) => {
+                    group.runtime_edge = true;
                     let local = safe_identifier(&import.local);
                     if !used_types.insert(local.clone())
                         && !group.bindings.iter().any(|binding| {
@@ -194,7 +195,6 @@ pub(super) fn lower_module_imports(
 }
 
 fn push_binding(group: &mut TypeScriptSourceImport, binding: TypeScriptSourceImportBinding) {
-    group.runtime_edge |= binding.type_only;
     if let Some(existing) = group.bindings.iter_mut().find(|existing| {
         existing.imported == binding.imported
             && existing.local == binding.local

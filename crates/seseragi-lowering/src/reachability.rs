@@ -7,7 +7,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 type Node = (String, String);
 type Names = BTreeSet<String>;
-const MODULE_LOAD: &str = "$module-load";
+const MODULE_OUTPUT: &str = "$module-output";
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -132,21 +132,17 @@ pub fn retain_application(
             }
         }
     }
-    // A surviving type-only import still emits a side-effect import so the
-    // defining module is present at runtime. Attach that load edge to the type
-    // binding itself: a dead named import must not retain its whole module.
-    // Namespace-only dependencies have no binding node, so their load edge is
-    // attached to each declaration in the importing module instead. The
-    // synthetic node is intentionally not a definition: it retains the output
-    // file without polluting the public reachability report or keeping
-    // otherwise dead declarations in that module.
+    // A surviving type-only import still needs its defining output file for
+    // TypeScript module resolution, even when the import has no runtime edge.
+    // Attach that output edge to the type binding itself: a dead named import
+    // must not retain its whole module. Namespace-only runtime dependencies
+    // have no binding node, so their output edge is attached to each
+    // declaration in the importing module instead. The synthetic node is
+    // intentionally not a definition: it retains the file without polluting
+    // the public reachability report or keeping otherwise dead declarations.
     for (id, module) in modules.iter() {
-        for import in module
-            .source_imports
-            .iter()
-            .filter(|import| import.runtime_edge)
-        {
-            let target = (import.module.clone(), MODULE_LOAD.to_owned());
+        for import in &module.source_imports {
+            let target = (import.module.clone(), MODULE_OUTPUT.to_owned());
             let bindings = import.bindings.iter().chain(&import.reexports);
             let mut has_binding = false;
             for binding in bindings {
@@ -158,7 +154,7 @@ pub fn retain_application(
                         .insert(target.clone());
                 }
             }
-            if !has_binding {
+            if !has_binding && import.runtime_edge {
                 for definition in definitions.iter().filter(|(module, _)| module == id) {
                     edges
                         .entry(definition.clone())
@@ -649,7 +645,7 @@ mod tests {
         assert!(modules.values().all(|module| module.functions.len() == 1));
     }
     #[test]
-    fn keeps_runtime_edge_targets_after_their_declarations_are_pruned() {
+    fn keeps_type_import_targets_after_their_declarations_are_pruned() {
         let mut main = module("main");
         main.module = "main".to_owned();
         let origin = match &mut main.functions[0] {
@@ -663,7 +659,7 @@ mod tests {
         main.source_imports.push(TypeScriptSourceImport {
             module: "types".to_owned(),
             specifier: "./types.js".to_owned(),
-            runtime_edge: true,
+            runtime_edge: false,
             bindings: vec![TypeScriptSourceImportBinding {
                 imported: "Model".to_owned(),
                 local: "Model".to_owned(),

@@ -53,6 +53,7 @@
     {
       "module": "fixture/transitive-instance-dispatch::provider",
       "specifier": "./provider.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "__ssrg$instance$Ready$0",
