@@ -10480,6 +10480,19 @@
       ]
     },
     {
+      "identity": "std/web/html::capturePointer",
+      "name": "capturePointer",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "capturePointer<Action> arg1: PointerEvent -> arg2: EventAction<Action> -> EventAction<Action>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::code",
       "name": "code",
       "module": "std/web/html",
@@ -11042,6 +11055,19 @@
       ]
     },
     {
+      "identity": "std/web/html::releasePointer",
+      "name": "releasePointer",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "releasePointer<Action> arg1: PointerEvent -> arg2: EventAction<Action> -> EventAction<Action>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::renderDocument",
       "name": "renderDocument",
       "module": "std/web/html",
@@ -11190,6 +11216,19 @@
       "constraints": [
         "IntoChildren<C, Action>"
       ]
+    },
+    {
+      "identity": "std/web/html::suppressCompatibilityClick",
+      "name": "suppressCompatibilityClick",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "suppressCompatibilityClick<Action> arg1: PointerEvent -> arg2: EventAction<Action> -> EventAction<Action>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
     },
     {
       "identity": "std/web/html::table",
