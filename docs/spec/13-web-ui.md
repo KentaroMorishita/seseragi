@@ -548,9 +548,9 @@ Html treeはnamespace、tag、normalized props、ordered childrenを持ちます
 runtime treeに残らず、component local stateやmount hookを暗黙生成しません。
 
 keyはparent直下のstructural regionがidentityを対応付けるためのhintで、HTML attributeではありません。pure treeと
-SSRはkeyを保持または無視できます。keyの一意性、keyed nodeの移動、keyがないnodeの対応規則はglobal Html treeの
-semanticsではなく、reactive structural regionを定義する13.10の拡張surfaceが所有します。keyをglobal ID、CSS
-selector、component identity、component stateの暗黙identityとして使いません。
+DOM snapshotはkeyを保持しますが、SSR出力には含めません。keyの一意性、keyed nodeの移動、keyがないnodeの対応規則は
+global Html treeのsemanticsではなく、reactive structural regionを定義する13.10の拡張surfaceが所有します。keyを
+global ID、CSS selector、component identity、component stateの暗黙identityとして使いません。
 
 ### 13.6.1 stateful featureのmodule所有境界
 
@@ -820,8 +820,20 @@ bindRegionのSignal値は入れ子の`DomContent<Action>`です。region target 
 current contentのinitial Htmlへ切り替え、入れ子bindingとevent handlerを同じscopeへ接続します。切替時は旧contentの
 subscriptionとevent bindingを解除してから新contentを接続し、region外node identityとlistenerを維持します。initial
 attachment時に既存childrenがinitial Htmlと一致する場合はnodeを再利用します。現surfaceはregion-local childrenを一つの
-structural valueとして扱い、`key`によるcollection diffを行いません。将来keyed collection surfaceを追加する場合もkeyは
-そのregion内のsibling identityだけを表し、global component / state identityにはなりません。
+structural valueとして扱いますが、direct childrenがすべて`key`を持つ場合はregion-local keyed collectionとしてbounded
+reconciliationを行います。keyが一つもない場合は従来どおりcoarse replacementです。一つでもkeyがある場合はすべてのdirect
+childがkey付きElementでなければならず、空key、重複key、keyed / unkeyed混在は`DomOperationFailed`です。
+
+keyは現在のregion内だけで一意なsibling identityです。同じkeyかつ同じnamespace / tagのElementはinsert、remove、move、
+attribute / child更新をまたいでhost node identityを維持し、期待順へ既存nodeを移動します。同じkeyでもnamespaceまたはtagが
+変わる場合は別nodeへ置換します。retained nodeのevent markerは現在のhandler tableへ更新し、focus、text selection、IME、
+pointer captureはそのnodeが保持される限り維持します。削除・置換nodeのcaptureと旧region scopeのbinding、listener、
+subscription、nested resourceは新scopeを接続する前に一度だけcleanupします。
+
+SSRはkeyをattributeへ出しません。DOM backendはhydration時に一致したdirect childへ内部key markerを対応付けるため、最初の
+collection updateからserver node identityを再利用できます。このmarkerはselector、global ID、component / hidden state identity
+ではなく、region reconciliation専用です。keyed reconciliationはdirect siblingを一回走査し、retained nodeを必要な場合に一度
+moveするbounded algorithmであり、arbitrary whole-tree minimum editを保証しません。
 
 Signal subscriberは5.13のtransaction commit後のstable valueだけを受け取ります。同一transactionの中間値をDOMへ
 公開しません。`Signal.distinct`が同値publicationを止めた場合はbinding callbackもDOM writeも発生せず、callbackが

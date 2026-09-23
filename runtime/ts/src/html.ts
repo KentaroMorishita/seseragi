@@ -752,7 +752,8 @@ function renderDomNode<Action>(
         value.tag,
         value.props,
         markers,
-        registerElementRef(value.props, elementRefs)
+        registerElementRef(value.props, elementRefs),
+        registerDomKey(value.props)
       )
       const opening = `<${value.tag}${attributes}>`
       if (value.voidElement) return opening
@@ -763,6 +764,16 @@ function renderDomNode<Action>(
         .join("")}</${value.tag}>`
     }
   }
+}
+
+function registerDomKey(
+  props: Readonly<Record<string, unknown>>
+): string | undefined {
+  if (!Object.hasOwn(props, "key")) return undefined
+  if (typeof props.key !== "string") {
+    throw new TypeError("HTML key must be a String")
+  }
+  return props.key
 }
 
 function registerElementRef(
@@ -965,11 +976,15 @@ function renderAttributes(
   tagName: string,
   props: Readonly<Record<string, unknown>>,
   eventMarkers: Readonly<Record<string, string>> = {},
-  elementRefMarker?: string
+  elementRefMarker?: string,
+  keyMarker?: string
 ): string {
   const attributes: string[] = []
   if (elementRefMarker !== undefined) {
     attributes.push(`data-ssrg-ref="${escapeAttribute(elementRefMarker)}"`)
+  }
+  if (keyMarker !== undefined) {
+    attributes.push(`data-ssrg-key="${escapeAttribute(keyMarker)}"`)
   }
   stringAttribute(attributes, "id", props.id)
   stringAttribute(attributes, "class", props.class)

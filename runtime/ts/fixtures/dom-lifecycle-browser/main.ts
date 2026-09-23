@@ -71,6 +71,12 @@ declare global {
       readonly reactiveDistinctSkippedWrite: boolean
       readonly reactiveHydrationPreservedIdentity: boolean
       readonly reactiveUnmountStoppedUpdates: boolean
+      readonly keyedRegionHydrationPreservedIdentity: boolean
+      readonly keyedRegionPreservedIdentity: boolean
+      readonly keyedRegionFocusSelection: boolean
+      readonly keyedRegionBoundedMutations: boolean
+      readonly keyedRegionCleanup: boolean
+      readonly keyedRegionDiagnostics: boolean
       readonly typedBindingPreservedHydrationIdentity: boolean
       readonly typedBindingValuesUpdated: boolean
       readonly typedBindingMissingRefRejected: boolean
@@ -395,6 +401,184 @@ const reactiveUnmountStoppedUpdates = boundText.textContent === "one"
 distinctObserver.disconnect()
 transactionObserver.disconnect()
 
+const keyedRoot = document.createElement("div")
+keyedRoot.innerHTML =
+  '<div><div id="keyed-region"><input id="key-a" value="abcdef" type="text"><button id="key-b" type="button">Beta</button><p id="key-c">Gamma</p></div></div>'
+host.append(keyedRoot)
+const hydratedKeyA = keyedRoot.querySelector<HTMLInputElement>("#key-a")
+const hydratedKeyB = keyedRoot.querySelector<HTMLButtonElement>("#key-b")
+const hydratedKeyC = keyedRoot.querySelector<HTMLElement>("#key-c")
+const keyedTextSource = await effectValue<MutableSignal<string>>(make("Beta"))
+const initialKeyedRegion = reactiveContent<string>(
+  fragment([
+    input({ key: "a", id: "key-a", value: "abcdef" }),
+    button({
+      key: "b",
+      id: "key-b",
+      onClick: "before",
+      children: "Beta",
+    }),
+    p({ key: "c", id: "key-c", children: "Gamma" }),
+  ]),
+  [bindText<string>("#key-b", keyedTextSource)]
+)
+const keyedRegionSource = await effectValue<MutableSignal<DomContent<string>>>(
+  make(initialKeyedRegion)
+)
+const keyedDispatches: string[] = []
+const keyedInitial = div<string>({
+  children: div({
+    id: "keyed-region",
+    children: [
+      input({ key: "a", id: "key-a", value: "abcdef" }),
+      button({
+        key: "b",
+        id: "key-b",
+        onClick: "before",
+        children: "Beta",
+      }),
+      p({ key: "c", id: "key-c", children: "Gamma" }),
+    ],
+  }),
+})
+const keyedMounted = await run(
+  mountContent(
+    {
+      ...defaultOptions(unit),
+      hydration: HydrateStrict,
+      cleanup: PreserveRenderedDom,
+    },
+    createDomTarget(keyedRoot),
+    (action: string) => async () => {
+      keyedDispatches.push(action)
+      return unit
+    },
+    reactiveContent(keyedInitial, [
+      bindRegion<string>("#keyed-region", keyedRegionSource),
+    ])
+  ),
+  { dom: createBrowserDom(document, () => undefined).service }
+)
+assert(
+  keyedMounted.kind === "success",
+  `keyed region must hydrate: ${JSON.stringify(keyedMounted)}`
+)
+const keyedRegionHydrationPreservedIdentity =
+  keyedRoot.querySelector("#key-a") === hydratedKeyA &&
+  keyedRoot.querySelector("#key-b") === hydratedKeyB &&
+  keyedRoot.querySelector("#key-c") === hydratedKeyC
+hydratedKeyA?.focus()
+hydratedKeyA?.setSelectionRange(2, 4)
+const keyedRegion = keyedRoot.querySelector("#keyed-region")!
+const keyedMutations: MutationRecord[] = []
+const keyedObserver = new MutationObserver((records) =>
+  keyedMutations.push(...records)
+)
+keyedObserver.observe(keyedRegion, { childList: true })
+
+const movedKeyedRegion = reactiveContent<string>(
+  fragment([
+    p({ key: "c", id: "key-c", children: "Gamma updated" }),
+    button({
+      key: "b",
+      id: "key-b",
+      onClick: "after",
+      children: "Beta",
+    }),
+    span({ key: "d", id: "key-d", children: "Delta" }),
+    input({ key: "a", id: "key-a", value: "abcdef" }),
+  ]),
+  [bindText<string>("#key-b", keyedTextSource)]
+)
+await effectValue(update(() => movedKeyedRegion, keyedRegionSource))
+await new Promise((resolve) => setTimeout(resolve, 0))
+const keyedRegionPreservedIdentity =
+  keyedRoot.querySelector("#key-a") === hydratedKeyA &&
+  keyedRoot.querySelector("#key-b") === hydratedKeyB &&
+  keyedRoot.querySelector("#key-c") === hydratedKeyC &&
+  [...keyedRegion.children].map((child) => child.id).join(",") ===
+    "key-c,key-b,key-d,key-a" &&
+  hydratedKeyC?.textContent === "Gamma updated"
+const keyedRegionFocusSelection =
+  document.activeElement === hydratedKeyA &&
+  hydratedKeyA?.selectionStart === 2 &&
+  hydratedKeyA.selectionEnd === 4
+hydratedKeyB?.click()
+await Promise.resolve()
+assert(
+  keyedDispatches.join(",") === "after",
+  "retained keyed node must use the current event handler"
+)
+await effectValue(update(() => "Beta updated", keyedTextSource))
+assert(hydratedKeyB?.textContent === "Beta updated", "binding must reattach")
+
+const reducedKeyedRegion = reactiveContent<string>(
+  fragment([
+    input({ key: "a", id: "key-a", value: "abcdef" }),
+    p({ key: "c", id: "key-c", children: "Gamma updated" }),
+  ]),
+  []
+)
+await effectValue(update(() => reducedKeyedRegion, keyedRegionSource))
+await new Promise((resolve) => setTimeout(resolve, 0))
+const detachedKeyBText = hydratedKeyB?.textContent
+await effectValue(update(() => "stale", keyedTextSource))
+const keyedRegionCleanup =
+  !keyedRegion.contains(hydratedKeyB) &&
+  hydratedKeyB?.textContent === detachedKeyBText
+const keyedRegionBoundedMutations = !keyedMutations.some(
+  (record) =>
+    [...record.removedNodes].includes(hydratedKeyA!) &&
+    [...record.removedNodes].includes(hydratedKeyB!) &&
+    [...record.removedNodes].includes(hydratedKeyC!)
+)
+keyedObserver.disconnect()
+await unmountTwice(keyedMounted.value)
+
+async function rejectedKeyedRegion(
+  children: readonly ReturnType<typeof span>[]
+): Promise<string> {
+  const root = document.createElement("div")
+  host.append(root)
+  const region = reactiveContent<string>(fragment(children), [])
+  const mounted = await run(
+    mountContent(
+      defaultOptions(unit),
+      createDomTarget(root),
+      () => async () => unit,
+      reactiveContent(
+        div<string>({
+          children: div({ id: "invalid-keyed-region", children }),
+        }),
+        [bindRegion<string>("#invalid-keyed-region", constant(region))]
+      )
+    ),
+    { dom: createBrowserDom(document, () => undefined).service }
+  )
+  assert(mounted.kind === "failure", "invalid keyed region must fail")
+  assert(
+    mounted.error.tag === "DomOperationFailed",
+    "invalid keyed region must report a DOM operation failure"
+  )
+  return mounted.error.value
+}
+
+const mixedKeyFailure = await rejectedKeyedRegion([
+  span({ key: "one", children: "one" }),
+  span({ children: "missing" }),
+])
+const duplicateKeyFailure = await rejectedKeyedRegion([
+  span({ key: "same", children: "one" }),
+  span({ key: "same", children: "two" }),
+])
+const emptyKeyFailure = await rejectedKeyedRegion([
+  span({ key: "", children: "empty" }),
+])
+const keyedRegionDiagnostics =
+  mixedKeyFailure.includes("cannot mix keyed and unkeyed") &&
+  duplicateKeyFailure.includes('duplicate key "same"') &&
+  emptyKeyFailure.includes("keys must be non-empty Strings")
+
 const typedRoot = document.createElement("div")
 typedRoot.innerHTML =
   '<div><span>zero</span><button aria-expanded="false" type="button">toggle</button><svg viewBox="0 0 10 10"><rect x="0" y="0" width="5" height="5"></rect></svg></div>'
@@ -674,6 +858,12 @@ window.domLifecycleResult = Object.freeze({
   reactiveDistinctSkippedWrite,
   reactiveHydrationPreservedIdentity,
   reactiveUnmountStoppedUpdates,
+  keyedRegionHydrationPreservedIdentity,
+  keyedRegionPreservedIdentity,
+  keyedRegionFocusSelection,
+  keyedRegionBoundedMutations,
+  keyedRegionCleanup,
+  keyedRegionDiagnostics,
   typedBindingPreservedHydrationIdentity,
   typedBindingValuesUpdated,
   typedBindingMissingRefRejected,

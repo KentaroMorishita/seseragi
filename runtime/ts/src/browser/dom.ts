@@ -849,16 +849,23 @@ export function createBrowserDom(
             if (renderInitial) {
               const snapshot = renderForDom(value.initial, `${scope}-`)
               const expected = domFragment(document, snapshot)
-              const mismatch = firstDomMismatch(
-                root.childNodes,
-                expected.childNodes,
-                []
-              )
-              if (mismatch === undefined) {
-                attachHydratedChildren(root, expected)
-              } else {
-                pointerLifecycle.releaseWithin(root)
-                root.replaceChildren(expected.cloneNode(true))
+              const beforeRemove = (node: Node): void => {
+                if (node.nodeType === 1) {
+                  pointerLifecycle.releaseWithin(node as Element)
+                }
+              }
+              if (!reconcileKeyedRegionChildren(root, expected, beforeRemove)) {
+                const mismatch = firstDomMismatch(
+                  root.childNodes,
+                  expected.childNodes,
+                  []
+                )
+                if (mismatch === undefined) {
+                  attachHydratedChildren(root, expected, beforeRemove)
+                } else {
+                  pointerLifecycle.releaseWithin(root)
+                  root.replaceChildren(expected.cloneNode(true))
+                }
               }
               bindings.set(scope, snapshot)
             }
@@ -1303,6 +1310,94 @@ function domFragment<Action>(
   return template.content
 }
 
+const DOM_KEY_ATTRIBUTE = "data-ssrg-key"
+
+type KeyedRegionChild = Readonly<{
+  readonly key: string
+  readonly node: Element
+}>
+
+function keyedRegionChildren(
+  expected: Node
+): readonly KeyedRegionChild[] | undefined {
+  const children = [...expected.childNodes]
+  const keyedCount = children.filter(
+    (child) =>
+      child.nodeType === 1 && (child as Element).hasAttribute(DOM_KEY_ATTRIBUTE)
+  ).length
+  if (keyedCount === 0) return undefined
+  if (keyedCount !== children.length) {
+    throw new TypeError(
+      "keyed DOM region cannot mix keyed and unkeyed direct children"
+    )
+  }
+
+  const keys = new Set<string>()
+  return children.map((child) => {
+    const node = child as Element
+    const key = node.getAttribute(DOM_KEY_ATTRIBUTE) ?? ""
+    if (key.length === 0) {
+      throw new TypeError("keyed DOM region keys must be non-empty Strings")
+    }
+    if (keys.has(key)) {
+      throw new TypeError(
+        `keyed DOM region has duplicate key ${JSON.stringify(key)}`
+      )
+    }
+    keys.add(key)
+    return Object.freeze({ key, node })
+  })
+}
+
+/** Reconcile only region-local keyed siblings; nested trees stay positional. */
+function reconcileKeyedRegionChildren(
+  actual: Element,
+  expected: DocumentFragment,
+  beforeRemove: (node: Node) => void
+): boolean {
+  const expectedChildren = keyedRegionChildren(expected)
+  if (expectedChildren === undefined) return false
+
+  const actualByKey = new Map<string, Element>()
+  for (const child of [...actual.childNodes]) {
+    if (child.nodeType !== 1) continue
+    const element = child as Element
+    const key = element.getAttribute(DOM_KEY_ATTRIBUTE)
+    if (key === null) continue
+    if (actualByKey.has(key)) {
+      throw new TypeError(
+        `managed keyed DOM region has duplicate key ${JSON.stringify(key)}`
+      )
+    }
+    actualByKey.set(key, element)
+  }
+
+  const finalNodes = new Set<Node>()
+  let cursor = actual.firstChild
+  for (const { key, node: expectedChild } of expectedChildren) {
+    const candidate = actualByKey.get(key)
+    const next =
+      candidate !== undefined && sameDomNodeKind(candidate, expectedChild)
+        ? candidate
+        : expectedChild.cloneNode(true)
+    actualByKey.delete(key)
+    if (next === candidate) {
+      reconcileAttributes(candidate, expectedChild)
+      attachHydratedChildren(candidate, expectedChild, beforeRemove)
+    }
+    if (next !== cursor) actual.insertBefore(next, cursor)
+    finalNodes.add(next)
+    cursor = next.nextSibling
+  }
+
+  for (const child of [...actual.childNodes]) {
+    if (finalNodes.has(child)) continue
+    beforeRemove(child)
+    child.remove()
+  }
+  return true
+}
+
 function firstDomMismatch(
   actual: NodeListOf<ChildNode> | NodeList,
   expected: NodeListOf<ChildNode> | NodeList,
@@ -1391,7 +1486,9 @@ function comparableAttributes(element: Element): ReadonlyMap<string, string> {
     [...element.attributes]
       .filter(
         ({ name }) =>
-          !name.startsWith("data-ssrg-event-") && name !== "data-ssrg-ref"
+          !name.startsWith("data-ssrg-event-") &&
+          name !== "data-ssrg-ref" &&
+          name !== DOM_KEY_ATTRIBUTE
       )
       .map(({ name, value }) => [name, value])
   )
@@ -1405,7 +1502,11 @@ function describeNode(node: Node | null): string {
 }
 
 /** Identity-preserving attachment for matching hydration and local regions. */
-function attachHydratedChildren(actual: Node, expected: Node): void {
+function attachHydratedChildren(
+  actual: Node,
+  expected: Node,
+  beforeRemove: (node: Node) => void = () => {}
+): void {
   let index = 0
   while (index < expected.childNodes.length) {
     const expectedChild = expected.childNodes.item(index)
@@ -1416,6 +1517,7 @@ function attachHydratedChildren(actual: Node, expected: Node): void {
       continue
     }
     if (!sameDomNodeKind(actualChild, expectedChild)) {
+      beforeRemove(actualChild)
       actual.replaceChild(expectedChild.cloneNode(true), actualChild)
       index += 1
       continue
@@ -1429,12 +1531,15 @@ function attachHydratedChildren(actual: Node, expected: Node): void {
     }
     if (actualChild.nodeType === 1 && expectedChild.nodeType === 1) {
       reconcileAttributes(actualChild as Element, expectedChild as Element)
-      attachHydratedChildren(actualChild, expectedChild)
+      attachHydratedChildren(actualChild, expectedChild, beforeRemove)
     }
     index += 1
   }
   while (actual.childNodes.length > expected.childNodes.length) {
-    actual.lastChild?.remove()
+    const child = actual.lastChild
+    if (child === null) break
+    beforeRemove(child)
+    child.remove()
   }
 }
 

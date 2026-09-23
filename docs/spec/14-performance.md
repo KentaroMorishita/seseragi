@@ -177,8 +177,9 @@ whole-tree reconciliationやkeyed virtual treeを唯一のperformance modelに�
 
 一transactionのstable publicationだけを反映し、`Signal.distinct`が止めた同値publicationはDOM writeを発生させません。
 binding callbackが到達しても現在sinkと同値ならwriteを省けます。profile、backend最適化、instrumentationはdependency、
-event order、region cleanup範囲を変えてはなりません。keyed collection surfaceが将来追加される場合もidentityはlocal region
-内に限定し、global component identityへ拡張しません。
+event order、region cleanup範囲を変えてはなりません。`bindRegion`のkeyed direct childrenはregion-local sibling
+identityだけを持ちます。reconciliationはdirect childrenを線形にindexし、retained nodeを期待順へ必要な場合だけmove
+します。whole-tree minimum edit、global component identity、keyからのhidden state生成へ拡張しません。
 
 Html treeのallocationが実測上支配的になった場合も、component hook、mutable virtual node、暗黙memoizationを
 言語へ追加する前に、static hoist、reactive leaf binding、structural region、arena、specialized renderer、incremental

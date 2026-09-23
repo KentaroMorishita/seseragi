@@ -131,6 +131,15 @@ describe("HTML browser runtime", () => {
     ).toThrow("HTML ElementRef may identify only one node per tree")
   })
 
+  test("keeps region-local keys out of SSR and marks only DOM snapshots", () => {
+    const node = div({ key: 'table-"osaka"', children: "Osaka" })
+
+    expect(renderToString(node)).toBe("<div>Osaka</div>")
+    expect(renderForDom(node).html).toBe(
+      '<div data-ssrg-key="table-&quot;osaka&quot;">Osaka</div>'
+    )
+  })
+
   test("renders the canonical class prop for SSR and DOM", () => {
     const node = div({ class: "card featured", children: "Styled" })
 
