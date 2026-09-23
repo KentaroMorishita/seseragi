@@ -24,6 +24,13 @@ struct SceneState {
   height: Float
 }
 
+struct SceneRefs {
+  scene: html.ElementRef,
+  camera: html.ElementRef,
+  node: html.ElementRef,
+  status: html.ElementRef
+}
+
 let initialState = SceneState {
   x: 40.0,
   y: 50.0,
@@ -36,12 +43,14 @@ let initialState = SceneState {
 }
 
 fn pointerStarted event: html.PointerEvent -> html.EventAction<Action> =
-  html.DispatchPreventDefaultAndStop (PointerStarted (
-    event.pointerId,
-    event.clientX,
-    event.clientY,
-    event.activePointerCount
-  ))
+  html.DispatchPreventDefaultAndStop (
+    PointerStarted (
+      event.pointerId,
+      event.clientX,
+      event.clientY,
+      event.activePointerCount
+    )
+  )
   |> html.capturePointer event
   |> html.suppressCompatibilityClick event
 
@@ -53,11 +62,17 @@ fn pointerMoved event: html.PointerEvent -> html.EventAction<Action> =
   ))
 
 fn pointerEnded event: html.PointerEvent -> html.EventAction<Action> =
-  html.Dispatch (PointerEnded (event.pointerId, event.activePointerCount))
+  html.Dispatch (PointerEnded (
+    event.pointerId,
+    event.activePointerCount
+  ))
   |> html.releasePointer event
 
 fn pointerCancelled event: html.PointerEvent -> html.EventAction<Action> =
-  html.Dispatch (PointerCancelled (event.pointerId, event.activePointerCount))
+  html.Dispatch (PointerCancelled (
+    event.pointerId,
+    event.activePointerCount
+  ))
   |> html.releasePointer event
 
 fn wheeled event: html.WheelEvent -> html.EventAction<Action> =
@@ -110,7 +125,8 @@ fn dispatch state: signals.MutableSignal<SceneState>
 fn status state: SceneState -> String =
   "x=" + show state.x + ";y=" + show state.y + ";pointers=" + show state.activePointers + ";zoom=" + show state.zoom + ";cancelled=" + show state.cancelled + ";size=" + show state.width + "x" + show state.height
 
-fn scene unit: Unit -> html.Html<Action> = svg.svg {
+fn scene refs: SceneRefs -> html.Html<Action> = svg.svg {
+  elementRef: refs.scene,
   id: "scene",
   role: "application",
   ariaLabel: "Interactive diagram scene",
@@ -123,6 +139,7 @@ fn scene unit: Unit -> html.Html<Action> = svg.svg {
   onPointerCancel: pointerCancelled,
   onWheel: wheeled,
   children: [svg.g {
+    elementRef: refs.camera,
     id: "camera",
     children: [
       svg.path {
@@ -133,6 +150,7 @@ fn scene unit: Unit -> html.Html<Action> = svg.svg {
         strokeWidth: "16"
       },
       svg.rect {
+        elementRef: refs.node,
         id: "node",
         x: 20.0,
         y: 30.0,
@@ -155,20 +173,29 @@ fn scene unit: Unit -> html.Html<Action> = svg.svg {
 }
   |> svg.toHtml
 
-fn content state: signals.MutableSignal<SceneState> -> dom.DomContent<Action> =
-  dom.content (html.div {
-    children: [
-      scene (),
-      html.p { id: "status", children: "starting" },
-      html.button { id: "stop", onClick: Stop, children: "stop" }
-    ]
-  }) [
-    dom.bindAttribute "#camera" "transform"
-      (signals.map (\value -> Just ("scale(" + show value.zoom + ")")) state),
-    dom.bindAttribute "#node" "x" (signals.map (\value -> Just (show value.x)) state),
-    dom.bindAttribute "#node" "y" (signals.map (\value -> Just (show value.y)) state),
-    dom.bindText "#status" (signals.map status state)
+fn content state: signals.MutableSignal<SceneState> -> dom.DomContent<Action> = {
+  let refs = SceneRefs {
+    scene: html.elementRef "scene",
+    camera: html.elementRef "camera",
+    node: html.elementRef "node",
+    status: html.elementRef "status"
+  }
+  dom.content (
+    html.div {
+      children: [
+        scene refs,
+        html.p { elementRef: refs.status, id: "status", children: "starting" },
+        html.button { id: "stop", onClick: Stop, children: "stop" }
+      ]
+    }
+  ) [
+    dom.bind (svg.transformTarget refs.camera)
+      (signals.map (\value -> "scale(" + show value.zoom + ")") state),
+    dom.bind (svg.xTarget refs.node) (signals.map (\value -> value.x) state),
+    dom.bind (svg.yTarget refs.node) (signals.map (\value -> value.y) state),
+    dom.bind (dom.textTarget refs.status) (signals.map status state)
   ]
+}
 
 fn observe state: signals.MutableSignal<SceneState>
   -> rect: dom.ElementRect

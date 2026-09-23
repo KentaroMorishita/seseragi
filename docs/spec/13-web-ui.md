@@ -860,6 +860,34 @@ callbackを省略したproduction pathはtrace objectを生成せず、callback�
 failureを変えません。
 Inspectorを追加する場合もこのschemaを入力とし、別のPlayground専用semanticsを定義しません。
 
+### Large scene application pattern
+
+canvas、diagram、data gridのように高頻度のleaf更新とcollection更新が共存するapplicationは、同じModel Signalを
+一つのcoarse regionへ直接流しません。rootごとにlogical `ElementRef`を一度作り、cameraの`viewBox`、選択class、
+ARIA、form property等はtyped targetへ、childrenの追加・削除・並替えだけをkeyed regionへ流します。
+node描画に必要なprojectionがcamera stateを含まない場合は、そのprojectionへ`Signal.distinct`を適用します。
+これによりcamera publicationはleaf writeだけを起こし、structural regionのcallbackにも到達しません。
+
+```seseragi
+let sceneRef = html.elementRef "scene"
+let cameraRef = html.elementRef "camera"
+let nodeRef = html.elementRef "node"
+
+let bindings = [
+  dom.bind (svg.viewBoxTarget sceneRef) (signals.map viewBox model),
+  dom.bind (svg.transformTarget cameraRef) (signals.map cameraTransform model),
+  dom.bind (svg.xTarget nodeRef) (signals.map nodeX nodeModel),
+  dom.bind (dom.regionTarget cameraRef) (signals.map keyedChildren nodeStructure)
+]
+```
+
+`BindingTarget<Action, Value>`自体がsinkの値型、namespace / tag制約、write規約を保持するため、このcompositionへ
+binding traitや任意`F<_>`のHKT layerを追加しません。複数source familyやuser-defined sinkの実需要がない限り、
+plainなtarget値とSignal projectionの組合せをapplication boundaryとします。実行可能な
+`examples/spec/fixtures/projects/web-scene-interaction`はtyped SVG leaf、event-time pointer control、stable rootの
+最小例です。large collectionのidentity契約はkeyed region fixtures、実運用のmutation / latencyはconsumer側の
+browser gateで検証します。
+
 互換用coarse updateはmanaged childrenを置換してもよく、一般のDOM node identityを保証しません。ただしevent受付と
 subscriptionの所有権を二重化せず、IME composition中の入力を破棄せず、対応するcontrolled controlを識別できる場合は
 focusとselectionを復元します。更新algorithmの違いでunmount、cancellation、cleanup、typed failureの意味を変えては
