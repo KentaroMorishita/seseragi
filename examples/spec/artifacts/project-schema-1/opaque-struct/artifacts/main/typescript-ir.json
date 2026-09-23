@@ -39,6 +39,7 @@
     {
       "module": "fixture/opaque-struct::facade",
       "specifier": "./facade.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "create",
