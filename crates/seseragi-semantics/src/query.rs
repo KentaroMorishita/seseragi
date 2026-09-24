@@ -6,7 +6,10 @@ use crate::{
     TypedModule, TypedMonadDoStatement, TypedParameter, TypedPattern, TypedScheme, TypedType,
 };
 use serde::Serialize;
-use seseragi_syntax::{ByteSpan, DiagnosticArtifact, InterfaceExport, InterfaceType};
+use seseragi_syntax::{
+    ByteRange, ByteSpan, Diagnostic, DiagnosticArtifact, DiagnosticSeverity, InterfaceExport,
+    InterfaceType, RelatedDiagnostic,
+};
 use std::collections::{BTreeMap, BTreeSet};
 
 mod completion;
@@ -194,6 +197,71 @@ pub struct AnalysisDocument {
 impl AnalysisDocument {
     pub fn diagnostics(&self) -> &DiagnosticArtifact {
         &self.diagnostics
+    }
+
+    /// Runs authoring-only rules over the same resolved symbols used by editor
+    /// queries. Compiler diagnostics remain separate and retain their severity.
+    pub fn lint_diagnostics(&self) -> DiagnosticArtifact {
+        let mut artifact = self.diagnostics.clone();
+        artifact.diagnostics.clear();
+        if self
+            .diagnostics
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error)
+        {
+            return artifact;
+        }
+
+        for symbol in &self.symbols {
+            if symbol.kind != "pattern-binding" || symbol.name.starts_with('_') {
+                continue;
+            }
+            let Some(scope) = self.scopes.get(symbol.scope.0 as usize) else {
+                continue;
+            };
+            if !matches!(
+                scope.kind,
+                crate::ScopeKind::Block | crate::ScopeKind::DoBlock
+            ) {
+                continue;
+            }
+            if symbol.definition.start == symbol.definition.end
+                || self.symbol_occurrences.iter().any(|occurrence| {
+                    occurrence.symbol == symbol.id && occurrence.range != symbol.definition
+                })
+            {
+                continue;
+            }
+            let primary = ByteRange {
+                start: symbol.definition.start,
+                end: symbol.definition.end,
+            };
+            artifact.diagnostics.push(Diagnostic {
+                id: String::new(),
+                code: "SES-L0301".to_owned(),
+                severity: DiagnosticSeverity::Warning,
+                message_key: "lint.unused-local-binding".to_owned(),
+                primary,
+                related: vec![RelatedDiagnostic {
+                    message: format!("`{}` has no resolved references", symbol.name),
+                    primary,
+                }],
+                fixes: Vec::new(),
+                type_difference: None,
+            });
+        }
+        artifact.diagnostics.sort_by(|left, right| {
+            (left.primary.start, left.primary.end, &left.code).cmp(&(
+                right.primary.start,
+                right.primary.end,
+                &right.code,
+            ))
+        });
+        for (index, diagnostic) in artifact.diagnostics.iter_mut().enumerate() {
+            diagnostic.id = format!("l{}", index + 1);
+        }
+        artifact
     }
 
     pub fn symbol_at(&self, position: usize) -> Option<&AnalysisSymbol> {
