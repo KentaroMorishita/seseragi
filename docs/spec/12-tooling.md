@@ -417,6 +417,7 @@ release noteへ記録し、同じlanguage major内では旧codeから新codeへ�
 | SES-F0104 | Error    | TypeScript公開ABIを生成できない             |
 | SES-L0101 | Warning  | standard HTML props literalの未知field      |
 | SES-L0201 | Warning  | deprecated symbolを参照                     |
+| SES-L0301 | Warning  | 局所pattern bindingに解決済み参照がない     |
 
 tableのcodeが十分具体的でない場合はlabels / notesで詳細を示し、message差だけのためにcodeを増やしません。
 最初のhuman-readable gateはunresolved name、arity、expected / actual type mismatch、missing trait instance、
@@ -442,6 +443,15 @@ machine-readable出力はschema version、tool version、language version、Unic
 です。未知fieldをreaderは無視し、schema majorが違う場合は拒否します。text edit fixは対象document version、
 UTF-8 range、replacementを持ち、version不一致ならLSP / CLIとも適用しません。一つのfix groupはall-or-nothingで、
 overlapするeditを含めません。
+
+公式 `seseragi lint <source.ssrg|package>` はcompilerと同じlinked analysisと上記diagnostic payloadを使い、
+lowering・code generation・実行をしません。packageではroot packageの全source moduleを対象にし、dependencyは
+型解決に使いますがdependency自体のlint warningは出しません（compiler errorは隠しません）。
+textと `--diagnostic-format json` は同一diagnosticの投影で、いずれもstderrに出します。既定のWarningはexit 0、
+`--deny-warnings` 指定時のWarningはseverityを変えずexit 1、compiler Errorは常にexit 2です。
+`SES-L0301` はblock / do内の局所pattern bindingに解決済み参照が一つもない場合だけ出し、名前が `_` で始まる
+意図的な非使用と、そのmoduleにcompiler Errorがある場合は出しません。初期化式の削除が常に安全とは限らないので
+自動fixは提供しません。formatterの書式、compilerのcorrectness、lintのauthoring guidanceは重複発行しません。
 
 ## 12.14 type inference explanation
 

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.14] - 2026-09-24
+
+### Added
+
+- #616 公式 `seseragi lint` の最小sliceを追加。linked analysisに基づく未使用局所binding診断、text/JSON出力、明示的な `--deny-warnings` に対応
+
 ## [0.61.13] - 2026-09-24
 
 ### Changed

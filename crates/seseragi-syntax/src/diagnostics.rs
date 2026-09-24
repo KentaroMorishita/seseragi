@@ -146,6 +146,7 @@ impl Diagnostic {
             "web.html.event-control-without-handler" => {
                 "This event control has no matching handler".to_owned()
             }
+            "lint.unused-local-binding" => "Local binding is never referenced".to_owned(),
             _ => humanize_message_key(&self.message_key),
         }
     }
@@ -237,6 +238,9 @@ impl Diagnostic {
             }
             "web.html.event-control-without-handler" => {
                 "Add `onClick`, or remove the unused event control prop."
+            }
+            "lint.unused-local-binding" => {
+                "Use the binding, or prefix its name with `_` if the non-use is intentional."
             }
             "record.field-unresolved" | "struct.field-unresolved" => {
                 "Check the field spelling and the type of the value being accessed."

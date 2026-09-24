@@ -5,6 +5,7 @@ mod diagnostics;
 mod doc;
 mod dts;
 mod format;
+mod lint;
 mod local_project;
 mod lock;
 mod new;
@@ -34,6 +35,7 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
         [command, arguments @ ..] if command == "dev" => dev::dev(arguments),
         [command, arguments @ ..] if command == "new" => new::new(arguments),
         [command, arguments @ ..] if command == "lock" => lock::lock(arguments),
+        [command, arguments @ ..] if command == "lint" => lint::lint(arguments),
         [command, path] if command == "format" => {
             format::format_file(path.as_ref(), format::FormatMode::Write)
         }
@@ -62,6 +64,6 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
 
 fn print_usage() {
     println!(
-        "Usage:\n  seseragi --version\n  seseragi --version-json\n  seseragi new web path/to/my-app\n  seseragi lock update [path/to/package]\n  seseragi dts convert [path/to/package] [--entry id]\n  seseragi run path/to/app.ssrg [--target process|web] [--profile development|release] [--diagnostic-format text|json] [--signal-mode cancel|forward] [--shutdown-grace-ms ms] [--hash-seed entropy|int] [--random-seed entropy|int]\n  seseragi run path/to/package [--target process|web] [--profile development|release] [--diagnostic-format text|json] [--signal-mode cancel|forward] [--shutdown-grace-ms ms] [--hash-seed entropy|int] [--random-seed entropy|int]\n  seseragi test [path/to/package] [--filter text | --exact module::suite::case] [--jobs n] [--timeout ms] [--seed int] [--target node]\n  seseragi benchmark [path/to/package] [--target node] [--filter text | --exact module::suite::case] [--warmup n] [--samples n] [--minimum-sample-ms ms] [--timeout-ms ms] [--cleanup-grace-ms ms] [--seed int] [--json] [--baseline path] [--save-baseline path] [--regression-threshold-percent n]\n  seseragi doc [path/to/package] --test [--target node]\n  seseragi build path/to/app.ssrg [--target process|web] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]\n  seseragi build path/to/package [--target process|web] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]\n  seseragi dev [path/to/package] [--host 127.0.0.1] [--port 3000] [--open]\n  seseragi format [--check] path/to/app.ssrg"
+        "Usage:\n  seseragi --version\n  seseragi --version-json\n  seseragi new web path/to/my-app\n  seseragi lock update [path/to/package]\n  seseragi dts convert [path/to/package] [--entry id]\n  seseragi run path/to/app.ssrg [--target process|web] [--profile development|release] [--diagnostic-format text|json] [--signal-mode cancel|forward] [--shutdown-grace-ms ms] [--hash-seed entropy|int] [--random-seed entropy|int]\n  seseragi run path/to/package [--target process|web] [--profile development|release] [--diagnostic-format text|json] [--signal-mode cancel|forward] [--shutdown-grace-ms ms] [--hash-seed entropy|int] [--random-seed entropy|int]\n  seseragi lint path/to/app.ssrg|path/to/package [--diagnostic-format text|json] [--deny-warnings]\n  seseragi test [path/to/package] [--filter text | --exact module::suite::case] [--jobs n] [--timeout ms] [--seed int] [--target node]\n  seseragi benchmark [path/to/package] [--target node] [--filter text | --exact module::suite::case] [--warmup n] [--samples n] [--minimum-sample-ms ms] [--timeout-ms ms] [--cleanup-grace-ms ms] [--seed int] [--json] [--baseline path] [--save-baseline path] [--regression-threshold-percent n]\n  seseragi doc [path/to/package] --test [--target node]\n  seseragi build path/to/app.ssrg [--target process|web] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]\n  seseragi build path/to/package [--target process|web] [--profile development|release] [--source-map emit|omit] [--out-dir path/to/dist]\n  seseragi dev [path/to/package] [--host 127.0.0.1] [--port 3000] [--open]\n  seseragi format [--check] path/to/app.ssrg"
     );
 }

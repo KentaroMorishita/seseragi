@@ -73,6 +73,32 @@ mod tests {
     use super::*;
 
     #[test]
+    fn lint_reports_only_unreferenced_local_bindings() {
+        let source = "fn value -> Int = {\n  let unused = 1\n  let used = 2\n  let _intentional = 3\n  used\n}\n";
+        let analysis = analyze_module(CompileInput::new("main.ssrg", "lint/local", source));
+        assert!(analysis.diagnostics.diagnostics.is_empty());
+        let lint = analysis.lint_diagnostics();
+        assert_eq!(lint.diagnostics.len(), 1);
+        assert_eq!(lint.diagnostics[0].code, "SES-L0301");
+        assert_eq!(lint.diagnostics[0].message_key, "lint.unused-local-binding");
+        let range = lint.diagnostics[0].primary;
+        assert_eq!(&source[range.start..range.end], "unused");
+        assert!(lint.diagnostics[0].fixes.is_empty());
+    }
+
+    #[test]
+    fn lint_does_not_guess_when_semantic_analysis_has_errors() {
+        let source = "fn value -> Int = {\n  let unused = missing\n  1\n}\n";
+        let analysis = analyze_module(CompileInput::new("main.ssrg", "lint/errors", source));
+        assert!(analysis
+            .diagnostics
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error));
+        assert!(analysis.lint_diagnostics().diagnostics.is_empty());
+    }
+
+    #[test]
     fn analysis_does_not_require_lowering_or_an_entry_point() {
         let source =
             "// 雫\nfn add left: Int -> right: Int -> Int = left + right\nlet addOne = add 1\n";
