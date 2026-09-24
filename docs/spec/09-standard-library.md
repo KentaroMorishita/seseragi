@@ -674,3 +674,13 @@ fn log event: LogEvent
 
 実際のtimestamp、JSON化、送信先、batchingはLogger implementationの責務です。library codeが
 直接consoleへ書かず、必要なLogger requirementをEffectの `R` に現します。
+
+同一操作のeventを関連づける場合、applicationは操作境界で選んだ不変の相関IDを
+`LogEvent.fields` に明示して渡します。`std/log` はIDを暗黙生成せず、EffectやFiberの
+実行順からidentityを推測しません。並行する子Fiberへ同じ操作IDを渡す場合も、共有
+Logger serviceの可変状態ではなく各eventのfieldで表します。field名と値の公開範囲は
+applicationが決め、回復可能failure、foreign error、入力値、stackを自動でfield化しません。
+applicationが回復可能failureからUIや応答へ提示する文言は別の明示的な投影であり、
+`show` やLogEventのmessageをそのまま転用しません。未処理failureをCLIが報告する
+RuntimeDiagnosticの契約は7.15のままです。このversionでは自動span伝播を標準契約に
+含めません。
