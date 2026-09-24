@@ -296,6 +296,12 @@
       "runners": ["cli-run"],
       "evidence": ["crates/seseragi-cli/tests/run.rs"]
     },
+    "log-correlation": {
+      "availability": "current",
+      "phase": "run",
+      "runners": ["cli-run"],
+      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+    },
     "logical-short-circuit": {
       "availability": "current",
       "phase": "run",

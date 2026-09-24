@@ -238,6 +238,41 @@ fn runs_the_stdin_lines_project_with_console_and_structured_logging() {
 }
 
 #[test]
+fn keeps_log_correlation_explicit_and_domain_error_messages_safe() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/log-correlation"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        output.stdout,
+        fs::read(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(
+        output.stderr,
+        fs::read(package.join("expected.stderr")).unwrap()
+    );
+    assert!(!output
+        .stdout
+        .windows(b"private-".len())
+        .any(|w| w == b"private-"));
+    assert!(!output
+        .stderr
+        .windows(b"private-".len())
+        .any(|w| w == b"private-"));
+}
+
+#[test]
 fn renders_typed_failure_and_preserves_the_program_exit_class() {
     let root = repository_root();
     let program = root.join("examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg");

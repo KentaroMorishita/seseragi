@@ -1,0 +1,4 @@
+{"level":"info","message":"started","fields":[["operation_id","alpha"],["code","started"]]}
+{"level":"info","message":"started","fields":[["operation_id","beta"],["code","started"]]}
+{"level":"info","message":"succeeded","fields":[["operation_id","alpha"],["code","ok"]]}
+{"level":"info","message":"failed","fields":[["operation_id","beta"],["code","invalid_input"]]}

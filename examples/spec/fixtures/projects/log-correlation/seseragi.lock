@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/log-correlation@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/log-correlation@0.0.0#workspace:."
+name = "fixture/log-correlation"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:1ca92d9606a422bc29f6f2ef34d1e5ac5d692a7dea6fa29262515dc88f5080de"
+content_digest = "sha256:6a3d162075a4e271a1ab61c609225c2018b5b71c0f70a7ead15baefa87cc7c97"
+dependencies = []

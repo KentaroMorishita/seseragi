@@ -1,0 +1,68 @@
+import * as arrays from "std/array"
+import * as effects from "std/effect"
+import * as logs from "std/log"
+import { LogEvent } from "std/log"
+
+type DomainError deriving Show =
+  | InvalidInput
+
+type AppError deriving Show =
+  | DomainFailure DomainError
+  | LogFailure logs.LogError
+  | ConsoleFailure ConsoleError
+
+fn reportCode error: DomainError -> String = match error {
+  InvalidInput -> "invalid_input"
+}
+
+fn userMessage error: DomainError -> String = match error {
+  InvalidInput -> "Input could not be processed."
+}
+
+fn validate input: String -> Either<DomainError, String> =
+  if input == "private-beta" then Left InvalidInput else Right "complete"
+
+fn operationEvent id: String -> message: String -> code: String -> LogEvent = LogEvent {
+  level: logs.LogInfo,
+  message,
+  fields: arrays.toList [
+    ("operation_id", logs.LogString id),
+    ("code", logs.LogString code),
+  ],
+}
+
+effect fn runOperation id: String
+  -> input: String
+  -> String
+with logger: logs.Logger
+fails AppError =
+  do {
+    logs.log (operationEvent id "started" "started") |> effects.mapError LogFailure
+
+    result <- effects.attempt (effects.fromEither (validate input))
+
+    match result {
+      Left failure -> do {
+        logs.log (operationEvent id "failed" (reportCode failure))
+          |> effects.mapError LogFailure
+        effects.fail (DomainFailure failure)
+      }
+      Right value -> do {
+        logs.log (operationEvent id "succeeded" "ok") |> effects.mapError LogFailure
+        effects.succeed value
+      }
+    }
+  }
+
+pub effect fn main -> Unit with Console, logger: logs.Logger fails AppError = do {
+  firstFiber <- effects.fork (runOperation "alpha" "private-alpha")
+  second <- effects.fork (runOperation "beta" "private-beta")
+  first <- effects.join firstFiber
+  result <- effects.attempt (effects.join second)
+  let message = match result {
+    Left (DomainFailure failure) -> userMessage failure
+    Left _ -> "Operation unavailable."
+    Right _ -> "Unexpected success."
+  }
+  println `${first}; ${message}` |> effects.mapError ConsoleFailure
+}
