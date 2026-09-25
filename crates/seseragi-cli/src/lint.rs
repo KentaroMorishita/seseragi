@@ -104,7 +104,7 @@ fn lint_file(path: &Path) -> Result<Vec<LintDocument>, String> {
     Ok(vec![LintDocument {
         path: name,
         source,
-        artifact: combined_diagnostics(&analysis),
+        artifact: analysis.authoring_diagnostics(),
     }])
 }
 
@@ -166,7 +166,7 @@ fn lint_package(path: &Path) -> Result<Vec<LintDocument>, String> {
             .ok_or_else(|| format!("project analysis is missing: {module_id}"))?;
         let own_package = identity.package() == project.packages().root();
         let artifact = if own_package {
-            combined_diagnostics(&analysis)
+            analysis.authoring_diagnostics()
         } else {
             analysis.diagnostics.clone()
         };
@@ -181,35 +181,4 @@ fn lint_package(path: &Path) -> Result<Vec<LintDocument>, String> {
     }
     documents.sort_by(|left, right| left.path.cmp(&right.path));
     Ok(documents)
-}
-
-fn combined_diagnostics(analysis: &seseragi_driver::AnalysisDocument) -> DiagnosticArtifact {
-    let mut artifact = analysis.diagnostics.clone();
-    artifact
-        .diagnostics
-        .extend(analysis.lint_diagnostics().diagnostics);
-    artifact.diagnostics.sort_by(|left, right| {
-        (
-            left.primary.start,
-            left.primary.end,
-            severity_rank(left.severity),
-            &left.code,
-        )
-            .cmp(&(
-                right.primary.start,
-                right.primary.end,
-                severity_rank(right.severity),
-                &right.code,
-            ))
-    });
-    artifact
-}
-
-fn severity_rank(severity: DiagnosticSeverity) -> u8 {
-    match severity {
-        DiagnosticSeverity::Error => 0,
-        DiagnosticSeverity::Warning => 1,
-        DiagnosticSeverity::Information => 2,
-        DiagnosticSeverity::Hint => 3,
-    }
 }

@@ -178,7 +178,7 @@ fn analyze_workspace_source(
         let (uri, version) = uri_and_version(module.source_path(), open_documents)?;
         documents.insert(
             uri,
-            DocumentState::from_analysis(version, module.source().to_owned(), analysis),
+            DocumentState::from_analysis(version, module.source().to_owned(), analysis, true),
         );
     }
     Ok(ProjectSnapshot { documents })
@@ -219,7 +219,12 @@ fn analyze_local_package(
         let (uri, version) = uri_and_version(module.source_path(), open_documents)?;
         documents.insert(
             uri,
-            DocumentState::from_analysis(version, module.source().to_owned(), analysis),
+            DocumentState::from_analysis(
+                version,
+                module.source().to_owned(),
+                analysis,
+                identity.package() == project.packages().root(),
+            ),
         );
     }
     Ok(ProjectSnapshot { documents })
