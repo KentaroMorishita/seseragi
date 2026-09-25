@@ -51,6 +51,9 @@ pub(crate) fn lint(arguments: &[String]) -> Result<i32, String> {
     }
     let path = path.ok_or_else(|| "lint requires a source file or package path".to_owned())?;
     let path = Path::new(&path);
+    if !path.exists() {
+        return Err(format!("lint path does not exist: {}", path.display()));
+    }
     if path.is_file() && path.extension().and_then(|extension| extension.to_str()) != Some("ssrg") {
         return Err("lint expects a .ssrg source file or package".to_owned());
     }

@@ -9,6 +9,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 static NEXT_LOCKED_PROJECT_ID: AtomicU64 = AtomicU64::new(0);
+static NEXT_FORMAT_DIRECTORY_ID: AtomicU64 = AtomicU64::new(0);
 
 fn repository_root() -> std::path::PathBuf {
     std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -1912,12 +1913,15 @@ fn formats_match_regression_fixtures_and_converges() {
 }
 
 fn assert_file_formatting(source: &str, expected: &str) {
-    let unique = SystemTime::now()
+    let timestamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()
         .as_nanos();
-    let directory =
-        std::env::temp_dir().join(format!("seseragi-format-{}-{unique}", std::process::id()));
+    let sequence = NEXT_FORMAT_DIRECTORY_ID.fetch_add(1, Ordering::Relaxed);
+    let directory = std::env::temp_dir().join(format!(
+        "seseragi-format-{}-{timestamp}-{sequence}",
+        std::process::id()
+    ));
     std::fs::create_dir_all(&directory).unwrap();
     let source_path = directory.join("main.ssrg");
     std::fs::write(&source_path, source).unwrap();
