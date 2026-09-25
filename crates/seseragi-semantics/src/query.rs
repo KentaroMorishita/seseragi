@@ -237,6 +237,15 @@ impl AnalysisDocument {
             return artifact;
         }
 
+        let referenced_symbols = self
+            .symbol_occurrences
+            .iter()
+            .filter_map(|occurrence| {
+                let symbol = self.symbols.get(occurrence.symbol as usize)?;
+                (occurrence.range != symbol.definition).then_some(occurrence.symbol)
+            })
+            .collect::<BTreeSet<_>>();
+
         for symbol in &self.symbols {
             if symbol.kind != "pattern-binding" || symbol.name.starts_with('_') {
                 continue;
@@ -251,9 +260,7 @@ impl AnalysisDocument {
                 continue;
             }
             if symbol.definition.start == symbol.definition.end
-                || self.symbol_occurrences.iter().any(|occurrence| {
-                    occurrence.symbol == symbol.id && occurrence.range != symbol.definition
-                })
+                || referenced_symbols.contains(&symbol.id)
             {
                 continue;
             }

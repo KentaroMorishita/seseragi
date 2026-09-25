@@ -21,3 +21,5 @@ serde_json.workspace = true
 
 [dev-dependencies]
 sha2.workspace = true
+seseragi-lsp = { path = "../seseragi-lsp" }
+url.workspace = true

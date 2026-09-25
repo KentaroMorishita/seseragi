@@ -1,4 +1,5 @@
 use std::fs;
+use std::io::Cursor;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -42,6 +43,48 @@ impl Drop for Fixture {
     }
 }
 
+fn frame(message: &serde_json::Value) -> Vec<u8> {
+    let payload = serde_json::to_vec(message).unwrap();
+    format!("Content-Length: {}\r\n\r\n", payload.len())
+        .into_bytes()
+        .into_iter()
+        .chain(payload)
+        .collect()
+}
+
+fn messages(bytes: &[u8]) -> Vec<serde_json::Value> {
+    let mut remaining = bytes;
+    let mut result = Vec::new();
+    while !remaining.is_empty() {
+        let boundary = remaining
+            .windows(4)
+            .position(|window| window == b"\r\n\r\n")
+            .unwrap();
+        let headers = std::str::from_utf8(&remaining[..boundary]).unwrap();
+        let length = headers
+            .lines()
+            .find_map(|line| line.strip_prefix("Content-Length: "))
+            .unwrap()
+            .parse::<usize>()
+            .unwrap();
+        let payload_start = boundary + 4;
+        result.push(
+            serde_json::from_slice(&remaining[payload_start..payload_start + length]).unwrap(),
+        );
+        remaining = &remaining[payload_start + length..];
+    }
+    result
+}
+
+fn utf8_position(source: &str, offset: usize) -> serde_json::Value {
+    let prefix = &source[..offset];
+    let line = prefix.bytes().filter(|byte| *byte == b'\n').count();
+    let character = prefix
+        .rsplit_once('\n')
+        .map_or(prefix.len(), |(_, line)| line.len());
+    serde_json::json!({"line": line, "character": character})
+}
+
 #[test]
 fn single_file_lint_is_warn_only_unless_denied() {
     let fixture = Fixture::new();
@@ -77,6 +120,74 @@ fn single_file_lint_is_warn_only_unless_denied() {
     assert_eq!(
         &source[range["start"].as_u64().unwrap() as usize..range["end"].as_u64().unwrap() as usize],
         "unused"
+    );
+}
+
+#[test]
+fn cli_json_and_lsp_publish_the_same_utf8_lint_fact() {
+    let fixture = Fixture::new();
+    let source = "fn value -> Int = {\n  // 🙂\n  let unused = 1\n  1\n}\n";
+    let path = fixture.write("unicode.ssrg", source);
+    let output = fixture.run(&["--diagnostic-format", "json"], &path);
+    assert_eq!(output.status.code(), Some(0));
+    let cli: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
+    let cli_diagnostic = &cli["diagnostics"][0]["diagnostics"]["diagnostics"][0];
+
+    let uri = url::Url::from_file_path(&path).unwrap().to_string();
+    let input = [
+        serde_json::json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {"general": {"positionEncodings": ["utf-8"]}}}
+        }),
+        serde_json::json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": uri, "languageId": "seseragi", "version": 1, "text": source
+            }}
+        }),
+        serde_json::json!({"jsonrpc": "2.0", "id": 2, "method": "shutdown"}),
+        serde_json::json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+    let framed = input.iter().flat_map(frame).collect::<Vec<_>>();
+    let mut output = Vec::new();
+    seseragi_lsp::run(Cursor::new(framed), &mut output).unwrap();
+    let lsp = messages(&output);
+    let lsp_diagnostic = &lsp
+        .iter()
+        .find(|message| message["method"] == "textDocument/publishDiagnostics")
+        .unwrap()["params"]["diagnostics"][0];
+
+    assert_eq!(lsp_diagnostic["code"], cli_diagnostic["code"]);
+    assert_eq!(lsp_diagnostic["severity"], 2);
+    assert_eq!(cli_diagnostic["severity"], "Warning");
+    assert_eq!(
+        lsp_diagnostic["data"]["messageKey"],
+        cli_diagnostic["messageKey"]
+    );
+    let start = cli_diagnostic["primary"]["start"].as_u64().unwrap() as usize;
+    let end = cli_diagnostic["primary"]["end"].as_u64().unwrap() as usize;
+    assert_eq!(
+        lsp_diagnostic["range"]["start"],
+        utf8_position(source, start)
+    );
+    assert_eq!(lsp_diagnostic["range"]["end"], utf8_position(source, end));
+}
+
+#[test]
+fn missing_source_inside_a_package_is_rejected() {
+    let fixture = Fixture::new();
+    fixture.write(
+        "seseragi.toml",
+        "[package]\nname = \"fixture/lint-missing\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n\n[exports]\n\".\" = \"main\"\n",
+    );
+    fixture.write("src/main.ssrg", "pub let value: Int = 1\n");
+    let missing = fixture.root.join("src/missing.ssrg");
+    let output = fixture.run(&[], &missing);
+    assert_eq!(output.status.code(), Some(2));
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("lint path does not exist"),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
     );
 }
 

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.16] - 2026-09-25
+
+### Fixed
+
+- #622 sample CLI timeoutで所有するprocess tree全体を停止し、存在しないlint pathの誤ったpackage fallback、CLI/LSP診断parityの検証漏れ、formatter並列testの一時directory衝突を修正
+
 ## [0.61.15] - 2026-09-25
 
 ### Changed
