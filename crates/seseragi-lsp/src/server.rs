@@ -887,8 +887,12 @@ fn publish(
     document: &DocumentState,
     encoding: PositionEncoding,
 ) -> Result<Value, LineIndexError> {
-    let diagnostics =
-        diagnostics::convert(&document.analysis.diagnostics, &document.source, encoding)?;
+    let artifact = if document.lint_enabled {
+        document.analysis.authoring_diagnostics()
+    } else {
+        document.analysis.diagnostics.clone()
+    };
+    let diagnostics = diagnostics::convert(&artifact, &document.source, encoding)?;
     let mut params = json!({"uri": uri, "diagnostics": diagnostics});
     if let Some(version) = document.version {
         params["version"] = json!(version);
@@ -1074,6 +1078,126 @@ fn view -> html.Html<Never> =
     }
 
     #[test]
+    fn publishes_and_clears_shared_lint_diagnostics_after_edits() {
+        let uri = "file:///lint.ssrg";
+        let unused = "fn value -> Int = {\n  let unused = 1\n  let used = 2\n  used\n}\n";
+        let used = "fn value -> Int = {\n  let used = 1\n  used\n}\n";
+        let mut state = State::default();
+        state
+            .handle(json!({
+                "jsonrpc": "2.0", "id": 1, "method": "initialize",
+                "params": {"capabilities": {"general": {"positionEncodings": ["utf-8"]}}}
+            }))
+            .unwrap();
+        let opened = state
+            .handle(json!({
+                "jsonrpc": "2.0", "method": "textDocument/didOpen",
+                "params": {"textDocument": {
+                    "uri": uri, "languageId": "seseragi", "version": 1, "text": unused
+                }}
+            }))
+            .unwrap();
+        let diagnostic = &opened[0]["params"]["diagnostics"][0];
+        let artifact = state.documents[uri].analysis.authoring_diagnostics();
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(diagnostic["code"], artifact.diagnostics[0].code);
+        assert_eq!(diagnostic["severity"], 2);
+        assert_eq!(
+            diagnostic["data"]["messageKey"],
+            artifact.diagnostics[0].message_key
+        );
+        assert_eq!(
+            diagnostic["range"]["start"],
+            json!({"line": 1, "character": 6})
+        );
+        assert_eq!(
+            diagnostic["range"]["end"],
+            json!({"line": 1, "character": 12})
+        );
+
+        let changed = state
+            .handle(json!({
+                "jsonrpc": "2.0", "method": "textDocument/didChange",
+                "params": {
+                    "textDocument": {"uri": uri, "version": 2},
+                    "contentChanges": [{"text": used}]
+                }
+            }))
+            .unwrap();
+        assert_eq!(changed[0]["params"]["version"], 2);
+        assert_eq!(changed[0]["params"]["diagnostics"], json!([]));
+
+        let broken = publish(
+            uri,
+            &DocumentState::analyze(
+                uri,
+                3,
+                "fn value -> Int = {\n  let unused = missing\n  1\n}\n".to_owned(),
+            ),
+            PositionEncoding::Utf8,
+        )
+        .unwrap();
+        let diagnostics = broken["params"]["diagnostics"].as_array().unwrap();
+        assert!(diagnostics.iter().any(|item| item["severity"] == 1));
+        assert!(diagnostics.iter().all(|item| item["code"] != "SES-L0301"));
+    }
+
+    #[test]
+    fn package_lint_excludes_dependency_warnings() {
+        let workspace = TempWorkspace::new();
+        workspace.write(
+            "seseragi.toml",
+            "[package]\nname = \"fixture/lint-root\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n\n[run]\nentry = \"main\"\ntarget = \"process\"\n\n[dependencies]\ndomain = { package = \"fixture/lint-domain\", path = \"vendor/domain\" }\n",
+        );
+        workspace.write(
+            "src/main.ssrg",
+            "import { answer } from \"domain\"\n\npub fn main -> Int = {\n  let unusedRoot = 1\n  answer\n}\n",
+        );
+        workspace.write(
+            "vendor/domain/seseragi.toml",
+            "[package]\nname = \"fixture/lint-domain\"\nversion = \"0.1.0\"\nlanguage = \"^0.1.0\"\n\n[exports]\n\".\" = \"lib\"\n",
+        );
+        workspace.write(
+            "vendor/domain/src/lib.ssrg",
+            "pub let answer: Int = {\n  let unusedDependency = 1\n  42\n}\n",
+        );
+        let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
+        let dependency_uri = file_uri(&workspace.path().join("vendor/domain/src/lib.ssrg"));
+        let mut state = State::default();
+        state
+            .handle(json!({
+                "jsonrpc": "2.0", "id": 1, "method": "initialize",
+                "params": {"capabilities": {}, "workspaceFolders": [{
+                    "uri": file_uri(workspace.path()), "name": "fixture"
+                }]}
+            }))
+            .unwrap();
+        let key =
+            project_key_for(&file_path(&main_uri).unwrap(), &state.workspace_folders).unwrap();
+        let analyzed = workspace::analyze(&key, &state.open_documents);
+        assert!(analyzed.is_ok(), "{:?}", analyzed.err());
+        let notifications = state
+            .handle(json!({
+                "jsonrpc": "2.0", "method": "textDocument/didOpen",
+                "params": {"textDocument": {
+                    "uri": main_uri, "languageId": "seseragi", "version": 1,
+                    "text": fs::read_to_string(workspace.path().join("src/main.ssrg")).unwrap()
+                }}
+            }))
+            .unwrap();
+        let diagnostics_for = |uri: &str| {
+            notifications
+                .iter()
+                .find(|notification| notification["params"]["uri"] == uri)
+                .map(|notification| notification["params"]["diagnostics"].clone())
+                .unwrap()
+        };
+        let root_diagnostics = diagnostics_for(&main_uri);
+        assert_eq!(root_diagnostics[0]["code"], "SES-L0301");
+        assert_eq!(diagnostics_for(&dependency_uri), json!([]));
+    }
+
+    #[test]
     fn watched_source_events_refresh_missing_and_restored_workspace_imports() {
         let workspace = TempWorkspace::new();
         let main = concat!(
@@ -1165,7 +1289,9 @@ fn view -> html.Html<Never> =
         }
 
         fn write(&self, relative: &str, source: &str) {
-            fs::write(self.path.join(relative), source).unwrap();
+            let path = self.path.join(relative);
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(path, source).unwrap();
         }
     }
 

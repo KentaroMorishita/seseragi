@@ -38,6 +38,7 @@ pub(crate) struct DocumentState {
     pub(crate) version: Option<i64>,
     pub(crate) source: String,
     pub(crate) analysis: AnalysisDocument,
+    pub(crate) lint_enabled: bool,
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
@@ -53,6 +54,7 @@ impl DocumentState {
             version: Some(version),
             source,
             analysis,
+            lint_enabled: true,
         }
     }
 
@@ -60,11 +62,13 @@ impl DocumentState {
         version: Option<i64>,
         source: String,
         analysis: AnalysisDocument,
+        lint_enabled: bool,
     ) -> Self {
         Self {
             version,
             source,
             analysis,
+            lint_enabled,
         }
     }
 

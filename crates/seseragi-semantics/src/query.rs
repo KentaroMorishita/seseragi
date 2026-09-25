@@ -199,6 +199,30 @@ impl AnalysisDocument {
         &self.diagnostics
     }
 
+    /// Combines compiler diagnostics with deterministic authoring guidance for
+    /// CLI and editor consumers. Errors suppress speculative lint rules.
+    pub fn authoring_diagnostics(&self) -> DiagnosticArtifact {
+        let mut artifact = self.diagnostics.clone();
+        artifact
+            .diagnostics
+            .extend(self.lint_diagnostics().diagnostics);
+        artifact.diagnostics.sort_by(|left, right| {
+            (
+                left.primary.start,
+                left.primary.end,
+                diagnostic_severity_rank(left.severity),
+                &left.code,
+            )
+                .cmp(&(
+                    right.primary.start,
+                    right.primary.end,
+                    diagnostic_severity_rank(right.severity),
+                    &right.code,
+                ))
+        });
+        artifact
+    }
+
     /// Runs authoring-only rules over the same resolved symbols used by editor
     /// queries. Compiler diagnostics remain separate and retain their severity.
     pub fn lint_diagnostics(&self) -> DiagnosticArtifact {
@@ -373,6 +397,15 @@ impl AnalysisDocument {
             .min_by_key(|scope| span_length(scope.origin))
             .map(|scope| scope.id)
             .or(Some(ScopeId(0)))
+    }
+}
+
+fn diagnostic_severity_rank(severity: DiagnosticSeverity) -> u8 {
+    match severity {
+        DiagnosticSeverity::Error => 0,
+        DiagnosticSeverity::Warning => 1,
+        DiagnosticSeverity::Information => 2,
+        DiagnosticSeverity::Hint => 3,
     }
 }
 

@@ -452,6 +452,10 @@ textと `--diagnostic-format json` は同一diagnosticの投影で、いずれ�
 `SES-L0301` はblock / do内の局所pattern bindingに解決済み参照が一つもない場合だけ出し、名前が `_` で始まる
 意図的な非使用と、そのmoduleにcompiler Errorがある場合は出しません。初期化式の削除が常に安全とは限らないので
 自動fixは提供しません。formatterの書式、compilerのcorrectness、lintのauthoring guidanceは重複発行しません。
+LSPのpublishDiagnosticsも同じlinked analysisのcompiler診断とdeterministic lint診断を使い、開いたsourceの
+versionに合わせて更新・消去します。local packageではroot packageのsource moduleだけをlint対象とし、
+dependency moduleに新たなlint warningを出しません。CLI JSONとLSPのcode、severity、source range、
+message keyは同じ診断事実から投影し、editor専用ruleを別実装しません。
 
 ## 12.14 type inference explanation
 
