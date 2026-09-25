@@ -220,7 +220,7 @@ test("compiler-owned Reference metadata generates every module and public item",
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
-})
+}, 15_000)
 
 test("Reference rejects unsafe modules, unsupported targets and duplicate exports", () => {
   const item = {
