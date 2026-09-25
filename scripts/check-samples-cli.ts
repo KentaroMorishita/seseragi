@@ -1,11 +1,11 @@
-import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises"
-import { tmpdir } from "node:os"
-import { join, resolve } from "node:path"
+import { readdir, readFile, writeFile } from "node:fs/promises"
+import { resolve } from "node:path"
 import {
   parseDiscoverGroups,
   parseSampleMetadata,
   validateSampleCatalog,
 } from "../apps/playground/src/sample-catalog"
+import { runSampleCommand, withTemporaryDirectory } from "./sample-cli-process"
 import { loadValidatedTourCurriculum } from "./tour-curriculum"
 import { repositoryPath } from "./tour-lessons"
 
@@ -44,12 +44,17 @@ const cargoTargetDirectory = resolve(
   process.env.CARGO_TARGET_DIR ?? "target"
 )
 
-const build = Bun.spawn(["cargo", "build", "-q", "-p", "seseragi-cli"], {
-  cwd: repositoryRoot,
-  stdout: "inherit",
-  stderr: "inherit",
-})
-if ((await build.exited) !== 0) throw new Error("failed to build seseragi CLI")
+const build = await runSampleCommand(
+  ["cargo", "build", "-q", "-p", "seseragi-cli"],
+  {
+    cwd: repositoryRoot,
+    label: "native CLI build",
+    timeoutMs: 600_000,
+  }
+)
+if (build.status !== 0) {
+  throw new Error(`failed to build seseragi CLI:\n${build.stderr}`)
+}
 
 const executable = resolve(cargoTargetDirectory, "debug/seseragi")
 let checked = 0
@@ -75,19 +80,10 @@ for (const { directory, metadata } of samples) {
   const expected = metadata.files.expectedOutput
     ? await readFile(resolve(directory, metadata.files.expectedOutput), "utf8")
     : ""
-  const run = Bun.spawn([executable, "run", runTarget], {
-    cwd: repositoryRoot,
-    stdin: "pipe",
-    stdout: "pipe",
-    stderr: "pipe",
-  })
-  run.stdin.write(stdin)
-  run.stdin.end()
-  const [status, stdout, stderr] = await Promise.all([
-    run.exited,
-    new Response(run.stdout).text(),
-    new Response(run.stderr).text(),
-  ])
+  const { status, stdout, stderr } = await runSampleCommand(
+    [executable, "run", runTarget],
+    { cwd: repositoryRoot, label: `sample ${metadata.id} run`, stdin }
+  )
   if (status !== 0) {
     throw new Error(`sample ${metadata.id} failed in CLI:\n${stderr}`)
   }
@@ -114,22 +110,13 @@ for (const lesson of tourLessons) {
         `Tour lesson ${lesson.metadata.id} has no expected result`
       )
     }
-    const formatCheck = Bun.spawn(
+    const formatCheck = await runSampleCommand(
       [executable, "format", "--check", lesson.sourcePath],
-      {
-        cwd: repositoryRoot,
-        stdout: "pipe",
-        stderr: "pipe",
-      }
+      { cwd: repositoryRoot, label: `Tour ${lesson.metadata.id} format` }
     )
-    const [formatStatus, formatStdout, formatStderr] = await Promise.all([
-      formatCheck.exited,
-      new Response(formatCheck.stdout).text(),
-      new Response(formatCheck.stderr).text(),
-    ])
-    if (formatStatus !== 0) {
+    if (formatCheck.status !== 0) {
       throw new Error(
-        `Tour lesson ${lesson.metadata.id} is not formatted:\n${formatStdout}${formatStderr}`
+        `Tour lesson ${lesson.metadata.id} is not formatted:\n${formatCheck.stdout}${formatCheck.stderr}`
       )
     }
     const stdin = lesson.stdinPath
@@ -138,19 +125,14 @@ for (const lesson of tourLessons) {
     const expected = lesson.expectedOutputPath
       ? await readFile(lesson.expectedOutputPath, "utf8")
       : ""
-    const run = Bun.spawn([executable, "run", lesson.sourcePath], {
-      cwd: repositoryRoot,
-      stdin: "pipe",
-      stdout: "pipe",
-      stderr: "pipe",
-    })
-    run.stdin.write(stdin)
-    run.stdin.end()
-    const [status, stdout, stderr] = await Promise.all([
-      run.exited,
-      new Response(run.stdout).text(),
-      new Response(run.stderr).text(),
-    ])
+    const { status, stdout, stderr } = await runSampleCommand(
+      [executable, "run", lesson.sourcePath],
+      {
+        cwd: repositoryRoot,
+        label: `Tour ${lesson.metadata.id} run`,
+        stdin,
+      }
+    )
     const expectedFailure = lesson.expectedFailurePath
       ? await readFile(lesson.expectedFailurePath, "utf8")
       : undefined
@@ -194,90 +176,60 @@ for (const lesson of tourLessons) {
       `Structured Tour lesson ${lesson.metadata.id} is missing exercise or diagnostic files`
     )
   }
-  const exerciseFormat = Bun.spawn(
+  const exerciseFormat = await runSampleCommand(
     [executable, "format", "--check", lesson.exercisePath],
-    {
-      cwd: repositoryRoot,
-      stdout: "pipe",
-      stderr: "pipe",
-    }
+    { cwd: repositoryRoot, label: `Tour ${lesson.metadata.id} exercise format` }
   )
-  const [exerciseFormatStatus, exerciseFormatStdout, exerciseFormatStderr] =
-    await Promise.all([
-      exerciseFormat.exited,
-      new Response(exerciseFormat.stdout).text(),
-      new Response(exerciseFormat.stderr).text(),
-    ])
-  if (exerciseFormatStatus !== 0) {
+  if (exerciseFormat.status !== 0) {
     throw new Error(
-      `Tour lesson ${lesson.metadata.id} exercise is not formatted:\n${exerciseFormatStdout}${exerciseFormatStderr}`
+      `Tour lesson ${lesson.metadata.id} exercise is not formatted:\n${exerciseFormat.stdout}${exerciseFormat.stderr}`
     )
   }
-  const exerciseRun = Bun.spawn([executable, "run", lesson.exercisePath], {
-    cwd: repositoryRoot,
-    stdin: "pipe",
-    stdout: "pipe",
-    stderr: "pipe",
-  })
-  exerciseRun.stdin.end()
-  const [exerciseStatus, exerciseStdout, exerciseStderr] = await Promise.all([
-    exerciseRun.exited,
-    new Response(exerciseRun.stdout).text(),
-    new Response(exerciseRun.stderr).text(),
-  ])
-  if (exerciseStatus !== 0) {
+  const exerciseRun = await runSampleCommand(
+    [executable, "run", lesson.exercisePath],
+    { cwd: repositoryRoot, label: `Tour ${lesson.metadata.id} exercise run` }
+  )
+  if (exerciseRun.status !== 0) {
     throw new Error(
-      `Tour lesson ${lesson.metadata.id} exercise failed in CLI:\n${exerciseStderr}`
+      `Tour lesson ${lesson.metadata.id} exercise failed in CLI:\n${exerciseRun.stderr}`
     )
   }
   const expectedExercise = (
     await readFile(lesson.exerciseExpectedOutputPath, "utf8")
   ).replace(/\r?\n$/u, "")
-  if (exerciseStdout.replace(/\r?\n$/u, "") !== expectedExercise) {
+  if (exerciseRun.stdout.replace(/\r?\n$/u, "") !== expectedExercise) {
     throw new Error(
-      `Tour lesson ${lesson.metadata.id} exercise output mismatch\nexpected: ${JSON.stringify(expectedExercise)}\nactual: ${JSON.stringify(exerciseStdout.replace(/\r?\n$/u, ""))}`
+      `Tour lesson ${lesson.metadata.id} exercise output mismatch\nexpected: ${JSON.stringify(expectedExercise)}\nactual: ${JSON.stringify(exerciseRun.stdout.replace(/\r?\n$/u, ""))}`
     )
   }
   checkedTourExercises += 1
 
-  const diagnosticRun = Bun.spawn(
+  const diagnosticRun = await runSampleCommand(
     [
       executable,
       "run",
       repositoryPath(repositoryRoot, lesson.diagnosticExamplePath),
     ],
-    {
-      cwd: repositoryRoot,
-      stdin: "pipe",
-      stdout: "pipe",
-      stderr: "pipe",
-    }
+    { cwd: repositoryRoot, label: `Tour ${lesson.metadata.id} diagnostic run` }
   )
-  diagnosticRun.stdin.end()
-  const [diagnosticStatus, diagnosticStdout, diagnosticStderr] =
-    await Promise.all([
-      diagnosticRun.exited,
-      new Response(diagnosticRun.stdout).text(),
-      new Response(diagnosticRun.stderr).text(),
-    ])
-  if (diagnosticStatus === 0 || diagnosticStderr.trim() === "") {
+  if (diagnosticRun.status === 0 || diagnosticRun.stderr.trim() === "") {
     throw new Error(
       `Tour lesson ${lesson.metadata.id} diagnostic example did not fail`
     )
   }
-  if (diagnosticStdout !== "") {
+  if (diagnosticRun.stdout !== "") {
     throw new Error(
       `Tour lesson ${lesson.metadata.id} diagnostic example wrote stdout`
     )
   }
   if (updateTourDiagnostics) {
-    await writeFile(lesson.diagnosticOutputPath, diagnosticStderr)
+    await writeFile(lesson.diagnosticOutputPath, diagnosticRun.stderr)
   } else {
     const expectedDiagnostic = await readFile(
       lesson.diagnosticOutputPath,
       "utf8"
     )
-    if (diagnosticStderr !== expectedDiagnostic) {
+    if (diagnosticRun.stderr !== expectedDiagnostic) {
       throw new Error(
         `Tour lesson ${lesson.metadata.id} diagnostic snapshot is stale; run \`bun run tour:diagnostics:update\``
       )
@@ -299,32 +251,20 @@ async function validateWebPackageBuild(
   packageDirectory: string,
   id: string
 ): Promise<void> {
-  const outputRoot = await mkdtemp(join(tmpdir(), `seseragi-web-${id}-`))
-  const outputDirectory = resolve(outputRoot, "dist")
-  try {
-    const build = Bun.spawn(
+  await withTemporaryDirectory(`seseragi-web-${id}-`, async (outputRoot) => {
+    const outputDirectory = resolve(outputRoot, "dist")
+    const build = await runSampleCommand(
       [executable, "build", packageDirectory, "--out-dir", outputDirectory],
-      {
-        cwd: repositoryRoot,
-        stdout: "pipe",
-        stderr: "pipe",
-      }
+      { cwd: repositoryRoot, label: `Web sample ${id} build` }
     )
-    const [status, stdout, stderr] = await Promise.all([
-      build.exited,
-      new Response(build.stdout).text(),
-      new Response(build.stderr).text(),
-    ])
-    if (status !== 0) {
+    if (build.status !== 0) {
       throw new Error(
-        `Web sample ${id} failed to build:\n${stdout}${stderr}`
+        `Web sample ${id} failed to build:\n${build.stdout}${build.stderr}`
       )
     }
     await Promise.all([
       readFile(resolve(outputDirectory, "index.html")),
       readFile(resolve(outputDirectory, "assets/app.js")),
     ])
-  } finally {
-    await rm(outputRoot, { recursive: true, force: true })
-  }
+  })
 }

@@ -71,6 +71,7 @@ require_extension_tools() {
 
 run_native_sample_checks() {
   echo "Checking runnable samples through the native CLI..."
+  check_step bun test scripts/sample-cli-process.test.ts
   check_step bun run test:samples:cli
 }
 
@@ -127,6 +128,8 @@ run_playground_lint() {
     apps/playground/e2e \
     apps/playground/tests \
     scripts/check-samples-cli.ts \
+    scripts/sample-cli-process.ts \
+    scripts/sample-cli-process.test.ts \
     scripts/check-project-fixtures.ts \
     scripts/check-project-fixtures.test.ts \
     scripts/check-playground-isolated-build.ts \
@@ -371,6 +374,8 @@ run_full_checks() {
     extensions/seseragi/tests \
     extensions/seseragi-legacy/extension.js \
     scripts/check-samples-cli.ts \
+    scripts/sample-cli-process.ts \
+    scripts/sample-cli-process.test.ts \
     scripts/generate-playground-samples.ts \
     scripts/generate-playground-tour.ts \
     scripts/tour-curriculum.ts \
