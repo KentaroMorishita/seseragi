@@ -178,7 +178,7 @@ export function validateRepositorySitemap(root: string): SitemapReport {
   const sections = collectSpecSections(specFiles)
   const coverage = collectCoverageMap(
     readFileSync(
-      resolve(root, "docs/design/issue-601/reference-content-map.md"),
+      resolve(root, "docs/design/docs-site/reference-content-map.md"),
       "utf8"
     )
   )
