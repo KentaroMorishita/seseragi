@@ -17,6 +17,11 @@ pub struct DocBlock deriving JsonDecode {
   source: String,
   language: String,
   reference: String,
+  referenceName: String,
+  referenceKind: String,
+  referenceNamespace: String,
+  referenceSignature: String,
+  referenceDescription: String,
   sha256: String
 }
 

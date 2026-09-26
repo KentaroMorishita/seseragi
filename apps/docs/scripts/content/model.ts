@@ -3,6 +3,7 @@ export type Locale = (typeof locales)[number]
 
 export const pageKinds = [
   "home",
+  "landing",
   "get-started",
   "language",
   "library",
@@ -65,6 +66,11 @@ export type ParsedDocBlock = {
   source: string
   language: string
   reference: string
+  referenceName: string
+  referenceKind: string
+  referenceNamespace: string
+  referenceSignature: string
+  referenceDescription: string
 }
 
 export type ParsedPage = {

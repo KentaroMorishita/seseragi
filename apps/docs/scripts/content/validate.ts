@@ -68,7 +68,7 @@ function validateMetadata(metadata: PageMetadata, path: string): void {
   )
   assert.match(
     metadata.route,
-    /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)+$/u,
+    /^(?:\/|\/ja\/|\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)+)$/u,
     `${path}: invalid route`
   )
   text(metadata.title, `${path}: title`)
@@ -181,9 +181,11 @@ export function validatePages(pages: ParsedPage[], pagesRoot: string): void {
     )
     const english = entries.find(({ metadata }) => metadata.locale === "en")!
     const japanese = entries.find(({ metadata }) => metadata.locale === "ja")!
+    const japaneseRoute =
+      english.metadata.route === "/" ? "/ja/" : `/ja${english.metadata.route}`
     assert.equal(
       japanese.metadata.route,
-      `/ja${english.metadata.route}`,
+      japaneseRoute,
       `${id}: Japanese route must mirror English under /ja/`
     )
     assert.deepEqual(

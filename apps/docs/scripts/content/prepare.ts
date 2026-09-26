@@ -48,8 +48,34 @@ function prepareSpec(
 
 function prepareBlock(
   repositoryRoot: string,
-  block: PreparedDocBlock
+  block: PreparedDocBlock,
+  references: Map<
+    string,
+    {
+      name: string
+      kind: string
+      namespace: string
+      signature: string
+      description: string
+    }
+  >
 ): PreparedDocBlock {
+  if (block.kind === "api-reference") {
+    const reference = references.get(block.reference)
+    assert.ok(
+      reference,
+      `Unknown compiler Reference identity: ${block.reference}`
+    )
+    return {
+      ...block,
+      referenceName: reference.name,
+      referenceKind: reference.kind,
+      referenceNamespace: reference.namespace,
+      referenceSignature: reference.signature,
+      referenceDescription: reference.description,
+      sha256: digest(JSON.stringify(reference)),
+    }
+  }
   if (block.kind !== "example") return { ...block, sha256: "" }
   assert.match(
     block.source,
@@ -78,6 +104,45 @@ export function prepareContent(options: {
     parseAuthoringFile(readFileSync(path, "utf8"), path)
   )
   validatePages(pages, pagesRoot)
+  const artifact = JSON.parse(
+    readFileSync(
+      join(
+        options.repositoryRoot,
+        "examples/spec/artifacts/stdlib-schema-1/reference/module.json"
+      ),
+      "utf8"
+    )
+  ) as { modules: Array<{ items: Array<Record<string, unknown>> }> }
+  const references = new Map(
+    artifact.modules.flatMap(({ items }) =>
+      items.map((item) => {
+        const identity = item.identity
+        assert.equal(typeof identity, "string")
+        for (const key of [
+          "name",
+          "kind",
+          "namespace",
+          "signature",
+          "description",
+        ])
+          assert.equal(
+            typeof item[key],
+            "string",
+            `Invalid Reference ${identity} ${key}`
+          )
+        return [
+          identity as string,
+          {
+            name: item.name as string,
+            kind: item.kind as string,
+            namespace: item.namespace as string,
+            signature: item.signature as string,
+            description: item.description as string,
+          },
+        ] as const
+      })
+    )
+  )
 
   return {
     schema: 1,
@@ -91,7 +156,11 @@ export function prepareContent(options: {
         prepareSpec(options.repositoryRoot, reference)
       ),
       blocks: page.blocks.map((block) =>
-        prepareBlock(options.repositoryRoot, { ...block, sha256: "" })
+        prepareBlock(
+          options.repositoryRoot,
+          { ...block, sha256: "" },
+          references
+        )
       ),
     })),
   }

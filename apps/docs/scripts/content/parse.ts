@@ -28,6 +28,11 @@ const emptyBlock = (
   source: "",
   language: "",
   reference: "",
+  referenceName: "",
+  referenceKind: "",
+  referenceNamespace: "",
+  referenceSignature: "",
+  referenceDescription: "",
   ...values,
 })
 
