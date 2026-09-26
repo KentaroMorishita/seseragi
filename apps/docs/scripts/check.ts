@@ -22,6 +22,9 @@ for (const command of [
       "check.ts",
       "production.ts",
       "quality.ts",
+      "sitemap.ts",
+      "sitemap.test.ts",
+      "check-sitemap.ts",
     ].map((name) => `apps/docs/scripts/${name}`),
   ],
 ]) {
@@ -44,10 +47,24 @@ const cli = resolve(
   "debug",
   "seseragi"
 )
-const test = Bun.spawnSync(["bun", "test", "apps/docs/scripts/build.test.ts"], {
+const sitemap = Bun.spawnSync(["bun", "apps/docs/scripts/check-sitemap.ts"], {
   cwd: root,
-  env: { ...process.env, SESERAGI_BIN: cli },
   stdout: "inherit",
   stderr: "inherit",
 })
+if (sitemap.exitCode !== 0) process.exit(sitemap.exitCode)
+const test = Bun.spawnSync(
+  [
+    "bun",
+    "test",
+    "apps/docs/scripts/build.test.ts",
+    "apps/docs/scripts/sitemap.test.ts",
+  ],
+  {
+    cwd: root,
+    env: { ...process.env, SESERAGI_BIN: cli },
+    stdout: "inherit",
+    stderr: "inherit",
+  }
+)
 process.exit(test.exitCode)
