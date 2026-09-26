@@ -25,6 +25,12 @@ for (const command of [
       "sitemap.ts",
       "sitemap.test.ts",
       "check-sitemap.ts",
+      "content/model.ts",
+      "content/discover.ts",
+      "content/parse.ts",
+      "content/validate.ts",
+      "content/prepare.ts",
+      "../tests/content.test.ts",
     ].map((name) => `apps/docs/scripts/${name}`),
   ],
 ]) {
@@ -59,6 +65,7 @@ const test = Bun.spawnSync(
     "test",
     "apps/docs/scripts/build.test.ts",
     "apps/docs/scripts/sitemap.test.ts",
+    "apps/docs/tests/content.test.ts",
   ],
   {
     cwd: root,

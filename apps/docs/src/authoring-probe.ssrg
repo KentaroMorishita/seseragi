@@ -1,0 +1,42 @@
+import * as arrays from "std/array"
+import * as effects from "std/effect"
+import * as json from "std/json"
+import * as inputs from "std/stdin"
+import { DocCorpus, decodeCorpus } from "./model/document"
+
+struct ProbeOutput deriving JsonEncode {
+  schema: Int,
+  pages: Int
+}
+
+type ProbeError deriving Show =
+  | InputFailure
+  | DecodeFailure
+  | ConsoleFailure ConsoleError
+
+fn requireInput value: Maybe<String> -> Either<ProbeError, String> =
+  match value {
+    Nothing -> Left InputFailure
+    Just encoded -> Right encoded
+  }
+
+fn encodeSummary corpus: DocCorpus -> String =
+  json.encodeString (ProbeOutput {
+    schema: corpus.schema,
+    pages: arrays.length corpus.pages
+  })
+
+pub effect fn main -> Unit
+with Console, Stdin
+fails ProbeError =
+  do {
+    limit <- inputs.lineLimit 67108864
+      |> effects.fromEither
+      |> effects.mapError (\_ -> InputFailure)
+    line <- inputs.readLineWith limit |> effects.mapError (\_ -> InputFailure)
+    encoded <- requireInput line |> effects.fromEither
+    corpus <- decodeCorpus encoded
+      |> effects.fromEither
+      |> effects.mapError (\_ -> DecodeFailure)
+    println (encodeSummary corpus) |> effects.mapError ConsoleFailure
+  }

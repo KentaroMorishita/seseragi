@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "locale": "ja",
+  "terms": {
+    "effect": "Effect",
+    "function-application": "関数適用",
+    "standard-library": "標準ライブラリ",
+    "type-parameter": "型パラメータ"
+  }
+}

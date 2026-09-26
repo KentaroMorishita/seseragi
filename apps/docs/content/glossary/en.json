@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "locale": "en",
+  "terms": {
+    "effect": "Effect",
+    "function-application": "function application",
+    "standard-library": "Standard Library",
+    "type-parameter": "type parameter"
+  }
+}
