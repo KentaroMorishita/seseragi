@@ -39,7 +39,13 @@ pub fn renderBlock<Action> input: BuildInput
     Terminal (title, command) -> html.section {
       class: "code-panel terminal-panel",
       children: [
-        html.div { children: translate locale title },
+        html.div {
+          class: "code-panel-header",
+          children: html.span {
+            class: "code-panel-title",
+            children: translate locale title
+          }
+        },
         html.pre { children: [html.code { children: command }] }
       ]
     }

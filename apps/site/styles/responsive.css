@@ -122,4 +122,15 @@
     padding: 20px;
     font-size: 12px;
   }
+
+  .code-panel-header {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 0;
+    padding: 0 16px 14px;
+  }
+
+  .code-panel-title {
+    padding: 14px 0 8px;
+  }
 }

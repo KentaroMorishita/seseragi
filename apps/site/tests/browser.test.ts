@@ -2,8 +2,40 @@ import assert from "node:assert/strict"
 import { mkdirSync, mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
-import { chromium } from "../../playground/node_modules/@playwright/test"
+import {
+  chromium,
+  type Locator,
+} from "../../playground/node_modules/@playwright/test"
 import { buildSite } from "../scripts/build"
+
+async function codeSurface(locator: Locator) {
+  return locator.evaluate((code) => {
+    const style = getComputedStyle(code)
+    return {
+      background: style.backgroundColor,
+      border: style.borderTopWidth,
+      display: style.display,
+      padding: style.paddingTop,
+    }
+  })
+}
+
+async function codeHeaderLayout(locator: Locator) {
+  return locator.evaluate((header) => {
+    const title = header.querySelector(".code-panel-title")
+    const actions = header.querySelector(".code-actions")
+    if (!(title instanceof HTMLElement)) return null
+    if (!(actions instanceof HTMLElement)) return null
+    const titleBox = title.getBoundingClientRect()
+    const actionsBox = actions.getBoundingClientRect()
+    return {
+      titleBottom: titleBox.bottom,
+      actionsTop: actionsBox.top,
+      actionsRight: actionsBox.right,
+      headerRight: header.getBoundingClientRect().right,
+    }
+  })
+}
 
 const temporary = mkdtempSync(join(tmpdir(), "seseragi-site-browser-"))
 const output = join(temporary, "site")
@@ -147,6 +179,35 @@ try {
         assert.ok(
           (await page.locator("body").innerText()).includes("SES-E0001")
         )
+        const highlightedCodeStyle = await codeSurface(
+          page.locator(".code-panel pre > code.seseragi-highlight").first()
+        )
+        assert.deepEqual(highlightedCodeStyle, {
+          background: "rgba(0, 0, 0, 0)",
+          border: "0px",
+          display: "block",
+          padding: "0px",
+        })
+        const inlineCodeStyle = await page
+          .locator(".article-content li > code")
+          .first()
+          .evaluate((code) => {
+            const style = getComputedStyle(code)
+            return {
+              background: style.backgroundColor,
+              border: style.borderTopWidth,
+            }
+          })
+        assert.notEqual(inlineCodeStyle.background, "rgba(0, 0, 0, 0)")
+        assert.equal(inlineCodeStyle.border, "1px")
+        if (width === 390) {
+          const headerLayout = await codeHeaderLayout(
+            page.locator(".code-panel-header:has(.code-actions)").first()
+          )
+          assert.ok(headerLayout)
+          assert.ok(headerLayout.titleBottom <= headerLayout.actionsTop)
+          assert.ok(headerLayout.actionsRight <= headerLayout.headerRight)
+        }
         const requirementWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
         )
@@ -157,6 +218,29 @@ try {
         if (screenshots)
           await page.screenshot({
             path: join(screenshots, `requirement-merge-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
+          `http://127.0.0.1:${server.port}/ja/docs/language/types/requirement-merge/`
+        )
+        assert.equal(await page.locator("html").getAttribute("lang"), "ja")
+        if (width === 390) {
+          const japaneseHeaderLayout = await codeHeaderLayout(
+            page.locator(".code-panel-header:has(.code-actions)").first()
+          )
+          assert.ok(japaneseHeaderLayout)
+          assert.ok(
+            japaneseHeaderLayout.titleBottom <= japaneseHeaderLayout.actionsTop
+          )
+          assert.ok(
+            japaneseHeaderLayout.actionsRight <=
+              japaneseHeaderLayout.headerRight
+          )
+        }
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `requirement-merge-ja-${width}.png`),
             fullPage: true,
           })
 
@@ -232,6 +316,31 @@ try {
         if (screenshots)
           await page.screenshot({
             path: join(screenshots, `getting-started-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
+          `http://127.0.0.1:${server.port}/docs/get-started/project-layout/`
+        )
+        const terminalCodeStyle = await codeSurface(
+          page.locator(".terminal-panel pre > code").first()
+        )
+        assert.deepEqual(terminalCodeStyle, {
+          background: "rgba(0, 0, 0, 0)",
+          border: "0px",
+          display: "block",
+          padding: "0px",
+        })
+        const projectLayoutWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          projectLayoutWidth <= width,
+          `project layout ${width}px viewport is ${projectLayoutWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `project-layout-${width}.png`),
             fullPage: true,
           })
 

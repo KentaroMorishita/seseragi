@@ -29,8 +29,9 @@ fn renderExample<Action> messages: Messages
     class: "code-panel",
     children: [
       html.div {
+        class: "code-panel-header",
         children: [
-          html.span { children: translate locale title },
+          html.span { class: "code-panel-title", children: translate locale title },
           html.div {
             class: "code-actions",
             children: anchor messages.openPlayground example.playgroundUrl
