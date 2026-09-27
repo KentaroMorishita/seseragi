@@ -1,0 +1,5 @@
+import { SyntaxCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> SyntaxCopy =
+  incomplete "Reserved words and naming" "全予約語・contextual keyword・case規則・wildcardを説明します。"

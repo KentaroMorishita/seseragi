@@ -1,0 +1,72 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { syntaxPage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  syntaxPage "language.syntax.reserved-words" "/docs/language/syntax/reserved-words-and-names/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "syntax-reserved-words",
+      localized "Reserved and contextual words in canonical grammar source"
+        "canonical grammar sourceの予約語・contextual word"
+    ),
+    BulletList [
+      [
+        InlineCode "Session",
+        Words (localized " is classified as a type-level name." " は型levelのnameです。")
+      ],
+      [
+        InlineCode "sessionName",
+        Words (localized " is classified as a value-level name." " は値levelのnameです。")
+      ],
+      [
+        InlineCode "method",
+        Words (
+          localized " becomes a keyword inside a foreign block."
+        " はforeign block内でkeywordになります。"
+        )
+      ],
+      [
+        InlineCode "self",
+        Words (
+          localized " is special only as an impl method's first parameter."
+        " はimpl methodの第一parameterでだけ特別です。 "
+        )
+      ]
+    ]
+  ] [BulletList [
+    [
+      InlineCode "let match = 1",
+      Words (localized " attempts to bind a reserved word." " は予約語をbindしようとしています。")
+    ],
+    [
+      InlineCode "let Value = 1",
+      Words (localized " violates value-name casing." " はvalue nameのcase規則に違反します。")
+    ],
+    [
+      InlineCode "let _ = value",
+      Words (
+        localized " may discard value, but _ can never be read later."
+        " はvalueを破棄できますが、_は後から参照できません。"
+      )
+    ]
+  ]] [
+    [InternalLink (
+      localized "Source text and comments" "source textとcomment",
+      "/docs/language/syntax/source-text/"
+    )],
+    [InternalLink
+        (localized "Method calls" "method呼び出し", "/docs/language/syntax/method-calls/")],
+    [InternalLink (
+      localized "Custom operators and fixity" "custom operatorとfixity",
+      "/docs/language/syntax/custom-operators/"
+    )]
+  ]

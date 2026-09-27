@@ -1,0 +1,59 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { syntaxPage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  syntaxPage "language.syntax.custom-operators" "/docs/language/syntax/custom-operators/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "syntax-custom-operator",
+      localized "A declared and used custom operator" "宣言して使うcustom operator"
+    ),
+    BulletList [
+      [
+        InlineCode "infixl",
+        Words
+          (localized " groups equal-precedence uses from the left." " は同優先順位を左からgroup化します。")
+      ],
+      [
+        InlineCode "infixr",
+        Words (localized " groups them from the right." " は右からgroup化します。")
+      ],
+      [
+        InlineCode "infix",
+        Words
+          (localized " rejects an unparenthesized repeated chain." " は括弧なしの反復chainを拒否します。")
+      ],
+      [
+        InlineCode "(<+>) left",
+        Words (
+          localized " partially applies the curried operator value."
+          " はcurried operator値を部分適用します。"
+        )
+      ]
+    ]
+  ] [CodeExample (
+    "syntax-invalid-custom-operator",
+    localized "Rejected symbol and arity forms" "拒否されるsymbol・arity form"
+  )] [
+    [InternalLink (
+      localized "Operator precedence" "operator優先順位",
+      "/docs/language/syntax/operator-precedence/"
+    )],
+    [InternalLink (
+      localized "Reserved words and naming" "予約語と命名",
+      "/docs/language/syntax/reserved-words-and-names/"
+    )],
+    [InternalLink (
+      localized "Function application" "関数適用",
+      "/docs/language/syntax/function-application/"
+    )]
+  ]

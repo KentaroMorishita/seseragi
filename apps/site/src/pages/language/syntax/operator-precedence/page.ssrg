@@ -1,0 +1,71 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { syntaxPage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  syntaxPage "language.syntax.operator-precedence" "/docs/language/syntax/operator-precedence/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "syntax-operator-precedence",
+      localized "Operators in the grammar coverage fixture"
+        "grammar coverage fixtureのoperator"
+    ),
+    BulletList [
+      [
+        InlineCode "9",
+        Words (localized ": field/method ., index []." ": field/method .、index []。")
+      ],
+      [InlineCode "8", Words (localized ": function application." ": 関数適用。")],
+      [
+        InlineCode "7..4",
+        Words (
+          localized ": prefix, power, multiplicative, then additive and cons."
+        ": prefix・power・multiplicative・additiveとcons。"
+        )
+      ],
+      [
+        InlineCode "3..0",
+        Words (localized ": comparisons, &&, ||, then ??." ": comparison・&&・||・??。")
+      ],
+      [
+        InlineCode "-1..-3",
+        Words (
+          localized ": monadic/applicative/pipeline, $, then :=."
+        ": monad/applicative/pipeline・$・:=。"
+        )
+      ]
+    ]
+  ] [BulletList [
+    [
+      InlineCode "a < b < c",
+      Words (localized " is a rejected comparison chain." " は拒否されるcomparison chainです。")
+    ],
+    [
+      InlineCode "(&&)",
+      Words (
+        localized " cannot be referenced as a function because it short-circuits."
+        " は短絡評価するため関数値として参照できません。"
+      )
+    ]
+  ]] [
+    [InternalLink (
+      localized "Pipelines and low-precedence application" "pipelineと低優先順位適用",
+      "/docs/language/syntax/pipelines-and-low-precedence-application/"
+    )],
+    [InternalLink (
+      localized "Custom operators and fixity" "custom operatorとfixity",
+      "/docs/language/syntax/custom-operators/"
+    )],
+    [InternalLink (
+      localized "Optional record fields" "optional record field",
+      "/docs/language/syntax/optional-record-fields/"
+    )]
+  ]

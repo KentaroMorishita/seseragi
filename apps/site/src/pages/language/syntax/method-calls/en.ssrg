@@ -1,0 +1,14 @@
+import { SyntaxCopy } from "../article"
+
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "Method calls",
+  summary: "Dot syntax is static receiver-first application, resolved from the receiver type rather than runtime dispatch.",
+  formsTitle: "Receiver-first dot syntax",
+  formsBody: "value.method arg desugars to Type.method value arg. Dot access binds more tightly than ordinary application, so account.deposit 1000 first selects deposit from account's static type and then applies 1000. There is no value method arg whitespace-only method form.",
+  typingBody: "The receiver's static nominal type selects one inherent impl; trait methods instead require visible trait evidence. Generic receiver parameters are substituted before remaining method parameters are inferred, and partial application may retain those later parameters.",
+  evaluationBody: "Method syntax does not add dynamic dispatch. Receiver and arguments follow ordinary strict, left-to-right application semantics, and the selected declaration is fixed by static name resolution.",
+  invalidTitle: "A dot does not search runtime values",
+  invalidBody: "Missing members, inaccessible methods, duplicate inherent definitions, a self parameter whose type differs from the impl target, and unresolved inherent-versus-trait ambiguity are rejected. A field and method with the same surface spelling remain distinct resolution cases.",
+  diagnosticsBody: "Name resolution reports the missing or ambiguous member at the dot access and includes the receiver type. Impl validation owns invalid self declarations and duplicate method definitions; ordinary application diagnostics own later arguments.",
+  provenanceBody: "This article covers specification section 1.5 and follows the receiver, impl, and name-resolution rules used by the generic-method lesson and inherent-method diagnostic fixtures."
+}

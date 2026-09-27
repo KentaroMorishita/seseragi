@@ -1,0 +1,49 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { syntaxPage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  syntaxPage "language.syntax.method-calls" "/docs/language/syntax/method-calls/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "syntax-method-calls",
+      localized "Generic inherent methods" "generic inherent method"
+    ),
+    BulletList [
+      [
+        InlineCode "answer.map transform",
+        Words (
+          localized " resolves map from the static type of answer."
+            " はanswerのstatic型からmapを解決します。"
+        )
+      ],
+      [
+        InlineCode "Type.method answer transform",
+        Words (localized " is the receiver-first expansion." " はreceiver-firstの展開形です。")
+      ]
+    ]
+  ] [CodeExample (
+    "syntax-invalid-methods",
+    localized "Rejected inherent method declarations" "拒否されるinherent method宣言"
+  )] [
+    [InternalLink (
+      localized "Function application" "関数適用",
+      "/docs/language/syntax/function-application/"
+    )],
+    [InternalLink (
+      localized "Operator precedence" "operator優先順位",
+      "/docs/language/syntax/operator-precedence/"
+    )],
+    [InternalLink (
+      localized "Reserved words and naming" "予約語と命名",
+      "/docs/language/syntax/reserved-words-and-names/"
+    )]
+  ]

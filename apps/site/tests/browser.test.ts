@@ -76,7 +76,7 @@ try {
         assert.equal(await page.locator(".mobile-on-this-page").count(), 1)
         assert.ok(
           (await page.locator("body").innerText()).includes(
-            "Function declarations use fn"
+            "Application does not infer a different call grammar"
           )
         )
         const articleWidth = await page.evaluate(
@@ -89,6 +89,29 @@ try {
         if (screenshots)
           await page.screenshot({
             path: join(screenshots, `function-application-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
+          `http://127.0.0.1:${server.port}/docs/language/syntax/operator-precedence/`
+        )
+        assert.equal(
+          await page.locator("h1").textContent(),
+          "Operator precedence"
+        )
+        assert.ok(
+          (await page.locator("body").innerText()).includes("a < b < c")
+        )
+        const operatorsWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          operatorsWidth <= width,
+          `operator article ${width}px viewport is ${operatorsWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `operator-precedence-${width}.png`),
             fullPage: true,
           })
 

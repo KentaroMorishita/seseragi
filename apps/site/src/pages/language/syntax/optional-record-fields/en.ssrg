@@ -1,0 +1,14 @@
+import { SyntaxCopy } from "../article"
+
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "Optional record field syntax",
+  summary: "field?: A marks optional presence in a structural record; it is not a Maybe-valued required field or a general ? operator.",
+  formsTitle: "Attach ? directly to a record field name",
+  formsBody: "Write id?: String. The formatter normalizes spacing to that form, not id? : String or id ? : String. A lone ? token is meaningful only here and in the optional-query position of a record pattern; expressions have no standalone ? operator.",
+  typingBody: "An absent optional field is different from a required field of type Maybe<A>. Accessing an optional field produces Maybe<A>. A record with a required A field may satisfy the matching optional field, and a provided optional field preserves its presence information through record operations.",
+  evaluationBody: "Omitting the field constructs no hidden Nothing payload; absence is record presence. Record patterns may query an optional field without pretending it was required. Field expressions that are present follow ordinary exactly-once record evaluation.",
+  invalidTitle: "Optional markers belong only to structural record positions",
+  invalidBody: "Do not attach ? directly to struct fields, function parameters, or ADT payloads. Spaced marker forms, a standalone expression ?, duplicate fields, unknown access, and patterns that demand a missing required field are rejected at their owning syntax or type boundary.",
+  diagnosticsBody: "The formatter canonicalizes valid marker spacing. Parser diagnostics own misplaced ? tokens; record typing owns incompatible presence, field access, and pattern requirements. Diagnostics preserve the distinction between absence and a required Maybe value.",
+  provenanceBody: "This article covers specification section 1.10 and the record-type and record-pattern presence rules. Valid code is the canonical optional-record-field compile fixture; invalid record operations come from the semantic diagnostics corpus."
+}

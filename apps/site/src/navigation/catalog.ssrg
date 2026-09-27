@@ -35,6 +35,12 @@ import { page as readableDensityPage } from "../pages/language/model/readable-de
 import { page as programsPage } from "../pages/language/model/programs/page"
 import { page as nonFeaturesPage } from "../pages/language/model/non-features/page"
 import { page as functionApplicationPage } from "../pages/language/syntax/function-application/page"
+import { page as methodCallsPage } from "../pages/language/syntax/method-calls/page"
+import { page as pipelinesPage } from "../pages/language/syntax/pipelines-and-low-precedence-application/page"
+import { page as operatorPrecedencePage } from "../pages/language/syntax/operator-precedence/page"
+import { page as customOperatorsPage } from "../pages/language/syntax/custom-operators/page"
+import { page as reservedWordsPage } from "../pages/language/syntax/reserved-words-and-names/page"
+import { page as optionalRecordFieldsPage } from "../pages/language/syntax/optional-record-fields/page"
 import { page as sourceTextPage } from "../pages/language/syntax/source-text/page"
 import { page as literalsPage } from "../pages/language/syntax/literals/page"
 import { page as characterStringEscapesPage } from "../pages/language/syntax/character-string-escapes/page"
@@ -122,11 +128,22 @@ fn languageArea -> NavigationArea = NavigationArea {
           ]
         },
         NavigationSection {
-          id: "functions",
-          title: localized "Functions" "関数",
+          id: "application",
+          title: localized "Application" "適用",
           kind: FlatSection,
           overview: functionApplicationPage (),
-          pages: []
+          pages: [methodCallsPage (), pipelinesPage ()]
+        },
+        NavigationSection {
+          id: "operators",
+          title: localized "Operators and names" "operatorとname",
+          kind: FlatSection,
+          overview: operatorPrecedencePage (),
+          pages: [
+            customOperatorsPage (),
+            reservedWordsPage (),
+            optionalRecordFieldsPage ()
+          ]
         }
       ]
     }

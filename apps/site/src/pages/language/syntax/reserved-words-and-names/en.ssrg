@@ -1,0 +1,14 @@
+import { SyntaxCopy } from "../article"
+
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "Reserved words and naming",
+  summary: "Reserved and contextual words define parse boundaries, while initial letter case separates type-level and value-level names.",
+  formsTitle: "Reserved, contextual, and ordinary names",
+  formsBody: "The reserved set is: as, alias, deprecated, deriving, do, effect, else, fails, False, fn, for, foreign, from, if, impl, import, infix, infixl, infixr, instance, let, match, newtype, opaque, operator, pub, rec, struct, then, trait, True, type, when, where, and with.",
+  typingBody: "Types, constructors, and traits start uppercase. Values, functions, fields, and module aliases start lowercase. These casing rules participate in name classification before later type resolution, and source names remain case-sensitive.",
+  evaluationBody: "constructor, method, property, value, pure, task, and namespace are keywords only inside foreign blocks; since is contextual inside deprecated clauses; self is special only in the first parameter position of an impl method. Outside those contexts they remain ordinary identifiers when their casing permits.",
+  invalidTitle: "A wildcard is not a binding you can read",
+  invalidBody: "_ discards a value and cannot be referenced. A reserved word cannot name a declaration, uppercase value names and lowercase type names are rejected, and changing case creates a different name rather than an alias.",
+  diagnosticsBody: "The lexer preserves identifier spelling and the parser applies contextual keyword rules only in their owning grammar. Naming diagnostics point at the declaration name; unresolved-name diagnostics never reinterpret _ or a reserved word as a value.",
+  provenanceBody: "This article enumerates specification section 1.9 completely. The highlighted grammar fixture demonstrates foreign contextual keywords, type and value casing, fn, match, operator, and alias in canonical source."
+}

@@ -1,0 +1,52 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { syntaxPage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  syntaxPage "language.syntax.optional-record-fields" "/docs/language/syntax/optional-record-fields/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "syntax-optional-record-field",
+      localized "Optional presence and Maybe access" "optional presenceとMaybe access"
+    ),
+    BulletList [
+      [
+        InlineCode "id?: String",
+        Words (localized " permits the id field to be absent." " はid fieldの不在を許可します。")
+      ],
+      [
+        InlineCode "id: Maybe<String>",
+        Words
+          (localized " requires the field itself to be present." " はfield自体の存在を必須にします。")
+      ],
+      [
+        InlineCode "props.id",
+        Words (
+          localized " has type Maybe<String> for an optional String field."
+          " はoptional String fieldに対してMaybe<String>型です。"
+        )
+      ]
+    ]
+  ] [CodeExample (
+    "syntax-invalid-record-fields",
+    localized "Rejected record field and pattern operations"
+          "拒否されるrecord field・pattern操作"
+  )] [
+    [InternalLink (
+      localized "Operator precedence" "operator優先順位",
+      "/docs/language/syntax/operator-precedence/"
+    )],
+    [InternalLink (
+      localized "Reserved words and naming" "予約語と命名",
+      "/docs/language/syntax/reserved-words-and-names/"
+    )],
+    [InternalLink (localized "Literals" "literal", "/docs/language/syntax/literals/")]
+  ]

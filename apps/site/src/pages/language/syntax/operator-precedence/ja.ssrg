@@ -1,0 +1,5 @@
+import { SyntaxCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> SyntaxCopy =
+  incomplete "Operator precedence" "全built-in operatorの優先順位・結合・短絡評価・関数値化を説明します。"
