@@ -1,0 +1,6 @@
+let newline: Char = '\n'
+let lambda: Char = '\u{03BB}'
+let million: Int = 1_000_000
+let avogadro: Float = 6.022e23
+let quoted: String = "quote: \"Seseragi\""
+let template: String = `lambda: ${lambda}`

@@ -1,0 +1,3 @@
+let values: Array<Char> = ['a', '\u{03BB}', '瀬']
+let quote: Char = '\''
+let slash: Char = '\\'

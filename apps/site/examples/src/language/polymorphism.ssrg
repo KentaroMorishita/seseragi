@@ -1,0 +1,4 @@
+fn identity<A> value: A -> A = value
+
+let enabled = identity True
+let answer = identity 42

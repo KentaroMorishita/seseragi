@@ -1,0 +1,13 @@
+import * as invalidCharacterLiterals from "./language/invalid-character-literals"
+import * as invalidCoercion from "./language/invalid-coercion"
+import * as invalidCustomOperator from "./language/invalid-custom-operator"
+import * as invalidEscape from "./language/invalid-escape"
+import * as invalidMethods from "./language/invalid-methods"
+import * as invalidNumeric from "./language/invalid-numeric"
+import * as invalidRecordFields from "./language/invalid-record-fields"
+import * as invalidRecursion from "./language/invalid-recursion"
+import * as invalidRequirementMerge from "./language/invalid-requirement-merge"
+import * as invalidStructural from "./language/invalid-structural"
+import * as effects from "std/effect"
+
+pub effect fn main -> Unit = effects.succeed ()

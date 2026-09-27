@@ -10,5 +10,5 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Static does not mean guessed",
   invalidBody: "The compiler does not infer a type from a future runtime value, silently choose among ambiguous instances, or turn a mismatch into Any. Nominal and structural compatibility, Never coercion, and record width are explicit rules rather than general conversion.",
   diagnosticsBody: "Parser diagnostics own malformed type syntax; type diagnostics own unification, missing evidence, ambiguity, and invalid coercion. The compiler, formatter, language server, and documentation examples consume the same source model rather than separate type grammars.",
-  provenanceBody: "This article covers specification section 2.1. The highlighted domain-types lesson demonstrates nominal ADTs and newtypes, structural data use, annotations, and trait-derived capabilities in executable source."
+  provenanceBody: "This article covers specification section 2.1. The displayed source isolates nominal ADTs, newtypes, structs, annotations, and immutable values."
 }

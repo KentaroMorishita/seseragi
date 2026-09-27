@@ -10,5 +10,5 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Optional does not mean an implicit Maybe payload",
   invalidBody: "A value with id?: String cannot satisfy a required id: String target. id?: Maybe<String> has two levels of absence and is not collapsed. Optional markers on structs, parameters, or ADT payloads are rejected by their syntax boundary.",
   diagnosticsBody: "Field-access hovers report Maybe<A> for optional presence. Compatibility diagnostics distinguish missing-required, optional-to-required, and field-type mismatch. Formatter and parser preserve the field?: A marker owned by record syntax.",
-  provenanceBody: "This article covers optional presence in specification section 2.6 and complements syntax section 1.10. The canonical optional-record fixture demonstrates omission, required presence, and Maybe-returning access."
+  provenanceBody: "This article covers optional presence in specification section 2.6 and complements syntax section 1.10. The displayed source isolates omission, required presence, and Maybe-returning access."
 }

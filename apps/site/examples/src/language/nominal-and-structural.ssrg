@@ -1,0 +1,12 @@
+struct Player {
+  name: String,
+  score: Int,
+}
+
+fn playerName player: Player -> String = player.name
+fn recordName value: { name: String } -> String = value.name
+
+let player = Player { name: "Aki", score: 42 }
+let summary = { name: "Mio", active: True }
+
+let names = (playerName player, recordName summary)

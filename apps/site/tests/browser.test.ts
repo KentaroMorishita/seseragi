@@ -158,6 +158,13 @@ try {
             "Application does not infer a different call grammar"
           )
         )
+        const functionApplicationSource = await page
+          .locator(".seseragi-highlight")
+          .first()
+          .innerText()
+        assert.ok(functionApplicationSource.includes("let addOne = add 1"))
+        assert.ok(!functionApplicationSource.includes("Lesson"))
+        assert.ok(functionApplicationSource.trim().split("\n").length <= 6)
         const articleWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
         )

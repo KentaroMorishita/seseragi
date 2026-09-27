@@ -10,5 +10,5 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "A broken number is one invalid token",
   invalidBody: "Digit separators may occur once only between digits of the same base. Leading decimal zeroes, missing base digits, hexadecimal Float syntax, suffixes, incomplete exponents, 1., and .5 are rejected instead of being split into smaller valid tokens.",
   diagnosticsBody: "Invalid spelling and out-of-range numeric values report SES-P0203 over the numeric token. Integer arithmetic that later leaves the safe range is a runtime defect rather than wrapping. The formatter preserves valid numeric spelling and separators.",
-  provenanceBody: "This article implements section 1.2 excluding escape decoding. Valid examples come from fixtures/compile/literals.ssrg; the invalid separator example is the canonical SES-P0203 diagnostic fixture."
+  provenanceBody: "This article implements section 1.2 excluding escape decoding. Its valid literals and rejected separator are focused documentation examples checked during the site build."
 }
