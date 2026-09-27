@@ -2,10 +2,12 @@ import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import { createHash } from "node:crypto"
 import {
+  closeSync,
   copyFileSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
+  openSync,
   readFileSync,
   renameSync,
   rmSync,
@@ -15,13 +17,10 @@ import { tmpdir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
 import { playgroundUrlForSource } from "../../playground/src/workspace/source-link"
+import { compilerReferenceModules } from "./reference"
 
 const app = resolve(import.meta.dir, "..")
 const root = resolve(app, "../..")
-const referencePath = join(
-  root,
-  "examples/spec/artifacts/stdlib-schema-1/reference/module.json"
-)
 const styleFiles = [
   "tokens.css",
   "base.css",
@@ -67,29 +66,6 @@ function canonicalExample(
   }
 }
 
-function compilerReference(identity: string) {
-  const artifact = JSON.parse(readFileSync(referencePath, "utf8"))
-  assert.equal(artifact.schema, 1)
-  const item = artifact.modules
-    .flatMap((module: { items: unknown[] }) => module.items)
-    .find((entry: { identity: string }) => entry.identity === identity)
-  assert.ok(item, `Missing compiler reference: ${identity}`)
-  return {
-    identity: item.identity,
-    name: item.name,
-    namespace: item.namespace,
-    itemKind: item.kind,
-    signature: item.signature,
-    description: item.description,
-    typeParameters: item.typeParameters,
-    constraints: item.constraints,
-    highlighted: highlightSeseragi(item.signature).map(({ text, classes }) => ({
-      text,
-      className: classes,
-    })),
-  }
-}
-
 function generatorInput(playgroundUrl: string) {
   return {
     schema: 1,
@@ -107,13 +83,33 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
     ],
-    references: [compilerReference("std/array::get")],
+    referenceModules: compilerReferenceModules(),
   }
 }
 
 function routeFile(output: string, route: string): string {
   assert.match(route, /^\/(?:[a-z0-9-]+\/)*$/u)
   return join(output, route.slice(1), "index.html")
+}
+
+function validateInternalLinks(pages: RenderedPage[]) {
+  const byRoute = new Map(pages.map((page) => [page.route, page.html]))
+  for (const page of pages) {
+    const links = page.html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/gu)
+    for (const match of links) {
+      const href = match[1]
+      if (href.startsWith("http://") || href.startsWith("https://")) continue
+      const [path, fragment] = href.split("#", 2)
+      const route = path || page.route
+      const target = byRoute.get(route)
+      assert.ok(target, `Unresolved internal link from ${page.route}: ${href}`)
+      if (fragment)
+        assert.ok(
+          target.includes(`id="${fragment}"`),
+          `Unresolved fragment from ${page.route}: ${href}`
+        )
+    }
+  }
 }
 
 function compileGenerator(
@@ -143,13 +139,32 @@ function compileGenerator(
 }
 
 function renderGenerator(entry: string, input: object): RenderedPage[] {
-  const result = spawnSync("bun", [entry], {
-    cwd: dirname(entry),
-    encoding: "utf8",
-    input: `${JSON.stringify(input)}\n`,
-  })
-  assert.equal(result.status, 0, result.stderr || result.stdout)
-  const decoded: unknown = JSON.parse(result.stdout)
+  const encodedInput = join(dirname(entry), "render-input.jsonl")
+  const output = join(dirname(entry), "rendered-pages.json")
+  writeFileSync(encodedInput, `${JSON.stringify(input)}\n`)
+  const inputDescriptor = openSync(encodedInput, "r")
+  const outputDescriptor = openSync(output, "wx")
+  let result: ReturnType<typeof spawnSync>
+  try {
+    result = spawnSync("bun", [entry], {
+      cwd: dirname(entry),
+      encoding: "utf8",
+      stdio: [inputDescriptor, outputDescriptor, "pipe"],
+    })
+  } finally {
+    closeSync(inputDescriptor)
+    closeSync(outputDescriptor)
+    rmSync(encodedInput)
+  }
+  assert.equal(
+    result.status,
+    0,
+    result.stderr?.toString() ||
+      result.error?.message ||
+      `Site generator failed (status ${result.status}, signal ${result.signal})`
+  )
+  const decoded: unknown = JSON.parse(readFileSync(output, "utf8"))
+  rmSync(output)
   assert.ok(Array.isArray(decoded), "Site generator must return page records")
   return decoded as RenderedPage[]
 }
@@ -181,12 +196,21 @@ export function buildSite(options: BuildOptions) {
     const entry = compileGenerator(generator, options.profile ?? "development")
     const input = { ...generatorInput(playgroundUrl), origin: origin.origin }
     const pages = renderGenerator(entry, input)
-    assert.equal(pages.length, 16, "Expected eight bilingual page definitions")
+    const referencePageCount = input.referenceModules.reduce(
+      (count, module) => count + 1 + module.items.length,
+      0
+    )
+    assert.equal(
+      pages.length,
+      2 * (7 + referencePageCount),
+      "Unexpected bilingual page count"
+    )
     assert.equal(
       new Set(pages.map(({ route }) => route)).size,
       pages.length,
       "Duplicate generated route"
     )
+    validateInternalLinks(pages)
     mkdirSync(output, { recursive: true })
     for (const page of pages) {
       assert.ok(!page.html.includes("site-build-error"), page.route)
@@ -210,7 +234,18 @@ export function buildSite(options: BuildOptions) {
         sourcePath,
         sha256,
       })),
-      references: input.references.map(({ identity }) => identity),
+      referenceModules: input.referenceModules.map(
+        ({ specifier, availability, targets, items }) => ({
+          specifier,
+          availability,
+          targets,
+          symbols: items.map(({ identity, namespace, itemKind }) => ({
+            identity,
+            namespace,
+            itemKind,
+          })),
+        })
+      ),
       files: files.map((path) => ({
         path,
         sha256: sha256(readFileSync(join(output, path))),

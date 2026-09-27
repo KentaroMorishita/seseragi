@@ -101,6 +101,26 @@ try {
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")
         assert.equal(await page.locator("h1").textContent(), "ドキュメント")
 
+        await page.goto(
+          `http://127.0.0.1:${server.port}/docs/library/array/function/get/`
+        )
+        assert.equal(await page.locator("h1").textContent(), "get")
+        assert.ok(
+          (await page.locator(".api-reference").innerText()).includes(
+            "std/array::get"
+          )
+        )
+        assert.equal(
+          await page
+            .locator(".docs-sidebar .sidebar-link.current")
+            .evaluate(
+              (link) =>
+                link.closest("details")?.querySelector(":scope > summary")
+                  ?.textContent
+            ),
+          "std/array"
+        )
+
         assert.deepEqual(failures, [])
         await context.close()
       }

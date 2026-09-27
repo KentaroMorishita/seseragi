@@ -33,7 +33,7 @@ fn renderLocale input: BuildInput
   } | page <- site.pages]
 
 fn render input: BuildInput -> Array<Output> = {
-  let site = catalog ()
+  let site = catalog input
   arrays.concat [renderLocale input site En, renderLocale input site Ja]
 }
 

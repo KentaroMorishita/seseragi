@@ -1,9 +1,12 @@
 import * as html from "std/web/html"
+import * as arrays from "std/array"
 import { Locale, localizedRoute, translate } from "../model/locale"
 import {
+  FlatSection,
   NavigationArea,
   NavigationGroup,
   NavigationSection,
+  NestedSection,
   PageDefinition
 } from "../model/page"
 import { anchor } from "./primitives"
@@ -17,16 +20,50 @@ fn pageLink<Action> locale: Locale
   else
     "sidebar-link")
 
+fn isCurrent current: String -> page: PageDefinition -> Bool = page.id == current
+
+fn sectionIsCurrent current: String -> value: NavigationSection -> Bool =
+  if value.overview.id == current then
+    True
+  else
+    match arrays.find (isCurrent current) value.pages {
+  Nothing -> False
+  Just _ -> True
+}
+
+fn sectionIsOpen current: String -> value: NavigationSection -> Bool =
+  match value.kind {
+    FlatSection -> True
+    NestedSection -> sectionIsCurrent current value
+  }
+
+fn sectionChildLinks<Action> locale: Locale
+  -> current: String
+  -> value: NavigationSection
+  -> Array<html.Html<Action>> =
+  if sectionIsCurrent current value then
+    [pageLink locale current page | page <- value.pages]
+  else
+    {
+  let empty: Array<html.Html<Action>> = []
+  empty
+}
+
 fn section<Action> locale: Locale
   -> current: String
   -> value: NavigationSection
   -> html.Html<Action> =
   html.details {
-    open: True,
+    open: sectionIsOpen current value,
     class: "sidebar-section",
     children: [
       html.summary { children: translate locale value.title },
-      html.nav { children: [pageLink locale current page | page <- value.pages] }
+      html.nav {
+        children: [
+          pageLink locale current value.overview,
+          html.div { children: sectionChildLinks locale current value }
+        ]
+      }
     ]
   }
 

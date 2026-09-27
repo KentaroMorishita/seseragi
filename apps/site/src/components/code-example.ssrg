@@ -1,14 +1,24 @@
 import * as arrays from "std/array"
 import * as html from "std/web/html"
 import { Messages } from "../i18n/model"
-import { ApiReference, BuildInput, ExampleSource } from "../model/build"
+import { BuildInput, ExampleSource, ReferenceSymbol } from "../model/build"
 import { Locale, LocalizedText, translate } from "../model/locale"
+import { referenceSummary } from "../reference/catalog"
 import { anchor } from "./primitives"
 
 fn exampleMatches id: String -> example: ExampleSource -> Bool = example.id == id
 
-fn referenceMatches identity: String -> reference: ApiReference -> Bool =
+fn referenceMatches identity: String
+  -> namespace: String
+  -> itemKind: String
+  -> reference: ReferenceSymbol
+  -> Bool =
   reference.identity == identity
+  && reference.namespace == namespace
+  && reference.itemKind == itemKind
+
+fn renderValues values: Array<String> -> String =
+  if arrays.length values == 0 then "None" else join ", " values
 
 fn renderExample<Action> messages: Messages
   -> locale: Locale
@@ -35,7 +45,7 @@ fn renderExample<Action> messages: Messages
         }]
       }
     ]
-  }
+}
 
 pub fn codeExample<Action> input: BuildInput
   -> messages: Messages
@@ -51,37 +61,68 @@ pub fn codeExample<Action> input: BuildInput
     Just example -> renderExample messages locale title example
   }
 
-fn renderReference<Action> reference: ApiReference -> html.Html<Action> = html.section {
-  class: "api-reference",
-  children: [
-    html.div {
-      class: "api-reference-heading",
-      children: [html.div {
+fn renderReference<Action> locale: Locale
+  -> reference: ReferenceSymbol
+  -> html.Html<Action> =
+  html.section {
+    class: "api-reference",
+    children: [
+      html.div {
+        class: "api-reference-heading",
+        children: [html.div {
+          children: [
+            html.p {
+              class: "api-reference-kind",
+              children: reference.category + " · " + reference.namespace + " · " + reference.itemKind
+            },
+            html.h2 { children: reference.name }
+          ]
+        }]
+      },
+      html.p { class: "api-reference-identity", children: reference.identity },
+      html.div {
+        class: "api-reference-metadata",
         children: [
           html.p {
-            class: "api-reference-kind",
-            children: reference.namespace + " · " + reference.itemKind
+            children: [
+              html.strong { children: "Module" },
+              html.code { children: reference.module }
+            ]
           },
-          html.h2 { children: reference.name }
+          html.p {
+            children: [
+              html.strong { children: "Type parameters" },
+              html.code { children: renderValues reference.typeParameters }
+            ]
+          },
+          html.p {
+            children: [
+              html.strong { children: "Constraints" },
+              html.code { children: renderValues reference.constraints }
+            ]
+          }
         ]
-      }]
-    },
-    html.p { class: "api-reference-identity", children: reference.identity },
-    html.pre {
-      children: [html.code {
-        class: "seseragi-highlight",
-        children: [html.span { class: part.className, children: part.text } | part <- reference.highlighted]
-      }]
-    },
-    html.p { children: reference.description }
-  ]
-}
+      },
+      html.pre {
+        children: [html.code {
+          class: "seseragi-highlight",
+          children: [html.span { class: part.className, children: part.text } | part <- reference.highlighted]
+        }]
+      },
+      html.p { children: translate locale (referenceSummary reference) }
+    ]
+  }
 
-pub fn apiReference<Action> input: BuildInput -> identity: String -> html.Html<Action> =
-  match arrays.find (referenceMatches identity) input.references {
+pub fn apiReference<Action> input: BuildInput
+  -> locale: Locale
+  -> identity: String
+  -> namespace: String
+  -> itemKind: String
+  -> html.Html<Action> =
+  match arrays.find (referenceMatches identity namespace itemKind) (arrays.concat [value.items | value <- input.referenceModules]) {
     Nothing -> html.p {
       class: "site-build-error",
-      children: "Missing compiler reference: " + identity
+      children: "Missing compiler reference: " + identity + " · " + namespace + " · " + itemKind
     }
-    Just reference -> renderReference reference
+    Just reference -> renderReference locale reference
   }

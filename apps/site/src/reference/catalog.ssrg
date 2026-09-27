@@ -1,0 +1,270 @@
+import * as arrays from "std/array"
+import * as text from "std/text"
+import { ReferenceModule, ReferenceSymbol } from "../model/build"
+import { LocalizedText, localized } from "../model/locale"
+import {
+  ApiReference,
+  BulletList,
+  Heading,
+  InternalLink,
+  NestedSection,
+  NavigationGroup,
+  NavigationSection,
+  PageDefinition,
+  Paragraph,
+  Reference,
+  Words
+} from "../model/page"
+
+fn moduleRoute specifier: String -> String =
+  "/docs/library/" + text.replace "std/" "" specifier + "/"
+
+fn operatorSlug name: String -> Maybe<String> = match name {
+  "-" -> Just "subtract"
+  ":" -> Just "cons"
+  "!=" -> Just "not-equal"
+  "??" -> Just "coalesce"
+  "*" -> Just "multiply"
+  "**" -> Just "power"
+  "/" -> Just "divide"
+  "%" -> Just "remainder"
+  "+" -> Just "add"
+  "<" -> Just "less-than"
+  "<*>" -> Just "apply-operator"
+  "<=" -> Just "less-than-or-equal"
+  "<$>" -> Just "map-operator"
+  "==" -> Just "equal"
+  ">" -> Just "greater-than"
+  ">=" -> Just "greater-than-or-equal"
+  ">>=" -> Just "bind-operator"
+  _ -> Nothing
+}
+
+fn referenceSlug symbol: ReferenceSymbol -> String = {
+  if symbol.itemKind == "instance" then
+    symbol.name
+    |> text.toLower
+    |> text.replaceAll "..." "values"
+    |> text.replaceAll "<" "-"
+    |> text.replaceAll ">" ""
+    |> text.replaceAll ", " "-"
+    |> text.replaceAll "," "-"
+    |> text.replaceAll " " "-"
+    |> text.replaceAll "." "-"
+    |> text.replaceAll "/" "-"
+    |> text.replaceAll "(" ""
+    |> text.replaceAll ")" ""
+  else
+    match operatorSlug symbol.name {
+    Just slug -> slug
+    Nothing ->
+      if symbol.identity == "std/prelude::Reducible::reduce" then
+        "reducible-reduce"
+      else
+        symbol.name
+        |> text.toLower
+        |> text.replaceAll "_" "-"
+  }
+}
+
+pub fn referenceRoute symbol: ReferenceSymbol -> String =
+  moduleRoute symbol.module + symbol.itemKind + "/" + referenceSlug symbol + "/"
+
+fn referenceLabel symbol: ReferenceSymbol -> String =
+  symbol.name + " · " + symbol.namespace + " · " + symbol.itemKind
+
+fn instanceSummary symbol: ReferenceSymbol -> LocalizedText = {
+  let english = match symbol.instanceClass {
+    "standard" -> "Standard " + symbol.name + " instance provided by the compiler."
+    "conditional" -> "Conditional " + symbol.name + " instance. Its constraints must also be available."
+    "dictionary" -> "Compiler-provided " + symbol.name + " dictionary instance."
+    "operator-abi" -> "Compiler-provided " + symbol.name + " instance using operator ABI dispatch."
+    "structural" -> "Structural " + symbol.name + " instance synthesized by the compiler."
+    _ -> "Compiler-provided " + symbol.name + " instance."
+  }
+  let japanese = match symbol.instanceClass {
+    "standard" -> "compilerが提供する標準" + symbol.name + " instanceです。"
+    "conditional" -> "条件付き" + symbol.name + " instanceです。constraintも利用可能である必要があります。"
+    "dictionary" -> "compilerがdictionaryとして提供する" + symbol.name + " instanceです。"
+    "operator-abi" -> "operator ABI dispatchを使うcompiler提供の" + symbol.name + " instanceです。"
+    "structural" -> "compilerが合成する構造的な" + symbol.name + " instanceです。"
+    _ -> "compilerが提供する" + symbol.name + " instanceです。"
+  }
+  localized english japanese
+}
+
+pub fn referenceSummary symbol: ReferenceSymbol -> LocalizedText =
+  if symbol.itemKind != "instance" then
+    localized symbol.description "Compiler-generated API reference. Japanese prose is not available yet."
+  else
+    instanceSummary symbol
+
+fn symbolPage symbol: ReferenceSymbol -> PageDefinition = PageDefinition {
+  id: "reference.symbol." + symbol.identity + "." + symbol.namespace + "." + symbol.itemKind,
+  path: referenceRoute symbol,
+  kind: Reference,
+  title: localized symbol.name symbol.name,
+  summary: referenceSummary symbol,
+  blocks: [
+    ApiReference (symbol.identity, symbol.namespace, symbol.itemKind),
+    Heading ("related", localized "Related documentation" "関連ドキュメント"),
+    Paragraph (
+      [
+        Words (
+          localized
+            "Use the Standard Library guide for module semantics and Examples for executable programs."
+            "module semanticsはStandard Library guide、実行可能なprogramはExamplesで確認できます。"
+        ),
+        InternalLink
+            (localized " Standard Library" " Standard Library", "/docs/library/"),
+        InternalLink (localized " Examples" " Examples", "/examples/")
+      ]
+    )
+  ]
+}
+
+fn modulePage value: ReferenceModule -> PageDefinition = PageDefinition {
+  id: "reference.module." + value.specifier,
+  path: moduleRoute value.specifier,
+  kind: Reference,
+  title: localized value.specifier value.specifier,
+  summary: localized (`Compiler-owned public API for ${value.specifier}.`)
+    (`${value.specifier}のcompiler-owned public APIです。`),
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "Signatures and availability on this page come from the compiler reference artifact."
+    "このページのsignatureとavailabilityはcompiler reference artifactから生成されます。"
+      )]
+    ),
+    Paragraph (
+      [Words (
+        localized (
+          "Availability: " + value.availability + ". Targets: " + join ", " value.targets + "."
+        ) (
+          "Availability: " + value.availability + ". Target: " + join ", " value.targets + "。"
+        )
+      )]
+    ),
+    Heading ("public-api", localized "Public API" "Public API"),
+    BulletList (
+      [[InternalLink (
+        localized (referenceLabel symbol) (referenceLabel symbol),
+        referenceRoute symbol
+      )] | symbol <- value.items]
+    )
+  ]
+}
+
+fn moduleSection value: ReferenceModule -> NavigationSection = NavigationSection {
+  id: value.specifier,
+  title: localized value.specifier value.specifier,
+  kind: NestedSection,
+  overview: modulePage value,
+  pages: [symbolPage symbol | symbol <- value.items]
+}
+
+fn moduleMatches specifier: String -> value: ReferenceModule -> Bool =
+  specifier == value.specifier
+
+fn sectionsFor specifier: String
+  -> modules: Array<ReferenceModule>
+  -> Array<NavigationSection> =
+  [moduleSection value | value <- arrays.filter (moduleMatches specifier) modules]
+
+fn group id: String
+  -> title: String
+  -> japanese: String
+  -> specifiers: Array<String>
+  -> modules: Array<ReferenceModule>
+  -> NavigationGroup =
+  NavigationGroup {
+    id,
+    title: localized title japanese,
+    sections: arrays.concat [sectionsFor specifier modules | specifier <- specifiers]
+  }
+
+pub fn referenceGroups modules: Array<ReferenceModule> -> Array<NavigationGroup> = [
+  group "prelude" "Prelude" "Prelude" ["std/prelude"] modules,
+  group "data-validation" "Data and validation" "Dataとvalidation" [
+    "std/maybe",
+    "std/either",
+    "std/validation",
+    "std/transformer/maybe",
+    "std/transformer/either",
+    "std/transformer/reader",
+    "std/transformer/state",
+    "std/transformer/writer"
+  ] modules,
+  group "collections" "Collections" "Collection" [
+    "std/collection",
+    "std/array",
+    "std/list",
+    "std/non-empty-list",
+    "std/map",
+    "std/set",
+    "std/iterator"
+  ] modules,
+  group "text" "Text" "Text" [
+    "std/text",
+    "std/regex",
+    "std/text/grapheme",
+    "std/text/unicode",
+    "std/char"
+  ] modules,
+  group "numbers-bytes" "Numbers and bytes" "数値とbyte" [
+    "std/number",
+    "std/int",
+    "std/float",
+    "std/math",
+    "std/big-int",
+    "std/decimal",
+    "std/bytes",
+    "std/bytes/hex",
+    "std/bytes/base64"
+  ] modules,
+  group "data-formats" "Data formats" "Data format" ["std/json"] modules,
+  group "time-randomness" "Time and randomness" "時刻と乱数" [
+    "std/time",
+    "std/clock",
+    "std/random",
+    "std/entropy"
+  ] modules,
+  group "effects-concurrency" "Effects and concurrency" "Effectと並行処理" [
+    "std/effect",
+    "std/ref",
+    "std/deferred",
+    "std/queue",
+    "std/semaphore"
+  ] modules,
+  group "streams-signals" "Streams and signals" "StreamとSignal" [
+    "std/stream",
+    "std/signal"
+  ] modules,
+  group "system" "System capabilities" "System capability" [
+    "std/console",
+    "std/log",
+    "std/stdin",
+    "std/fs",
+    "std/path",
+    "std/process",
+    "std/child-process"
+  ] modules,
+  group "network-browser" "Networking and browser" "Networkとbrowser" [
+    "std/http",
+    "std/http/server",
+    "std/http/multipart",
+    "std/sse",
+    "std/websocket",
+    "std/websocket/server",
+    "std/web/file",
+    "std/web/navigation",
+    "std/web/storage",
+    "std/web/html",
+    "std/web/svg",
+    "std/web/dom"
+  ] modules,
+  group "testing" "Testing and measurement" "Testと計測" ["std/test", "std/benchmark"]
+    modules
+]

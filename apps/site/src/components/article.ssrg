@@ -42,7 +42,7 @@ pub fn renderBlock<Action> input: BuildInput
       ]
     }
     Callout (tone, title, body) -> callout locale tone title body
-    ApiReference identity -> apiReference input identity
+    ApiReference (identity, namespace, itemKind) -> apiReference input locale identity namespace itemKind
   }
 
 pub fn article<Action> input: BuildInput

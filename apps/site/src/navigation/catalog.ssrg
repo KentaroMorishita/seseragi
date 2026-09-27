@@ -1,6 +1,8 @@
 import * as arrays from "std/array"
+import { BuildInput } from "../model/build"
 import { localized } from "../model/locale"
 import {
+  FlatSection,
   NavigationArea,
   NavigationGroup,
   NavigationSection,
@@ -12,9 +14,9 @@ import { page as docsOverviewPage } from "../pages/docs/overview/page"
 import { page as languageOverviewPage } from "../pages/language/overview/page"
 import { page as functionApplicationPage } from "../pages/language/syntax/function-application/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
-import { page as arrayGetPage } from "../pages/library/array/get/page"
 import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
+import { referenceGroups } from "../reference/catalog"
 
 fn languageArea -> NavigationArea = NavigationArea {
   id: "language",
@@ -28,29 +30,26 @@ fn languageArea -> NavigationArea = NavigationArea {
     sections: [NavigationSection {
       id: "functions",
       title: localized "Functions" "関数",
-      pages: [functionApplicationPage ()]
+      kind: FlatSection,
+      overview: functionApplicationPage (),
+      pages: []
     }]
   }]
 }
 
-fn libraryArea -> NavigationArea = NavigationArea {
+fn libraryArea input: BuildInput -> NavigationArea = NavigationArea {
   id: "library",
   title: localized "Standard Library" "標準ライブラリ",
   description: localized "Module and symbol reference generated from compiler metadata."
     "compiler metadataから生成されるmodule・symbol referenceです。",
   landing: libraryOverviewPage (),
-  groups: [NavigationGroup {
-    id: "collections",
-    title: localized "Collections" "Collection",
-    sections: [NavigationSection {
-      id: "array",
-      title: localized "Array" "Array",
-      pages: [arrayGetPage ()]
-    }]
-  }]
+  groups: referenceGroups input.referenceModules
 }
 
-fn sectionPages section: NavigationSection -> Array<PageDefinition> = section.pages
+fn sectionPages section: NavigationSection -> Array<PageDefinition> = arrays.concat [
+  [section.overview],
+  section.pages
+]
 
 fn groupPages group: NavigationGroup -> Array<PageDefinition> =
   arrays.concat [sectionPages section | section <- group.sections]
@@ -60,9 +59,9 @@ fn areaPages area: NavigationArea -> Array<PageDefinition> = arrays.concat [
   arrays.concat [groupPages group | group <- area.groups]
 ]
 
-pub fn catalog -> SiteCatalog = {
+pub fn catalog input: BuildInput -> SiteCatalog = {
   let home = homePage ()
-  let areas = [languageArea (), libraryArea ()]
+  let areas = [languageArea (), libraryArea input]
   SiteCatalog {
     home,
     areas,
