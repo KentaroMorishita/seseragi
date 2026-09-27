@@ -1,0 +1,7 @@
+pub fn title -> String = "ドキュメント"
+pub fn summary -> String = "Seseragiを学び、言語規則を確認し、標準ライブラリを調べられます。"
+pub fn languageTitle -> String = "言語"
+pub fn languageBody -> String =
+  "構文、値、関数、型、pattern match、trait、Effect、Signal、module、interopを独立した項目として説明します。"
+pub fn libraryTitle -> String = "標準ライブラリ"
+pub fn libraryBody -> String = "compiler-owned metadataから生成されたmodule・symbolページを参照できます。"

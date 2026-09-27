@@ -1,0 +1,8 @@
+pub fn title -> String = "Standard Library"
+
+pub fn summary -> String = "Modules, types and functions shipped with Seseragi."
+
+pub fn collectionsTitle -> String = "Collections"
+
+pub fn collectionsBody -> String =
+  "Reference pages preserve the compiler-owned signature, constraints and symbol identity."

@@ -1,0 +1,33 @@
+import * as html from "std/web/html"
+import { Messages } from "../i18n/model"
+import { Locale, translate } from "../model/locale"
+import { Block, Heading } from "../model/page"
+import { anchor } from "./primitives"
+
+pub fn onThisPage<Action> messages: Messages
+  -> locale: Locale
+  -> blocks: Array<Block>
+  -> html.Html<Action> =
+  html.aside {
+    class: "on-this-page",
+    children: [
+      html.p { children: messages.onThisPage },
+      html.nav {
+        children: [anchor (translate locale title) ("#" + id) "" | Heading (id, title) <- blocks]
+      }
+    ]
+  }
+
+pub fn mobileOnThisPage<Action> messages: Messages
+  -> locale: Locale
+  -> blocks: Array<Block>
+  -> html.Html<Action> =
+  html.details {
+    class: "mobile-on-this-page",
+    children: [
+      html.summary { children: messages.onThisPage },
+      html.nav {
+        children: [anchor (translate locale title) ("#" + id) "" | Heading (id, title) <- blocks]
+      }
+    ]
+  }

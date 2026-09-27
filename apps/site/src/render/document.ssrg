@@ -1,0 +1,70 @@
+import * as html from "std/web/html"
+import { messages } from "../i18n/messages"
+import { BuildInput } from "../model/build"
+import { Locale, localeCode, localizedRoute, translate } from "../model/locale"
+import {
+  Article,
+  DocumentationLanding,
+  Home,
+  PageDefinition,
+  Reference,
+  SiteLanding,
+  SiteCatalog
+} from "../model/page"
+import { siteHeader } from "../components/site-header"
+import { anchor, metadata, resource } from "../components/primitives"
+import { articleLayout } from "../layouts/article"
+import { documentationLandingLayout } from "../layouts/documentation-landing"
+import { homeLayout } from "../layouts/home"
+import { landingLayout } from "../layouts/landing"
+
+fn pageBody<Action> input: BuildInput
+  -> catalog: SiteCatalog
+  -> locale: Locale
+  -> page: PageDefinition
+  -> html.Html<Action> =
+  {
+    let labels = messages locale
+    match page.kind {
+      Home -> homeLayout input labels locale catalog.areas page
+      SiteLanding -> landingLayout input labels locale page
+      DocumentationLanding -> documentationLandingLayout input labels locale catalog.areas page
+      Article -> articleLayout input labels locale catalog.areas page
+      Reference -> articleLayout input labels locale catalog.areas page
+    }
+  }
+
+pub fn renderDocument input: BuildInput
+  -> catalog: SiteCatalog
+  -> locale: Locale
+  -> page: PageDefinition
+  -> String =
+  {
+    let labels = messages locale
+    let route = localizedRoute locale page.path
+    html.renderDocument (
+      html.html {
+        lang: localeCode locale,
+        children: [
+          html.head {
+            children: [
+              html.meta { charSet: "utf-8" },
+              metadata "viewport" "width=device-width, initial-scale=1",
+              html.title { children: translate locale page.title + " · Seseragi" },
+              metadata "description" (translate locale page.summary),
+              resource "canonical" (input.origin + route),
+              resource "stylesheet" "/assets/site.css"
+            ]
+          },
+          html.body {
+            children: [
+              anchor "Skip to content" "#content" "skip-link",
+              siteHeader input labels locale page,
+              pageBody input catalog locale page,
+              html.footer { class: "site-footer", children: "Seseragi" }
+            ]
+          }
+        ]
+      }
+    )
+  }

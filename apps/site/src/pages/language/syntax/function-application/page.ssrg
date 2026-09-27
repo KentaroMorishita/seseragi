@@ -1,0 +1,38 @@
+import { LocalizedText, localized } from "../../../../model/locale"
+import {
+  Article,
+  Callout,
+  CodeExample,
+  Heading,
+  Note,
+  PageDefinition,
+  Paragraph,
+  Words
+} from "../../../../model/page"
+import * as en from "./en"
+import * as ja from "./ja"
+
+fn text english: String -> japanese: String -> LocalizedText =
+  localized english japanese
+
+pub fn page -> PageDefinition = PageDefinition {
+  id: "language.syntax.function-application",
+  path: "/docs/language/syntax/function-application/",
+  kind: Article,
+  title: text (en.title ()) (ja.title ()),
+  summary: text (en.summary ()) (ja.summary ()),
+  blocks: [
+    Heading ("apply-arguments", text (en.callTitle ()) (ja.callTitle ())),
+    Paragraph ([Words (text (en.callBody ()) (ja.callBody ()))]),
+    Heading ("partial-application", text (en.partialTitle ()) (ja.partialTitle ())),
+    Paragraph ([Words (text (en.partialBody ()) (ja.partialBody ()))]),
+    CodeExample ("function-application", text (en.exampleTitle ()) (ja.exampleTitle ())),
+    Heading ("pipelines", text (en.pipelineTitle ()) (ja.pipelineTitle ())),
+    Paragraph ([Words (text (en.pipelineBody ()) (ja.pipelineBody ()))]),
+    Callout (
+      Note,
+      text (en.noteTitle ()) (ja.noteTitle ()),
+      [Words (text (en.noteBody ()) (ja.noteBody ()))]
+    )
+  ]
+}

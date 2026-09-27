@@ -1,0 +1,33 @@
+import * as html from "std/web/html"
+import { Locale, LocalizedText, translate } from "../model/locale"
+import {
+  CalloutTone,
+  CommonMistake,
+  Inline,
+  Note,
+  Rationale,
+  Warning
+} from "../model/page"
+import { renderInlines } from "./primitives"
+
+fn toneClass tone: CalloutTone -> String = match tone {
+  Note -> "note"
+  Warning -> "warning"
+  Rationale -> "rationale"
+  CommonMistake -> "common-mistake"
+}
+
+fn calloutBody<Action> locale: Locale -> body: Array<Inline> -> html.Html<Action> =
+  html.p {
+    children: renderInlines locale body
+  }
+
+pub fn callout<Action> locale: Locale
+  -> tone: CalloutTone
+  -> title: LocalizedText
+  -> body: Array<Inline>
+  -> html.Html<Action> =
+  html.aside {
+    class: "callout callout-" + toneClass tone,
+    children: [html.h3 { children: translate locale title }, calloutBody locale body]
+  }

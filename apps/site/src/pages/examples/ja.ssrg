@@ -1,0 +1,4 @@
+pub fn title -> String = "例"
+pub fn summary -> String = "解決する課題ごとに整理した、完全なSeseragiプログラムです。"
+pub fn heading -> String = "実行可能なsourceから構築"
+pub fn body -> String = "公開する各exampleはrepository上のsourceを正本とし、Seseragi toolchainで検証します。"

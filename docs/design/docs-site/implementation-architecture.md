@@ -1,185 +1,136 @@
-# Docs rebuild implementation architecture
+# Official site implementation architecture
 
-## Reuse versus replacement
+## Ownership
 
-Keep these O03 contracts:
+`apps/site` is the only active official-site implementation. It owns the main
+language entrance, Documentation, Examples and Releases. Playground remains an
+independent application and is linked as a primary product surface.
 
-- process-target Seseragi generator and pure `html.renderDocument` output;
-- explicit origin/base inputs and safe trailing-slash routes;
-- compiler-owned Standard Library metadata;
-- canonical example source digests and exact Playground links;
-- deterministic production manifests and repeated-build comparison;
-- static no-JavaScript content, search/copy as narrow enhancements;
-- link, fragment, SEO, accessibility, viewport and artifact-budget gates;
-- the canonical brand assets under `assets/brand`.
+The former `apps/docs` implementation is removed. The new application does not
+keep compatibility readers, copied CSS, a second renderer or a second content
+inventory.
 
-Replace these implementation shapes:
+## Page authoring model
 
-- the single human-authored `content/pages.json` array;
-- the flat `navigation: Bool` list;
-- the single `src/render.ssrg` module owning model, components, layout and
-  document rendering;
-- the monolithic `public/docs.css` file;
-- module-only Reference routes with in-page symbol anchors;
-- fixed Japanese rendering and hard-coded route/search totals.
-
-## Target source layout
+Pages are Seseragi modules, not Markdown or JSON records. Each stable page owns
+one directory:
 
 ```text
-apps/docs/
-├─ content/
-│  ├─ sitemap.json
-│  ├─ glossary/
-│  │  ├─ en.json
-│  │  └─ ja.json
-│  └─ pages/
-│     ├─ home/
-│     │  ├─ en.md
-│     │  └─ ja.md
-│     ├─ get-started/...
-│     ├─ language/...
-│     ├─ standard-library/...
-│     ├─ applications/...
-│     ├─ interop-and-projects/...
-│     ├─ tooling/...
-│     └─ internals/...
+src/pages/language/syntax/function-application/
+├─ page.ssrg  # typed structure and component composition
+├─ en.ssrg    # English page copy
+└─ ja.ssrg    # Japanese page copy
+```
+
+`page.ssrg` constructs a `PageDefinition` from typed values:
+
+- `Paragraph`
+- `Heading`
+- `BulletList` and `OrderedList`
+- `CodeExample`
+- `Terminal`
+- `Callout`
+- `ApiReference`
+
+Inline content is also typed as words, inline code, internal links, external
+links, emphasis and strong text. Adding a documentation pattern means adding a
+model constructor and a reusable component, not inventing per-page HTML.
+
+## Locale ownership
+
+English uses unprefixed canonical routes. Japanese mirrors the same page at
+`/ja/`:
+
+```text
+/docs/language/syntax/function-application/
+/ja/docs/language/syntax/function-application/
+```
+
+Page-specific copy stays next to the page. Shared interface copy lives under
+`src/i18n/`. The page module pairs both languages structurally, so adding a
+heading or semantic block cannot silently update only one locale.
+
+## Navigation ownership
+
+`src/navigation/catalog.ssrg` composes the page modules into the hierarchical
+area, group and section tree. The same typed page values provide routes, titles,
+sidebar entries and rendered output. There is no separate page-ID JSON file
+that can drift from the sidebar.
+
+Every language concept remains an independent leaf. Effects, Signals, modules,
+interop and binding generation may share an area, but never collapse into one
+summary article.
+
+## External source boundary
+
+The TypeScript build host may supply only data that is not site-authored:
+
+- canonical executable sources from `examples/spec`;
+- syntax-highlight spans and exact Playground URLs for those sources;
+- compiler-owned Standard Library symbol metadata;
+- deployment origin and product version.
+
+The host does not supply page prose, navigation, layout or HTML. Seseragi
+decodes the closed build input and renders complete documents through pure Html.
+
+## Source layout
+
+```text
+apps/site/
 ├─ src/
 │  ├─ main.ssrg
 │  ├─ model/
-│  │  ├─ document.ssrg
-│  │  ├─ navigation.ssrg
-│  │  ├─ page.ssrg
-│  │  └─ reference.ssrg
+│  │  ├─ build.ssrg
+│  │  ├─ locale.ssrg
+│  │  └─ page.ssrg
+│  ├─ i18n/
+│  │  ├─ model.ssrg
+│  │  ├─ messages.ssrg
+│  │  ├─ en.ssrg
+│  │  └─ ja.ssrg
+│  ├─ navigation/catalog.ssrg
+│  ├─ pages/<page path>/{page,en,ja}.ssrg
 │  ├─ components/
 │  │  ├─ article.ssrg
-│  │  ├─ breadcrumb.ssrg
 │  │  ├─ callout.ssrg
 │  │  ├─ code-example.ssrg
-│  │  ├─ language-switch.ssrg
 │  │  ├─ on-this-page.ssrg
-│  │  ├─ page-links.ssrg
-│  │  ├─ search-root.ssrg
-│  │  ├─ sidebar-tree.ssrg
+│  │  ├─ primitives.ssrg
+│  │  ├─ sidebar.ssrg
 │  │  └─ site-header.ssrg
-│  ├─ layouts/
-│  │  ├─ article.ssrg
-│  │  ├─ landing.ssrg
-│  │  └─ reference.ssrg
-│  └─ render/
-│     ├─ block.ssrg
-│     ├─ document.ssrg
-│     └─ page.ssrg
+│  ├─ layouts/{home,landing,article}.ssrg
+│  └─ render/document.ssrg
 ├─ styles/
-│  ├─ tokens.css
-│  ├─ reset.css
-│  ├─ document.css
-│  ├─ shell.css
-│  ├─ navigation.css
-│  ├─ article.css
-│  ├─ code.css
-│  ├─ components.css
-│  └─ responsive.css
-├─ scripts/
-│  ├─ content/
-│  │  ├─ discover.ts
-│  │  ├─ parse.ts
-│  │  ├─ validate.ts
-│  │  └─ prepare.ts
-│  ├─ reference/
-│  │  ├─ prepare.ts
-│  │  └─ routes.ts
-│  ├─ build.ts
-│  ├─ browser.ts
-│  ├─ quality.ts
-│  └─ production.ts
-└─ tests/
-   ├─ content.test.ts
-   ├─ navigation.test.ts
-   ├─ reference.test.ts
-   ├─ render.test.ts
-   └─ production.test.ts
+├─ scripts/{build,check}.ts
+└─ tests/{build,browser}.test.ts
 ```
 
-Names may be refined during implementation, but responsibility may not be
-collapsed back into one renderer, one page array or one stylesheet.
-
-## Authoring and rendering boundary
-
-Human prose uses one Markdown file per stable page identity and locale. A small
-closed directive vocabulary represents semantic components such as Example,
-FromTypeScript, DesignRationale, CommonMistake, Warning, Availability,
-Prerequisites, Related, NextSteps and ApiReference.
-
-The host build layer performs only filesystem discovery, Markdown parsing,
-source/provenance loading and validation. It emits a versioned, closed Doc AST.
-It does not render HTML.
-
-Seseragi owns:
-
-- the typed Doc AST decoder;
-- semantic component rendering;
-- layouts and navigation presentation;
-- complete document composition through pure Html;
-- locale-aware links and accessible markup.
-
-This retains a Seseragi-built site without forcing long-form authors to write
-escaped prose inside `.ssrg` source files.
-
-## Page identity and locale routes
-
-Each page has one locale-independent id and one position in the navigation
-tree. English is the canonical unprefixed route and Japanese is the `/ja/`
-mirror:
+## Rendering flow
 
 ```text
-page id: language.syntax.function-application
-English: /docs/language/syntax/function-application/
-Japanese: /ja/docs/language/syntax/function-application/
+page modules + locale modules + navigation catalog
+                         │
+canonical examples ── BuildInput ── compiler Reference
+                         │
+                Seseragi process SSG
+                         │
+          English and Japanese static HTML
 ```
 
-Locale files may differ in prose structure but share page identity, canonical
-examples, Reference identities, prerequisites and related edges. Missing
-Japanese content is a build-visible availability state; production does not
-silently display English under `lang="ja"`.
-
-## Navigation model
-
-The navigation tree and concept graph are separate typed inputs.
-
-- The tree owns sidebar order, nesting, disclosure state, previous and next.
-- The concept graph owns prerequisites, related pages and reader journeys.
-- Breadcrumbs derive from tree ancestry.
-- On-this-page derives from the rendered heading tree.
-- Search records area, page kind, locale, hierarchy and symbol kind.
-- Generated API symbols appear as children of their module and symbol group.
-- Mobile uses the same tree in a modal drawer; it never emits the whole tree
-  before the article.
+The vertical slice must compile with the repository CLI, produce deterministic
+static routes, render at desktop and mobile widths without horizontal overflow,
+and contain no unresolved build sentinels before Vercel preview.
 
 ## Style ownership
 
-- `tokens.css`: colors, typography, spacing, borders, layers and code tokens.
-- `document.css`: document defaults and accessibility utilities.
-- `shell.css`: global header, secondary tabs and three-column frame.
-- `navigation.css`: sidebar tree, disclosure, active path and mobile drawer.
-- `article.css`: prose rhythm, headings, tables and page footer.
-- `code.css`: code panel, syntax tokens and copy/Playground actions.
-- `components.css`: callouts, metadata, badges and semantic blocks.
-- `responsive.css`: breakpoint behavior only; no component semantics.
+- `tokens.css`: design tokens only.
+- `base.css`: reset and document defaults.
+- `shell.css`: product header and footer.
+- `home.css`: language entrance composition.
+- `docs.css`: documentation frame, hierarchy and local outline.
+- `article.css`: prose and semantic documentation components.
+- `code.css`: highlighted code and API panels.
+- `responsive.css`: breakpoint changes only.
 
-## Migration sequence
-
-1. Freeze the complete site map and coverage ledger.
-2. Introduce file-per-page authoring and the versioned Doc AST beside the old
-   pipeline.
-3. Split the Seseragi renderer into model, component, layout and render modules.
-4. Implement the hierarchical shell and split styles against a small bilingual
-   vertical slice.
-5. Integrate compiler Reference as module and symbol pages.
-6. Migrate and rebuild content by documentation area.
-7. Switch search/SEO/quality/production to the new route inventory.
-8. Delete `pages.json`, the legacy flat renderer and obsolete CSS only after
-   parity gates pass.
-
-The old site remains buildable during steps 2–6. There is one final cutover;
-there are not two long-lived Docs products.
-
+The build concatenates these files into one static asset. Source responsibility
+stays split even though the browser receives one request.

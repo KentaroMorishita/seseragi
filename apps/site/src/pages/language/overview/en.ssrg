@@ -1,0 +1,14 @@
+pub fn title -> String = "Language Reference"
+
+pub fn summary -> String =
+  "The complete syntax and semantics of the Seseragi programming language."
+
+pub fn syntaxTitle -> String = "Syntax"
+
+pub fn syntaxBody -> String =
+  "Read each grammatical form independently, including its precedence, typing rules and evaluation behavior."
+
+pub fn functionsTitle -> String = "Functions"
+
+pub fn functionsBody -> String =
+  "Function declarations, parameters and application each have their own reference pages."

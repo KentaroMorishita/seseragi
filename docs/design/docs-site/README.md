@@ -2,7 +2,7 @@
 
 This directory records the approved information architecture and visual
 direction for [#601](https://github.com/KentaroMorishita/seseragi/issues/601).
-It is the design input for rebuilding `apps/docs`; it is not a second language
+It is the design input for building `apps/site`; it is not a second language
 specification.
 
 ## Decisions
@@ -15,8 +15,8 @@ specification.
   group, and API symbol where applicable.
 - The Docs site explains Seseragi completely. Links to `docs/spec` establish
   provenance but never replace explanations.
-- Human-authored content is one file per page and locale. The current single
-  `apps/docs/content/pages.json` is retired as an authoring source.
+- Human-authored content is a typed Seseragi page module. Page-specific English
+  and Japanese copy lives beside that page as `en.ssrg` and `ja.ssrg`.
 - Rendering, layouts, navigation and semantic documentation components remain
   a first-party Seseragi application using pure Html and process-target SSG.
 - Compiler-owned metadata remains the source of truth for API signatures and
@@ -57,6 +57,5 @@ Standard Library
 
 See [implementation architecture](implementation-architecture.md). The rebuild
 keeps the proven deterministic SSG, safe-route, canonical-example, compiler
-Reference, no-JavaScript, SEO and accessibility contracts. It replaces the flat
-authoring, rendering and navigation structure rather than extending it.
-
+Reference, no-JavaScript, SEO and accessibility contracts. There is no Markdown,
+MDX, JSON page array or legacy renderer in the active application.

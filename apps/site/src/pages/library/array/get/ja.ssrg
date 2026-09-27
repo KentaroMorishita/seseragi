@@ -1,0 +1,5 @@
+pub fn title -> String = "Array.get"
+pub fn summary -> String = "範囲外アクセスを未検査の値にせず、indexから配列要素を取得します。"
+pub fn behaviorTitle -> String = "動作"
+pub fn behaviorBody -> String =
+  "Array.getは公開signatureで定義されたcompiler-owned resultを返します。欠けたindexは戻り値の型を通して明示的に処理します。"

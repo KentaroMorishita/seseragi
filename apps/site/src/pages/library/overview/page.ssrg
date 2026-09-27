@@ -1,0 +1,31 @@
+import { LocalizedText, localized } from "../../../model/locale"
+import {
+  DocumentationLanding,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words
+} from "../../../model/page"
+import * as en from "./en"
+import * as ja from "./ja"
+
+fn text english: String -> japanese: String -> LocalizedText =
+  localized english japanese
+
+pub fn page -> PageDefinition = PageDefinition {
+  id: "library.overview",
+  path: "/docs/library/",
+  kind: DocumentationLanding,
+  title: text (en.title ()) (ja.title ()),
+  summary: text (en.summary ()) (ja.summary ()),
+  blocks: [
+    Heading ("collections", text (en.collectionsTitle ()) (ja.collectionsTitle ())),
+    Paragraph (
+      [
+        Words (text (en.collectionsBody ()) (ja.collectionsBody ())),
+        InternalLink (text " Array.get" " Array.get", "/docs/library/array/get/")
+      ]
+    )
+  ]
+}

@@ -1,0 +1,51 @@
+import * as html from "std/web/html"
+import { Messages } from "../i18n/model"
+import { Locale, localizedRoute, translate } from "../model/locale"
+import {
+  Emphasis,
+  ExternalLink,
+  Inline,
+  InlineCode,
+  InternalLink,
+  Strong,
+  Words
+} from "../model/page"
+
+pub fn anchor<Action> label: String
+  -> value: String
+  -> className: String
+  -> html.Html<Action> =
+  match html.parseWebUrl value {
+    Left error -> html.span { class: "site-build-error", children: show error }
+    Right url -> html.a { href: url, class: className, children: label }
+  }
+
+pub fn resource<Action> relation: String -> value: String -> html.Html<Action> =
+  match html.parseWebUrl value {
+    Left error -> html.span { class: "site-build-error", children: show error }
+    Right url -> html.link { rel: relation, href: url }
+  }
+
+pub fn metadata<Action> key: String -> value: String -> html.Html<Action> = html.meta {
+  name: key,
+  content: value
+}
+
+pub fn renderInline<Action> locale: Locale -> inline: Inline -> html.Html<Action> =
+  match inline {
+    Words value -> html.span { children: translate locale value }
+    InlineCode value -> html.code { children: value }
+    InternalLink (label, path) -> anchor (translate locale label) (localizedRoute locale path) "article-link"
+    ExternalLink (label, url) -> anchor (translate locale label) url "article-link external-link"
+    Strong values -> html.strong {
+      children: [renderInline locale value | value <- values]
+    }
+    Emphasis values -> html.em {
+      children: [renderInline locale value | value <- values]
+    }
+  }
+
+pub fn renderInlines<Action> locale: Locale
+  -> values: Array<Inline>
+  -> Array<html.Html<Action>> =
+  [renderInline locale value | value <- values]

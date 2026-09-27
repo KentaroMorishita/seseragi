@@ -1,0 +1,67 @@
+import { LocalizedText } from "./locale"
+
+pub type PageKind =
+  | Home
+  | SiteLanding
+  | DocumentationLanding
+  | Article
+  | Reference
+
+pub type CalloutTone =
+  | Note
+  | Warning
+  | Rationale
+  | CommonMistake
+
+pub type Inline =
+  | Words LocalizedText
+  | InlineCode String
+  | InternalLink (LocalizedText, String)
+  | ExternalLink (LocalizedText, String)
+  | Strong (Array<Inline>)
+  | Emphasis (Array<Inline>)
+
+pub type Block =
+  | Paragraph (Array<Inline>)
+  | Heading (String, LocalizedText)
+  | BulletList (Array<Array<Inline>>)
+  | OrderedList (Array<Array<Inline>>)
+  | CodeExample (String, LocalizedText)
+  | Terminal (LocalizedText, String)
+  | Callout (CalloutTone, LocalizedText, Array<Inline>)
+  | ApiReference String
+
+pub struct PageDefinition {
+  id: String,
+  path: String,
+  kind: PageKind,
+  title: LocalizedText,
+  summary: LocalizedText,
+  blocks: Array<Block>
+}
+
+pub struct NavigationSection {
+  id: String,
+  title: LocalizedText,
+  pages: Array<PageDefinition>
+}
+
+pub struct NavigationGroup {
+  id: String,
+  title: LocalizedText,
+  sections: Array<NavigationSection>
+}
+
+pub struct NavigationArea {
+  id: String,
+  title: LocalizedText,
+  description: LocalizedText,
+  landing: PageDefinition,
+  groups: Array<NavigationGroup>
+}
+
+pub struct SiteCatalog {
+  home: PageDefinition,
+  areas: Array<NavigationArea>,
+  pages: Array<PageDefinition>
+}

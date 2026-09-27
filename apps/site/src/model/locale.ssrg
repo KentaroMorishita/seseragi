@@ -1,0 +1,27 @@
+pub type Locale =
+  | En
+  | Ja
+
+pub struct LocalizedText { en: String, ja: String }
+
+pub fn localized en: String -> ja: String -> LocalizedText = LocalizedText { en, ja }
+
+pub fn translate locale: Locale -> value: LocalizedText -> String = match locale {
+  En -> value.en
+  Ja -> value.ja
+}
+
+pub fn localeCode locale: Locale -> String = match locale {
+  En -> "en"
+  Ja -> "ja"
+}
+
+pub fn alternateLocale locale: Locale -> Locale = match locale {
+  En -> Ja
+  Ja -> En
+}
+
+pub fn localizedRoute locale: Locale -> path: String -> String = match locale {
+  En -> path
+  Ja -> if path == "/" then "/ja/" else "/ja" + path
+}

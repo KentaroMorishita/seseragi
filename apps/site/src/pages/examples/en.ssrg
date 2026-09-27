@@ -1,0 +1,6 @@
+pub fn title -> String = "Examples"
+pub fn summary -> String =
+  "Complete Seseragi programs organized by the problem they solve."
+pub fn heading -> String = "Built from executable sources"
+pub fn body -> String =
+  "Every example published here is backed by a repository source that is checked by the Seseragi toolchain."

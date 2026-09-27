@@ -1,6 +1,0 @@
-{
-  "schema": 1,
-  "defaultLocale": "en",
-  "locales": ["en", "ja"],
-  "missingTranslation": "error"
-}

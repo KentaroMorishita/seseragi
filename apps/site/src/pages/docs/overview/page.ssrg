@@ -1,0 +1,41 @@
+import { LocalizedText, localized } from "../../../model/locale"
+import {
+  DocumentationLanding,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words
+} from "../../../model/page"
+import * as en from "./en"
+import * as ja from "./ja"
+
+fn text english: String -> japanese: String -> LocalizedText =
+  localized english japanese
+
+pub fn page -> PageDefinition = PageDefinition {
+  id: "docs.overview",
+  path: "/docs/",
+  kind: DocumentationLanding,
+  title: text (en.title ()) (ja.title ()),
+  summary: text (en.summary ()) (ja.summary ()),
+  blocks: [
+    Heading ("language", text (en.languageTitle ()) (ja.languageTitle ())),
+    Paragraph (
+      [
+        Words (text (en.languageBody ()) (ja.languageBody ())),
+        InternalLink (
+          text " Function application" " 関数適用",
+          "/docs/language/syntax/function-application/"
+        )
+      ]
+    ),
+    Heading ("standard-library", text (en.libraryTitle ()) (ja.libraryTitle ())),
+    Paragraph (
+      [
+        Words (text (en.libraryBody ()) (ja.libraryBody ())),
+        InternalLink (text " Array.get" " Array.get", "/docs/library/array/get/")
+      ]
+    )
+  ]
+}

@@ -1,0 +1,74 @@
+import * as html from "std/web/html"
+import { Messages } from "../i18n/model"
+import { BuildInput } from "../model/build"
+import { Locale, localizedRoute, translate } from "../model/locale"
+import { NavigationArea, PageDefinition } from "../model/page"
+import { article } from "../components/article"
+import { anchor } from "../components/primitives"
+
+fn areaCard<Action> locale: Locale -> area: NavigationArea -> html.Html<Action> =
+  match html.parseWebUrl (localizedRoute locale area.landing.path) {
+    Left error -> html.span { class: "site-build-error", children: show error }
+    Right route -> html.a {
+      href: route,
+      class: "path-card",
+      children: [
+        html.h3 { children: translate locale area.title },
+        html.p { children: translate locale area.description }
+      ]
+    }
+  }
+
+pub fn homeLayout<Action> input: BuildInput
+  -> messages: Messages
+  -> locale: Locale
+  -> areas: Array<NavigationArea>
+  -> page: PageDefinition
+  -> html.Html<Action> =
+  html.main {
+    id: "content",
+    class: "home-page",
+    children: [
+      html.section {
+        class: "home-hero",
+        children: [
+          html.div {
+            class: "home-hero-copy",
+            children: [
+              html.p { class: "eyebrow", children: "THE SESERAGI PROGRAMMING LANGUAGE" },
+              html.h1 { children: translate locale page.title },
+              html.p { class: "home-lead", children: translate locale page.summary },
+              html.div {
+                class: "hero-actions",
+                children: [
+                  anchor messages.documentation (localizedRoute locale "/docs/")
+                    "primary-action",
+                  anchor messages.playground input.playgroundUrl "secondary-action"
+                ]
+              }
+            ]
+          },
+          html.div {
+            class: "home-hero-content",
+            children: article input messages locale page.blocks
+          }
+        ]
+      },
+      html.section {
+        class: "home-paths",
+        children: [
+          html.div {
+            class: "section-heading",
+            children: [
+              html.p { class: "eyebrow", children: "DOCUMENTATION" },
+              html.h2 { children: messages.documentation }
+            ]
+          },
+          html.div {
+            class: "path-grid",
+            children: [areaCard locale area | area <- areas]
+          }
+        ]
+      }
+    ]
+  }

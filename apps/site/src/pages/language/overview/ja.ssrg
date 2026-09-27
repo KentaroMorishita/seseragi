@@ -1,0 +1,11 @@
+pub fn title -> String = "Language Reference"
+
+pub fn summary -> String = "Seseragiプログラミング言語の構文と意味論を網羅するリファレンスです。"
+
+pub fn syntaxTitle -> String = "構文"
+
+pub fn syntaxBody -> String = "文法形式ごとに、優先順位・型付け規則・評価規則を独立したページで説明します。"
+
+pub fn functionsTitle -> String = "関数"
+
+pub fn functionsBody -> String = "関数宣言・引数・関数適用を、それぞれのリファレンスページで説明します。"

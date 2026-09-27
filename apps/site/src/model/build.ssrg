@@ -1,0 +1,35 @@
+import * as json from "std/json"
+
+pub struct HighlightPart deriving JsonDecode { text: String, className: String }
+
+pub struct ExampleSource deriving JsonDecode {
+  id: String,
+  sourcePath: String,
+  source: String,
+  sha256: String,
+  playgroundUrl: String,
+  highlighted: Array<HighlightPart>
+}
+
+pub struct ApiReference deriving JsonDecode {
+  identity: String,
+  name: String,
+  namespace: String,
+  itemKind: String,
+  signature: String,
+  description: String,
+  typeParameters: Array<String>,
+  constraints: Array<String>,
+  highlighted: Array<HighlightPart>
+}
+
+pub struct BuildInput deriving JsonDecode {
+  schema: Int,
+  origin: String,
+  playgroundUrl: String,
+  examples: Array<ExampleSource>,
+  references: Array<ApiReference>
+}
+
+pub fn decodeBuildInput encoded: String -> Either<json.JsonReadError, BuildInput> =
+  json.decodeString encoded
