@@ -1,0 +1,4 @@
+import { GuideCopy } from "../guide"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> GuideCopy = incomplete "Web applicationを作る" "Signal applicationとDOM host境界を分けてlocal開発します。"

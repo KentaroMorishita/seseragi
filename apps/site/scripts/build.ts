@@ -74,12 +74,22 @@ function generatorInput(playgroundUrl: string) {
     examples: [
       canonicalExample(
         "hello-world",
-        "examples/spec/lessons/01-hello-world.ssrg",
+        "examples/samples/hello-world/main.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "function-application",
         "examples/spec/lessons/02-values-and-functions.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "test-discovery",
+        "examples/spec/fixtures/projects/test-discovery/tests/basic.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "web-starter-main",
+        "examples/samples/web-starter/src/main.ssrg",
         playgroundUrl
       ),
     ],
@@ -202,7 +212,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (7 + referencePageCount),
+      2 * (18 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

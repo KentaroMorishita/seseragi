@@ -1,0 +1,34 @@
+import { localized } from "../../../model/locale"
+import {
+  Article,
+  InternalLink,
+  OrderedList,
+  PageDefinition,
+  Paragraph,
+  Words
+} from "../../../model/page"
+import { guideBlocks } from "../guide"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  PageDefinition {
+    id: "get-started.overview",
+    path: "/docs/get-started/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: guideBlocks english japanese [
+      Paragraph ([Words (localized (en.pathBody ()) japanese.prerequisites)]),
+      OrderedList [
+        [InternalLink (localized "Install the toolchain" "toolchainをinstallする", "/docs/get-started/install/")],
+        [InternalLink (localized "Run Hello, Seseragi" "Hello, Seseragiを実行する", "/docs/get-started/hello-seseragi/")],
+        [InternalLink (localized "Create and inspect a project" "projectを作成して確認する", "/docs/get-started/create-project/")],
+        [InternalLink (localized "Test and build for production" "testしてproduction buildを作る", "/docs/get-started/test/")]
+      ]
+    ] (localized "Install the toolchain" "toolchainをinstallする")
+      "/docs/get-started/install/"
+  }
+}

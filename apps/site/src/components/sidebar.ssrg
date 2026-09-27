@@ -88,6 +88,7 @@ fn area<Action> locale: Locale
     class: "sidebar-area",
     children: [
       html.summary { children: translate locale value.title },
+      pageLink locale current value.landing,
       html.div { children: [group locale current item | item <- value.groups] }
     ]
   }

@@ -1,0 +1,4 @@
+import { GuideCopy } from "../guide"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> GuideCopy = incomplete "次に進む" "目的に応じてLanguage Reference・Standard Library・Examplesへ進みます。"

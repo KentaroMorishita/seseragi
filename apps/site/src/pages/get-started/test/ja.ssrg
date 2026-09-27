@@ -1,0 +1,4 @@
+import { GuideCopy } from "../guide"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> GuideCopy = incomplete "projectをtestする" "typed test treeを発見し、deterministicな順序で実行します。"

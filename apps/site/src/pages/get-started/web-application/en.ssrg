@@ -1,0 +1,14 @@
+import { GuideCopy } from "../guide"
+
+pub fn copy -> GuideCopy = GuideCopy {
+  title: "Create a Web application",
+  summary: "Develop the canonical Signal application locally and keep pure application structure separate from the DOM host boundary.",
+  prerequisites: "Use the hello-web package created earlier. No project-local JavaScript package installation is required for the canonical starter.",
+  actionTitle: "Start the Web development loop",
+  expected: "The CLI serves the app at http://127.0.0.1:3000/, opens it when --open is present, rebuilds after Seseragi source changes, and reloads the browser after a successful build.",
+  troubleshooting: "During a compile error the server keeps the last successful page and prints the diagnostic. Fix the source to recover. If port 3000 is busy, pass --port with another available port.",
+  nextSummary: "Choose the reference, API, examples, or Playground path that matches what you want to learn next."
+}
+
+pub fn boundaryBody -> String =
+  "main.ssrg queries the host target and runs the completed view. State, actions, update, and Signal composition stay in app.ssrg rather than leaking into the host adapter."
