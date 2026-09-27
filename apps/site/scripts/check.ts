@@ -20,6 +20,7 @@ for (const command of [
     "apps/site/scripts/check-content-map.ts",
     "apps/site/tests/build.test.ts",
     "apps/site/tests/browser.test.ts",
+    "apps/site/tests/deployment.test.ts",
   ],
   ["cargo", "build", "-p", "seseragi-cli"],
 ]) {
@@ -41,15 +42,23 @@ const contentMap = Bun.spawnSync(
 )
 if (contentMap.exitCode !== 0) process.exit(contentMap.exitCode)
 
-const test = Bun.spawnSync(["bun", "test", "apps/site/tests/build.test.ts"], {
-  cwd: root,
-  env: {
-    ...process.env,
-    SESERAGI_BIN: resolve(root, "target/debug/seseragi"),
-  },
-  stdout: "inherit",
-  stderr: "inherit",
-})
+const test = Bun.spawnSync(
+  [
+    "bun",
+    "test",
+    "apps/site/tests/build.test.ts",
+    "apps/site/tests/deployment.test.ts",
+  ],
+  {
+    cwd: root,
+    env: {
+      ...process.env,
+      SESERAGI_BIN: resolve(root, "target/debug/seseragi"),
+    },
+    stdout: "inherit",
+    stderr: "inherit",
+  }
+)
 if (test.exitCode !== 0) process.exit(test.exitCode)
 
 const browser = Bun.spawnSync(["bun", "apps/site/tests/browser.test.ts"], {
