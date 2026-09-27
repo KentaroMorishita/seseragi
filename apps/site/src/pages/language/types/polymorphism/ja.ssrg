@@ -1,0 +1,5 @@
+import { TypeCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> TypeCopy =
+  incomplete "Polymorphism" "let-polymorphism・fresh instantiation・value restriction・recursive groupを説明します。"

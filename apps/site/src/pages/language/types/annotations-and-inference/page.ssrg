@@ -1,0 +1,57 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.annotations-and-inference" "/docs/language/types/annotations-and-inference/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "function-application",
+      localized "Annotations and inferred immutable values"
+        "annotationと推論されるimmutable value"
+    ),
+    BulletList [
+      [
+        InlineCode "fn add left: Int -> right: Int -> Int",
+        Words (
+          localized " states every parameter and the return type."
+        " は全parameterとreturn型を明示します。"
+        )
+      ],
+      [
+        InlineCode "let base = 20",
+        Words
+        (localized " infers a private Int binding." " はprivate Int bindingを推論します。")
+      ],
+      [
+        InlineCode "let initial: Char",
+        Words
+        (localized " checks the initializer against Char." " はinitializerをCharに対して検査します。")
+      ]
+    ]
+  ] [BulletList [
+    [
+      InlineCode "fn add left -> Int",
+      Words (localized " omits the parameter type." " はparameter型を省略しています。")
+    ],
+    [
+      InlineCode "fn add left: Int = left",
+      Words (localized " omits the required return type." " は必須のreturn型を省略しています。")
+    ]
+  ]] [
+    [InternalLink
+        (localized "Type system" "type system", "/docs/language/types/type-system/")],
+    [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
+    [InternalLink (
+      localized "Function application" "関数適用",
+      "/docs/language/syntax/function-application/"
+    )]
+  ]

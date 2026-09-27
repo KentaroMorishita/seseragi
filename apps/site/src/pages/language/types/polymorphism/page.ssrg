@@ -1,0 +1,63 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.polymorphism" "/docs/language/types/polymorphism/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "types-polymorphism",
+      localized "One generic identity at two concrete types"
+        "二つのconcrete型で使うgeneric identity"
+    ),
+    BulletList [
+      [
+        InlineCode "forall A. A -> A",
+        Words
+        (localized " is the specification notation for the scheme." " はschemeの仕様表記です。")
+      ],
+      [
+        InlineCode "identity True",
+        Words (localized " instantiates A as Bool." " はAをBoolとしてinstantiateします。")
+      ],
+      [
+        InlineCode "identity 42",
+        Words
+        (localized " independently instantiates A as Int." " は独立にAをIntとしてinstantiateします。")
+      ]
+    ]
+  ] [BulletList [
+    [
+      InlineCode "let id: forall A. A -> A",
+      Words (
+        localized " uses notation that is not source syntax."
+        " はsource syntaxではない表記を使っています。"
+      )
+    ],
+    [Words (
+      localized
+        "A recursive group is checked monomorphically before any generalization."
+        "recursive groupは一般化前にmonomorphicに検査されます。"
+    )]
+  ]] [
+    [InternalLink (
+      localized "Annotations and inference" "型注釈と推論",
+      "/docs/language/types/annotations-and-inference/"
+    )],
+    [InternalLink (
+      localized "Type constructors" "型constructor",
+      "/docs/language/types/type-constructors/"
+    )],
+    [InternalLink (
+      localized "Function application" "関数適用",
+      "/docs/language/syntax/function-application/"
+    )]
+  ]

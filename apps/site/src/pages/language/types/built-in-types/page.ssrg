@@ -1,0 +1,58 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.built-in-types" "/docs/language/types/built-in-types/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "syntax-literals",
+      localized "Built-in values in canonical source" "canonical sourceの組み込み値"
+    ),
+    BulletList [
+      [
+        InlineCode "Int",
+        Words (
+          localized " — exact safe integer, without negative zero."
+            " — negative zeroを持たないexact safe integer。"
+        )
+      ],
+      [
+        InlineCode "Float",
+        Words (
+          localized " — IEEE 754 binary64, including signed zero."
+            " — signed zeroを含むIEEE 754 binary64。"
+        )
+      ],
+      [
+        InlineCode "Char / String",
+        Words (
+          localized " — one Unicode scalar / an immutable scalar sequence."
+            " — Unicode scalar一個 / immutable scalar列。"
+        )
+      ],
+      [
+        InlineCode "Unit / Never",
+        Words (localized " — one value / no values." " — 値一個 / 値なし。")
+      ]
+    ]
+  ] [CodeExample (
+    "syntax-invalid-numeric",
+    localized "An invalid Int is not rounded" "invalid Intは丸められない"
+  )] [
+    [InternalLink (localized "Literals" "literal", "/docs/language/syntax/literals/")],
+    [InternalLink (
+      localized "Character and string escapes" "Char・String・templateのescape",
+      "/docs/language/syntax/character-string-escapes/"
+    )],
+    [InternalLink
+            (localized "Type system" "type system", "/docs/language/types/type-system/")]
+  ]

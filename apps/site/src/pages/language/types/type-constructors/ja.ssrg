@@ -1,0 +1,5 @@
+import { TypeCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> TypeCopy =
+  incomplete "Type constructors" "built-in constructor・再帰型引数・arity・kind・delimiterを説明します。"

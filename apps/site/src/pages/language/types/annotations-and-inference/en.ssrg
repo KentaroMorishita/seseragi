@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Annotations and inference",
+  summary: "Public APIs and function boundaries state their types; private immutable values may be inferred from local evidence.",
+  ruleTitle: "Annotate stable boundaries",
+  ruleBody: "Every function parameter and return type is annotated, and every public declaration exposes an explicit type. A private non-recursive let may omit its annotation when its initializer determines one type. Type parameters appear directly after the declaration name, as in fn identity<A>.",
+  identityBody: "Annotations describe Seseragi types, not backend representations. Keeping module APIs explicit makes separate compilation and documentation stable; requiring recursive return types fixes the contract before the body refers back to the declaration.",
+  checkingBody: "The compiler checks an annotated initializer against its declared type and infers only omitted private-let types. Inference never changes a public signature, invents undeclared type parameters, or replaces an unresolved boundary with Unknown.",
+  invalidTitle: "Inference is local, not an excuse to hide an API",
+  invalidBody: "An untyped function parameter, missing function return type, or public declaration without its required annotation is rejected. A conflicting let annotation is an error even when the initializer could have another valid inferred type.",
+  diagnosticsBody: "Missing-boundary diagnostics point to the declaration header and suggest the required annotation position. Mismatch diagnostics retain expected and actual types. Language-server hovers report inferred private-let types without rewriting source.",
+  provenanceBody: "This article covers specification section 2.4. The canonical values-and-functions lesson demonstrates annotated parameters and returns, an inferred private let, an annotated let, and declaration-scoped type information."
+}

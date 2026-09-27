@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Type system",
+  summary: "Every expression is typed before execution; unresolved meaning becomes a diagnostic, never implicit Any or Unknown.",
+  ruleTitle: "Static types before execution",
+  ruleBody: "A Seseragi program runs only after every expression has a type. Inference is based on Hindley-Milner unification and extends it with nominal ADTs, structs and newtypes, structural immutable records, trait constraints, and bottom coercion from Never.",
+  identityBody: "Nominal declarations preserve declared identity even when representations match. Record identity is structural. Types guide compilation but do not authorize a backend to change observable values, evaluation order, failure, or Effect behavior.",
+  checkingBody: "Inference solves locally available equations and trait evidence. When those constraints do not determine one type, the compiler asks for an annotation instead of inserting a dynamic escape hatch. No successful build carries an unresolved Unknown type into execution.",
+  invalidTitle: "Static does not mean guessed",
+  invalidBody: "The compiler does not infer a type from a future runtime value, silently choose among ambiguous instances, or turn a mismatch into Any. Nominal and structural compatibility, Never coercion, and record width are explicit rules rather than general conversion.",
+  diagnosticsBody: "Parser diagnostics own malformed type syntax; type diagnostics own unification, missing evidence, ambiguity, and invalid coercion. The compiler, formatter, language server, and documentation examples consume the same source model rather than separate type grammars.",
+  provenanceBody: "This article covers specification section 2.1. The highlighted domain-types lesson demonstrates nominal ADTs and newtypes, structural data use, annotations, and trait-derived capabilities in executable source."
+}

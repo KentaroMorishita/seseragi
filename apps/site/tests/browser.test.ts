@@ -116,6 +116,28 @@ try {
           })
 
         await page.goto(
+          `http://127.0.0.1:${server.port}/docs/language/types/type-system/`
+        )
+        assert.equal(await page.locator("h1").textContent(), "Type system")
+        assert.ok(
+          (await page.locator("body").innerText()).includes(
+            "unresolved meaning becomes a diagnostic"
+          )
+        )
+        const typeSystemWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          typeSystemWidth <= width,
+          `type system article ${width}px viewport is ${typeSystemWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `type-system-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
           `http://127.0.0.1:${server.port}/docs/language/model/non-features/`
         )
         assert.equal(
