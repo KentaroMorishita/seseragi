@@ -48,7 +48,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3828)
+    expect(manifest.pages).toHaveLength(3838)
     for (const route of [
       "/",
       "/docs/",
@@ -86,6 +86,12 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/language/syntax/reserved-words-and-names/",
       "/docs/language/syntax/optional-record-fields/",
       "/ja/docs/language/syntax/operator-precedence/",
+      "/docs/language/types/type-system/",
+      "/docs/language/types/built-in-types/",
+      "/docs/language/types/type-constructors/",
+      "/docs/language/types/annotations-and-inference/",
+      "/docs/language/types/polymorphism/",
+      "/ja/docs/language/types/type-system/",
       "/docs/library/",
       "/docs/library/array/",
       "/docs/library/array/function/get/",
@@ -176,6 +182,30 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     expect(textContent(optionalFields)).toContain(
       "required field of type Maybe"
     )
+    const typeSystem = readFileSync(
+      join(output, "docs/language/types/type-system/index.html"),
+      "utf8"
+    )
+    expect(textContent(typeSystem)).toContain("implicit Any or Unknown")
+    expect(textContent(typeSystem)).toContain("Type systemFoundations")
+    const builtInTypes = readFileSync(
+      join(output, "docs/language/types/built-in-types/index.html"),
+      "utf8"
+    )
+    expect(textContent(builtInTypes)).toContain("-9007199254740991")
+    expect(textContent(builtInTypes)).toContain("Unit / Never")
+    const constructors = readFileSync(
+      join(output, "docs/language/types/type-constructors/index.html"),
+      "utf8"
+    )
+    expect(textContent(constructors)).toContain("Array<Array<Int>>")
+    expect(textContent(constructors)).toContain("Maybe<Int, String>")
+    const polymorphism = readFileSync(
+      join(output, "docs/language/types/polymorphism/index.html"),
+      "utf8"
+    )
+    expect(textContent(polymorphism)).toContain("forall A. A -> A")
+    expect(textContent(polymorphism)).toContain("identity True")
     const reference = readFileSync(
       join(output, "docs/library/array/function/get/index.html"),
       "utf8"

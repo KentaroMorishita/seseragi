@@ -45,6 +45,11 @@ import { page as sourceTextPage } from "../pages/language/syntax/source-text/pag
 import { page as literalsPage } from "../pages/language/syntax/literals/page"
 import { page as characterStringEscapesPage } from "../pages/language/syntax/character-string-escapes/page"
 import { page as layoutLineContinuationPage } from "../pages/language/syntax/layout-and-line-continuation/page"
+import { page as typeSystemPage } from "../pages/language/types/type-system/page"
+import { page as builtInTypesPage } from "../pages/language/types/built-in-types/page"
+import { page as typeConstructorsPage } from "../pages/language/types/type-constructors/page"
+import { page as annotationsInferencePage } from "../pages/language/types/annotations-and-inference/page"
+import { page as polymorphismPage } from "../pages/language/types/polymorphism/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
 import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
@@ -146,6 +151,22 @@ fn languageArea -> NavigationArea = NavigationArea {
           ]
         }
       ]
+    },
+    NavigationGroup {
+      id: "type-system",
+      title: localized "Type system" "型system",
+      sections: [NavigationSection {
+        id: "type-foundations",
+        title: localized "Foundations" "基礎",
+        kind: FlatSection,
+        overview: typeSystemPage (),
+        pages: [
+          builtInTypesPage (),
+          typeConstructorsPage (),
+          annotationsInferencePage (),
+          polymorphismPage ()
+        ]
+      }]
     }
   ]
 }

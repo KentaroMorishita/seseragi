@@ -128,6 +128,21 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
+        "types-system",
+        "examples/spec/lessons/07-domain-types.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-constructors",
+        "examples/spec/fixtures/compile/generic-struct.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-polymorphism",
+        "examples/spec/fixtures/projects/local-rec/src/main.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "language-program-entry",
         "examples/spec/lessons/01-hello-world.ssrg",
         playgroundUrl
@@ -292,7 +307,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (39 + referencePageCount),
+      2 * (44 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

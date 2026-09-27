@@ -1,0 +1,5 @@
+import { TypeCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> TypeCopy =
+  incomplete "Built-in types" "Int・Float・Bool・Char・String・Unit・Neverの正確な値domainを説明します。"
