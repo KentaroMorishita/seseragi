@@ -23,7 +23,7 @@
   line-height: 1.9;
 }
 
-.article-content code:not(.seseragi-highlight) {
+.article-content :not(pre) > code {
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--surface-raised);
