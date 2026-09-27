@@ -18,8 +18,11 @@ test("Vercel keeps the site preview separate from the root Playground", () => {
     { source: "/(.*)", destination: "/index.html" },
   ])
 
-  expect(site.buildCommand).toBe("bun run build:site:production")
-  expect(site.outputDirectory).toBe("target/site")
+  expect(site.buildCommand).toBe(
+    "cd ../.. && SESERAGI_SITE_OUTPUT=apps/site/dist bun run build:site:production"
+  )
+  expect(site.outputDirectory).toBe("dist")
+  expect(site.installCommand).toStartWith("cd ../.. && ")
   expect(site.trailingSlash).toBe(true)
   expect(site.rewrites).toBeUndefined()
 })

@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "bun run build:site:production",
-  "outputDirectory": "target/site",
-  "installCommand": "bun install --frozen-lockfile && bun install --frozen-lockfile --cwd apps/playground",
+  "buildCommand": "cd ../.. && SESERAGI_SITE_OUTPUT=apps/site/dist bun run build:site:production",
+  "outputDirectory": "dist",
+  "installCommand": "cd ../.. && bun install --frozen-lockfile && bun install --frozen-lockfile --cwd apps/playground",
   "framework": null,
   "trailingSlash": true,
   "headers": [
