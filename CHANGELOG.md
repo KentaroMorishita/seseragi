@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.18] - 2026-09-27
+
+### Fixed
+
+- #660 v0.61.17で更新漏れしていたbrowser multipart fixtureのprovider lockを同期し、canonical release gateを復旧
+
 ## [0.61.17] - 2026-09-27
 
 ### Fixed
