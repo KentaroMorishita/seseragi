@@ -1,0 +1,38 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  Inline,
+  InternalLink,
+  PageDefinition
+} from "../../../../model/page"
+import { conceptPage } from "../concept"
+import * as en from "./en"
+import * as ja from "./ja"
+
+fn principle label: String -> japanese: String -> path: String -> Array<Inline> =
+  [InternalLink (localized label japanese, path)]
+
+pub fn page -> PageDefinition =
+  conceptPage "language.model.design-principles" "/docs/language/model/design-principles/" (en.copy ()) (ja.copy ()) [BulletList
+      [
+        principle "Expression-oriented" "式指向"
+      "/docs/language/model/expression-oriented/",
+        principle "Immutable by default" "default immutable"
+      "/docs/language/model/immutable-by-default/",
+        principle "No hidden danger" "危険を隠さない" "/docs/language/model/no-hidden-danger/",
+        principle "Backend-independent semantics" "backend-independent semantics"
+      "/docs/language/model/backend-independent-semantics/",
+        principle "Diagnosable behavior" "診断可能な挙動"
+      "/docs/language/model/diagnosable-behavior/",
+        principle "Visible costs" "costを見える形にする" "/docs/language/model/visible-costs/",
+        principle "Readable density" "読める密度" "/docs/language/model/readable-density/"
+      ]] [
+        [InternalLink (
+          localized "What Seseragi is" "Seseragiとは何か",
+          "/docs/language/model/what-is-seseragi/"
+        )],
+        [InternalLink (
+          localized "Features the language does not have" "言語に存在しない機能",
+          "/docs/language/model/non-features/"
+        )]
+      ]

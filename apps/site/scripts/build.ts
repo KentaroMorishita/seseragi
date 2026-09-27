@@ -83,6 +83,11 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
+        "language-program-entry",
+        "examples/spec/lessons/01-hello-world.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "test-discovery",
         "examples/spec/fixtures/projects/test-discovery/tests/basic.ssrg",
         playgroundUrl
@@ -212,7 +217,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (18 + referencePageCount),
+      2 * (29 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

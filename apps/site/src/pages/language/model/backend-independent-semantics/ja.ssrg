@@ -1,0 +1,5 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy =
+  incomplete "backend-independent semantics" "生成先に左右されない言語semanticsを説明します。"

@@ -92,6 +92,31 @@ try {
             fullPage: true,
           })
 
+        await page.goto(
+          `http://127.0.0.1:${server.port}/docs/language/model/non-features/`
+        )
+        assert.equal(
+          await page.locator("h1").textContent(),
+          "Features the language does not have"
+        )
+        assert.ok(
+          (await page.locator("body").innerText()).includes(
+            "return, break, and continue"
+          )
+        )
+        const modelWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          modelWidth <= width,
+          `language model ${width}px viewport is ${modelWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `language-model-${width}.png`),
+            fullPage: true,
+          })
+
         await page.goto(`http://127.0.0.1:${server.port}/docs/`)
         assert.equal(await page.locator("h1").textContent(), "Documentation")
         assert.equal(await page.locator(".docs-sidebar").count(), 1)

@@ -1,0 +1,4 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy = incomplete "診断可能な挙動" "compilerが一意に説明できる推論と選択だけを許可します。"

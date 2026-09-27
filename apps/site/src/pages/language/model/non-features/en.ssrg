@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "Features the language does not have",
+  summary: "Intentional absences define the core model and point to explicit replacements rather than unfinished placeholders.",
+  ruleTitle: "Absence is part of the design",
+  ruleBody: "Seseragi omits features that would add ambient mutation, hidden absence, implicit conversion, non-local control, value-directed magic, or unrestricted compile-time rewriting. Similar foreign behavior is contained at an explicit boundary.",
+  consequenceOne: "Ordinary data has no reassignment, mutable fields, null, undefined, truthiness, implicit numeric conversion, or non-exhaustive match.",
+  consequenceTwo: "Recoverable error handling does not use exceptions, and Effect requirements are not a general union/intersection type or an algebraic perform/handle system.",
+  consequenceThree: "The language has no general syntax/procedural macros, user-defined prefix/postfix operators, or return, break, and continue control transfer.",
+  boundaryTitle: "Not present does not mean not implemented yet",
+  boundaryBody: "These surfaces are outside the language model. Their supported replacements—new values, Maybe/Either/Effect, exhaustive matching, ordinary functions, reduceUntil/forEachUntil, closed deriving, and explicit interop—are the intended design.",
+  provenanceBody: "Section 0.4 is the normative inventory. Later chapters define the replacements and the limited compile-time behavior of deriving and template strings."
+}

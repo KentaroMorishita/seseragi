@@ -1,0 +1,5 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy =
+  incomplete "Seseragiとは何か" "式指向・静的型付き・default immutableという言語modelを説明します。"

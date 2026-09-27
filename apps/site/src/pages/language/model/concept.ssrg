@@ -1,0 +1,73 @@
+import * as arrays from "std/array"
+import { localized } from "../../../model/locale"
+import {
+  Article,
+  Block,
+  BulletList,
+  Callout,
+  Heading,
+  Inline,
+  PageDefinition,
+  Paragraph,
+  Rationale,
+  Words
+} from "../../../model/page"
+
+pub struct ConceptCopy {
+  title: String,
+  summary: String,
+  ruleTitle: String,
+  ruleBody: String,
+  consequenceOne: String,
+  consequenceTwo: String,
+  consequenceThree: String,
+  boundaryTitle: String,
+  boundaryBody: String,
+  provenanceBody: String
+}
+
+fn blocks english: ConceptCopy
+  -> japanese: ConceptCopy
+  -> details: Array<Block>
+  -> related: Array<Array<Inline>>
+  -> Array<Block> =
+  arrays.concat [
+    [
+      Heading ("core-rule", localized english.ruleTitle japanese.ruleTitle),
+      Paragraph ([Words (localized english.ruleBody japanese.ruleBody)])
+    ],
+    details,
+    [
+      Heading ("consequences", localized "What follows from the rule" "この規則から導かれること"),
+      BulletList [
+        [Words (localized english.consequenceOne japanese.consequenceOne)],
+        [Words (localized english.consequenceTwo japanese.consequenceTwo)],
+        [Words (localized english.consequenceThree japanese.consequenceThree)]
+      ],
+      Callout (
+        Rationale,
+        localized english.boundaryTitle japanese.boundaryTitle,
+        [Words (localized english.boundaryBody japanese.boundaryBody)]
+      ),
+      Heading ("specification", localized "Specification and implementation" "仕様と実装"),
+      Paragraph ([Words (localized english.provenanceBody japanese.provenanceBody)]),
+      Heading ("related-rules", localized "Related rules" "関連する規則"),
+      BulletList related
+    ]
+  ]
+
+pub fn conceptPage id: String
+  -> path: String
+  -> english: ConceptCopy
+  -> japanese: ConceptCopy
+  -> details: Array<Block>
+  -> related: Array<Array<Inline>>
+  -> PageDefinition =
+  PageDefinition {
+    id,
+    path,
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: blocks english japanese details related
+  }

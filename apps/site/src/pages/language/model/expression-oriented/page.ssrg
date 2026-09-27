@@ -1,0 +1,20 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { conceptPage } from "../concept"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  conceptPage "language.model.expression-oriented" "/docs/language/model/expression-oriented/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("function-application", localized "Values flow through functions" "関数を流れる値")] [
+        [InternalLink (
+          localized "Function application" "関数適用",
+          "/docs/language/syntax/function-application/"
+        )],
+        [InternalLink (
+          localized "Programs and entry points" "programとentry point",
+          "/docs/language/model/programs/"
+        )],
+        [InternalLink
+      (localized "Readable density" "読める密度", "/docs/language/model/readable-density/")]
+      ]

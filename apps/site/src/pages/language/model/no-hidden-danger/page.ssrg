@@ -1,0 +1,21 @@
+import { localized } from "../../../../model/locale"
+import { InternalLink, PageDefinition } from "../../../../model/page"
+import { conceptPage } from "../concept"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  conceptPage "language.model.no-hidden-danger" "/docs/language/model/no-hidden-danger/" (en.copy ()) (ja.copy ()) [] [
+    [InternalLink (
+      localized "Immutable by default" "default immutable",
+      "/docs/language/model/immutable-by-default/"
+    )],
+    [InternalLink (
+      localized "Diagnosable behavior" "診断可能な挙動",
+      "/docs/language/model/diagnosable-behavior/"
+    )],
+    [InternalLink (
+      localized "Features the language does not have" "言語に存在しない機能",
+      "/docs/language/model/non-features/"
+    )]
+  ]

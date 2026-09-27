@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "Design principles",
+  summary: "Seven principles constrain the language together; none is a slogan that overrides the others.",
+  ruleTitle: "Read the principles as a dependency map",
+  ruleBody: "Expression orientation, immutability, explicit danger, backend-independent meaning, diagnosable behavior, visible costs, and readable density describe one system. A feature belongs only when its typing, evaluation, failure, cost, and tooling behavior satisfy that system.",
+  consequenceOne: "Concise syntax cannot hide an effect, partial operation, implicit conversion, or backend-specific evaluation rule.",
+  consequenceTwo: "Static inference and typeclass selection succeed only when the compiler can explain one stable result.",
+  consequenceThree: "Optimizations may erase representation overhead but cannot change values, order, failure, cancellation, or resource lifetime.",
+  boundaryTitle: "An index is not the explanation",
+  boundaryBody: "This page connects the seven principles. Each principle has its own article because its consequences reach different syntax, type, runtime, interop, and performance rules.",
+  provenanceBody: "The seven principles and their ordering come from section 0.2. The linked leaves expand every principle without replacing the normative rules in later specification chapters."
+}

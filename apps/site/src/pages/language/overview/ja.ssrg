@@ -2,6 +2,11 @@ pub fn title -> String = "Language Reference"
 
 pub fn summary -> String = "Seseragiプログラミング言語の構文と意味論を網羅するリファレンスです。"
 
+pub fn modelTitle -> String = "言語model"
+
+pub fn modelBody -> String =
+  "日本語本文は#630で整備中です。構文・型・runtime・interopが維持する意味論の原則から参照できます。"
+
 pub fn syntaxTitle -> String = "構文"
 
 pub fn syntaxBody -> String = "文法形式ごとに、優先順位・型付け規則・評価規則を独立したページで説明します。"

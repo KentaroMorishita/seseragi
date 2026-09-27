@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "Backend-independent semantics",
+  summary: "Generated representations may differ, but observable language behavior does not follow the host language by accident.",
+  ruleTitle: "One program has one language meaning",
+  ruleBody: "Integer arithmetic, division, evaluation order, record structure, pattern coverage, Effect laziness, failure, cancellation, and resource lifetime are Seseragi rules. A backend implements those rules rather than borrowing whatever its output language happens to do.",
+  consequenceOne: "A backend may erase types, inline functions, specialize dictionaries, or choose another data representation when observable meaning stays unchanged.",
+  consequenceTwo: "Foreign values enter through adapters that validate and convert them instead of weakening internal types or evaluation rules.",
+  consequenceThree: "Conformance compares stable results and runtime traces without treating generated paths or host module caches as language identity.",
+  boundaryTitle: "Representation freedom ends at observable behavior",
+  boundaryBody: "Optimization cannot reorder visible work, duplicate evaluation, change rounding or failure, skip finalizers, or alter cancellation merely because a host runtime makes that convenient.",
+  provenanceBody: "Section 0.2 establishes backend independence. Runtime ABI, Provider, interop, conformance, and performance chapters define the preserved observations and permitted implementation freedom."
+}

@@ -1,0 +1,5 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy =
+  incomplete "costを見える形にする" "走査・allocation・scheduling・foreign copyの本質的costを隠しません。"

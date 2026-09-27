@@ -1,0 +1,4 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy = incomplete "危険を隠さない" "欠如・failure・Effect・変換を値と型へ明示します。"

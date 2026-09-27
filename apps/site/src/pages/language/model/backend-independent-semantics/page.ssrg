@@ -1,0 +1,19 @@
+import { localized } from "../../../../model/locale"
+import { InternalLink, PageDefinition } from "../../../../model/page"
+import { conceptPage } from "../concept"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  conceptPage "language.model.backend-independent-semantics" "/docs/language/model/backend-independent-semantics/" (en.copy ()) (ja.copy ()) [] [
+    [InternalLink (
+      localized "What Seseragi is" "Seseragiとは何か",
+      "/docs/language/model/what-is-seseragi/"
+    )],
+    [InternalLink
+        (localized "Visible costs" "costを見える形にする", "/docs/language/model/visible-costs/")],
+    [InternalLink (
+      localized "Programs and entry points" "programとentry point",
+      "/docs/language/model/programs/"
+    )]
+  ]

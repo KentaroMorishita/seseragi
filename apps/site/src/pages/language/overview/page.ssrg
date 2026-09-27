@@ -20,6 +20,16 @@ pub fn page -> PageDefinition = PageDefinition {
   title: text (en.title ()) (ja.title ()),
   summary: text (en.summary ()) (ja.summary ()),
   blocks: [
+    Heading ("language-model", text (en.modelTitle ()) (ja.modelTitle ())),
+    Paragraph (
+      [
+        Words (text (en.modelBody ()) (ja.modelBody ())),
+        InternalLink (
+          text " What Seseragi is" " Seseragiとは何か",
+          "/docs/language/model/what-is-seseragi/"
+        )
+      ]
+    ),
     Heading ("syntax", text (en.syntaxTitle ()) (ja.syntaxTitle ())),
     Paragraph ([Words (text (en.syntaxBody ()) (ja.syntaxBody ()))]),
     Heading ("functions", text (en.functionsTitle ()) (ja.functionsTitle ())),

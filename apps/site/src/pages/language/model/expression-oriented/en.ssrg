@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "Expression-oriented",
+  summary: "Functions and control forms produce values, so control flow and data flow share one typing model.",
+  ruleTitle: "Control forms are expressions",
+  ruleBody: "A function body is an expression. if, match, blocks, lambdas, and do expressions also produce values, and their types participate in the surrounding expression instead of living in a separate statement language.",
+  consequenceOne: "if and match branches must agree on a result type, with Never accepted where a branch cannot return normally.",
+  consequenceTwo: "A block evaluates in order and yields its final expression; a form with no meaningful result uses Unit rather than an absent value.",
+  consequenceThree: "Declarations introduce names, but expressions remain the units that compute, compose, fail, or construct an Effect value.",
+  boundaryTitle: "Expression-oriented does not mean top-level execution",
+  boundaryBody: "Modules contain imports and declarations at top level. Arbitrary top-level expressions are rejected, so module loading never becomes an implicit execution mechanism.",
+  provenanceBody: "Section 0.2 defines the principle. The block, conditional, pattern-match, Never, Unit, and do-notation articles define the exact typing and evaluation rules."
+}
