@@ -1,0 +1,5 @@
+import { TypeCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> TypeCopy =
+  incomplete "Closed records" "host requirementの有限field集合とwidth subtypingの独立性を説明します。"

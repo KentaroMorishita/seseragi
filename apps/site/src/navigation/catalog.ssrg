@@ -50,6 +50,13 @@ import { page as builtInTypesPage } from "../pages/language/types/built-in-types
 import { page as typeConstructorsPage } from "../pages/language/types/type-constructors/page"
 import { page as annotationsInferencePage } from "../pages/language/types/annotations-and-inference/page"
 import { page as polymorphismPage } from "../pages/language/types/polymorphism/page"
+import { page as nominalStructuralPage } from "../pages/language/types/nominal-and-structural-types/page"
+import { page as optionalRecordTypePage } from "../pages/language/types/optional-record-fields/page"
+import { page as closedRecordsPage } from "../pages/language/types/closed-records/page"
+import { page as requirementMergePage } from "../pages/language/types/requirement-merge/page"
+import { page as functionTypesPage } from "../pages/language/types/function-types-and-currying/page"
+import { page as identityCoercionPage } from "../pages/language/types/type-identity-and-coercion/page"
+import { page as recursiveDeclarationsPage } from "../pages/language/types/recursive-declarations/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
 import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
@@ -155,18 +162,38 @@ fn languageArea -> NavigationArea = NavigationArea {
     NavigationGroup {
       id: "type-system",
       title: localized "Type system" "型system",
-      sections: [NavigationSection {
-        id: "type-foundations",
-        title: localized "Foundations" "基礎",
-        kind: FlatSection,
-        overview: typeSystemPage (),
-        pages: [
-          builtInTypesPage (),
-          typeConstructorsPage (),
-          annotationsInferencePage (),
-          polymorphismPage ()
-        ]
-      }]
+      sections: [
+        NavigationSection {
+          id: "type-foundations",
+          title: localized "Foundations" "基礎",
+          kind: FlatSection,
+          overview: typeSystemPage (),
+          pages: [
+            builtInTypesPage (),
+            typeConstructorsPage (),
+            annotationsInferencePage (),
+            polymorphismPage ()
+          ]
+        },
+        NavigationSection {
+          id: "records-and-requirements",
+          title: localized "Records and requirements" "recordとrequirement",
+          kind: FlatSection,
+          overview: nominalStructuralPage (),
+          pages: [
+            optionalRecordTypePage (),
+            closedRecordsPage (),
+            requirementMergePage ()
+          ]
+        },
+        NavigationSection {
+          id: "functions-and-recursion",
+          title: localized "Functions and recursion" "関数と再帰",
+          kind: FlatSection,
+          overview: functionTypesPage (),
+          pages: [identityCoercionPage (), recursiveDeclarationsPage ()]
+        }
+      ]
     }
   ]
 }

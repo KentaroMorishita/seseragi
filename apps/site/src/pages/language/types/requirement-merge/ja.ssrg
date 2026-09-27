@@ -1,0 +1,5 @@
+import { TypeCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> TypeCopy =
+  incomplete "Requirement merge" "Effect/Stream requirement限定のR & S・normalization・conflict診断を説明します。"

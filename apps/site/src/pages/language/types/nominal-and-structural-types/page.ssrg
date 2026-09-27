@@ -1,0 +1,56 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.nominal-structural" "/docs/language/types/nominal-and-structural-types/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "types-nominal-structural",
+      localized "Nominal recursive data and structural records"
+        "nominal recursive dataとstructural record"
+    ),
+    BulletList [
+      [
+        InlineCode "ADT / struct / newtype",
+        Words (
+          localized " — compatibility follows declaration identity."
+        " — compatibilityは宣言identityに従います。"
+        )
+      ],
+      [
+        InlineCode "{ id: Int, name: String }",
+        Words (
+          localized " — may flow to { name: String } by width."
+        " — widthにより{name: String}へflowできます。"
+        )
+      ],
+      [Words (
+        localized
+        "A shared field type must match exactly; width does not recurse through fields."
+        "共有field型は完全一致し、widthはfield内へ再帰しません。"
+      )]
+    ]
+  ] [CodeExample (
+    "types-invalid-structural",
+    localized "Rejected structural type differences" "拒否されるstructural type差分"
+  )] [
+    [InternalLink (
+      localized "Optional record fields" "optional record field",
+      "/docs/language/types/optional-record-fields/"
+    )],
+    [InternalLink (
+      localized "Type identity and coercion" "型identityとcoercion",
+      "/docs/language/types/type-identity-and-coercion/"
+    )],
+    [InternalLink
+        (localized "Type system" "type system", "/docs/language/types/type-system/")]
+  ]

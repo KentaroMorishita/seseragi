@@ -1,0 +1,48 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.requirement-merge" "/docs/language/types/requirement-merge/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "types-requirement-merge",
+      localized "A requirement-polymorphic Effect alias"
+        "requirement-polymorphic Effect alias"
+    ),
+    BulletList [
+      [InlineCode "R & {}", Words (localized " normalizes to R." " はRへnormalizeされます。")],
+      [Words (
+        localized
+        "Equal duplicate fields collapse; incompatible duplicates report SES-E0001."
+        "同型duplicate fieldは統合し、非互換ならSES-E0001です。"
+      )],
+      [Words (
+        localized
+        "Associative regrouping and operand order preserve a conflict-free field map."
+        "conflictがなければ結合順序とoperand順序はfield mapを変えません。"
+      )]
+    ]
+  ] [CodeExample (
+    "types-invalid-requirement-merge",
+    localized "Rejected requirement merge contexts" "拒否されるrequirement merge context"
+  )] [
+    [InternalLink
+        (localized "Closed records" "closed record", "/docs/language/types/closed-records/")],
+    [InternalLink (
+      localized "Operator precedence" "operator優先順位",
+      "/docs/language/syntax/operator-precedence/"
+    )],
+    [InternalLink (
+      localized "Type constructors" "型constructor",
+      "/docs/language/types/type-constructors/"
+    )]
+  ]

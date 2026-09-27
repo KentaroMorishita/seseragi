@@ -1,0 +1,50 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.identity-coercion" "/docs/language/types/type-identity-and-coercion/" (en.copy ()) (ja.copy ()) [BulletList
+      [
+        [
+          InlineCode "Never -> A",
+          Words
+      (localized " is allowed because no value is produced." " は値が生成されないため許可されます。")
+        ],
+        [
+          InlineCode "{ id: Int, name: String } -> { name: String }",
+          Words (localized " is allowed by record width." " はrecord widthで許可されます。")
+        ],
+        [
+          InlineCode "Int -> Float",
+          Words (localized " requires an explicit conversion." " は明示変換が必要です。")
+        ],
+        [
+          InlineCode "A -> Maybe<A>",
+          Words (
+            localized " requires Just or another explicit constructor."
+      " はJustなどの明示constructorが必要です。"
+          )
+        ]
+      ]] [CodeExample (
+        "types-invalid-coercion",
+        localized "A newtype cannot coerce to its representation"
+      "newtypeはrepresentationへcoerceできない"
+      )] [
+        [InternalLink (
+          localized "Nominal and structural types" "nominal型とstructural型",
+          "/docs/language/types/nominal-and-structural-types/"
+        )],
+        [InternalLink
+      (localized "Built-in types" "組み込み型", "/docs/language/types/built-in-types/")],
+        [InternalLink
+      (localized "Type system" "type system", "/docs/language/types/type-system/")]
+      ]

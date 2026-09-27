@@ -1,0 +1,5 @@
+import { TypeCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> TypeCopy =
+  incomplete "Type identity and coercion" "禁止される暗黙変換とNever・record widthだけの一般coercionを説明します。"

@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Requirement merge",
+  summary: "R & S merges closed service requirements only inside Effect and Stream requirement positions; it is not a general intersection type.",
+  ruleTitle: "Compile-time union of required service fields",
+  ruleBody: "Inside the first type argument of Effect or Stream, R & S normalizes to the union of fields from two required-field structural records or parameters known to be complete record requirements. R & {} is R; grouping and order do not change a conflict-free normalized field map.",
+  identityBody: "Requirement merge has no constructor, runtime tag, field access, or value representation. Equal duplicate fields collapse to one. A duplicate field with different types is SES-E0001, because one host service name cannot satisfy two incompatible requirements.",
+  checkingBody: "Each operand must be a required-field record requirement or an appropriately constrained requirement parameter. Optional fields, nominal structs, and ordinary value types cannot merge. The normalized entry requirement must still be closed.",
+  invalidTitle: "& is not a general-purpose intersection",
+  invalidBody: "Using R & S outside an Effect or Stream requirement position reports SES-T0501. A lone & in value syntax is not an operator, and requirement parameters are complete records rather than row fragments.",
+  diagnosticsBody: "SES-E0001 identifies the conflicting field and both types. SES-T0501 owns invalid contexts. Alias expansion and normalization remain visible to tooling so a diagnostic can trace a service back through the generic combinator that added it.",
+  provenanceBody: "This article covers the requirement-merge subsection of specification 2.6. The valid and invalid highlighted files are the canonical compiler fixtures for R & { clock: Clock } and rejected merge contexts."
+}

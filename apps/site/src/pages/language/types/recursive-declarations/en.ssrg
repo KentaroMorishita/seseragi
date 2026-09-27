@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Recursive declarations",
+  summary: "Named functions and types may recurse under explicit scope and return-type rules; mutual recursion belongs in one monomorphic rec group.",
+  ruleTitle: "Make recursive scope explicit",
+  ruleBody: "A named function or type declaration may refer to itself. Recursive functions require return annotations. Ordinary let is non-recursive. Mutually recursive functions appear in one rec group whose member names are visible throughout the group and after it, but not before it.",
+  identityBody: "A local fn or effect fn is visible in its own body and following block items; a later local function is not visible backward. A rec group defines one checking unit without changing the declared function types or turning functions into runtime references.",
+  checkingBody: "Every rec-group member is checked monomorphically against its declared boundary while the group is open. Explicit type parameters generalize only after the entire group succeeds. Direct self tail calls receive the specified constant-host-stack guarantee; mutual and non-tail calls do not.",
+  invalidTitle: "Source order still matters outside rec",
+  invalidBody: "A normal let cannot read itself, an earlier local function cannot call a later sibling without rec, duplicate group names are rejected, and a mutually recursive return mismatch fails the whole group. Generalizing one member early is never used to make the group pass.",
+  diagnosticsBody: "Scope diagnostics distinguish a forward reference from an unknown external name. Group diagnostics identify duplicate members, declared-result mismatches, and constraint failures while retaining each member's source range. Tail-call tooling must not promise the guarantee outside direct self tail position.",
+  provenanceBody: "This article covers specification section 2.9 and the direct self-tail guarantee in 14.8. Valid and invalid panels use the canonical local-recursion and forward-reference fixtures."
+}

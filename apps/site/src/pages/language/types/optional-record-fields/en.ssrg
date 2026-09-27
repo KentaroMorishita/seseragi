@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Optional record fields",
+  summary: "Optional presence is part of a structural record type and remains distinct from a required field containing Maybe.",
+  ruleTitle: "Presence has three compatible source states",
+  ruleBody: "For a target optional field id?: String, the source may omit id, provide it optionally, or require id: String. A target required field must also be required in the source. Additional source fields remain permitted by width subtyping.",
+  identityBody: "{ id?: String } differs from { id: Maybe<String> }. The first may lack the field and access yields Maybe<String>; the second always contains the field, so Nothing is a present value and an optional access would distinguish Just Nothing from absence.",
+  checkingBody: "Record literals infer their written fields as required unless an expected type says otherwise. Optional never flows to required, present field types must match exactly, and inference does not insert Nothing for a field that was absent.",
+  invalidTitle: "Optional does not mean an implicit Maybe payload",
+  invalidBody: "A value with id?: String cannot satisfy a required id: String target. id?: Maybe<String> has two levels of absence and is not collapsed. Optional markers on structs, parameters, or ADT payloads are rejected by their syntax boundary.",
+  diagnosticsBody: "Field-access hovers report Maybe<A> for optional presence. Compatibility diagnostics distinguish missing-required, optional-to-required, and field-type mismatch. Formatter and parser preserve the field?: A marker owned by record syntax.",
+  provenanceBody: "This article covers optional presence in specification section 2.6 and complements syntax section 1.10. The canonical optional-record fixture demonstrates omission, required presence, and Maybe-returning access."
+}

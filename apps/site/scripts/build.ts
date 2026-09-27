@@ -143,6 +143,41 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
+        "types-nominal-structural",
+        "examples/spec/lessons/19-recursive-data-and-spread.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-invalid-structural",
+        "examples/spec/artifacts/semantic-diagnostics-schema-1/structured-type-differences/main.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-requirement-merge",
+        "examples/spec/fixtures/compile/requirement-merge.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-invalid-requirement-merge",
+        "examples/spec/fixtures/diagnostics/invalid-requirement-merge.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-invalid-coercion",
+        "examples/spec/artifacts/semantic-diagnostics-schema-1/newtype-no-coercion/main.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-recursion",
+        "examples/spec/fixtures/compile/local-recursion.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-invalid-recursion",
+        "examples/spec/fixtures/diagnostics/local-forward-reference.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "language-program-entry",
         "examples/spec/lessons/01-hello-world.ssrg",
         playgroundUrl
@@ -307,7 +342,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (44 + referencePageCount),
+      2 * (51 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(
