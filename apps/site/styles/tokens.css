@@ -17,9 +17,17 @@
   --green: #8ce99a;
   --yellow: #f2cc8f;
   --red: #ff8d91;
-  --page-width: 1240px;
+  --page-width: 1320px;
   --article-width: 760px;
   --header-height: 68px;
+  --type-display: 68px;
+  --type-page-title: 42px;
+  --type-section-title: 28px;
+  --type-lead: 17px;
+  --type-body: 16px;
+  --tracking-display: -0.04em;
+  --tracking-heading: -0.02em;
+  --tracking-label: 0.1em;
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 24px;
