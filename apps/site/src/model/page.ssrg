@@ -29,7 +29,7 @@ pub type Block =
   | CodeExample (String, LocalizedText)
   | Terminal (LocalizedText, String)
   | Callout (CalloutTone, LocalizedText, Array<Inline>)
-  | ApiReference String
+  | ApiReference (String, String, String)
 
 pub struct PageDefinition {
   id: String,
@@ -40,9 +40,15 @@ pub struct PageDefinition {
   blocks: Array<Block>
 }
 
+pub type NavigationSectionKind =
+  | FlatSection
+  | NestedSection
+
 pub struct NavigationSection {
   id: String,
   title: LocalizedText,
+  kind: NavigationSectionKind,
+  overview: PageDefinition,
   pages: Array<PageDefinition>
 }
 

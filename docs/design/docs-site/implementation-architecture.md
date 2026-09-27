@@ -87,6 +87,26 @@ The TypeScript build host may supply only data that is not site-authored:
 The host does not supply page prose, navigation, layout or HTML. Seseragi
 decodes the closed build input and renders complete documents through pure Html.
 
+## Compiler-owned Reference
+
+The build host decodes the canonical Standard Library Reference and Prelude
+instance artifacts. It normalizes exact signatures and adds syntax-highlight
+spans without authoring prose or choosing routes and navigation. Seseragi's
+`src/reference/catalog.ssrg` owns the projection from compiler identities to:
+
+- one module landing page per registered `std/*` module;
+- one symbol page per compiler item, including compiler-provided and structural
+  instance pages, separated by symbol kind when names overlap;
+- grouped Standard Library navigation matching the approved site map;
+- module indexes that link every generated child.
+
+The module tree remains the source of generated page output. The sidebar lists
+all modules and expands symbol children only for the current module, avoiding a
+flat 1,812-link rail on every page. The build rejects duplicate routes,
+duplicate compiler symbol keys, unresolved internal links and unresolved
+fragments. `check:site` also runs the compiler conformance tests that compare
+the committed Reference and Prelude artifacts with live compiler metadata.
+
 ## Source layout
 
 ```text
@@ -103,6 +123,7 @@ apps/site/
 │  │  ├─ en.ssrg
 │  │  └─ ja.ssrg
 │  ├─ navigation/catalog.ssrg
+│  ├─ reference/catalog.ssrg
 │  ├─ pages/<page path>/{page,en,ja}.ssrg
 │  ├─ components/
 │  │  ├─ article.ssrg
@@ -115,7 +136,7 @@ apps/site/
 │  ├─ layouts/{home,landing,article}.ssrg
 │  └─ render/document.ssrg
 ├─ styles/
-├─ scripts/{build,check}.ts
+├─ scripts/{build,reference,check}.ts
 └─ tests/{build,browser}.test.ts
 ```
 
@@ -131,9 +152,12 @@ canonical examples ── BuildInput ── compiler Reference
           English and Japanese static HTML
 ```
 
-The vertical slice must compile with the repository CLI, produce deterministic
-static routes, render at desktop and mobile widths without horizontal overflow,
-and contain no unresolved build sentinels before Vercel preview.
+The site must compile with the repository CLI, produce deterministic static
+routes, render at desktop and mobile widths without horizontal overflow, and
+contain no unresolved build sentinels before Vercel preview. The current output
+contains 3,764 English/Japanese routes: seven authored shell pages plus 63
+compiler-owned module pages and 1,812 compiler-owned symbol and instance pages
+per locale.
 
 ## Style ownership
 

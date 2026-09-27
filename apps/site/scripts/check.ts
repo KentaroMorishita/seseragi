@@ -23,6 +23,13 @@ for (const command of [
     "apps/site/tests/deployment.test.ts",
   ],
   ["cargo", "build", "-p", "seseragi-cli"],
+  [
+    "cargo",
+    "test",
+    "-p",
+    "seseragi-conformance",
+    "stdlib_surface::tests::canonical_",
+  ],
 ]) {
   const result = Bun.spawnSync(command, {
     cwd: root,

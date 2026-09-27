@@ -15,13 +15,18 @@ pipeline.
 - `src/layouts/`: home, documentation and general landing shells.
 - `src/navigation/`: the implemented page tree; generated page output is
   derived from this tree rather than maintained as a second list.
+- `src/reference/`: compiler-owned Standard Library modules and symbols are
+  projected into module sections and individual Reference pages in Seseragi.
 - `styles/`: split visual responsibilities compiled into one static asset.
-- `scripts/build.ts`: host adapter that reads canonical examples and compiler
-  metadata, invokes the Seseragi generator and publishes static files.
+- `scripts/reference.ts`: validates and joins the canonical Reference and
+  Prelude instance artifacts without owning routes or page prose.
+- `scripts/build.ts`: host adapter that reads canonical inputs, invokes the
+  Seseragi generator and publishes static files.
 
-The complete planned reference hierarchy and per-page coverage obligations
-live in `docs/design/docs-site/reference-content-map.md`. `check:site` validates
-that ledger independently from the currently implemented vertical slice.
+The complete planned guide hierarchy and per-page coverage obligations live in
+`docs/design/docs-site/reference-content-map.md`. `check:site` validates that
+ledger and also verifies the complete compiler-owned Standard Library artifact:
+63 module pages and 1,812 symbol and instance pages in both locales.
 
 ## Commands
 

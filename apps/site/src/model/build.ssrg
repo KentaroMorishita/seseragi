@@ -11,16 +11,27 @@ pub struct ExampleSource deriving JsonDecode {
   highlighted: Array<HighlightPart>
 }
 
-pub struct ApiReference deriving JsonDecode {
+pub struct ReferenceSymbol deriving JsonDecode {
   identity: String,
   name: String,
+  module: String,
+  category: String,
   namespace: String,
   itemKind: String,
   signature: String,
   description: String,
   typeParameters: Array<String>,
   constraints: Array<String>,
+  instanceClass: String,
+  instanceHead: String,
   highlighted: Array<HighlightPart>
+}
+
+pub struct ReferenceModule deriving JsonDecode {
+  specifier: String,
+  availability: String,
+  targets: Array<String>,
+  items: Array<ReferenceSymbol>
 }
 
 pub struct BuildInput deriving JsonDecode {
@@ -28,7 +39,7 @@ pub struct BuildInput deriving JsonDecode {
   origin: String,
   playgroundUrl: String,
   examples: Array<ExampleSource>,
-  references: Array<ApiReference>
+  referenceModules: Array<ReferenceModule>
 }
 
 pub fn decodeBuildInput encoded: String -> Either<json.JsonReadError, BuildInput> =

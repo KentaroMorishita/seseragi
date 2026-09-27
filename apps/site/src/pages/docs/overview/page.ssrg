@@ -34,7 +34,8 @@ pub fn page -> PageDefinition = PageDefinition {
     Paragraph (
       [
         Words (text (en.libraryBody ()) (ja.libraryBody ())),
-        InternalLink (text " Array.get" " Array.get", "/docs/library/array/get/")
+        InternalLink
+          (text " Array.get" " Array.get", "/docs/library/array/function/get/")
       ]
     )
   ]
