@@ -1,26 +1,27 @@
 .article-content {
   max-width: var(--article-width);
-  padding-top: 64px;
+  padding-top: 48px;
 }
 
 .article-content > * + * {
-  margin-top: 26px;
+  margin-top: 22px;
 }
 
 .article-content h2 {
   margin-bottom: 0;
-  padding-top: 54px;
-  font-size: clamp(27px, 4vw, 36px);
+  scroll-margin-top: calc(var(--header-height) + 24px);
+  padding-top: 38px;
+  font-size: var(--type-section-title);
   font-weight: 630;
-  letter-spacing: -0.035em;
-  line-height: 1.2;
+  letter-spacing: var(--tracking-heading);
+  line-height: 1.28;
 }
 
 .article-content p,
 .article-content li {
   color: #c1d0d6;
-  font-size: 16px;
-  line-height: 1.9;
+  font-size: var(--type-body);
+  line-height: 1.75;
 }
 
 .article-content :not(pre) > code {
@@ -65,7 +66,7 @@
   color: var(--text-soft) !important;
   font-size: 11px !important;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
 }
 
 .guide-next-link {

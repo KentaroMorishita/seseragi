@@ -444,6 +444,140 @@ try {
         assert.deepEqual(failures, [])
         await context.close()
       }
+
+      for (const width of [1710, 1160, 960, 760]) {
+        const context = await browser.newContext({
+          viewport: { width, height: 1112 },
+          javaScriptEnabled: false,
+        })
+        const page = await context.newPage()
+        const failures: string[] = []
+        page.on("pageerror", (error) => failures.push(error.message))
+        page.on("response", (response) => {
+          if (response.status() >= 400) failures.push(response.url())
+        })
+
+        await page.goto(`http://127.0.0.1:${server.port}/`)
+        const home = await page.evaluate(() => {
+          const hero = document.querySelector(".home-hero")
+          const heading = document.querySelector(".home-hero h1")
+          const lead = document.querySelector(".home-lead")
+          if (!(hero instanceof HTMLElement)) return null
+          if (!(heading instanceof HTMLElement)) return null
+          if (!(lead instanceof HTMLElement)) return null
+          return {
+            columns: getComputedStyle(hero).gridTemplateColumns,
+            headingFont: Number.parseFloat(getComputedStyle(heading).fontSize),
+            headingTracking: Number.parseFloat(
+              getComputedStyle(heading).letterSpacing
+            ),
+            leadFont: Number.parseFloat(getComputedStyle(lead).fontSize),
+            overflow: document.documentElement.scrollWidth - innerWidth,
+          }
+        })
+        assert.ok(home)
+        assert.ok(home.headingFont <= 68)
+        assert.ok(home.headingFont >= 44)
+        assert.ok(home.headingTracking >= -3)
+        assert.ok(home.leadFont <= 19)
+        assert.equal(home.overflow, 0)
+        assert.equal(
+          home.columns.split(" ").length,
+          width <= 960 ? 1 : 2,
+          `home ${width}px column count`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `home-responsive-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(`http://127.0.0.1:${server.port}/docs/`)
+        const docsLandingTitle = await page
+          .locator(".page-intro h1")
+          .evaluate((heading) =>
+            Number.parseFloat(getComputedStyle(heading).fontSize)
+          )
+        assert.ok(docsLandingTitle <= 44)
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `docs-responsive-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
+          `http://127.0.0.1:${server.port}/docs/get-started/hello-seseragi/`
+        )
+        const article = await page.evaluate(() => {
+          const frame = document.querySelector(".docs-frame")
+          const header = document.querySelector(".site-header")
+          const heading = document.querySelector(".page-intro h1")
+          const section = document.querySelector(".article-content h2")
+          const body = document.querySelector(".article-content p")
+          const sidebar = document.querySelector(".docs-sidebar")
+          const mobileNavigation = document.querySelector(
+            ".mobile-docs-navigation"
+          )
+          const onThisPage = document.querySelector(".on-this-page")
+          if (!(frame instanceof HTMLElement)) return null
+          if (!(header instanceof HTMLElement)) return null
+          if (!(heading instanceof HTMLElement)) return null
+          if (!(section instanceof HTMLElement)) return null
+          if (!(body instanceof HTMLElement)) return null
+          if (!(sidebar instanceof HTMLElement)) return null
+          if (!(mobileNavigation instanceof HTMLElement)) return null
+          if (!(onThisPage instanceof HTMLElement)) return null
+          return {
+            display: getComputedStyle(frame).display,
+            columns: getComputedStyle(frame).gridTemplateColumns,
+            headerBottom: header.getBoundingClientRect().bottom,
+            headingTop: heading.getBoundingClientRect().top,
+            headingFont: Number.parseFloat(getComputedStyle(heading).fontSize),
+            headingTracking: Number.parseFloat(
+              getComputedStyle(heading).letterSpacing
+            ),
+            sectionFont: Number.parseFloat(getComputedStyle(section).fontSize),
+            bodyFont: Number.parseFloat(getComputedStyle(body).fontSize),
+            sidebar: getComputedStyle(sidebar).display,
+            mobileNavigation: getComputedStyle(mobileNavigation).display,
+            onThisPage: getComputedStyle(onThisPage).display,
+            overflow: document.documentElement.scrollWidth - innerWidth,
+          }
+        })
+        assert.ok(article)
+        assert.ok(article.headingTop >= article.headerBottom + 32)
+        assert.ok(article.headingFont <= 42)
+        assert.ok(article.headingTracking >= -1)
+        assert.ok(article.sectionFont <= 28)
+        assert.equal(article.bodyFont, 16)
+        assert.equal(article.overflow, 0)
+        if (width > 1160) {
+          assert.equal(article.display, "grid")
+          assert.equal(article.columns.split(" ").length, 3)
+          assert.notEqual(article.sidebar, "none")
+          assert.equal(article.mobileNavigation, "none")
+          assert.notEqual(article.onThisPage, "none")
+        } else if (width > 760) {
+          assert.equal(article.display, "grid")
+          assert.equal(article.columns.split(" ").length, 2)
+          assert.notEqual(article.sidebar, "none")
+          assert.equal(article.mobileNavigation, "none")
+          assert.equal(article.onThisPage, "none")
+        } else {
+          assert.equal(article.display, "block")
+          assert.equal(article.sidebar, "none")
+          assert.notEqual(article.mobileNavigation, "none")
+          assert.equal(article.onThisPage, "none")
+        }
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `getting-started-responsive-${width}.png`),
+            fullPage: true,
+          })
+
+        assert.deepEqual(failures, [])
+        await context.close()
+      }
     } finally {
       await browser.close()
     }

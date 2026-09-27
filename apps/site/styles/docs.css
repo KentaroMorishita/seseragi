@@ -1,7 +1,8 @@
 .docs-frame {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr) 190px;
-  gap: clamp(34px, 5vw, 72px);
+  grid-template-columns: 240px minmax(0, var(--article-width)) 176px;
+  justify-content: space-between;
+  gap: clamp(28px, 3.5vw, 52px);
   width: min(calc(100% - 48px), var(--page-width));
   margin: 0 auto;
 }
@@ -43,7 +44,7 @@
   color: var(--text-soft);
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -76,7 +77,7 @@
   width: min(100%, var(--article-width));
   min-height: 80vh;
   margin: 0 auto;
-  padding: 84px 0 120px;
+  padding: 64px 0 104px;
 }
 
 .docs-landing {
@@ -84,24 +85,30 @@
 }
 
 .page-intro {
-  padding-bottom: 56px;
+  scroll-margin-top: calc(var(--header-height) + 24px);
+  padding-bottom: 40px;
   border-bottom: 1px solid var(--border);
 }
 
 .page-intro h1 {
   margin: 0;
-  font-size: clamp(44px, 7vw, 72px);
+  font-size: var(--type-page-title);
   font-weight: 620;
-  letter-spacing: -0.058em;
-  line-height: 1;
+  letter-spacing: var(--tracking-heading);
+  line-height: 1.08;
+}
+
+.documentation-landing .page-intro h1,
+.docs-landing .page-intro h1 {
+  font-size: 44px;
 }
 
 .page-lead {
   max-width: 680px;
-  margin: 26px 0 0;
+  margin: 18px 0 0;
   color: var(--text-muted);
-  font-size: 19px;
-  line-height: 1.75;
+  font-size: var(--type-lead);
+  line-height: 1.65;
 }
 
 .on-this-page > p {
@@ -109,7 +116,7 @@
   color: var(--text-soft);
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -122,4 +129,10 @@
   color: var(--text-muted);
   font-size: 13px;
   text-decoration: none;
+}
+
+html[lang="ja"] .sidebar-group > p,
+html[lang="ja"] .on-this-page > p {
+  letter-spacing: 0.03em;
+  text-transform: none;
 }

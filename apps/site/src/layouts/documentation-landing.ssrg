@@ -20,7 +20,7 @@ pub fn documentationLandingLayout<Action> input: BuildInput
       mobileSidebar messages locale page.id areas,
       html.main {
         id: "content",
-        class: "article-page",
+        class: "article-page documentation-landing",
         children: [
           html.header {
             class: "page-intro",
