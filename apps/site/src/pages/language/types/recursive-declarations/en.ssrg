@@ -10,5 +10,5 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Source order still matters outside rec",
   invalidBody: "A normal let cannot read itself, an earlier local function cannot call a later sibling without rec, duplicate group names are rejected, and a mutually recursive return mismatch fails the whole group. Generalizing one member early is never used to make the group pass.",
   diagnosticsBody: "Scope diagnostics distinguish a forward reference from an unknown external name. Group diagnostics identify duplicate members, declared-result mismatches, and constraint failures while retaining each member's source range. Tail-call tooling must not promise the guarantee outside direct self tail position.",
-  provenanceBody: "This article covers specification section 2.9 and the direct self-tail guarantee in 14.8. Valid and invalid panels use the canonical local-recursion and forward-reference fixtures."
+  provenanceBody: "This article covers specification section 2.9 and the direct self-tail guarantee in 14.8. The valid and rejected panels isolate recursive groups and invalid forward references."
 }

@@ -10,5 +10,5 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "These tokens are syntax, not user-defined operators",
   invalidBody: "$ cannot be redefined, overloaded, or referenced as ($). Pipeline syntax uses |>, not |. A non-function left side receives the same type error as ordinary application, and := remains lower-precedence than $.",
   diagnosticsBody: "The parser fixes associativity and precedence before type checking. Type diagnostics point to the desugared application relationship without hiding the original |> or $ source range; formatter line breaking preserves that parse.",
-  provenanceBody: "This article covers specification section 1.6. The highlighted program is the canonical collections-and-pipelines lesson, including a line break directly after $."
+  provenanceBody: "This article covers specification section 1.6. The displayed source isolates pipeline and low-precedence application and is checked during the site build."
 }

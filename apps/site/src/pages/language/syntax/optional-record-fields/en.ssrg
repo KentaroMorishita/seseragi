@@ -10,5 +10,5 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "Optional markers belong only to structural record positions",
   invalidBody: "Do not attach ? directly to struct fields, function parameters, or ADT payloads. Spaced marker forms, a standalone expression ?, duplicate fields, unknown access, and patterns that demand a missing required field are rejected at their owning syntax or type boundary.",
   diagnosticsBody: "The formatter canonicalizes valid marker spacing. Parser diagnostics own misplaced ? tokens; record typing owns incompatible presence, field access, and pattern requirements. Diagnostics preserve the distinction between absence and a required Maybe value.",
-  provenanceBody: "This article covers specification section 1.10 and the record-type and record-pattern presence rules. Valid code is the canonical optional-record-field compile fixture; invalid record operations come from the semantic diagnostics corpus."
+  provenanceBody: "This article covers specification section 1.10 and the record-type and record-pattern presence rules. The displayed valid and rejected operations are focused documentation examples."
 }

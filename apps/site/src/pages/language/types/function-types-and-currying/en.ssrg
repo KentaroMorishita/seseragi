@@ -10,5 +10,5 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "No parameter does not mean an eager value",
   invalidBody: "Referencing clock without clock () yields the function value rather than Instant. f(x, y) is not a curried multi-argument call, and A -> B -> C never means (A -> B) -> C unless parentheses state that type explicitly.",
   diagnosticsBody: "Function hovers display the right-associated signature and the remaining type after partial application. Application diagnostics identify the single argument layer that failed instead of flattening every parameter into one host-style call.",
-  provenanceBody: "This article covers specification section 2.7 and the application rules in sections 1.4 and 3.1. The canonical values-and-functions lesson executes a two-layer curried declaration and partial intermediate value."
+  provenanceBody: "This article covers specification section 2.7 and the application rules in sections 1.4 and 3.1. The displayed source isolates a curried declaration and partial application."
 }

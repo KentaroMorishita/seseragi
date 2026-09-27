@@ -10,5 +10,5 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "Precedence never licenses an ambiguous chain",
   invalidBody: "a < b < c is rejected; write a < b && b < c. Ambiguous overloaded operator references need a type annotation. Unary * and - are distinguished by position from binary multiplication and subtraction, and parentheses are required whenever a different grouping is intended.",
   diagnosticsBody: "The shared parser and formatter use one precedence table. Non-associative chains are syntax diagnostics; missing trait evidence and ambiguous operator values are type diagnostics; short-circuit forms retain their source operator rather than lowering to an ordinary function call in tooling.",
-  provenanceBody: "This article covers specification section 1.7 and links its Maybe, trait, pipeline, custom-operator, and Signal boundaries. The highlighted grammar fixture exercises representative precedence levels."
+  provenanceBody: "This article covers specification section 1.7 and links its Maybe, trait, pipeline, custom-operator, and Signal boundaries. The displayed source isolates representative precedence levels."
 }

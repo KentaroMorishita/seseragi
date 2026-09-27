@@ -79,137 +79,137 @@ function generatorInput(playgroundUrl: string) {
       ),
       canonicalExample(
         "function-application",
-        "examples/spec/lessons/02-values-and-functions.ssrg",
+        "apps/site/examples/src/language/function-application.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-method-calls",
-        "examples/spec/lessons/11-generics.ssrg",
+        "apps/site/examples/src/language/method-calls.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-invalid-methods",
-        "examples/spec/artifacts/semantic-diagnostics-schema-1/inherent-method-invalid/main.ssrg",
+        "apps/site/examples/invalid/src/language/invalid-methods.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-pipelines",
-        "examples/spec/lessons/04-collections-and-pipelines.ssrg",
+        "apps/site/examples/src/language/pipelines.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-operator-precedence",
-        "examples/spec/fixtures/compile/grammar-terminal-coverage.ssrg",
+        "apps/site/examples/src/language/operator-precedence.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-custom-operator",
-        "examples/spec/lessons/13-traits-and-custom-operators.ssrg",
+        "apps/site/examples/src/language/custom-operator.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-invalid-custom-operator",
-        "examples/spec/artifacts/semantic-diagnostics-schema-1/custom-operator-invalid-declaration/main.ssrg",
+        "apps/site/examples/invalid/src/language/invalid-custom-operator.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-reserved-words",
-        "examples/spec/fixtures/compile/grammar-terminal-coverage.ssrg",
+        "apps/site/examples/src/language/reserved-words.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-optional-record-field",
-        "examples/spec/fixtures/compile/optional-record-field.ssrg",
+        "apps/site/examples/src/language/optional-record-field.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-invalid-record-fields",
-        "examples/spec/artifacts/semantic-diagnostics-schema-1/record-field-errors/main.ssrg",
+        "apps/site/examples/invalid/src/language/invalid-record-fields.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "types-system",
-        "examples/spec/lessons/07-domain-types.ssrg",
+        "apps/site/examples/src/language/type-system.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "types-constructors",
-        "examples/spec/fixtures/compile/generic-struct.ssrg",
+        "apps/site/examples/src/language/type-constructors.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "types-polymorphism",
-        "examples/spec/fixtures/projects/local-rec/src/main.ssrg",
+        "apps/site/examples/src/language/polymorphism.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "types-nominal-structural",
-        "examples/spec/lessons/19-recursive-data-and-spread.ssrg",
+        "apps/site/examples/src/language/nominal-and-structural.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "types-invalid-structural",
-        "examples/spec/artifacts/semantic-diagnostics-schema-1/structured-type-differences/main.ssrg",
+        "apps/site/examples/invalid/src/language/invalid-structural.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "types-requirement-merge",
-        "examples/spec/fixtures/compile/requirement-merge.ssrg",
+        "apps/site/examples/src/language/requirement-merge.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "types-invalid-requirement-merge",
-        "examples/spec/fixtures/diagnostics/invalid-requirement-merge.ssrg",
+        "apps/site/examples/invalid/src/language/invalid-requirement-merge.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "types-invalid-coercion",
-        "examples/spec/artifacts/semantic-diagnostics-schema-1/newtype-no-coercion/main.ssrg",
+        "apps/site/examples/invalid/src/language/invalid-coercion.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "types-recursion",
-        "examples/spec/fixtures/compile/local-recursion.ssrg",
+        "apps/site/examples/src/language/recursion.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "types-invalid-recursion",
-        "examples/spec/fixtures/diagnostics/local-forward-reference.ssrg",
+        "apps/site/examples/invalid/src/language/invalid-recursion.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "language-program-entry",
-        "examples/spec/lessons/01-hello-world.ssrg",
+        "apps/site/examples/src/language/program-entry.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-source-text",
-        "examples/spec/fixtures/projects/char-literal/src/domain.ssrg",
+        "apps/site/examples/src/language/source-text.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-literals",
-        "examples/spec/fixtures/compile/literals.ssrg",
+        "apps/site/examples/src/language/literals.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-invalid-numeric",
-        "examples/spec/fixtures/diagnostics/invalid-numeric-literal.ssrg",
+        "apps/site/examples/invalid/src/language/invalid-numeric.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-char-valid",
-        "examples/spec/fixtures/projects/char-literal/src/main.ssrg",
+        "apps/site/examples/src/language/character-literals.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-char-invalid",
-        "examples/spec/artifacts/schema-1/char-literal-invalid/main.ssrg",
+        "apps/site/examples/invalid/src/language/invalid-character-literals.ssrg",
         playgroundUrl
       ),
       canonicalExample(
         "syntax-invalid-escape",
-        "examples/spec/fixtures/diagnostics/invalid-escape.ssrg",
+        "apps/site/examples/invalid/src/language/invalid-escape.ssrg",
         playgroundUrl
       ),
       canonicalExample(

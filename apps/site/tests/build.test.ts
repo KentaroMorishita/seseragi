@@ -9,6 +9,7 @@ setDefaultTimeout(180_000)
 
 type SiteManifest = {
   pages: string[]
+  examples: Array<{ id: string; sourcePath: string }>
   referenceModules: Array<{
     symbols: Array<{ itemKind: string }>
   }>
@@ -118,6 +119,21 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       expect(manifest.pages).toContain(route)
     }
     expect(manifest.referenceModules).toHaveLength(63)
+    const nonReferenceExamples = new Set([
+      "hello-world",
+      "test-discovery",
+      "web-starter-main",
+    ])
+    const languageExamples = manifest.examples.filter(
+      ({ id }) => !nonReferenceExamples.has(id)
+    )
+    expect(languageExamples.length).toBeGreaterThan(0)
+    for (const example of languageExamples) {
+      expect(example.sourcePath).toStartWith("apps/site/examples/")
+      expect(example.sourcePath).not.toContain("/lessons/")
+      expect(example.sourcePath).not.toContain("/fixtures/")
+      expect(example.sourcePath).not.toContain("/artifacts/")
+    }
     expect(
       manifest.referenceModules
         .flatMap(({ symbols }) => symbols)

@@ -1,0 +1,15 @@
+type Rank =
+  | Bronze
+  | Silver
+  | Gold
+
+// Score and Int have distinct type identities.
+newtype Score = Int
+
+struct Player {
+  name: String,
+  score: Score,
+  rank: Rank,
+}
+
+let player = Player { name: "Aki", score: Score 42, rank: Gold }

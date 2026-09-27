@@ -10,5 +10,5 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Inference is local, not an excuse to hide an API",
   invalidBody: "An untyped function parameter, missing function return type, or public declaration without its required annotation is rejected. A conflicting let annotation is an error even when the initializer could have another valid inferred type.",
   diagnosticsBody: "Missing-boundary diagnostics point to the declaration header and suggest the required annotation position. Mismatch diagnostics retain expected and actual types. Language-server hovers report inferred private-let types without rewriting source.",
-  provenanceBody: "This article covers specification section 2.4. The canonical values-and-functions lesson demonstrates annotated parameters and returns, an inferred private let, an annotated let, and declaration-scoped type information."
+  provenanceBody: "This article covers specification section 2.4. The displayed source isolates annotated parameters, an inferred immutable value, and declaration-scoped type information."
 }
