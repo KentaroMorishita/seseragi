@@ -155,11 +155,22 @@ describe("mobile editing layout contract", () => {
       new URL("src/ui/reference-browser.ts", root)
     ).text()
     const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const palette = await Bun.file(
+      new URL("src/editor/syntax-theme.css", root)
+    ).text()
+    const theme = await Bun.file(new URL("src/editor/theme.ts", root)).text()
 
     expect(reference).toContain("highlightSeseragi(item.signature)")
     expect(reference).toContain('signature.className = "seseragi-highlight"')
+    expect(styles).toContain('@import "./editor/syntax-theme.css"')
     expect(styles).toContain(".seseragi-highlight .tok-keyword")
     expect(styles).toContain(".seseragi-highlight .tok-typeName")
+    expect(styles).toContain(".seseragi-highlight .tok-standardType")
+    expect(styles).toContain(".seseragi-highlight .tok-operator")
+    expect(styles).toContain("var(--seseragi-syntax-keyword)")
+    expect(theme).toContain('keyword: "var(--seseragi-syntax-keyword)"')
+    expect(palette).toContain("--seseragi-syntax-keyword: #c7a0f7")
+    expect(palette).toContain("--seseragi-syntax-type-name: #f1b37a")
   })
 
   test("moves Input beside Output and keeps its expanded state accessible", async () => {

@@ -4,13 +4,15 @@ import { tags } from "@lezer/highlight"
 import { editorSelectionClassNames } from "./editing-extensions"
 
 const colors = {
-  text: "#dce9e4",
-  muted: "#687c74",
-  accent: "#7ed6ad",
-  purple: "#c7a0f7",
-  orange: "#f1b37a",
-  blue: "#82b9f6",
-  green: "#a9d989",
+  text: "var(--seseragi-syntax-text)",
+  muted: "var(--seseragi-syntax-muted)",
+  accent: "var(--seseragi-syntax-accent)",
+  keyword: "var(--seseragi-syntax-keyword)",
+  typeName: "var(--seseragi-syntax-type-name)",
+  standardType: "var(--seseragi-syntax-standard-type)",
+  operator: "var(--seseragi-syntax-operator)",
+  string: "var(--seseragi-syntax-string)",
+  punctuation: "var(--seseragi-syntax-punctuation)",
 }
 
 export const editorSelectionColors = {
@@ -97,16 +99,16 @@ export const seseragiEditorTheme = [
   ),
   syntaxHighlighting(
     HighlightStyle.define([
-      { tag: tags.keyword, color: colors.purple, fontWeight: "600" },
-      { tag: tags.typeName, color: colors.orange },
-      { tag: tags.standard(tags.typeName), color: "#ffd27d" },
+      { tag: tags.keyword, color: colors.keyword, fontWeight: "600" },
+      { tag: tags.typeName, color: colors.typeName },
+      { tag: tags.standard(tags.typeName), color: colors.standardType },
       { tag: tags.variableName, color: colors.text },
-      { tag: tags.bool, color: colors.orange },
-      { tag: tags.number, color: colors.orange },
-      { tag: tags.string, color: colors.green },
+      { tag: tags.bool, color: colors.typeName },
+      { tag: tags.number, color: colors.typeName },
+      { tag: tags.string, color: colors.string },
       { tag: tags.comment, color: colors.muted, fontStyle: "italic" },
-      { tag: tags.operatorKeyword, color: colors.blue },
-      { tag: tags.punctuation, color: "#9fb4ac" },
+      { tag: tags.operatorKeyword, color: colors.operator },
+      { tag: tags.punctuation, color: colors.punctuation },
     ])
   ),
 ]

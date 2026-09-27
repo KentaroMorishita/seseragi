@@ -1,0 +1,11 @@
+:root {
+  --seseragi-syntax-text: #dce9e4;
+  --seseragi-syntax-muted: #687c74;
+  --seseragi-syntax-accent: #7ed6ad;
+  --seseragi-syntax-keyword: #c7a0f7;
+  --seseragi-syntax-type-name: #f1b37a;
+  --seseragi-syntax-standard-type: #ffd27d;
+  --seseragi-syntax-operator: #82b9f6;
+  --seseragi-syntax-string: #a9d989;
+  --seseragi-syntax-punctuation: #9fb4ac;
+}

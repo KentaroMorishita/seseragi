@@ -1,3 +1,5 @@
+@import "./editor/syntax-theme.css";
+
 :root {
   color-scheme: dark;
   font-family:
@@ -324,27 +326,34 @@ textarea {
   font-size: 10px;
 }
 .seseragi-highlight .tok-keyword {
-  color: #c792ea;
+  color: var(--seseragi-syntax-keyword);
+  font-weight: 600;
 }
 .seseragi-highlight .tok-typeName {
-  color: #f2c06b;
+  color: var(--seseragi-syntax-type-name);
+}
+.seseragi-highlight .tok-standardType {
+  color: var(--seseragi-syntax-standard-type);
 }
 .seseragi-highlight .tok-variableName {
-  color: #dce9e4;
+  color: var(--seseragi-syntax-text);
 }
 .seseragi-highlight .tok-number,
 .seseragi-highlight .tok-bool {
-  color: #f78c6c;
+  color: var(--seseragi-syntax-type-name);
 }
 .seseragi-highlight .tok-string {
-  color: #addb67;
+  color: var(--seseragi-syntax-string);
 }
 .seseragi-highlight .tok-comment {
-  color: #6fa18e;
+  color: var(--seseragi-syntax-muted);
   font-style: italic;
 }
+.seseragi-highlight .tok-operator {
+  color: var(--seseragi-syntax-operator);
+}
 .seseragi-highlight .tok-punctuation {
-  color: #89ddff;
+  color: var(--seseragi-syntax-punctuation);
 }
 .reference-card pre {
   margin: 12px 0 8px;
@@ -405,24 +414,30 @@ textarea {
   font-size: 11px;
 }
 .analysis-hover-signature .tok-keyword {
-  color: #c7a0f7;
+  color: var(--seseragi-syntax-keyword);
   font-weight: 600;
 }
 .analysis-hover-signature .tok-typeName {
-  color: #f1b37a;
+  color: var(--seseragi-syntax-type-name);
+}
+.analysis-hover-signature .tok-standardType {
+  color: var(--seseragi-syntax-standard-type);
 }
 .analysis-hover-signature .tok-variableName {
-  color: #dce9e4;
+  color: var(--seseragi-syntax-text);
 }
 .analysis-hover-signature .tok-number,
 .analysis-hover-signature .tok-bool {
-  color: #f1b37a;
+  color: var(--seseragi-syntax-type-name);
 }
 .analysis-hover-signature .tok-string {
-  color: #a9d989;
+  color: var(--seseragi-syntax-string);
+}
+.analysis-hover-signature .tok-operator {
+  color: var(--seseragi-syntax-operator);
 }
 .analysis-hover-signature .tok-punctuation {
-  color: #9fb4ac;
+  color: var(--seseragi-syntax-punctuation);
 }
 .analysis-hover small {
   color: #6fa18e;

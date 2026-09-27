@@ -312,9 +312,15 @@ function renderGenerator(entry: string, input: object): RenderedPage[] {
 function publishAssets(output: string): string[] {
   const assets = join(output, "assets")
   mkdirSync(assets, { recursive: true })
-  const css = styleFiles
-    .map((name) => readFileSync(join(app, "styles", name), "utf8").trim())
-    .join("\n\n")
+  const css = [
+    readFileSync(
+      join(root, "apps/playground/src/editor/syntax-theme.css"),
+      "utf8"
+    ).trim(),
+    ...styleFiles.map((name) =>
+      readFileSync(join(app, "styles", name), "utf8").trim()
+    ),
+  ].join("\n\n")
   writeFileSync(join(assets, "site.css"), `${css}\n`)
   copyFileSync(
     join(root, "assets/brand/public/brand/seseragi-icon.svg"),
