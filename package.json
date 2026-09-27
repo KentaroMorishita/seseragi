@@ -49,7 +49,7 @@
     "test:local-web-e2e": "bun scripts/local-web-product-e2e.ts",
     "dev:playground": "cd apps/playground && bun run dev",
     "build:playground": "cd apps/playground && bun run build",
-    "build:site:production": "CARGO_INCREMENTAL=0 cargo build --locked --release -p seseragi-cli && SESERAGI_BIN=target/release/seseragi NODE_ENV=production bun apps/site/scripts/build.ts target/site https://seseragi.vercel.app",
+    "build:site:production": "CARGO_INCREMENTAL=0 cargo build --locked --release -p seseragi-cli && SESERAGI_BIN=target/release/seseragi NODE_ENV=production bun apps/site/scripts/build.ts target/site",
     "build:playground:wasm": "./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
     "build:extension": "cd extensions/seseragi && bun install --frozen-lockfile && bun ../../scripts/check-extension-identity.ts && bun run package && bun run package:legacy",
     "check:production": "./scripts/check-scoped.sh production",

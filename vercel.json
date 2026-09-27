@@ -1,24 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "bun run build:site:production",
-  "outputDirectory": "target/site",
-  "installCommand": "bun install --frozen-lockfile && bun install --frozen-lockfile --cwd apps/playground",
+  "buildCommand": "cd apps/playground && bun run build",
+  "outputDirectory": "apps/playground/dist",
+  "installCommand": "cd apps/playground && bun install --frozen-lockfile",
   "framework": null,
-  "trailingSlash": true,
-  "headers": [
+  "rewrites": [
     {
       "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'none'; connect-src 'none'; form-action 'none'; frame-ancestors 'none'; img-src 'self'; script-src 'self'; style-src 'self'"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
-      ]
+      "destination": "/index.html"
     }
   ]
 }

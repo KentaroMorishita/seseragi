@@ -10,6 +10,20 @@ The former `apps/docs` implementation is removed. The new application does not
 keep compatibility readers, copied CSS, a second renderer or a second content
 inventory.
 
+## Deployment ownership
+
+The language site and Playground use independent Vercel configurations until
+the root-domain cutover:
+
+- root `vercel.json` owns the current `seseragi` Playground deployment;
+- `apps/site/vercel.json` owns explicit deployments to the existing
+  `seseragi-docs` project.
+
+The site configuration is not copied over the root configuration during normal
+development. The final cutover must first choose and implement the Playground's
+durable route, then move the site and canonical origin to the root domain as one
+reviewed change.
+
 ## Page authoring model
 
 Pages are Seseragi modules, not Markdown or JSON records. Each stable page owns

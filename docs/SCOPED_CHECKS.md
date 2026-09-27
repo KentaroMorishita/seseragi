@@ -14,7 +14,7 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 | Rust / compiler / LSP workspace | `bun run check:rust` | Rust format、workspace test（対象crateだけなら `bun run check:rust -- -p <crate>`） |
 | production browser dogfood | `bun run check:production:browser` | canonical CLIでWeb starter / Flowをdevelopment/release buildし、Chromium操作・text/input値の一致、source-map defaults、JS例外を検証。Playground依存とChromiumの事前installが必要。full/release source gateにも含む |
 | Official site shell / pages / Reference | `bun run check:site` | `apps/site`のSeseragi page moduleとlocale moduleをcompileし、canonical example、compiler-owned Reference、英日route、desktop/mobile表示、horizontal overflow、console/page errorを検証 |
-| Official site production / deploy handoff | `bun run build:site:production` | release-profile process SSGから`target/site`を生成し、root `vercel.json`でmain language entrance、Docs、Examples、Releasesを同一static siteとして配信 |
+| Official site production / deploy handoff | `bun run build:site:production` | release-profile process SSGから`target/site`を生成する。root cutoverまでは`apps/site/vercel.json`を明示選択して`seseragi-docs` projectへ配信し、root `vercel.json`のPlayground責務と混在させない |
 | production artifacts | `bun run check:production` | first-party 6 fixtureのrelease build、manifest shape、必要runtime、size budget、digest / identity / 再build、process実行。full / release source gateにも含む |
 | conformance fixture | `bun run check:conformance` | canonical conformance runner（対象rootを引数で限定可能） |
 | compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認 |

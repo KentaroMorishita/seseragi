@@ -230,8 +230,12 @@ export function buildSite(options: BuildOptions) {
 }
 
 if (import.meta.main) {
-  const [output, origin] = process.argv.slice(2)
-  assert.ok(output && origin, "Usage: build.ts OUTPUT ORIGIN")
+  const [output, originArgument] = process.argv.slice(2)
+  const origin =
+    originArgument ??
+    process.env.SESERAGI_SITE_ORIGIN ??
+    "https://seseragi-docs.vercel.app"
+  assert.ok(output, "Usage: build.ts OUTPUT [ORIGIN]")
   const finalOutput = resolve(output)
   const stagingOutput = `${finalOutput}.staging-${process.pid}`
   try {
