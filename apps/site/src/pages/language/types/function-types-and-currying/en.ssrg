@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Function types and currying",
+  summary: "Every function consumes one parameter at a time; multi-parameter declarations are nested right-associative function types.",
+  ruleTitle: "One parameter per function layer",
+  ruleBody: "fn add x: Int -> y: Int -> Int has type Int -> (Int -> Int). The source spelling omits those grouping parentheses because -> associates right. Applying add 1 consumes the outer parameter and produces a function of type Int -> Int.",
+  identityBody: "Currying is the function's type and calling model, not an optimizer rewrite or tuple-call convention. Parameters bind left to right. A declaration with no written parameter has one anonymous Unit parameter, type Unit -> A, and must be invoked with ().",
+  checkingBody: "Each application checks one argument against the current outer parameter type and exposes the remaining result type. Partial application preserves unresolved generic and trait constraints until later arguments or expected types resolve them.",
+  invalidTitle: "No parameter does not mean an eager value",
+  invalidBody: "Referencing clock without clock () yields the function value rather than Instant. f(x, y) is not a curried multi-argument call, and A -> B -> C never means (A -> B) -> C unless parentheses state that type explicitly.",
+  diagnosticsBody: "Function hovers display the right-associated signature and the remaining type after partial application. Application diagnostics identify the single argument layer that failed instead of flattening every parameter into one host-style call.",
+  provenanceBody: "This article covers specification section 2.7 and the application rules in sections 1.4 and 3.1. The canonical values-and-functions lesson executes a two-layer curried declaration and partial intermediate value."
+}

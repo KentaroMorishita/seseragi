@@ -1,0 +1,5 @@
+import { TypeCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> TypeCopy =
+  incomplete "Recursive declarations" "self recursion・local scope・rec group・monomorphic checking・tail保証を説明します。"

@@ -1,0 +1,5 @@
+import { TypeCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> TypeCopy =
+  incomplete "Function types and currying" "nested one-parameter型・部分適用・Unit parameterを説明します。"

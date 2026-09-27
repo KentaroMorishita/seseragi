@@ -1,0 +1,48 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.recursive-declarations" "/docs/language/types/recursive-declarations/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "types-recursion",
+      localized "A local mutually recursive group" "local mutual recursion group"
+    ),
+    BulletList [
+      [Words (
+        localized "All member names enter scope for the whole rec group."
+          "全member名はrec group全体でscopeに入ります。"
+      )],
+      [Words (
+        localized "The group is monomorphic until every member checks."
+          "全memberの検査完了までgroupはmonomorphicです。"
+      )],
+      [Words (
+        localized
+          "Only direct self tail calls receive the constant host-stack guarantee."
+          "direct self tail callだけがconstant host-stack保証を持ちます。"
+      )]
+    ]
+  ] [CodeExample (
+    "types-invalid-recursion",
+    localized "A forward reference outside rec" "rec外のforward reference"
+  )] [
+    [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
+    [InternalLink (
+      localized "Annotations and inference" "型注釈と推論",
+      "/docs/language/types/annotations-and-inference/"
+    )],
+    [InternalLink (
+      localized "Function types and currying" "関数型とcurrying",
+      "/docs/language/types/function-types-and-currying/"
+    )]
+  ]

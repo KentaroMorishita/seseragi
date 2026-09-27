@@ -138,6 +138,29 @@ try {
           })
 
         await page.goto(
+          `http://127.0.0.1:${server.port}/docs/language/types/requirement-merge/`
+        )
+        assert.equal(
+          await page.locator("h1").textContent(),
+          "Requirement merge"
+        )
+        assert.ok(
+          (await page.locator("body").innerText()).includes("SES-E0001")
+        )
+        const requirementWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          requirementWidth <= width,
+          `requirement article ${width}px viewport is ${requirementWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `requirement-merge-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
           `http://127.0.0.1:${server.port}/docs/language/model/non-features/`
         )
         assert.equal(

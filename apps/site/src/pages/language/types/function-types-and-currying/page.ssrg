@@ -1,0 +1,54 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.function-types" "/docs/language/types/function-types-and-currying/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "function-application",
+      localized "Curried declaration and partial application" "curried宣言と部分適用"
+    ),
+    BulletList [
+      [
+        InlineCode "Int -> Int -> Int",
+        Words (localized " means Int -> (Int -> Int)." " はInt -> (Int -> Int)を意味します。")
+      ],
+      [InlineCode "add 1", Words (localized " has type Int -> Int." " はInt -> Int型です。")],
+      [
+        InlineCode "fn clock -> Instant",
+        Words (
+          localized " has type Unit -> Instant and is called as clock ()."
+            " はUnit -> Instant型でclock ()として呼びます。"
+        )
+      ]
+    ]
+  ] [BulletList [
+    [
+      InlineCode "(Int -> Int) -> Int",
+      Words
+            (localized " is a different explicitly grouped type." " は明示的にgroup化された別の型です。")
+    ],
+    [
+      InlineCode "clock",
+      Words (localized " alone remains a function value." " 単体は関数値のままです。")
+    ]
+  ]] [
+    [InternalLink (
+      localized "Function application" "関数適用",
+      "/docs/language/syntax/function-application/"
+    )],
+    [InternalLink (
+      localized "Annotations and inference" "型注釈と推論",
+      "/docs/language/types/annotations-and-inference/"
+    )],
+    [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")]
+  ]

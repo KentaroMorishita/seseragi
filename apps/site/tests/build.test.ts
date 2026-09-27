@@ -48,7 +48,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3838)
+    expect(manifest.pages).toHaveLength(3852)
     for (const route of [
       "/",
       "/docs/",
@@ -92,6 +92,14 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/language/types/annotations-and-inference/",
       "/docs/language/types/polymorphism/",
       "/ja/docs/language/types/type-system/",
+      "/docs/language/types/nominal-and-structural-types/",
+      "/docs/language/types/optional-record-fields/",
+      "/docs/language/types/closed-records/",
+      "/docs/language/types/requirement-merge/",
+      "/docs/language/types/function-types-and-currying/",
+      "/docs/language/types/type-identity-and-coercion/",
+      "/docs/language/types/recursive-declarations/",
+      "/ja/docs/language/types/requirement-merge/",
       "/docs/library/",
       "/docs/library/array/",
       "/docs/library/array/function/get/",
@@ -206,6 +214,27 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     )
     expect(textContent(polymorphism)).toContain("forall A. A -> A")
     expect(textContent(polymorphism)).toContain("identity True")
+    const recordTypes = readFileSync(
+      join(
+        output,
+        "docs/language/types/nominal-and-structural-types/index.html"
+      ),
+      "utf8"
+    )
+    expect(textContent(recordTypes)).toContain("width subtyping")
+    expect(textContent(recordTypes)).toContain("Player struct")
+    const requirementMerge = readFileSync(
+      join(output, "docs/language/types/requirement-merge/index.html"),
+      "utf8"
+    )
+    expect(textContent(requirementMerge)).toContain("SES-E0001")
+    expect(textContent(requirementMerge)).toContain("SES-T0501")
+    const recursion = readFileSync(
+      join(output, "docs/language/types/recursive-declarations/index.html"),
+      "utf8"
+    )
+    expect(textContent(recursion)).toContain("monomorphic")
+    expect(textContent(recursion)).toContain("forward reference outside rec")
     const reference = readFileSync(
       join(output, "docs/library/array/function/get/index.html"),
       "utf8"

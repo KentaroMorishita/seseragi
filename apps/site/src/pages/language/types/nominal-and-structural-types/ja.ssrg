@@ -1,0 +1,5 @@
+import { TypeCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> TypeCopy =
+  incomplete "Nominal and structural types" "nominal identity・record shape・width subtyping・field invarianceを説明します。"
