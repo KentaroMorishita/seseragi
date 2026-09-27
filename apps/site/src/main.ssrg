@@ -1,0 +1,51 @@
+import * as arrays from "std/array"
+import * as effects from "std/effect"
+import * as inputs from "std/stdin"
+import * as json from "std/json"
+import { BuildInput, decodeBuildInput } from "./model/build"
+import { En, Ja, Locale, localizedRoute } from "./model/locale"
+import { PageDefinition, SiteCatalog } from "./model/page"
+import { catalog } from "./navigation/catalog"
+import { renderDocument } from "./render/document"
+
+struct Output deriving JsonEncode { route: String, html: String }
+
+type GeneratorError deriving Show =
+  | InputFailure
+  | DecodeFailure
+  | ConsoleFailure ConsoleError
+
+fn requireInput value: Maybe<String> -> Either<GeneratorError, String> = match value {
+  Nothing -> Left InputFailure
+  Just encoded -> Right encoded
+}
+
+fn requireSchema input: BuildInput -> Either<GeneratorError, BuildInput> =
+  if input.schema == 1 then Right input else Left DecodeFailure
+
+fn renderLocale input: BuildInput
+  -> site: SiteCatalog
+  -> locale: Locale
+  -> Array<Output> =
+  [Output {
+    route: localizedRoute locale page.path,
+    html: renderDocument input site locale page
+  } | page <- site.pages]
+
+fn render input: BuildInput -> Array<Output> = {
+  let site = catalog ()
+  arrays.concat [renderLocale input site En, renderLocale input site Ja]
+}
+
+pub effect fn main -> Unit with Console, Stdin fails GeneratorError = do {
+  limit <- inputs.lineLimit 67108864
+    |> effects.fromEither
+    |> effects.mapError (\_ -> InputFailure)
+  line <- inputs.readLineWith limit |> effects.mapError (\_ -> InputFailure)
+  encoded <- requireInput line |> effects.fromEither
+  decoded <- decodeBuildInput encoded
+    |> effects.fromEither
+    |> effects.mapError (\_ -> DecodeFailure)
+  input <- requireSchema decoded |> effects.fromEither
+  println (json.encodeString (render input)) |> effects.mapError ConsoleFailure
+}

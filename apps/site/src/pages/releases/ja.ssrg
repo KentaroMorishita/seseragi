@@ -1,0 +1,4 @@
+pub fn title -> String = "リリース"
+pub fn summary -> String = "言語・compiler・runtime・Playground・toolingの変更をreleaseごとに確認できます。"
+pub fn heading -> String = "一つのrelease記録"
+pub fn body -> String = "release noteはユーザーに見える変更をlanguage version、artifact、移行手順へ結び付けます。"

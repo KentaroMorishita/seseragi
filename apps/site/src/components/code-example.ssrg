@@ -1,0 +1,87 @@
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import { Messages } from "../i18n/model"
+import { ApiReference, BuildInput, ExampleSource } from "../model/build"
+import { Locale, LocalizedText, translate } from "../model/locale"
+import { anchor } from "./primitives"
+
+fn exampleMatches id: String -> example: ExampleSource -> Bool = example.id == id
+
+fn referenceMatches identity: String -> reference: ApiReference -> Bool =
+  reference.identity == identity
+
+fn renderExample<Action> messages: Messages
+  -> locale: Locale
+  -> title: LocalizedText
+  -> example: ExampleSource
+  -> html.Html<Action> =
+  html.section {
+    class: "code-panel",
+    children: [
+      html.div {
+        children: [
+          html.span { children: translate locale title },
+          html.div {
+            class: "code-actions",
+            children: anchor messages.openPlayground example.playgroundUrl
+              "playground-link"
+          }
+        ]
+      },
+      html.pre {
+        children: [html.code {
+          class: "seseragi-highlight",
+          children: [html.span { class: part.className, children: part.text } | part <- example.highlighted]
+        }]
+      }
+    ]
+  }
+
+pub fn codeExample<Action> input: BuildInput
+  -> messages: Messages
+  -> locale: Locale
+  -> id: String
+  -> title: LocalizedText
+  -> html.Html<Action> =
+  match arrays.find (exampleMatches id) input.examples {
+    Nothing -> html.p {
+      class: "site-build-error",
+      children: "Missing canonical example: " + id
+    }
+    Just example -> renderExample messages locale title example
+  }
+
+fn renderReference<Action> reference: ApiReference -> html.Html<Action> = html.section {
+  class: "api-reference",
+  children: [
+    html.div {
+      class: "api-reference-heading",
+      children: [html.div {
+        children: [
+          html.p {
+            class: "api-reference-kind",
+            children: reference.namespace + " · " + reference.itemKind
+          },
+          html.h2 { children: reference.name }
+        ]
+      }]
+    },
+    html.p { class: "api-reference-identity", children: reference.identity },
+    html.pre {
+      children: [html.code {
+        class: "seseragi-highlight",
+        children: [html.span { class: part.className, children: part.text } | part <- reference.highlighted]
+      }]
+    },
+    html.p { children: reference.description }
+  ]
+}
+
+pub fn apiReference<Action> input: BuildInput -> identity: String -> html.Html<Action> =
+  match arrays.find (referenceMatches identity) input.references {
+    Nothing -> html.p {
+      class: "site-build-error",
+      children: "Missing compiler reference: " + identity
+    }
+    Just reference -> renderReference reference
+  }

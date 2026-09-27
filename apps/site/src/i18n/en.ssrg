@@ -1,0 +1,11 @@
+import { Messages } from "./model"
+
+pub fn messages -> Messages = Messages {
+  documentation: "Documentation",
+  playground: "Playground",
+  examples: "Examples",
+  releases: "Releases",
+  onThisPage: "On this page",
+  openPlayground: "Open in Playground",
+  language: "日本語"
+}

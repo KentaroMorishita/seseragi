@@ -1,0 +1,8 @@
+pub fn title -> String = "標準ライブラリ"
+
+pub fn summary -> String = "Seseragiに同梱されるmodule・型・関数のリファレンスです。"
+
+pub fn collectionsTitle -> String = "Collection"
+
+pub fn collectionsBody -> String =
+  "compilerが所有するsignature・制約・symbol identityをそのまま参照します。"

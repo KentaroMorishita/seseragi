@@ -1,0 +1,79 @@
+import * as html from "std/web/html"
+import { Locale, localizedRoute, translate } from "../model/locale"
+import {
+  NavigationArea,
+  NavigationGroup,
+  NavigationSection,
+  PageDefinition
+} from "../model/page"
+import { anchor } from "./primitives"
+
+fn pageLink<Action> locale: Locale
+  -> current: String
+  -> page: PageDefinition
+  -> html.Html<Action> =
+  anchor (translate locale page.title) (localizedRoute locale page.path) (if page.id == current then
+    "sidebar-link current"
+  else
+    "sidebar-link")
+
+fn section<Action> locale: Locale
+  -> current: String
+  -> value: NavigationSection
+  -> html.Html<Action> =
+  html.details {
+    open: True,
+    class: "sidebar-section",
+    children: [
+      html.summary { children: translate locale value.title },
+      html.nav { children: [pageLink locale current page | page <- value.pages] }
+    ]
+  }
+
+fn group<Action> locale: Locale
+  -> current: String
+  -> value: NavigationGroup
+  -> html.Html<Action> =
+  html.div {
+    class: "sidebar-group",
+    children: [
+      html.p { children: translate locale value.title },
+      html.div { children: [section locale current item | item <- value.sections] }
+    ]
+  }
+
+fn area<Action> locale: Locale
+  -> current: String
+  -> value: NavigationArea
+  -> html.Html<Action> =
+  html.details {
+    open: True,
+    class: "sidebar-area",
+    children: [
+      html.summary { children: translate locale value.title },
+      html.div { children: [group locale current item | item <- value.groups] }
+    ]
+  }
+
+pub fn sidebar<Action> locale: Locale
+  -> current: String
+  -> areas: Array<NavigationArea>
+  -> html.Html<Action> =
+  html.aside {
+    class: "docs-sidebar",
+    children: [area locale current item | item <- areas]
+  }
+
+pub fn mobileSidebar<Action> messages: Messages
+  -> locale: Locale
+  -> current: String
+  -> areas: Array<NavigationArea>
+  -> html.Html<Action> =
+  html.details {
+    class: "mobile-docs-navigation",
+    children: [
+      html.summary { children: messages.documentation },
+      html.div { children: [area locale current item | item <- areas] }
+    ]
+  }
+import { Messages } from "../i18n/model"

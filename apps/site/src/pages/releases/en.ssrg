@@ -1,0 +1,6 @@
+pub fn title -> String = "Releases"
+pub fn summary -> String =
+  "Language, compiler, runtime, Playground, and tooling changes by release."
+pub fn heading -> String = "One release record"
+pub fn body -> String =
+  "Release notes will connect user-visible changes to their language version, artifacts, and migration guidance."

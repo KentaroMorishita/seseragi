@@ -1,0 +1,63 @@
+import * as html from "std/web/html"
+import { Messages } from "../i18n/model"
+import { BuildInput } from "../model/build"
+import { Locale, alternateLocale, localizedRoute } from "../model/locale"
+import { PageDefinition } from "../model/page"
+import { anchor } from "./primitives"
+
+fn brand<Action> locale: Locale -> html.Html<Action> =
+  match (
+    html.parseWebUrl (localizedRoute locale "/"),
+    html.parseWebUrl "/assets/seseragi-icon.svg"
+  ) {
+    (Right home, Right logo) -> html.a {
+      href: home,
+      class: "site-brand",
+      children: [
+        html.img { src: logo, alt: "", width: 28, height: 28 },
+        html.strong { children: "Seseragi" }
+      ]
+    }
+    _ -> html.span { class: "site-build-error", children: "Invalid brand URL" }
+  }
+
+fn navigation<Action> input: BuildInput
+  -> messages: Messages
+  -> locale: Locale
+  -> html.Html<Action> =
+  html.nav {
+    class: "site-nav",
+    children: [
+      anchor messages.documentation (localizedRoute locale "/docs/") "",
+      anchor messages.playground input.playgroundUrl "",
+      anchor messages.examples (localizedRoute locale "/examples/") "",
+      anchor messages.releases (localizedRoute locale "/releases/") ""
+    ]
+  }
+
+fn tools<Action> messages: Messages
+  -> locale: Locale
+  -> page: PageDefinition
+  -> html.Html<Action> =
+  html.div {
+    class: "site-tools",
+    children: anchor messages.language
+      (localizedRoute (alternateLocale locale) page.path) "locale-switch"
+  }
+
+pub fn siteHeader<Action> input: BuildInput
+  -> messages: Messages
+  -> locale: Locale
+  -> page: PageDefinition
+  -> html.Html<Action> =
+  html.header {
+    class: "site-header",
+    children: [html.div {
+      class: "site-header-inner",
+      children: [
+        brand locale,
+        navigation input messages locale,
+        tools messages locale page
+      ]
+    }]
+  }

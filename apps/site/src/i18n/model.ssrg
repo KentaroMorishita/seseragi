@@ -1,0 +1,9 @@
+pub struct Messages {
+  documentation: String,
+  playground: String,
+  examples: String,
+  releases: String,
+  onThisPage: String,
+  openPlayground: String,
+  language: String
+}

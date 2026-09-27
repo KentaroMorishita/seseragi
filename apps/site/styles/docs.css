@@ -1,0 +1,120 @@
+.docs-frame {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 190px;
+  gap: clamp(34px, 5vw, 72px);
+  width: min(calc(100% - 48px), var(--page-width));
+  margin: 0 auto;
+}
+
+.mobile-docs-navigation {
+  display: none;
+}
+
+.mobile-on-this-page {
+  display: none;
+}
+
+.docs-sidebar,
+.on-this-page {
+  position: sticky;
+  top: calc(var(--header-height) + 28px);
+  align-self: start;
+  max-height: calc(100vh - var(--header-height) - 56px);
+  overflow: auto;
+  padding: 52px 0;
+}
+
+.sidebar-area,
+.sidebar-section {
+  margin: 0 0 20px;
+}
+
+.sidebar-area > summary,
+.sidebar-section > summary {
+  cursor: pointer;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 760;
+  list-style: none;
+}
+
+.sidebar-group > p {
+  margin: 22px 0 8px;
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sidebar-section nav {
+  display: grid;
+  gap: 3px;
+  margin-top: 8px;
+}
+
+.sidebar-link {
+  border-left: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 7px 12px;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.sidebar-link.current {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.article-page,
+.docs-landing {
+  width: min(100%, var(--article-width));
+  min-height: 80vh;
+  margin: 0 auto;
+  padding: 84px 0 120px;
+}
+
+.docs-landing {
+  width: min(calc(100% - 48px), 980px);
+}
+
+.page-intro {
+  padding-bottom: 56px;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-intro h1 {
+  margin: 0;
+  font-size: clamp(44px, 7vw, 72px);
+  font-weight: 620;
+  letter-spacing: -0.058em;
+  line-height: 1;
+}
+
+.page-lead {
+  max-width: 680px;
+  margin: 26px 0 0;
+  color: var(--text-muted);
+  font-size: 19px;
+  line-height: 1.75;
+}
+
+.on-this-page > p {
+  margin: 0 0 12px;
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.on-this-page nav {
+  display: grid;
+  gap: 8px;
+}
+
+.on-this-page a {
+  color: var(--text-muted);
+  font-size: 13px;
+  text-decoration: none;
+}

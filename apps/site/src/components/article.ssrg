@@ -1,0 +1,56 @@
+import * as html from "std/web/html"
+import { Messages } from "../i18n/model"
+import { BuildInput } from "../model/build"
+import { Locale, translate } from "../model/locale"
+import {
+  ApiReference,
+  Block,
+  BulletList,
+  Callout,
+  CodeExample,
+  Heading,
+  Inline,
+  OrderedList,
+  Paragraph,
+  Terminal
+} from "../model/page"
+import { apiReference, codeExample } from "./code-example"
+import { callout } from "./callout"
+import { renderInlines } from "./primitives"
+
+fn listItem<Action> locale: Locale -> values: Array<Inline> -> html.Html<Action> =
+  html.li {
+    children: renderInlines locale values
+  }
+
+pub fn renderBlock<Action> input: BuildInput
+  -> messages: Messages
+  -> locale: Locale
+  -> block: Block
+  -> html.Html<Action> =
+  match block {
+    Paragraph values -> html.p { children: renderInlines locale values }
+    Heading (id, title) -> html.h2 { id, children: translate locale title }
+    BulletList items -> html.ul { children: [listItem locale item | item <- items] }
+    OrderedList items -> html.ol { children: [listItem locale item | item <- items] }
+    CodeExample (id, title) -> codeExample input messages locale id title
+    Terminal (title, command) -> html.section {
+      class: "code-panel terminal-panel",
+      children: [
+        html.div { children: translate locale title },
+        html.pre { children: [html.code { children: command }] }
+      ]
+    }
+    Callout (tone, title, body) -> callout locale tone title body
+    ApiReference identity -> apiReference input identity
+  }
+
+pub fn article<Action> input: BuildInput
+  -> messages: Messages
+  -> locale: Locale
+  -> blocks: Array<Block>
+  -> html.Html<Action> =
+  html.article {
+    class: "article-content",
+    children: [renderBlock input messages locale block | block <- blocks]
+  }

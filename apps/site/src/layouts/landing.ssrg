@@ -1,0 +1,27 @@
+import * as html from "std/web/html"
+import { Messages } from "../i18n/model"
+import { BuildInput } from "../model/build"
+import { Locale, translate } from "../model/locale"
+import { PageDefinition } from "../model/page"
+import { article } from "../components/article"
+
+pub fn landingLayout<Action> input: BuildInput
+  -> messages: Messages
+  -> locale: Locale
+  -> page: PageDefinition
+  -> html.Html<Action> =
+  html.main {
+    id: "content",
+    class: "docs-landing",
+    children: [
+      html.header {
+        class: "page-intro",
+        children: [
+          html.p { class: "eyebrow", children: "SESERAGI DOCUMENTATION" },
+          html.h1 { children: translate locale page.title },
+          html.p { class: "page-lead", children: translate locale page.summary }
+        ]
+      },
+      article input messages locale page.blocks
+    ]
+  }

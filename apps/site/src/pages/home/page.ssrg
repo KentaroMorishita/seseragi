@@ -1,0 +1,16 @@
+import { LocalizedText, localized } from "../../model/locale"
+import { CodeExample, Home, PageDefinition } from "../../model/page"
+import * as en from "./en"
+import * as ja from "./ja"
+
+fn text english: String -> japanese: String -> LocalizedText =
+  localized english japanese
+
+pub fn page -> PageDefinition = PageDefinition {
+  id: "home",
+  path: "/",
+  kind: Home,
+  title: text (en.title ()) (ja.title ()),
+  summary: text (en.summary ()) (ja.summary ()),
+  blocks: [CodeExample ("hello-world", text (en.codeTitle ()) (ja.codeTitle ()))]
+}

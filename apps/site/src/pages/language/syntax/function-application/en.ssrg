@@ -1,0 +1,16 @@
+pub fn title -> String = "Function application"
+pub fn summary -> String =
+  "Call curried functions with whitespace and pass values through pipelines."
+pub fn callTitle -> String = "Apply arguments with whitespace"
+pub fn callBody -> String =
+  "A function call does not use parentheses or commas. Each argument is applied from left to right."
+pub fn partialTitle -> String = "Partial application"
+pub fn partialBody -> String =
+  "Applying fewer arguments returns another function. The remaining parameter keeps its declared type."
+pub fn pipelineTitle -> String = "Use a pipeline when the value reads first"
+pub fn pipelineBody -> String =
+  "The pipeline passes its left value to the function on the right. It changes reading order, not function semantics."
+pub fn exampleTitle -> String = "Application, partial application, and pipelines"
+pub fn noteTitle -> String = "Function declarations use fn"
+pub fn noteBody -> String =
+  "Use fn for named functions. let binds values and may hold a function value, but it does not replace a function declaration."

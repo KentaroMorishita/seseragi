@@ -1,0 +1,25 @@
+import { LocalizedText, localized } from "../../model/locale"
+import {
+  Heading,
+  PageDefinition,
+  Paragraph,
+  SiteLanding,
+  Words
+} from "../../model/page"
+import * as en from "./en"
+import * as ja from "./ja"
+
+fn text english: String -> japanese: String -> LocalizedText =
+  localized english japanese
+
+pub fn page -> PageDefinition = PageDefinition {
+  id: "releases",
+  path: "/releases/",
+  kind: SiteLanding,
+  title: text (en.title ()) (ja.title ()),
+  summary: text (en.summary ()) (ja.summary ()),
+  blocks: [
+    Heading ("release-record", text (en.heading ()) (ja.heading ())),
+    Paragraph ([Words (text (en.body ()) (ja.body ()))])
+  ]
+}

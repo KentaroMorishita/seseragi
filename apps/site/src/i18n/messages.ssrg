@@ -1,0 +1,9 @@
+import { En, Ja, Locale } from "../model/locale"
+import { Messages } from "./model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn messages locale: Locale -> Messages = match locale {
+  En -> en.messages ()
+  Ja -> ja.messages ()
+}

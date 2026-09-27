@@ -1,0 +1,39 @@
+import * as html from "std/web/html"
+import { Messages } from "../i18n/model"
+import { BuildInput } from "../model/build"
+import { Locale, translate } from "../model/locale"
+import { NavigationArea, PageDefinition } from "../model/page"
+import { article } from "../components/article"
+import { mobileOnThisPage, onThisPage } from "../components/on-this-page"
+import { mobileSidebar, sidebar } from "../components/sidebar"
+
+pub fn articleLayout<Action> input: BuildInput
+  -> messages: Messages
+  -> locale: Locale
+  -> areas: Array<NavigationArea>
+  -> page: PageDefinition
+  -> html.Html<Action> =
+  html.div {
+    class: "docs-frame",
+    children: [
+      sidebar locale page.id areas,
+      mobileSidebar messages locale page.id areas,
+      html.main {
+        id: "content",
+        class: "article-page",
+        children: [
+          html.header {
+            class: "page-intro",
+            children: [
+              html.p { class: "eyebrow", children: "SESERAGI DOCUMENTATION" },
+              html.h1 { children: translate locale page.title },
+              html.p { class: "page-lead", children: translate locale page.summary }
+            ]
+          },
+          mobileOnThisPage messages locale page.blocks,
+          article input messages locale page.blocks
+        ]
+      },
+      onThisPage messages locale page.blocks
+    ]
+  }

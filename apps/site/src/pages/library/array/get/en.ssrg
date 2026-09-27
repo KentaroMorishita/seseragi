@@ -1,0 +1,6 @@
+pub fn title -> String = "Array.get"
+pub fn summary -> String =
+  "Read an array element by index without turning an out-of-range access into an unchecked value."
+pub fn behaviorTitle -> String = "Behavior"
+pub fn behaviorBody -> String =
+  "Array.get returns the compiler-owned result described by its public signature. Use the return type to handle a missing index explicitly."
