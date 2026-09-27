@@ -1,0 +1,11 @@
+import { GuideCopy } from "../guide"
+
+pub fn copy -> GuideCopy = GuideCopy {
+  title: "Build for production",
+  summary: "Compile the selected package target with the release profile and publish an atomic output directory.",
+  prerequisites: "Run this command from hello-web after source, manifest, and lockfile checks pass. Stop the development server before replacing its output intentionally.",
+  actionTitle: "Produce a release-profile Web build",
+  expected: "dist contains index.html, bundled JavaScript, CSS, and build metadata without depending on the repository or Playground. The release profile omits development-only behavior and the explicit source-map option keeps maps out of the published directory.",
+  troubleshooting: "A stale or missing lockfile stops with SES-K0102. Run seseragi lock update only after reviewing the manifest or dependency change, then rebuild; do not delete the lock to bypass the check.",
+  nextSummary: "Use the Web development server and understand how Seseragi source reaches the browser DOM."
+}

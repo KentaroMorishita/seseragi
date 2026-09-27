@@ -9,7 +9,7 @@ const routes = [...source.matchAll(/`(\/[^`\s]+\/)`/gu)].map(
   ([, route]) => route
 )
 
-assert.equal(routes.length, 351, "Reference map route count changed")
+assert.equal(routes.length, 362, "Reference map route count changed")
 assert.equal(
   new Set(routes).size,
   routes.length,

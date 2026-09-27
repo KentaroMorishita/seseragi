@@ -11,12 +11,56 @@ import {
 } from "../model/page"
 import { page as homePage } from "../pages/home/page"
 import { page as docsOverviewPage } from "../pages/docs/overview/page"
+import { page as getStartedOverviewPage } from "../pages/get-started/overview/page"
+import { page as installPage } from "../pages/get-started/install/page"
+import { page as helloSeseragiPage } from "../pages/get-started/hello-seseragi/page"
+import { page as createProjectPage } from "../pages/get-started/create-project/page"
+import { page as projectLayoutPage } from "../pages/get-started/project-layout/page"
+import { page as runPage } from "../pages/get-started/run/page"
+import { page as formatAndCheckPage } from "../pages/get-started/format-and-check/page"
+import { page as testPage } from "../pages/get-started/test/page"
+import { page as productionBuildPage } from "../pages/get-started/production-build/page"
+import { page as webApplicationPage } from "../pages/get-started/web-application/page"
+import { page as nextPage } from "../pages/get-started/next/page"
 import { page as languageOverviewPage } from "../pages/language/overview/page"
 import { page as functionApplicationPage } from "../pages/language/syntax/function-application/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
 import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
 import { referenceGroups } from "../reference/catalog"
+
+fn getStartedArea -> NavigationArea = {
+  let overview = getStartedOverviewPage ()
+  NavigationArea {
+    id: "get-started",
+    title: localized "Get Started" "Get Started",
+    description: localized
+      "Install the toolchain and take one verified program through run, test and production build."
+      "toolchainの導入から実行・test・production buildまでを進めます。",
+    landing: overview,
+    groups: [NavigationGroup {
+      id: "journey",
+      title: localized "Guide" "ガイド",
+      sections: [NavigationSection {
+        id: "first-project",
+        title: localized "First project" "最初のproject",
+        kind: FlatSection,
+        overview: installPage (),
+        pages: [
+          helloSeseragiPage (),
+          createProjectPage (),
+          projectLayoutPage (),
+          runPage (),
+          formatAndCheckPage (),
+          testPage (),
+          productionBuildPage (),
+          webApplicationPage (),
+          nextPage ()
+        ]
+      }]
+    }]
+  }
+}
 
 fn languageArea -> NavigationArea = NavigationArea {
   id: "language",
@@ -61,7 +105,7 @@ fn areaPages area: NavigationArea -> Array<PageDefinition> = arrays.concat [
 
 pub fn catalog input: BuildInput -> SiteCatalog = {
   let home = homePage ()
-  let areas = [languageArea (), libraryArea input]
+  let areas = [getStartedArea (), languageArea (), libraryArea input]
   SiteCatalog {
     home,
     areas,

@@ -1,0 +1,23 @@
+import { localized } from "../../../model/locale"
+import { Article, PageDefinition, Terminal } from "../../../model/page"
+import { guideBlocks } from "../guide"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  PageDefinition {
+    id: "get-started.format-and-check",
+    path: "/docs/get-started/format-and-check/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: guideBlocks english japanese [
+      Terminal (localized "Check formatting" "formatをcheck", "seseragi format --check src/main.ssrg"),
+      Terminal (localized "Apply formatting" "formatを適用", "seseragi format src/main.ssrg"),
+      Terminal (localized "Run semantic lint" "semantic lintを実行", "seseragi lint . --deny-warnings")
+    ] (localized "Test a project" "projectをtestする")
+      "/docs/get-started/test/"
+  }
+}

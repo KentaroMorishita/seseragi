@@ -48,10 +48,21 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3764)
+    expect(manifest.pages).toHaveLength(3786)
     for (const route of [
       "/",
       "/docs/",
+      "/docs/get-started/",
+      "/docs/get-started/install/",
+      "/docs/get-started/hello-seseragi/",
+      "/docs/get-started/create-project/",
+      "/docs/get-started/project-layout/",
+      "/docs/get-started/run/",
+      "/docs/get-started/format-and-check/",
+      "/docs/get-started/test/",
+      "/docs/get-started/production-build/",
+      "/docs/get-started/web-application/",
+      "/docs/get-started/next/",
       "/docs/language/syntax/function-application/",
       "/docs/library/",
       "/docs/library/array/",
@@ -62,6 +73,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/library/prelude/operator/add/",
       "/docs/library/prelude/function/reducible-reduce/",
       "/ja/docs/library/array/function/get/",
+      "/ja/docs/get-started/install/",
       "/ja/releases/",
     ]) {
       expect(manifest.pages).toContain(route)
@@ -76,6 +88,20 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     expect(home).toContain('<html lang="en">')
     expect(home).toContain("THE SESERAGI PROGRAMMING LANGUAGE")
     expect(textContent(home)).toContain("pub effect fn main")
+    const gettingStarted = readFileSync(
+      join(output, "docs/get-started/hello-seseragi/index.html"),
+      "utf8"
+    )
+    expect(gettingStarted).toContain("Before you begin")
+    expect(textContent(gettingStarted)).toContain(
+      'pub effect fn main = println "Hello, Seseragi!"'
+    )
+    expect(gettingStarted).toContain("guide-next")
+    const japaneseGuide = readFileSync(
+      join(output, "ja/docs/get-started/install/index.html"),
+      "utf8"
+    )
+    expect(japaneseGuide).toContain("日本語本文は#630で整備中です")
     const language = readFileSync(
       join(output, "docs/language/syntax/function-application/index.html"),
       "utf8"

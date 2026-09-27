@@ -1,0 +1,34 @@
+import { localized } from "../../../model/locale"
+import {
+  Article,
+  CodeExample,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../model/page"
+import { guideBlocks } from "../guide"
+import { body as japaneseFallback } from "../ja-fallback"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  PageDefinition {
+    id: "get-started.test",
+    path: "/docs/get-started/test/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: guideBlocks english japanese [
+      Paragraph ([Words (localized (en.treeBody ()) (japaneseFallback ())) ]),
+      CodeExample ("test-discovery", localized "tests/basic.ssrg" "tests/basic.ssrg"),
+      Terminal (
+        localized "Run the executable fixture" "実行可能fixtureをtest",
+        "seseragi test examples/spec/fixtures/projects/test-discovery"
+      )
+    ] (localized "Build for production" "production buildを作る")
+      "/docs/get-started/production-build/"
+  }
+}

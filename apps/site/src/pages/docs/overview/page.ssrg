@@ -20,6 +20,16 @@ pub fn page -> PageDefinition = PageDefinition {
   title: text (en.title ()) (ja.title ()),
   summary: text (en.summary ()) (ja.summary ()),
   blocks: [
+    Heading ("get-started", text (en.getStartedTitle ()) (ja.getStartedTitle ())),
+    Paragraph (
+      [
+        Words (text (en.getStartedBody ()) (ja.getStartedBody ())),
+        InternalLink (
+          text " Start with the guide" " ガイドを開く",
+          "/docs/get-started/"
+        )
+      ]
+    ),
     Heading ("language", text (en.languageTitle ()) (ja.languageTitle ())),
     Paragraph (
       [

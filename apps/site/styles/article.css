@@ -54,6 +54,31 @@
   margin-top: 8px;
 }
 
+.guide-next {
+  margin-top: 72px !important;
+  border-top: 1px solid var(--border);
+  padding-top: 30px;
+}
+
+.guide-next-label {
+  margin: 0 0 10px;
+  color: var(--text-soft) !important;
+  font-size: 11px !important;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.guide-next-link {
+  color: var(--accent-strong);
+  font-size: 22px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.guide-next > p:last-child {
+  margin: 10px 0 0;
+}
+
 .api-reference {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);

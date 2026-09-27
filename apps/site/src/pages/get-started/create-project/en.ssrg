@@ -1,0 +1,14 @@
+import { GuideCopy } from "../guide"
+
+pub fn copy -> GuideCopy = GuideCopy {
+  title: "Create a project",
+  summary: "Create a filesystem package from the canonical Web starter without a second scaffold implementation.",
+  prerequisites: "Choose a destination that does not exist. A package name uses lowercase ASCII letters and digits, with hyphens only inside a segment.",
+  actionTitle: "Create the package",
+  expected: "The command creates hello-web, writes a normal seseragi.toml and seseragi.lock, and copies the same app and main modules published as the canonical web-starter sample.",
+  troubleshooting: "The command refuses to overwrite an existing file or directory. Pick a new destination instead of deleting or merging an existing project implicitly.",
+  nextSummary: "Inspect what each generated file owns before editing the application."
+}
+
+pub fn canonicalBody -> String =
+  "The scaffold embeds examples/samples/web-starter. Changes to that sample and the CLI template are tested as one source contract."

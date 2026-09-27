@@ -53,6 +53,11 @@
   margin-top: 8px;
 }
 
+.sidebar-section nav > div {
+  display: grid;
+  gap: 3px;
+}
+
 .sidebar-link {
   border-left: 1px solid var(--border);
   color: var(--text-muted);

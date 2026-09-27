@@ -10,12 +10,14 @@ import {
   CodeExample,
   Heading,
   Inline,
+  NextStep,
   OrderedList,
   Paragraph,
   Terminal
 } from "../model/page"
 import { apiReference, codeExample } from "./code-example"
 import { callout } from "./callout"
+import { nextStep } from "./next-step"
 import { renderInlines } from "./primitives"
 
 fn listItem<Action> locale: Locale -> values: Array<Inline> -> html.Html<Action> =
@@ -42,6 +44,7 @@ pub fn renderBlock<Action> input: BuildInput
       ]
     }
     Callout (tone, title, body) -> callout locale tone title body
+    NextStep (title, summary, path) -> nextStep locale title summary path
     ApiReference (identity, namespace, itemKind) -> apiReference input locale identity namespace itemKind
   }
 

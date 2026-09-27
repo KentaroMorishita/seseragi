@@ -1,0 +1,14 @@
+import { GuideCopy } from "../guide"
+
+pub fn copy -> GuideCopy = GuideCopy {
+  title: "Run a program",
+  summary: "Run a process entry from a single source file or a package through the same compiler and runtime boundary.",
+  prerequisites: "Use the hello-world source from the earlier step, or a package whose run target is process. The initial run command executes process targets; Web packages use seseragi dev.",
+  actionTitle: "Choose a source file or package root",
+  expected: "Both forms compile first, resolve the selected target, and only then execute main. A successful hello-world run writes the same exact line in either form.",
+  troubleshooting: "A Web package does not silently fall back to a process target. Use seseragi dev for a Web manifest, or pass a compatible process source/package to run. Target and compilation errors exit before application code starts.",
+  nextSummary: "Format source and run the static checks before treating a change as ready."
+}
+
+pub fn formsBody -> String =
+  "A file is the shortest path for experiments. A package adds explicit module discovery, target selection, dependency resolution, and lock validation."

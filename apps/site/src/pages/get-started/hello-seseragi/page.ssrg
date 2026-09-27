@@ -1,0 +1,31 @@
+import { localized } from "../../../model/locale"
+import {
+  Article,
+  CodeExample,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../model/page"
+import { guideBlocks } from "../guide"
+import { body as japaneseFallback } from "../ja-fallback"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  PageDefinition {
+    id: "get-started.hello-seseragi",
+    path: "/docs/get-started/hello-seseragi/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: guideBlocks english japanese [
+      Paragraph ([Words (localized (en.sourceBody ()) (japaneseFallback ())) ]),
+      CodeExample ("hello-world", localized "main.ssrg" "main.ssrg"),
+      Terminal (localized "Compile and run" "compileして実行", "seseragi run main.ssrg")
+    ] (localized "Create a project" "projectを作る")
+      "/docs/get-started/create-project/"
+  }
+}

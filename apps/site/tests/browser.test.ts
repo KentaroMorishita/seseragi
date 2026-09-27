@@ -44,7 +44,7 @@ try {
         await page.goto(`http://127.0.0.1:${server.port}/`)
         assert.equal(await page.locator("h1").textContent(), "Seseragi")
         assert.equal(await page.locator("html").getAttribute("lang"), "en")
-        assert.equal(await page.locator(".code-panel").count(), 1)
+        assert.equal(await page.locator(".seseragi-highlight").count(), 1)
         assert.ok(
           (await page.locator("body").innerText()).includes(
             "pub effect fn main"
@@ -96,6 +96,30 @@ try {
         assert.equal(await page.locator("h1").textContent(), "Documentation")
         assert.equal(await page.locator(".docs-sidebar").count(), 1)
         assert.equal(await page.locator(".mobile-docs-navigation").count(), 1)
+
+        await page.goto(
+          `http://127.0.0.1:${server.port}/docs/get-started/hello-seseragi/`
+        )
+        assert.equal(await page.locator("h1").textContent(), "Hello, Seseragi")
+        assert.equal(await page.locator(".seseragi-highlight").count(), 1)
+        assert.equal(await page.locator(".guide-next").count(), 1)
+        assert.ok(
+          (await page.locator("body").innerText()).includes(
+            'pub effect fn main = println "Hello, Seseragi!"'
+          )
+        )
+        const guideWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          guideWidth <= width,
+          `getting started ${width}px viewport is ${guideWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `getting-started-${width}.png`),
+            fullPage: true,
+          })
 
         await page.goto(`http://127.0.0.1:${server.port}/ja/docs/`)
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")

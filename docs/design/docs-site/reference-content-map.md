@@ -16,6 +16,26 @@ review source, while every documentation leaf must be readable on its own.
 No visual mockup represents a finished section until its leaves are at least
 Outlined.
 
+## Getting Started
+
+These pages form one verified journey, but each route remains useful on its
+own. Commands are checked against the current CLI, and source panels are loaded
+from executable repository artifacts rather than copied into page prose.
+
+| Route | Source | Required scope |
+| --- | --- | --- |
+| `/docs/get-started/` | `README.md`, `docs/GETTING_STARTED.md` | Journey overview, prerequisites, expected final state, and links to every independent step. |
+| `/docs/get-started/install/` | `README.md`, `docs/RELEASE.md` | Host prerequisites, locked CLI install, version verification, PATH and toolchain failure checks. |
+| `/docs/get-started/hello-seseragi/` | `examples/samples/hello-world` | Exact canonical source, public entry point, Console boundary, command, stdout, and compile-before-run behavior. |
+| `/docs/get-started/create-project/` | `crates/seseragi-cli/src/new.rs`, `examples/samples/web-starter` | Destination and name rules, canonical scaffold ownership, generated manifest/lock/source, and overwrite refusal. |
+| `/docs/get-started/project-layout/` | Specification 11.1–11.4 | Manifest, lockfile, source root, module path, application/host split, and explicit lock updates. |
+| `/docs/get-started/run/` | Specification 11.10, 12.2 | File and package invocation, process target selection, compile-before-execute, exit boundary, and Web distinction. |
+| `/docs/get-started/format-and-check/` | Specification 12.5–12.6 | Check/apply formatter modes, lint scope, deny-warnings, and why formatting is not compilation proof. |
+| `/docs/get-started/test/` | Specification 11.7, 12.17; `test-discovery` fixture | Typed test tree, deterministic discovery/reporting, target configuration, empty selection, and failure classes. |
+| `/docs/get-started/production-build/` | Specification 14.3–14.5 | Release profile, source-map choice, atomic self-contained output, static serving, and stale-lock recovery. |
+| `/docs/get-started/web-application/` | `docs/GETTING_STARTED.md`, `web-starter` | Development server, rebuild/reload behavior, pure app versus DOM host boundary, failure recovery, and port override. |
+| `/docs/get-started/next/` | Site architecture | Separate links by intent to Language Reference, Standard Library, Examples, and Playground without summarizing them. |
+
 ## Language Reference / Language model
 
 | Route | Source | Required semantic scope |

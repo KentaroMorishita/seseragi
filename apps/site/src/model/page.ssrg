@@ -29,6 +29,7 @@ pub type Block =
   | CodeExample (String, LocalizedText)
   | Terminal (LocalizedText, String)
   | Callout (CalloutTone, LocalizedText, Array<Inline>)
+  | NextStep (LocalizedText, LocalizedText, String)
   | ApiReference (String, String, String)
 
 pub struct PageDefinition {

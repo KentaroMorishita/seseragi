@@ -1,6 +1,9 @@
 pub fn title -> String = "Documentation"
 pub fn summary -> String =
-  "Learn Seseragi, look up a language rule, or explore the standard library."
+  "Start with an executable path, look up one language rule, or inspect an exact standard-library symbol."
+pub fn getStartedTitle -> String = "Get Started"
+pub fn getStartedBody -> String =
+  "Install the official CLI and take verified source through execution, testing, Web development, and a production build."
 pub fn languageTitle -> String = "Language"
 pub fn languageBody -> String =
   "Syntax, values, functions, types, pattern matching, traits, effects, signals, modules, and interoperability are documented as separate topics."

@@ -1,0 +1,26 @@
+import * as html from "std/web/html"
+import {
+  Locale,
+  LocalizedText,
+  localized,
+  localizedRoute,
+  translate
+} from "../model/locale"
+import { anchor } from "./primitives"
+
+pub fn nextStep<Action> locale: Locale
+  -> title: LocalizedText
+  -> summary: LocalizedText
+  -> path: String
+  -> html.Html<Action> =
+  html.section {
+    class: "guide-next",
+    children: [
+      html.p {
+        class: "guide-next-label",
+        children: translate locale (localized "NEXT" "次へ")
+      },
+      anchor (translate locale title) (localizedRoute locale path) "guide-next-link",
+      html.p { children: translate locale summary }
+    ]
+  }

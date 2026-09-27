@@ -1,4 +1,4 @@
 pub fn title -> String = "Seseragi"
 pub fn summary -> String =
-  "A statically typed language for building clear programs from small expressions to complete applications."
+  "A statically typed, expression-oriented language with explicit boundaries from small functions to complete applications."
 pub fn codeTitle -> String = "A small Seseragi program"

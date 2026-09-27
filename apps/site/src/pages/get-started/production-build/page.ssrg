@@ -1,0 +1,28 @@
+import { localized } from "../../../model/locale"
+import { Article, PageDefinition, Terminal } from "../../../model/page"
+import { guideBlocks } from "../guide"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  PageDefinition {
+    id: "get-started.production-build",
+    path: "/docs/get-started/production-build/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: guideBlocks english japanese [
+      Terminal (
+        localized "Build the selected Web target" "選択されたWeb targetをbuild",
+        "seseragi build . --profile release --source-map omit"
+      ),
+      Terminal (
+        localized "Serve the static output for a final check" "static outputを最終確認",
+        "python3 -m http.server --directory dist 8080"
+      )
+    ] (localized "Create a Web application" "Web applicationを作る")
+      "/docs/get-started/web-application/"
+  }
+}
