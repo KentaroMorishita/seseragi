@@ -3,7 +3,7 @@ import {
   type StreamParser,
   type StringStream,
 } from "@codemirror/language"
-import { classHighlighter, highlightCode, tags } from "@lezer/highlight"
+import { highlightCode, tagHighlighter, tags } from "@lezer/highlight"
 
 const KEYWORDS = new Set([
   "as",
@@ -199,6 +199,19 @@ const parser: StreamParser<State> = {
 
 export const seseragiLanguage = StreamLanguage.define(parser)
 
+const seseragiClassHighlighter = tagHighlighter([
+  { tag: tags.standard(tags.typeName), class: "tok-standardType" },
+  { tag: tags.operatorKeyword, class: "tok-operator" },
+  { tag: tags.keyword, class: "tok-keyword" },
+  { tag: tags.typeName, class: "tok-typeName" },
+  { tag: tags.variableName, class: "tok-variableName" },
+  { tag: tags.bool, class: "tok-bool" },
+  { tag: tags.number, class: "tok-number" },
+  { tag: tags.string, class: "tok-string" },
+  { tag: tags.comment, class: "tok-comment" },
+  { tag: tags.punctuation, class: "tok-punctuation" },
+])
+
 export type HighlightedSeseragiPart = {
   readonly text: string
   readonly classes: string
@@ -209,7 +222,7 @@ export function highlightSeseragi(source: string): HighlightedSeseragiPart[] {
   highlightCode(
     source,
     seseragiLanguage.parser.parse(source),
-    classHighlighter,
+    seseragiClassHighlighter,
     (text, classes) => parts.push({ text, classes }),
     () => parts.push({ text: "\n", classes: "" })
   )

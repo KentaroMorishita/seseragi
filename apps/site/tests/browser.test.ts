@@ -37,6 +37,53 @@ async function codeHeaderLayout(locator: Locator) {
   })
 }
 
+async function syntaxPresentation(locator: Locator, tokens: string[]) {
+  return locator.evaluate((code, tokenNames) => {
+    const resolveColor = (variable: string) => {
+      const probe = document.createElement("span")
+      probe.style.color = `var(${variable})`
+      code.append(probe)
+      const color = getComputedStyle(probe).color
+      probe.remove()
+      return color
+    }
+    const variables: Record<string, string> = {
+      keyword: "--seseragi-syntax-keyword",
+      typeName: "--seseragi-syntax-type-name",
+      standardType: "--seseragi-syntax-standard-type",
+      variableName: "--seseragi-syntax-text",
+      number: "--seseragi-syntax-type-name",
+      bool: "--seseragi-syntax-type-name",
+      string: "--seseragi-syntax-string",
+      comment: "--seseragi-syntax-muted",
+      operator: "--seseragi-syntax-operator",
+      punctuation: "--seseragi-syntax-punctuation",
+    }
+    const colors = Object.fromEntries(
+      tokenNames.map((token) => {
+        const element = code.querySelector(`.tok-${token}`)
+        if (!element) throw new Error(`missing tok-${token}`)
+        const variable = variables[token]
+        if (!variable)
+          throw new Error(`missing palette variable for tok-${token}`)
+        return [
+          token,
+          {
+            actual: getComputedStyle(element).color,
+            expected: resolveColor(variable),
+          },
+        ]
+      })
+    )
+    const style = getComputedStyle(code)
+    return {
+      colors,
+      fontSize: style.fontSize,
+      lineHeight: style.lineHeight,
+    }
+  }, tokens)
+}
+
 const temporary = mkdtempSync(join(tmpdir(), "seseragi-site-browser-"))
 const output = join(temporary, "site")
 const screenshots = process.env.SITE_SCREENSHOTS
@@ -156,6 +203,32 @@ try {
             "unresolved meaning becomes a diagnostic"
           )
         )
+        const typeSystemCode = await syntaxPresentation(
+          page.locator(".seseragi-highlight").first(),
+          [
+            "keyword",
+            "typeName",
+            "standardType",
+            "variableName",
+            "number",
+            "string",
+            "comment",
+            "operator",
+            "punctuation",
+          ]
+        )
+        assert.equal(typeSystemCode.fontSize, width === 390 ? "11px" : "12px")
+        assert.equal(
+          typeSystemCode.lineHeight,
+          width === 390 ? "17.6px" : "19.8px"
+        )
+        for (const [token, colors] of Object.entries(typeSystemCode.colors)) {
+          assert.equal(
+            colors.actual,
+            colors.expected,
+            `tok-${token} must use the canonical syntax palette`
+          )
+        }
         const typeSystemWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
         )

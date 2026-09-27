@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.17] - 2026-09-27
+
+### Fixed
+
+- #658 Docsのコード文字サイズとsyntax highlightをPlaygroundの正規themeへ統一し、静的highlightでも演算子と組み込み型の分類を保持
+
 ## [0.61.16] - 2026-09-25
 
 ### Fixed

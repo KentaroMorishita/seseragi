@@ -9,10 +9,11 @@ test("highlights Tour source excerpts with the shared Seseragi tokens", async ({
   const code = page.locator(".tour-walkthrough-card code.seseragi-highlight")
   await expect(code).toHaveCount(1)
   const keywordTokens = await code.locator(".tok-keyword").allTextContents()
-  expect(keywordTokens).toEqual(
-    expect.arrayContaining(["import", "<$>", "<*>", "*"])
+  expect(keywordTokens).toEqual(expect.arrayContaining(["import"]))
+  expect(await code.locator(".tok-operator").allTextContents()).toEqual(
+    expect.arrayContaining(["<$>", "<*>", "*"])
   )
-  expect(await code.locator(".tok-typeName").allTextContents()).toEqual(
+  expect(await code.locator(".tok-standardType").allTextContents()).toEqual(
     expect.arrayContaining(["Int"])
   )
   expect(await code.locator(".tok-number").allTextContents()).toEqual(
@@ -30,7 +31,7 @@ test("highlights Tour source excerpts with the shared Seseragi tokens", async ({
   await page.goto("/tour/?lesson=abstraction-monad-bind")
   expect(
     await page
-      .locator(".tour-walkthrough-card code .tok-keyword")
+      .locator(".tour-walkthrough-card code .tok-operator")
       .allTextContents()
   ).toContain(">>=")
 

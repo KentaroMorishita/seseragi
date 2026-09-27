@@ -1,7 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import { toggleBlockComment, toggleComment } from "@codemirror/commands"
 import { EditorState, type StateCommand } from "@codemirror/state"
-import { classHighlighter, highlightTree } from "@lezer/highlight"
 import {
   classifyIdentifier,
   highlightSeseragi,
@@ -9,15 +8,7 @@ import {
 } from "../src/editor/seseragi-language"
 
 function highlightedTokens(source: string) {
-  const tokens: Array<{ text: string; classes: string }> = []
-  highlightTree(
-    seseragiLanguage.parser.parse(source),
-    classHighlighter,
-    (from, to, classes) => {
-      tokens.push({ text: source.slice(from, to), classes })
-    }
-  )
-  return tokens
+  return highlightSeseragi(source).filter(({ classes }) => classes !== "")
 }
 
 function runCommand(
@@ -66,8 +57,8 @@ describe("Seseragi syntax classification", () => {
     expect(highlightSeseragi("map: (A -> B) -> Array<A> -> Array<B>")).toEqual(
       expect.arrayContaining([
         { text: "map", classes: "tok-variableName" },
-        { text: "->", classes: "tok-keyword" },
-        { text: "Array", classes: "tok-typeName" },
+        { text: "->", classes: "tok-operator" },
+        { text: "Array", classes: "tok-standardType" },
       ])
     )
   })
@@ -78,11 +69,11 @@ describe("Seseragi syntax classification", () => {
     ).filter(({ text }) => ["<$>", "<*>", ">>=", ":=", "*"].includes(text))
 
     expect(operators).toEqual([
-      { text: "<$>", classes: "tok-keyword" },
-      { text: "<*>", classes: "tok-keyword" },
-      { text: ">>=", classes: "tok-keyword" },
-      { text: ":=", classes: "tok-keyword" },
-      { text: "*", classes: "tok-keyword" },
+      { text: "<$>", classes: "tok-operator" },
+      { text: "<*>", classes: "tok-operator" },
+      { text: ">>=", classes: "tok-operator" },
+      { text: ":=", classes: "tok-operator" },
+      { text: "*", classes: "tok-operator" },
     ])
   })
 
@@ -92,7 +83,7 @@ describe("Seseragi syntax classification", () => {
       { text: "1", classes: "tok-number" },
       { text: ",", classes: "tok-punctuation" },
       { text: "value", classes: "tok-variableName" },
-      { text: "+", classes: "tok-keyword" },
+      { text: "+", classes: "tok-operator" },
       { text: "2", classes: "tok-number" },
       { text: "]", classes: "tok-punctuation" },
     ])
@@ -101,7 +92,7 @@ describe("Seseragi syntax classification", () => {
   test("highlights record spread as one operator token", () => {
     expect(highlightedTokens("{ ...base, name: value }")).toContainEqual({
       text: "...",
-      classes: "tok-keyword",
+      classes: "tok-operator",
     })
   })
 
@@ -167,10 +158,14 @@ describe("Seseragi syntax classification", () => {
 })
 
 test("highlights Char literals without consuming identifier apostrophes", () => {
-  const tokens = highlightedTokens("let account' = '瀬'\nlet result = classify '\\u{03BB}'")
-  expect(tokens).toEqual(expect.arrayContaining([
-    { text: "account'", classes: "tok-variableName" },
-    { text: "'瀬'", classes: "tok-string" },
-    { text: "'\\u{03BB}'", classes: "tok-string" },
-  ]))
+  const tokens = highlightedTokens(
+    "let account' = '瀬'\nlet result = classify '\\u{03BB}'"
+  )
+  expect(tokens).toEqual(
+    expect.arrayContaining([
+      { text: "account'", classes: "tok-variableName" },
+      { text: "'瀬'", classes: "tok-string" },
+      { text: "'\\u{03BB}'", classes: "tok-string" },
+    ])
+  )
 })
