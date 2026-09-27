@@ -1,0 +1,60 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { syntaxPage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  syntaxPage "language.syntax.source-text" "/docs/language/syntax/source-text/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "syntax-source-text",
+      localized "Unicode names, apostrophes, and Char boundaries"
+        "Unicode name・apostrophe・Char境界"
+    ),
+    BulletList [
+      [
+        InlineCode "userName",
+        Words (localized " starts with ASCII XID_Start." " はASCII XID_Startで始まります。")
+      ],
+      [
+        InlineCode "次の値",
+        Words (
+          localized " uses Unicode identifier properties."
+        " はUnicode identifier propertyを使います。"
+        )
+      ],
+      [
+        InlineCode "account'",
+        Words (
+          localized " is one identifier with a trailing apostrophe."
+        " は末尾apostropheを含む一つのidentifierです。"
+        )
+      ]
+    ]
+  ] [BulletList [
+    [
+      InlineCode "1value",
+      Words (localized " cannot start with a digit." " はdigitで開始できません。")
+    ],
+    [
+      InlineCode "/* text */",
+      Words (localized " is not a block comment form." " はblock commentではありません。")
+    ]
+  ]] [
+    [InternalLink (
+      localized "Character and string escapes" "Char・String・templateのescape",
+      "/docs/language/syntax/character-string-escapes/"
+    )],
+    [InternalLink (localized "Literals" "literal", "/docs/language/syntax/literals/")],
+    [InternalLink (
+      localized "Layout and line continuation" "layoutとline continuation",
+      "/docs/language/syntax/layout-and-line-continuation/"
+    )]
+  ]

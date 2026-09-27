@@ -48,7 +48,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3808)
+    expect(manifest.pages).toHaveLength(3816)
     for (const route of [
       "/",
       "/docs/",
@@ -74,6 +74,10 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/language/model/readable-density/",
       "/docs/language/model/programs/",
       "/docs/language/model/non-features/",
+      "/docs/language/syntax/source-text/",
+      "/docs/language/syntax/literals/",
+      "/docs/language/syntax/character-string-escapes/",
+      "/docs/language/syntax/layout-and-line-continuation/",
       "/docs/language/syntax/function-application/",
       "/docs/library/",
       "/docs/library/array/",
@@ -86,6 +90,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/ja/docs/library/array/function/get/",
       "/ja/docs/get-started/install/",
       "/ja/docs/language/model/non-features/",
+      "/ja/docs/language/syntax/literals/",
       "/ja/releases/",
     ]) {
       expect(manifest.pages).toContain(route)
@@ -122,6 +127,13 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "Not present does not mean not implemented yet"
     )
     expect(textContent(languageModel)).toContain("return, break, and continue")
+    const literals = readFileSync(
+      join(output, "docs/language/syntax/literals/index.html"),
+      "utf8"
+    )
+    expect(textContent(literals)).toContain("6.022e23")
+    expect(textContent(literals)).toContain("let broken = 1__0")
+    expect(literals).toContain("SES-P0203")
     const language = readFileSync(
       join(output, "docs/language/syntax/function-application/index.html"),
       "utf8"

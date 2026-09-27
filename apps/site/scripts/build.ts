@@ -88,6 +88,36 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
+        "syntax-source-text",
+        "examples/spec/fixtures/projects/char-literal/src/domain.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-literals",
+        "examples/spec/fixtures/compile/literals.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-invalid-numeric",
+        "examples/spec/fixtures/diagnostics/invalid-numeric-literal.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-char-valid",
+        "examples/spec/fixtures/projects/char-literal/src/main.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-char-invalid",
+        "examples/spec/artifacts/schema-1/char-literal-invalid/main.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-invalid-escape",
+        "examples/spec/fixtures/diagnostics/invalid-escape.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "test-discovery",
         "examples/spec/fixtures/projects/test-discovery/tests/basic.ssrg",
         playgroundUrl
@@ -217,7 +247,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (29 + referencePageCount),
+      2 * (33 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

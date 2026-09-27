@@ -1,0 +1,14 @@
+import { SyntaxCopy } from "../article"
+
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "Layout and line continuation",
+  summary: "Braces define blocks; newlines and semicolons separate forms under two explicit continuation rules.",
+  formsTitle: "Use braces for every block",
+  formsBody: "Indentation never creates or closes a block. Braces are the block boundary, and a newline or semicolon separates declarations and expressions. Newlines inside parentheses are free. Outside parentheses, a line continues only when the previous token still requires a right-hand side or the next token is |>, $, arithmetic, or comparison operator.",
+  typingBody: "Layout decides how tokens group before typing; indentation width contributes no type or scope information. Bind, pure let, and ordinary expressions can therefore use the same operator-first continuation style without introducing an indentation grammar.",
+  evaluationBody: "Continuation changes parsing only. Once grouped, subexpressions use their ordinary evaluation order. A semicolon is always a separator and cannot be recovered as continuation by indentation or the next operator.",
+  invalidTitle: "Indentation is not a continuation signal",
+  invalidBody: "Moving a line to the right does not join two complete expressions. If neither continuation condition holds, use parentheses or rewrite the operator at the beginning of the following line. A semicolon always terminates the current form.",
+  diagnosticsBody: "Incomplete-source recovery may retain a partial tree for editor tooling, but a build still reports the parser boundary. The formatter writes two-space indentation and operator-first continuation while preserving the brace and separator semantics.",
+  provenanceBody: "This article implements section 1.3. The canonical Web starter demonstrates bind and pipeline continuation in compiled source."
+}

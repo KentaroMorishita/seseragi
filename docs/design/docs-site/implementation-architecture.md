@@ -155,7 +155,7 @@ canonical examples ── BuildInput ── compiler Reference
 The site must compile with the repository CLI, produce deterministic static
 routes, render at desktop and mobile widths without horizontal overflow, and
 contain no unresolved build sentinels before Vercel preview. The current output
-contains 3,808 English/Japanese routes: twenty-nine authored entrance, guide and
+contains 3,816 English/Japanese routes: thirty-three authored entrance, guide and
 shell pages plus 63
 compiler-owned module pages and 1,812 compiler-owned symbol and instance pages
 per locale.

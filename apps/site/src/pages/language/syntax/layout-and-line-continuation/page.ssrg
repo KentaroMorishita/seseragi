@@ -1,0 +1,63 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { syntaxPage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  syntaxPage "language.syntax.layout-and-line-continuation" "/docs/language/syntax/layout-and-line-continuation/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "web-starter-main",
+      localized "Operator-first continuation in compiled source"
+        "compile済みsourceのoperator-first continuation"
+    ),
+    BulletList [
+      [
+        InlineCode "value +",
+        Words (
+          localized " continues because + still needs a right operand."
+        " は+が右operandを必要とするため継続します。"
+        )
+      ],
+      [
+        InlineCode "|> transform",
+        Words (
+          localized
+        " continues the previous expression because the next token is a continuation operator."
+        " は次tokenがcontinuation operatorなので前の式を継続します。"
+        )
+      ],
+      [InlineCode ";", Words (localized " always separates forms." " は常にformを区切ります。")]
+    ]
+  ] [BulletList [
+    [Words (
+      localized "Indenting a complete second expression does not join it to the first."
+        "completeな二つ目の式をindentしても一つ目とは結合しません。"
+    )],
+    [Words (
+      localized "A closing brace cannot be inferred from indentation."
+        "closing braceをindentationから推測しません。"
+    )],
+    [Words (
+      localized "Use parentheses when neither explicit continuation condition applies."
+        "明示されたcontinuation条件を満たさない場合はparenthesesを使います。"
+    )]
+  ]] [
+    [InternalLink (
+      localized "Function application" "関数適用",
+      "/docs/language/syntax/function-application/"
+    )],
+    [InternalLink (
+      localized "Source text and comments" "source textとcomment",
+      "/docs/language/syntax/source-text/"
+    )],
+    [InternalLink
+        (localized "Readable density" "読める密度", "/docs/language/model/readable-density/")]
+  ]

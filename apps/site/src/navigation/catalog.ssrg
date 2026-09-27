@@ -35,6 +35,10 @@ import { page as readableDensityPage } from "../pages/language/model/readable-de
 import { page as programsPage } from "../pages/language/model/programs/page"
 import { page as nonFeaturesPage } from "../pages/language/model/non-features/page"
 import { page as functionApplicationPage } from "../pages/language/syntax/function-application/page"
+import { page as sourceTextPage } from "../pages/language/syntax/source-text/page"
+import { page as literalsPage } from "../pages/language/syntax/literals/page"
+import { page as characterStringEscapesPage } from "../pages/language/syntax/character-string-escapes/page"
+import { page as layoutLineContinuationPage } from "../pages/language/syntax/layout-and-line-continuation/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
 import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
@@ -105,13 +109,26 @@ fn languageArea -> NavigationArea = NavigationArea {
     NavigationGroup {
       id: "syntax",
       title: localized "Syntax" "構文",
-      sections: [NavigationSection {
-        id: "functions",
-        title: localized "Functions" "関数",
-        kind: FlatSection,
-        overview: functionApplicationPage (),
-        pages: []
-      }]
+      sections: [
+        NavigationSection {
+          id: "lexical-structure",
+          title: localized "Lexical structure" "字句構造",
+          kind: FlatSection,
+          overview: sourceTextPage (),
+          pages: [
+            literalsPage (),
+            characterStringEscapesPage (),
+            layoutLineContinuationPage ()
+          ]
+        },
+        NavigationSection {
+          id: "functions",
+          title: localized "Functions" "関数",
+          kind: FlatSection,
+          overview: functionApplicationPage (),
+          pages: []
+        }
+      ]
     }
   ]
 }

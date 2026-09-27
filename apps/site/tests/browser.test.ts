@@ -117,6 +117,27 @@ try {
             fullPage: true,
           })
 
+        await page.goto(
+          `http://127.0.0.1:${server.port}/docs/language/syntax/literals/`
+        )
+        assert.equal(await page.locator("h1").textContent(), "Literals")
+        assert.equal(await page.locator(".seseragi-highlight").count(), 2)
+        assert.ok(
+          (await page.locator("body").innerText()).includes("SES-P0203")
+        )
+        const literalsWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          literalsWidth <= width,
+          `literals ${width}px viewport is ${literalsWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `literals-${width}.png`),
+            fullPage: true,
+          })
+
         await page.goto(`http://127.0.0.1:${server.port}/docs/`)
         assert.equal(await page.locator("h1").textContent(), "Documentation")
         assert.equal(await page.locator(".docs-sidebar").count(), 1)
