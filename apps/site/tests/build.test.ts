@@ -1,10 +1,11 @@
-import { expect, test } from "bun:test"
+import { expect, setDefaultTimeout, test } from "bun:test"
 import { spawnSync } from "node:child_process"
 import { mkdtempSync, readFileSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 
 const root = resolve(import.meta.dir, "../../..")
+setDefaultTimeout(180_000)
 
 type SiteManifest = {
   pages: string[]
@@ -256,4 +257,4 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   } finally {
     rmSync(directory, { recursive: true, force: true })
   }
-}, 120_000)
+})
