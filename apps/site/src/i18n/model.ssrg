@@ -3,10 +3,7 @@ pub struct Messages {
   playground: String,
   examples: String,
   releases: String,
-  search: String,
   onThisPage: String,
   openPlayground: String,
-  language: String,
-  previous: String,
-  next: String
+  language: String
 }

@@ -20,6 +20,9 @@ fn requireInput value: Maybe<String> -> Either<GeneratorError, String> = match v
   Just encoded -> Right encoded
 }
 
+fn requireSchema input: BuildInput -> Either<GeneratorError, BuildInput> =
+  if input.schema == 1 then Right input else Left DecodeFailure
+
 fn renderLocale input: BuildInput
   -> site: SiteCatalog
   -> locale: Locale
@@ -40,8 +43,9 @@ pub effect fn main -> Unit with Console, Stdin fails GeneratorError = do {
     |> effects.mapError (\_ -> InputFailure)
   line <- inputs.readLineWith limit |> effects.mapError (\_ -> InputFailure)
   encoded <- requireInput line |> effects.fromEither
-  input <- decodeBuildInput encoded
+  decoded <- decodeBuildInput encoded
     |> effects.fromEither
     |> effects.mapError (\_ -> DecodeFailure)
+  input <- requireSchema decoded |> effects.fromEither
   println (json.encodeString (render input)) |> effects.mapError ConsoleFailure
 }

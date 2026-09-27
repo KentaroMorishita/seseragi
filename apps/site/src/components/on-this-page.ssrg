@@ -4,6 +4,11 @@ import { Locale, translate } from "../model/locale"
 import { Block, Heading } from "../model/page"
 import { anchor } from "./primitives"
 
+fn headingLinks<Action> locale: Locale
+  -> blocks: Array<Block>
+  -> Array<html.Html<Action>> =
+  [anchor (translate locale title) ("#" + id) "" | Heading (id, title) <- blocks]
+
 pub fn onThisPage<Action> messages: Messages
   -> locale: Locale
   -> blocks: Array<Block>
@@ -12,9 +17,7 @@ pub fn onThisPage<Action> messages: Messages
     class: "on-this-page",
     children: [
       html.p { children: messages.onThisPage },
-      html.nav {
-        children: [anchor (translate locale title) ("#" + id) "" | Heading (id, title) <- blocks]
-      }
+      html.nav { children: headingLinks locale blocks }
     ]
   }
 
@@ -26,8 +29,6 @@ pub fn mobileOnThisPage<Action> messages: Messages
     class: "mobile-on-this-page",
     children: [
       html.summary { children: messages.onThisPage },
-      html.nav {
-        children: [anchor (translate locale title) ("#" + id) "" | Heading (id, title) <- blocks]
-      }
+      html.nav { children: headingLinks locale blocks }
     ]
   }

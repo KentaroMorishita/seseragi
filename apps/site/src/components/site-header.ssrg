@@ -35,22 +35,14 @@ fn navigation<Action> input: BuildInput
     ]
   }
 
-fn searchRoot<Action> -> html.Html<Action> = html.div {
-  id: "site-search",
-  children: ""
-}
-
 fn tools<Action> messages: Messages
   -> locale: Locale
   -> page: PageDefinition
   -> html.Html<Action> =
   html.div {
     class: "site-tools",
-    children: [
-      searchRoot (),
-      anchor messages.language (localizedRoute (alternateLocale locale) page.path)
-        "locale-switch"
-    ]
+    children: anchor messages.language
+      (localizedRoute (alternateLocale locale) page.path) "locale-switch"
   }
 
 pub fn siteHeader<Action> input: BuildInput

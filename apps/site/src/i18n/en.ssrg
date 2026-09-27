@@ -5,10 +5,7 @@ pub fn messages -> Messages = Messages {
   playground: "Playground",
   examples: "Examples",
   releases: "Releases",
-  search: "Search documentation",
   onThisPage: "On this page",
   openPlayground: "Open in Playground",
-  language: "日本語",
-  previous: "Previous",
-  next: "Next"
+  language: "日本語"
 }
