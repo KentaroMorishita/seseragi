@@ -1,38 +1,73 @@
-import { LocalizedText, localized } from "../../../../model/locale"
+import { localized } from "../../../../model/locale"
 import {
-  Article,
-  Callout,
+  BulletList,
   CodeExample,
-  Heading,
-  Note,
+  InlineCode,
+  InternalLink,
   PageDefinition,
-  Paragraph,
   Words
 } from "../../../../model/page"
+import { syntaxPage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn text english: String -> japanese: String -> LocalizedText =
-  localized english japanese
-
-pub fn page -> PageDefinition = PageDefinition {
-  id: "language.syntax.function-application",
-  path: "/docs/language/syntax/function-application/",
-  kind: Article,
-  title: text (en.title ()) (ja.title ()),
-  summary: text (en.summary ()) (ja.summary ()),
-  blocks: [
-    Heading ("apply-arguments", text (en.callTitle ()) (ja.callTitle ())),
-    Paragraph ([Words (text (en.callBody ()) (ja.callBody ()))]),
-    Heading ("partial-application", text (en.partialTitle ()) (ja.partialTitle ())),
-    Paragraph ([Words (text (en.partialBody ()) (ja.partialBody ()))]),
-    CodeExample ("function-application", text (en.exampleTitle ()) (ja.exampleTitle ())),
-    Heading ("pipelines", text (en.pipelineTitle ()) (ja.pipelineTitle ())),
-    Paragraph ([Words (text (en.pipelineBody ()) (ja.pipelineBody ()))]),
-    Callout (
-      Note,
-      text (en.noteTitle ()) (ja.noteTitle ()),
-      [Words (text (en.noteBody ()) (ja.noteBody ()))]
-    )
+pub fn page -> PageDefinition =
+  syntaxPage "language.syntax.function-application" "/docs/language/syntax/function-application/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "function-application",
+      localized "Curried application in a complete program"
+        "curried applicationのprogram"
+    ),
+    BulletList [
+      [
+        InlineCode "add 1 2",
+        Words (localized " parses as (add 1) 2." " は(add 1) 2としてparseされます。")
+      ],
+      [
+        InlineCode "add 1",
+        Words (
+          localized
+        " has the remaining function type Int -> Int when add is Int -> Int -> Int."
+        " はaddがInt -> Int -> Intなら残りのInt -> Int型を持ちます。"
+        )
+      ],
+      [
+        InlineCode "fn clock -> Instant",
+        Words (
+          localized " declares an anonymous Unit parameter; invoke it as clock ()."
+        " は名前のないUnit parameterを宣言し、clock ()で呼びます。"
+        )
+      ],
+      [
+        InlineCode "identity<String> value",
+        Words (
+          localized " keeps the explicit type argument attached to the callee."
+        " は明示型引数をcalleeに接続します。"
+        )
+      ]
+    ]
+  ] [BulletList [
+    [
+      InlineCode "add(1, 2)",
+      Words (
+        localized " is not Seseragi's multi-argument call syntax."
+        " はSeseragiの複数引数call構文ではありません。"
+      )
+    ],
+    [
+      InlineCode "identity < value",
+      Words
+        (localized " is comparison, not explicit type application." " は明示型適用ではなく比較です。")
+    ]
+  ]] [
+    [InternalLink
+        (localized "Method calls" "method呼び出し", "/docs/language/syntax/method-calls/")],
+    [InternalLink (
+      localized "Pipelines and low-precedence application" "pipelineと低優先順位適用",
+      "/docs/language/syntax/pipelines-and-low-precedence-application/"
+    )],
+    [InternalLink (
+      localized "Operator precedence" "operator優先順位",
+      "/docs/language/syntax/operator-precedence/"
+    )]
   ]
-}

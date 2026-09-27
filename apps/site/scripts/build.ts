@@ -83,6 +83,51 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
+        "syntax-method-calls",
+        "examples/spec/lessons/11-generics.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-invalid-methods",
+        "examples/spec/artifacts/semantic-diagnostics-schema-1/inherent-method-invalid/main.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-pipelines",
+        "examples/spec/lessons/04-collections-and-pipelines.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-operator-precedence",
+        "examples/spec/fixtures/compile/grammar-terminal-coverage.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-custom-operator",
+        "examples/spec/lessons/13-traits-and-custom-operators.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-invalid-custom-operator",
+        "examples/spec/artifacts/semantic-diagnostics-schema-1/custom-operator-invalid-declaration/main.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-reserved-words",
+        "examples/spec/fixtures/compile/grammar-terminal-coverage.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-optional-record-field",
+        "examples/spec/fixtures/compile/optional-record-field.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "syntax-invalid-record-fields",
+        "examples/spec/artifacts/semantic-diagnostics-schema-1/record-field-errors/main.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "language-program-entry",
         "examples/spec/lessons/01-hello-world.ssrg",
         playgroundUrl
@@ -247,7 +292,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (33 + referencePageCount),
+      2 * (39 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

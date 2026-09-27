@@ -1,0 +1,14 @@
+import { SyntaxCopy } from "../article"
+
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "Operator precedence",
+  summary: "The complete built-in precedence table fixes parsing, associativity, short-circuiting, and operator-value boundaries.",
+  formsTitle: "Precedence from access through Signal update",
+  formsBody: "From strongest to weakest: field/method/index access; application; prefix !, unary -, and Signal read *; **; multiplicative operators; additive operators and list cons; comparisons; &&; ||; Maybe fallback ??; >>=, <$>, <*>, and |>; $; then Signal update :=.",
+  typingBody: "Arithmetic, comparison, cons, and typeclass-backed binary operators may be parenthesized as curried function values. Expected types and trait constraints must select one overload. Short-circuit, pipeline, $, Signal, and prefix operators cannot become function values.",
+  evaluationBody: "&&, ||, and ?? evaluate the right operand only when needed; ?? follows Maybe fallback typing. Other binary operators evaluate left then right. **, :, ??, $, and := associate right; comparisons do not associate; remaining built-ins associate left.",
+  invalidTitle: "Precedence never licenses an ambiguous chain",
+  invalidBody: "a < b < c is rejected; write a < b && b < c. Ambiguous overloaded operator references need a type annotation. Unary * and - are distinguished by position from binary multiplication and subtraction, and parentheses are required whenever a different grouping is intended.",
+  diagnosticsBody: "The shared parser and formatter use one precedence table. Non-associative chains are syntax diagnostics; missing trait evidence and ambiguous operator values are type diagnostics; short-circuit forms retain their source operator rather than lowering to an ordinary function call in tooling.",
+  provenanceBody: "This article covers specification section 1.7 and links its Maybe, trait, pipeline, custom-operator, and Signal boundaries. The highlighted grammar fixture exercises representative precedence levels."
+}

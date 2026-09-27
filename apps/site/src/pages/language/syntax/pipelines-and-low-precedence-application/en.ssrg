@@ -1,0 +1,14 @@
+import { SyntaxCopy } from "../article"
+
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "Pipelines and low-precedence application",
+  summary: "Use |> to move a value forward and $ to extend one application across a low-precedence expression.",
+  formsTitle: "Two fixed application forms",
+  formsBody: "x |> f means f x and associates left. f $ x also means f x but associates right and binds below every binary operator except Signal update :=. A lone | remains an ADT-variant or comprehension separator, never a pipeline.",
+  typingBody: "Both forms reuse ordinary one-argument function application. They do not manufacture multi-argument calls, overloads, or delayed values. The left side must have a function type accepting the right-side result after desugaring.",
+  evaluationBody: "$ evaluates its left side once, then its right side once, then performs one application. It neither runs a returned Effect nor delays the right side. A newline may follow $, and if, match, do, or a lambda may appear there without grouping.",
+  invalidTitle: "These tokens are syntax, not user-defined operators",
+  invalidBody: "$ cannot be redefined, overloaded, or referenced as ($). Pipeline syntax uses |>, not |. A non-function left side receives the same type error as ordinary application, and := remains lower-precedence than $.",
+  diagnosticsBody: "The parser fixes associativity and precedence before type checking. Type diagnostics point to the desugared application relationship without hiding the original |> or $ source range; formatter line breaking preserves that parse.",
+  provenanceBody: "This article covers specification section 1.6. The highlighted program is the canonical collections-and-pipelines lesson, including a line break directly after $."
+}

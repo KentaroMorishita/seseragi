@@ -48,7 +48,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3816)
+    expect(manifest.pages).toHaveLength(3828)
     for (const route of [
       "/",
       "/docs/",
@@ -79,6 +79,13 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/language/syntax/character-string-escapes/",
       "/docs/language/syntax/layout-and-line-continuation/",
       "/docs/language/syntax/function-application/",
+      "/docs/language/syntax/method-calls/",
+      "/docs/language/syntax/pipelines-and-low-precedence-application/",
+      "/docs/language/syntax/operator-precedence/",
+      "/docs/language/syntax/custom-operators/",
+      "/docs/language/syntax/reserved-words-and-names/",
+      "/docs/language/syntax/optional-record-fields/",
+      "/ja/docs/language/syntax/operator-precedence/",
       "/docs/library/",
       "/docs/library/array/",
       "/docs/library/array/function/get/",
@@ -140,13 +147,35 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     )
     expect(language).toContain("Function application")
     expect(textContent(language)).toContain("fn add left")
-    expect(language).toContain("Function declarations use fn")
+    expect(textContent(language)).toContain("add(1, 2)")
+    expect(textContent(language)).toContain("Effect constructs the cold Effect")
     const japanese = readFileSync(
       join(output, "ja/docs/language/syntax/function-application/index.html"),
       "utf8"
     )
     expect(japanese).toContain('<html lang="ja">')
-    expect(japanese).toContain("関数宣言にはfnを使う")
+    expect(japanese).toContain("日本語本文は#630で整備中です")
+    const operators = readFileSync(
+      join(output, "docs/language/syntax/operator-precedence/index.html"),
+      "utf8"
+    )
+    expect(textContent(operators)).toContain("9: field/method ., index []")
+    expect(textContent(operators)).toContain("a < b < c")
+    expect(textContent(operators)).toContain("Operators and names")
+    const customOperators = readFileSync(
+      join(output, "docs/language/syntax/custom-operators/index.html"),
+      "utf8"
+    )
+    expect(textContent(customOperators)).toContain("operator infixr 4 <+>")
+    expect(textContent(customOperators)).toContain("operator infixl 4 ^")
+    const optionalFields = readFileSync(
+      join(output, "docs/language/syntax/optional-record-fields/index.html"),
+      "utf8"
+    )
+    expect(textContent(optionalFields)).toContain("id?: String")
+    expect(textContent(optionalFields)).toContain(
+      "required field of type Maybe"
+    )
     const reference = readFileSync(
       join(output, "docs/library/array/function/get/index.html"),
       "utf8"

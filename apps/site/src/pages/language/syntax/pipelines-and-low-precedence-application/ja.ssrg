@@ -1,0 +1,5 @@
+import { SyntaxCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> SyntaxCopy =
+  incomplete "Pipelineと低優先順位適用" "|>と$の展開・結合規則・評価順序・改行規則を説明します。"

@@ -1,0 +1,14 @@
+import { SyntaxCopy } from "../article"
+
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "Custom operators and fixity",
+  summary: "Top-level declarations define one binary infix symbol, fixity, precedence, type scheme, constraints, and body.",
+  formsTitle: "Declare the complete operator contract",
+  formsBody: "A declaration such as operator<A> infixr 5 <+> left: A -> right: A -> A where Semigroup<A> = append left right defines the symbol, associativity, precedence, polymorphic scheme, evidence, and implementation together. Import it explicitly with import { operator <+> } from a module.",
+  typingBody: "left <+> right desugars to (<+>) left right, so the operator value is curried and may be partially applied. Operators live in a namespace separate from values. Standard overloads belong to traits or struct/newtype operator sugar instead of custom declarations.",
+  evaluationBody: "infixl associates left, infixr right, and infix is non-associative. Precedence is an integer from 0 through 8, so custom operators never outrank application or postfix access. Module interfaces collect declarations before bodies, allowing use before textual declaration.",
+  invalidTitle: "The operator alphabet is intentionally bounded",
+  invalidBody: "Symbols use at least two allowed ASCII operator characters. Standard operators, ->, <-, ranges, comments, ??, and := are reserved; angle-bracket-only symbols conflict with generic delimiters. Prefix and postfix custom operators do not exist. A lone & is only contextual requirement merge syntax.",
+  diagnosticsBody: "Duplicate imported symbols are ambiguous. Mixing equal-precedence operators with different fixities requires parentheses. Raw scanning remains lossless; shared header scanning, module-interface collection, flat-chain parsing, and fixity resolution keep compiler, formatter, and language server aligned.",
+  provenanceBody: "This article covers specification section 1.8 and the tooling fixity contract. Valid code comes from the canonical traits-and-custom-operators lesson; the rejected panel is the semantic diagnostic fixture for invalid declarations."
+}

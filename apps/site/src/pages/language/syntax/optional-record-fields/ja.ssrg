@@ -1,0 +1,5 @@
+import { SyntaxCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> SyntaxCopy =
+  incomplete "Optional record field syntax" "field?: Aのtoken配置・presence型・pattern query・禁止位置を説明します。"
