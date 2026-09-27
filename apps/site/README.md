@@ -45,19 +45,22 @@ responsibilities:
 
 - the repository root `vercel.json` continues to deploy the Playground to the
   `seseragi` project and `seseragi.vercel.app`;
-- `apps/site/vercel.json` is selected explicitly when deploying this site to
-  the existing `seseragi-docs` project.
+- the existing `seseragi-docs` project is connected to this repository with
+  `apps/site` as its Root Directory, so it reads `apps/site/vercel.json`
+  without ever reading the root Playground configuration.
 
 The site build uses `https://seseragi-docs.vercel.app` as its default canonical
 origin. An explicit deployment can override it with `SESERAGI_SITE_ORIGIN`.
 The Playground link remains `https://seseragi.vercel.app/` until its durable
 post-cutover route is implemented in the cutover task.
 
-The separate project can be deployed from the repository root without linking
-the checkout away from the Playground project:
+The separate project deploys `main` through its Git integration or the
+`Docs production` deploy hook. For an explicit CLI deployment, run Vercel from
+the same `apps/site` root used by the project:
 
 ```sh
-vercel deploy --project seseragi-docs --local-config apps/site/vercel.json
+cd apps/site
+vercel deploy --project seseragi-docs
 ```
 
 Do not promote this artifact to the `seseragi` project. Moving the language

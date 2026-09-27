@@ -16,13 +16,15 @@ The language site and Playground use independent Vercel configurations until
 the root-domain cutover:
 
 - root `vercel.json` owns the current `seseragi` Playground deployment;
-- `apps/site/vercel.json` owns explicit deployments to the existing
-  `seseragi-docs` project.
+- the existing `seseragi-docs` project uses `apps/site` as its Vercel Root
+  Directory, so `apps/site/vercel.json` owns its Git and explicit deployments.
 
 The site configuration is not copied over the root configuration during normal
-development. The final cutover must first choose and implement the Playground's
-durable route, then move the site and canonical origin to the root domain as one
-reviewed change.
+development. Its commands return to the repository root explicitly for the
+shared lockfile, Rust compiler build and first-party SSG, then publish the
+artifact inside `apps/site/dist`. The final cutover must first choose and
+implement the Playground's durable route, then move the site and canonical
+origin to the root domain as one reviewed change.
 
 ## Page authoring model
 
