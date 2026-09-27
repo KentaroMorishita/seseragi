@@ -1,0 +1,14 @@
+import { SyntaxCopy } from "../article"
+
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "Literals",
+  summary: "Every literal spelling has a fixed type, range, token boundary, and evaluation rule.",
+  formsTitle: "Literal forms and types",
+  formsBody: "Integer spelling produces Int; a decimal point or exponent produces Float. True and False are Bool, a single quoted scalar is Char, double quotes produce String, backticks produce a template String unless followed immediately by [, backtick-bracket produces List, and () is Unit.",
+  typingBody: "Numeric literals are not overloaded through a typeclass. Int literals use decimal, binary, octal, or hexadecimal spelling and must fit the safe range from -9007199254740991 through 9007199254740991 after the separate unary minus is considered. Float literals are decimal binary64 values.",
+  evaluationBody: "Template interpolations evaluate exactly once from left to right and use Show for each value. The complete template is a pure String and performs no I/O. Float conversion rounds to nearest with ties to even; finite spelling that overflows is rejected, while underflow preserves signed zero.",
+  invalidTitle: "A broken number is one invalid token",
+  invalidBody: "Digit separators may occur once only between digits of the same base. Leading decimal zeroes, missing base digits, hexadecimal Float syntax, suffixes, incomplete exponents, 1., and .5 are rejected instead of being split into smaller valid tokens.",
+  diagnosticsBody: "Invalid spelling and out-of-range numeric values report SES-P0203 over the numeric token. Integer arithmetic that later leaves the safe range is a runtime defect rather than wrapping. The formatter preserves valid numeric spelling and separators.",
+  provenanceBody: "This article implements section 1.2 excluding escape decoding. Valid examples come from fixtures/compile/literals.ssrg; the invalid separator example is the canonical SES-P0203 diagnostic fixture."
+}

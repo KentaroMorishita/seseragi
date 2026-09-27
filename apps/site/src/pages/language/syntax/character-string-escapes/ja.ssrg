@@ -1,0 +1,5 @@
+import { SyntaxCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> SyntaxCopy =
+  incomplete "Char・String・templateのescape" "閉じたescape集合、delimiter固有規則、Unicode scalar境界を説明します。"

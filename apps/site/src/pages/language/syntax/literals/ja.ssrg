@@ -1,0 +1,5 @@
+import { SyntaxCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> SyntaxCopy =
+  incomplete "literal" "各literalのspelling・型・range・token境界・評価規則を説明します。"

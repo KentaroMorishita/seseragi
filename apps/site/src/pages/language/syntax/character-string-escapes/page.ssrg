@@ -1,0 +1,51 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { syntaxPage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  syntaxPage "language.syntax.character-string-escapes" "/docs/language/syntax/character-string-escapes/" (en.copy ()) (ja.copy ()) [
+    CodeExample
+      ("syntax-char-valid", localized "Valid Char and escape forms" "有効なCharとescape"),
+    BulletList [
+      [
+        InlineCode "\\n \\r \\t \\0",
+        Words (localized " are the common control escapes." " は共通control escapeです。")
+      ],
+      [
+        InlineCode "\\u{03BB}",
+        Words
+      (localized " decodes one Unicode scalar." " は一つのUnicode scalarへdecodeされます。")
+      ],
+      [
+        InlineCode "\\${",
+        Words
+      (localized " writes literal ${ in a template." " はtemplateにliteral ${を書きます。")
+      ]
+    ]
+  ] [
+    CodeExample (
+      "syntax-char-invalid",
+      localized "Rejected Char scalar counts" "拒否されるChar scalar count"
+    ),
+    CodeExample
+      ("syntax-invalid-escape", localized "Rejected with SES-P0201" "SES-P0201で拒否")
+  ] [
+    [InternalLink (localized "Literals" "literal", "/docs/language/syntax/literals/")],
+    [InternalLink (
+      localized "Source text and comments" "source textとcomment",
+      "/docs/language/syntax/source-text/"
+    )],
+    [InternalLink (
+      localized "Layout and line continuation" "layoutとline continuation",
+      "/docs/language/syntax/layout-and-line-continuation/"
+    )]
+  ]

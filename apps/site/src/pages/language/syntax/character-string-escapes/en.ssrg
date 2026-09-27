@@ -1,0 +1,14 @@
+import { SyntaxCopy } from "../article"
+
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "Character and string escapes",
+  summary: "Char, String, and template text share a closed escape set with delimiter-specific rules.",
+  formsTitle: "Decode a closed escape language",
+  formsBody: "Char and String accept backslash, line-feed, carriage-return, tab, null, and one-to-six-digit Unicode scalar escapes. Char additionally escapes its single quote, String its double quote, and template text its backtick. A literal template sequence ${ is written as backslash-${, while a standalone $ needs no escape.",
+  typingBody: "A Char must decode to exactly one Unicode scalar value. A precomposed é is one Char, but e followed by a combining acute scalar is two and cannot inhabit Char. Surrogate code points are not Unicode scalars and are rejected in every text literal.",
+  evaluationBody: "Escape decoding produces scalar values before typing. String is a sequence of Unicode scalars, not indexed bytes or grapheme clusters. Templates may contain raw LF; source CRLF contributes the same single LF. Double-quoted String and Char cannot contain raw line terminators or raw control characters.",
+  invalidTitle: "Only documented escapes exist",
+  invalidBody: "Hex-byte, octal, named-Unicode, cross-delimiter, empty Unicode, over-six-digit, out-of-range, and surrogate escapes are rejected. The lexer never repairs them into another character or delegates their meaning to a backend string parser.",
+  diagnosticsBody: "An invalid escape reports SES-P0201 from the backslash through the escape end. An unterminated literal reports SES-P0001. A Char whose decoded value has zero or multiple scalars reports SES-P0202 over the complete literal. Formatting preserves valid escape meaning and spelling.",
+  provenanceBody: "This article implements section 1.2.1. Valid values come from the char-literal package; invalid scalar counts and surrogate escapes come from the canonical char-literal-invalid artifact."
+}

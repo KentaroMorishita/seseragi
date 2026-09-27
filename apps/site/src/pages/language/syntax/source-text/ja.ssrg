@@ -1,0 +1,5 @@
+import { SyntaxCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> SyntaxCopy =
+  incomplete "source textとcomment" "UTF-8・Unicode identifier・改行・apostrophe・keyword・commentの字句規則です。"

@@ -1,0 +1,46 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { syntaxPage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  syntaxPage "language.syntax.literals" "/docs/language/syntax/literals/" (en.copy ()) (ja.copy ()) [
+    CodeExample
+      ("syntax-literals", localized "Canonical literal forms" "canonical literal form"),
+    BulletList [
+      [InlineCode "0b1010_0110", Words (localized " is binary Int." " はbinary Intです。")],
+      [InlineCode "0o755", Words (localized " is octal Int." " はoctal Intです。")],
+      [
+        InlineCode "0xFF_00",
+        Words (localized " is hexadecimal Int." " はhexadecimal Intです。")
+      ],
+      [InlineCode "6.022e23", Words
+      (localized " is decimal Float." " はdecimal Floatです。")],
+      [
+        InlineCode "`[1, 2]",
+        Words (
+          localized " starts a List literal; other backticks start a template."
+      " はList literalを開始し、それ以外のbacktickはtemplateを開始します。"
+        )
+      ]
+    ]
+  ] [CodeExample
+      ("syntax-invalid-numeric", localized "Rejected with SES-P0203" "SES-P0203で拒否")] [
+        [InternalLink (
+          localized "Character and string escapes" "Char・String・templateのescape",
+          "/docs/language/syntax/character-string-escapes/"
+        )],
+        [InternalLink (
+          localized "Source text and comments" "source textとcomment",
+          "/docs/language/syntax/source-text/"
+        )],
+        [InternalLink (localized "std/number" "std/number", "/docs/library/number/")]
+      ]
