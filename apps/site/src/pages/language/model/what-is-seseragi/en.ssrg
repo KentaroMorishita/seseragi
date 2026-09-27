@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "What Seseragi is",
+  summary: "A precise language model: expression-oriented, statically typed, immutable by default, and explicit about boundaries.",
+  ruleTitle: "The language is defined by semantics",
+  ruleBody: "Seseragi is an expression-oriented, statically typed programming language whose ordinary values are immutable. Its identity comes from the meaning of programs, not from short syntax or a particular generated language.",
+  consequenceOne: "Functions are curried and support partial application, while algebraic data types make distinct states explicit.",
+  consequenceTwo: "Absence, recoverable failure, asynchronous work, and effects remain visible in values and types instead of becoming ambient behavior.",
+  consequenceThree: "Pattern matching is exhaustive, typeclasses separate behavior from representation, and modules give names a stable boundary.",
+  boundaryTitle: "Foreign systems do not redefine Seseragi",
+  boundaryBody: "JavaScript, TypeScript, host services, and generated backends are entered through explicit conversion and provider boundaries. Their nullish values, exceptions, evaluation details, or mutation do not silently become Seseragi semantics.",
+  provenanceBody: "This page follows section 0.1 of the language specification. Detailed syntax, typing, runtime, and interop pages own the exact rules summarized here."
+}

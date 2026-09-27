@@ -1,0 +1,5 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy =
+  incomplete "default immutable" "通常のbindingとdataを変更せず、状態遷移を明示する原則です。"

@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "No hidden danger",
+  summary: "Absence, recoverable failure, effects, and conversion stay visible in the program's values and types.",
+  ruleTitle: "Risk crosses an explicit type boundary",
+  ruleBody: "Seseragi has no ordinary null or undefined value. Maybe represents recoverable absence, Either represents a pure recoverable choice, and Effect exposes delayed work, required services, and typed failure.",
+  consequenceOne: "Conditionals require Bool; values do not become truthy or falsy, and numeric types do not convert implicitly.",
+  consequenceTwo: "Recoverable failures do not appear as hidden exceptions, while runtime defects remain a distinct non-recovery channel.",
+  consequenceThree: "Nullish values, thrown exceptions, promises, and mutable objects from foreign code must be decoded or adapted at the interop boundary.",
+  boundaryTitle: "Explicit does not mean every operation returns Either",
+  boundaryBody: "Total pure operations keep ordinary result types. Maybe, Either, or Effect appears where the semantic operation can be absent, recoverably fail, or require execution by a host.",
+  provenanceBody: "Section 0.2 states the principle. The Maybe, Either, Effect, defects, numeric conversion, conditional, and TypeScript interop articles own the detailed cases."
+}

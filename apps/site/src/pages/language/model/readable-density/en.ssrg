@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "Readable density",
+  summary: "Concise forms express the data shape and flow directly without hiding typing, order, failure, or cost.",
+  ruleTitle: "Density comes from composition",
+  ruleBody: "Currying, partial application, pipelines, type inference, comprehensions, and Signal operators reduce ceremony when their expansion and evaluation remain clear. Seseragi does not measure readability by the smallest character count.",
+  consequenceOne: "Dedicated syntax is admitted only with defined types, evaluation order, expansion, failure conditions, and formatter behavior.",
+  consequenceTwo: "Explicit Effect, failure, module, interop, and capability boundaries remain visible even when values inside those boundaries compose tersely.",
+  consequenceThree: "The canonical formatter gives equivalent source one stable readable layout and does not invent a second language style.",
+  boundaryTitle: "Short syntax does not justify hidden control flow",
+  boundaryBody: "General macros, implicit returns, non-local loop control, truthiness, and opaque conversions are not added merely to shorten common code. A surface form must be at least as explainable as the ordinary functions beneath it.",
+  provenanceBody: "Section 0.2 defines readable density. Function application, pipelines, operators, comprehensions, Signal operators, and formatter pages specify the accepted concise forms."
+}

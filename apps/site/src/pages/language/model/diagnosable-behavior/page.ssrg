@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { InternalLink, PageDefinition } from "../../../../model/page"
+import { conceptPage } from "../concept"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  conceptPage "language.model.diagnosable-behavior" "/docs/language/model/diagnosable-behavior/" (en.copy ()) (ja.copy ()) [] [
+    [InternalLink
+        (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")],
+    [InternalLink (
+      localized "Backend-independent semantics" "backend-independent semantics",
+      "/docs/language/model/backend-independent-semantics/"
+    )],
+    [InternalLink
+        (localized "Readable density" "読める密度", "/docs/language/model/readable-density/")]
+  ]

@@ -1,0 +1,23 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { conceptPage } from "../concept"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  conceptPage "language.model.what-is-seseragi" "/docs/language/model/what-is-seseragi/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "function-application",
+        localized "Functions compose by application" "関数適用によるcomposition"
+      )] [
+        [InternalLink
+      (localized "Design principles" "設計原則", "/docs/language/model/design-principles/")],
+        [InternalLink (
+          localized "Programs and entry points" "programとentry point",
+          "/docs/language/model/programs/"
+        )],
+        [InternalLink (
+          localized "Features the language does not have" "言語に存在しない機能",
+          "/docs/language/model/non-features/"
+        )]
+      ]

@@ -1,0 +1,5 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy =
+  incomplete "programとentry point" "package・module・declaration・expressionとhost entryの境界です。"

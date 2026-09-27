@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "Diagnosable behavior",
+  summary: "Inference and abstraction succeed only when the compiler can identify and explain one result.",
+  ruleTitle: "Ambiguity is a compile error",
+  ruleBody: "Overload resolution, type inference, method lookup, operator values, Provider selection, and implicit typeclass dictionaries may automate a choice only when the applicable rule yields one stable candidate.",
+  consequenceOne: "Multiple viable instances, methods, providers, or overloaded meanings produce a diagnostic rather than a priority guess based on values or source order.",
+  consequenceTwo: "Parser, formatter, compiler, LSP, Playground, and documentation share compiler-owned syntax and interface artifacts instead of maintaining competing interpretations.",
+  consequenceThree: "Diagnostics identify the owning phase and source range; a later runtime adapter does not relabel a compile or target error as a generic defect.",
+  boundaryTitle: "Inference remains useful, not magical",
+  boundaryBody: "The compiler can infer types and dictionaries from declared constraints. It cannot inspect runtime values, silently search unrelated namespaces, or select an arbitrary candidate to make a program compile.",
+  provenanceBody: "Section 0.2 defines diagnosability. Name resolution, type inference, traits, impls, diagnostics, formatter, LSP, and Provider pages define each decision procedure."
+}

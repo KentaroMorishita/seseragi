@@ -1,0 +1,4 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy = incomplete "設計原則" "七つの設計原則と依存関係を案内します。"

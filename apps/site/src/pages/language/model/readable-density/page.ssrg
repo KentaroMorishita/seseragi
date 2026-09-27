@@ -1,0 +1,19 @@
+import { localized } from "../../../../model/locale"
+import { InternalLink, PageDefinition } from "../../../../model/page"
+import { conceptPage } from "../concept"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  conceptPage "language.model.readable-density" "/docs/language/model/readable-density/" (en.copy ()) (ja.copy ()) [] [
+    [InternalLink
+        (localized "Expression-oriented" "式指向", "/docs/language/model/expression-oriented/")],
+    [InternalLink (
+      localized "Function application" "関数適用",
+      "/docs/language/syntax/function-application/"
+    )],
+    [InternalLink (
+      localized "Features the language does not have" "言語に存在しない機能",
+      "/docs/language/model/non-features/"
+    )]
+  ]

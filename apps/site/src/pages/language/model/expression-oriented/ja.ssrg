@@ -1,0 +1,5 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy =
+  incomplete "式指向" "functionとcontrol formが値を返すtyping modelを説明します。"

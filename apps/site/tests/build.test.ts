@@ -48,7 +48,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3786)
+    expect(manifest.pages).toHaveLength(3808)
     for (const route of [
       "/",
       "/docs/",
@@ -63,6 +63,17 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/get-started/production-build/",
       "/docs/get-started/web-application/",
       "/docs/get-started/next/",
+      "/docs/language/model/what-is-seseragi/",
+      "/docs/language/model/design-principles/",
+      "/docs/language/model/expression-oriented/",
+      "/docs/language/model/immutable-by-default/",
+      "/docs/language/model/no-hidden-danger/",
+      "/docs/language/model/backend-independent-semantics/",
+      "/docs/language/model/diagnosable-behavior/",
+      "/docs/language/model/visible-costs/",
+      "/docs/language/model/readable-density/",
+      "/docs/language/model/programs/",
+      "/docs/language/model/non-features/",
       "/docs/language/syntax/function-application/",
       "/docs/library/",
       "/docs/library/array/",
@@ -74,6 +85,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/library/prelude/function/reducible-reduce/",
       "/ja/docs/library/array/function/get/",
       "/ja/docs/get-started/install/",
+      "/ja/docs/language/model/non-features/",
       "/ja/releases/",
     ]) {
       expect(manifest.pages).toContain(route)
@@ -102,6 +114,14 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(japaneseGuide).toContain("日本語本文は#630で整備中です")
+    const languageModel = readFileSync(
+      join(output, "docs/language/model/non-features/index.html"),
+      "utf8"
+    )
+    expect(languageModel).toContain(
+      "Not present does not mean not implemented yet"
+    )
+    expect(textContent(languageModel)).toContain("return, break, and continue")
     const language = readFileSync(
       join(output, "docs/language/syntax/function-application/index.html"),
       "utf8"

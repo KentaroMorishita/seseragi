@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "Immutable by default",
+  summary: "Ordinary bindings and data do not change after construction; state transitions are represented explicitly.",
+  ruleTitle: "Values are created, not reassigned",
+  ruleBody: "let introduces an immutable binding. Records, structs, algebraic data values, arrays, and lists are immutable after construction, so an update produces a new value or passes through a library abstraction that names state explicitly.",
+  consequenceOne: "There are no mutable local variables or mutable fields whose later contents must be inferred from control flow.",
+  consequenceTwo: "Persistent collection operations return new collection values and keep aliasing behavior independent of a backend's mutable containers.",
+  consequenceThree: "External state changes occur through Effect services; time-varying UI values use capabilities such as Signal or Ref whose operations expose the boundary.",
+  boundaryTitle: "A state abstraction is not a mutable ordinary value",
+  boundaryBody: "Signal, Ref, DOM services, files, and foreign objects may represent changing systems, but access to that change is typed and scoped. Their existence does not add assignment semantics to let, records, or fields.",
+  provenanceBody: "Section 0.2 fixes immutability as a language principle. Data, collection, Effect, Signal, Ref, resource, and interop pages define the specific operations and lifetime rules."
+}

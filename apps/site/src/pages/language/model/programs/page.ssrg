@@ -1,0 +1,22 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { conceptPage } from "../concept"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  conceptPage "language.model.programs" "/docs/language/model/programs/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("language-program-entry", localized "A typed executable entry" "型付きの実行entry")] [
+        [InternalLink (
+          localized "Getting Started: run a program" "Getting Started: programを実行する",
+          "/docs/get-started/run/"
+        )],
+        [InternalLink (
+          localized "Backend-independent semantics" "backend-independent semantics",
+          "/docs/language/model/backend-independent-semantics/"
+        )],
+        [InternalLink (
+          localized "What Seseragi is" "Seseragiとは何か",
+          "/docs/language/model/what-is-seseragi/"
+        )]
+      ]

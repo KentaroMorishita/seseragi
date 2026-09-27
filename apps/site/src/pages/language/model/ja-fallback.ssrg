@@ -1,0 +1,14 @@
+import { ConceptCopy } from "./concept"
+
+pub fn incomplete title: String -> summary: String -> ConceptCopy = ConceptCopy {
+  title,
+  summary,
+  ruleTitle: "中核規則",
+  ruleBody: "このページの日本語本文は#630で整備中です。現在は英語版を正本として参照してください。",
+  consequenceOne: "routeと見出し構造は英語版と同じidentityで維持しています。",
+  consequenceTwo: "code、型、用語は英語版と同じ仕様sourceを参照します。",
+  consequenceThree: "日本語化では意味論を要約せず、各規則を同じ粒度で説明します。",
+  boundaryTitle: "日本語版の状態",
+  boundaryBody: "本文が未翻訳であることと、言語機能が未実装であることを混同しません。",
+  provenanceBody: "英語版はdocs/spec/00-language.mdとcoverage ledgerに照合済みです。"
+}

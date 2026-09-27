@@ -23,6 +23,17 @@ import { page as productionBuildPage } from "../pages/get-started/production-bui
 import { page as webApplicationPage } from "../pages/get-started/web-application/page"
 import { page as nextPage } from "../pages/get-started/next/page"
 import { page as languageOverviewPage } from "../pages/language/overview/page"
+import { page as whatIsSeseragiPage } from "../pages/language/model/what-is-seseragi/page"
+import { page as designPrinciplesPage } from "../pages/language/model/design-principles/page"
+import { page as expressionOrientedPage } from "../pages/language/model/expression-oriented/page"
+import { page as immutableByDefaultPage } from "../pages/language/model/immutable-by-default/page"
+import { page as noHiddenDangerPage } from "../pages/language/model/no-hidden-danger/page"
+import { page as backendIndependentSemanticsPage } from "../pages/language/model/backend-independent-semantics/page"
+import { page as diagnosableBehaviorPage } from "../pages/language/model/diagnosable-behavior/page"
+import { page as visibleCostsPage } from "../pages/language/model/visible-costs/page"
+import { page as readableDensityPage } from "../pages/language/model/readable-density/page"
+import { page as programsPage } from "../pages/language/model/programs/page"
+import { page as nonFeaturesPage } from "../pages/language/model/non-features/page"
 import { page as functionApplicationPage } from "../pages/language/syntax/function-application/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
 import { page as examplesPage } from "../pages/examples/page"
@@ -68,17 +79,41 @@ fn languageArea -> NavigationArea = NavigationArea {
   description: localized "Syntax and semantics, one concept per page."
     "構文と意味論を、一概念ずつ説明します。",
   landing: languageOverviewPage (),
-  groups: [NavigationGroup {
-    id: "syntax",
-    title: localized "Syntax" "構文",
-    sections: [NavigationSection {
-      id: "functions",
-      title: localized "Functions" "関数",
-      kind: FlatSection,
-      overview: functionApplicationPage (),
-      pages: []
-    }]
-  }]
+  groups: [
+    NavigationGroup {
+      id: "language-model",
+      title: localized "Language model" "言語model",
+      sections: [NavigationSection {
+        id: "foundations",
+        title: localized "Foundations" "基礎",
+        kind: FlatSection,
+        overview: whatIsSeseragiPage (),
+        pages: [
+          designPrinciplesPage (),
+          expressionOrientedPage (),
+          immutableByDefaultPage (),
+          noHiddenDangerPage (),
+          backendIndependentSemanticsPage (),
+          diagnosableBehaviorPage (),
+          visibleCostsPage (),
+          readableDensityPage (),
+          programsPage (),
+          nonFeaturesPage ()
+        ]
+      }]
+    },
+    NavigationGroup {
+      id: "syntax",
+      title: localized "Syntax" "構文",
+      sections: [NavigationSection {
+        id: "functions",
+        title: localized "Functions" "関数",
+        kind: FlatSection,
+        overview: functionApplicationPage (),
+        pages: []
+      }]
+    }
+  ]
 }
 
 fn libraryArea input: BuildInput -> NavigationArea = NavigationArea {

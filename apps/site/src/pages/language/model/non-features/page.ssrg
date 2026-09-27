@@ -1,0 +1,47 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  Inline,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { conceptPage } from "../concept"
+import * as en from "./en"
+import * as ja from "./ja"
+
+fn absent value: String -> Array<Inline> = [Words (localized value "日本語本文は#630で整備中です。")]
+
+pub fn page -> PageDefinition =
+  conceptPage "language.model.non-features" "/docs/language/model/non-features/" (en.copy ()) (ja.copy ()) [BulletList
+      [
+        absent
+      "Reassignment and mutable fields: create a new value or use an explicit state capability.",
+        absent
+      "null, undefined, and implicit nullable types: use Maybe or decode a foreign nullish value.",
+        absent
+      "Implicit numeric conversion and truthiness: convert explicitly and require Bool conditions.",
+        absent
+      "Non-exhaustive pattern matching: cover every constructor or add an explicit wildcard.",
+        absent
+      "Exceptions for ordinary recovery: use Either or Effect's typed failure channel.",
+        absent
+      "Arbitrary union and intersection types: use ADTs and closed Effect/Stream requirement merging.",
+        absent
+      "perform/handle algebraic effects: compose typed Effect values and services.",
+        absent
+      "General syntax or procedural macros: use functions, deriving, and closed template-string expansion.",
+        absent
+      "User-defined prefix/postfix operators: use named functions or declared infix operators.",
+        absent
+      "return, break, and continue: use expression results, matching, reduceUntil, or forEachUntil."
+      ]] [
+        [InternalLink
+      (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")],
+        [InternalLink (
+          localized "Immutable by default" "default immutable",
+          "/docs/language/model/immutable-by-default/"
+        )],
+        [InternalLink
+      (localized "Readable density" "読める密度", "/docs/language/model/readable-density/")]
+      ]

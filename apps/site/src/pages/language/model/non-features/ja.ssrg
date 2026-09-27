@@ -1,0 +1,5 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy =
+  incomplete "言語に存在しない機能" "意図的に持たないsurfaceと、その代わりに使うmodelを説明します。"

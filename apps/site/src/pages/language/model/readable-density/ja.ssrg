@@ -1,0 +1,4 @@
+import { ConceptCopy } from "../concept"
+import { incomplete } from "../ja-fallback"
+
+pub fn copy -> ConceptCopy = incomplete "読める密度" "型・評価順・failure・costを隠さず簡潔に組み立てます。"

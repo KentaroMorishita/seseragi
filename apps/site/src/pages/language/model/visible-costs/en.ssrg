@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "Visible costs",
+  summary: "Abstractions may remove representation overhead, but APIs and documentation keep essential work inferable.",
+  ruleTitle: "Essential work is part of the contract",
+  ruleBody: "Collection traversal, allocation, closure capture, dictionary passing, Effect scheduling, synchronization, resource acquisition, and foreign copying are real operations. Their presence and broad complexity must remain discoverable from an API and its documentation.",
+  consequenceOne: "Type aliases, erased phantom types, and surface sugar should not demand runtime identity when the semantics need none.",
+  consequenceTwo: "A collection combinator does not pretend to be constant time, and a foreign bridge does not pretend that validation or copying is free.",
+  consequenceThree: "Release optimization may specialize or fuse work only while preserving evaluation, failure, cancellation, and resource observations.",
+  boundaryTitle: "Visible cost is not a ban on abstraction",
+  boundaryBody: "Users should compose high-level functions and Effects. The rule is that composition keeps material traversals, scheduling boundaries, copies, and lifetime behavior understandable instead of disguising them as zero-cost syntax.",
+  provenanceBody: "Section 0.2 states the principle. Collection modules, Effect runtime, foreign interop, build profiles, benchmarks, and the performance model provide operation-specific guarantees."
+}

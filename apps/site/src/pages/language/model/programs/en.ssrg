@@ -1,0 +1,14 @@
+import { ConceptCopy } from "../concept"
+
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "Programs and entry points",
+  summary: "Packages contain modules, modules contain declarations, and a public typed main crosses into a host target.",
+  ruleTitle: "Program structure is explicit",
+  ruleBody: "Each source file is one module. Modules contain imports and declarations, packages define source and export topology in seseragi.toml, and executable packages identify one source module whose public main is the host entry point.",
+  consequenceOne: "Arbitrary top-level expressions are rejected; importing a module never runs application code as an incidental side effect.",
+  consequenceTwo: "An executable main is a Unit function returning Effect with a closed service environment, a typed failure channel, and Unit success.",
+  consequenceThree: "A library package exports declarations without requiring main, while one package may expose both library modules and an executable entry.",
+  boundaryTitle: "Compilation and execution have different owners",
+  boundaryBody: "The compiler establishes module, type, Effect, and entry-point meaning. The selected host target supplies compatible services and maps success, typed failure, defect, cancellation, and signals to host results without changing the Effect semantics.",
+  provenanceBody: "Section 0.3 defines programs and main. Package layout, modules, entry points, Effect environments, Providers, build targets, and runtime chapters define the complete boundary. Product STATUS records current implementation coverage separately from these language rules."
+}

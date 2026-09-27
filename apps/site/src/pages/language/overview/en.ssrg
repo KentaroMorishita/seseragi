@@ -3,6 +3,11 @@ pub fn title -> String = "Language Reference"
 pub fn summary -> String =
   "The complete syntax and semantics of the Seseragi programming language."
 
+pub fn modelTitle -> String = "Language model"
+
+pub fn modelBody -> String =
+  "Start with the semantic principles that every syntax, type, runtime, and interop rule must preserve."
+
 pub fn syntaxTitle -> String = "Syntax"
 
 pub fn syntaxBody -> String =
