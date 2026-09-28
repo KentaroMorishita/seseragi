@@ -1,8 +1,9 @@
 import { Messages } from "./model"
 
 pub fn messages -> Messages = Messages {
-  documentation: "ドキュメント",
+  documentation: "リファレンス",
   playground: "Playground",
+  tour: "Tour",
   examples: "例",
   releases: "リリース",
   onThisPage: "このページの内容",

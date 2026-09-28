@@ -1,6 +1,7 @@
 pub struct Messages {
   documentation: String,
   playground: String,
+  tour: String,
   examples: String,
   releases: String,
   onThisPage: String,

@@ -1,4 +1,0 @@
-import { GuideCopy } from "../guide"
-import { incomplete } from "../ja-fallback"
-
-pub fn copy -> GuideCopy = incomplete "programを実行する" "single fileまたはprocess packageを公式runtime境界で実行します。"

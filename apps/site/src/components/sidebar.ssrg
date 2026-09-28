@@ -31,6 +31,21 @@ fn sectionIsCurrent current: String -> value: NavigationSection -> Bool =
   Just _ -> True
 }
 
+fn groupIsCurrent current: String -> value: NavigationGroup -> Bool =
+  match arrays.find (sectionIsCurrent current) value.sections {
+    Nothing -> False
+    Just _ -> True
+  }
+
+fn areaIsCurrent current: String -> value: NavigationArea -> Bool =
+  if value.landing.id == current then
+    True
+  else
+    match arrays.find (groupIsCurrent current) value.groups {
+  Nothing -> False
+  Just _ -> True
+}
+
 fn sectionIsOpen current: String -> value: NavigationSection -> Bool =
   match value.kind {
     FlatSection -> True
@@ -41,7 +56,7 @@ fn sectionChildLinks<Action> locale: Locale
   -> current: String
   -> value: NavigationSection
   -> Array<html.Html<Action>> =
-  if sectionIsCurrent current value then
+  if sectionIsOpen current value then
     [pageLink locale current page | page <- value.pages]
   else
     {
@@ -71,10 +86,11 @@ fn group<Action> locale: Locale
   -> current: String
   -> value: NavigationGroup
   -> html.Html<Action> =
-  html.div {
+  html.details {
+    open: groupIsCurrent current value,
     class: "sidebar-group",
     children: [
-      html.p { children: translate locale value.title },
+      html.summary { children: translate locale value.title },
       html.div { children: [section locale current item | item <- value.sections] }
     ]
   }
@@ -84,7 +100,7 @@ fn area<Action> locale: Locale
   -> value: NavigationArea
   -> html.Html<Action> =
   html.details {
-    open: True,
+    open: areaIsCurrent current value,
     class: "sidebar-area",
     children: [
       html.summary { children: translate locale value.title },
@@ -93,13 +109,21 @@ fn area<Action> locale: Locale
     ]
   }
 
+fn currentAreas current: String
+  -> areas: Array<NavigationArea>
+  -> Array<NavigationArea> =
+  match arrays.find (areaIsCurrent current) areas {
+    Nothing -> []
+    Just value -> [value]
+  }
+
 pub fn sidebar<Action> locale: Locale
   -> current: String
   -> areas: Array<NavigationArea>
   -> html.Html<Action> =
   html.aside {
     class: "docs-sidebar",
-    children: [area locale current item | item <- areas]
+    children: [area locale current item | item <- currentAreas current areas]
   }
 
 pub fn mobileSidebar<Action> messages: Messages
@@ -111,7 +135,9 @@ pub fn mobileSidebar<Action> messages: Messages
     class: "mobile-docs-navigation",
     children: [
       html.summary { children: messages.documentation },
-      html.div { children: [area locale current item | item <- areas] }
+      html.div {
+        children: [area locale current item | item <- currentAreas current areas]
+      }
     ]
   }
 import { Messages } from "../i18n/model"

@@ -1,4 +1,0 @@
-import { GuideCopy } from "../guide"
-import { incomplete } from "../ja-fallback"
-
-pub fn copy -> GuideCopy = incomplete "toolchainをinstallする" "公式CLIをinstallし、実行しているversionを確認します。"

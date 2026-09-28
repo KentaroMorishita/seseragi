@@ -6,14 +6,19 @@ pub fn summary -> String =
 pub fn modelTitle -> String = "Language model"
 
 pub fn modelBody -> String =
-  "Start with the semantic principles that every syntax, type, runtime, and interop rule must preserve."
+  "Understand the expression-oriented model, program boundaries, and deliberate omissions before looking up individual forms."
 
 pub fn syntaxTitle -> String = "Syntax"
 
 pub fn syntaxBody -> String =
-  "Read each grammatical form independently, including its precedence, typing rules and evaluation behavior."
+  "Look up source forms, names, literals, layout, and the rules that determine how code is parsed."
 
 pub fn functionsTitle -> String = "Functions"
 
 pub fn functionsBody -> String =
-  "Function declarations, parameters and application each have their own reference pages."
+  "Follow function application through method calls, pipelines, precedence, and custom operators without turning it into a tutorial sequence."
+
+pub fn typesTitle -> String = "Types"
+
+pub fn typesBody -> String =
+  "Start with Seseragi's type model, then inspect inference, polymorphism, nominal and structural data, coercion, and recursion."

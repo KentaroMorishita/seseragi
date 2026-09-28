@@ -1,4 +1,0 @@
-import { GuideCopy } from "../guide"
-import { incomplete } from "../ja-fallback"
-
-pub fn copy -> GuideCopy = incomplete "projectを作る" "canonical Web starterからfilesystem packageを作成します。"

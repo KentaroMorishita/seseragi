@@ -3,8 +3,9 @@
 ## Ownership
 
 `apps/site` is the only active official-site implementation. It owns the main
-language entrance, Documentation, Examples and Releases. Playground remains an
-independent application and is linked as a primary product surface.
+language entrance, Language Reference, Standard Library, Examples and Releases.
+Playground remains an independent application, and its Tour is the sole ordered
+learning path.
 
 The former `apps/docs` implementation is removed. The new application does not
 keep compatibility readers, copied CSS, a second renderer or a second content
@@ -73,9 +74,12 @@ area, group and section tree. The same typed page values provide routes, titles,
 sidebar entries and rendered output. There is no separate page-ID JSON file
 that can drift from the sidebar.
 
-Every language concept remains an independent leaf. Effects, Signals, modules,
-interop and binding generation may share an area, but never collapse into one
-summary article.
+The catalog follows reader questions instead of specification file boundaries.
+Every independently useful language concept remains an addressable leaf, while
+the internal coverage map may assign several normative sections to that page.
+Effect, Task, cancellation, resources, Signal, modules, interop and binding
+generation never collapse into one summary article. Language and Standard
+Library pages use separate navigation trees; only the current tree is rendered.
 
 ## External source boundary
 

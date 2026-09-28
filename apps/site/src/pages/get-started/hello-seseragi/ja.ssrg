@@ -1,4 +1,0 @@
-import { GuideCopy } from "../guide"
-import { incomplete } from "../ja-fallback"
-
-pub fn copy -> GuideCopy = incomplete "Hello, Seseragi" "最小の公開entry pointを実行し、console outputを確認します。"

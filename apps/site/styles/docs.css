@@ -25,27 +25,65 @@
   padding: 52px 0;
 }
 
-.sidebar-area,
-.sidebar-section {
-  margin: 0 0 20px;
+.sidebar-area {
+  margin: 0 0 10px;
 }
 
 .sidebar-area > summary,
+.sidebar-group > summary,
 .sidebar-section > summary {
   cursor: pointer;
   color: var(--text);
-  font-size: 14px;
-  font-weight: 760;
   list-style: none;
 }
 
-.sidebar-group > p {
-  margin: 22px 0 8px;
+.sidebar-area > summary::-webkit-details-marker,
+.sidebar-group > summary::-webkit-details-marker,
+.sidebar-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.sidebar-area > summary::before,
+.sidebar-group > summary::before,
+.sidebar-section > summary::before {
+  display: inline-block;
+  width: 14px;
+  color: var(--text-soft);
+  content: "›";
+  transform-origin: 45% 50%;
+  transition: transform 120ms ease;
+}
+
+.sidebar-area[open] > summary::before,
+.sidebar-group[open] > summary::before,
+.sidebar-section[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.sidebar-area > summary {
+  font-size: 14px;
+  font-weight: 760;
+}
+
+.sidebar-group {
+  margin: 18px 0 4px 12px;
+}
+
+.sidebar-group > summary {
   color: var(--text-soft);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.sidebar-section {
+  margin: 10px 0 0 10px;
+}
+
+.sidebar-section > summary {
+  font-size: 13px;
+  font-weight: 720;
 }
 
 .sidebar-section nav {
@@ -67,13 +105,19 @@
   text-decoration: none;
 }
 
+.sidebar-area > .sidebar-link {
+  display: block;
+  margin: 6px 0 0 14px;
+}
+
 .sidebar-link.current {
   border-color: var(--accent);
   color: var(--accent-strong);
 }
 
 .article-page,
-.docs-landing {
+.docs-landing,
+.reference-index {
   width: min(100%, var(--article-width));
   min-height: 80vh;
   margin: 0 auto;
@@ -82,6 +126,20 @@
 
 .docs-landing {
   width: min(calc(100% - 48px), 980px);
+}
+
+.reference-index {
+  width: min(calc(100% - 48px), 900px);
+  padding-top: 88px;
+}
+
+.reference-index .article-content {
+  max-width: 760px;
+  padding-top: 34px;
+}
+
+.reference-index .article-content h2 {
+  padding-top: 34px;
 }
 
 .page-intro {
@@ -99,7 +157,8 @@
 }
 
 .documentation-landing .page-intro h1,
-.docs-landing .page-intro h1 {
+.docs-landing .page-intro h1,
+.reference-index .page-intro h1 {
   font-size: 44px;
 }
 
@@ -109,6 +168,14 @@
   color: var(--text-muted);
   font-size: var(--type-lead);
   line-height: 1.65;
+}
+
+.reference-index .page-intro {
+  max-width: 760px;
+}
+
+.reference-index .page-intro h1 {
+  font-size: 44px;
 }
 
 .on-this-page > p {
@@ -131,7 +198,7 @@
   text-decoration: none;
 }
 
-html[lang="ja"] .sidebar-group > p,
+html[lang="ja"] .sidebar-group > summary,
 html[lang="ja"] .on-this-page > p {
   letter-spacing: 0.03em;
   text-transform: none;

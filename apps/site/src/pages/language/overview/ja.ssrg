@@ -4,13 +4,18 @@ pub fn summary -> String = "Seseragiプログラミング言語の構文と意�
 
 pub fn modelTitle -> String = "言語model"
 
-pub fn modelBody -> String =
-  "日本語本文は#630で整備中です。構文・型・runtime・interopが維持する意味論の原則から参照できます。"
+pub fn modelBody -> String = "個別の形式を調べる前に、式指向のmodel、program境界、意図的に持たない機能を理解できます。"
 
 pub fn syntaxTitle -> String = "構文"
 
-pub fn syntaxBody -> String = "文法形式ごとに、優先順位・型付け規則・評価規則を独立したページで説明します。"
+pub fn syntaxBody -> String = "source形式、name、literal、layout、codeの解釈を決める規則を調べられます。"
 
 pub fn functionsTitle -> String = "関数"
 
-pub fn functionsBody -> String = "関数宣言・引数・関数適用を、それぞれのリファレンスページで説明します。"
+pub fn functionsBody -> String =
+  "関数適用からmethod call、pipeline、優先順位、custom operatorまでを関連づけて説明します。"
+
+pub fn typesTitle -> String = "型"
+
+pub fn typesBody -> String =
+  "Seseragiの型modelを起点に、推論、polymorphism、nominal・structural data、coercion、再帰を調べられます。"

@@ -30,6 +30,7 @@ fn navigation<Action> input: BuildInput
     children: [
       anchor messages.documentation (localizedRoute locale "/docs/") "",
       anchor messages.playground input.playgroundUrl "",
+      anchor messages.tour input.tourUrl "",
       anchor messages.examples (localizedRoute locale "/examples/") "",
       anchor messages.releases (localizedRoute locale "/releases/") ""
     ]

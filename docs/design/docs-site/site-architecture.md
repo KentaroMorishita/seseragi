@@ -1,684 +1,298 @@
-# Seseragi Documentation Site Architecture
+# Seseragi reference site architecture
 
-Status: design source for the documentation mockups. This document defines
-content depth before visual design. It does not replace `docs/spec/`.
+Status: design source for the public Seseragi reference site. This document
+defines how readers navigate the language. `docs/spec/` remains normative.
 
-## 1. Content ownership
+## 1. Product boundaries
 
-- `docs/spec/` is the normative source used to review correctness and drift.
-- The documentation site is the complete reader-facing explanation of the
-  language. A reader must not need to open the specification to understand a
-  documented feature.
-- Documentation pages teach one subject at a time and link to the exact
-  normative section as evidence, not as a substitute for explanation.
-- Public API signatures and symbol identities come from compiler metadata.
-- `examples/spec/` and verified samples provide executable code. Prose must not
-  invent a second, unverified version of an example.
-- The website is English-first. Japanese uses the same page ids and hierarchy
-  under `/ja/`; missing Japanese content falls back visibly to English.
+Seseragi has three different reading experiences. They must not be collapsed
+into one giant documentation tree.
 
-## 2. Page-granularity rule
+| Surface | Reader question | Organization |
+| --- | --- | --- |
+| Tour | How do I learn Seseragi in order? | One interactive sequence |
+| Language Reference | What does this language concept mean and what are its exact rules? | Concepts and semantic relationships |
+| Standard Library | Which module or symbol provides this operation? | Modules and compiler-owned symbols |
 
-The specification currently contains 290 second-level normative sections.
-They are not content to compress into six overview articles.
+The Tour at `https://seseragi.vercel.app/tour/` is the only ordered learning
+course. The reference site links to it but does not recreate a Get Started or
+Learn track.
 
-- A sidebar group is navigation, not an article.
-- Every normative subject gets its own stable leaf route.
-- Overview pages introduce and route; they do not absorb the leaf articles.
-- Closely related pages link to each other but remain independently searchable.
-- Standard Library modules get module pages, then generated pages for their
-  public types, traits, functions, instances, and deprecations.
-- Large contracts such as Effect, Web UI, Tooling, and Runtime Providers use
-  nested sidebar groups so their leaf pages remain visible without one enormous
-  flat list.
+Examples, releases, and the Playground are global destinations. Tooling,
+package, interop, Web, and runtime-provider material may gain their own
+reference surfaces when the content exists. They must not be inserted into the
+Language Reference or Standard Library sidebars merely to make a complete
+looking site.
 
-### Completeness rule
+There is no Community or package-registry destination until a real product
+exists for it.
 
-Navigation coverage alone is insufficient. Before a leaf page is considered
-designed, every rule in its source specification section must be assigned to a
-visible part of the article. That includes:
+## 2. Content ownership
 
-- accepted syntax and invalid syntax;
-- static type, inference, constraints, and coercions;
+- `docs/spec/` defines normative behavior.
+- The public reference explains that behavior in reader-facing language. A
+  reader should not need to decode the specification to understand a feature.
+- `examples/spec/` and site-owned verification sources provide executable
+  examples. Prose and code panels do not copy Tour lessons.
+- Compiler metadata owns Standard Library module, symbol, signature, instance,
+  and availability data.
+- English is canonical. Japanese has the same page identity and hierarchy under
+  `/ja/`; incomplete translations are identified explicitly.
+
+## 3. Human-centred page boundaries
+
+A specification section is evidence, not automatically a page.
+
+Create a leaf page when a reader can reasonably arrive with one distinct
+question, the answer has a stable name, and the page can explain a coherent
+contract. A page may cover several normative subsections. One normative
+subsection may also support several pages when readers encounter it through
+different concepts.
+
+Do not combine independent concepts merely because they share an implementation
+or a specification chapter. In particular, failure, Effect, Task,
+cancellation, resources, Signal, modules, and interop remain separately
+addressable topics.
+
+Every article answers, in the order useful to a reader:
+
+1. what the concept is and when it matters;
+2. its accepted form, with a small verified example;
+3. its static rules and inferred types;
+4. its runtime or evaluation behavior;
+5. invalid forms and the diagnostics they produce;
+6. interactions, limits, costs, and related concepts;
+7. the normative specification sections that support the explanation.
+
+Not every heading is required on a short page, but none of the applicable
+questions may be silently omitted.
+
+## 4. Coverage without specification-shaped navigation
+
+Completeness is tracked in an internal coverage map rather than exposed as the
+site hierarchy. Each normative rule maps to one or more public pages and to a
+visible article location. Coverage records include:
+
+- syntax and rejected syntax;
+- type inference, constraints, identity, and coercion;
 - evaluation order and desugaring;
-- success, typed failure, defect, and cancellation behavior;
-- resource and lifetime rules;
-- module visibility, package identity, and interop boundaries;
-- complexity, allocation, stack-safety, and other performance guarantees;
-- diagnostics and rejected configurations;
-- executable examples, counterexamples, and related concepts.
+- success, typed failure, defects, and cancellation;
+- resources, ownership, subscription, and lifetime;
+- visibility, module identity, packages, and interop boundaries;
+- performance, allocation, stack safety, and ordering guarantees;
+- diagnostics and invalid configurations;
+- verified examples and counterexamples.
 
-The specification link is provenance. It never stands in for any of the items
-above. A short summary that omits the normative behavior is a failed page.
+A route list is not proof of coverage. A specification link is provenance, not
+a substitute for an explanation.
 
-## 3. Global site navigation
+## 5. Global navigation
 
-The language website has one primary entrance and a small, stable global nav:
+The public site uses a small stable header:
 
-1. **Documentation** — the complete learning and reference system.
-2. **Playground** — edit and run Seseragi.
-3. **Examples** — verified, task-oriented programs.
-4. **Releases** — language and toolchain release notes.
-5. **GitHub** — repository and issue tracker.
-6. **Language switch** — English / 日本語.
+1. Documentation — opens the reference index;
+2. Playground — edits and runs Seseragi;
+3. Tour — the ordered learning path;
+4. Examples — verified complete programs;
+5. Releases — language and toolchain history;
+6. locale switch — English / 日本語.
 
-There is no Community destination and no package-registry destination until a
-real product exists for either one.
+## 6. Reference index
 
-## 4. Documentation landing page
+`/docs/` is the entrance to reference material, not a compressed tutorial. It
+contains three calm routes:
 
-`/docs/` is a router, not a compressed language tutorial. It presents six
-reader paths with short descriptions and recent-version context:
+- Language Reference;
+- Standard Library;
+- the external Tour link for readers who want a sequence.
 
-- Get Started
-- Language Reference
-- Standard Library
-- Application Development
-- Interop and Projects
-- Tooling and Internals
+It does not render the article sidebar. It does not explain Effect, types, Web,
+or tooling on the landing page.
 
-The page also links to Playground, Examples, the normative Specification, and
-the current release. It does not attempt to explain the language on the landing
-page.
+## 7. Navigation shell
 
-## 5. Documentation shell
+Language and library articles use separate navigation trees. An article sidebar
+renders only the tree containing the current page.
 
-Desktop uses three columns: section sidebar, article, and in-page table of
-contents. Mobile turns the sidebar and table of contents into separate drawers.
+Desktop uses:
 
-The left sidebar has four levels:
+1. the current reference tree;
+2. the article;
+3. the current article's table of contents.
 
-1. documentation area;
-2. collapsible subject group;
-3. leaf article;
-4. generated symbol children where applicable.
+Mobile turns the current reference tree and article table of contents into two
+separate disclosures. Collapsed branches do not render thousands of symbol
+links. The active group and section remain expanded.
 
-The active path stays expanded. Previous/next navigation follows the same order
-as the sidebar. Search indexes leaf pages, headings, symbols, diagnostics, and
-spec anchors; results identify whether a hit is Guide, Reference, API, or
-Internals.
+The navigation levels are:
 
-## 6. Get Started sidebar
+1. reference surface;
+2. reader-oriented concept group or API category;
+3. concept cluster or module;
+4. leaf concept or generated symbol.
 
-```text
-Get Started
-├─ Overview
-├─ Install the toolchain
-├─ Hello, Seseragi
-├─ Create a project
-├─ Project layout
-├─ Run a program
-├─ Format and check code
-├─ Test a project
-├─ Build for production
-├─ Create a Web application
-└─ Where to go next
-```
+## 8. Language Reference sitemap
 
-This is the only deliberately linear section. Each step is a separate page and
-uses verified commands or source files.
-
-## 7. Language Reference sidebar
-
-### Language model
+The sitemap below is the target information architecture. Routes may be filled
+incrementally, but completed pages must be placed in this reader model rather
+than in a temporary Learn or miscellaneous group.
 
 ```text
 Language Reference
-├─ Language model
+├─ Understand Seseragi
 │  ├─ What Seseragi is
-│  ├─ Design principles
 │  ├─ Programs and entry points
-│  └─ Features the language does not have
-```
-
-### Syntax and operators
-
-```text
-├─ Syntax and operators
+│  ├─ Design principles
+│  └─ Features Seseragi deliberately does not have
+├─ Source and syntax
 │  ├─ Source text and comments
+│  ├─ Names and reserved words
 │  ├─ Literals
 │  ├─ Characters, strings, and template escapes
-│  ├─ Layout and blocks
+│  ├─ Layout, blocks, and line continuation
+│  └─ Optional record field syntax
+├─ Functions and operators
+│  ├─ Function declarations
+│  ├─ Parameters and currying
 │  ├─ Function application
 │  ├─ Method calls
 │  ├─ Pipelines and low-precedence application
-│  ├─ Built-in operators
-│  ├─ Custom operators and fixity
-│  ├─ Reserved words
-│  └─ Optional record field syntax
-```
-
-### Type system
-
-```text
-├─ Type system
-│  ├─ Type-system properties
-│  ├─ Built-in types
-│  ├─ Type constructors
-│  ├─ Type annotations and inference
-│  ├─ Polymorphism
-│  ├─ Nominal and structural types
-│  ├─ Optional record fields
-│  ├─ Closed structural records
-│  ├─ Requirement merge
-│  ├─ Function types and currying
-│  ├─ Type identity and coercion
-│  ├─ Recursive declarations
-│  ├─ Kinds and type constructors
-│  ├─ Type-parameter scope
-│  ├─ Generic functions
-│  ├─ Let-polymorphism and rank
-│  ├─ Generic ADTs
-│  ├─ Generic structs
-│  ├─ Generic impls and methods
-│  ├─ Generic aliases
-│  ├─ Newtypes
-│  ├─ Variance
-│  └─ Type erasure and runtime representation
-```
-
-### Data, expressions, and patterns
-
-```text
-├─ Data, expressions, and patterns
-│  ├─ Evaluation order
-│  ├─ Let bindings and blocks
-│  ├─ Binding rules
-│  ├─ Irrefutable patterns
-│  ├─ Conditional expressions
+│  ├─ Built-in operator precedence
+│  └─ Custom operators and fixity
+├─ Values and data modelling
+│  ├─ Bindings and immutability
 │  ├─ Algebraic data types
 │  ├─ Structs
 │  ├─ Newtypes
 │  ├─ Records
 │  ├─ Tuples, arrays, and lists
-│  ├─ Ranges and comprehensions
-│  ├─ Match and patterns
+│  └─ Ranges and comprehensions
+├─ Expressions and control flow
+│  ├─ Evaluation order
+│  ├─ Blocks
+│  ├─ Conditional expressions
+│  ├─ Match expressions
 │  ├─ Lambdas
-│  ├─ Impls and methods
-│  └─ Struct and newtype operator overloads
-```
-
-### Traits and generic abstractions
-
-```text
-├─ Traits and generic abstractions
-│  ├─ Why traits exist
-│  ├─ Trait declarations
-│  ├─ Instances
-│  ├─ Constraints
-│  ├─ Calling trait methods
+│  └─ Impls and methods
+├─ Patterns
+│  ├─ Binding and irrefutable patterns
+│  ├─ Constructor patterns
+│  ├─ Record, tuple, array, and list patterns
+│  ├─ Guards and exhaustiveness
+│  └─ Diagnostics for unreachable or incomplete matches
+├─ Types
+│  ├─ Type-system model
+│  ├─ Built-in types
+│  ├─ Type constructors and kinds
+│  ├─ Annotations and inference
+│  ├─ Polymorphism and rank
+│  ├─ Nominal and structural types
+│  ├─ Records and requirement merge
+│  ├─ Function types
+│  ├─ Identity and coercion
+│  ├─ Recursive declarations
+│  ├─ Generics and type-parameter scope
+│  ├─ Variance
+│  └─ Runtime representation
+├─ Traits and implementations
+│  ├─ Trait declarations and constraints
+│  ├─ Instances and method resolution
 │  ├─ Coherence and orphan rules
-│  ├─ Standard operators and traits
-│  ├─ Laws
-│  ├─ Deriving
-│  ├─ Methods versus trait methods
-│  ├─ Do notation
-│  ├─ Do desugaring
-│  └─ Typing a do block
-```
-
-### Failure, Effect, and state
-
-```text
-├─ Failure, Effect, and state
+│  ├─ Laws and deriving
+│  ├─ Operator traits
+│  └─ Do notation and desugaring
+├─ Failure and Effect
 │  ├─ Pure expressions
-│  ├─ Maybe
-│  ├─ Either
+│  ├─ Maybe and Either
 │  ├─ Effect<R, E, A>
-│  ├─ Effect functions
-│  │  ├─ Contract form
-│  │  ├─ Compact inferred form
-│  │  └─ Effectful for
-│  ├─ Environment requirements
-│  ├─ Typed error channels
+│  ├─ Requirements and typed error channels
+│  ├─ Effect function forms
+│  ├─ Execution boundaries
+│  └─ Defects
+├─ Concurrency and resources
 │  ├─ Task
 │  ├─ Sequential and parallel execution
-│  ├─ Runtime execution boundaries
-│  ├─ Defects
 │  ├─ Cancellation
 │  ├─ Resource scopes and finalizers
-│  ├─ Scheduler fairness
-│  ├─ Fiber supervision
+│  ├─ Fibers and supervision
+│  └─ Scheduler guarantees
+├─ Signals
 │  ├─ Signal and MutableSignal
 │  ├─ Derived signals
-│  ├─ Signal read and update operators
-│  ├─ Subscriptions and lifetime
-│  └─ Exceptions and algebraic effects
-```
-
-### Modules
-
-```text
-└─ Modules
-   ├─ Module units and identity
-   ├─ Packages
-   ├─ Top-level declarations
-   ├─ Visibility
-   ├─ Imports
-   ├─ Module specifier resolution
-   ├─ Re-exports
-   ├─ Namespaces and name resolution
-   ├─ Dependency graphs and cycles
-   ├─ Initialization and evaluation
-   └─ Entry points
-```
-
-`Maybe`, `Either`, `Effect`, `Task`, cancellation, resources, Fiber, and Signal
-are separate leaf articles. The sidebar group merely keeps them discoverable.
-
-## 8. TypeScript Interop sidebar
-
-```text
-Interop and Projects
+│  ├─ Reading and updating
+│  └─ Subscriptions and lifetime
+├─ Modules and packages
+│  ├─ Module identity
+│  ├─ Top-level declarations and visibility
+│  ├─ Imports, exports, and resolution
+│  ├─ Dependency graphs and initialization
+│  ├─ Packages, manifests, and lockfiles
+│  └─ Entry points and targets
 ├─ TypeScript interop
-│  ├─ Boundary principles
-│  ├─ Foreign modules
-│  ├─ Pure foreign calls
-│  ├─ Task foreign calls
-│  ├─ Arity and currying
-│  ├─ Boundary types
-│  ├─ Primitive conversion
-│  ├─ Collections and records
-│  ├─ Optional, nullable, and rest parameters
-│  ├─ Overloads
-│  ├─ Classes, constructors, methods, and properties
-│  ├─ Callbacks and lifetime
-│  ├─ Calling Seseragi from TypeScript
-│  ├─ ABI stability
-│  ├─ Generic public ABI
-│  └─ Source maps and cross-language stacks
+│  ├─ Boundary model and foreign modules
+│  ├─ Calls, currying, and callbacks
+│  ├─ Type conversion and overloads
+│  ├─ Classes and object boundaries
+│  ├─ Public ABI and source maps
+│  └─ Binding generation
+└─ Grammar and diagnostics
+   ├─ Grammar reference
+   ├─ Diagnostic catalogue
+   └─ Source ranges and recovery
 ```
 
-## 9. `.d.ts` binding generation sidebar
+## 9. Standard Library sitemap
 
-```text
-├─ Binding generation
-│  ├─ What the converter generates
-│  ├─ Inputs and symbol resolution
-│  ├─ Generated outputs and reports
-│  ├─ Primitive type conversion
-│  ├─ Nullability and optional values
-│  ├─ Collections, tuples, and objects
-│  ├─ Functions
-│  ├─ Overload selection
-│  ├─ Generic declarations
-│  ├─ Classes and enums
-│  ├─ Unions and intersections
-│  ├─ Unsupported TypeScript types
-│  ├─ Discriminated-union opt-in
-│  ├─ Updating declarations
-│  ├─ Converter configuration
-│  ├─ Callback lifetime configuration
-│  ├─ Generated naming
-│  └─ Declaration merging and namespace exports
-```
-
-## 10. Packages and projects sidebar
-
-```text
-└─ Packages and projects
-   ├─ Manifest reference
-   ├─ Package identity and versions
-   ├─ Standard project layout
-   ├─ Module paths
-   ├─ Export maps
-   ├─ Dependencies
-   ├─ Package-local imports and tests
-   ├─ Generated bindings
-   ├─ Foreign host inputs
-   ├─ Executable entry points
-   ├─ Web documents and public assets
-   ├─ Lockfiles
-   ├─ Workspace discovery
-   └─ Logical project inputs and loader adapters
-```
-
-## 11. Standard Library sidebar
-
-The sidebar exposes every standard module. Each module landing page explains
-semantics and cost; compiler-owned children document the exact public surface.
+The library tree is generated from compiler metadata. Categories help a reader
+find a module; module pages explain semantics, availability, target support,
+and cost; generated children document exact public types, traits, constructors,
+functions, operators, and instances.
 
 ```text
 Standard Library
-├─ Overview
-├─ Common API rules
 ├─ Prelude
 ├─ Data and validation
-│  ├─ std/maybe
-│  ├─ std/either
-│  └─ std/validation
 ├─ Collections
-│  ├─ std/collection
-│  ├─ std/array
-│  ├─ std/list
-│  ├─ std/non-empty-list
-│  ├─ std/map
-│  └─ std/set
-├─ Text
-│  ├─ std/text
-│  ├─ std/regex
-│  ├─ std/text/grapheme
-│  └─ std/text/unicode
+├─ Text and Unicode
 ├─ Numbers and bytes
-│  ├─ std/number
-│  ├─ std/int
-│  ├─ std/float
-│  ├─ std/math
-│  ├─ std/big-int
-│  ├─ std/decimal
-│  ├─ std/bytes
-│  ├─ std/bytes/hex
-│  └─ std/bytes/base64
 ├─ Data formats
-│  └─ std/json and decoders
 ├─ Time and randomness
-│  ├─ std/time
-│  ├─ std/clock
-│  ├─ std/random
-│  └─ std/entropy
 ├─ Effects and concurrency
-│  ├─ std/effect
-│  ├─ Temporal control
-│  ├─ Resource scopes
-│  ├─ Concurrency
-│  ├─ std/ref
-│  ├─ std/deferred
-│  ├─ std/queue
-│  └─ std/semaphore
 ├─ Streams and signals
-│  ├─ std/stream
-│  ├─ Demand, buffers, and overflow
-│  ├─ Time operators
-│  ├─ Terminal operations and resources
-│  ├─ Stream-to-Signal conversion
-│  └─ std/signal
 ├─ System capabilities
-│  ├─ std/console
-│  ├─ std/logger
-│  ├─ std/stdin
-│  ├─ std/filesystem
-│  ├─ std/process
-│  ├─ Termination and graceful shutdown
-│  └─ Child processes
 ├─ Networking and browser
-│  ├─ std/http
-│  ├─ std/http/server
-│  ├─ std/web/file
-│  ├─ std/http/multipart
-│  ├─ std/sse
-│  ├─ std/websocket
-│  ├─ std/websocket/server
-│  ├─ std/web/navigation
-│  └─ std/web/storage
-├─ Testing and measurement
-│  ├─ std/test
-│  └─ std/benchmark
-└─ Optional adapters
+└─ Testing and measurement
 ```
 
-Generated children beneath a module use stable compiler identities, for
-example `std/array` → types → traits → functions → instances. They are not
-hand-copied signatures.
+Generated symbol routes use stable compiler identities. Signatures are never
+hand-copied into a second source of truth.
 
-## 12. Application Development sidebar
+## 10. Cross-reference rules
 
-### Web UI
+- A Language Reference page may link to relevant library modules and symbols,
+  but does not embed the library tree.
+- A library symbol may link back to the language concepts needed to understand
+  its signature or behavior.
+- A reference article may link to a Tour step as an optional exercise. It does
+  not depend on the Tour for its explanation.
+- Examples may show a complete application, while reference pages keep examples
+  minimal and specific to the rule being explained.
+- Tooling and provider implementation details are linked only where they change
+  user-visible language or runtime behavior.
 
-```text
-Application Development
-├─ Web UI
-│  ├─ Web module boundaries
-│  ├─ Html values and children
-│  ├─ Props records
-│  ├─ Event actions
-│  ├─ IME composition
-│  ├─ Safe tags, attributes, styles, and URLs
-│  ├─ Pure tree semantics
-│  ├─ Stateful feature ownership
-│  ├─ Server-side rendering
-│  ├─ Dom services and targets
-│  ├─ Event dispatch and resource lifetime
-│  ├─ Signal-driven DOM binding
-│  ├─ Large-scene application patterns
-│  ├─ Hydration
-│  ├─ Targets and interop
-│  ├─ Document metadata
-│  └─ SVG and browser interaction capabilities
-```
+## 11. Review gates
 
-### Data, servers, and storage
+A documentation change is complete only after these reviews:
 
-```text
-├─ Data and protocols
-│  ├─ JSON decoding
-│  ├─ Bytes and encoding
-│  ├─ HTTP clients
-│  ├─ HTTP servers
-│  ├─ Multipart and files
-│  ├─ Server-sent events
-│  └─ WebSockets
-├─ Host applications
-│  ├─ Console and structured logging
-│  ├─ Filesystem
-│  ├─ Processes and shutdown
-│  ├─ Time, clocks, and randomness
-│  ├─ Browser navigation
-│  └─ Browser storage
-└─ Databases
-   ├─ PostgreSQL
-   │  ├─ Identity and requirements
-   │  ├─ Resources and values
-   │  ├─ Query results and row decoding
-   │  ├─ Transactions
-   │  ├─ Cursors
-   │  └─ Failures and Provider boundaries
-   └─ SQLite
-      ├─ Identity and requirements
-      ├─ Databases and parameters
-      ├─ Row decoding
-      ├─ Transactions and resources
-      └─ Failures, targets, and streams
-```
-
-## 13. Tooling sidebar
-
-User-facing tool pages and implementation contracts are separated. The first
-group explains how to use the tools; the second records exact shared behavior.
-
-```text
-Tooling
-├─ CLI
-│  ├─ run
-│  ├─ build
-│  ├─ test
-│  ├─ format
-│  ├─ lock
-│  └─ target capabilities
-├─ Editor support
-│  ├─ VS Code extension
-│  ├─ Language server
-│  ├─ Diagnostics
-│  ├─ Type inference explanations
-│  ├─ Exhaustive-match fixes
-│  ├─ Syntax highlighting
-│  ├─ Document comments
-│  └─ Deprecation metadata
-├─ Playground
-│  ├─ Virtual workspaces
-│  ├─ Project compiler boundary
-│  ├─ Spec fixtures and availability
-│  ├─ Explorer
-│  ├─ Editor tabs
-│  ├─ Workspace execution
-│  └─ Fullscreen HTML Preview
-└─ Tool contracts
-   ├─ Shared syntax pipeline
-   ├─ Raw operator tokens
-   ├─ Header scanning and module interfaces
-   ├─ Flat operator chains and fixity resolution
-   ├─ Incomplete source recovery
-   ├─ Formatter contract
-   ├─ Conformance cases
-   ├─ Shared Analysis API
-   ├─ Shared type documents
-   ├─ Type display surface
-   ├─ Diagnostic contract
-   ├─ Test runner contract
-   └─ Public-surface coverage
-```
-
-## 14. Internals sidebar
-
-### Performance and production artifacts
-
-```text
-Internals
-├─ Performance model
-│  ├─ Performance guarantees
-│  ├─ Observability and the as-if rule
-│  ├─ Abstraction cost classes
-│  ├─ Erased surface abstractions
-│  ├─ Functions, currying, and traits
-│  ├─ Data, collections, and fusion
-│  ├─ Recursion and stack safety
-│  ├─ Effect, Stream, and Signal costs
-│  ├─ HTML and DOM costs
-│  ├─ Build profiles
-│  ├─ Verification and benchmarks
-│  ├─ Production artifact manifests
-│  ├─ Application reachability
-│  ├─ Official runtime retention
-│  ├─ Production bundle layout
-│  ├─ Minification and source maps
-│  └─ Artifact regression gates
-```
-
-### Runtime Provider Contract
-
-The Provider section retains the specification's full leaf depth. It is split
-into navigable groups, not collapsed into one provider article.
-
-```text
-└─ Runtime Provider Contract
-   ├─ Model
-   │  ├─ Purpose and source of truth
-   │  ├─ Service identity and requirements
-   │  ├─ Contract versions
-   │  ├─ Logical types
-   │  ├─ Operation identity and kinds
-   │  ├─ Portable operations and target extensions
-   │  └─ Capability validation examples
-   ├─ Discovery and selection
-   │  ├─ Provider manifests
-   │  ├─ Requirement collection and visibility
-   │  ├─ Compatibility filters
-   │  ├─ Deterministic selection
-   │  ├─ Preflight diagnostics
-   │  └─ Lockfile and build metadata
-   ├─ TypeScript runtime ABI
-   │  ├─ Runtime ABI v1
-   │  ├─ Logical-value projection
-   │  ├─ Null, undefined, and missing
-   │  ├─ Operation calls and result envelopes
-   │  ├─ Opaque handles
-   │  ├─ Conversion responsibility
-   │  └─ Cross-capability projection
-   ├─ Lifecycle
-   │  ├─ Provider lifecycle contract
-   │  ├─ Cold Effect and single start
-   │  ├─ Terminal outcomes
-   │  ├─ Cancellation races
-   │  ├─ Resource acquire and handoff
-   │  ├─ Scope cleanup and shutdown order
-   │  └─ Causal metadata
-   ├─ Callback and stream contract
-   │  ├─ One-shot and multi-shot callbacks
-   │  ├─ Registration and removal
-   │  ├─ Demand and backpressure
-   │  ├─ Overflow and protocol violations
-   │  ├─ Producer and consumer cancellation
-   │  ├─ Stream and Signal conversion
-   │  └─ Capability boundaries
-   ├─ Compatibility and conformance
-   │  ├─ Portable surface and target extensions
-   │  ├─ Independent version roles
-   │  ├─ Additive and breaking changes
-   │  ├─ Handshake diagnostics
-   │  ├─ Provider conformance cases
-   │  ├─ Backend replacement
-   │  └─ Capability-level final validation
-   └─ Application bridges
-      ├─ Application capability baseline
-      └─ HTTP server effectful-handler bridge
-```
-
-Every rejection-condition section in the Provider specification is a separate
-leaf checklist beside the contract it validates. The Provider sidebar therefore
-also includes Logical schema rejections, TypeScript ABI rejections, Lifecycle
-schema rejections, Stream schema rejections, and Compatibility schema
-rejections. Each page retains a direct normative anchor and links every rejected
-shape back to the page that explains the corresponding valid contract.
-
-## 15. Examples and Cookbook
-
-Examples are task-oriented and do not replace reference pages.
-
-```text
-Examples
-├─ Language examples
-├─ Effect and concurrency
-├─ Web interfaces
-├─ HTTP and data
-├─ Resources and cancellation
-├─ TypeScript interop
-├─ PostgreSQL
-├─ SQLite
-└─ Testing
-
-Cookbook
-├─ Decode and validate external data
-├─ Model domain failures
-├─ Compose environment services
-├─ Run work in parallel
-├─ Acquire and release resources
-├─ Build a form
-├─ Bind Signal state to DOM regions
-├─ Stream server events
-├─ Handle graceful shutdown
-└─ Test with deterministic services
-```
-
-## 16. Leaf article contract
-
-Every reference article follows the same content contract. Empty headings are
-not emitted when a subject does not have that dimension.
-
-1. concise definition;
-2. syntax or public signature;
-3. typing and inference rules;
-4. evaluation order and runtime semantics;
-5. failure, cancellation, and resource behavior where relevant;
-6. visibility, package, interop, or Provider boundary where relevant;
-7. performance or complexity guarantees where specified;
-8. verified examples and counterexamples;
-9. diagnostics and invalid forms;
-10. related pages;
-11. exact links to normative specification sections.
-
-This contract prevents a page from becoming a decorative summary. A reader can
-use a leaf article to answer what is valid, what type it has, when it executes,
-how it fails, and which boundary owns the behavior.
-
-## 17. Visual-design consequences
-
-- Section landing pages use generous whitespace and a short route list; they do
-  not preview every concept in marketing cards.
-- Reference pages prioritize the sidebar, article typography, code, tables, and
-  direct links to the specification.
-- Code is rendered as real highlighted text with copy and Playground actions,
-  never as an editor screenshot.
-- The desktop sidebar must demonstrate at least three expanded levels in the
-  next mockup, because depth is part of the product design.
-- The next mockup set must include `/docs/`, one deep language reference page,
-  one generated Standard Library symbol page, one Web guide, and one Tooling or
-  Provider contract page. A homepage alone cannot validate this architecture.
+1. **Information architecture** — the page answers a stable reader question and
+   appears in the correct reference tree.
+2. **Specification coverage** — every claimed rule has normative evidence and
+   no applicable rule was hidden by an overview.
+3. **Executable truth** — valid and invalid examples are checked at their owning
+   compiler, runtime, or tool boundary.
+4. **Navigation** — the current branch is visible without exposing unrelated
+   reference trees or every generated symbol.
+5. **Visual QA** — desktop and mobile are inspected for type scale, line length,
+   whitespace, code readability, overflow, and locale behavior.
+6. **Dead-content audit** — replaced pages, routes, samples, styles, and tests
+   are removed instead of left as a second architecture.

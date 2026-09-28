@@ -1,0 +1,27 @@
+import * as html from "std/web/html"
+import { article } from "../components/article"
+import { Messages } from "../i18n/model"
+import { BuildInput } from "../model/build"
+import { Locale, translate } from "../model/locale"
+import { PageDefinition } from "../model/page"
+
+pub fn documentationIndexLayout<Action> input: BuildInput
+  -> messages: Messages
+  -> locale: Locale
+  -> page: PageDefinition
+  -> html.Html<Action> =
+  html.main {
+    id: "content",
+    class: "reference-index",
+    children: [
+      html.header {
+        class: "page-intro",
+        children: [
+          html.p { class: "eyebrow", children: "SESERAGI REFERENCE" },
+          html.h1 { children: translate locale page.title },
+          html.p { class: "page-lead", children: translate locale page.summary }
+        ]
+      },
+      article input messages locale page.blocks
+    ]
+  }

@@ -1,4 +1,0 @@
-import { GuideCopy } from "../guide"
-import { incomplete } from "../ja-fallback"
-
-pub fn copy -> GuideCopy = incomplete "Getting Started" "Seseragiの導入から実行・test・production buildまでを進めるガイドです。"

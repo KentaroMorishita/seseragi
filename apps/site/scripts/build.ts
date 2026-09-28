@@ -71,6 +71,7 @@ function generatorInput(playgroundUrl: string) {
     schema: 1,
     origin: "",
     playgroundUrl,
+    tourUrl: new URL("tour/", playgroundUrl).href,
     examples: [
       canonicalExample(
         "hello-world",
@@ -213,11 +214,6 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
-        "test-discovery",
-        "examples/spec/fixtures/projects/test-discovery/tests/basic.ssrg",
-        playgroundUrl
-      ),
-      canonicalExample(
         "web-starter-main",
         "examples/samples/web-starter/src/main.ssrg",
         playgroundUrl
@@ -348,7 +344,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (51 + referencePageCount),
+      2 * (40 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

@@ -4,6 +4,7 @@ import { BuildInput } from "../model/build"
 import { Locale, localeCode, localizedRoute, translate } from "../model/locale"
 import {
   Article,
+  DocumentationIndex,
   DocumentationLanding,
   Home,
   PageDefinition,
@@ -15,6 +16,7 @@ import { siteHeader } from "../components/site-header"
 import { anchor, metadata, resource } from "../components/primitives"
 import { articleLayout } from "../layouts/article"
 import { documentationLandingLayout } from "../layouts/documentation-landing"
+import { documentationIndexLayout } from "../layouts/documentation-index"
 import { homeLayout } from "../layouts/home"
 import { landingLayout } from "../layouts/landing"
 
@@ -28,6 +30,7 @@ fn pageBody<Action> input: BuildInput
     match page.kind {
       Home -> homeLayout input labels locale catalog.areas page
       SiteLanding -> landingLayout input labels locale page
+      DocumentationIndex -> documentationIndexLayout input labels locale page
       DocumentationLanding -> documentationLandingLayout input labels locale catalog.areas page
       Article -> articleLayout input labels locale catalog.areas page
       Reference -> articleLayout input labels locale catalog.areas page
