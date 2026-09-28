@@ -50,21 +50,10 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3852)
+    expect(manifest.pages).toHaveLength(3830)
     for (const route of [
       "/",
       "/docs/",
-      "/docs/get-started/",
-      "/docs/get-started/install/",
-      "/docs/get-started/hello-seseragi/",
-      "/docs/get-started/create-project/",
-      "/docs/get-started/project-layout/",
-      "/docs/get-started/run/",
-      "/docs/get-started/format-and-check/",
-      "/docs/get-started/test/",
-      "/docs/get-started/production-build/",
-      "/docs/get-started/web-application/",
-      "/docs/get-started/next/",
       "/docs/language/model/what-is-seseragi/",
       "/docs/language/model/design-principles/",
       "/docs/language/model/expression-oriented/",
@@ -111,19 +100,17 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/library/prelude/operator/add/",
       "/docs/library/prelude/function/reducible-reduce/",
       "/ja/docs/library/array/function/get/",
-      "/ja/docs/get-started/install/",
       "/ja/docs/language/model/non-features/",
       "/ja/docs/language/syntax/literals/",
       "/ja/releases/",
     ]) {
       expect(manifest.pages).toContain(route)
     }
+    for (const route of manifest.pages) {
+      expect(route).not.toContain("/docs/get-started/")
+    }
     expect(manifest.referenceModules).toHaveLength(63)
-    const nonReferenceExamples = new Set([
-      "hello-world",
-      "test-discovery",
-      "web-starter-main",
-    ])
+    const nonReferenceExamples = new Set(["hello-world", "web-starter-main"])
     const languageExamples = manifest.examples.filter(
       ({ id }) => !nonReferenceExamples.has(id)
     )
@@ -143,20 +130,14 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     expect(home).toContain('<html lang="en">')
     expect(home).toContain("THE SESERAGI PROGRAMMING LANGUAGE")
     expect(textContent(home)).toContain("pub effect fn main")
-    const gettingStarted = readFileSync(
-      join(output, "docs/get-started/hello-seseragi/index.html"),
-      "utf8"
-    )
-    expect(gettingStarted).toContain("Before you begin")
-    expect(textContent(gettingStarted)).toContain(
-      'pub effect fn main = println "Hello, Seseragi!"'
-    )
-    expect(gettingStarted).toContain("guide-next")
-    const japaneseGuide = readFileSync(
-      join(output, "ja/docs/get-started/install/index.html"),
-      "utf8"
-    )
-    expect(japaneseGuide).toContain("日本語本文は#630で整備中です")
+    expect(home).toContain('href="https://seseragi.vercel.app/tour/"')
+    const documentation = readFileSync(join(output, "docs/index.html"), "utf8")
+    expect(textContent(documentation)).toContain("Seseragi Reference")
+    expect(textContent(documentation)).toContain("Language Reference")
+    expect(textContent(documentation)).toContain("Standard Library")
+    expect(textContent(documentation)).toContain("The interactive Tour")
+    expect(textContent(documentation)).not.toContain("Get Started")
+    expect(documentation).not.toContain("docs-sidebar")
     const languageModel = readFileSync(
       join(output, "docs/language/model/non-features/index.html"),
       "utf8"
@@ -192,7 +173,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     )
     expect(textContent(operators)).toContain("9: field/method ., index []")
     expect(textContent(operators)).toContain("a < b < c")
-    expect(textContent(operators)).toContain("Operators and names")
+    expect(textContent(operators)).toContain("Functions and operators")
     const customOperators = readFileSync(
       join(output, "docs/language/syntax/custom-operators/index.html"),
       "utf8"
@@ -212,7 +193,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(textContent(typeSystem)).toContain("implicit Any or Unknown")
-    expect(textContent(typeSystem)).toContain("Type systemFoundations")
+    expect(textContent(typeSystem)).toContain("TypesUnderstanding types")
     const builtInTypes = readFileSync(
       join(output, "docs/language/types/built-in-types/index.html"),
       "utf8"

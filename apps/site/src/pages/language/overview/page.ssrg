@@ -41,6 +41,14 @@ pub fn page -> PageDefinition = PageDefinition {
           "/docs/language/syntax/function-application/"
         )
       ]
+    ),
+    Heading ("types", text (en.typesTitle ()) (ja.typesTitle ())),
+    Paragraph (
+      [
+        Words (text (en.typesBody ()) (ja.typesBody ())),
+        InternalLink
+          (text " Type system" " 型system", "/docs/language/types/type-system/")
+      ]
     )
   ]
 }

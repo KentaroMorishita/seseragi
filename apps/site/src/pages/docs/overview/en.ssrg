@@ -1,12 +1,12 @@
-pub fn title -> String = "Documentation"
+pub fn title -> String = "Seseragi Reference"
 pub fn summary -> String =
-  "Start with an executable path, look up one language rule, or inspect an exact standard-library symbol."
-pub fn getStartedTitle -> String = "Get Started"
-pub fn getStartedBody -> String =
-  "Install the official CLI and take verified source through execution, testing, Web development, and a production build."
-pub fn languageTitle -> String = "Language"
+  "Understand the language by concept, then follow each rule to its exact syntax, semantics, diagnostics, and related API."
+pub fn languageTitle -> String = "Language Reference"
 pub fn languageBody -> String =
-  "Syntax, values, functions, types, pattern matching, traits, effects, signals, modules, and interoperability are documented as separate topics."
+  "Read Seseragi from the language model outward: source forms, functions, data, types, traits, effects, signals, modules, and interoperability."
 pub fn libraryTitle -> String = "Standard Library"
 pub fn libraryBody -> String =
-  "Browse module and symbol pages generated from compiler-owned metadata."
+  "Look up modules and public symbols from compiler-owned metadata without mixing API navigation into the language specification."
+pub fn tourTitle -> String = "Learning Seseragi"
+pub fn tourBody -> String =
+  "The interactive Tour is the ordered learning path. The reference stays organized for explanation and lookup instead of repeating that course."

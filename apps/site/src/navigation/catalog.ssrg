@@ -11,17 +11,6 @@ import {
 } from "../model/page"
 import { page as homePage } from "../pages/home/page"
 import { page as docsOverviewPage } from "../pages/docs/overview/page"
-import { page as getStartedOverviewPage } from "../pages/get-started/overview/page"
-import { page as installPage } from "../pages/get-started/install/page"
-import { page as helloSeseragiPage } from "../pages/get-started/hello-seseragi/page"
-import { page as createProjectPage } from "../pages/get-started/create-project/page"
-import { page as projectLayoutPage } from "../pages/get-started/project-layout/page"
-import { page as runPage } from "../pages/get-started/run/page"
-import { page as formatAndCheckPage } from "../pages/get-started/format-and-check/page"
-import { page as testPage } from "../pages/get-started/test/page"
-import { page as productionBuildPage } from "../pages/get-started/production-build/page"
-import { page as webApplicationPage } from "../pages/get-started/web-application/page"
-import { page as nextPage } from "../pages/get-started/next/page"
 import { page as languageOverviewPage } from "../pages/language/overview/page"
 import { page as whatIsSeseragiPage } from "../pages/language/model/what-is-seseragi/page"
 import { page as designPrinciplesPage } from "../pages/language/model/design-principles/page"
@@ -62,75 +51,49 @@ import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
 import { referenceGroups } from "../reference/catalog"
 
-fn getStartedArea -> NavigationArea = {
-  let overview = getStartedOverviewPage ()
-  NavigationArea {
-    id: "get-started",
-    title: localized "Get Started" "Get Started",
-    description: localized
-      "Install the toolchain and take one verified program through run, test and production build."
-      "toolchainの導入から実行・test・production buildまでを進めます。",
-    landing: overview,
-    groups: [NavigationGroup {
-      id: "journey",
-      title: localized "Guide" "ガイド",
-      sections: [NavigationSection {
-        id: "first-project",
-        title: localized "First project" "最初のproject",
-        kind: FlatSection,
-        overview: installPage (),
-        pages: [
-          helloSeseragiPage (),
-          createProjectPage (),
-          projectLayoutPage (),
-          runPage (),
-          formatAndCheckPage (),
-          testPage (),
-          productionBuildPage (),
-          webApplicationPage (),
-          nextPage ()
-        ]
-      }]
-    }]
-  }
-}
-
 fn languageArea -> NavigationArea = NavigationArea {
   id: "language",
   title: localized "Language Reference" "Language Reference",
-  description: localized "Syntax and semantics, one concept per page."
-    "構文と意味論を、一概念ずつ説明します。",
+  description: localized
+    "Understand each language concept, then inspect its exact rules."
+    "概念を理解してから、正確な言語規則まで辿れます。",
   landing: languageOverviewPage (),
   groups: [
     NavigationGroup {
-      id: "language-model",
-      title: localized "Language model" "言語model",
-      sections: [NavigationSection {
-        id: "foundations",
-        title: localized "Foundations" "基礎",
-        kind: FlatSection,
-        overview: whatIsSeseragiPage (),
-        pages: [
-          designPrinciplesPage (),
-          expressionOrientedPage (),
-          immutableByDefaultPage (),
-          noHiddenDangerPage (),
-          backendIndependentSemanticsPage (),
-          diagnosableBehaviorPage (),
-          visibleCostsPage (),
-          readableDensityPage (),
-          programsPage (),
-          nonFeaturesPage ()
-        ]
-      }]
-    },
-    NavigationGroup {
-      id: "syntax",
-      title: localized "Syntax" "構文",
+      id: "orientation",
+      title: localized "Understand Seseragi" "Seseragiを理解する",
       sections: [
         NavigationSection {
-          id: "lexical-structure",
-          title: localized "Lexical structure" "字句構造",
+          id: "language-model",
+          title: localized "The language model" "言語model",
+          kind: FlatSection,
+          overview: whatIsSeseragiPage (),
+          pages: [programsPage (), nonFeaturesPage ()]
+        },
+        NavigationSection {
+          id: "design-principles",
+          title: localized "Design principles" "設計原則",
+          kind: FlatSection,
+          overview: designPrinciplesPage (),
+          pages: [
+            expressionOrientedPage (),
+            immutableByDefaultPage (),
+            noHiddenDangerPage (),
+            backendIndependentSemanticsPage (),
+            diagnosableBehaviorPage (),
+            visibleCostsPage (),
+            readableDensityPage ()
+          ]
+        }
+      ]
+    },
+    NavigationGroup {
+      id: "source-and-syntax",
+      title: localized "Source and syntax" "sourceと構文",
+      sections: [
+        NavigationSection {
+          id: "source-forms",
+          title: localized "Reading source" "sourceを読む",
           kind: FlatSection,
           overview: sourceTextPage (),
           pages: [
@@ -140,32 +103,41 @@ fn languageArea -> NavigationArea = NavigationArea {
           ]
         },
         NavigationSection {
-          id: "application",
-          title: localized "Application" "適用",
+          id: "names-and-fields",
+          title: localized "Names and fields" "nameとfield",
+          kind: FlatSection,
+          overview: reservedWordsPage (),
+          pages: [optionalRecordFieldsPage ()]
+        }
+      ]
+    },
+    NavigationGroup {
+      id: "functions-and-operators",
+      title: localized "Functions and operators" "関数とoperator",
+      sections: [
+        NavigationSection {
+          id: "calling-functions",
+          title: localized "Calling functions" "関数を呼び出す",
           kind: FlatSection,
           overview: functionApplicationPage (),
           pages: [methodCallsPage (), pipelinesPage ()]
         },
         NavigationSection {
           id: "operators",
-          title: localized "Operators and names" "operatorとname",
+          title: localized "Operators" "operator",
           kind: FlatSection,
           overview: operatorPrecedencePage (),
-          pages: [
-            customOperatorsPage (),
-            reservedWordsPage (),
-            optionalRecordFieldsPage ()
-          ]
+          pages: [customOperatorsPage ()]
         }
       ]
     },
     NavigationGroup {
-      id: "type-system",
-      title: localized "Type system" "型system",
+      id: "types",
+      title: localized "Types" "型",
       sections: [
         NavigationSection {
-          id: "type-foundations",
-          title: localized "Foundations" "基礎",
+          id: "understanding-types",
+          title: localized "Understanding types" "型を理解する",
           kind: FlatSection,
           overview: typeSystemPage (),
           pages: [
@@ -176,8 +148,8 @@ fn languageArea -> NavigationArea = NavigationArea {
           ]
         },
         NavigationSection {
-          id: "records-and-requirements",
-          title: localized "Records and requirements" "recordとrequirement",
+          id: "data-shapes",
+          title: localized "Nominal and structural data" "nominal・structural data",
           kind: FlatSection,
           overview: nominalStructuralPage (),
           pages: [
@@ -187,7 +159,7 @@ fn languageArea -> NavigationArea = NavigationArea {
           ]
         },
         NavigationSection {
-          id: "functions-and-recursion",
+          id: "function-and-recursive-types",
           title: localized "Functions and recursion" "関数と再帰",
           kind: FlatSection,
           overview: functionTypesPage (),
@@ -201,8 +173,7 @@ fn languageArea -> NavigationArea = NavigationArea {
 fn libraryArea input: BuildInput -> NavigationArea = NavigationArea {
   id: "library",
   title: localized "Standard Library" "標準ライブラリ",
-  description: localized "Module and symbol reference generated from compiler metadata."
-    "compiler metadataから生成されるmodule・symbol referenceです。",
+  description: localized "Look up modules and public symbols." "moduleと公開symbolを調べられます。",
   landing: libraryOverviewPage (),
   groups: referenceGroups input.referenceModules
 }
@@ -222,7 +193,7 @@ fn areaPages area: NavigationArea -> Array<PageDefinition> = arrays.concat [
 
 pub fn catalog input: BuildInput -> SiteCatalog = {
   let home = homePage ()
-  let areas = [getStartedArea (), languageArea (), libraryArea input]
+  let areas = [languageArea (), libraryArea input]
   SiteCatalog {
     home,
     areas,

@@ -153,6 +153,32 @@ try {
         assert.equal(await page.locator(".on-this-page").count(), 1)
         assert.equal(await page.locator(".mobile-docs-navigation").count(), 1)
         assert.equal(await page.locator(".mobile-on-this-page").count(), 1)
+        assert.equal(
+          await page.locator(".docs-sidebar > .sidebar-area[open]").count(),
+          1
+        )
+        assert.equal(
+          await page
+            .locator(".docs-sidebar > .sidebar-area[open] > summary")
+            .textContent(),
+          "Language Reference"
+        )
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-group[open] > summary"
+            )
+            .textContent(),
+          "Functions and operators"
+        )
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-section:has(.sidebar-link.current) > summary"
+            )
+            .textContent(),
+          "Calling functions"
+        )
         assert.ok(
           (await page.locator("body").innerText()).includes(
             "Application does not infer a different call grammar"
@@ -371,62 +397,43 @@ try {
           })
 
         await page.goto(`http://127.0.0.1:${server.port}/docs/`)
-        assert.equal(await page.locator("h1").textContent(), "Documentation")
-        assert.equal(await page.locator(".docs-sidebar").count(), 1)
-        assert.equal(await page.locator(".mobile-docs-navigation").count(), 1)
-
-        await page.goto(
-          `http://127.0.0.1:${server.port}/docs/get-started/hello-seseragi/`
+        assert.equal(
+          await page.locator("h1").textContent(),
+          "Seseragi Reference"
         )
-        assert.equal(await page.locator("h1").textContent(), "Hello, Seseragi")
-        assert.equal(await page.locator(".seseragi-highlight").count(), 1)
-        assert.equal(await page.locator(".guide-next").count(), 1)
-        assert.ok(
-          (await page.locator("body").innerText()).includes(
-            'pub effect fn main = println "Hello, Seseragi!"'
-          )
+        assert.equal(await page.locator(".docs-sidebar").count(), 0)
+        assert.equal(await page.locator(".mobile-docs-navigation").count(), 0)
+        const documentationText = await page.locator("body").innerText()
+        assert.ok(documentationText.includes("Language Reference"))
+        assert.ok(documentationText.includes("Standard Library"))
+        assert.ok(documentationText.includes("interactive Tour"))
+        assert.ok(!documentationText.includes("Get Started"))
+        assert.equal(
+          await page
+            .locator('a[href="https://seseragi.vercel.app/tour/"]')
+            .count(),
+          2
         )
-        const guideWidth = await page.evaluate(
+        const documentationWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
         )
         assert.ok(
-          guideWidth <= width,
-          `getting started ${width}px viewport is ${guideWidth}px`
+          documentationWidth <= width,
+          `documentation ${width}px viewport is ${documentationWidth}px`
         )
         if (screenshots)
           await page.screenshot({
-            path: join(screenshots, `getting-started-${width}.png`),
-            fullPage: true,
-          })
-
-        await page.goto(
-          `http://127.0.0.1:${server.port}/docs/get-started/project-layout/`
-        )
-        const terminalCodeStyle = await codeSurface(
-          page.locator(".terminal-panel pre > code").first()
-        )
-        assert.deepEqual(terminalCodeStyle, {
-          background: "rgba(0, 0, 0, 0)",
-          border: "0px",
-          display: "block",
-          padding: "0px",
-        })
-        const projectLayoutWidth = await page.evaluate(
-          () => document.documentElement.scrollWidth
-        )
-        assert.ok(
-          projectLayoutWidth <= width,
-          `project layout ${width}px viewport is ${projectLayoutWidth}px`
-        )
-        if (screenshots)
-          await page.screenshot({
-            path: join(screenshots, `project-layout-${width}.png`),
+            path: join(screenshots, `documentation-${width}.png`),
             fullPage: true,
           })
 
         await page.goto(`http://127.0.0.1:${server.port}/ja/docs/`)
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")
-        assert.equal(await page.locator("h1").textContent(), "ドキュメント")
+        assert.equal(
+          await page.locator("h1").textContent(),
+          "Seseragiリファレンス"
+        )
+        assert.equal(await page.locator(".docs-sidebar").count(), 0)
 
         await page.goto(
           `http://127.0.0.1:${server.port}/docs/library/array/function/get/`
@@ -447,6 +454,37 @@ try {
             ),
           "std/array"
         )
+        assert.equal(
+          await page.locator(".docs-sidebar > .sidebar-area[open]").count(),
+          1
+        )
+        assert.equal(
+          await page
+            .locator(".docs-sidebar > .sidebar-area[open] > summary")
+            .textContent(),
+          "Standard Library"
+        )
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-group[open] > summary"
+            )
+            .textContent(),
+          "Collections"
+        )
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-section[open]"
+            )
+            .count(),
+          1
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `standard-library-${width}.png`),
+            fullPage: true,
+          })
 
         assert.deepEqual(failures, [])
         await context.close()
@@ -513,7 +551,7 @@ try {
           })
 
         await page.goto(
-          `http://127.0.0.1:${server.port}/docs/get-started/hello-seseragi/`
+          `http://127.0.0.1:${server.port}/docs/language/syntax/function-application/`
         )
         const article = await page.evaluate(() => {
           const frame = document.querySelector(".docs-frame")
@@ -578,7 +616,7 @@ try {
         }
         if (screenshots)
           await page.screenshot({
-            path: join(screenshots, `getting-started-responsive-${width}.png`),
+            path: join(screenshots, `article-responsive-${width}.png`),
             fullPage: true,
           })
 

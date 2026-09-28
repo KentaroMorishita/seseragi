@@ -38,6 +38,7 @@ pub struct BuildInput deriving JsonDecode {
   schema: Int,
   origin: String,
   playgroundUrl: String,
+  tourUrl: String,
   examples: Array<ExampleSource>,
   referenceModules: Array<ReferenceModule>
 }

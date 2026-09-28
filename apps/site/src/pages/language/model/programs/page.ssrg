@@ -8,8 +8,8 @@ pub fn page -> PageDefinition =
   conceptPage "language.model.programs" "/docs/language/model/programs/" (en.copy ()) (ja.copy ()) [CodeExample
       ("language-program-entry", localized "A typed executable entry" "型付きの実行entry")] [
         [InternalLink (
-          localized "Getting Started: run a program" "Getting Started: programを実行する",
-          "/docs/get-started/run/"
+          localized "Function application" "関数適用",
+          "/docs/language/syntax/function-application/"
         )],
         [InternalLink (
           localized "Backend-independent semantics" "backend-independent semantics",

@@ -3,6 +3,7 @@ import { LocalizedText } from "./locale"
 pub type PageKind =
   | Home
   | SiteLanding
+  | DocumentationIndex
   | DocumentationLanding
   | Article
   | Reference
@@ -29,7 +30,6 @@ pub type Block =
   | CodeExample (String, LocalizedText)
   | Terminal (LocalizedText, String)
   | Callout (CalloutTone, LocalizedText, Array<Inline>)
-  | NextStep (LocalizedText, LocalizedText, String)
   | ApiReference (String, String, String)
 
 pub struct PageDefinition {

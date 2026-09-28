@@ -1,6 +1,7 @@
 import { LocalizedText, localized } from "../../../model/locale"
 import {
-  DocumentationLanding,
+  DocumentationIndex,
+  ExternalLink,
   Heading,
   InternalLink,
   PageDefinition,
@@ -16,28 +17,16 @@ fn text english: String -> japanese: String -> LocalizedText =
 pub fn page -> PageDefinition = PageDefinition {
   id: "docs.overview",
   path: "/docs/",
-  kind: DocumentationLanding,
+  kind: DocumentationIndex,
   title: text (en.title ()) (ja.title ()),
   summary: text (en.summary ()) (ja.summary ()),
   blocks: [
-    Heading ("get-started", text (en.getStartedTitle ()) (ja.getStartedTitle ())),
-    Paragraph (
-      [
-        Words (text (en.getStartedBody ()) (ja.getStartedBody ())),
-        InternalLink (
-          text " Start with the guide" " ガイドを開く",
-          "/docs/get-started/"
-        )
-      ]
-    ),
     Heading ("language", text (en.languageTitle ()) (ja.languageTitle ())),
     Paragraph (
       [
         Words (text (en.languageBody ()) (ja.languageBody ())),
-        InternalLink (
-          text " Function application" " 関数適用",
-          "/docs/language/syntax/function-application/"
-        )
+        InternalLink
+          (text " Browse the language reference" " 言語リファレンスを見る", "/docs/language/")
       ]
     ),
     Heading ("standard-library", text (en.libraryTitle ()) (ja.libraryTitle ())),
@@ -45,7 +34,15 @@ pub fn page -> PageDefinition = PageDefinition {
       [
         Words (text (en.libraryBody ()) (ja.libraryBody ())),
         InternalLink
-          (text " Array.get" " Array.get", "/docs/library/array/function/get/")
+          (text " Browse the standard library" " 標準ライブラリを見る", "/docs/library/")
+      ]
+    ),
+    Heading ("learn-by-doing", text (en.tourTitle ()) (ja.tourTitle ())),
+    Paragraph (
+      [
+        Words (text (en.tourBody ()) (ja.tourBody ())),
+        ExternalLink
+          (text " Open the Tour" " Tourを開く", "https://seseragi.vercel.app/tour/")
       ]
     )
   ]
