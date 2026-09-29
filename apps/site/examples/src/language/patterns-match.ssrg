@@ -1,0 +1,11 @@
+type Status =
+  | Waiting
+  | Complete Int
+
+fn message status: Status -> String = match status {
+  Waiting -> "waiting"
+  Complete count when count > 0 -> `${count} complete`
+  Complete _ -> "complete"
+}
+
+let result = message (Complete 3)

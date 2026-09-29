@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "演算子オーバーロード",
+  summary: "structとnewtypeは、nominal型が所有するtypeclass evidenceとして固定の標準operatorを実装できます。",
+  ruleTitle: "overloadは型付きstandard traitの糖衣",
+  ruleBody: "impl内のoperator memberは対応するstandard trait instanceを定義します。第一operandのselfは囲むnominal型で、後続operandと結果の宣言型がevidence全体を決めます。",
+  typingBody: "静的operand型とglobal instance coherenceで解決します。generic overloadにはconstraintを付けられます。newtypeは表現型のoperatorを継承しません。",
+  evaluationBody: "operandを通常どおり左から右へ一度ずつ評価し、選ばれた実装を実行します。runtimeでoverloadを探索しません。",
+  invalidTitle: "overloadは新しい構文を作らない",
+  invalidBody: "固定されたoperatorだけをoverloadできます。precedenceとassociativityは標準のままです。custom tokenはtop-level custom operator declarationを使い、明示instanceとの重複は拒否します。",
+  diagnosticsBody: "不正operator名、operand・結果contract、equalityの不正結果、evidence重複、利用位置でのcoherent instance欠落を報告します。",
+  provenanceBody: "仕様3.13を扱い、糖衣をstandard operator traitとcoherenceへ接続します。"
+}

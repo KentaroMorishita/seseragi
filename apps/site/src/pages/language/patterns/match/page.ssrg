@@ -1,0 +1,21 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.patterns.match" "/docs/language/patterns/match/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("patterns-match", localized "Exhaustive match with a guard" "guardを持つ網羅match")] [CodeExample
+      ("patterns-invalid-match", localized "Rejected non-exhaustive match" "非網羅matchを拒否")] [
+        [InternalLink
+      (localized "Binding rules" "binding共通規則", "/docs/language/patterns/binding-rules/")],
+        [InternalLink (
+          localized "Irrefutable patterns" "irrefutable pattern",
+          "/docs/language/patterns/irrefutable-patterns/"
+        )],
+        [InternalLink (
+          localized "Algebraic data types" "algebraic data type",
+          "/docs/language/data/algebraic-data-types/"
+        )]
+      ]

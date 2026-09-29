@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Tuples, arrays, and lists",
+  summary: "Tuples fix arity, arrays provide strict indexed storage, and lists provide persistent head-tail structure.",
+  ruleTitle: "Three collection shapes have different contracts",
+  ruleBody: "A tuple has two or more fixed positions. [items] creates Array, while backtick-bracket creates List. Array and List elements share one type, and empty literals need an expected element type.",
+  typingBody: "Array and List are distinct invariant types with explicit conversions. Array indexing takes Int and returns Maybe; List has no index syntax. Patterns preserve the original collection kind in rest bindings.",
+  evaluationBody: "Literal elements evaluate once from left to right. Arrays store a strict contiguous sequence; lists are immutable persistent Empty/Cons values with constant-time head and tail sharing.",
+  invalidTitle: "Similar literals do not imply the same cost",
+  invalidBody: "There is no one-element tuple or implicit Array/List conversion. Repeated Array head-rest matching can be quadratic, while List tail sharing supports linear recursive traversal.",
+  diagnosticsBody: "The checker reports unresolved empty element types, mixed element types, tuple arity mismatches, wrong index types, and Array/List confusion.",
+  provenanceBody: "This article covers specification 3.8, including literal, pattern, indexing, conversion, representation, and complexity contracts."
+}

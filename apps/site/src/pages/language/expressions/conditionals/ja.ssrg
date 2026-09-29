@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "条件式",
+  summary: "if式はBool条件から、同じ型を持つ二つのbranchの片方を選びます。",
+  ruleTitle: "二つのbranchで一つの式",
+  ruleBody: "条件はBool、elseは必須で、thenとelseは同じ型を返します。片方がNeverなら、もう片方の型へcoerceします。",
+  typingBody: "実行されるbranchは一つでも、checkerは条件と両branchを検査します。Int、String、collection、foreign valueからBoolへのtruthiness変換はありません。",
+  evaluationBody: "条件を一度評価し、選ばれたbranchだけを評価します。選ばれなかったbranchの処理は実行しません。",
+  invalidTitle: "ifはstatementではない",
+  invalidBody: "elseを省略したり無関係な型を混ぜたりしても、暗黙のUnitやunion型にはなりません。両方の選択肢を明示し、型を揃えます。",
+  diagnosticsBody: "Boolでない条件、elseの欠落、型が異なるbranchをそれぞれ指します。Never branchは許可されますが、他の不一致を隠しません。",
+  provenanceBody: "仕様3.3と、型systemが定めるNever coercionを扱います。"
+}

@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "newtypeの値",
+  summary: "newtypeはrecordのboilerplateなしで、一つの表現を別のnominal boundaryで包みます。",
+  ruleTitle: "wrapとunwrapは明示する",
+  ruleBody: "型名が一引数constructorにもなります。visibilityが許せばconstructor patternで内部値を取り出せます。新しいnominal型へmethodとoperatorを定義できます。",
+  typingBody: "newtypeと表現型は暗黙にunifyしません。generic parameterはnominal identityの一部です。opaque visibilityなら型だけを公開しconstructorとpatternを隠せます。",
+  evaluationBody: "構築時に内部式を一度評価します。backendはwrapper表現をeraseできますが、nominalな検査と観測可能な構築・match semanticsを保つ必要があります。",
+  invalidTitle: "同じ表現でも同じ型ではない",
+  invalidBody: "field access、record spread、struct update、暗黙coercion、表現型instanceの自動継承はできません。",
+  diagnosticsBody: "表現値をnewtypeとして使う場合や逆の場合、二つのnominally distinctな型を示し、明示的な構築またはmatchを求めます。",
+  provenanceBody: "仕様3.6のexpression・patternを扱います。型identityとruntime representationはchapter 2で説明します。"
+}

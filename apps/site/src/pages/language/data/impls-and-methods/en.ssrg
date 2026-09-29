@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Inherent impls and methods",
+  summary: "An inherent impl adds statically resolved methods to a nominal type in its defining module.",
+  ruleTitle: "The nominal type owns its methods",
+  ruleBody: "impl T may appear only in the module that defines T. A method's first parameter is named self and has the impl target type; later parameters remain curried ordinary parameters.",
+  typingBody: "Receiver type selects the impl and substitutes generic type arguments before ordinary method inference continues. Multiple impl blocks are allowed, but method names for one target must be unique.",
+  evaluationBody: "Method syntax resolves statically and then applies an ordinary function to the receiver. It does not perform runtime class dispatch or mutate the receiver.",
+  invalidTitle: "impl is not a trait instance",
+  invalidBody: "Use instance Trait<T> for typeclass evidence. impl Trait<T>, impl of a foreign nominal type, a missing self name, and a mismatched self type are rejected.",
+  diagnosticsBody: "Errors identify the non-local target, invalid self parameter, duplicate method, visibility violation, or receiver type that has no matching method.",
+  provenanceBody: "This article covers specification 3.12; generic receiver rules and the contrast with traits have dedicated cross-links."
+}

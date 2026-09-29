@@ -1,0 +1,24 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.data.impls-and-methods" "/docs/language/data/impls-and-methods/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "data-impls-and-methods",
+        localized "A generic inherent method" "generic inherent method"
+      )] [CodeExample (
+        "data-invalid-impl-owner",
+        localized "Rejected foreign impl target" "外部impl targetを拒否"
+      )] [
+        [InternalLink
+      (localized "Method calls" "method call", "/docs/language/syntax/method-calls/")],
+        [InternalLink
+      (localized "Polymorphism" "polymorphism", "/docs/language/types/polymorphism/")],
+        [InternalLink (
+          localized "Nominal and structural types" "nominal型とstructural型",
+          "/docs/language/types/nominal-and-structural-types/"
+        )]
+      ]

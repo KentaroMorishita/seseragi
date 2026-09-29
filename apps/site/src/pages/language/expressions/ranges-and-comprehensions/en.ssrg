@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Ranges and comprehensions",
+  summary: "Finite Int ranges feed ordered Array or List comprehensions with explicit generators and guards.",
+  ruleTitle: "Generation order is written in the source",
+  ruleBody: "start..end excludes end and start..=end includes it. Comprehensions process generator and Bool guard clauses left to right; multiple generators nest with the leftmost generator outermost.",
+  typingBody: "A generator source must have Iterable evidence. Its pattern receives the element type, guards are Bool, and the result expression determines the Array or List element type independently of the source collection type.",
+  evaluationBody: "Each source expression is evaluated once for each surrounding generator element, then traversed in Iterable order. A refutable generator pattern filters nonmatching elements without partial bindings.",
+  invalidTitle: "A range does not infer direction",
+  invalidBody: "The step is always one and a start greater than end produces an empty range. Use library operations for descending sequences; an Effect cannot be a pure comprehension source.",
+  diagnosticsBody: "Errors identify missing Iterable evidence, a non-Bool guard, a pattern mismatch, or incompatible result elements. Source and result collection kinds are never converted implicitly.",
+  provenanceBody: "This article covers specification 3.9, including endpoint semantics and the generator expansion model."
+}

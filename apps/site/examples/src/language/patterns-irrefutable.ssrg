@@ -1,0 +1,5 @@
+newtype UserId = Int
+
+let UserId rawId = UserId 42
+let (name, score) = ("Aki", 100)
+let identity = (rawId, name, score)

@@ -1,0 +1,3 @@
+impl Int {
+  fn doubled self: Int -> Int = self * 2
+}

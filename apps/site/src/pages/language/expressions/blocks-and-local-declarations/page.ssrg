@@ -1,0 +1,50 @@
+import { localized } from "../../../../model/locale"
+import {
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  BulletList,
+  Words
+} from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.expressions.blocks-and-local-declarations" "/docs/language/expressions/blocks-and-local-declarations/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "expressions-blocks",
+      localized "A block with a local function" "local functionを持つblock"
+    ),
+    BulletList [
+      [
+        InlineCode "let",
+        Words
+          (localized " binds from the following item onward." " は次のitemから末尾までbindします。")
+      ],
+      [
+        InlineCode "fn",
+        Words (
+          localized " captures earlier lexical bindings and itself."
+          " は先行するlexical bindingと自身をcaptureします。"
+        )
+      ],
+      [
+        InlineCode "rec",
+        Words (
+          localized " gives every member the complete group scope."
+          " は全memberへgroup全体のscopeを与えます。"
+        )
+      ]
+    ]
+  ] [] [
+    [InternalLink
+          (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")],
+    [InternalLink
+          (localized "Binding rules" "binding共通規則", "/docs/language/patterns/binding-rules/")],
+    [InternalLink (
+      localized "Recursive declarations" "再帰宣言",
+      "/docs/language/types/recursive-declarations/"
+    )]
+  ]

@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Newtype values",
+  summary: "A newtype creates a distinct nominal boundary around one representation without record boilerplate.",
+  ruleTitle: "Wrapping and unwrapping are explicit",
+  ruleBody: "The type name is also its one-argument constructor. A constructor pattern exposes the contained value where visibility allows it; methods and operators may be attached to the new nominal type.",
+  typingBody: "A newtype and its representation never unify implicitly. Generic parameters belong to the nominal identity, and opaque visibility can expose the type while hiding its constructor and pattern.",
+  evaluationBody: "Construction evaluates the inner expression once. A backend may erase the wrapper representation, but must preserve nominal checking and observable construction and matching behavior.",
+  invalidTitle: "Same representation does not mean same type",
+  invalidBody: "Field access, record spread, struct update, implicit coercion, and automatic inheritance of the representation type's instances are unavailable.",
+  diagnosticsBody: "A representation value used where the newtype is expected, or the reverse, reports the two nominally distinct types and requires explicit construction or matching.",
+  provenanceBody: "This article covers expression and pattern behavior from specification 3.6; type identity and runtime representation are covered in chapter 2."
+}

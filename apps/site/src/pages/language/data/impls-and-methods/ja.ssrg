@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "inherent implとメソッド",
+  summary: "inherent implは、定義module内でnominal型へ静的解決されるmethodを追加します。",
+  ruleTitle: "nominal型がmethodを所有する",
+  ruleBody: "impl TはTを定義したmoduleだけに書けます。methodの第一parameterはselfという名前でimpl target型を持ち、後続parameterは通常どおりcurriedです。",
+  typingBody: "receiver型でimplを選び、generic type argumentを置換した後、通常のmethod推論を続けます。impl blockは複数書けますが、同じtargetのmethod名は一意です。",
+  evaluationBody: "method構文は静的に解決し、receiverへ通常の関数を適用します。runtime class dispatchやreceiver mutationは行いません。",
+  invalidTitle: "implはtrait instanceではない",
+  invalidBody: "typeclass evidenceにはinstance Trait<T>を使います。impl Trait<T>、外部nominal型へのimpl、self名の欠落、self型不一致は拒否します。",
+  diagnosticsBody: "localでないtarget、不正self parameter、method重複、visibility違反、該当methodを持たないreceiver型を示します。",
+  provenanceBody: "仕様3.12を扱います。generic receiver規則とtraitとの違いは専用pageへ接続します。"
+}

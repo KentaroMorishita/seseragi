@@ -46,6 +46,21 @@ import { page as requirementMergePage } from "../pages/language/types/requiremen
 import { page as functionTypesPage } from "../pages/language/types/function-types-and-currying/page"
 import { page as identityCoercionPage } from "../pages/language/types/type-identity-and-coercion/page"
 import { page as recursiveDeclarationsPage } from "../pages/language/types/recursive-declarations/page"
+import { page as evaluationPage } from "../pages/language/expressions/evaluation/page"
+import { page as blocksLocalPage } from "../pages/language/expressions/blocks-and-local-declarations/page"
+import { page as conditionalsPage } from "../pages/language/expressions/conditionals/page"
+import { page as rangesComprehensionsPage } from "../pages/language/expressions/ranges-and-comprehensions/page"
+import { page as lambdasPage } from "../pages/language/expressions/lambdas/page"
+import { page as algebraicDataTypesPage } from "../pages/language/data/algebraic-data-types/page"
+import { page as structsPage } from "../pages/language/data/structs/page"
+import { page as newtypesPage } from "../pages/language/data/newtypes/page"
+import { page as recordsPage } from "../pages/language/data/records/page"
+import { page as tuplesArraysListsPage } from "../pages/language/data/tuples-arrays-and-lists/page"
+import { page as implsMethodsPage } from "../pages/language/data/impls-and-methods/page"
+import { page as operatorOverloadsPage } from "../pages/language/data/operator-overloads/page"
+import { page as bindingRulesPage } from "../pages/language/patterns/binding-rules/page"
+import { page as irrefutablePatternsPage } from "../pages/language/patterns/irrefutable-patterns/page"
+import { page as matchPage } from "../pages/language/patterns/match/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
 import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
@@ -166,6 +181,64 @@ fn languageArea -> NavigationArea = NavigationArea {
           pages: [identityCoercionPage (), recursiveDeclarationsPage ()]
         }
       ]
+    },
+    NavigationGroup {
+      id: "expressions",
+      title: localized "Expressions" "式",
+      sections: [
+        NavigationSection {
+          id: "evaluation-and-scope",
+          title: localized "Evaluation and local scope" "評価とlocal scope",
+          kind: FlatSection,
+          overview: evaluationPage (),
+          pages: [blocksLocalPage (), conditionalsPage (), lambdasPage ()]
+        },
+        NavigationSection {
+          id: "ranges-and-comprehensions",
+          title: localized "Ranges and comprehensions" "rangeとcomprehension",
+          kind: FlatSection,
+          overview: rangesComprehensionsPage (),
+          pages: []
+        }
+      ]
+    },
+    NavigationGroup {
+      id: "data",
+      title: localized "Data" "データ",
+      sections: [
+        NavigationSection {
+          id: "nominal-data",
+          title: localized "Nominal data" "名前を持つデータ型",
+          kind: FlatSection,
+          overview: algebraicDataTypesPage (),
+          pages: [structsPage (), newtypesPage ()]
+        },
+        NavigationSection {
+          id: "structural-and-collection-data",
+          title: localized "Structural and collection data" "構造的データとコレクション",
+          kind: FlatSection,
+          overview: recordsPage (),
+          pages: [tuplesArraysListsPage ()]
+        },
+        NavigationSection {
+          id: "methods-and-operators",
+          title: localized "Methods and operator overloads" "メソッドと演算子オーバーロード",
+          kind: FlatSection,
+          overview: implsMethodsPage (),
+          pages: [operatorOverloadsPage ()]
+        }
+      ]
+    },
+    NavigationGroup {
+      id: "patterns",
+      title: localized "Patterns" "パターン",
+      sections: [NavigationSection {
+        id: "binding-and-matching",
+        title: localized "Binding and matching" "束縛とパターン照合",
+        kind: FlatSection,
+        overview: bindingRulesPage (),
+        pages: [irrefutablePatternsPage (), matchPage ()]
+      }]
     }
   ]
 }

@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Structs",
+  summary: "A struct is a nominal product with declared fields, explicit construction, and type-owned methods.",
+  ruleTitle: "The declaration owns the shape",
+  ruleBody: "Construction supplies every field exactly once, or begins with one same-typed spread and overrides selected fields. Field shorthand name means name: name.",
+  typingBody: "Field access and update require the exact nominal struct type. Public ordinary fields remain readable outside the module; opaque structs hide their representation behind public operations.",
+  evaluationBody: "A spread expression is evaluated first once, then explicit field expressions run once in source order. An update creates a new immutable value.",
+  invalidTitle: "A struct is not a structural record",
+  invalidBody: "Matching field names do not make another struct or record interchangeable. Missing, duplicate, unknown, misplaced-spread, and cross-type spread fields are rejected.",
+  diagnosticsBody: "Construction diagnostics name missing, duplicate, unknown, and wrong-typed fields. Tooling resolves field access from the nominal declaration and respects visibility.",
+  provenanceBody: "This article covers specification 3.5; generic identity, opacity, methods, and patterns are documented on their dedicated pages."
+}

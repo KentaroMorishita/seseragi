@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Match expressions",
+  summary: "match evaluates one value, selects the first matching unguarded or true-guarded arm, and returns one common result type.",
+  ruleTitle: "Pattern choice is ordered and exhaustive",
+  ruleBody: "Patterns may nest literals, bindings, wildcards, constructors, tuples, records, structs, arrays, and lists. A guard is Bool and can use names bound by its arm. Every possible input must reach an arm.",
+  typingBody: "The scrutinee type checks every pattern, guard, and nested binding. All arm results have one type, with Never coercion where applicable. A guarded arm does not contribute to exhaustiveness.",
+  evaluationBody: "The scrutinee is evaluated once. Arms are tested in source order; only the first matching arm with a true guard evaluates its body. There is no fallthrough.",
+  invalidTitle: "A final-looking arm can still be incomplete",
+  invalidBody: "A guard may be false, so a guarded constructor arm cannot cover that constructor by itself. Add an unguarded fallback and remove arms shadowed by an earlier total pattern.",
+  diagnosticsBody: "The checker reports pattern/type mismatch, inaccessible fields, duplicate bindings, non-Bool guards, non-exhaustive cases, unreachable arms, and inconsistent result types.",
+  provenanceBody: "This article covers specification 3.10 and relies on the shared binding and irrefutability rules."
+}

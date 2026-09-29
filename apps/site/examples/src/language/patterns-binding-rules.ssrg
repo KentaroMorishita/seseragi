@@ -1,0 +1,4 @@
+struct Player { name: String, score: Int, }
+
+let Player { name, score } = Player { name: "Aki", score: 42 }
+let summary = (name, score)

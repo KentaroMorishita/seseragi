@@ -1,0 +1,6 @@
+fn evenSquares limit: Int -> Array<Int> = [
+  value * value | value <- 1 ..= limit,
+  value % 2 == 0
+]
+
+let squares = evenSquares 8

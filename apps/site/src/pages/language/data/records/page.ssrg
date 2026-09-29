@@ -1,0 +1,21 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.data.records" "/docs/language/data/records/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "data-records",
+        localized "Structural spread and width use" "structural spreadとwidth利用"
+      )] [CodeExample
+      ("data-invalid-record", localized "Rejected duplicate field" "field重複を拒否")] [
+        [InternalLink (
+          localized "Optional record fields" "optional record field",
+          "/docs/language/types/optional-record-fields/"
+        )],
+        [InternalLink (localized "Structs" "struct", "/docs/language/data/structs/")],
+        [InternalLink
+      (localized "Binding rules" "binding共通規則", "/docs/language/patterns/binding-rules/")]
+      ]

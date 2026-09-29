@@ -214,6 +214,121 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
+        "expressions-evaluation",
+        "apps/site/examples/src/language/expressions-evaluation.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "expressions-blocks",
+        "apps/site/examples/src/language/expressions-blocks.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "expressions-conditionals",
+        "apps/site/examples/src/language/expressions-conditionals.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "expressions-invalid-conditional",
+        "apps/site/examples/invalid/src/language/invalid-conditional.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "expressions-ranges-comprehensions",
+        "apps/site/examples/src/language/expressions-ranges-comprehensions.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "expressions-lambdas",
+        "apps/site/examples/src/language/expressions-lambdas.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-algebraic-data-types",
+        "apps/site/examples/src/language/data-algebraic-data-types.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-structs",
+        "apps/site/examples/src/language/data-structs.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-invalid-struct",
+        "apps/site/examples/invalid/src/language/invalid-struct-literal.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-newtypes",
+        "apps/site/examples/src/language/data-newtypes.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-records",
+        "apps/site/examples/src/language/data-records.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-invalid-record",
+        "apps/site/examples/invalid/src/language/invalid-record-literal.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-tuples-arrays-lists",
+        "apps/site/examples/src/language/data-tuples-arrays-lists.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-impls-and-methods",
+        "apps/site/examples/src/language/data-impls-and-methods.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-invalid-impl-owner",
+        "apps/site/examples/invalid/src/language/invalid-impl-owner.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-operator-overloads",
+        "apps/site/examples/src/language/data-operator-overloads.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "data-invalid-operator-overload",
+        "apps/site/examples/invalid/src/language/invalid-operator-overload.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "patterns-binding-rules",
+        "apps/site/examples/src/language/patterns-binding-rules.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "patterns-invalid-binding",
+        "apps/site/examples/invalid/src/language/invalid-binding-pattern.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "patterns-irrefutable",
+        "apps/site/examples/src/language/patterns-irrefutable.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "patterns-invalid-irrefutable",
+        "apps/site/examples/invalid/src/language/invalid-irrefutable-pattern.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "patterns-match",
+        "apps/site/examples/src/language/patterns-match.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "patterns-invalid-match",
+        "apps/site/examples/invalid/src/language/invalid-match.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "web-starter-main",
         "examples/samples/web-starter/src/main.ssrg",
         playgroundUrl
@@ -344,7 +459,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (40 + referencePageCount),
+      2 * (55 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

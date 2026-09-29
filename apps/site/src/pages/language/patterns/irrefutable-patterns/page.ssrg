@@ -1,0 +1,46 @@
+import { localized } from "../../../../model/locale"
+import {
+  BulletList,
+  CodeExample,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Words
+} from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.patterns.irrefutable-patterns" "/docs/language/patterns/irrefutable-patterns/" (en.copy ()) (ja.copy ()) [
+    CodeExample
+      ("patterns-irrefutable", localized "Bindings that cannot fail" "失敗しないbinding"),
+    BulletList [
+      [
+        InlineCode "name",
+        Words (localized " and " " と "),
+        InlineCode "_",
+        Words (localized " always match." " は常に一致します。")
+      ],
+      [Words (
+        localized "Product patterns inherit refutability from every nested pattern."
+      "product patternは全nested patternからrefutabilityを引き継ぎます。"
+      )],
+      [Words (
+        localized "Only a rest-only Array or List pattern matches every length."
+      "restだけのArray・List patternがすべての長さに一致します。"
+      )]
+    ]
+  ] [CodeExample (
+    "patterns-invalid-irrefutable",
+    localized "Rejected length-dependent binding" "長さに依存するbindingを拒否"
+  )] [
+    [InternalLink
+      (localized "Binding rules" "binding共通規則", "/docs/language/patterns/binding-rules/")],
+    [InternalLink
+      (localized "Match expressions" "match式", "/docs/language/patterns/match/")],
+    [InternalLink (
+      localized "Tuples, arrays, and lists" "tuple・Array・List",
+      "/docs/language/data/tuples-arrays-and-lists/"
+    )]
+  ]

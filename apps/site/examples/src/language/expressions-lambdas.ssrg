@@ -1,0 +1,4 @@
+let increment: Int -> Int = \value -> value + 1
+let add: Int -> Int -> Int = \left right -> left + right
+
+let answer = add (increment 20) 21

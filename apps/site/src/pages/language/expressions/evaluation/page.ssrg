@@ -1,0 +1,20 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.expressions.evaluation" "/docs/language/expressions/evaluation/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("expressions-evaluation", localized "Ordered application" "順序付きの関数適用")] [] [
+        [InternalLink (
+          localized "Function application" "関数適用",
+          "/docs/language/syntax/function-application/"
+        )],
+        [InternalLink (
+          localized "Blocks and local declarations" "blockとlocal declaration",
+          "/docs/language/expressions/blocks-and-local-declarations/"
+        )],
+        [InternalLink
+      (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")]
+      ]

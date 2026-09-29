@@ -1,0 +1,7 @@
+struct Box<A> { value: A, }
+
+impl<A> Box<A> {
+  fn get self: Box<A> -> A = self.value
+}
+
+let answer = Box<Int> { value: 42 }.get

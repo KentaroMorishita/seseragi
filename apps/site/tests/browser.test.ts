@@ -316,6 +316,76 @@ try {
           })
 
         await page.goto(
+          `http://127.0.0.1:${server.port}/docs/language/patterns/match/`
+        )
+        assert.equal(
+          await page.locator("h1").textContent(),
+          "Match expressions"
+        )
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-group[open] > summary"
+            )
+            .textContent(),
+          "Patterns"
+        )
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-section:has(.sidebar-link.current) > summary"
+            )
+            .textContent(),
+          "Binding and matching"
+        )
+        assert.equal(
+          (await page.locator(".breadcrumbs").innerText()).replace(
+            /\s+/gu,
+            " "
+          ),
+          "Language Reference / Patterns / Binding and matching / Match expressions"
+        )
+        assert.equal(
+          await page.locator(".reference-previous strong").textContent(),
+          "Irrefutable patterns"
+        )
+        assert.equal(await page.locator(".seseragi-highlight").count(), 2)
+        const matchSource = await page
+          .locator(".seseragi-highlight")
+          .first()
+          .innerText()
+        assert.ok(matchSource.includes("Complete count when count > 0"))
+        assert.ok(!matchSource.includes("Lesson"))
+        const matchWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          matchWidth <= width,
+          `match article ${width}px viewport is ${matchWidth}px`
+        )
+
+        await page.goto(
+          `http://127.0.0.1:${server.port}/ja/docs/language/patterns/match/`
+        )
+        assert.equal(await page.locator("html").getAttribute("lang"), "ja")
+        assert.equal(await page.locator("h1").textContent(), "パターン照合")
+        const japaneseMatch = await page.locator("body").innerText()
+        assert.ok(japaneseMatch.includes("pattern選択は順序付きで網羅的"))
+        assert.ok(!japaneseMatch.match(/#[0-9]+/u))
+        const japaneseMatchWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          japaneseMatchWidth <= width,
+          `Japanese match article ${width}px viewport is ${japaneseMatchWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `match-ja-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
           `http://127.0.0.1:${server.port}/docs/language/types/requirement-merge/`
         )
         assert.equal(

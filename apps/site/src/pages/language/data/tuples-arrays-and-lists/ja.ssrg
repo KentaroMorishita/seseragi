@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "タプル・配列・リスト",
+  summary: "tupleはarityを固定し、Arrayはstrictなindex storage、Listはpersistentなhead-tail構造を提供します。",
+  ruleTitle: "三つのcollection shapeは契約が異なる",
+  ruleBody: "tupleは2個以上の固定positionを持ちます。[items]はArray、backtick-bracketはListです。Array・Listの要素は同じ型で、empty literalには期待要素型が必要です。",
+  typingBody: "ArrayとListは別のinvariant型で、変換は明示します。Array indexはIntを受けMaybeを返します。Listにindex構文はありません。rest patternは元のcollection kindを保ちます。",
+  evaluationBody: "literal要素は左から右へ一度ずつ評価します。Arrayはstrictな連続列、Listはconstant-timeのhead・tail共有を持つimmutable persistentなEmpty/Consです。",
+  invalidTitle: "似たliteralでもcostは同じではない",
+  invalidBody: "1要素tupleと暗黙のArray/List変換はありません。Arrayのhead-rest再帰は二乗時間になり得ますが、Listのtail共有なら線形走査できます。",
+  diagnosticsBody: "empty要素型の未解決、混在要素型、tuple arity不一致、誤ったindex型、Array/List混同を報告します。",
+  provenanceBody: "literal、pattern、index、変換、表現、complexityを含む仕様3.8を扱います。"
+}

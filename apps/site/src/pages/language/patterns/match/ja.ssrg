@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "パターン照合",
+  summary: "matchは値を一度評価し、最初に一致してguardも真になるarmを選び、共通の結果型を返します。",
+  ruleTitle: "pattern選択は順序付きで網羅的",
+  ruleBody: "literal、binding、wildcard、constructor、tuple、record、struct、Array、Listのpatternを入れ子にできます。guardはBoolで、armがbindしたnameを使えます。全入力がどれかのarmへ到達する必要があります。",
+  typingBody: "scrutinee型から各pattern、guard、nested bindingを検査します。全arm結果は一つの型で、必要ならNever coercionを使います。guard付きarmは網羅性へ寄与しません。",
+  evaluationBody: "scrutineeを一度評価し、armをsource順に試します。patternが一致しguardも真になる最初のarm bodyだけを評価し、fallthroughしません。",
+  invalidTitle: "最後に見えるarmでも不完全なことがある",
+  invalidBody: "guardは偽になり得るため、guard付きconstructor armだけではそのconstructorをcoverしません。guardなしfallbackを追加し、先行するtotal patternに隠れたarmは削除します。",
+  diagnosticsBody: "patternと型の不一致、非公開field、binding重複、Boolでないguard、非網羅case、unreachable arm、結果型不一致を報告します。",
+  provenanceBody: "仕様3.10を扱い、binding共通規則とirrefutabilityに基づきます。"
+}

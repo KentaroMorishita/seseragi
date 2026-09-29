@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "範囲と内包表記",
+  summary: "有限のInt rangeを、明示的なgeneratorとguardを持つArray・List comprehensionへ渡します。",
+  ruleTitle: "生成順序はsourceに書かれる",
+  ruleBody: "start..endはendを含まず、start..=endは含みます。comprehensionはgeneratorとBool guardを左から右へ処理し、複数generatorでは左端が最も外側になります。",
+  typingBody: "generator sourceにはIterable evidenceが必要です。patternは要素型を受け、guardはBool、結果式がArray・Listの要素型を決めます。sourceと結果のcollection型は独立です。",
+  evaluationBody: "source式は、それを囲むgeneratorの各要素につき一度評価され、Iterable順に走査されます。refutableなgenerator patternに一致しない要素は、部分bindingを残さず除外します。",
+  invalidTitle: "rangeは方向を推測しない",
+  invalidBody: "stepは常に1で、startがendより大きければ空です。降順はlibrary operationを使います。pureなcomprehension sourceへEffectは渡せません。",
+  diagnosticsBody: "Iterable evidenceの欠落、Boolでないguard、pattern不一致、結果要素型の不一致を指します。sourceと結果のcollection kindを暗黙変換しません。",
+  provenanceBody: "endpoint semanticsとgenerator展開を含む仕様3.9を扱います。"
+}

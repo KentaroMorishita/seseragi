@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "束縛の共通規則",
+  summary: "すべてのbinding surfaceは、入力型・scope・refutabilityを明示した一つのpattern typing modelを使います。",
+  ruleTitle: "どの構文でも一つのmodelでnameをbindする",
+  ruleBody: "top-level・block let、do let、monadic bind、match arm、comprehension generator、effectful forは、いずれも一つの入力に対して一つのpatternを型検査します。違いは入力型、scope、refutable patternを許すかだけです。",
+  typingBody: "pattern注釈はpattern全体を制約します。nested nameの型を再帰的に導出し、照合全体の成功後にまとめてscopeへ入れます。重複nameと入力式からのself-referenceは拒否します。",
+  evaluationBody: "tuple、record、struct、constructor、Array、Listを入れ子にしても入力式は一度だけ評価します。refutable matchの失敗時に部分bindingは見えません。",
+  invalidTitle: "binding構文ごとに別の推論規則は作られない",
+  invalidBody: "実行時には一致すると分かっていても、letでrefutable patternは使えません。失敗をcontrol flowに含めるならmatchまたはfiltering comprehensionを使います。",
+  diagnosticsBody: "compiler、typed representation、analysis、language serverはsymbol identity、nested型、refutability、source rangeを含む同じtyped-pattern結果を共有します。",
+  provenanceBody: "仕様3.2.1を扱い、patternを持つすべての構文が従う共通contractを定義します。"
+}

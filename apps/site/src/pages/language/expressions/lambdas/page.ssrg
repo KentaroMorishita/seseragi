@@ -1,0 +1,22 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.expressions.lambdas" "/docs/language/expressions/lambdas/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("expressions-lambdas", localized "Typed curried lambdas" "型付きcurried lambda")] [] [
+        [InternalLink (
+          localized "Function types and currying" "function型とcurrying",
+          "/docs/language/types/function-types-and-currying/"
+        )],
+        [InternalLink (
+          localized "Function application" "関数適用",
+          "/docs/language/syntax/function-application/"
+        )],
+        [InternalLink (
+          localized "Blocks and local declarations" "blockとlocal declaration",
+          "/docs/language/expressions/blocks-and-local-declarations/"
+        )]
+      ]
