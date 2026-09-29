@@ -1,0 +1,24 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "パッケージ",
+  summary: "seseragi.tomlで、モジュールが共有するidentity・配置・dependencyの境界を定めます。",
+  ruleTitle: "manifestでpackageの境界を定める",
+  ruleBody: "package rootにはseseragi.tomlを一つ置きます。package名、version、対応する言語versionの範囲を宣言し、必要に応じてlayout、直接dependency、公開するentry moduleを指定します。compilerはpackage.jsonから境界を推測したり、親directoryにある複数のmanifestをmergeしたりしません。source root内をdirectoryで整理するだけでは、別packageにはなりません。",
+  typingBody: "モジュールのidentityには、packageの名前・正確なversion・source identityが含まれます。同名dependencyでもversionが違えば内部identityを区別できます。同じ名前とversionを名乗る異なるsourceを一つのdependency graphへ混在させると、dependency confusionのエラーになります。compilerが片方を勝手に選ぶことはありません。異なるpackage identityからimportした型は、それぞれの定義元のidentityを保ちます。",
+  evaluationBody: "sourceがimportできるdependencyは、そのpackageのmanifestに直接宣言したものだけです。dependencyの依存先まで自動で使えるわけではありません。resolverは宣言されたdependencyと公開export mapを確認してからモジュールを読み込みます。packageの境界そのものがI/Oを起こすことはなく、モジュールの初期化とEffectの実行は別の規則に従います。",
+  invalidTitle: "pubとexport mapは役割が違う",
+  invalidBody: "pubは、そのモジュールを解決できる他モジュールへ宣言を公開します。packageのexport mapは、外部packageからどのsource moduleを解決できるかを決めます。pubを付けてもpackage内の全パスが公開されるわけではなく、exportsへ載せてもそのモジュールの全宣言が公開されるわけではありません。",
+  diagnosticsBody: "package名は小文字ASCIIのsegmentを/でつなぎ、std・self・genのprefixは予約されています。対応外の言語version、未宣言の直接dependency、存在しない公開subpath、競合するsource identity、package外へ抜けるパスは実行前に診断されます。lockfileは解決済みgraphを記録するため、packageやsourceを変更したときは明示的に更新します。",
+  provenanceBody: "仕様6.2がpackageの境界を導入します。11章がmanifest、identity、layout、export map、dependency graph、lockfileの契約を定めます。"
+}
+
+pub fn layoutTitle -> String = "通常sourceと補助rootを区別する"
+
+pub fn layoutBody -> String =
+  "既定のrootはsrc、tests、benchmarks、.seseragi/generatedです。互いに重複できず、symlink経由でもpackage外へ抜けてはいけません。testとbenchmarkは対応するcommand専用のrootで、generated moduleにも固有のidentity tagが付きます。相対importは同じroot内に留まります。self/は現在packageの通常source、gen/は生成bindingを参照します。"
+
+pub fn exampleTitle -> String = "ライブラリで公開するモジュールを選ぶ"
+
+pub fn exampleBody -> String =
+  "このmanifestでは、外部からacme/validationをimportするとsrc/lib.ssrgへ、acme/validation/emailならsrc/email.ssrgへ解決します。その他のsource fileはpackage内部に留まります。ライブラリにmainは不要です。実行可能packageにする場合は、entry moduleとhost targetを指定するrun tableを加えます。"

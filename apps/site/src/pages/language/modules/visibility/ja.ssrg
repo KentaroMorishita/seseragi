@@ -1,0 +1,24 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "公開範囲とopaqueな表現",
+  summary: "他モジュールから使える宣言と、データを直接構築・観察できる範囲を選びます。",
+  ruleTitle: "宣言は既定でモジュール内だけに公開される",
+  ruleBody: "pubのない宣言は定義元のモジュールだけで使えます。let、fn、effect fn、type、newtype、alias、struct、trait、custom operator、foreign blockへpubを付けると他モジュールへ公開します。公開関数のbodyではprivateなhelperを使えます。呼び出し側に必要なのは公開された契約であり、実装の全宣言ではありません。公開letと公開関数には完全な型注釈が必要で、公開型のsignatureからprivate型を露出してはいけません。",
+  typingBody: "通常の公開ADTはconstructor、公開newtypeはconstructorと表現型、公開structはfieldも公開します。pubにopaqueを加えると、他モジュールへ公開するのは型名だけになります。外部ではその型の値を渡せますが、表現を直接構築・参照・destructureできません。定義元のモジュールではこれらの操作を引き続き使えます。",
+  evaluationBody: "opaqueはcompile時のアクセス制御であり、暗号化やruntimeのsecurity checkではありません。例ではuserIdがIntを検証してからUserIdを作り、toIntが意図して用意した観察手段になります。isValidもpublicなinherent methodなので他モジュールから呼べますが、そのhelperであるvalidはprivateのままです。UserIdのnominalな型identityは保たれます。",
+  invalidTitle: "型を公開しても全methodが公開されるわけではない",
+  invalidBody: "inherent methodは、型がpublicでも既定ではprivateです。外部から呼べるmethodにはpub fnを付けます。非opaqueな公開newtypeの表現型はAPIへ現れるため、private型を使えません。opaque newtypeなら外部signatureに表現が現れないため、private型を内部表現に使えます。",
+  diagnosticsBody: "存在するprivate名をimportするとPrivateExport、存在しない名前ならMissingExportになります。private-importの例のdomainにはprivateなinternalとpublicなexposedがあります。呼び出し側はexposedを使ってください。opaque型の構築・field access・patternは定義元へ置き、外部では公開された関数とmethodを通して操作します。",
+  provenanceBody: "仕様6.4がprivate宣言、公開signature、opaque表現、methodのvisibility、instanceの到達範囲を定めます。6.5はimportの使用判定、4.6はinstanceのcoherenceを定めます。"
+}
+
+pub fn layoutTitle -> String = "instanceはimport graphを通じて見える"
+
+pub fn layoutBody -> String =
+  "trait instance自体にはvisibility modifierを付けません。現在モジュールのtransitive import closureに含まれるモジュールのinstanceが、instance searchの対象になります。named importで個別のinstanceを選んだり、instanceだけを隠したりはできません。公開valueの名前を選ぶ規則とは異なります。選択されたinstanceを供給するimportは、式に名前が現れなくても意味上使われています。"
+
+pub fn exampleTitle -> String = "constructorを隠して操作を公開する"
+
+pub fn exampleBody -> String =
+  "UserIdという型はモジュール境界を越えますが、Intとしての内部表現は隠れています。構築の入口であるuserIdは不正な入力にNothingを返します。toIntは意図して公開した観察手段であり、それを使えることはUserId constructorを直接使えることとは違います。"

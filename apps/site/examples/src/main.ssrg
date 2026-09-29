@@ -65,5 +65,9 @@ import * as effectDerivedSignals from "./language/effects-derived-signals"
 import * as effectSignalOperators from "./language/effects-signal-operators"
 import * as effectSignalSubscription from "./language/effects-signal-subscription"
 import * as effectForeignFailure from "./language/effects-foreign-failure"
+import * as moduleDomain from "./language/modules-domain"
+import * as moduleIdentity from "./language/modules-identity"
+import * as moduleImports from "./language/modules-imports"
+import * as moduleTopLevel from "./language/modules-top-level"
 
 pub effect fn main -> Unit = effects.succeed ()

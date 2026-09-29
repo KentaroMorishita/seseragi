@@ -1,0 +1,24 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "top-levelの宣言",
+  summary: "モジュールのtop-levelで名前を宣言します。通常の値はsource順に初期化され、Effectの値は後から実行する処理を表します。",
+  ruleTitle: "top-levelには宣言を置く",
+  ruleBody: "top-levelに置けるのは、importとre-export、let、fnとeffect fn、type・newtype・alias・struct、inherent impl、traitとinstance、custom operator、foreign宣言、rec groupです。それぞれが名前を導入したり、モジュールのinterfaceを構成したりします。単独の式statementはtop-levelの形式ではありません。関数呼び出しはbindingや関数bodyの中に書きます。",
+  typingBody: "top-levelのletにはirrefutableなbinding patternと純粋な右辺が必要です。純粋であることは、結果が数値などに限られるという意味ではありません。Effectの構築は処理を記述するだけで実行しないため、純粋です。例のreportはEffect関数で、pendingはreport ()が返すEffectを保持します。pendingの初期化ではconsoleへの出力は起きません。",
+  evaluationBody: "top-levelのletはsource順に一度だけ評価します。右辺から直接参照できるのは先行するletと、モジュール内の全関数宣言です。後続のletは直接読めません。関数や型の宣言はletの評価より前から名前解決でき、関数のruntime bindingも先に確立します。そのため、呼び出す関数の宣言がletより後にあっても構いません。",
+  invalidTitle: "関数で参照を遅らせても、初期化順は変わらない",
+  invalidBody: "関数bodyから後続のletを参照しても、初期化後にその関数を実行するなら構いません。しかし先行するletの初期化中に呼び、そのcall chainが現在または後続の未初期化letを読むと、SES-N0201で拒否します。関数宣言だけ並べ替えても、値の初期化は早まりません。関数同士の相互再帰にも同じrec groupが必要です。",
+  diagnosticsBody: "不正なbinding patternや解決できない名前は宣言位置で診断されます。SES-N0201は関数呼び出し経由の初期化前参照を示します。Effectの値をimportしても、それだけでは実行しません。通常は選択された公開mainなど、明示的なruntime境界で実行します。toolingがモジュールを調べるためにforeignのruntime codeを実行してはいけません。",
+  provenanceBody: "仕様6.3がtop-levelの形式を列挙します。6.10が初期化と遅延参照を定め、2.9と3.2がモジュール内の再帰とlocal宣言のscopeを区別します。"
+}
+
+pub fn layoutTitle -> String = "privateの型推論とpublicの契約"
+
+pub fn layoutBody -> String =
+  "private関数では型推論を使えます。公開APIの型契約はvisibilityの規則に従って明示します。importは宣言より前へ置きます。また、モジュール直下の宣言とblock内のlocal宣言ではscopeが異なります。local関数は宣言位置からscopeへ入り、モジュール関数の名前解決規則は適用されません。"
+
+pub fn exampleTitle -> String = "初期化では処理を構築し、実行は後へ残す"
+
+pub fn exampleBody -> String =
+  "まずbaseが初期化され、続いてanswerが42になります。report ()はpendingを構築しますが、printlnの処理は返されたEffectの中に残ります。他モジュールがこのファイルをimportしても、answerを出力することはありません。"

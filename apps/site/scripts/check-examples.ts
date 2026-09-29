@@ -45,6 +45,18 @@ try {
       `Rejected example did not produce a diagnostic: ${name}`
     )
   }
+  const invalidImport = build(
+    join(examples, "invalid/import"),
+    join(temporary, "invalid-import")
+  )
+  assert.notEqual(invalidImport.exitCode, 0)
+  assert.ok(invalidImport.stderr.toString().includes("MissingExport"))
+  const invalidVisibility = build(
+    join(examples, "invalid/visibility"),
+    join(temporary, "invalid-visibility")
+  )
+  assert.notEqual(invalidVisibility.exitCode, 0)
+  assert.ok(invalidVisibility.stderr.toString().includes("PrivateExport"))
 } finally {
   rmSync(temporary, { recursive: true, force: true })
 }

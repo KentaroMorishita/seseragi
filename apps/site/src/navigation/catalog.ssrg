@@ -95,6 +95,11 @@ import { page as derivedSignalsPage } from "../pages/language/effects/derived-si
 import { page as signalOperatorsPage } from "../pages/language/effects/signal-operators/page"
 import { page as subscriptionsLifetimePage } from "../pages/language/effects/subscriptions-and-lifetime/page"
 import { page as exceptionsAlgebraicPage } from "../pages/language/effects/exceptions-and-algebraic-effects/page"
+import { page as moduleIdentityPage } from "../pages/language/modules/identity/page"
+import { page as packagesPage } from "../pages/language/modules/packages/page"
+import { page as topLevelPage } from "../pages/language/modules/top-level/page"
+import { page as visibilityPage } from "../pages/language/modules/visibility/page"
+import { page as importsPage } from "../pages/language/modules/imports/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
 import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
@@ -364,6 +369,26 @@ fn languageArea -> NavigationArea = NavigationArea {
           pages: [exceptionsAlgebraicPage ()]
         }
       ]
+    },
+    NavigationGroup {
+      id: "modules",
+      title: localized "Modules and packages" "モジュールとパッケージ",
+      sections: [
+        NavigationSection {
+          id: "module-boundaries",
+          title: localized "Module boundaries" "モジュールの境界",
+          kind: FlatSection,
+          overview: moduleIdentityPage (),
+          pages: [packagesPage (), topLevelPage ()]
+        },
+        NavigationSection {
+          id: "module-interfaces",
+          title: localized "Public interfaces" "公開interface",
+          kind: FlatSection,
+          overview: visibilityPage (),
+          pages: [importsPage ()]
+        }
+      ]
     }
   ]
 }
@@ -371,8 +396,7 @@ fn languageArea -> NavigationArea = NavigationArea {
 fn libraryArea input: BuildInput -> NavigationArea = NavigationArea {
   id: "library",
   title: localized "Standard Library" "標準ライブラリ",
-  description: localized
-    "Look up modules and public symbols."
+  description: localized "Look up modules and public symbols."
     "標準moduleと公開symbolを調べられます。",
   landing: libraryOverviewPage (),
   groups: referenceGroups input.referenceModules

@@ -50,7 +50,8 @@ const sha256 = (value: string | Buffer) =>
 function canonicalExample(
   id: string,
   sourcePath: string,
-  playgroundUrl: string
+  playgroundUrl: string,
+  standalone = true
 ) {
   const source = readFileSync(join(root, sourcePath), "utf8")
   return {
@@ -58,7 +59,9 @@ function canonicalExample(
     sourcePath,
     source,
     sha256: sha256(source),
-    playgroundUrl: playgroundUrlForSource(playgroundUrl, source),
+    playgroundUrl: standalone
+      ? playgroundUrlForSource(playgroundUrl, source)
+      : "",
     highlighted: highlightSeseragi(source).map(({ text, classes }) => ({
       text,
       className: classes,
@@ -73,6 +76,43 @@ function generatorInput(playgroundUrl: string) {
     playgroundUrl,
     tourUrl: new URL("tour/", playgroundUrl).href,
     examples: [
+      canonicalExample(
+        "modules-domain",
+        "apps/site/examples/src/language/modules-domain.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "modules-identity",
+        "apps/site/examples/src/language/modules-identity.ssrg",
+        playgroundUrl,
+        false
+      ),
+      canonicalExample(
+        "modules-imports",
+        "apps/site/examples/src/language/modules-imports.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "modules-top-level",
+        "apps/site/examples/src/language/modules-top-level.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "modules-private-domain",
+        "apps/site/examples/invalid/visibility/src/domain.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "modules-invalid-private-import",
+        "apps/site/examples/invalid/visibility/src/main.ssrg",
+        playgroundUrl,
+        false
+      ),
+      canonicalExample(
+        "modules-invalid-import",
+        "apps/site/examples/invalid/import/src/main.ssrg",
+        playgroundUrl
+      ),
       canonicalExample(
         "hello-world",
         "examples/samples/hello-world/main.ssrg",
@@ -714,7 +754,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (89 + referencePageCount),
+      2 * (94 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

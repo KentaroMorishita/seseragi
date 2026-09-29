@@ -50,7 +50,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3928)
+    expect(manifest.pages).toHaveLength(3938)
     for (const route of [
       "/",
       "/docs/",
@@ -154,6 +154,16 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/language/effects/exceptions-and-algebraic-effects/",
       "/ja/docs/language/effects/exceptions-and-algebraic-effects/",
       "/docs/library/",
+      "/docs/language/modules/identity/",
+      "/ja/docs/language/modules/identity/",
+      "/docs/language/modules/packages/",
+      "/ja/docs/language/modules/packages/",
+      "/docs/language/modules/top-level/",
+      "/ja/docs/language/modules/top-level/",
+      "/docs/language/modules/visibility/",
+      "/ja/docs/language/modules/visibility/",
+      "/docs/language/modules/imports/",
+      "/ja/docs/language/modules/imports/",
       "/docs/library/array/",
       "/docs/library/array/function/get/",
       "/docs/library/array/instance/eq-array-a/",
@@ -189,6 +199,42 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
         .filter(({ itemKind }) => itemKind === "instance")
     ).toHaveLength(357)
     const home = readFileSync(join(output, "index.html"), "utf8")
+    const moduleIdentity = readFileSync(
+      join(output, "docs/language/modules/identity/index.html"),
+      "utf8"
+    )
+    expect(textContent(moduleIdentity)).toContain(
+      "Two imports, one defining module"
+    )
+    expect(textContent(moduleIdentity)).toContain(
+      'from "./modules-domain.ssrg"'
+    )
+    expect(moduleIdentity).toContain('href="/docs/language/modules/packages/"')
+    expect(moduleIdentity).not.toContain('href=""')
+    for (const slug of [
+      "identity",
+      "packages",
+      "top-level",
+      "visibility",
+      "imports",
+    ]) {
+      const translated = readFileSync(
+        join(output, `ja/docs/language/modules/${slug}/index.html`),
+        "utf8"
+      )
+      expect(translated).toContain('<html lang="ja">')
+      expect(textContent(translated)).not.toMatch(/準備中|整備中|#[0-9]+/u)
+      expect(translated).toContain('class="reference-sequence"')
+    }
+    const visibility = readFileSync(
+      join(output, "docs/language/modules/visibility/index.html"),
+      "utf8"
+    )
+    expect(textContent(visibility)).toContain("pub opaque newtype UserId")
+    expect(textContent(visibility)).toContain("PrivateExport")
+    expect(textContent(visibility)).toContain(
+      'import { internal } from "./domain"'
+    )
     expect(home).toContain('<html lang="en">')
     expect(home).toContain("THE SESERAGI PROGRAMMING LANGUAGE")
     expect(textContent(home)).toContain("pub effect fn main")

@@ -1,0 +1,25 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Visibility and opaque representations",
+  summary: "Choose which declarations other modules may use, and whether they may construct or inspect your data.",
+  ruleTitle: "Declarations are private by default",
+  ruleBody: "A declaration without pub belongs to its defining module. Add pub to expose a let, fn, effect fn, type, newtype, alias, struct, trait, custom operator or foreign block. A public declaration can still call private helpers in its body: callers need its public contract, not access to its implementation. Public lets and functions require complete type annotations, and public type signatures must not expose private types.",
+  typingBody: "A public ADT normally exposes its constructors, a public newtype its constructor and representation type, and a public struct its fields. Add opaque to a public struct, ADT or newtype to expose only the type name. Outside its defining module, code may pass values of that type but cannot construct, inspect or destructure its representation. The defining module retains those operations.",
+  evaluationBody: "opaque controls access at compilation; it does not perform encryption or a runtime security check. In the example, userId validates a positive Int before constructing UserId, and toInt exposes a deliberate observation. Calling isValid works from another module because the inherent method is public. Its helper valid remains private. The wrapper preserves UserId's nominal type identity.",
+  invalidTitle: "Public types do not automatically publish every method",
+  invalidBody: "Inherent methods default to private even when their owner type is public. Mark an externally callable method with pub fn. A non-opaque public newtype cannot wrap a private type because the representation appears in its API; an opaque newtype may do so because the hidden representation does not appear in the external signature.",
+  diagnosticsBody: "Importing an existing private name is rejected as PrivateExport; importing a name that does not exist is MissingExport. The private-import example refers to a domain module containing private internal and public exposed functions. Use exposed instead. For an opaque type, construction, field access and patterns must remain in its defining module; callers use exported functions and methods.",
+  provenanceBody: "Specification 6.4 defines private declarations, public signatures, opaque representations, method visibility and instance reachability. Section 6.5 defines import use tracking; section 4.6 defines instance coherence."
+}
+
+pub fn layoutTitle -> String = "Instances follow the import graph"
+
+pub fn layoutBody -> String =
+  "A trait instance itself has no visibility modifier. Instances declared in the current module's transitive import closure participate in instance search; named imports do not select individual instances, and an instance cannot be hidden separately. This is different from choosing public value names. An import used to supply a selected instance is semantically used even if no imported name appears in an expression."
+
+pub fn exampleTitle -> String =
+  "Expose operations while keeping the constructor private"
+
+pub fn exampleBody -> String =
+  "The UserId type crosses the module boundary, while its Int representation stays hidden. userId is the construction boundary and returns Nothing for invalid input. toInt is an intentional observation; it does not make the UserId constructor accessible to a caller."

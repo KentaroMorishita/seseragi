@@ -1,0 +1,24 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "モジュールのidentity",
+  summary: "一つのsourceファイルが一つのモジュールです。同じファイルへのimportは、書き方が違っても同じidentityへ解決されます。",
+  ruleTitle: "一つのファイルが一つのモジュールを定義する",
+  ruleBody: "一つの.ssrgファイルが一つのモジュールになります。sourceの先頭にモジュール名を宣言する必要はありません。通常のsource rootでは、そのrootからの相対パスがモジュールのパスです。たとえばrootがsrcなら、src/domain/user.ssrgのモジュールパスはdomain/userです。このパスとpackage identityの組で識別するため、別packageにある同名のファイルとは区別されます。",
+  typingBody: "nominal型は定義元のモジュールに属します。importで変わるのは参照するときの名前であり、型そのもののidentityではありません。例ではUserIdとtoIntを、.ssrg拡張子の有無が異なるパスからimportしていますが、定義元は同じファイルです。そのためuserIdが作ったUserIdをtoIntへ渡せます。同じ型宣言を別ファイルへコピーすれば、別のnominal型になります。",
+  evaluationBody: "複数のimportが同じcanonical moduleへ解決されると、宣言とtop-levelの値を共有します。モジュールは依存先の後に一度だけ初期化され、import文の数だけ初期化されることはありません。同じモジュールを二度importしても、nominal型や初期化済みの値が二組できるわけではありません。",
+  invalidTitle: "importの表記とidentityを混同しない",
+  invalidBody: "namespace aliasの名前を変えても、新しいモジュールにはなりません。.ssrgを付けても新しい型にはなりません。一方、内容が同じでも別ファイルにある宣言は別モジュールです。型名だけ見れば同じに見える場合も、定義元のpackageとモジュールを確認してください。",
+  diagnosticsBody: "resolverはパスをcanonical化し、不正なパスや曖昧な解決を拒否します。モジュールパスはUnicodeのNFCへ正規化し、ファイル名の大文字・小文字とも一致させます。正規化で同名になる二つのファイルや、caseだけ異なる二つのモジュールは置けません。symlink経由の参照も同じcanonical pathへ解決し、package外へ抜けてはいけません。",
+  provenanceBody: "言語仕様6.1がファイル単位のidentityを定めます。11.2〜11.4がpackage identity、root tag、モジュールパスの正規化を定めます。"
+}
+
+pub fn layoutTitle -> String = "source rootを基準にパスを読む"
+
+pub fn layoutBody -> String =
+  "package identityは名前・正確なversion・source identityから成ります。source、generated、test、benchmarkのrootは別々で、generatedには@generated、testには@test、benchmarkには@benchmarkのtagが付きます。相対importは現在のroot内だけを移動でき、..で別rootへ跨ぐことはできません。identityの区切りは/に統一し、拡張子.ssrgは含めません。"
+
+pub fn exampleTitle -> String = "二つのimportから同じ定義を使う"
+
+pub fn exampleBody -> String =
+  "次の二つのファイルを同じsource rootの同じdirectoryへ置きます。一つ目が型と公開関数の定義元です。二つ目では、拡張子を省略したパスと明示したパスから同じモジュールを参照します。二つのコードパネルを合わせて一つの例です。"

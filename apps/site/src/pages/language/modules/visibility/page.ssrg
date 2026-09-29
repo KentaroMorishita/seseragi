@@ -1,0 +1,30 @@
+import { localized } from "../../../../model/locale"
+import {
+  CodeExample,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words
+} from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.modules.visibility" "/docs/language/modules/visibility/" (en.copy ()) (ja.copy ()) [
+    Heading ("boundaries", localized (en.layoutTitle ()) (ja.layoutTitle ())),
+    Paragraph [Words (localized (en.layoutBody ()) (ja.layoutBody ()))],
+    Heading ("example", localized (en.exampleTitle ()) (ja.exampleTitle ())),
+    Paragraph [Words (localized (en.exampleBody ()) (ja.exampleBody ()))],
+    CodeExample
+      ("modules-domain", localized "modules-domain.ssrg" "modules-domain.ssrg")
+  ] [
+    CodeExample ("modules-private-domain", localized "domain.ssrg" "domain.ssrg"),
+    CodeExample ("modules-invalid-private-import", localized "main.ssrg" "main.ssrg")
+  ] [
+    [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
+    [InternalLink (localized "Packages" "パッケージ", "/docs/language/modules/packages/")],
+    [InternalLink
+      (localized "Module identity" "モジュールのidentity", "/docs/language/modules/identity/")]
+  ]

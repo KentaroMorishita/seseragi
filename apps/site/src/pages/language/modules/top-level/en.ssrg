@@ -1,0 +1,24 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Top-level declarations",
+  summary: "A module declares names at top level. Ordinary values initialize in order, while Effect values describe work for later execution.",
+  ruleTitle: "Top level contains declarations",
+  ruleBody: "A module may contain imports and re-exports, let bindings, fn and effect fn declarations, type, newtype, alias and struct declarations, inherent impl blocks, trait declarations and instances, custom operators, foreign declarations and rec groups. Each form introduces declarations or changes the module interface. Arbitrary expression statements are not a top-level form; a call belongs in a binding or function body.",
+  typingBody: "A top-level let needs an irrefutable binding pattern and a pure right-hand expression. Pure does not mean that the resulting value must be a scalar: constructing an Effect is pure because it describes work without running it. In the example, report is an Effect function and pending holds the Effect returned by report (). No console operation runs when pending is initialized.",
+  evaluationBody: "Top-level let bindings evaluate once in source order. A binding can directly refer to earlier lets and any module-level function declaration, but cannot directly read a later let. Function and type declarations are available to name resolution before the lets execute. Module-level function bindings are established before evaluating initializers, so a function can be declared below the let that calls it.",
+  invalidTitle: "A function can delay a reference, not initialize it early",
+  invalidBody: "A function body may refer to a later top-level let if the function runs after initialization. Calling that function from an earlier initializer is different: if its call chain reads the current or a later uninitialized let, compilation stops with SES-N0201. Reordering function declarations does not make a value initialize sooner. Mutually recursive functions also require one rec group.",
+  diagnosticsBody: "Illegal binding patterns and unresolved names are reported at the declaration. SES-N0201 identifies an initialization-before-use dependency reached through a function call. Importing an Effect value does not execute it; execution requires an explicit runtime boundary, normally the selected public main. Tooling must not execute foreign runtime code to inspect a module.",
+  provenanceBody: "Specification 6.3 lists top-level forms. Section 6.10 defines initialization and delayed references; sections 2.9 and 3.2 distinguish module recursion from local declaration scope."
+}
+
+pub fn layoutTitle -> String = "Private inference and public contracts"
+
+pub fn layoutBody -> String =
+  "Private functions may use inferred types; the module's public API has explicit type contracts under the visibility rules. Imports appear before declarations. A module-level declaration is not the same as a local declaration inside a block: local functions enter scope at their declaration position, while module functions use the module-wide name-resolution rules."
+
+pub fn exampleTitle -> String = "Initialization constructs work without running it"
+
+pub fn exampleBody -> String =
+  "base initializes first, then answer becomes 42. Calling report () constructs pending; the println remains inside the returned Effect. Even if another module imports this file, that import does not print the answer."
