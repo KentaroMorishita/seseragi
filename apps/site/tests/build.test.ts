@@ -197,9 +197,12 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     expect(textContent(documentation)).toContain("Seseragi Reference")
     expect(textContent(documentation)).toContain("Language Reference")
     expect(textContent(documentation)).toContain("Standard Library")
+    expect(textContent(documentation)).toContain("Functions and operators")
+    expect(textContent(documentation)).toContain("Collections")
     expect(textContent(documentation)).toContain("The interactive Tour")
     expect(textContent(documentation)).not.toContain("Get Started")
     expect(documentation).not.toContain("docs-sidebar")
+    expect(documentation.match(/reference-area-card/g)).toHaveLength(2)
     const languageModel = readFileSync(
       join(output, "docs/language/model/non-features/index.html"),
       "utf8"

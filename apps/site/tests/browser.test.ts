@@ -757,9 +757,13 @@ try {
         )
         assert.equal(await page.locator(".docs-sidebar").count(), 0)
         assert.equal(await page.locator(".mobile-docs-navigation").count(), 0)
+        assert.equal(await page.locator(".reference-area-card").count(), 2)
+        assert.ok((await page.locator(".reference-topic-link").count()) >= 10)
         const documentationText = await page.locator("body").innerText()
         assert.ok(documentationText.includes("Language Reference"))
         assert.ok(documentationText.includes("Standard Library"))
+        assert.ok(documentationText.includes("Functions and operators"))
+        assert.ok(documentationText.includes("Collections"))
         assert.ok(documentationText.includes("interactive Tour"))
         assert.ok(!documentationText.includes("Get Started"))
         assert.equal(
@@ -785,9 +789,17 @@ try {
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")
         assert.equal(
           await page.locator("h1").textContent(),
-          "Seseragiリファレンス"
+          "Seseragi リファレンス"
         )
         assert.equal(await page.locator(".docs-sidebar").count(), 0)
+        assert.ok(
+          (await page.locator("body").innerText()).includes("言語リファレンス")
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `documentation-ja-${width}.png`),
+            fullPage: true,
+          })
 
         await page.goto(
           `http://127.0.0.1:${server.port}/docs/library/array/function/get/`

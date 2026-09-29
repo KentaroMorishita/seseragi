@@ -1,13 +1,57 @@
 import * as html from "std/web/html"
 import { article } from "../components/article"
+import { anchor } from "../components/primitives"
 import { Messages } from "../i18n/model"
 import { BuildInput } from "../model/build"
-import { Locale, translate } from "../model/locale"
-import { PageDefinition } from "../model/page"
+import { Locale, localizedRoute, translate } from "../model/locale"
+import {
+  NavigationArea,
+  NavigationGroup,
+  PageDefinition
+} from "../model/page"
+
+fn groupPath area: NavigationArea -> group: NavigationGroup -> String =
+  match group.sections {
+    [section, ...rest] -> section.overview.path
+    [] -> area.landing.path
+  }
+
+fn groupLink<Action> locale: Locale
+  -> area: NavigationArea
+  -> group: NavigationGroup
+  -> html.Html<Action> =
+  anchor
+    (translate locale group.title)
+    (localizedRoute locale (groupPath area group))
+    "reference-topic-link"
+
+fn areaCard<Action> locale: Locale
+  -> area: NavigationArea
+  -> html.Html<Action> =
+  html.section {
+    class: "reference-area-card",
+    children: [
+      html.h2 {
+        children: anchor
+          (translate locale area.title)
+          (localizedRoute locale area.landing.path)
+          "reference-area-link"
+      },
+      html.p {
+        class: "reference-area-description",
+        children: translate locale area.description
+      },
+      html.nav {
+        class: "reference-topic-list",
+        children: [groupLink locale area group | group <- area.groups]
+      }
+    ]
+  }
 
 pub fn documentationIndexLayout<Action> input: BuildInput
   -> messages: Messages
   -> locale: Locale
+  -> areas: Array<NavigationArea>
   -> page: PageDefinition
   -> html.Html<Action> =
   html.main {
@@ -21,6 +65,10 @@ pub fn documentationIndexLayout<Action> input: BuildInput
           html.h1 { children: translate locale page.title },
           html.p { class: "page-lead", children: translate locale page.summary }
         ]
+      },
+      html.div {
+        class: "reference-area-grid",
+        children: [areaCard locale area | area <- areas]
       },
       article input messages locale page.blocks
     ]
