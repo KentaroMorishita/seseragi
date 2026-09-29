@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "How do blocks desugar",
+  summary: "A do block expands from right to left into nested flatMap calls and lambdas while preserving source order and lexical scope.",
+  ruleTitle: "Each bind introduces one nested continuation",
+  ruleBody: "x <- mx becomes flatMap (\\x -> rest) mx. A discarded mx uses an ignored lambda parameter. let x = value remains a pure local binding around the rest. A final expression is returned unchanged.",
+  typingBody: "The lambda parameter has the payload type A from M<A>, not the monadic type. Pattern typing and irrefutability are checked at that parameter. Constraints required by flatMap remain attached to the expansion.",
+  evaluationBody: "The outer monadic expression runs before its continuation. Later items are not constructed or evaluated early. Backend optimization may avoid materializing lambdas only when it preserves this scope and ordering.",
+  invalidTitle: "Desugaring does not erase monad semantics",
+  invalidBody: "Expansion removes only surface syntax. Failure, branching, state, scheduling, and resource behavior still come from the selected Monad implementation and cannot be optimized into pure sequencing indiscriminately.",
+  diagnosticsBody: "Source diagnostics map failures in generated flatMap structure back to the original bind or item. Users should not need to debug backend-generated dictionary or lambda names.",
+  provenanceBody: "This article covers specification 4.12 and states the normative expansion shared by all backends."
+}

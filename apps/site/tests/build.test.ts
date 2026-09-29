@@ -50,7 +50,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3860)
+    expect(manifest.pages).toHaveLength(3886)
     for (const route of [
       "/",
       "/docs/",
@@ -107,6 +107,21 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/language/patterns/irrefutable-patterns/",
       "/docs/language/patterns/match/",
       "/ja/docs/language/patterns/match/",
+      "/docs/language/traits/model/",
+      "/docs/language/traits/declarations/",
+      "/docs/language/traits/instances/",
+      "/docs/language/traits/constraints/",
+      "/docs/language/traits/method-calls/",
+      "/docs/language/traits/coherence/",
+      "/docs/language/traits/standard-operators/",
+      "/docs/language/traits/laws/",
+      "/docs/language/traits/deriving/",
+      "/docs/language/traits/methods-versus-traits/",
+      "/docs/language/traits/do-notation/",
+      "/docs/language/traits/do-desugaring/",
+      "/docs/language/traits/do-block-typing/",
+      "/ja/docs/language/traits/model/",
+      "/ja/docs/language/traits/do-block-typing/",
       "/docs/library/",
       "/docs/library/array/",
       "/docs/library/array/function/get/",

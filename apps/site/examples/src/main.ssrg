@@ -31,5 +31,18 @@ import * as rangesComprehensions from "./language/expressions-ranges-comprehensi
 import * as bindingRules from "./language/patterns-binding-rules"
 import * as irrefutablePatterns from "./language/patterns-irrefutable"
 import * as matchPatterns from "./language/patterns-match"
+import * as traitModel from "./language/traits-model"
+import * as traitDeclarations from "./language/traits-declarations"
+import * as traitInstances from "./language/traits-instances"
+import * as traitConstraints from "./language/traits-constraints"
+import * as traitMethodCalls from "./language/traits-method-calls"
+import * as traitCoherence from "./language/traits-coherence"
+import * as traitStandardOperators from "./language/traits-standard-operators"
+import * as traitLaws from "./language/traits-laws"
+import * as traitDeriving from "./language/traits-deriving"
+import * as traitMethodsVersusTraits from "./language/traits-methods-versus-traits"
+import * as traitDoNotation from "./language/traits-do-notation"
+import * as traitDoDesugaring from "./language/traits-do-desugaring"
+import * as traitDoBlockTyping from "./language/traits-do-block-typing"
 
 pub effect fn main -> Unit = effects.succeed ()

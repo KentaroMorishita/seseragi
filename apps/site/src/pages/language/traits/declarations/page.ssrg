@@ -1,0 +1,22 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.traits.declarations" "/docs/language/traits/declarations/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "traits-declarations",
+        localized "Value and constructor parameters" "値型と型構築子のparameter"
+      )] [CodeExample (
+        "traits-invalid-declaration",
+        localized "Rejected unresolved method type" "未解決method型を拒否"
+      )] [
+        [InternalLink
+      (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
+        [InternalLink
+      (localized "Instances" "instance", "/docs/language/traits/instances/")],
+        [InternalLink
+      (localized "Constraints" "constraint", "/docs/language/traits/constraints/")]
+      ]

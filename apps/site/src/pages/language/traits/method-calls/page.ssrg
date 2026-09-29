@@ -1,0 +1,24 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.traits.method-calls" "/docs/language/traits/method-calls/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "traits-method-calls",
+        localized "An ordinary curried trait call" "通常のcurried trait call"
+      )] [CodeExample
+      ("traits-invalid-method", localized "Ambiguous method ownership" "method所有traitの曖昧さ")] [
+        [InternalLink (
+          localized "Function application" "関数application",
+          "/docs/language/syntax/function-application/"
+        )],
+        [InternalLink
+      (localized "Constraints" "constraint", "/docs/language/traits/constraints/")],
+        [InternalLink (
+          localized "Methods versus traits" "methodとtrait",
+          "/docs/language/traits/methods-versus-traits/"
+        )]
+      ]

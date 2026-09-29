@@ -17,5 +17,12 @@ import * as invalidMatch from "./language/invalid-match"
 import * as invalidOperatorOverload from "./language/invalid-operator-overload"
 import * as invalidRecordLiteral from "./language/invalid-record-literal"
 import * as invalidStructLiteral from "./language/invalid-struct-literal"
+import * as invalidTraitDeclaration from "./language/invalid-trait-declaration"
+import * as invalidTraitInstance from "./language/invalid-trait-instance"
+import * as invalidTraitConstraint from "./language/invalid-trait-constraint"
+import * as invalidTraitMethod from "./language/invalid-trait-method"
+import * as invalidTraitCoherence from "./language/invalid-trait-coherence"
+import * as invalidTraitDeriving from "./language/invalid-trait-deriving"
+import * as invalidTraitDo from "./language/invalid-trait-do"
 
 pub effect fn main -> Unit = effects.succeed ()

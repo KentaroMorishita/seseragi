@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "coherenceと所有権",
+  summary: "package graphには各trait適用につき一つだけinstanceを置け、traitまたは最外nominal型の隣で所有します。",
+  ruleTitle: "一つの静的な問いには一つの答え",
+  ruleBody: "aliasと型parameterを考慮した後に二つのinstanceがoverlapしてはいけません。宣言moduleはtraitまたはinstance headの最外nominal型を所有する必要があります。priority、local override、orphan instanceはありません。",
+  typingBody: "visible instanceはmoduleのtransitive import closureから集まります。標準structural instanceはsealedです。functional dependencyは、全引数列が異なっても決定済みoutputが食い違うheadを拒否できます。",
+  evaluationBody: "coherenceによりinstance選択はruntime値とimport順序から独立します。無関係なimportを追加しても、既存のwell-typed codeが実行する実装は密かに変わりません。",
+  invalidTitle: "aliasやspecificityでoverlapを回避できない",
+  invalidBody: "identity判定前にaliasを展開し、specificなheadもgeneric headより優先されません。競合evidenceを除くか、異なるnominal型で表現します。",
+  diagnosticsBody: "overlap診断は両方の宣言を示します。orphan診断は所有していないtraitと外側の型を示します。functional dependency診断は矛盾するoutputを決定するinputを示します。",
+  provenanceBody: "仕様4.6のglobal uniqueness、ownership、sealed structural evidence、functional dependencyを扱います。"
+}

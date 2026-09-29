@@ -1,0 +1,22 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.traits.do-block-typing" "/docs/language/traits/do-block-typing/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "traits-do-block-typing",
+        localized "One constructor across every item" "全itemで一つの型構築子"
+      )] [CodeExample (
+        "traits-invalid-do",
+        localized "Constructor mismatch and missing result" "型構築子の不一致と結果欠落"
+      )] [
+        [InternalLink
+      (localized "Do notation" "do記法", "/docs/language/traits/do-notation/")],
+        [InternalLink
+      (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
+        [InternalLink
+      (localized "Constraints" "constraint", "/docs/language/traits/constraints/")]
+      ]

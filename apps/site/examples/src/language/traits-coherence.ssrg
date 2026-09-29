@@ -1,0 +1,16 @@
+type Stage =
+  | Draft
+  | Published
+
+trait Title<A> {
+  fn title value: A -> String
+}
+
+instance Title<Stage> {
+  fn title value: Stage -> String = match value {
+    Draft -> "draft"
+    Published -> "published"
+  }
+}
+
+let publishedTitle = title Published

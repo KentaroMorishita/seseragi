@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Instances",
+  summary: "An instance supplies the exact operations required by one trait application and becomes compile-time evidence, not a value.",
+  ruleTitle: "An instance must satisfy the substituted contract",
+  ruleBody: "instance Trait<Type> provides every required method. Replacing the trait parameters with the instance head must produce exactly the declared method types. Generic instances may declare parameters and where constraints.",
+  typingBody: "Every instance type parameter must occur in its head, so evidence cannot depend on an unconstrained hidden type. Constructor heads such as Either<E, _> retain their kind. An instance is distinct from impl, which owns nominal members.",
+  evaluationBody: "The instance declaration creates no constructible runtime value. Calls use its operations only after static selection; user code cannot create, compare, store, or explicitly pass instance objects.",
+  invalidTitle: "Close names are not close enough",
+  invalidBody: "A missing method, extra incompatible method, or result type that differs from the substituted signature rejects the instance. Writing impl Trait<Type> does not declare evidence.",
+  diagnosticsBody: "Contract diagnostics name the trait method and show expected and actual types. Head and constraint diagnostics identify parameters that cannot be determined from the requested evidence.",
+  provenanceBody: "This article covers specification 4.3. Coherence and visibility decide whether a well-typed instance may participate in selection."
+}

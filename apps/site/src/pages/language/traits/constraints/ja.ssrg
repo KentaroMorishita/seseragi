@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "trait constraint",
+  summary: "where clauseはgeneric関数やinstanceが必要とするcapabilityをcontractの一部にします。",
+  ruleTitle: "constraintはpolymorphic codeと一緒に移動する",
+  ruleBody: "whereの後ろへ一つ以上のtrait適用を書きます。generic関数は対応dictionaryを暗黙parameterとして受け取ります。conditional instanceは子evidenceを要求でき、選択はそのrequirementを再帰的に解決します。",
+  typingBody: "具体的call siteでは、各requirementにvisibleでcoherentなinstanceが一つ必要です。選択は静的型だけに依存し、空collectionやNothingでも要素evidenceの要求は値がある場合と同じです。",
+  evaluationBody: "evidenceを渡すだけではconstraint対象の値を評価しません。constraint付き操作を呼ぶと、静的に選ばれたdictionaryが実装を与えます。",
+  invalidTitle: "値の状態でconstraintを免除できない",
+  invalidBody: "たまたま要素を見ないbranch、空container、特定constructorでも宣言済みrequirementは消えません。再帰選択のleaf evidenceがなければ型errorです。",
+  diagnosticsBody: "evidence欠落はnested conditional requirementを含む具体的な未充足適用を報告します。曖昧なevidenceと未確定型変数は別に報告します。",
+  provenanceBody: "仕様4.4を扱い、generic polymorphismとinstance選択を接続します。"
+}

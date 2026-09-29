@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Trait constraints",
+  summary: "A where clause makes required capabilities part of a generic function or instance contract.",
+  ruleTitle: "Constraints travel with polymorphic code",
+  ruleBody: "Write one or more trait applications after where. A generic function receives matching dictionaries as implicit parameters. A conditional instance may request child evidence and selection resolves those requirements recursively.",
+  typingBody: "At a concrete call site every required application must have one visible coherent instance. Selection depends on static types alone: an empty collection or Nothing still requires the same element evidence as a populated value.",
+  evaluationBody: "Passing evidence does not evaluate the constrained values. When the constrained operation is called, the statically selected dictionary supplies its implementation.",
+  invalidTitle: "Values cannot waive a constraint",
+  invalidBody: "A branch that happens not to inspect an element, an empty container, or a particular constructor does not remove its declared requirement. Missing recursive leaf evidence remains a type error.",
+  diagnosticsBody: "Missing-evidence diagnostics report the concrete unsatisfied application, including nested conditional requirements. Ambiguous evidence and unresolved type variables are reported separately.",
+  provenanceBody: "This article covers specification 4.4 and connects generic polymorphism to instance selection."
+}

@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "標準operatorとtrait",
+  summary: "標準operator構文は固定されたtrait evidenceを選び、暗黙変換やruntime overloadを行いません。",
+  ruleTitle: "各標準operatorにはtrait contractがある",
+  ruleBody: "equalityはEq、順序はOrd.compare、算術はAdd・Sub・Mul・Div・Rem・Pow、関数的operatorはFunctor・Applicative・Monadを使います。選ばれたinstanceが操作を定めます。",
+  typingBody: "算術evidenceは左・右・output型を持ち、operand pairから一つのoutputが決まります。順序比較は同じ型の二値を比較します。異型式は正確なevidenceがある場合だけ有効で、数値coercionを挿入しません。",
+  evaluationBody: "operandを左から右へ一度ずつ評価してから選択済み操作を実行します。四つの順序operatorはcompare一回の結果から導出します。Boolean short-circuitはtrait callではなくbuiltin control flowです。",
+  invalidTitle: "overloadでgrammarは変えられない",
+  invalidBody: "instanceはprecedence、associativity、別tokenの意味を変えられません。新tokenはcustom operator宣言を使い、標準構文は固定のtraitに結び付きます。",
+  diagnosticsBody: "失敗した式は具体的なoperator evidenceの欠落または競合とoperand型を報告します。Floatの順序はhost言語比較へfallbackしません。",
+  provenanceBody: "仕様4.7を扱い、operator構文を通常instanceと共通のcoherence規則へ接続します。"
+}

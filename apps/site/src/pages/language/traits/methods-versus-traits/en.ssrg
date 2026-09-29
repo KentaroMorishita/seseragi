@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Inherent methods versus trait operations",
+  summary: "An inherent method belongs to one nominal type; a trait operation belongs to an abstraction selected through evidence.",
+  ruleTitle: "Two forms solve different lookup problems",
+  ruleBody: "impl User adds members resolved from a User receiver and called with member syntax. instance Eq<User> implements an existing abstract operation, called as a constrained function after evidence selection.",
+  typingBody: "Inherent lookup uses the receiver's nominal identity, declaration visibility, and generic substitution. Trait lookup uses the operation's owning trait, inferred type arguments, constraints, visible instances, and coherence.",
+  evaluationBody: "Both eventually call statically known code, but neither performs dynamic object dispatch by default. The surface spelling does not merge their namespaces or ownership rules.",
+  invalidTitle: "Do not use instance as an extension-method namespace",
+  invalidBody: "A trait instance does not make every trait operation available as value.method. An impl cannot satisfy a trait requirement unless it also defines the required coherent instance.",
+  diagnosticsBody: "Member diagnostics name the receiver and visible impl candidates. Trait diagnostics name the owning trait, evidence requirement, and ambiguity or missing instance. Keeping them separate makes fixes local.",
+  provenanceBody: "This article covers specification 4.10 and links back to the independent inherent-impl and method-call syntax pages."
+}

@@ -1,0 +1,4 @@
+fn reflexive<A> value: A -> Bool where Eq<A> = value == value
+
+let integerLawExample = reflexive 42
+let textLawExample = reflexive "seseragi"
