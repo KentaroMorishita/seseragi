@@ -1,0 +1,9 @@
+import * as effects from "std/effect"
+
+struct Settings { label: String, }
+
+fn settings unit: Unit -> Effect<{ settings: Settings }, Never, Settings> =
+  effects.service (\environment -> environment.settings)
+
+pub fn applicationLabel unit: Unit -> Effect<{ settings: Settings }, Never, String> =
+  map (\value -> value.label) (settings ())

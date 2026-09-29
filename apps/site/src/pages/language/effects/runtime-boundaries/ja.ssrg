@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Effectのruntime境界",
+  summary: "宣言されたhost境界だけがserviceを供給してSeseragi Effectを実行できます。",
+  ruleTitle: "通常codeに汎用Effect runnerはない",
+  ruleBody: "main、test runner、定義済みcallback adapterが実行境界です。environmentを一度組み立て、target capabilityを検証し、coldなEffectを実行して終了結果をhost contractへ変換します。",
+  typingBody: "境界wrapperは実行前にRの全fieldを満たします。application固有serviceはmainが返すEffectを構築する段階でprovideし、target非対応serviceはdynamic lookup failureではなくbuild・startup拒否になります。",
+  evaluationBody: "境界はentry関数を呼び、返されたEffectを一度実行し、resource scopeとsupervised childを待って、success・typed failure・defect・cancellationを混同せずhostへ対応付けます。",
+  invalidTitle: "helper関数から境界の外へ逃げない",
+  invalidBody: "通常のapplication codeにはrunEffectを公開しません。nested実行はenvironment・cancellation tree・resource ownershipを分断するため、programはEffect値を合成します。",
+  diagnosticsBody: "build・startup診断は非対応serviceと選択targetを示します。runtime reportも境界、typed failure表示、defect、cancellation理由を区別します。",
+  provenanceBody: "仕様5.9を扱い、entry pointとprovider contractへ接続します。"
+}

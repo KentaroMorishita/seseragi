@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Pure expressions",
+  summary: "Ordinary expressions compute values without reading or changing external state.",
+  ruleTitle: "A value does not secretly run external work",
+  ruleBody: "A pure function computes from its arguments. Console, network, filesystem, time, randomness, mutable runtime state, and asynchronous work appear only through an Effect value whose type exposes the boundary.",
+  typingBody: "Purity is enforced by the types of operations rather than by a pure annotation. A pure function may construct and return Effect<R, E, A>, but it cannot turn that value into A or call an effectful operation as though it returned an ordinary value.",
+  evaluationBody: "Ordinary expressions remain strict and deterministic according to their value operations. Constructing a cold Effect evaluates only the pure code needed to build its description; the represented work waits for an authorized runtime boundary.",
+  invalidTitle: "Returning an Effect is not running it",
+  invalidBody: "A function cannot print, read a clock, or mutate a Signal while claiming to return Unit, Instant, or another plain value. Keep the Effect in the result type and compose it explicitly.",
+  diagnosticsBody: "A mismatch identifies the position that requires an Effect value or the plain value that cannot satisfy one. Tools show the complete R, E, and A arguments so the missing boundary stays visible.",
+  provenanceBody: "This article covers specification 5.1. Cold Effect construction and host execution boundaries are documented separately."
+}

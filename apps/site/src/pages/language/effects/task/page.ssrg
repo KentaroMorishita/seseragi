@@ -1,0 +1,23 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.task" "/docs/language/effects/task/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-task",
+        localized "Task beside a service-free fallible Effect"
+      "Taskとservice不要のfallible Effect"
+      )] [CodeExample
+      ("effects-invalid-task", localized "Rejected fallible Task" "failureを持つTaskを拒否")] [
+        [InternalLink
+      (localized "The Effect type" "Effect型", "/docs/language/effects/effect-type/")],
+        [InternalLink (
+          localized "Error channels" "error channel",
+          "/docs/language/effects/error-channels/"
+        )],
+        [InternalLink
+      (localized "Type aliases" "型alias", "/docs/language/types/type-constructors/")]
+      ]

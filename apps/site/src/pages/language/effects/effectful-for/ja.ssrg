@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "effectful for",
+  summary: "effectful forはIterableを順番に走査し、各要素に一つのUnit Effectを実行します。",
+  ruleTitle: "programが明示しない限り走査は逐次実行",
+  ruleBody: "for pattern <- values { body }はirrefutable patternを持つforEachへdesugarします。bodyと式全体はEffect<R, E, Unit>で、空collectionはbodyを実行せず成功します。",
+  typingBody: "valuesにはIterable evidenceが必要で、patternは一要素を受け取るirrefutable pattern、すべてのbody pathは同じEffect<R, E, Unit>を返します。requirement mergeとfailureは他のEffect合成と同じく明示的です。",
+  evaluationBody: "Iterable順に要素を取り出し、一つのbody完了後に次へ進み、最初のtyped failureで停止します。暗黙parallel化、break、continueは行わず、forEachParallelとforEachUntilが別contractを表します。",
+  invalidTitle: "for blockは汎用的なloop脱出ではない",
+  invalidBody: "要素をskipするならsucceed ()を返す明示branch、正常な早期終了ならforEachUntilのContinue・Breakを使います。別関数やFiberからの非local jumpにはなりません。",
+  diagnosticsBody: "Iterableでない入力、refutable pattern、Effectでないbody、Unitでないsuccess、requirement・failure不一致を該当itemで報告します。",
+  provenanceBody: "仕様5.4のeffectful forを扱います。pureなrangeとcomprehensionは別の意味規則を持ちます。"
+}

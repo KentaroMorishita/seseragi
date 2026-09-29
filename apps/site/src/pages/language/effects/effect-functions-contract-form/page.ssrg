@@ -1,0 +1,28 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.effect-functions-contract-form" "/docs/language/effects/effect-functions-contract-form/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-contract-form",
+        localized "An explicit Console contract" "Consoleを明示するcontract"
+      )] [CodeExample (
+        "effects-invalid-contract",
+        localized "Rejected missing environment and failure" "environment・failure欠落を拒否"
+      )] [
+        [InternalLink (
+          localized "Inferred Effect functions" "contractを推論するeffect fn",
+          "/docs/language/effects/effect-functions-inferred-form/"
+        )],
+        [InternalLink (
+          localized "Environment requirements" "environment requirement",
+          "/docs/language/effects/environment-requirements/"
+        )],
+        [InternalLink (
+          localized "Function types" "関数型",
+          "/docs/language/types/function-types-and-currying/"
+        )]
+      ]

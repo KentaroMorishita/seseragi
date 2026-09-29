@@ -50,7 +50,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3886)
+    expect(manifest.pages).toHaveLength(3912)
     for (const route of [
       "/",
       "/docs/",
@@ -122,6 +122,21 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/language/traits/do-block-typing/",
       "/ja/docs/language/traits/model/",
       "/ja/docs/language/traits/do-block-typing/",
+      "/docs/language/effects/pure-expressions/",
+      "/docs/language/effects/maybe/",
+      "/docs/language/effects/either/",
+      "/docs/language/effects/effect-type/",
+      "/docs/language/effects/effect-functions-contract-form/",
+      "/docs/language/effects/effect-functions-inferred-form/",
+      "/docs/language/effects/effectful-for/",
+      "/docs/language/effects/environment-requirements/",
+      "/docs/language/effects/error-channels/",
+      "/docs/language/effects/task/",
+      "/docs/language/effects/sequential-and-parallel/",
+      "/docs/language/effects/runtime-boundaries/",
+      "/docs/language/effects/defects/",
+      "/ja/docs/language/effects/pure-expressions/",
+      "/ja/docs/language/effects/defects/",
       "/docs/library/",
       "/docs/library/array/",
       "/docs/library/array/function/get/",

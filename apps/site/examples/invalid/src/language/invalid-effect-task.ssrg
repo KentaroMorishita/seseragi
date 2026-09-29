@@ -1,0 +1,3 @@
+import * as effects from "std/effect"
+
+fn fallibleTask unit: Unit -> Task<Int> = effects.fail "not a Task"

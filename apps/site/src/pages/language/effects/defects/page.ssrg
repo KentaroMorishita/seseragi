@@ -1,0 +1,23 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.defects" "/docs/language/effects/defects/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-defects",
+        localized "Modeling an expected zero divisor as data" "想定可能なzero divisorをdata化"
+      )] [] [
+        [InternalLink (
+          localized "Error channels" "error channel",
+          "/docs/language/effects/error-channels/"
+        )],
+        [InternalLink
+      (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")],
+        [InternalLink (
+          localized "Backend-independent semantics" "backendに依存しない意味",
+          "/docs/language/model/backend-independent-semantics/"
+        )]
+      ]

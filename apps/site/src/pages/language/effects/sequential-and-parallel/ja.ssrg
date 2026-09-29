@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Effectの逐次・並列実行",
+  summary: "Effectは既定で順番に実行し、並行性は明示的なparallel APIだけが導入します。",
+  ruleTitle: "flatMap・>>=・doはsource順に実行する",
+  ruleBody: "逐次Effectでは先の処理が成功してから後続を開始します。独立したEffectを並べてもreorderやconcurrencyは許可されず、Effect.parallelなどが異なるcontractを明示します。",
+  typingBody: "逐次合成は先のsuccessをcontinuationへ渡し、互換R・Eをmergeします。parallel operationは互換Effectのcollectionを要求し、そのlibrary contractが約束する順序でresultを返します。",
+  evaluationBody: "逐次failureなら後続処理を開始しません。parallelのresult順、failure選択、sibling cancellation、cleanupは完了時刻やcompiler推測ではなく、選んだAPIに従います。",
+  invalidTitle: "compilerはEffectを自動parallel化できない",
+  invalidBody: "外部順序、resource ownership、failure選択、cancellationは観測可能です。独立して見えるEffectでも、programが明示parallel operationを選ぶまでは逐次です。",
+  diagnosticsBody: "schedule前にrequirement・failure・successの不一致を示します。runtime診断はconcurrent failureでも選択operationとinput位置を保持します。",
+  provenanceBody: "仕様5.8を扱います。scheduler fairness、Fiber supervision、parallel API詳細は独立pageです。"
+}

@@ -1,0 +1,23 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.runtime-boundaries" "/docs/language/effects/runtime-boundaries/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-runtime-boundary",
+        localized "A cold program awaiting its host" "host実行を待つcoldなprogram"
+      )] [] [
+        [InternalLink (
+          localized "Programs and entry points" "programとentry point",
+          "/docs/language/model/programs/"
+        )],
+        [InternalLink (
+          localized "Environment requirements" "environment requirement",
+          "/docs/language/effects/environment-requirements/"
+        )],
+        [InternalLink
+      (localized "Pure expressions" "純粋な式", "/docs/language/effects/pure-expressions/")]
+      ]

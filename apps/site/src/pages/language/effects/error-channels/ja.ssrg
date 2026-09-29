@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Effectのerror channel",
+  summary: "Eはcallerが明示的にmodel化して扱う回復可能なfailureを運びます。",
+  ruleTitle: "application failureは自動unionせず設計する",
+  ruleBody: "一つのEffect合成では一つの回復可能error型を使います。dependency errorはmapErrorでapplication ADTへ変換し、異なる失敗operationが並んでもcompilerは匿名unionを合成しません。",
+  typingBody: "Effect<R, Never, A>は回復可能failureを生成できないためEffect<R, E, A>へwidenできます。それ以外のfailure coercionはありません。recoverはEだけを扱い、置換後error型を持つEffectを返します。",
+  evaluationBody: "typed failureは現在の逐次continuationを停止し、最も近い明示recovery operationへ渡ります。defectとcancellationは別channelで、recoverは捕捉もEへの変換もしません。",
+  invalidTitle: "想定できる外部failureをdefectにしない",
+  invalidBody: "network拒否、不正inputなど予測できる結果はEまたは通常のEitherに置きます。application error型の設計を避けるためにruntime defectへ隠してはいけません。",
+  diagnosticsBody: "failure不一致は各具体Eと、それを導入したoperationを示します。inferred effect fnで複数のNever以外のfailureが合流すると、ADTとmapError・recoverを案内します。",
+  provenanceBody: "仕様5.6を扱います。defect、cancellation、foreign exception変換は別contractです。"
+}

@@ -1,0 +1,21 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.error-channels" "/docs/language/effects/error-channels/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-error-channels",
+        localized "Mapping a dependency error into an application ADT"
+      "dependency errorをapplication ADTへ変換"
+      )] [CodeExample (
+        "effects-invalid-errors",
+        localized "Rejected mismatched failure contract" "failure contract不一致を拒否"
+      )] [
+        [InternalLink (localized "Either" "Either", "/docs/language/effects/either/")],
+        [InternalLink (localized "Defects" "defect", "/docs/language/effects/defects/")],
+        [InternalLink
+      (localized "The Effect type" "Effect型", "/docs/language/effects/effect-type/")]
+      ]

@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Maybe and absence",
+  summary: "Maybe represents normal absence as data, without null or a hidden failure path.",
+  ruleTitle: "Use Nothing when no value is a valid result",
+  ruleBody: "Maybe<A> is either Nothing or Just A. Choose Either when absence needs a reason, and convert nullable foreign values to Maybe at the interop boundary instead of extending nullish behavior into Seseragi code.",
+  typingBody: "For left: Maybe<A>, left ?? fallback requires fallback: A and returns A. The operator is fixed to Maybe, associates to the right, and is not overloaded for Either, foreign nullable values, or ordinary values.",
+  evaluationBody: "The left operand is evaluated first. Just value returns value without evaluating the fallback; only Nothing evaluates the right operand. A chain therefore preserves deliberate, lazy fallback order.",
+  invalidTitle: "Absence and failure are different questions",
+  invalidBody: "Do not discard an error reason by replacing Either with Maybe, and do not use ?? as a generic truthy fallback. Select the data type that preserves the domain information callers need.",
+  diagnosticsBody: "Type errors identify a non-Maybe left operand or a fallback whose type differs from A. Exhaustive matching still requires both Nothing and Just when pattern matching directly.",
+  provenanceBody: "This article covers specification 5.2. Standard Maybe functions and instances are listed in the std/maybe reference."
+}

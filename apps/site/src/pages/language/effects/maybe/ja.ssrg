@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Maybeと値の不在",
+  summary: "Maybeは正常に起こりうる値の不在を、nullや隠れたfailureではなくdataとして表します。",
+  ruleTitle: "値がなくても正常ならNothingを使う",
+  ruleBody: "Maybe<A>はNothingまたはJust Aです。不在理由が必要ならEitherを選び、foreignのnullable値はinterop境界でMaybeへ変換して、Seseragi codeへnullishな振る舞いを広げません。",
+  typingBody: "left: Maybe<A>に対するleft ?? fallbackはfallback: Aを要求し、Aを返します。??はMaybe専用の右結合operatorで、Either・foreign nullable・通常値へoverloadしません。",
+  evaluationBody: "左operandを先に評価します。Just valueならfallbackを評価せずvalueを返し、Nothingの場合だけ右operandを評価します。chainでも意図したlazyなfallback順を保ちます。",
+  invalidTitle: "不在と失敗は別の問い",
+  invalidBody: "EitherをMaybeへ置き換えてerror理由を捨てたり、??をtruthyな汎用fallbackとして使ったりしません。callerに必要なdomain情報を保つdata型を選びます。",
+  diagnosticsBody: "Maybeでない左operand、またはAと異なるfallback型を示します。直接matchする場合はNothingとJustの両方を網羅する必要があります。",
+  provenanceBody: "仕様5.2を扱います。標準Maybe関数とinstanceはstd/maybe referenceに分けて掲載します。"
+}

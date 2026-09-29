@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "contractを推論するeffect fn",
+  summary: "compact formはEffect型のbodyから完全なEffect contractを推論します。",
+  ruleTitle: "推論するならsignature clauseをすべて外す",
+  ruleBody: "->・with・fails・whereを一つも持たないeffect fnはbodyからR・E・Aを推論します。正規化されたEffect型はtyped artifactとpublic module interfaceへ明示されます。",
+  typingBody: "requirement fieldはcanonical名と同じ型でmergeします。Never以外のfailureが0種類ならNever、1種類ならその型、複数ならunionを合成せず拒否します。branchのsuccess値も通常どおり一つの型へ合流する必要があります。",
+  evaluationBody: "推論formを同値な明示contractへ展開しても動作は変わりません。違いはsourceでAPIを固定するか、生成typed interfaceでreviewするかです。",
+  invalidTitle: "compact formは部分的な明示ではない",
+  invalidBody: "with・fails・whereを->なしでは書けません。success型から完全なcontractを書くか、clauseをすべて外してbodyにEffect型全体を決めさせます。",
+  diagnosticsBody: "Effectでないbody、requirement field競合、複数failure型、合流できないsuccess branchを区別し、各型を導入したsource spanを示します。",
+  provenanceBody: "仕様5.4のcompact inferred formとModuleInterface・TypedInterface contractを扱います。"
+}

@@ -460,6 +460,82 @@ try {
           })
 
         await page.goto(
+          `http://127.0.0.1:${server.port}/docs/language/effects/effect-type/`
+        )
+        assert.equal(await page.locator("h1").textContent(), "The Effect type")
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-group[open] > summary"
+            )
+            .textContent(),
+          "Effects and failure"
+        )
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-section:has(.sidebar-link.current) > summary"
+            )
+            .textContent(),
+          "Values and computations"
+        )
+        assert.equal(
+          (await page.locator(".breadcrumbs").innerText()).replace(
+            /\s+/gu,
+            " "
+          ),
+          "Language Reference / Effects and failure / Values and computations / The Effect type"
+        )
+        assert.equal(
+          await page.locator(".reference-previous strong").textContent(),
+          "Either and typed results"
+        )
+        assert.equal(
+          await page.locator(".reference-next strong").textContent(),
+          "Effect functions with an explicit contract"
+        )
+        const effectText = await page.locator("body").innerText()
+        assert.ok(
+          effectText.includes("Construction and execution are separate")
+        )
+        assert.ok(!effectText.includes("Lesson"))
+        assert.ok(!effectText.match(/#[0-9]+/u))
+        assert.equal(await page.locator(".seseragi-highlight").count(), 2)
+        const effectWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          effectWidth <= width,
+          `Effect article ${width}px viewport is ${effectWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `effect-type-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
+          `http://127.0.0.1:${server.port}/ja/docs/language/effects/effect-type/`
+        )
+        assert.equal(await page.locator("html").getAttribute("lang"), "ja")
+        assert.equal(await page.locator("h1").textContent(), "Effect型")
+        const japaneseEffectText = await page.locator("body").innerText()
+        assert.ok(japaneseEffectText.includes("構築と実行は別の段階"))
+        assert.ok(!japaneseEffectText.match(/#[0-9]+/u))
+        const japaneseEffectWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          japaneseEffectWidth <= width,
+          `Japanese Effect article ${width}px viewport is ${japaneseEffectWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `effect-type-ja-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
           `http://127.0.0.1:${server.port}/docs/language/types/requirement-merge/`
         )
         assert.equal(

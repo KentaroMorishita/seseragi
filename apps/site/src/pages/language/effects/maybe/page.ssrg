@@ -1,0 +1,19 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.maybe" "/docs/language/effects/maybe/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-maybe",
+        localized "Lazy fallback through two optional values" "二つのoptional値を順にfallback"
+      )] [CodeExample
+      ("effects-invalid-maybe", localized "Rejected Either fallback" "Eitherへの??を拒否")] [
+        [InternalLink (localized "Either" "Either", "/docs/language/effects/either/")],
+        [InternalLink
+      (localized "Pattern matching" "パターン照合", "/docs/language/patterns/match/")],
+        [InternalLink
+      (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")]
+      ]

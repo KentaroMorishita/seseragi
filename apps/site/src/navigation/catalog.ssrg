@@ -74,6 +74,19 @@ import { page as methodsVersusTraitsPage } from "../pages/language/traits/method
 import { page as doNotationPage } from "../pages/language/traits/do-notation/page"
 import { page as doDesugaringPage } from "../pages/language/traits/do-desugaring/page"
 import { page as doBlockTypingPage } from "../pages/language/traits/do-block-typing/page"
+import { page as pureExpressionsPage } from "../pages/language/effects/pure-expressions/page"
+import { page as maybePage } from "../pages/language/effects/maybe/page"
+import { page as eitherPage } from "../pages/language/effects/either/page"
+import { page as effectTypePage } from "../pages/language/effects/effect-type/page"
+import { page as effectContractFormPage } from "../pages/language/effects/effect-functions-contract-form/page"
+import { page as effectInferredFormPage } from "../pages/language/effects/effect-functions-inferred-form/page"
+import { page as effectfulForPage } from "../pages/language/effects/effectful-for/page"
+import { page as environmentRequirementsPage } from "../pages/language/effects/environment-requirements/page"
+import { page as effectErrorChannelsPage } from "../pages/language/effects/error-channels/page"
+import { page as taskPage } from "../pages/language/effects/task/page"
+import { page as sequentialParallelPage } from "../pages/language/effects/sequential-and-parallel/page"
+import { page as runtimeBoundariesPage } from "../pages/language/effects/runtime-boundaries/page"
+import { page as defectsPage } from "../pages/language/effects/defects/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
 import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
@@ -287,6 +300,39 @@ fn languageArea -> NavigationArea = NavigationArea {
           kind: FlatSection,
           overview: doNotationPage (),
           pages: [doDesugaringPage (), doBlockTypingPage ()]
+        }
+      ]
+    },
+    NavigationGroup {
+      id: "effects-and-failure",
+      title: localized "Effects and failure" "Effectとfailure",
+      sections: [
+        NavigationSection {
+          id: "values-and-computations",
+          title: localized "Values and computations" "値と計算",
+          kind: FlatSection,
+          overview: pureExpressionsPage (),
+          pages: [maybePage (), eitherPage (), effectTypePage ()]
+        },
+        NavigationSection {
+          id: "effect-programs",
+          title: localized "Writing Effect programs" "Effect programを書く",
+          kind: FlatSection,
+          overview: effectContractFormPage (),
+          pages: [
+            effectInferredFormPage (),
+            effectfulForPage (),
+            environmentRequirementsPage (),
+            effectErrorChannelsPage (),
+            taskPage ()
+          ]
+        },
+        NavigationSection {
+          id: "effect-execution",
+          title: localized "Execution and faults" "実行と異常終了",
+          kind: FlatSection,
+          overview: sequentialParallelPage (),
+          pages: [runtimeBoundariesPage (), defectsPage ()]
         }
       ]
     }

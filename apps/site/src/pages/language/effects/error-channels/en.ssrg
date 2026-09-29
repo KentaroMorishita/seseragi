@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Effect error channels",
+  summary: "E carries recoverable failures that callers are expected to model and handle explicitly.",
+  ruleTitle: "Application failures are designed, not auto-unioned",
+  ruleBody: "Effects in one composition use one recoverable error type. mapError converts dependency errors into an application ADT; the compiler never synthesizes an anonymous union merely because two operations can fail differently.",
+  typingBody: "Effect<R, Never, A> may widen to Effect<R, E, A> because it cannot produce a recoverable failure. No other failure coercion exists. recover handles E only and must return an Effect with the replacement error type.",
+  evaluationBody: "A typed failure stops the current sequential continuation and is passed to the nearest explicit recovery operation. It is distinct from a defect and cancellation, neither of which recover catches or converts to E.",
+  invalidTitle: "Expected external failure is not a defect",
+  invalidBody: "Network refusal, invalid input, and other anticipated outcomes belong in E or an ordinary Either. Do not hide them behind a runtime defect simply to avoid designing an application error type.",
+  diagnosticsBody: "Failure mismatches show each concrete E and the operation that introduced it. Inferred effect functions suggest an ADT plus mapError or recover when multiple non-Never failures meet.",
+  provenanceBody: "This article covers specification 5.6. Defects, cancellation, and foreign exception conversion have separate contracts."
+}

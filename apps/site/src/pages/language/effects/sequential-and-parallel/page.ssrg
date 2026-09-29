@@ -1,0 +1,19 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.sequential-and-parallel" "/docs/language/effects/sequential-and-parallel/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-execution-order",
+        localized "Explicit sequential and parallel composition" "明示的な逐次・並列合成"
+      )] [] [
+        [InternalLink
+      (localized "Do notation" "do記法", "/docs/language/traits/do-notation/")],
+        [InternalLink
+      (localized "Effectful for" "effectful for", "/docs/language/effects/effectful-for/")],
+        [InternalLink
+      (localized "Visible costs" "costを見える形にする", "/docs/language/model/visible-costs/")]
+      ]

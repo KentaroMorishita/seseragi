@@ -1,0 +1,26 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.effect-functions-inferred-form" "/docs/language/effects/effect-functions-inferred-form/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-inferred-form",
+        localized "A complete contract inferred from println" "printlnから完全なcontractを推論"
+      )] [CodeExample
+      ("effects-invalid-pure-body", localized "Rejected non-Effect body" "Effectでないbodyを拒否")] [
+        [InternalLink (
+          localized "Explicit Effect contracts" "明示Effect contract",
+          "/docs/language/effects/effect-functions-contract-form/"
+        )],
+        [InternalLink (
+          localized "Annotations and inference" "annotationと推論",
+          "/docs/language/types/annotations-and-inference/"
+        )],
+        [InternalLink (
+          localized "Error channels" "error channel",
+          "/docs/language/effects/error-channels/"
+        )]
+      ]

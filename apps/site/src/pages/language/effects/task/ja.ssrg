@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Task",
+  summary: "Task<A>はservice不要・回復可能failureなしのEffect<{}, Never, A>を表す透明aliasです。",
+  ruleTitle: "Taskは便利な名前であり別runtimeではない",
+  ruleBody: "Taskは独立したnominal identity、実行model、ABI、instanceを持ちません。すべてのTask operationは、空environmentと生成不能なfailure channelを持つEffect operationです。",
+  typingBody: "service不要でも失敗しうる計算はTask<A>ではなくEffect<{}, E, A>です。TaskはNever wideningで広いEが必要な位置へ合成でき、serviceが必要ならfailureがNeverでもTaskにはなりません。",
+  evaluationBody: "Taskの実行もEffectと同じcold構築、sequencing、cancellation、resource、scheduling規則に従います。aliasが処理を開始したりeagerにしたりはしません。",
+  invalidTitle: "Taskは任意のasync処理を意味しない",
+  invalidBody: "RとEを表記から消せるのは正確に{}とNeverの場合だけです。短いaliasにするためservice requirementや回復可能failureを消してはいけません。",
+  diagnosticsBody: "aliasをEffect<{}, Never, A>へ展開して、required service、Neverでないfailure、success型のどこが不一致か示します。",
+  provenanceBody: "仕様5.7を扱います。TaskはEffectの標準library・runtime contractをそのまま使います。"
+}
