@@ -1,5 +1,14 @@
 import { ConceptCopy } from "../concept"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> ConceptCopy =
-  incomplete "言語に存在しない機能" "意図的に持たないsurfaceと、その代わりに使うmodelを説明します。"
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "言語に存在しない機能",
+  summary: "Seseragiが意図的に採用していない機能と、その代わりに使う明示的な仕組みを説明します。",
+  ruleTitle: "存在しないことも設計の一部",
+  ruleBody: "Seseragiは、暗黙の状態変更、不在を隠す値、暗黙変換、離れた場所へ制御を移す構文、値に応じて意味が変わる仕組み、制限のないcompile-time rewriteを採用しません。外部コードに同様の挙動がある場合は、明示的な境界の内側で扱います。",
+  consequenceOne: "通常のdataには、再代入、mutable field、null、undefined、truthiness、暗黙の数値変換、網羅的でないmatchがありません。",
+  consequenceTwo: "回復可能なerrorにexceptionは使いません。Effect requirementは汎用のunion・intersection typeでも、perform・handle形式のalgebraic effectでもありません。",
+  consequenceThree: "汎用syntax macroやprocedural macro、ユーザー定義のprefix・postfix operator、return、break、continueはありません。",
+  boundaryTitle: "存在しない機能は未実装機能ではありません",
+  boundaryBody: "これらはSeseragiの言語modelに含まれません。新しい値、Maybe・Either・Effect、網羅的なmatching、通常の関数、reduceUntil・forEachUntil、閉じたderiving、明示的なinteropが、意図された代替手段です。",
+  provenanceBody: "仕様0.4節が、存在しない機能を定義しています。後続の各章では、代替手段と、deriving・template stringで許可される限定的なcompile-time処理を定義しています。"
+}

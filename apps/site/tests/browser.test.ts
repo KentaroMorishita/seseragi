@@ -179,6 +179,46 @@ try {
             .textContent(),
           "Calling functions"
         )
+        assert.equal(
+          (await page.locator(".breadcrumbs").innerText()).replace(
+            /\s+/gu,
+            " "
+          ),
+          "Language Reference / Functions and operators / Function application"
+        )
+        assert.equal(await page.locator(".reference-sequence a").count(), 2)
+        assert.equal(
+          await page.locator(".reference-next strong").textContent(),
+          "Method calls"
+        )
+        if (width === 390) {
+          assert.notEqual(
+            await page
+              .locator(".locale-switch")
+              .evaluate((link) => getComputedStyle(link).display),
+            "none"
+          )
+          assert.equal(
+            await page.locator(".locale-switch").getAttribute("href"),
+            "/ja/docs/language/syntax/function-application/"
+          )
+          const headerRows = await page
+            .locator(".site-header-inner")
+            .evaluate((header) => {
+              const brand = header.querySelector(".site-brand")
+              const navigation = header.querySelector(".site-nav")
+              const tools = header.querySelector(".site-tools")
+              if (!(brand instanceof HTMLElement)) return null
+              if (!(navigation instanceof HTMLElement)) return null
+              if (!(tools instanceof HTMLElement)) return null
+              return [brand, navigation, tools].map((item) => {
+                const box = item.getBoundingClientRect()
+                return box.top + box.height / 2
+              })
+            })
+          assert.ok(headerRows)
+          assert.ok(Math.max(...headerRows) - Math.min(...headerRows) <= 1)
+        }
         assert.ok(
           (await page.locator("body").innerText()).includes(
             "Application does not infer a different call grammar"
@@ -331,6 +371,7 @@ try {
           `http://127.0.0.1:${server.port}/ja/docs/language/types/requirement-merge/`
         )
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")
+        assert.ok(!(await page.locator("body").innerText()).match(/#[0-9]+/u))
         if (width === 390) {
           const japaneseHeaderLayout = await codeHeaderLayout(
             page.locator(".code-panel-header:has(.code-actions)").first()
@@ -374,6 +415,15 @@ try {
             path: join(screenshots, `language-model-${width}.png`),
             fullPage: true,
           })
+
+        await page.goto(
+          `http://127.0.0.1:${server.port}/ja/docs/language/model/non-features/`
+        )
+        const japaneseModelText = await page.locator("body").innerText()
+        assert.ok(
+          japaneseModelText.includes("再代入とmutable fieldはありません")
+        )
+        assert.ok(!japaneseModelText.match(/#[0-9]+/u))
 
         await page.goto(
           `http://127.0.0.1:${server.port}/docs/language/syntax/literals/`

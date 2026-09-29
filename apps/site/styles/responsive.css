@@ -41,7 +41,8 @@
   }
 
   .site-header-inner {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
     width: min(calc(100% - 28px), var(--page-width));
   }
 
@@ -49,9 +50,13 @@
     justify-content: flex-end;
   }
 
-  .site-nav a:not(:first-child),
-  .site-tools {
+  .site-nav a:not(:first-child) {
     display: none;
+  }
+
+  .locale-switch {
+    font-size: 13px;
+    white-space: nowrap;
   }
 
   .home-hero,
@@ -155,6 +160,10 @@
     font-size: 16px;
   }
 
+  .breadcrumbs {
+    margin-bottom: 18px;
+  }
+
   .article-content {
     padding-top: 38px;
   }
@@ -162,6 +171,19 @@
   .article-content h2 {
     padding-top: 30px;
     font-size: 25px;
+  }
+
+  .reference-sequence {
+    grid-template-columns: 1fr;
+    margin-top: 56px;
+  }
+
+  .reference-sequence-spacer {
+    display: none;
+  }
+
+  .reference-next {
+    text-align: left;
   }
 
   .code-panel pre,

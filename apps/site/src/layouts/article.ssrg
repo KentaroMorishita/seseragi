@@ -5,6 +5,7 @@ import { Locale, translate } from "../model/locale"
 import { NavigationArea, PageDefinition } from "../model/page"
 import { article } from "../components/article"
 import { mobileOnThisPage, onThisPage } from "../components/on-this-page"
+import { breadcrumbs, pageSequence } from "../components/page-navigation"
 import { mobileSidebar, sidebar } from "../components/sidebar"
 
 pub fn articleLayout<Action> input: BuildInput
@@ -22,6 +23,7 @@ pub fn articleLayout<Action> input: BuildInput
         id: "content",
         class: "article-page",
         children: [
+          breadcrumbs locale page areas,
           html.header {
             class: "page-intro",
             children: [
@@ -31,7 +33,8 @@ pub fn articleLayout<Action> input: BuildInput
             ]
           },
           mobileOnThisPage messages locale page.blocks,
-          article input messages locale page.blocks
+          article input messages locale page.blocks,
+          pageSequence messages locale page areas
         ]
       },
       onThisPage messages locale page.blocks

@@ -8,5 +8,7 @@ pub fn messages -> Messages = Messages {
   releases: "リリース",
   onThisPage: "このページの内容",
   openPlayground: "Playgroundで開く",
-  language: "English"
+  language: "English",
+  previousPage: "前へ",
+  nextPage: "次へ"
 }

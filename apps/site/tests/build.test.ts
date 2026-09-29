@@ -166,7 +166,12 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(japanese).toContain('<html lang="ja">')
-    expect(japanese).toContain("日本語本文は#630で整備中です")
+    expect(japanese).toContain("詳しい日本語解説は準備中です")
+    expect(textContent(japanese)).not.toMatch(/#[0-9]+/u)
+    expect(japanese).toContain("Language Reference")
+    expect(japanese).toContain('class="breadcrumbs"')
+    expect(japanese).toContain('class="reference-sequence"')
+    expect(japanese).toContain('href="/ja/docs/language/syntax/method-calls/"')
     const operators = readFileSync(
       join(output, "docs/language/syntax/operator-precedence/index.html"),
       "utf8"
