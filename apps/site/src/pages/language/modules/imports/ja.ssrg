@@ -1,0 +1,24 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "import",
+  summary: "公開名を選んでscopeへ導入するか、namespace aliasを使って修飾したまま参照します。",
+  ruleTitle: "名前の取得元をimportで明示する",
+  ruleBody: "importはモジュールの先頭へ置きます。named importは指定した公開宣言をscopeへ導入し、asでlocal名を変えられます。namespace importはaliasを導入し、text.trimのように修飾して参照します。例ではarrayのlengthをarrayLengthという名前にし、trimはtextを通して使っています。どちらも全公開名をunqualifiedなscopeへ展開する形式ではありません。",
+  typingBody: "importは宣言のcanonical identityと型schemeを保ちます。関数名を変えても、型や実装が新しくなるわけではありません。同じ表記が型namespaceと値namespaceの両方で公開されている場合、一つのnamed importで両方を導入し、aliasも両方のlocal名を変えます。そのため非opaqueなnewtypeを一度importすれば、型名とconstructorの両方を使えます。どちらを参照するかはsource上の位置で決まります。",
+  evaluationBody: "importはモジュールをdependency graphへ加えますが、その関数を呼び出したりEffectを実行したりはしません。namespaceはruntime objectを調べるのではなく、compilerが名前解決します。aliasで公開value、関数、型、trait、constructor、入れ子のforeign namespaceを修飾できます。ただしcustom operatorを修飾したinfix表記はありません。",
+  invalidTitle: "namespace importは名前を全部展開するwildcardではない",
+  invalidBody: "std/textをimport * as textで取り込んだ場合はtext.trimを使います。trimという名前が直接導入されるわけではありません。全exportをunqualifiedに導入する構文はなく、同じscopeへ同じlocal名を二度importすることもできません。別名にするか、namespaceで修飾してください。private関数は、名前を知っていてもimportできません。",
+  diagnosticsBody: "存在しない公開名はMissingExport、存在するprivate名はPrivateExportとして拒否されます。未使用importはwarningであり、programの意味は変わりません。ただし型検査で選択されたtrait instanceを供給するimportは使用済みです。aliasやnamed valueがsourceへ現れなくても、organize-importsで削除してはいけません。",
+  provenanceBody: "仕様6.5がnamed・alias・namespace・operator import、型と値の同時導入、instanceを含む使用判定を定めます。6.8が名前解決の順序とnamespaceを定めます。"
+}
+
+pub fn layoutTitle -> String = "operatorは解析規則ごとimportする"
+
+pub fn layoutBody -> String =
+  "custom operatorはimport { operator <+> }のように明示して取り込み、fromのモジュールspecifierは文字列で書きます。interfaceからsymbolだけでなくfixity、precedence、型schemeも取得します。そのためcompilerやlanguage serverは、import先の関数bodyを実行・parseせずに公開interfaceだけでoperator chainを解析できます。operatorは通常のvalue名とは別のnamespaceです。"
+
+pub fn exampleTitle -> String = "local aliasとnamespaceの修飾を使い分ける"
+
+pub fn exampleBody -> String =
+  "arrayLengthはstd/arrayのlengthを指すlocal名です。textはモジュールaliasなので、text.trimは公開関数の参照であり、textという値のfield accessではありません。この例は標準moduleだけに依存するためPlayground単体で確認できます。相対importを使う例には、参照先のsourceファイルも必要です。"

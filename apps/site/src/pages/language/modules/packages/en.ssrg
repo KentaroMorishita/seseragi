@@ -1,0 +1,24 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Packages",
+  summary: "A package gives modules a shared identity, layout and dependency boundary through seseragi.toml.",
+  ruleTitle: "The manifest defines the boundary",
+  ruleBody: "A package has one seseragi.toml at its root. It declares the package name, version and supported language range, and may specify layout, direct dependencies and public entry modules. The compiler does not infer this boundary from package.json or merge several parent manifests. Organizing files into directories inside a source root does not create additional packages.",
+  typingBody: "A module's identity incorporates the package's identity: name, exact version and source identity. Two versions of the same dependency can have distinct internal identities. Two sources claiming the same name and exact version in one dependency graph cause a dependency-confusion error; the compiler does not silently pick one. Types imported from different package identities retain their declaring identities.",
+  evaluationBody: "An import can use only dependencies declared directly in the importing package's manifest. A transitive dependency used by one of your dependencies is not automatically available to your source. Resolution selects the declared dependency and its public export map before loading the module. A package boundary alone performs no I/O; module initialization and Effect execution retain their own rules.",
+  invalidTitle: "pub and the export map answer different questions",
+  invalidBody: "A pub declaration is visible to another module that can resolve its defining module. The package export map controls which source modules an external package may resolve. Publishing a declaration does not expose every private package path, and listing a module in exports does not make all its declarations public.",
+  diagnosticsBody: "The package name uses lowercase ASCII segments separated by /. The std, self and gen prefixes are reserved. An incompatible language range, missing direct dependency, unavailable export subpath, conflicting source identity or a path escaping the package is diagnosed before application execution. A lockfile records the resolved graph; explicitly update it when package or source inputs change.",
+  provenanceBody: "Specification 6.2 introduces the package boundary. Chapter 11 defines the manifest, identity, layout, export map, dependency graph and lockfile contracts."
+}
+
+pub fn layoutTitle -> String = "Ordinary source and auxiliary roots"
+
+pub fn layoutBody -> String =
+  "The default roots are src, tests, benchmarks and .seseragi/generated. They cannot overlap or escape the package, including through symlinks. Tests and benchmarks are command-specific roots, and generated modules carry their own identity tag. Relative imports stay in one root. self/ refers to the current package's ordinary source; gen/ refers to its generated bindings."
+
+pub fn exampleTitle -> String = "A library exposes chosen modules"
+
+pub fn exampleBody -> String =
+  "In this manifest, an external import of acme/validation resolves to src/lib.ssrg; acme/validation/email resolves to src/email.ssrg. Other source files remain internal to the package. A library does not need a main entry point. An executable package adds a run table naming the entry module and host target."

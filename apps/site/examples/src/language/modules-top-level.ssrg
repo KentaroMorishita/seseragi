@@ -1,0 +1,9 @@
+let base = 20
+
+fn double value: Int -> Int = value * 2
+
+let answer = double (base + 1)
+
+effect fn report = println $"answer: ${answer}"
+
+let pending = report ()

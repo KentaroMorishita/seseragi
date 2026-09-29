@@ -1,0 +1,30 @@
+import { localized } from "../../../../model/locale"
+import {
+  CodeExample,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words
+} from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.modules.imports" "/docs/language/modules/imports/" (en.copy ()) (ja.copy ()) [
+    Heading ("boundaries", localized (en.layoutTitle ()) (ja.layoutTitle ())),
+    Paragraph [Words (localized (en.layoutBody ()) (ja.layoutBody ()))],
+    Heading ("example", localized (en.exampleTitle ()) (ja.exampleTitle ())),
+    Paragraph [Words (localized (en.exampleBody ()) (ja.exampleBody ()))],
+    CodeExample
+      ("modules-imports", localized "modules-imports.ssrg" "modules-imports.ssrg")
+  ] [CodeExample ("modules-invalid-import", localized "Rejected import" "拒否されるimport")] [
+    [InternalLink
+      (localized "Module identity" "モジュールのidentity", "/docs/language/modules/identity/")],
+    [InternalLink (
+      localized "Visibility and opaque representations" "公開範囲とopaqueな表現",
+      "/docs/language/modules/visibility/"
+    )],
+    [InternalLink (localized "Packages" "パッケージ", "/docs/language/modules/packages/")]
+  ]

@@ -1,0 +1,32 @@
+import { localized } from "../../../../model/locale"
+import {
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.modules.packages" "/docs/language/modules/packages/" (en.copy ()) (ja.copy ()) [
+    Heading ("boundaries", localized (en.layoutTitle ()) (ja.layoutTitle ())),
+    Paragraph [Words (localized (en.layoutBody ()) (ja.layoutBody ()))],
+    Heading ("example", localized (en.exampleTitle ()) (ja.exampleTitle ())),
+    Paragraph [Words (localized (en.exampleBody ()) (ja.exampleBody ()))],
+    Terminal (
+      localized "seseragi.toml" "seseragi.toml",
+      "[package]\nname = \"acme/validation\"\nversion = \"1.2.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n\n[exports]\n\".\" = \"lib\"\n\"email\" = \"email\""
+    )
+  ] [] [
+    [InternalLink
+        (localized "Module identity" "モジュールのidentity", "/docs/language/modules/identity/")],
+    [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
+    [InternalLink (
+      localized "Visibility and opaque representations" "公開範囲とopaqueな表現",
+      "/docs/language/modules/visibility/"
+    )]
+  ]

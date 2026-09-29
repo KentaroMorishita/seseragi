@@ -1,0 +1,3 @@
+import { internal } from "./domain"
+
+let value = internal 42

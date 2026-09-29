@@ -1,0 +1,24 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Imports",
+  summary: "Bring selected public names into scope, or keep them qualified under a namespace alias.",
+  ruleTitle: "Imports state where names come from",
+  ruleBody: "Imports appear at the beginning of a module. A named import introduces the selected public declarations; as changes their local spelling. A namespace import introduces an alias and keeps access qualified, such as text.trim. The example gives array length the local name arrayLength and uses trim through text. Neither form imports every exported name into unqualified scope.",
+  typingBody: "Imports carry declarations' canonical identities and type schemes. Renaming a function does not alter its type or create a new implementation. If one spelling is exported in both the type and value namespaces, one named import brings both into scope and an alias renames both. This lets a non-opaque newtype be imported once for its type name and constructor, with the reference position choosing the namespace.",
+  evaluationBody: "Importing links the module into the dependency graph; it does not call its functions or execute its Effects. Namespaces are resolved by the compiler, not by inspecting a runtime object. A namespace alias can qualify public values, functions, types, traits, constructors and nested foreign namespaces. It cannot provide a qualified infix spelling for a custom operator.",
+  invalidTitle: "Namespace import is not an unqualified wildcard",
+  invalidBody: "import * as text from \"std/text\" supplies text.trim, not bare trim. There is no syntax that introduces every export unqualified. Imports also cannot introduce the same local name twice in one scope. Use distinct aliases or keep one namespace-qualified. Import only public names: knowing a private function's spelling does not make it accessible.",
+  diagnosticsBody: "A missing exported name is rejected as MissingExport and an existing private name as PrivateExport. Unused imports produce warnings without changing program semantics. An import that supplies a trait instance selected during type checking counts as used even if its alias or named value never appears in source; organize-imports must retain it.",
+  provenanceBody: "Specification 6.5 defines named, aliased, namespace and operator imports, paired type/value imports and instance-aware use tracking. Section 6.8 defines the name-resolution order and separate namespaces."
+}
+
+pub fn layoutTitle -> String = "Operators bring their parsing contract"
+
+pub fn layoutBody -> String =
+  "A custom operator is imported explicitly, for example import { operator <+> } from \"./semigroup\". Its interface supplies fixity, precedence and type scheme as well as the symbol. The compiler and language server can therefore parse an operator chain from the public interface without executing or parsing the imported function body. Operators remain distinct from ordinary value names."
+
+pub fn exampleTitle -> String = "Use a local alias and a qualified namespace"
+
+pub fn exampleBody -> String =
+  "The arrayLength binding refers to std/array's length function. text is a module alias, so text.trim refers to an exported function rather than a field lookup on a text value. The standard-library modules are available to the standalone Playground example; relative imports require their sibling source files."

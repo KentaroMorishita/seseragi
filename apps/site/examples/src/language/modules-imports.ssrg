@@ -1,0 +1,8 @@
+import { length as arrayLength } from "std/array"
+import * as text from "std/text"
+
+fn itemCount values: Array<Int> -> Int = arrayLength values
+fn normalize name: String -> String = text.trim name
+
+let count = itemCount [1, 2, 3]
+let name = normalize "  Aki  "

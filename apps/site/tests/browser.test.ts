@@ -861,6 +861,71 @@ try {
             fullPage: true,
           })
 
+        await page.goto(
+          `http://127.0.0.1:${server.port}/docs/language/modules/identity/`
+        )
+        assert.equal(await page.locator("h1").textContent(), "Module identity")
+        const modulePanels = page.locator("main .code-panel")
+        assert.equal(await modulePanels.count(), 2)
+        assert.equal(
+          await modulePanels.nth(0).locator(".code-actions a").count(),
+          1
+        )
+        assert.equal(
+          await modulePanels.nth(1).locator(".code-actions a").count(),
+          0
+        )
+        assert.equal(
+          await page
+            .locator(".docs-sidebar .sidebar-link.current")
+            .textContent(),
+          "Module identity"
+        )
+        assert.equal(
+          await page
+            .locator(".reference-sequence a")
+            .last()
+            .getAttribute("href"),
+          "/docs/language/modules/packages/"
+        )
+        assert.equal(
+          await modulePanels
+            .nth(1)
+            .locator("pre")
+            .evaluate((pre) => getComputedStyle(pre).fontSize),
+          width === 390 ? "13px" : "14px"
+        )
+        assert.ok(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth
+          )
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `modules-identity-${width}.png`),
+            fullPage: true,
+          })
+        await page.goto(
+          `http://127.0.0.1:${server.port}/ja/docs/language/modules/visibility/`
+        )
+        assert.equal(
+          await page.locator("h1").textContent(),
+          "公開範囲とopaqueな表現"
+        )
+        assert.ok(!(await page.locator("main").innerText()).includes("準備中"))
+        assert.equal(
+          await page
+            .locator(".reference-sequence a")
+            .last()
+            .getAttribute("href"),
+          "/ja/docs/language/modules/imports/"
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `modules-visibility-ja-${width}.png`),
+            fullPage: true,
+          })
+
         assert.deepEqual(failures, [])
         await context.close()
       }
