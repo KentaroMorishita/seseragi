@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Task",
+  summary: "Task<A> is the transparent alias Effect<{}, Never, A> for infallible work needing no services.",
+  ruleTitle: "Task is a convenient name, not another runtime",
+  ruleBody: "Task has no separate nominal identity, execution model, ABI, or instances. Every Task operation is the corresponding Effect operation with an empty environment and an uninhabited recoverable error channel.",
+  typingBody: "A service-free computation that can fail is Effect<{}, E, A>, not Task<A>. Task may compose where a broader E is expected through Never widening, while a required service keeps the type outside Task even when failure is Never.",
+  evaluationBody: "Running a Task follows the same cold construction, sequencing, cancellation, resource, and scheduling rules as any Effect. The alias does not start work or make it eager.",
+  invalidTitle: "Task does not mean arbitrary async work",
+  invalidBody: "Removing R or E from notation is valid only when they are exactly {} and Never. Do not erase a service requirement or recoverable failure merely to obtain the shorter alias.",
+  diagnosticsBody: "Alias expansion reports mismatches against Effect<{}, Never, A>, showing whether the problem is a required service, a non-Never failure, or the success type.",
+  provenanceBody: "This article covers specification 5.7. Task uses the Effect standard-library and runtime contracts unchanged."
+}

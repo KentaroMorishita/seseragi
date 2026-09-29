@@ -1,0 +1,4 @@
+import * as effects from "std/effect"
+
+pub fn program unit: Unit -> Task<String> =
+  effects.succeed "ready for the host boundary"

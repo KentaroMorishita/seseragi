@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "The Effect type",
+  summary: "Effect<R, E, A> is a cold computation requiring R, failing with E, or succeeding with A.",
+  ruleTitle: "Construction and execution are separate",
+  ruleBody: "R is the structural service requirement, E is the recoverable error, and A is the success value. Building an Effect records a computation; it does not perform the represented I/O, scheduling, state access, or asynchronous work.",
+  typingBody: "Effect composition merges compatible requirement fields and keeps one explicit failure type. Functor changes A, Applicative combines independent descriptions in its documented order, and Monad sequences later work from an earlier success.",
+  evaluationBody: "Each execution starts the cold computation again. Sequential combinators run left to right and stop on typed failure, defect, or cancellation according to the selected operation's contract.",
+  invalidTitle: "An Effect is not a Promise or an eager task",
+  invalidBody: "Storing, passing, or returning an Effect does not start it or memoize its result. If work must run once or be shared, use the resource or concurrency API whose ownership and lifetime make that behavior explicit.",
+  diagnosticsBody: "Type displays keep R, E, and A visible. Mismatches point to the requirement field, failure channel, or success value that does not compose rather than reporting a generic asynchronous error.",
+  provenanceBody: "This article covers the Effect meaning in specification 5.4. Function forms, environments, errors, and execution boundaries are separate leaves."
+}

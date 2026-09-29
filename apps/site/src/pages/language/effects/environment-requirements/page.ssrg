@@ -1,0 +1,26 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.environment-requirements" "/docs/language/effects/environment-requirements/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("effects-environment", localized "Selecting one typed service" "型付きserviceを一つ取得")] [CodeExample
+      (
+        "effects-invalid-contract",
+        localized "Rejected missing Console requirement" "Console requirement欠落を拒否"
+      )] [
+        [InternalLink (
+          localized "Requirement merge" "requirement merge",
+          "/docs/language/types/requirement-merge/"
+        )],
+        [InternalLink (
+          localized "Effect function contracts" "effect fn contract",
+          "/docs/language/effects/effect-functions-contract-form/"
+        )],
+        [InternalLink (
+          localized "Runtime boundaries" "runtime境界",
+          "/docs/language/effects/runtime-boundaries/"
+        )]
+      ]

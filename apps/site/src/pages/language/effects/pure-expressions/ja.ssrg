@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "純粋な式",
+  summary: "通常の式は外部状態を読んだり変更したりせず、値を計算します。",
+  ruleTitle: "値が外部処理を隠れて実行することはない",
+  ruleBody: "純粋な関数は引数から結果を計算します。console、network、filesystem、時刻、乱数、runtimeの可変状態、非同期処理は、境界を型に表すEffect値を通してだけ扱います。",
+  typingBody: "純粋性はpure annotationではなく、operationの型で保証します。純粋な関数はEffect<R, E, A>を構築して返せますが、その値をAへ変えたり、effectful operationを通常値を返す関数として呼んだりはできません。",
+  evaluationBody: "通常の式は値operationの規則に従ってstrictに評価します。coldなEffectを構築するときは、その記述を作るための純粋なcodeだけを評価し、表された処理は許可されたruntime境界まで実行しません。",
+  invalidTitle: "Effectを返すことと実行することは違う",
+  invalidBody: "UnitやInstantなどの通常値を返すふりをして、出力・時刻取得・Signal更新はできません。結果型にEffectを残し、明示的に合成します。",
+  diagnosticsBody: "診断はEffect値が必要な位置、またはEffectを満たせない通常値を示します。toolはR・E・Aを省略せず表示し、欠けた境界を明らかにします。",
+  provenanceBody: "仕様5.1を扱います。coldなEffect構築とhost実行境界は独立したpageで説明します。"
+}

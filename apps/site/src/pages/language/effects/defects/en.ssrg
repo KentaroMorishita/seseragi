@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Defects",
+  summary: "A defect means the runtime cannot promise ordinary program recovery through the typed failure channel.",
+  ruleTitle: "Defects stay separate from E",
+  ruleBody: "Integer overflow, division by zero, runtime invariant violations, memory exhaustion, and a foreign value violating a safe wrapper may terminate a computation as defects. Anticipated input and external failures belong in ordinary data or E instead.",
+  typingBody: "A defect has no value inhabiting the Effect error type and is never inserted into Either or E. recover handles only typed failures; ordinary Seseragi code has no catch form that converts an arbitrary defect into success.",
+  evaluationBody: "A defect stops the affected computation and begins the same supervised cleanup required by other terminal outcomes. Finalizer defects follow the resource contract and may take precedence only after remaining finalizers are attempted.",
+  invalidTitle: "Do not use defects as an application error shortcut",
+  invalidBody: "Parsing, authorization refusal, unavailable services, and other expected cases must remain inspectable. Converting them to defects removes recovery from the type and breaks the caller's contract.",
+  diagnosticsBody: "Runtime diagnostics label defects separately from typed failures, preserve source and causal frames where available, and never render them through the application's Show<E> path.",
+  provenanceBody: "This article covers specification 5.10. Resource-finalizer priority and foreign exception conversion are defined on their owning pages."
+}

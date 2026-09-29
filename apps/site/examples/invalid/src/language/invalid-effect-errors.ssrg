@@ -1,0 +1,5 @@
+import * as effects from "std/effect"
+
+effect fn mixedFailure -> Unit
+fails String =
+  effects.fail 404

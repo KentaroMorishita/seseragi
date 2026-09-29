@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "明示contractを持つeffect fn",
+  summary: "contract formはsuccess・environment・failureをsourceへ直接書きます。",
+  ruleTitle: "contractは->から書き始める",
+  ruleBody: "effect fn parameters -> A with R fails E = bodyは、Effect<R, E, A>を返す関数を宣言します。surfaceのAはsuccess型、withは必要service、failsは回復可能なerrorです。",
+  typingBody: "with省略は{}、fails省略はNeverを意味します。bodyは必要field、宣言failure、宣言successを持つEffectでなければならず、通常値を暗黙liftしません。成功しないbodyのNever successだけはwidenできます。",
+  evaluationBody: "このformが変えるのは関数型のsource表記だけです。関数callはcoldなEffectを構築し、実行は引き続き許可された境界が管理します。",
+  invalidTitle: "contractの省略値は推論依頼ではなく約束",
+  invalidBody: "withとfailsなしで-> Unitと書くとEffect<{}, Never, Unit>に固定されます。compilerがbodyからConsole・Clock・error型を調べて明示APIへ勝手に追加することはありません。",
+  diagnosticsBody: "追加requirement、異なるfailure、異なるsuccessを導入した宣言側とbody operation・result側の両方を示します。",
+  provenanceBody: "仕様5.4のcontract formを扱います。省略規則が異なるcompact inferred formは独立pageです。"
+}

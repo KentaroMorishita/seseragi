@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Effect environment requirements",
+  summary: "R is the exact structural record of services an Effect needs from its execution boundary.",
+  ruleTitle: "Required services are fields, not globals",
+  ruleBody: "Composing Effects takes the union of their required fields. Equal names must have the same canonical type, fields cannot be optional, and a program obtains a service with Effect.service rather than consulting ambient singletons.",
+  typingBody: "Effect<R1, E, A> may widen to a requirement record R2 that contains every R1 field with the same type. This special Effect rule is not general generic covariance. Public generic signatures use restricted requirement merge R & { service: Service }.",
+  evaluationBody: "Effect.provide fixes an environment before execution, and provideSome translates a larger outer environment to the inner requirement. Lookup cannot fail at runtime because the host or provider wrapper validates the complete record first.",
+  invalidTitle: "Optional capabilities are explicit service operations",
+  invalidBody: "An optional record field would move a missing-service decision into runtime lookup. Model optional capability as an operation returning Maybe, or choose and provide a concrete service before executing the Effect.",
+  diagnosticsBody: "Requirement errors name conflicting fields, both canonical types and their source spans. Boundary validation lists services a selected target cannot provide before work begins.",
+  provenanceBody: "This article covers specification 5.5 and connects to the restricted requirement merge rules in specification 2.6."
+}

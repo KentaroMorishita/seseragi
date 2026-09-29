@@ -44,5 +44,18 @@ import * as traitMethodsVersusTraits from "./language/traits-methods-versus-trai
 import * as traitDoNotation from "./language/traits-do-notation"
 import * as traitDoDesugaring from "./language/traits-do-desugaring"
 import * as traitDoBlockTyping from "./language/traits-do-block-typing"
+import * as effectPureExpressions from "./language/effects-pure-expressions"
+import * as effectMaybe from "./language/effects-maybe"
+import * as effectEither from "./language/effects-either"
+import * as effectColdValue from "./language/effects-cold-value"
+import * as effectContractForm from "./language/effects-contract-form"
+import * as effectInferredForm from "./language/effects-inferred-form"
+import * as effectFor from "./language/effects-effectful-for"
+import * as effectEnvironment from "./language/effects-environment"
+import * as effectErrors from "./language/effects-error-channels"
+import * as effectTask from "./language/effects-task"
+import * as effectExecutionOrder from "./language/effects-execution-order"
+import * as effectRuntimeBoundary from "./language/effects-runtime-boundary"
+import * as effectDefects from "./language/effects-defects"
 
 pub effect fn main -> Unit = effects.succeed ()

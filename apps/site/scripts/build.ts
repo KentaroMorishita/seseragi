@@ -429,6 +429,96 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
+        "effects-pure-expressions",
+        "apps/site/examples/src/language/effects-pure-expressions.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-maybe",
+        "apps/site/examples/src/language/effects-maybe.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-either",
+        "apps/site/examples/src/language/effects-either.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-cold-value",
+        "apps/site/examples/src/language/effects-cold-value.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-contract-form",
+        "apps/site/examples/src/language/effects-contract-form.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-inferred-form",
+        "apps/site/examples/src/language/effects-inferred-form.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-effectful-for",
+        "apps/site/examples/src/language/effects-effectful-for.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-environment",
+        "apps/site/examples/src/language/effects-environment.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-error-channels",
+        "apps/site/examples/src/language/effects-error-channels.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-task",
+        "apps/site/examples/src/language/effects-task.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-execution-order",
+        "apps/site/examples/src/language/effects-execution-order.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-runtime-boundary",
+        "apps/site/examples/src/language/effects-runtime-boundary.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-defects",
+        "apps/site/examples/src/language/effects-defects.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-invalid-pure-body",
+        "apps/site/examples/invalid/src/language/invalid-effect-pure-body.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-invalid-maybe",
+        "apps/site/examples/invalid/src/language/invalid-effect-maybe.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-invalid-contract",
+        "apps/site/examples/invalid/src/language/invalid-effect-contract.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-invalid-errors",
+        "apps/site/examples/invalid/src/language/invalid-effect-errors.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-invalid-task",
+        "apps/site/examples/invalid/src/language/invalid-effect-task.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "web-starter-main",
         "examples/samples/web-starter/src/main.ssrg",
         playgroundUrl
@@ -559,7 +649,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (68 + referencePageCount),
+      2 * (81 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

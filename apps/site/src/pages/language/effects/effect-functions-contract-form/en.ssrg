@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Effect functions with an explicit contract",
+  summary: "The contract form writes success, environment, and failure directly in source.",
+  ruleTitle: "Start the contract with ->",
+  ruleBody: "effect fn parameters -> A with R fails E = body declares a function returning Effect<R, E, A>. The surface A is the success type; with names required services and fails names the recoverable error.",
+  typingBody: "Omitting with means {}, and omitting fails means Never. The body must already be an Effect with every required field, the declared failure, and the declared success; ordinary values are not lifted implicitly. A Never success may widen when the body cannot succeed.",
+  evaluationBody: "The form changes only the source notation for the function type. Calling the function constructs its cold Effect, and an authorized boundary still controls execution.",
+  invalidTitle: "Contract defaults are promises, not inference requests",
+  invalidBody: "Writing -> Unit without with or fails fixes Effect<{}, Never, Unit>. The compiler does not inspect the body and silently add Console, Clock, or an error type to that explicit API.",
+  diagnosticsBody: "Contract errors show both the declaration and the body operation or result that introduced an extra requirement, different failure, or different success type.",
+  provenanceBody: "This article covers the contract form in specification 5.4. The compact inferred form has different omission rules and its own page."
+}

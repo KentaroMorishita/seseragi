@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Effectful for",
+  summary: "Effectful for traverses an Iterable in order and runs one Unit effect for each element.",
+  ruleTitle: "Traversal is sequential unless the program says otherwise",
+  ruleBody: "for pattern <- values { body } desugars to forEach with an irrefutable pattern. body and the complete expression have Effect<R, E, Unit>; an empty collection succeeds without running the body.",
+  typingBody: "values must provide Iterable evidence, the pattern receives one element and must be irrefutable, and every body path must return the same Effect<R, E, Unit>. Requirements merge and failures remain explicit as in other Effect composition.",
+  evaluationBody: "Elements are pulled in Iterable order, one body completes before the next begins, and the first typed failure stops traversal. There is no implicit parallelism, break, or continue; forEachParallel and forEachUntil express those distinct contracts.",
+  invalidTitle: "A for block is not a general loop escape",
+  invalidBody: "Skipping an element is an explicit branch returning succeed (), while successful early termination uses Continue or Break with forEachUntil. Neither becomes a non-local jump from another function or Fiber.",
+  diagnosticsBody: "Errors identify non-Iterable input, a refutable pattern, non-Effect body, non-Unit success, or incompatible requirement and failure types at the relevant item.",
+  provenanceBody: "This article covers effectful for in specification 5.4. Range and comprehension expressions remain pure and have separate semantics."
+}

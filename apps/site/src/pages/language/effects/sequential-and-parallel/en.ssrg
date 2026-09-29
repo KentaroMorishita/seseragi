@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Sequential and parallel Effects",
+  summary: "Effect sequencing is ordered by default; concurrency appears only through an explicit parallel API.",
+  ruleTitle: "flatMap, >>=, and do run in source order",
+  ruleBody: "A later sequential Effect starts only after the earlier one succeeds. Merely placing independent Effects beside each other never authorizes reordering or concurrency; Effect.parallel and related APIs carry that different contract.",
+  typingBody: "Sequential composition passes the prior success into the continuation and merges compatible R and E. Parallel operations require a collection of compatible Effects and return results in the order promised by their library contract.",
+  evaluationBody: "Sequential failure prevents later work from starting. Parallel result order, failure selection, sibling cancellation, and cleanup follow the specific API rather than completion timing or a compiler optimization guess.",
+  invalidTitle: "The compiler cannot auto-parallelize Effects",
+  invalidBody: "External order, resource ownership, failure choice, and cancellation are observable. Even apparently independent Effects remain sequential until the program selects an explicit parallel operation.",
+  diagnosticsBody: "Type errors identify incompatible requirements, failures, or successes before scheduling. Runtime diagnostics retain the selected operation and input position for concurrent failures.",
+  provenanceBody: "This article covers specification 5.8. Scheduler fairness, Fiber supervision, and detailed parallel APIs are documented separately."
+}

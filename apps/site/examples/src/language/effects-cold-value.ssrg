@@ -1,0 +1,4 @@
+import * as effects from "std/effect"
+
+pub fn greeting name: String -> Task<String> =
+  effects.defer (\_ -> effects.succeed ("Hello, " + name))

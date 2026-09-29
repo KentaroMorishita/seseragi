@@ -24,5 +24,10 @@ import * as invalidTraitMethod from "./language/invalid-trait-method"
 import * as invalidTraitCoherence from "./language/invalid-trait-coherence"
 import * as invalidTraitDeriving from "./language/invalid-trait-deriving"
 import * as invalidTraitDo from "./language/invalid-trait-do"
+import * as invalidEffectPureBody from "./language/invalid-effect-pure-body"
+import * as invalidEffectMaybe from "./language/invalid-effect-maybe"
+import * as invalidEffectContract from "./language/invalid-effect-contract"
+import * as invalidEffectErrors from "./language/invalid-effect-errors"
+import * as invalidEffectTask from "./language/invalid-effect-task"
 
 pub effect fn main -> Unit = effects.succeed ()

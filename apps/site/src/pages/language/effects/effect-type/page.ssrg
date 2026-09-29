@@ -1,0 +1,22 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.effect-type" "/docs/language/effects/effect-type/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-cold-value",
+        localized "A cold Effect rebuilt on each execution" "実行ごとに構築されるcold Effect"
+      )] [CodeExample
+      ("effects-invalid-pure-body", localized "Rejected implicit lifting" "通常値の暗黙liftを拒否")] [
+        [InternalLink
+      (localized "Pure expressions" "純粋な式", "/docs/language/effects/pure-expressions/")],
+        [InternalLink (
+          localized "Effect function contracts" "effect fn contract",
+          "/docs/language/effects/effect-functions-contract-form/"
+        )],
+        [InternalLink
+      (localized "Do notation" "do記法", "/docs/language/traits/do-notation/")]
+      ]

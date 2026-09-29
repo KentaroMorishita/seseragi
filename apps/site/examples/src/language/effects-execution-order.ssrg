@@ -1,0 +1,11 @@
+import * as effects from "std/effect"
+
+fn twice value: Int -> Task<Int> = effects.succeed (value * 2)
+
+pub fn sequential unit: Unit -> Task<Int> = do {
+  left <- twice 2
+  right <- twice 3
+  pure (left + right)
+}
+
+pub fn parallel unit: Unit -> Task<Array<Int>> = effects.parallel [twice 2, twice 3]

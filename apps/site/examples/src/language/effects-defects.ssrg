@@ -1,0 +1,5 @@
+type DivisionError =
+  | ZeroDivisor
+
+pub fn checkedDivide dividend: Int -> divisor: Int -> Either<DivisionError, Int> =
+  if divisor == 0 then Left ZeroDivisor else Right (dividend / divisor)

@@ -1,0 +1,25 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.effectful-for" "/docs/language/effects/effectful-for/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-effectful-for",
+        localized "Sequential output in Iterable order" "Iterable順の逐次出力"
+      )] [] [
+        [InternalLink (
+          localized "Ranges and comprehensions" "rangeとcomprehension",
+          "/docs/language/expressions/ranges-and-comprehensions/"
+        )],
+        [InternalLink (
+          localized "Irrefutable patterns" "irrefutable pattern",
+          "/docs/language/patterns/irrefutable-patterns/"
+        )],
+        [InternalLink (
+          localized "Sequential and parallel Effects" "Effectの逐次・並列実行",
+          "/docs/language/effects/sequential-and-parallel/"
+        )]
+      ]

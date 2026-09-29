@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Effect functions with an inferred contract",
+  summary: "The compact form infers a complete Effect contract from an Effect-typed body.",
+  ruleTitle: "Remove every signature clause to request inference",
+  ruleBody: "An effect fn with no ->, with, fails, or where clause infers R, E, and A from its body. The normalized Effect type is still emitted in typed artifacts and public module interfaces.",
+  typingBody: "Requirement fields merge by canonical name and identical type. Zero non-Never failures infer Never; one infers that type; multiple distinct recoverable failures are rejected instead of synthesized into a union. Branch success values must converge normally.",
+  evaluationBody: "Expanding the inferred form to an equivalent explicit contract does not change behavior. The difference is whether source fixes the API or generated typed interface records it for review.",
+  invalidTitle: "Compact does not mean partly explicit",
+  invalidBody: "with, fails, and where cannot appear without ->. Either write the complete contract beginning with its success type or remove all clauses and let the body determine the whole Effect type.",
+  diagnosticsBody: "Diagnostics distinguish a non-Effect body, conflicting requirement fields, multiple failure types, and incompatible success branches, with the source spans that contributed each type.",
+  provenanceBody: "This article covers the compact inferred form in specification 5.4 and its ModuleInterface and TypedInterface contract."
+}
