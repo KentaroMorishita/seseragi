@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "例外とalgebraic effect",
+  summary: "Seseragiにはthrow・catch・try構文も、perform・handleによるalgebraic effect構文もありません。",
+  ruleTitle: "failureとcapabilityは一つの明示effect modelが所有する",
+  ruleBody: "想定可能failureはEitherまたはEffectのEを通ります。foreign adapterは境界でhost例外を捕捉し、Either<ForeignError, A>またはEffect<R, ForeignError, A>へ変換します。",
+  typingBody: "通常のSeseragi式にexception edgeがないため、回復可能failureはreturn型に残ります。environment requirement・resource・cancellationも第二のhandler systemではなくEffectに現れます。",
+  evaluationBody: "foreign adapterがhost固有catchとnormalizeを行ってからSeseragi codeを再開します。safe wrapper契約違反はdefectであり、通常codeがcatchできるhidden exceptionではありません。",
+  invalidTitle: "throw・catch・try・perform・handleはlanguage formではない",
+  invalidBody: "EやRを迂回するpseudo syntaxを書きません。domain errorはdataにし、回復可能operationはEffectへ持ち上げ、adapter固有exception処理はinterop境界へ置きます。",
+  diagnosticsBody: "parserは未対応exception・handler formをsource range付きで報告します。interop診断はadapter operationとnormalize済みForeignErrorを保持し、任意host stackをtyped program dataとして公開しません。",
+  provenanceBody: "仕様5.16を扱います。defectとtyped failure channelはそれぞれのreference pageで定義します。"
+}

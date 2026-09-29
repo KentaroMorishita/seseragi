@@ -519,6 +519,71 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
+        "effects-cancellation-resources",
+        "apps/site/examples/src/language/effects-cancellation-resources.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-scheduler-fairness",
+        "apps/site/examples/src/language/effects-scheduler-fairness.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-fiber-supervision",
+        "apps/site/examples/src/language/effects-fiber-supervision.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-signal-transactions",
+        "apps/site/examples/src/language/effects-signal-transactions.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-derived-signals",
+        "apps/site/examples/src/language/effects-derived-signals.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-signal-operators",
+        "apps/site/examples/src/language/effects-signal-operators.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-signal-subscription",
+        "apps/site/examples/src/language/effects-signal-subscription.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-foreign-failure",
+        "apps/site/examples/src/language/effects-foreign-failure.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-invalid-finalizer",
+        "apps/site/examples/invalid/src/language/invalid-effect-finalizer.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-invalid-signal-read",
+        "apps/site/examples/invalid/src/language/invalid-signal-read.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-invalid-signal-distinct",
+        "apps/site/examples/invalid/src/language/invalid-signal-distinct.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-invalid-signal-write",
+        "apps/site/examples/invalid/src/language/invalid-signal-write.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "effects-invalid-throw",
+        "apps/site/examples/invalid/src/language/invalid-effect-throw.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "web-starter-main",
         "examples/samples/web-starter/src/main.ssrg",
         playgroundUrl
@@ -649,7 +714,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (81 + referencePageCount),
+      2 * (89 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

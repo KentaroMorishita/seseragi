@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Cancellation and resources",
+  summary: "Cooperative cancellation propagates through scopes while registered resources are finalized exactly once.",
+  ruleTitle: "A scope owns both work and cleanup",
+  ruleBody: "Effect.bracket and acquireRelease register cleanup in the current scope. Once acquisition succeeds, registering its finalizer is atomic with respect to cancellation, so no resource can escape through the handoff.",
+  typingBody: "Cancellation is not a value of E. Code that must observe success, typed failure, or cancellation receives EffectExit<E, A>; finalizers themselves must have an uninhabited typed failure channel.",
+  evaluationBody: "Scope exit requests cancellation from unfinished children and runs finalizers once in LIFO order after success, typed failure, or cancellation. Explicit close and scope cleanup must remain idempotent when they overlap.",
+  invalidTitle: "A finalizer cannot leak a recoverable failure",
+  invalidBody: "Handle an expected close failure inside the finalizer and convert it to Never. If one finalizer defects, the runtime still attempts the remaining finalizers before reporting the first defect with later defects attached as diagnostics.",
+  diagnosticsBody: "Resource diagnostics distinguish acquisition, use, and release phases and preserve the original outcome alongside any finalizer defect. A finalizer that never completes also prevents its scope from completing.",
+  provenanceBody: "This article covers specification 5.11 cancellation and resource ownership. Scheduling and Fiber ownership are documented separately."
+}

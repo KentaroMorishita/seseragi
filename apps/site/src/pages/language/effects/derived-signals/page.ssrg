@@ -1,0 +1,28 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.derived-signals" "/docs/language/effects/derived-signals/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-derived-signals",
+        localized "A glitch-free derived graph" "glitch-freeなderived graph"
+      )] [CodeExample (
+        "effects-invalid-signal-distinct",
+        localized "Rejected distinct without Eq" "Eqなしのdistinctを拒否"
+      )] [
+        [InternalLink (
+          localized "Signals and transactions" "Signalとtransaction",
+          "/docs/language/effects/signals-and-transactions/"
+        )],
+        [InternalLink (
+          localized "Trait constraints" "trait constraint",
+          "/docs/language/traits/constraints/"
+        )],
+        [InternalLink (
+          localized "Subscriptions and lifetime" "subscriptionとlifetime",
+          "/docs/language/effects/subscriptions-and-lifetime/"
+        )]
+      ]

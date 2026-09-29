@@ -1,0 +1,11 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+effect fn useScoped -> Bool = do {
+  released <- refs.make False
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed ()) (\_: Unit -> refs.set True released)
+    effects.succeed ()
+  }
+  refs.get released
+}

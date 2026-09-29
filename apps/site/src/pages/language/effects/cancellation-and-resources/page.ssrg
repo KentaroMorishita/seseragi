@@ -1,0 +1,23 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.cancellation-resources" "/docs/language/effects/cancellation-and-resources/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-cancellation-resources",
+        localized "Scoped acquisition and release" "scope付きacquireとrelease"
+      )] [CodeExample (
+        "effects-invalid-finalizer",
+        localized "Rejected fallible finalizer" "fallible finalizerを拒否"
+      )] [
+        [InternalLink (localized "Defects" "defect", "/docs/language/effects/defects/")],
+        [InternalLink (
+          localized "Scheduler fairness" "scheduler fairness",
+          "/docs/language/effects/scheduler-fairness/"
+        )],
+        [InternalLink
+      (localized "The Effect type" "Effect型", "/docs/language/effects/effect-type/")]
+      ]

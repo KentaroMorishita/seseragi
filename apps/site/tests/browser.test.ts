@@ -536,6 +536,90 @@ try {
           })
 
         await page.goto(
+          `http://127.0.0.1:${server.port}/docs/language/effects/signals-and-transactions/`
+        )
+        assert.equal(
+          await page.locator("h1").textContent(),
+          "Signals and transactions"
+        )
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-group[open] > summary"
+            )
+            .textContent(),
+          "Effects and failure"
+        )
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-section:has(.sidebar-link.current) > summary"
+            )
+            .textContent(),
+          "Reactive state"
+        )
+        assert.equal(
+          (await page.locator(".breadcrumbs").innerText()).replace(
+            /\s+/gu,
+            " "
+          ),
+          "Language Reference / Effects and failure / Signals and transactions"
+        )
+        assert.equal(
+          await page.locator(".reference-previous strong").textContent(),
+          "Fiber supervision"
+        )
+        assert.equal(
+          await page.locator(".reference-next strong").textContent(),
+          "Derived Signals"
+        )
+        const signalText = await page.locator("body").innerText()
+        assert.ok(
+          signalText.includes("Signal state is accessed through Effect")
+        )
+        assert.ok(!signalText.includes("Lesson"))
+        assert.ok(!signalText.match(/#[0-9]+/u))
+        assert.equal(await page.locator(".seseragi-highlight").count(), 2)
+        const signalWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          signalWidth <= width,
+          `Signal article ${width}px viewport is ${signalWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `signal-transactions-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
+          `http://127.0.0.1:${server.port}/ja/docs/language/effects/signals-and-transactions/`
+        )
+        assert.equal(await page.locator("html").getAttribute("lang"), "ja")
+        assert.equal(
+          await page.locator("h1").textContent(),
+          "Signalとtransaction"
+        )
+        const japaneseSignalText = await page.locator("body").innerText()
+        assert.ok(
+          japaneseSignalText.includes("Signal stateにはEffectからaccessする")
+        )
+        assert.ok(!japaneseSignalText.match(/#[0-9]+/u))
+        const japaneseSignalWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          japaneseSignalWidth <= width,
+          `Japanese Signal article ${width}px viewport is ${japaneseSignalWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `signal-transactions-ja-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
           `http://127.0.0.1:${server.port}/docs/language/types/requirement-merge/`
         )
         assert.equal(

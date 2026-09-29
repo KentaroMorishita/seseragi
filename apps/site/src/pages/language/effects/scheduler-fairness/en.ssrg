@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Scheduler fairness",
+  summary: "The Effect runtime uses cooperative FIFO scheduling with an explicit weak-fairness guarantee at checkpoints.",
+  ruleTitle: "Progress depends on reaching checkpoints",
+  ruleBody: "Async waits, yieldNow, Queue, Deferred and Semaphore waits, sleep, I/O boundaries, and cancellation observation are checkpoints. Runnable Fibers enter a FIFO queue and eventually run while other Fibers keep reaching checkpoints.",
+  typingBody: "Scheduling does not change an Effect type or expose a Fiber priority. yieldNow is a Task<Unit>; inserting it makes a cooperative boundary explicit without adding a service or recoverable failure.",
+  evaluationBody: "Weak fairness promises eventual rescheduling, not equal wall-clock time or equal step counts. A long pure calculation is not preempted automatically and can starve every other Fiber until it yields.",
+  invalidTitle: "Do not infer a global order for concurrent cleanup",
+  invalidBody: "Input order and waiter registration determine enqueue order only where an operation states it. Independent sibling finalizers have no global order even when an API waits for all of them before returning.",
+  diagnosticsBody: "Runtime tracing may expose checkpoint and enqueue events, but changing worker counts cannot change specified result order, failure selection, or the LIFO order within one resource scope.",
+  provenanceBody: "This article covers the scheduler-fairness subsection of specification 5.11. Fiber supervision is defined on the next page."
+}

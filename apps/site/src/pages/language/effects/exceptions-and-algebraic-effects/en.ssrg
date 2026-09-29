@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Exceptions and algebraic effects",
+  summary: "Seseragi has neither throw/catch/try syntax nor perform/handle algebraic-effect syntax.",
+  ruleTitle: "One explicit effect model owns failure and capabilities",
+  ruleBody: "Expected failure travels through Either or Effect E. Foreign adapters catch host exceptions at the boundary and convert them to Either<ForeignError, A> or Effect<R, ForeignError, A>.",
+  typingBody: "Because exception edges do not exist in ordinary Seseragi expressions, every recoverable failure remains visible in a return type. Environment requirements, resources, and cancellation remain visible in Effect rather than a second handler system.",
+  evaluationBody: "A foreign adapter performs host-specific catch and normalization before Seseragi code resumes. A violated safe-wrapper contract is a defect, not a hidden exception that ordinary code can catch.",
+  invalidTitle: "throw, catch, try, perform, and handle are not language forms",
+  invalidBody: "Do not write pseudo-syntax that bypasses E or R. Model a domain error as data, lift a recoverable operation into Effect, and keep adapter-specific exception handling at the interop boundary.",
+  diagnosticsBody: "The parser reports unsupported exception or handler forms at their source range. Interop diagnostics retain the adapter operation and normalized ForeignError without exposing an arbitrary host stack as typed program data.",
+  provenanceBody: "This article covers specification 5.16. Defects and typed failure channels are defined on their own reference pages."
+}

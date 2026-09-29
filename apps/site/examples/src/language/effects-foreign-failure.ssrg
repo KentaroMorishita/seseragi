@@ -1,0 +1,5 @@
+type ForeignError deriving Eq, Show =
+  | ForeignError String
+
+fn decodeForeign ok: Bool -> Either<ForeignError, Int> =
+  if ok { Right 42 } else { Left (ForeignError "adapter rejected the value") }

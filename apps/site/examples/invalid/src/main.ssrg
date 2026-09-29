@@ -29,5 +29,10 @@ import * as invalidEffectMaybe from "./language/invalid-effect-maybe"
 import * as invalidEffectContract from "./language/invalid-effect-contract"
 import * as invalidEffectErrors from "./language/invalid-effect-errors"
 import * as invalidEffectTask from "./language/invalid-effect-task"
+import * as invalidEffectFinalizer from "./language/invalid-effect-finalizer"
+import * as invalidSignalRead from "./language/invalid-signal-read"
+import * as invalidSignalDistinct from "./language/invalid-signal-distinct"
+import * as invalidSignalWrite from "./language/invalid-signal-write"
+import * as invalidEffectThrow from "./language/invalid-effect-throw"
 
 pub effect fn main -> Unit = effects.succeed ()

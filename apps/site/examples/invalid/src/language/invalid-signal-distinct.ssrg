@@ -1,0 +1,7 @@
+import * as signals from "std/signal"
+
+type Token =
+  | Token Int
+
+fn invalid signal: signals.Signal<Token> -> signals.Signal<Token> =
+  signals.distinct signal

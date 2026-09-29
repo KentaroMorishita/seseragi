@@ -1,0 +1,25 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.signals-transactions" "/docs/language/effects/signals-and-transactions/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-signal-transactions",
+        localized "Atomically updating two sources" "二つのsourceをatomicに更新"
+      )] [CodeExample (
+        "effects-invalid-signal-read",
+        localized "Rejected pure Signal read" "pureなSignal readを拒否"
+      )] [
+        [InternalLink (localized "Task" "Task", "/docs/language/effects/task/")],
+        [InternalLink (
+          localized "Derived Signals" "derived Signal",
+          "/docs/language/effects/derived-signals/"
+        )],
+        [InternalLink (
+          localized "Signal operators" "Signal operator",
+          "/docs/language/effects/signal-operators/"
+        )]
+      ]

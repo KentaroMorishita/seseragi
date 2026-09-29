@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Signal operator",
+  summary: "prefix *はSignal snapshotを読み、:=はMutableSignalへ書きます。どちらもeffectful operationです。",
+  ruleTitle: "operatorはstate accessを表し、代入構文ではない",
+  ruleBody: "*sourceはSignal.read sourceへdesugarしTask<A>を持ちます。target := valueはSignal.set value targetへdesugarしTask<Unit>を持ち、二項*は乗算のままです。",
+  typingBody: "Signal<A>とMutableSignal<A>はどちらも読めますが、:=の左辺になれるのはMutableSignal<A>だけです。通常変数やstruct fieldはimmutableで、このoperatorによって代入可能にはなりません。",
+  evaluationBody: "各:=は一件のtransactionです。*はそのEffect stepでstableな現在snapshotを観測し、旧値から新値を作るatomic operationにはupdateを使います。",
+  invalidTitle: "*をpure dereferenceとして扱わない",
+  invalidBody: "pure functionは*sourceをAとして返せません。この式の型はTask<A>です。同様にtarget := *targetはatomic incrementでもpure assignmentでもないためupdateを使います。",
+  diagnosticsBody: "診断は位置からprefix *と乗算を区別し、結果のTask型を示します。:=へread-only Signalまたは非Signal targetを渡すと対象を明示して報告します。",
+  provenanceBody: "仕様5.14と固定form *・:=を扱います。precedenceはlanguage grammarで定義されます。"
+}

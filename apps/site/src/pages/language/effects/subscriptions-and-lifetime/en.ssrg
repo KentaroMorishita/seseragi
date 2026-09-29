@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Subscriptions and lifetime",
+  summary: "A Subscription owns ordered observation of one Signal and must be released explicitly or by its resource scope.",
+  ruleTitle: "Observation has a lifetime",
+  ruleBody: "subscribe first invokes the observer with the current value, then delivers updates in order. Observers on one Signal run in registration order and never receive overlapping notifications.",
+  typingBody: "The observer returns Effect<R, Never, Unit>, so recoverable failure cannot escape. subscribe returns Effect<R, Never, Subscription>; unsubscribe is an idempotent Task<Unit>.",
+  evaluationBody: "An observer update is queued as a new transaction after the current one, preventing synchronous re-entrancy. Scope exit, typed failure, and cancellation all release a registered subscription and unused derived Signals release dependencies.",
+  invalidTitle: "Signal is deliberately not a Monad",
+  invalidBody: "Dynamic dependencies carry subscription lifetime, so they are expressed with named operations such as switchMap. Do not hide observer allocation and release behind an unrestricted bind operation.",
+  diagnosticsBody: "A defect stops the affected observer under runtime policy without becoming another subscriber's typed failure. Lifetime diagnostics identify active, released, and duplicate-unsubscribe states.",
+  provenanceBody: "This article covers specification 5.15. Stream conversion is the boundary for consumers that need a failure channel."
+}

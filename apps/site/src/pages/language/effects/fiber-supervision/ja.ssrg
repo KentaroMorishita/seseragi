@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Fiber supervision",
+  summary: "すべてのFiberはroot main scopeまたは最も内側のscoped resource ownerに属し、forkはunscoped daemonを作りません。",
+  ruleTitle: "child lifetimeはscopeを越えない",
+  ruleBody: "scope終了時は未完了childすべてへcancellationを要求し、child finalizerを待ってから閉じます。parentがsuccess・typed failure・cancellationのどれで終わっても同じです。",
+  typingBody: "joinはchild successを返し、typed failureをcallerのfailureにし、child cancellationをcancellationとして伝播します。cancellationをdataで調べる場合はawaitでFiberExitを取り、interruptはcancel要求後cleanupを待ちます。",
+  evaluationBody: "child typed failureはjoinまたはawaitが観測するまでFiberに保存されます。待機中Fiberのcancelはwaitだけを解除してtargetをcancelせず、targetを止めるidempotent operationはinterruptです。",
+  invalidTitle: "forkはfire-and-forgetではない",
+  invalidBody: "Fiber handleを捨ててもownershipはdaemon registryへ移りません。enclosing scopeはsupervised cleanupを待ち、testは未観測child failureを診断してもparentのtyped resultを変えません。",
+  diagnosticsBody: "Fiber診断はparent scope、spawn site、completion state、failure観測有無を保持します。grace period後のhost forced terminationはcooperative保証外です。",
+  provenanceBody: "仕様5.11のFiber supervision subsectionとroot scope shutdown規則を扱います。"
+}

@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "cancellationとresource",
+  summary: "cooperative cancellationはscope内へ伝播し、登録済みresourceを正確に一度finalizeします。",
+  ruleTitle: "scopeがworkとcleanupを一緒に所有する",
+  ruleBody: "Effect.bracketとacquireReleaseは現在scopeへcleanupを登録します。acquire成功からfinalizer登録までのhandoffはcancellationに対してatomicで、その隙間からresourceは漏れません。",
+  typingBody: "cancellationはEの値ではありません。success・typed failure・cancellationを観測するcodeはEffectExit<E, A>を受け取り、finalizer自身のtyped failure channelは生成不能でなければなりません。",
+  evaluationBody: "scope終了時は未完了childへcancellationを要求し、success・typed failure・cancellationのどの場合もfinalizerをLIFO順に一度だけ実行します。明示closeとscope cleanupが重なってもidempotentです。",
+  invalidTitle: "finalizerから回復可能failureを漏らさない",
+  invalidBody: "想定できるclose failureはfinalizer内で処理してNeverへ変換します。一つのfinalizerがdefectになっても、runtimeは残りを試してから最初のdefectを報告し、後続defectを診断へ添付します。",
+  diagnosticsBody: "resource診断はacquire・use・release phaseを区別し、元の終了結果とfinalizer defectを併記します。永久に完了しないfinalizerはscope完了も止めます。",
+  provenanceBody: "仕様5.11のcancellationとresource ownershipを扱います。schedulingとFiber ownershipは別pageで説明します。"
+}

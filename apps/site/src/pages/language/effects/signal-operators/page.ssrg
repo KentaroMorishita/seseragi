@@ -1,0 +1,28 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.signal-operators" "/docs/language/effects/signal-operators/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-signal-operators",
+        localized "Explicit read and write steps" "明示的なreadとwrite step"
+      )] [CodeExample (
+        "effects-invalid-signal-write",
+        localized "Rejected write to a read-only Signal" "read-only Signalへのwriteを拒否"
+      )] [
+        [InternalLink (
+          localized "Signals and transactions" "Signalとtransaction",
+          "/docs/language/effects/signals-and-transactions/"
+        )],
+        [InternalLink (
+          localized "Operator precedence" "operator precedence",
+          "/docs/language/syntax/operator-precedence/"
+        )],
+        [InternalLink (
+          localized "Derived Signals" "derived Signal",
+          "/docs/language/effects/derived-signals/"
+        )]
+      ]

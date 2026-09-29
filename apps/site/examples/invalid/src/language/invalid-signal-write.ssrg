@@ -1,0 +1,3 @@
+import { Signal } from "std/signal"
+
+fn invalid signal: Signal<Int> -> Task<Unit> = signal := 1
