@@ -4,11 +4,11 @@ pub fn incomplete title: String -> summary: String -> TypeCopy = TypeCopy {
   title,
   summary,
   ruleTitle: "中心規則",
-  ruleBody: "このページの日本語本文は#630で整備中です。現在は英語版を正本として参照してください。",
-  identityBody: "型の同一性とruntime表現は英語版と同じ仕様sourceに基づきます。",
-  checkingBody: "型検査・推論・constraintの規則はbackendに依存しません。",
+  ruleBody: "このページの詳しい日本語解説は準備中です。Englishへ切り替えると、現在公開している全内容を確認できます。",
+  identityBody: "型の同一性とruntime表現に関する詳しい規則は、同じページのEnglishで確認できます。",
+  checkingBody: "型検査、推論、constraintに関する詳しい規則は、同じページのEnglishで確認できます。",
   invalidTitle: "受理しない型付け",
-  invalidBody: "型をAnyやUnknownへ逃がさず、英語版に記載した境界でcompile errorにします。",
-  diagnosticsBody: "diagnosticとsource rangeは英語版と共通です。",
-  provenanceBody: "英語版はdocs/spec/02-types.mdとcanonical fixtureへ照合済みです。"
+  invalidBody: "受理されない型付けと理由は、同じページのEnglishで確認できます。",
+  diagnosticsBody: "diagnosticとsource rangeは、Englishと共通です。",
+  provenanceBody: "このページの内容は、Seseragiの型仕様と検証済みのコード例に基づいています。"
 }

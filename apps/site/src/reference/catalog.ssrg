@@ -95,7 +95,7 @@ fn instanceSummary symbol: ReferenceSymbol -> LocalizedText = {
 
 pub fn referenceSummary symbol: ReferenceSymbol -> LocalizedText =
   if symbol.itemKind != "instance" then
-    localized symbol.description "Compiler-generated API reference. Japanese prose is not available yet."
+    localized symbol.description "詳しい日本語解説は準備中です。signatureとavailabilityは現在の公開情報を表示しています。"
   else
     instanceSummary symbol
 

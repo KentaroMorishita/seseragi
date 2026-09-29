@@ -6,5 +6,7 @@ pub struct Messages {
   releases: String,
   onThisPage: String,
   openPlayground: String,
-  language: String
+  language: String,
+  previousPage: String,
+  nextPage: String
 }

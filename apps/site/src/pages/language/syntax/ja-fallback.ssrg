@@ -4,11 +4,11 @@ pub fn incomplete title: String -> summary: String -> SyntaxCopy = SyntaxCopy {
   title,
   summary,
   formsTitle: "受理する形式",
-  formsBody: "このページの日本語本文は#630で整備中です。現在は英語版を正本として参照してください。",
-  typingBody: "型と値の規則は英語版と同じ仕様sourceに基づきます。",
-  evaluationBody: "評価順序とnormalizationはbackendに依存せず、英語版の規則を適用します。",
+  formsBody: "このページの詳しい日本語解説は準備中です。Englishへ切り替えると、現在公開している全内容を確認できます。",
+  typingBody: "型と値に関する詳しい規則は、同じページのEnglishで確認できます。",
+  evaluationBody: "評価順序とnormalizationに関する詳しい規則は、同じページのEnglishで確認できます。",
   invalidTitle: "受理しない形式",
-  invalidBody: "invalid caseを暗黙に修正せず、英語版に記載したlexer・parser・formatter境界で拒否します。",
-  diagnosticsBody: "diagnostic codeとsource rangeは英語版と共通です。",
-  provenanceBody: "英語版はdocs/spec/01-syntax.mdとcanonical fixtureへ照合済みです。"
+  invalidBody: "受理されない形式と理由は、同じページのEnglishで確認できます。",
+  diagnosticsBody: "diagnostic codeとsource rangeは、Englishと共通です。",
+  provenanceBody: "このページの内容は、Seseragiの構文仕様と検証済みのコード例に基づいています。"
 }

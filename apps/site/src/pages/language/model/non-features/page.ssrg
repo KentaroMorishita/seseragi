@@ -10,31 +10,42 @@ import { conceptPage } from "../concept"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn absent value: String -> Array<Inline> = [Words (localized value "日本語本文は#630で整備中です。")]
+fn absent english: String -> japanese: String -> Array<Inline> =
+  [Words (localized english japanese)]
 
 pub fn page -> PageDefinition =
   conceptPage "language.model.non-features" "/docs/language/model/non-features/" (en.copy ()) (ja.copy ()) [BulletList
       [
         absent
-      "Reassignment and mutable fields: create a new value or use an explicit state capability.",
+      "Reassignment and mutable fields: create a new value or use an explicit state capability."
+      "再代入とmutable fieldはありません。新しい値を作るか、明示的なstate capabilityを使います。",
         absent
-      "null, undefined, and implicit nullable types: use Maybe or decode a foreign nullish value.",
+      "null, undefined, and implicit nullable types: use Maybe or decode a foreign nullish value."
+      "null、undefined、暗黙のnullable typeはありません。Maybeを使うか、外部のnullish値をdecodeします。",
         absent
-      "Implicit numeric conversion and truthiness: convert explicitly and require Bool conditions.",
+      "Implicit numeric conversion and truthiness: convert explicitly and require Bool conditions."
+      "暗黙の数値変換とtruthinessはありません。明示的に変換し、条件にはBoolを使います。",
         absent
-      "Non-exhaustive pattern matching: cover every constructor or add an explicit wildcard.",
+      "Non-exhaustive pattern matching: cover every constructor or add an explicit wildcard."
+      "網羅的でないpattern matchingは受理されません。すべてのconstructorか明示的なwildcardを記述します。",
         absent
-      "Exceptions for ordinary recovery: use Either or Effect's typed failure channel.",
+      "Exceptions for ordinary recovery: use Either or Effect's typed failure channel."
+      "通常の回復処理にexceptionは使いません。EitherかEffectのtyped failure channelを使います。",
         absent
-      "Arbitrary union and intersection types: use ADTs and closed Effect/Stream requirement merging.",
+      "Arbitrary union and intersection types: use ADTs and closed Effect/Stream requirement merging."
+      "任意のunion・intersection typeはありません。ADTと閉じたEffect・Stream requirement mergeを使います。",
         absent
-      "perform/handle algebraic effects: compose typed Effect values and services.",
+      "perform/handle algebraic effects: compose typed Effect values and services."
+      "perform・handle形式のalgebraic effectはありません。型付きEffect値とserviceを合成します。",
         absent
-      "General syntax or procedural macros: use functions, deriving, and closed template-string expansion.",
+      "General syntax or procedural macros: use functions, deriving, and closed template-string expansion."
+      "汎用syntax macroやprocedural macroはありません。関数、deriving、閉じたtemplate string展開を使います。",
         absent
-      "User-defined prefix/postfix operators: use named functions or declared infix operators.",
+      "User-defined prefix/postfix operators: use named functions or declared infix operators."
+      "ユーザー定義のprefix・postfix operatorはありません。名前付き関数か宣言済みのinfix operatorを使います。",
         absent
       "return, break, and continue: use expression results, matching, reduceUntil, or forEachUntil."
+      "return、break、continueはありません。式の結果、matching、reduceUntil、forEachUntilを使います。"
       ]] [
         [InternalLink
       (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")],
