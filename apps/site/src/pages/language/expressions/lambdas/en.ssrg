@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Lambda expressions",
+  summary: "A lambda creates a curried function value and captures only lexical bindings already in scope.",
+  ruleTitle: "Anonymous functions use the same function model",
+  ruleBody: "A lambda is written with backslash parameters, an arrow, and a body. Multiple parameters desugar to nested one-parameter lambdas, so partial application works exactly as it does for named functions.",
+  typingBody: "Parameter types may be inferred from an expected function type or annotated directly. Parameters enter scope from left to right and may be referenced by later parameter annotations and the body.",
+  evaluationBody: "Evaluating a lambda creates a closure without evaluating its body. Captured immutable bindings keep their lexical values; the body runs on each application.",
+  invalidTitle: "A lambda is not a multi-argument host callback",
+  invalidBody: "Writing several parameters still produces curried functions. Foreign callback conversion and lifetime rules are explicit interoperability concerns, not a different lambda calling convention.",
+  diagnosticsBody: "An unconstrained parameter or result reports an inference ambiguity. Add a parameter annotation or place the lambda where an expected function type is available.",
+  provenanceBody: "This article covers specification 3.11 and relies on the function type and currying rules in chapter 2."
+}

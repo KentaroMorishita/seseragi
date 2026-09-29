@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Operator overloads",
+  summary: "Structs and newtypes may implement a fixed standard operator through typeclass evidence owned by the nominal type.",
+  ruleTitle: "Overloading is typed standard-trait sugar",
+  ruleBody: "An operator member inside impl defines the corresponding standard trait instance. The first self operand is the enclosing nominal type; the declared later operand and result types determine the full evidence.",
+  typingBody: "Resolution uses static operand types and global instance coherence. Generic overloads may require constraints. The representation type's operators are not inherited by a newtype.",
+  evaluationBody: "Operands follow ordinary left-to-right exactly-once evaluation, then the selected implementation runs. There is no runtime overload search.",
+  invalidTitle: "Overloading does not create new syntax",
+  invalidBody: "Only the fixed supported operators may be overloaded. Precedence and associativity stay standard; custom tokens use a top-level custom operator declaration. Duplicate explicit and sugared instances are rejected.",
+  diagnosticsBody: "Diagnostics cover invalid operator names, operand or result contracts, illegal equality results, duplicate evidence, and a missing coherent instance at the use site.",
+  provenanceBody: "This article covers specification 3.13 and links the sugar to standard operator traits and coherence."
+}

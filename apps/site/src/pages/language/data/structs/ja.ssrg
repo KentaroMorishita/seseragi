@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "構造体",
+  summary: "structは宣言済みfield、明示的な構築、型が所有するmethodを持つnominal productです。",
+  ruleTitle: "shapeはdeclarationが所有する",
+  ruleBody: "構築では全fieldを一度ずつ渡すか、同じ型のspreadを先頭に一つ置いて一部fieldを上書きします。field shorthandのnameはname: nameです。",
+  typingBody: "field accessとupdateには正確なnominal struct型が必要です。通常のpublic fieldはmodule外から読めます。opaque structはpublic operationの背後へ表現を隠します。",
+  evaluationBody: "spread式を最初に一度評価し、その後に明示field式をsource順で一度ずつ評価します。updateは新しいimmutable valueを作ります。",
+  invalidTitle: "structはstructural recordではない",
+  invalidBody: "field名が同じでも別structやrecordと互換にはなりません。欠落、重複、未知field、spread位置、異なる型からのspreadを拒否します。",
+  diagnosticsBody: "構築diagnosticは欠落・重複・未知・型不一致のfieldを示します。toolingはnominal declarationからfieldを解決しvisibilityを守ります。",
+  provenanceBody: "仕様3.5を扱います。generic identity、opacity、method、patternは専用pageへ分けます。"
+}

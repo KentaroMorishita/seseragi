@@ -1,0 +1,5 @@
+let pair: (String, Int) = ("answer", 42)
+let numbers: Array<Int> = [1, 2, 3]
+let linked: List<Int> = `[1, 2, 3]
+
+let values = (pair, numbers, linked)

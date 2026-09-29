@@ -1,0 +1,7 @@
+type Status =
+  | Waiting
+  | Complete Int
+
+fn invalid status: Status -> Int = match status {
+  Complete count -> count
+}

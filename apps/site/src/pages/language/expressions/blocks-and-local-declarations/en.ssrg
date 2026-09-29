@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Blocks and local declarations",
+  summary: "A block introduces local immutable bindings and returns its final expression.",
+  ruleTitle: "A block is an expression with a lexical scope",
+  ruleBody: "A block contains one or more local declarations and an optional final expression, or one final expression by itself. The final expression is the block value; a declaration-only block returns Unit.",
+  typingBody: "Local let, fn, effect fn, and rec groups are allowed. A binding is visible after its declaration through the end of the block; shadowing is allowed, but later bindings cannot be captured from an earlier declaration.",
+  evaluationBody: "Block items run from top to bottom. A local function declaration creates its closure but does not run its body or an Effect until the function is applied.",
+  invalidTitle: "Empty braces are a record",
+  invalidBody: "{} is the empty record literal, not a Unit block. Write { () } for an explicit no-op Unit block. Type, trait, impl, instance, operator, foreign, and pub declarations are not local block items.",
+  diagnosticsBody: "A reference to a later local binding is unresolved. Mutually recursive local functions must be placed in one rec group so every member has a defined scope.",
+  provenanceBody: "This article covers specification 3.2: block values, local declaration forms, scope, capture, recursion, and the empty-record distinction."
+}

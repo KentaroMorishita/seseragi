@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Records",
+  summary: "A record is an immutable structural product with explicit field presence and ordered spread updates.",
+  ruleTitle: "Fields, not a declaration name, determine identity",
+  ruleBody: "Record literals use named fields, shorthand, and zero or more spreads. Spreads apply left to right and later explicit fields override earlier values; direct field names may appear only once.",
+  typingBody: "Required and optional fields participate in structural typing and width subtyping. Optional access returns Maybe, and a present explicit field becomes required in the resulting record type.",
+  evaluationBody: "Every record item is evaluated once in source order. A spread copies structural fields and presence; omitted optional fields do not evaluate an expression or create a runtime field.",
+  invalidTitle: "Brace forms are intentionally distinct",
+  invalidBody: "{} is the empty record, while { expression } is a block. A one-field shorthand record requires a trailing comma. Unknown access, direct duplicates, and spreading a non-record are rejected.",
+  diagnosticsBody: "Diagnostics name missing, extra, duplicate, and unknown fields and show nested structural differences. Optional presence is never silently converted into a required value.",
+  provenanceBody: "This article covers specification 3.7 and connects record expressions with record types and record patterns."
+}

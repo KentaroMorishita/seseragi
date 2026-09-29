@@ -1,0 +1,20 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.data.structs" "/docs/language/data/structs/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("data-structs", localized "Construction and immutable update" "構築とimmutable update")] [CodeExample
+      ("data-invalid-struct", localized "Rejected missing field" "field欠落を拒否")] [
+        [InternalLink (localized "Records" "record", "/docs/language/data/records/")],
+        [InternalLink (
+          localized "Type constructors" "type constructor",
+          "/docs/language/types/type-constructors/"
+        )],
+        [InternalLink (
+          localized "Inherent impls and methods" "inherent implとmethod",
+          "/docs/language/data/impls-and-methods/"
+        )]
+      ]

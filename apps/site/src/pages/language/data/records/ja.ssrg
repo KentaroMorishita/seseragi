@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "レコード",
+  summary: "recordはfield presenceと順序付きspread updateを持つimmutableなstructural productです。",
+  ruleTitle: "declaration名ではなくfieldがidentityを決める",
+  ruleBody: "record literalはnamed field、shorthand、0個以上のspreadを使います。spreadは左から右へ適用し、後続の明示fieldが前の値を上書きします。直接書くfield名は一度だけです。",
+  typingBody: "required・optional fieldはstructural typingとwidth subtypingへ参加します。optional accessはMaybeを返し、明示したfieldは結果recordでrequiredになります。",
+  evaluationBody: "record itemはsource順で一度ずつ評価します。spreadはfieldとpresenceをコピーします。省略したoptional fieldは式を評価せずruntime fieldも作りません。",
+  invalidTitle: "brace formは意図的に区別される",
+  invalidBody: "{}はempty record、{ expression }はblockです。shorthand一つだけのrecordにはtrailing commaが必要です。未知field access、直接重複、non-record spreadを拒否します。",
+  diagnosticsBody: "欠落・追加・重複・未知fieldを示し、入れ子のstructural differenceも表示します。optional presenceをrequired valueへ暗黙変換しません。",
+  provenanceBody: "仕様3.7を扱い、record expressionをrecord type・record patternへ接続します。"
+}

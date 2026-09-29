@@ -50,7 +50,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3830)
+    expect(manifest.pages).toHaveLength(3860)
     for (const route of [
       "/",
       "/docs/",
@@ -91,6 +91,22 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/language/types/type-identity-and-coercion/",
       "/docs/language/types/recursive-declarations/",
       "/ja/docs/language/types/requirement-merge/",
+      "/docs/language/expressions/evaluation/",
+      "/docs/language/expressions/blocks-and-local-declarations/",
+      "/docs/language/expressions/conditionals/",
+      "/docs/language/expressions/ranges-and-comprehensions/",
+      "/docs/language/expressions/lambdas/",
+      "/docs/language/data/algebraic-data-types/",
+      "/docs/language/data/structs/",
+      "/docs/language/data/newtypes/",
+      "/docs/language/data/records/",
+      "/docs/language/data/tuples-arrays-and-lists/",
+      "/docs/language/data/impls-and-methods/",
+      "/docs/language/data/operator-overloads/",
+      "/docs/language/patterns/binding-rules/",
+      "/docs/language/patterns/irrefutable-patterns/",
+      "/docs/language/patterns/match/",
+      "/ja/docs/language/patterns/match/",
       "/docs/library/",
       "/docs/library/array/",
       "/docs/library/array/function/get/",

@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Algebraic data types",
+  summary: "An algebraic data type names a closed set of variants and makes every state explicit.",
+  ruleTitle: "Variants define a closed nominal sum",
+  ruleBody: "A type declaration lists every constructor. A constructor with no payload is a value; a constructor with a payload is a function into the declared type. Multiple payload values are carried by one tuple.",
+  typingBody: "Constructors introduce module-scope names and instantiate generic type parameters from their payload or expected result type. Matching uses the same nominal type and substituted payload types.",
+  evaluationBody: "Constructor application evaluates its one payload once and builds the selected value. Match later observes only the declared constructor and payload, not a backend representation.",
+  invalidTitle: "A variant list is closed",
+  invalidBody: "Code cannot add a constructor from another module or treat two declarations with identical constructors as the same type. Use a new declaration and explicit conversion when the domain differs.",
+  diagnosticsBody: "Unknown constructors, wrong payload arity or type, inaccessible constructors, and non-exhaustive matches are compile-time diagnostics.",
+  provenanceBody: "This article covers specification 3.4 and links construction to generic ADTs, visibility, and pattern exhaustiveness."
+}

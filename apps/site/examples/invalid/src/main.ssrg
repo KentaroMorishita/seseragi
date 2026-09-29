@@ -9,5 +9,13 @@ import * as invalidRecursion from "./language/invalid-recursion"
 import * as invalidRequirementMerge from "./language/invalid-requirement-merge"
 import * as invalidStructural from "./language/invalid-structural"
 import * as effects from "std/effect"
+import * as invalidBinding from "./language/invalid-binding-pattern"
+import * as invalidConditional from "./language/invalid-conditional"
+import * as invalidImpl from "./language/invalid-impl-owner"
+import * as invalidIrrefutable from "./language/invalid-irrefutable-pattern"
+import * as invalidMatch from "./language/invalid-match"
+import * as invalidOperatorOverload from "./language/invalid-operator-overload"
+import * as invalidRecordLiteral from "./language/invalid-record-literal"
+import * as invalidStructLiteral from "./language/invalid-struct-literal"
 
 pub effect fn main -> Unit = effects.succeed ()

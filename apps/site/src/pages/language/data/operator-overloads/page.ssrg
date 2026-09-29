@@ -1,0 +1,28 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.data.operator-overloads" "/docs/language/data/operator-overloads/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "data-operator-overloads",
+        localized "A newtype addition contract" "newtypeの加算contract"
+      )] [CodeExample (
+        "data-invalid-operator-overload",
+        localized "Rejected duplicate evidence" "重複evidenceを拒否"
+      )] [
+        [InternalLink (
+          localized "Custom operators" "custom operator",
+          "/docs/language/syntax/custom-operators/"
+        )],
+        [InternalLink (
+          localized "Operator precedence" "operator precedence",
+          "/docs/language/syntax/operator-precedence/"
+        )],
+        [InternalLink (
+          localized "Inherent impls and methods" "inherent implとmethod",
+          "/docs/language/data/impls-and-methods/"
+        )]
+      ]

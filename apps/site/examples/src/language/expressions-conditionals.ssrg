@@ -1,0 +1,3 @@
+fn accessLabel allowed: Bool -> String = if allowed then "allowed" else "denied"
+
+let label = accessLabel True

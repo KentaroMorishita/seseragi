@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "ラムダ式",
+  summary: "lambdaはcurried function valueを作り、すでにscope内にあるlexical bindingだけをcaptureします。",
+  ruleTitle: "無名関数も同じfunction modelを使う",
+  ruleBody: "lambdaはbackslash、parameter、arrow、bodyで書きます。複数parameterは一引数lambdaの入れ子へdesugarされ、named functionと同じように部分適用できます。",
+  typingBody: "parameter型は期待されるfunction型から推論するか、直接注釈します。parameterは左から右へscopeへ入り、後続parameterの注釈とbodyから参照できます。",
+  evaluationBody: "lambdaの評価はclosureを作り、bodyを実行しません。captureしたimmutable bindingはlexicalな値を保ち、bodyは適用ごとに実行されます。",
+  invalidTitle: "lambdaはhostの多引数callbackではない",
+  invalidBody: "parameterを複数書いてもcurried functionです。foreign callbackの変換とlifetimeはinteropで明示する規則であり、lambdaだけ別のcalling conventionにはなりません。",
+  diagnosticsBody: "parameterや結果が制約されなければ推論ambiguityを報告します。parameter注釈を付けるか、期待function型がある位置へ置きます。",
+  provenanceBody: "仕様3.11とchapter 2のfunction type・currying規則を扱います。"
+}

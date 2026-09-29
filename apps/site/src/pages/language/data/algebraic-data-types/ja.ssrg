@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "代数的データ型",
+  summary: "algebraic data typeは閉じたvariant集合へ名前を付け、取りうる状態を明示します。",
+  ruleTitle: "variantは閉じたnominal sumを定義する",
+  ruleBody: "type declarationですべてのconstructorを列挙します。payloadなしのconstructorは値、payloadありは宣言した型を返す関数です。複数のpayloadは一つのtupleで渡します。",
+  typingBody: "constructorはmodule scopeへnameを導入し、payloadまたは期待結果型からgeneric type parameterをinstantiateします。matchも同じnominal型と置換済みpayload型を使います。",
+  evaluationBody: "constructor適用は一つのpayloadを一度評価し、選択した値を作ります。matchが観測するのは宣言されたconstructorとpayloadだけで、backend表現ではありません。",
+  invalidTitle: "variant集合は閉じている",
+  invalidBody: "別moduleからconstructorを追加したり、同じconstructorを並べた別declを同一型として扱ったりできません。domainが違う場合は新しい型と明示変換を使います。",
+  diagnosticsBody: "未知のconstructor、payloadのarity・型不一致、非公開constructor、非網羅matchはcompile-time diagnosticです。",
+  provenanceBody: "仕様3.4を扱い、構築規則をgeneric ADT、visibility、pattern exhaustivenessへ接続します。"
+}

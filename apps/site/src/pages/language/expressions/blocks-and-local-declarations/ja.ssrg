@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "ブロックとローカル宣言",
+  summary: "blockはlocalなimmutable bindingを導入し、最後の式を返します。",
+  ruleTitle: "blockはlexical scopeを持つ式",
+  ruleBody: "blockは1個以上のlocal declarationと省略可能な最後の式、または最後の式一つを持ちます。最後の式がblockの値になり、declarationだけならUnitを返します。",
+  typingBody: "localではlet、fn、effect fn、rec groupを使えます。bindingは宣言直後からblock末尾まで見えます。shadowingはできますが、先の宣言から後続bindingをcaptureできません。",
+  evaluationBody: "block itemは上から順に評価します。local function declarationはclosureを作りますが、適用されるまでbodyやEffectを実行しません。",
+  invalidTitle: "空のbraceはrecord",
+  invalidBody: "{}はempty record literalで、Unit blockではありません。何もしないUnit blockは{ () }です。type、trait、impl、instance、operator、foreign、pub declarationはblock内へ置けません。",
+  diagnosticsBody: "後から宣言するlocal bindingへの参照はname未解決です。相互再帰するlocal functionは一つのrec groupへ置き、全memberのscopeを明示します。",
+  provenanceBody: "仕様3.2のblock value、local declaration、scope、capture、再帰、empty recordとの違いを扱います。"
+}

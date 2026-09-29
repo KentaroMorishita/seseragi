@@ -1,0 +1,20 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.data.algebraic-data-types" "/docs/language/data/algebraic-data-types/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("data-algebraic-data-types", localized "A closed generic state" "閉じたgeneric state")] [] [
+        [InternalLink (
+          localized "Type constructors" "type constructor",
+          "/docs/language/types/type-constructors/"
+        )],
+        [InternalLink
+      (localized "Match expressions" "match式", "/docs/language/patterns/match/")],
+        [InternalLink (
+          localized "Nominal and structural types" "nominal型とstructural型",
+          "/docs/language/types/nominal-and-structural-types/"
+        )]
+      ]

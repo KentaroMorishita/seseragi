@@ -1,0 +1,21 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.expressions.ranges-and-comprehensions" "/docs/language/expressions/ranges-and-comprehensions/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "expressions-ranges-comprehensions",
+        localized "An ordered filtered comprehension" "順序付きfilter comprehension"
+      )] [] [
+        [InternalLink (
+          localized "Tuples, arrays, and lists" "tuple・Array・List",
+          "/docs/language/data/tuples-arrays-and-lists/"
+        )],
+        [InternalLink
+      (localized "Binding rules" "binding共通規則", "/docs/language/patterns/binding-rules/")],
+        [InternalLink
+      (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")]
+      ]
