@@ -30,7 +30,8 @@ fn pageBody<Action> input: BuildInput
     match page.kind {
       Home -> homeLayout input labels locale catalog.areas page
       SiteLanding -> landingLayout input labels locale page
-      DocumentationIndex -> documentationIndexLayout input labels locale page
+      DocumentationIndex ->
+        documentationIndexLayout input labels locale catalog.areas page
       DocumentationLanding -> documentationLandingLayout input labels locale catalog.areas page
       Article -> articleLayout input labels locale catalog.areas page
       Reference -> articleLayout input labels locale catalog.areas page

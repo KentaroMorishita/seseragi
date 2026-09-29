@@ -1,11 +1,5 @@
-pub fn title -> String = "Seseragiリファレンス"
-pub fn summary -> String = "人が理解しやすい概念から入り、正確な構文・意味論・診断・関連APIまで辿れるリファレンスです。"
-pub fn languageTitle -> String = "言語リファレンス"
-pub fn languageBody -> String =
-  "言語modelを起点に、source形式、関数、data、型、trait、Effect、Signal、module、interopを体系的に説明します。"
-pub fn libraryTitle -> String = "標準ライブラリ"
-pub fn libraryBody -> String =
-  "言語仕様のnavigationと混ぜず、compiler-owned metadataに基づくmodule・公開symbolを調べられます。"
+pub fn title -> String = "Seseragi リファレンス"
+pub fn summary -> String = "知りたい概念から、正確な構文・意味論・診断・関連APIへ辿れるリファレンスです。"
 pub fn tourTitle -> String = "順番に学ぶ"
 pub fn tourBody -> String =
   "順番に手を動かして学ぶ導線はinteractive Tourが担当します。リファレンス側で同じcourseを重複させません。"

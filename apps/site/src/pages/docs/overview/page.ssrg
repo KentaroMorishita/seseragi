@@ -3,7 +3,6 @@ import {
   DocumentationIndex,
   ExternalLink,
   Heading,
-  InternalLink,
   PageDefinition,
   Paragraph,
   Words
@@ -21,22 +20,6 @@ pub fn page -> PageDefinition = PageDefinition {
   title: text (en.title ()) (ja.title ()),
   summary: text (en.summary ()) (ja.summary ()),
   blocks: [
-    Heading ("language", text (en.languageTitle ()) (ja.languageTitle ())),
-    Paragraph (
-      [
-        Words (text (en.languageBody ()) (ja.languageBody ())),
-        InternalLink
-          (text " Browse the language reference" " 言語リファレンスを見る", "/docs/language/")
-      ]
-    ),
-    Heading ("standard-library", text (en.libraryTitle ()) (ja.libraryTitle ())),
-    Paragraph (
-      [
-        Words (text (en.libraryBody ()) (ja.libraryBody ())),
-        InternalLink
-          (text " Browse the standard library" " 標準ライブラリを見る", "/docs/library/")
-      ]
-    ),
     Heading ("learn-by-doing", text (en.tourTitle ()) (ja.tourTitle ())),
     Paragraph (
       [

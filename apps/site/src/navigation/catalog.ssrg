@@ -102,10 +102,10 @@ import { referenceGroups } from "../reference/catalog"
 
 fn languageArea -> NavigationArea = NavigationArea {
   id: "language",
-  title: localized "Language Reference" "Language Reference",
+  title: localized "Language Reference" "言語リファレンス",
   description: localized
     "Understand each language concept, then inspect its exact rules."
-    "概念を理解してから、正確な言語規則まで辿れます。",
+    "言語の各概念から、正確な規則と関連項目へ辿れます。",
   landing: languageOverviewPage (),
   groups: [
     NavigationGroup {
@@ -371,7 +371,9 @@ fn languageArea -> NavigationArea = NavigationArea {
 fn libraryArea input: BuildInput -> NavigationArea = NavigationArea {
   id: "library",
   title: localized "Standard Library" "標準ライブラリ",
-  description: localized "Look up modules and public symbols." "moduleと公開symbolを調べられます。",
+  description: localized
+    "Look up modules and public symbols."
+    "標準moduleと公開symbolを調べられます。",
   landing: libraryOverviewPage (),
   groups: referenceGroups input.referenceModules
 }

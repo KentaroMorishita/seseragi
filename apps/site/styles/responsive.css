@@ -33,6 +33,10 @@
   .home-hero-content {
     max-width: var(--article-width);
   }
+
+  .reference-area-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 760px) {
@@ -145,6 +149,23 @@
     padding: 48px 0 80px;
   }
 
+  .reference-area-grid {
+    gap: 14px;
+    margin-top: 34px;
+  }
+
+  .reference-area-card {
+    padding: 24px 22px;
+  }
+
+  .reference-area-card h2 {
+    font-size: 21px;
+  }
+
+  .reference-topic-list {
+    margin-top: 22px;
+  }
+
   .page-intro {
     padding-bottom: 32px;
   }
@@ -171,6 +192,15 @@
   .article-content h2 {
     padding-top: 30px;
     font-size: 25px;
+  }
+
+  .reference-index .article-content {
+    margin-top: 52px;
+    padding-top: 36px;
+  }
+
+  .reference-index .article-content h2 {
+    padding-top: 0;
   }
 
   .reference-sequence {
