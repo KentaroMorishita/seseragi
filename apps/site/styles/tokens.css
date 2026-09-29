@@ -25,6 +25,8 @@
   --type-section-title: 28px;
   --type-lead: 17px;
   --type-body: 16px;
+  --type-code-block: 14px;
+  --type-code-block-compact: 13px;
   --tracking-display: -0.04em;
   --tracking-heading: -0.02em;
   --tracking-label: 0.1em;

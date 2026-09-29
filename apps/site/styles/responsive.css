@@ -219,8 +219,7 @@
   .code-panel pre,
   .api-reference pre {
     padding: 20px;
-    font-size: 11px;
-    line-height: 1.6;
+    font-size: var(--type-code-block-compact);
   }
 
   .code-panel-header {

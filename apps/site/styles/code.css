@@ -54,7 +54,7 @@
   overflow: auto;
   margin: 0;
   padding: clamp(22px, 4vw, 32px);
-  font-size: 12px;
+  font-size: var(--type-code-block);
   line-height: 1.65;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;

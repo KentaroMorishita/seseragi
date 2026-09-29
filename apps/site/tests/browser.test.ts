@@ -290,10 +290,17 @@ try {
             "punctuation",
           ]
         )
-        assert.equal(typeSystemCode.fontSize, width === 390 ? "11px" : "12px")
+        assert.equal(typeSystemCode.fontSize, width === 390 ? "13px" : "14px")
         assert.equal(
           typeSystemCode.lineHeight,
-          width === 390 ? "17.6px" : "19.8px"
+          width === 390 ? "21.45px" : "23.1px"
+        )
+        assert.equal(
+          await page
+            .locator(".code-panel-header")
+            .first()
+            .evaluate((header) => getComputedStyle(header).fontSize),
+          "12px"
         )
         for (const [token, colors] of Object.entries(typeSystemCode.colors)) {
           assert.equal(
@@ -646,10 +653,12 @@ try {
             return {
               background: style.backgroundColor,
               border: style.borderTopWidth,
+              fontSize: style.fontSize,
             }
           })
         assert.notEqual(inlineCodeStyle.background, "rgba(0, 0, 0, 0)")
         assert.equal(inlineCodeStyle.border, "1px")
+        assert.equal(inlineCodeStyle.fontSize, "14.4px")
         if (width === 390) {
           const headerLayout = await codeHeaderLayout(
             page.locator(".code-panel-header:has(.code-actions)").first()
