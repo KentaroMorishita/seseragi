@@ -57,5 +57,13 @@ import * as effectTask from "./language/effects-task"
 import * as effectExecutionOrder from "./language/effects-execution-order"
 import * as effectRuntimeBoundary from "./language/effects-runtime-boundary"
 import * as effectDefects from "./language/effects-defects"
+import * as effectCancellationResources from "./language/effects-cancellation-resources"
+import * as effectSchedulerFairness from "./language/effects-scheduler-fairness"
+import * as effectFiberSupervision from "./language/effects-fiber-supervision"
+import * as effectSignalTransactions from "./language/effects-signal-transactions"
+import * as effectDerivedSignals from "./language/effects-derived-signals"
+import * as effectSignalOperators from "./language/effects-signal-operators"
+import * as effectSignalSubscription from "./language/effects-signal-subscription"
+import * as effectForeignFailure from "./language/effects-foreign-failure"
 
 pub effect fn main -> Unit = effects.succeed ()

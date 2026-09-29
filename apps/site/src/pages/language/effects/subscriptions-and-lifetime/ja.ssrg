@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "subscriptionとlifetime",
+  summary: "Subscriptionは一つのSignalを順序付きで観測し、明示またはresource scopeによって解放します。",
+  ruleTitle: "observationにはlifetimeがある",
+  ruleBody: "subscribeは最初に現在値でobserverを呼び、その後の更新を順番に届けます。同じSignalのobserverは登録順に動き、一つのobserverへ通知を重ねません。",
+  typingBody: "observerはEffect<R, Never, Unit>を返すため回復可能failureを外へ残せません。subscribeはEffect<R, Never, Subscription>、unsubscribeはidempotentなTask<Unit>です。",
+  evaluationBody: "observer内の更新は現在transaction終了後の新transactionへqueueされ、同期re-entrancyを防ぎます。scope終了・typed failure・cancellationは登録subscriptionを解放し、未購読derived Signalもdependencyを解放します。",
+  invalidTitle: "Signalは意図的にMonadではない",
+  invalidBody: "dynamic dependencyにはsubscription lifetimeが伴うため、switchMapなど名前付きoperationで表します。observer確保と解放を制限のないbindへ隠してはいけません。",
+  diagnosticsBody: "observer defectはruntime policyに従って該当observerを停止し、他subscriberのtyped failureにはなりません。lifetime診断はactive・released・重複unsubscribeを識別します。",
+  provenanceBody: "仕様5.15を扱います。failure channelが必要なconsumerとの境界にはStream変換を使います。"
+}

@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Signals and transactions",
+  summary: "Signal<A> is a read-only node in a typed dependency graph; MutableSignal<A> adds an explicit update capability.",
+  ruleTitle: "Signal state is accessed through Effect",
+  ruleBody: "Creating, reading, updating, and subscribing touch runtime state and therefore return Task or Effect. MutableSignal<A> can lose write capability by coercing to Signal<A>, but the reverse conversion does not exist.",
+  typingBody: "planSet and planUpdate produce opaque SignalChange values, allowing heterogeneous changes in one Array without exposing their targets. transaction accepts those plans and returns Task<Unit>.",
+  evaluationBody: "A transaction stages changes in Array order, computes every update, and publishes once. A defect during staging or cancellation before commit publishes nothing; after commit begins, recomputation and notification finish atomically before cancellation is observed.",
+  invalidTitle: "A Signal is not an implicitly changing pure value",
+  invalidBody: "Pure code may hold a Signal but cannot read its current value. Use Signal.read or the prefix * operator in an Effect, and use update when a write depends on the current value.",
+  diagnosticsBody: "Type errors distinguish read-only Signal from MutableSignal and report the exact planned value mismatch. Runtime diagnostics identify staging, commit, derived recomputation, and subscriber notification phases.",
+  provenanceBody: "This article covers specification 5.12. Derived graph semantics and the Signal operators each have their own pages."
+}

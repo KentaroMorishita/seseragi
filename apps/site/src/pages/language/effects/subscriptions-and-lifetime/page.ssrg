@@ -1,0 +1,25 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.subscriptions-lifetime" "/docs/language/effects/subscriptions-and-lifetime/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-signal-subscription",
+        localized "Subscribe, update, and release" "subscribe・update・release"
+      )] [] [
+        [InternalLink (
+          localized "Derived Signals" "derived Signal",
+          "/docs/language/effects/derived-signals/"
+        )],
+        [InternalLink (
+          localized "Cancellation and resources" "cancellationとresource",
+          "/docs/language/effects/cancellation-and-resources/"
+        )],
+        [InternalLink (
+          localized "Signal operators" "Signal operator",
+          "/docs/language/effects/signal-operators/"
+        )]
+      ]

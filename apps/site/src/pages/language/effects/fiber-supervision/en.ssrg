@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Fiber supervision",
+  summary: "Every Fiber belongs to the root main scope or the innermost scoped resource owner; fork never creates an unscoped daemon.",
+  ruleTitle: "Child lifetime cannot outlive its scope",
+  ruleBody: "When a scope exits it requests cancellation from every unfinished child, waits for child finalizers, and only then closes. This applies after parent success, typed failure, and cancellation alike.",
+  typingBody: "join returns child success, raises its typed failure in the caller, and propagates child cancellation as cancellation. await returns FiberExit when cancellation must be inspected as data; interrupt requests cancellation and waits for cleanup.",
+  evaluationBody: "A child typed failure remains stored on the Fiber until join or await observes it. Cancelling the waiting Fiber stops only the wait, not the target; interrupt is the explicit idempotent operation that cancels the target.",
+  invalidTitle: "fork is not fire-and-forget",
+  invalidBody: "Dropping a Fiber handle does not transfer ownership to a daemon registry. The enclosing scope still waits for supervised cleanup, and tests may diagnose an unobserved child failure without changing the parent's typed result.",
+  diagnosticsBody: "Fiber diagnostics retain parent scope, spawn site, completion state, and whether a failure was observed. Forced host termination after a grace period is outside the cooperative guarantee.",
+  provenanceBody: "This article covers the Fiber-supervision subsection of specification 5.11 and the root-scope shutdown rule."
+}

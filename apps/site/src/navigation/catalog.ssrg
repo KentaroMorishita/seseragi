@@ -87,6 +87,14 @@ import { page as taskPage } from "../pages/language/effects/task/page"
 import { page as sequentialParallelPage } from "../pages/language/effects/sequential-and-parallel/page"
 import { page as runtimeBoundariesPage } from "../pages/language/effects/runtime-boundaries/page"
 import { page as defectsPage } from "../pages/language/effects/defects/page"
+import { page as cancellationResourcesPage } from "../pages/language/effects/cancellation-and-resources/page"
+import { page as schedulerFairnessPage } from "../pages/language/effects/scheduler-fairness/page"
+import { page as fiberSupervisionPage } from "../pages/language/effects/fiber-supervision/page"
+import { page as signalsTransactionsPage } from "../pages/language/effects/signals-and-transactions/page"
+import { page as derivedSignalsPage } from "../pages/language/effects/derived-signals/page"
+import { page as signalOperatorsPage } from "../pages/language/effects/signal-operators/page"
+import { page as subscriptionsLifetimePage } from "../pages/language/effects/subscriptions-and-lifetime/page"
+import { page as exceptionsAlgebraicPage } from "../pages/language/effects/exceptions-and-algebraic-effects/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
 import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
@@ -333,6 +341,27 @@ fn languageArea -> NavigationArea = NavigationArea {
           kind: FlatSection,
           overview: sequentialParallelPage (),
           pages: [runtimeBoundariesPage (), defectsPage ()]
+        },
+        NavigationSection {
+          id: "runtime-ownership",
+          title: localized "Runtime ownership" "runtime ownership",
+          kind: FlatSection,
+          overview: cancellationResourcesPage (),
+          pages: [schedulerFairnessPage (), fiberSupervisionPage ()]
+        },
+        NavigationSection {
+          id: "reactive-state",
+          title: localized "Reactive state" "reactive state",
+          kind: FlatSection,
+          overview: signalsTransactionsPage (),
+          pages: [derivedSignalsPage (), signalOperatorsPage ()]
+        },
+        NavigationSection {
+          id: "observation-boundaries",
+          title: localized "Observation and boundaries" "observationと境界",
+          kind: FlatSection,
+          overview: subscriptionsLifetimePage (),
+          pages: [exceptionsAlgebraicPage ()]
         }
       ]
     }

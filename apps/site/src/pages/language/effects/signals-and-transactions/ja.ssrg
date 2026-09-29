@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Signalとtransaction",
+  summary: "Signal<A>は型付きdependency graphのread-only nodeで、MutableSignal<A>が明示的な更新capabilityを加えます。",
+  ruleTitle: "Signal stateにはEffectからaccessする",
+  ruleBody: "生成・読み取り・更新・購読はruntime stateへ触れるためTaskまたはEffectを返します。MutableSignal<A>はSignal<A>へwrite capabilityを落とせますが、逆変換はありません。",
+  typingBody: "planSetとplanUpdateはopaqueなSignalChangeを作り、targetを公開せず異なるvalue型のchangeを同じArrayへ入れられます。transactionはそのplanを受け取りTask<Unit>を返します。",
+  evaluationBody: "transactionはArray順にchangeをstageし、全updateを計算して一度だけ公開します。staging中のdefectやcommit前cancellationでは一件も公開せず、commit開始後は再計算と通知完了までatomicに進みます。",
+  invalidTitle: "Signalは暗黙に変化するpure valueではない",
+  invalidBody: "pure codeはSignalを保持できますが現在値を読めません。Effect内でSignal.readまたはprefix *を使い、現在値に依存するwriteにはupdateを使います。",
+  diagnosticsBody: "型errorはread-only SignalとMutableSignalを区別し、planしたvalue型の不一致箇所を示します。runtime診断はstaging・commit・derived再計算・subscriber通知phaseを識別します。",
+  provenanceBody: "仕様5.12を扱います。derived graph semanticsとSignal operatorはそれぞれ別pageです。"
+}

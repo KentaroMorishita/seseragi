@@ -1,0 +1,14 @@
+import * as effects from "std/effect"
+import * as signals from "std/signal"
+
+effect fn updateCoordinates -> (Int, Int) = do {
+  x <- signals.make 1
+  y <- signals.make 2
+  signals.transaction [
+    signals.planSet 10 x,
+    signals.planUpdate (\value: Int -> value + 20) y
+  ]
+  currentX <- *x
+  currentY <- *y
+  effects.succeed (currentX, currentY)
+}

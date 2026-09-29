@@ -1,0 +1,7 @@
+import * as effects from "std/effect"
+
+type CloseError =
+  | CloseError
+
+effect fn invalid =
+  effects.acquireRelease (effects.succeed ()) (\_: Unit -> effects.fail CloseError)

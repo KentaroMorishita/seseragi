@@ -1,0 +1,7 @@
+import * as effects from "std/effect"
+
+effect fn supervisedChild -> Int = do {
+  child <- effects.fork (effects.succeed 21)
+  value <- effects.join child
+  effects.succeed (value * 2)
+}

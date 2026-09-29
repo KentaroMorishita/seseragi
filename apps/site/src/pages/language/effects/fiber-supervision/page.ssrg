@@ -1,0 +1,25 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.fiber-supervision" "/docs/language/effects/fiber-supervision/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-fiber-supervision",
+        localized "Forking and joining a scoped child" "scope childのforkとjoin"
+      )] [] [
+        [InternalLink (
+          localized "Scheduler fairness" "scheduler fairness",
+          "/docs/language/effects/scheduler-fairness/"
+        )],
+        [InternalLink (
+          localized "Cancellation and resources" "cancellationとresource",
+          "/docs/language/effects/cancellation-and-resources/"
+        )],
+        [InternalLink (
+          localized "Runtime boundaries" "runtime境界",
+          "/docs/language/effects/runtime-boundaries/"
+        )]
+      ]

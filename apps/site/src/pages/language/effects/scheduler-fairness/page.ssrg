@@ -1,0 +1,22 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.effects.scheduler-fairness" "/docs/language/effects/scheduler-fairness/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "effects-scheduler-fairness",
+        localized "An explicit cooperative checkpoint" "明示的なcooperative checkpoint"
+      )] [] [
+        [InternalLink (
+          localized "Cancellation and resources" "cancellationとresource",
+          "/docs/language/effects/cancellation-and-resources/"
+        )],
+        [InternalLink (
+          localized "Fiber supervision" "Fiber supervision",
+          "/docs/language/effects/fiber-supervision/"
+        )],
+        [InternalLink (localized "Task" "Task", "/docs/language/effects/task/")]
+      ]

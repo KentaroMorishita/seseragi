@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Derived Signals",
+  summary: "Derived Signals declare dependencies with pure constructors and update without observable glitches.",
+  ruleTitle: "Dependencies are explicit",
+  ruleBody: "map, combine, constant, distinct, and switchMap construct graph edges directly. Seseragi does not track reads performed inside arbitrary functions to infer hidden dependencies.",
+  typingBody: "map and combine preserve a read-only Signal result. distinct requires Eq<A>; switchMap maps each source value to one selected inner Signal and returns Signal<B> without exposing subscription handles.",
+  evaluationBody: "One source transaction recomputes affected nodes at most once in topological order and notifies only after the graph is stable. switchMap replaces the old inner dependency and publishes the stable new value in the same transaction.",
+  invalidTitle: "Do not depend on transient combinations",
+  invalidBody: "Subscribers cannot observe one derived input before another has caught up. If duplicate values should be suppressed, request distinct explicitly; ordinary set and update notify even when Eq would consider the value unchanged.",
+  diagnosticsBody: "Construction rejects dependency cycles and missing Eq evidence. Runtime graph diagnostics identify the derived node and constructor while preserving the transaction that triggered recomputation.",
+  provenanceBody: "This article covers specification 5.13. Signal has Functor and Applicative behavior, but no Monad instance."
+}

@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "scheduler fairness",
+  summary: "Effect runtimeはcheckpointを境界に、cooperative FIFO schedulingとweak fairnessを保証します。",
+  ruleTitle: "progressにはcheckpoint到達が必要",
+  ruleBody: "async wait、yieldNow、Queue・Deferred・Semaphoreの待機、sleep、I/O境界、cancellation観測がcheckpointです。runnable FiberはFIFO queueへ入り、他のFiberがcheckpointへ到達し続ける限り最終的に実行されます。",
+  typingBody: "schedulingはEffect型を変えず、Fiber priorityも公開しません。yieldNowはTask<Unit>で、serviceや回復可能failureを追加せずcooperative boundaryを明示します。",
+  evaluationBody: "weak fairnessが保証するのは再実行であり、wall-clock時間やstep数の均等性ではありません。長いpure計算は自動preemptされず、yieldするまで他のFiberをstarveさせられます。",
+  invalidTitle: "並行cleanupへglobal orderを仮定しない",
+  invalidBody: "input順やwaiter登録順がenqueue順を決めるのはAPIが明示した箇所だけです。すべてのcleanupを待つAPIでも、独立sibling finalizer間にglobal orderはありません。",
+  diagnosticsBody: "runtime traceはcheckpointやenqueue eventを示せますが、worker数の違いが仕様上のresult順・failure選択・同一scope内LIFOを変えてはいけません。",
+  provenanceBody: "仕様5.11のscheduler fairness subsectionを扱います。Fiber supervisionは次pageで定義します。"
+}

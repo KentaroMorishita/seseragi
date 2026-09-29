@@ -50,7 +50,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3912)
+    expect(manifest.pages).toHaveLength(3928)
     for (const route of [
       "/",
       "/docs/",
@@ -137,6 +137,22 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "/docs/language/effects/defects/",
       "/ja/docs/language/effects/pure-expressions/",
       "/ja/docs/language/effects/defects/",
+      "/docs/language/effects/cancellation-and-resources/",
+      "/ja/docs/language/effects/cancellation-and-resources/",
+      "/docs/language/effects/scheduler-fairness/",
+      "/ja/docs/language/effects/scheduler-fairness/",
+      "/docs/language/effects/fiber-supervision/",
+      "/ja/docs/language/effects/fiber-supervision/",
+      "/docs/language/effects/signals-and-transactions/",
+      "/ja/docs/language/effects/signals-and-transactions/",
+      "/docs/language/effects/derived-signals/",
+      "/ja/docs/language/effects/derived-signals/",
+      "/docs/language/effects/signal-operators/",
+      "/ja/docs/language/effects/signal-operators/",
+      "/docs/language/effects/subscriptions-and-lifetime/",
+      "/ja/docs/language/effects/subscriptions-and-lifetime/",
+      "/docs/language/effects/exceptions-and-algebraic-effects/",
+      "/ja/docs/language/effects/exceptions-and-algebraic-effects/",
       "/docs/library/",
       "/docs/library/array/",
       "/docs/library/array/function/get/",
