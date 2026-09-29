@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "instance",
+  summary: "instanceは一つのtrait適用が要求する操作を正確に実装し、値ではなくcompile時のevidenceになります。",
+  ruleTitle: "instanceは置換後のcontractを満たす",
+  ruleBody: "instance Trait<Type>は要求された全methodを実装します。trait parameterをinstance headで置換した型と、method宣言の型が完全に一致しなければなりません。generic instanceにはparameterとwhere constraintを書けます。",
+  typingBody: "evidenceが隠れた未確定型に依存しないよう、すべてのinstance型parameterはheadに現れる必要があります。Either<E, _>のようなheadはkindを保ちます。instanceとnominal memberを所有するimplは別物です。",
+  evaluationBody: "instance宣言は構築可能なruntime値を作りません。呼び出しは静的選択後にだけ操作を使い、user codeはinstance objectを生成・比較・保存・明示渡しできません。",
+  invalidTitle: "似たsignatureでは足りない",
+  invalidBody: "method欠落、互換性のない余分なmethod、置換後signatureと異なる結果型はinstanceを拒否します。impl Trait<Type>と書いてもevidenceにはなりません。",
+  diagnosticsBody: "contract診断はtrait method名と期待型・実際型を示します。headとconstraintの診断は、要求evidenceから決められないparameterを指します。",
+  provenanceBody: "仕様4.3を扱います。型の正しいinstanceが選択対象になれるかはcoherenceとvisibilityで決まります。"
+}

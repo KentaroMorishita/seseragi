@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "inherent methodとtrait操作",
+  summary: "inherent methodは一つのnominal型に属し、trait操作はevidenceで選ばれる抽象に属します。",
+  ruleTitle: "二つの形式は異なるlookup問題を解く",
+  ruleBody: "impl UserはUser receiverから解決するmemberを追加し、member構文で呼びます。instance Eq<User>は既存の抽象操作を実装し、evidence選択後にconstraint付き関数として呼びます。",
+  typingBody: "inherent lookupはreceiverのnominal identity、宣言visibility、generic substitutionを使います。trait lookupは操作を所有するtrait、推論型引数、constraint、visible instance、coherenceを使います。",
+  evaluationBody: "どちらも最終的に静的に既知のcodeを呼びますが、既定でdynamic object dispatchは行いません。表面構文がnamespaceやownership規則を統合することもありません。",
+  invalidTitle: "instanceをextension-method namespaceとして使わない",
+  invalidBody: "trait instanceを定義しても全trait操作がvalue.methodで使えるわけではありません。implもrequired coherent instanceを別途定義しない限りtrait requirementを満たしません。",
+  diagnosticsBody: "member診断はreceiverとvisible impl候補を示します。trait診断は所有trait、evidence requirement、曖昧さまたはinstance欠落を示し、修正箇所を分離します。",
+  provenanceBody: "仕様4.10を扱い、独立したinherent implページとmethod call構文ページへ接続します。"
+}

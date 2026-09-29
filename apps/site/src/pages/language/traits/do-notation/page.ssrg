@@ -1,0 +1,24 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.traits.do-notation" "/docs/language/traits/do-notation/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "traits-do-notation",
+        localized "Bind, local let, and a final expression" "bind・local let・最後の式"
+      )] [CodeExample (
+        "traits-invalid-do",
+        localized "Rejected mixed and unfinished blocks" "monad混在と未完了blockを拒否"
+      )] [
+        [InternalLink
+      (localized "Do desugaring" "doのdesugar", "/docs/language/traits/do-desugaring/")],
+        [InternalLink
+      (localized "Do-block typing" "do blockの型", "/docs/language/traits/do-block-typing/")],
+        [InternalLink (
+          localized "Blocks and local declarations" "blockとlocal宣言",
+          "/docs/language/expressions/blocks-and-local-declarations/"
+        )]
+      ]

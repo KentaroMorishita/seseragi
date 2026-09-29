@@ -61,6 +61,19 @@ import { page as operatorOverloadsPage } from "../pages/language/data/operator-o
 import { page as bindingRulesPage } from "../pages/language/patterns/binding-rules/page"
 import { page as irrefutablePatternsPage } from "../pages/language/patterns/irrefutable-patterns/page"
 import { page as matchPage } from "../pages/language/patterns/match/page"
+import { page as traitModelPage } from "../pages/language/traits/model/page"
+import { page as traitDeclarationsPage } from "../pages/language/traits/declarations/page"
+import { page as traitInstancesPage } from "../pages/language/traits/instances/page"
+import { page as traitConstraintsPage } from "../pages/language/traits/constraints/page"
+import { page as traitMethodCallsPage } from "../pages/language/traits/method-calls/page"
+import { page as traitCoherencePage } from "../pages/language/traits/coherence/page"
+import { page as traitStandardOperatorsPage } from "../pages/language/traits/standard-operators/page"
+import { page as traitLawsPage } from "../pages/language/traits/laws/page"
+import { page as traitDerivingPage } from "../pages/language/traits/deriving/page"
+import { page as methodsVersusTraitsPage } from "../pages/language/traits/methods-versus-traits/page"
+import { page as doNotationPage } from "../pages/language/traits/do-notation/page"
+import { page as doDesugaringPage } from "../pages/language/traits/do-desugaring/page"
+import { page as doBlockTypingPage } from "../pages/language/traits/do-block-typing/page"
 import { page as libraryOverviewPage } from "../pages/library/overview/page"
 import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
@@ -239,6 +252,43 @@ fn languageArea -> NavigationArea = NavigationArea {
         overview: bindingRulesPage (),
         pages: [irrefutablePatternsPage (), matchPage ()]
       }]
+    },
+    NavigationGroup {
+      id: "traits-and-abstraction",
+      title: localized "Traits and abstraction" "traitと抽象",
+      sections: [
+        NavigationSection {
+          id: "trait-evidence",
+          title: localized "Traits and evidence" "traitとevidence",
+          kind: FlatSection,
+          overview: traitModelPage (),
+          pages: [
+            traitDeclarationsPage (),
+            traitInstancesPage (),
+            traitConstraintsPage (),
+            traitMethodCallsPage ()
+          ]
+        },
+        NavigationSection {
+          id: "coherence-and-contracts",
+          title: localized "Coherence and contracts" "coherenceとcontract",
+          kind: FlatSection,
+          overview: traitCoherencePage (),
+          pages: [
+            traitStandardOperatorsPage (),
+            traitLawsPage (),
+            traitDerivingPage (),
+            methodsVersusTraitsPage ()
+          ]
+        },
+        NavigationSection {
+          id: "do-notation",
+          title: localized "Do notation" "do記法",
+          kind: FlatSection,
+          overview: doNotationPage (),
+          pages: [doDesugaringPage (), doBlockTypingPage ()]
+        }
+      ]
     }
   ]
 }

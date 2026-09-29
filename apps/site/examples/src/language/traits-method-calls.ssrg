@@ -1,0 +1,15 @@
+type Status =
+  | Online
+
+trait Render<A> {
+  fn render value: A -> String
+}
+
+instance Render<Status> {
+  fn render value: Status -> String = "online"
+}
+
+fn withPrefix prefix: String -> value: Status -> String = prefix + render value
+
+let renderStatus = withPrefix "status: "
+let text = renderStatus Online

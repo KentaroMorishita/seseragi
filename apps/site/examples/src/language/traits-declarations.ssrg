@@ -1,0 +1,11 @@
+trait Render<A> {
+  fn render value: A -> String
+}
+
+trait Mappable<F<_>> {
+  fn transform<A, B> change: (A -> B) -> value: F<A> -> F<B>
+}
+
+trait Constructible<F<_>> where Mappable<F> {
+  fn create<A> value: A -> F<A>
+}

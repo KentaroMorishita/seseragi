@@ -386,6 +386,80 @@ try {
           })
 
         await page.goto(
+          `http://127.0.0.1:${server.port}/docs/language/traits/do-notation/`
+        )
+        assert.equal(await page.locator("h1").textContent(), "Do notation")
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-group[open] > summary"
+            )
+            .textContent(),
+          "Traits and abstraction"
+        )
+        assert.equal(
+          await page
+            .locator(
+              ".docs-sidebar > .sidebar-area[open] .sidebar-section:has(.sidebar-link.current) > summary"
+            )
+            .textContent(),
+          "Do notation"
+        )
+        assert.equal(
+          (await page.locator(".breadcrumbs").innerText()).replace(
+            /\s+/gu,
+            " "
+          ),
+          "Language Reference / Traits and abstraction / Do notation"
+        )
+        assert.equal(
+          await page.locator(".reference-previous strong").textContent(),
+          "Inherent methods versus trait operations"
+        )
+        assert.equal(
+          await page.locator(".reference-next strong").textContent(),
+          "How do blocks desugar"
+        )
+        const doText = await page.locator("body").innerText()
+        assert.ok(doText.includes("Do is generic Monad syntax"))
+        assert.ok(!doText.includes("Lesson"))
+        assert.ok(!doText.match(/#[0-9]+/u))
+        assert.equal(await page.locator(".seseragi-highlight").count(), 2)
+        const doWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          doWidth <= width,
+          `do notation article ${width}px viewport is ${doWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `do-notation-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
+          `http://127.0.0.1:${server.port}/ja/docs/language/traits/do-notation/`
+        )
+        assert.equal(await page.locator("html").getAttribute("lang"), "ja")
+        assert.equal(await page.locator("h1").textContent(), "do記法")
+        const japaneseDoText = await page.locator("body").innerText()
+        assert.ok(japaneseDoText.includes("doはgenericなMonad構文"))
+        assert.ok(!japaneseDoText.match(/#[0-9]+/u))
+        const japaneseDoWidth = await page.evaluate(
+          () => document.documentElement.scrollWidth
+        )
+        assert.ok(
+          japaneseDoWidth <= width,
+          `Japanese do notation article ${width}px viewport is ${japaneseDoWidth}px`
+        )
+        if (screenshots)
+          await page.screenshot({
+            path: join(screenshots, `do-notation-ja-${width}.png`),
+            fullPage: true,
+          })
+
+        await page.goto(
           `http://127.0.0.1:${server.port}/docs/language/types/requirement-merge/`
         )
         assert.equal(

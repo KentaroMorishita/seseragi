@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "traitとevidence",
+  summary: "traitは型のcapabilityを表し、compilerはprogram実行前に静的な型から対応する実装を一つ選びます。",
+  ruleTitle: "traitはcompile時のevidence",
+  ruleBody: "traitは一つ以上の型と名前付き操作の関係を宣言します。instanceは具体的な型適用へ操作を与えます。型検査は一意なinstanceを選び、その操作をdictionaryとしてconstraint付きcodeへ渡します。",
+  typingBody: "trait適用は型推論とconstraintに参加します。subtype関係、object member、暗黙cast、runtime interface値は作りません。evidenceは型だけで決まり、runtimeでconstructorや値を観察して選びません。",
+  evaluationBody: "backendはdictionary渡し、specialization、選択後の消去を使えます。どの方式でも選ばれる操作と観測可能な評価順序は同じでなければなりません。",
+  invalidTitle: "traitを継承として読まない",
+  invalidBody: "Trait<A>を宣言してもAが子型になったり、各値へmethodが付いたりしません。member構文はinherent impl、trait操作は通常のconstraint付き関数です。",
+  diagnosticsBody: "evidence欠落は選べなかった具体的なtrait適用を報告します。曖昧さはruntime値を調べず、競合するmethod所有者や未確定の型情報を示します。",
+  provenanceBody: "仕様4.1を扱います。後続ページで宣言、instance、constraint、呼び出し、coherenceを個別に定義します。"
+}

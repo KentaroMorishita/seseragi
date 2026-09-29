@@ -1,0 +1,26 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.traits.coherence" "/docs/language/traits/coherence/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "traits-coherence",
+        localized "Evidence owned beside a nominal type" "nominal型の隣で所有するevidence"
+      )] [CodeExample (
+        "traits-invalid-coherence",
+        localized "Rejected overlapping evidence" "overlapするevidenceを拒否"
+      )] [
+        [InternalLink
+      (localized "Instances" "instance", "/docs/language/traits/instances/")],
+        [InternalLink (
+          localized "Standard operators" "標準operator",
+          "/docs/language/traits/standard-operators/"
+        )],
+        [InternalLink (
+          localized "Type identity" "型identity",
+          "/docs/language/types/type-identity-and-coercion/"
+        )]
+      ]

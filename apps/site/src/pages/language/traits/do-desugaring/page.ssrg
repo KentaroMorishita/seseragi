@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.traits.do-desugaring" "/docs/language/traits/do-desugaring/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("traits-do-desugaring", localized "Equivalent do and flatMap forms" "等価なdoとflatMap")] [] [
+        [InternalLink
+      (localized "Do notation" "do記法", "/docs/language/traits/do-notation/")],
+        [InternalLink
+      (localized "Lambdas" "lambda", "/docs/language/expressions/lambdas/")],
+        [InternalLink
+      (localized "Evaluation" "評価", "/docs/language/expressions/evaluation/")]
+      ]

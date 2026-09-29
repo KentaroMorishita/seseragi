@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "instanceのderiving",
+  summary: "nominal data宣言はfieldとconstructor順序から、閉じた集合の標準instanceをcompilerに生成させられます。",
+  ruleTitle: "derivingは通常のcoherent evidenceを生成する",
+  ruleBody: "ADT、struct、newtypeはEq、Ord、Show、Debug、Hash、JsonEncode、JsonDecodeをderiveできます。生成instanceは明示instanceと同じvisibility、ownership、coherence規則に従います。",
+  typingBody: "すべてのfieldまたはpayloadに対象traitが要求するevidenceが必要です。generic宣言は対応constraintを生成します。HashにはEqも必要です。JSON derivingは独自のwire contractに従い、汎用serializationを発明しません。",
+  evaluationBody: "EqとHashは宣言順にfield・payloadを辿ります。Ordはconstructor順を先に比較し、その後payloadを比較します。newtypeのequalityと順序は表現へ委譲しますが、ShowとDebugはwrapper名を保ちます。",
+  invalidTitle: "derivingはmacro systemではない",
+  invalidBody: "user-defined traitや任意code生成は未対応です。同じheadへの明示instanceとderived instanceは競合し、field evidence欠落は宣言を拒否します。",
+  diagnosticsBody: "未対応trait、nested evidence欠落、Hashが必要とするEq、生成evidence重複を区別し、nominal宣言と対象field・payloadを示します。",
+  provenanceBody: "仕様4.9を扱います。JSON固有のshapeとwire動作はJSON codecの標準library contractで定義します。"
+}

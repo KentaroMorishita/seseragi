@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "trait宣言",
+  summary: "traitは値型または高kindの型構築子に対する操作の型と、必要ならsupertrait requirementを宣言します。",
+  ruleTitle: "宣言にはsignatureを書き、実装は書かない",
+  ruleBody: "各trait methodは関数型を宣言し、bodyを持ちません。Aのような通常parameterは値型、F<_>のようなparameterは単項型構築子を表します。where clauseでsupertrait evidenceを要求できます。",
+  typingBody: "型構築子parameterの利用は宣言したkindとarityに一致する必要があります。Either<E, _>のような部分適用は必要な構築子形を満たしますが、完全適用済みの値型をF<_>の位置には置けません。",
+  evaluationBody: "宣言単体にruntime動作はありません。signatureは各instanceが満たすdictionary形と、constraint付きcallerが利用できる操作を定めます。",
+  invalidTitle: "trait methodにdefault bodyは書けない",
+  invalidBody: "method bodyはinstanceへ置きます。型の欠落、型構築子arityの不一致、kindが違うsupertraitは宣言境界で拒否されます。",
+  diagnosticsBody: "parserは不正なmethod signatureを示します。kind・arity診断はinstance探索前に、問題のtrait parameterまたは部分適用を指します。",
+  provenanceBody: "仕様4.2を扱い、共通の型構築子規則と関数型規則を参照します。"
+}

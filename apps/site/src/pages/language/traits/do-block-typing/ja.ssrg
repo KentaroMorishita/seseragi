@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "do blockの型付け",
+  summary: "型推論はblock全体で一つのMonad型構築子を選び、各payload型を後続itemへ伝えます。",
+  ruleTitle: "すべてのmonadic itemは一つのM<_>を共有する",
+  ruleBody: "最初のbind、最後の式、期待block型のいずれかからMを決められます。bindはM<A>を検査してAのbindingを導入し、残りをM<B>として型付けします。最後の式がblock結果M<R>を決めます。",
+  typingBody: "一意なMonad<M> evidenceと全monadic itemの型構築子一致が必要です。pure letはMを制約しません。部分適用constructorは単項kindでなければならず、候補が未確定なら既定値を推測せず曖昧errorにします。",
+  evaluationBody: "型付けはsequencingを変えず、各payloadはcontinuationに入ってから利用可能になります。short-circuitするmonadはflatMap contractに従い後続itemをskipできます。",
+  invalidTitle: "異なる型構築子には明示的bridgeが必要",
+  invalidBody: "MaybeとEither、異なるtransformer stack、pure値とEffectは、全itemを同じM<_>にする明示liftまたは変換なしにmonadic itemとして混在できません。",
+  diagnosticsBody: "選択済みconstructor、不一致itemとpayload、非単項kind、Monad evidence欠落、最後の結果欠落を具体的に示します。",
+  provenanceBody: "仕様4.13を扱い、do記法の構文とdesugar規則を完成させます。"
+}

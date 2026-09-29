@@ -1,0 +1,13 @@
+newtype Key = Int
+
+trait Label<A> {
+  fn label value: A -> String
+}
+
+instance Label<Key> {
+  fn label value: Key -> String = "first"
+}
+
+instance Label<Key> {
+  fn label value: Key -> String = "second"
+}

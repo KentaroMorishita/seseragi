@@ -329,6 +329,106 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
+        "traits-model",
+        "apps/site/examples/src/language/traits-model.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-declarations",
+        "apps/site/examples/src/language/traits-declarations.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-invalid-declaration",
+        "apps/site/examples/invalid/src/language/invalid-trait-declaration.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-instances",
+        "apps/site/examples/src/language/traits-instances.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-invalid-instance",
+        "apps/site/examples/invalid/src/language/invalid-trait-instance.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-constraints",
+        "apps/site/examples/src/language/traits-constraints.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-invalid-constraint",
+        "apps/site/examples/invalid/src/language/invalid-trait-constraint.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-method-calls",
+        "apps/site/examples/src/language/traits-method-calls.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-invalid-method",
+        "apps/site/examples/invalid/src/language/invalid-trait-method.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-coherence",
+        "apps/site/examples/src/language/traits-coherence.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-invalid-coherence",
+        "apps/site/examples/invalid/src/language/invalid-trait-coherence.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-standard-operators",
+        "apps/site/examples/src/language/traits-standard-operators.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-laws",
+        "apps/site/examples/src/language/traits-laws.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-deriving",
+        "apps/site/examples/src/language/traits-deriving.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-invalid-deriving",
+        "apps/site/examples/invalid/src/language/invalid-trait-deriving.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-methods-versus-traits",
+        "apps/site/examples/src/language/traits-methods-versus-traits.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-do-notation",
+        "apps/site/examples/src/language/traits-do-notation.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-do-desugaring",
+        "apps/site/examples/src/language/traits-do-desugaring.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-do-block-typing",
+        "apps/site/examples/src/language/traits-do-block-typing.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "traits-invalid-do",
+        "apps/site/examples/invalid/src/language/invalid-trait-do.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "web-starter-main",
         "examples/samples/web-starter/src/main.ssrg",
         playgroundUrl
@@ -459,7 +559,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (55 + referencePageCount),
+      2 * (68 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

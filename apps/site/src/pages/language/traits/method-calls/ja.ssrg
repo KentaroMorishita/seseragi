@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "trait methodの呼び出し",
+  summary: "trait methodは、型schemeにevidence requirementを持つ通常のcurried関数として振る舞います。",
+  ruleTitle: "関数構文と静的evidenceで呼び出す",
+  ruleBody: "scope内のmethodは非修飾名で呼べます。明示引数は通常どおりcurry化され、trait適用が暗黙requirementになります。同名methodを公開するtraitが複数ある場合はtrait修飾名で区別します。",
+  typingBody: "具体的引数または期待結果からtrait parameterを推論し、instanceを選びます。generic callerは対応constraintを宣言します。部分適用は後続引数が型を決めるまで未解決evidenceを保持できます。",
+  evaluationBody: "明示引数は通常のapplication順序を保ちます。選ばれたmethod実装を直接実行し、runtimeで値のshape、constructor、host classからmethodを探索しません。",
+  invalidTitle: "同名methodにはtrait修飾が必要な場合がある",
+  invalidBody: "型情報から非修飾名の所有traitを決められなければ、候補のsignatureが似ていても曖昧です。traitを修飾するか、有効な型情報を追加します。",
+  diagnosticsBody: "未知の名前、trait所有者の曖昧さ、instance evidence欠落、期待型を満たさないmethod結果を区別して報告します。",
+  provenanceBody: "仕様4.5を扱い、通常の関数applicationとcurrying規則を適用します。"
+}

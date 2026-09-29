@@ -1,0 +1,21 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.traits.deriving" "/docs/language/traits/deriving/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("traits-deriving", localized "Derived nominal evidence" "導出したnominal evidence")] [CodeExample
+      (
+        "traits-invalid-deriving",
+        localized "Unsupported deriving target" "未対応のderiving target"
+      )] [
+        [InternalLink (
+          localized "Algebraic data types" "代数的データ型",
+          "/docs/language/data/algebraic-data-types/"
+        )],
+        [InternalLink (localized "Structs" "struct", "/docs/language/data/structs/")],
+        [InternalLink
+      (localized "Coherence" "coherence", "/docs/language/traits/coherence/")]
+      ]

@@ -1,0 +1,8 @@
+fn mixed value: Maybe<Int> -> Maybe<Int> = do {
+  number <- value
+  Right (number + 1)
+}
+
+fn unfinished value: Maybe<Int> -> Maybe<Int> = do {
+  number <- value
+}

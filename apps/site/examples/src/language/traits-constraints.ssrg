@@ -1,0 +1,14 @@
+type Badge =
+  | Ready
+
+trait Label<A> {
+  fn label value: A -> String
+}
+
+instance Label<Badge> {
+  fn label value: Badge -> String = "ready"
+}
+
+fn describe<A> value: A -> String where Label<A> = "badge: " + label value
+
+let description = describe Ready

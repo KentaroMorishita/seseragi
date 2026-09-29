@@ -1,0 +1,22 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.traits.constraints" "/docs/language/traits/constraints/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "traits-constraints",
+        localized "A constrained generic function" "constraint付きgeneric関数"
+      )] [CodeExample
+      ("traits-invalid-constraint", localized "Missing concrete evidence" "具体的evidenceの欠落")] [
+        [InternalLink
+      (localized "Polymorphism" "polymorphism", "/docs/language/types/polymorphism/")],
+        [InternalLink (
+          localized "Trait method calls" "trait method call",
+          "/docs/language/traits/method-calls/"
+        )],
+        [InternalLink
+      (localized "Instances" "instance", "/docs/language/traits/instances/")]
+      ]

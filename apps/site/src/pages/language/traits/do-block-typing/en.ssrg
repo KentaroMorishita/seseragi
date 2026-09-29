@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Typing a do block",
+  summary: "Type inference chooses one Monad constructor for the whole block and propagates each payload type through its following items.",
+  ruleTitle: "Every monadic item shares one M<_>",
+  ruleBody: "The first bind, final expression, or expected block type can determine M. A bind checks M<A>, introduces an A binding, and types the remainder as M<B>. The final expression determines the block result M<R>.",
+  typingBody: "The compiler requires unique Monad<M> evidence and equal constructors across all monadic items. A pure let does not constrain M. Partial constructors must have unary kind, and unresolved candidates produce ambiguity rather than a guessed default.",
+  evaluationBody: "Typing does not change sequencing: each payload becomes available only to its continuation. A short-circuiting monad may skip later items according to its flatMap contract.",
+  invalidTitle: "Different constructors require an explicit bridge",
+  invalidBody: "Maybe and Either, two transformer stacks, or a pure value and an Effect cannot coexist as monadic items without an explicit lift or conversion that makes every item share M<_>.",
+  diagnosticsBody: "Errors show the selected constructor, the item with a mismatched constructor or payload, a non-unary kind, missing Monad evidence, or an absent final result.",
+  provenanceBody: "This article covers specification 4.13 and completes the syntax and desugaring rules for do notation."
+}

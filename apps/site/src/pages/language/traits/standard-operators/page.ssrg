@@ -1,0 +1,27 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.traits.standard-operators" "/docs/language/traits/standard-operators/" (en.copy ()) (ja.copy ()) [CodeExample
+      (
+        "traits-standard-operators",
+        localized "Operator syntax backed by evidence" "evidenceに基づくoperator構文"
+      )] [CodeExample (
+        "traits-invalid-coherence",
+        localized "Duplicate operator evidence is incoherent"
+      "重複operator evidenceはincoherent"
+      )] [
+        [InternalLink (
+          localized "Operator overloads" "operator overload",
+          "/docs/language/data/operator-overloads/"
+        )],
+        [InternalLink (
+          localized "Operator precedence" "operator precedence",
+          "/docs/language/syntax/operator-precedence/"
+        )],
+        [InternalLink
+      (localized "Coherence" "coherence", "/docs/language/traits/coherence/")]
+      ]

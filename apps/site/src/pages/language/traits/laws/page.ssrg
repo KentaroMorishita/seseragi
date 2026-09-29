@@ -1,0 +1,18 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.traits.laws" "/docs/language/traits/laws/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("traits-laws", localized "A law-shaped reusable check" "lawの形をした再利用可能な検査")] [] [
+        [InternalLink
+      (localized "Trait model" "trait model", "/docs/language/traits/model/")],
+        [InternalLink (
+          localized "Standard operators" "標準operator",
+          "/docs/language/traits/standard-operators/"
+        )],
+        [InternalLink
+      (localized "Deriving" "deriving", "/docs/language/traits/deriving/")]
+      ]

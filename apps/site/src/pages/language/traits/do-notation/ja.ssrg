@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "do記法",
+  summary: "do blockは一つのMonad型構築子に属する操作を順に連結する、読みやすい構文です。",
+  ruleTitle: "doはgenericなMonad構文",
+  ruleBody: "blockにはpattern <- expressionでmonadic payloadをbindし、letでpure localを導入し、monadic結果を捨て、最後にmonadic expressionを書けます。最後の式は必須です。",
+  typingBody: "すべてのmonadic itemは一つの型構築子M<_>と一意なMonad<M> evidenceを使います。pureはsupertraitのApplicativeを使います。bind patternはM<A>のpayload Aを受け取り、irrefutableでなければなりません。",
+  evaluationBody: "itemはflatMapの意味に従ってsource順に実行します。local letは通常のpure bindとして評価し、計算を実行・liftしません。最後の式がblock結果を与えます。",
+  invalidTitle: "doはEffectを意味しない",
+  invalidBody: "Maybe、Either、user monad、EffectはいずれもMonad evidenceがあればdoを使えます。異なるmonadを暗黙に混在・liftせず、失敗しうるpatternをMonadFailへ変換しません。",
+  diagnosticsBody: "最後の式欠落、refutable bind pattern、型構築子混在、未解決Monad evidence、選択したM<_>でないitem型を区別して報告します。",
+  provenanceBody: "仕様4.11を扱います。desugarとblock全体の型付けは独立ページで説明します。"
+}

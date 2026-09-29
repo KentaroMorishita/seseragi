@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Trait laws",
+  summary: "Some standard traits carry semantic laws that implementations must preserve even though ordinary type checking cannot prove them.",
+  ruleTitle: "A valid signature is necessary but not sufficient",
+  ruleBody: "Eq, Ord, Functor, Applicative, Monad, and other documented abstractions define equations or observational properties. Each instance author accepts those contracts in addition to the method types.",
+  typingBody: "Laws do not add hidden type rules or change instance selection. They describe relationships among well-typed calls. Equality used by a law follows the documented observational equality for the values involved.",
+  evaluationBody: "The compiler does not run arbitrary proofs while type checking. Standard-library instances are checked by maintained law suites, and user instances can use reusable law helpers with representative generated values.",
+  invalidTitle: "Compilation is not a law certificate",
+  invalidBody: "An implementation can type-check and still violate reflexivity, ordering consistency, identity, or associativity. Such an instance is semantically invalid even when no compiler diagnostic is possible.",
+  diagnosticsBody: "Type diagnostics still catch malformed methods and missing evidence. Law failures belong to tests and should report the property, generated input, and smallest reproducible counterexample.",
+  provenanceBody: "This article covers specification 4.8. Individual standard-library contract pages define the exact laws for each trait."
+}

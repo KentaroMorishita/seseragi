@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Calling trait methods",
+  summary: "A trait method behaves like an ordinary curried function whose type scheme carries an evidence requirement.",
+  ruleTitle: "Calls use function syntax and static evidence",
+  ruleBody: "A method in scope may be called by its unqualified name. Its explicit arguments are curried normally; its trait application is an implicit requirement. A trait-qualified name disambiguates two traits that expose the same method name.",
+  typingBody: "Concrete arguments or an expected result infer the trait parameters and select an instance. Generic callers must state the matching constraint. A partial application can retain unresolved evidence until later arguments determine its type.",
+  evaluationBody: "Explicit arguments keep ordinary application order. The chosen method implementation runs directly; the runtime does not search a value's shape, constructor, or host class for a matching method.",
+  invalidTitle: "A shared method name may need qualification",
+  invalidBody: "If type information cannot determine which trait owns an unqualified name, the call is ambiguous even when both candidates have similar signatures. Qualify the trait or add useful type information.",
+  diagnosticsBody: "Diagnostics distinguish unknown names, ambiguous trait ownership, missing instance evidence, and a method result that cannot satisfy the expected type.",
+  provenanceBody: "This article covers specification 4.5 and applies the ordinary function-application and currying rules."
+}
