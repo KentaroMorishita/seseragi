@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How does the runner know which services to provide?"
-    "実行環境は、必要なサービスをどう把握するか",
-  summary: localized
-    "At a program's execution boundary, the compiler must know every required service name and type. A closed requirement record is a record whose required fields are all determined."
-    "実行入口では、必要なサービスの名前と型をすべて確定させます。このようにフィールドを列挙できる要求のレコードを「閉じたレコード」と呼びます。",
-  exampleId: "types-requirement-merge",
-  reading: localized
-    "Timed<R, E, A> in the example adds a clock field to the services represented by R. While R is still a type parameter, this is a useful reusable description, but not yet a complete list that a runner can supply."
-    "例のTimed<R, E, A>は、Rが表すサービスにclockを追加しています。Rが型パラメーターのままなら、汎用的な計算の説明には使えても、実行環境へ渡す最終的なサービス一覧にはなりません。",
-  result: localized
-    "Before execution, R must resolve to a concrete record of mandatory services. Extra services in the supplied environment are allowed; closed does not mean that the environment must contain exactly those fields. Optional services are not permitted in this execution requirement."
-    "実行時にはRを具体的な必須サービスのレコードに決める必要があります。提供する環境に余分なサービスがあっても構いません。「閉じた」はフィールドの完全一致ではなく、必要な一覧が確定しているという意味です。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "types-requirement-merge") (en.explanation ()) (ja.explanation ())

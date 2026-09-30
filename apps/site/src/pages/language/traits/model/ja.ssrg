@@ -1,11 +1,12 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "traitとは",
-  summary: "traitは、複数の型で使える操作に共通の名前を付ける仕組みです。instanceで型ごとの処理を定義し、呼び出せることをコンパイル時に確認します。",
+  summary: (explanation ()).summary,
   purpose: [
     "いろいろな種類のデータを、表示用のラベルにしたいとします。型ごとに無関係な関数名を付けると、共通の処理を書く側も、その名前をすべて知る必要があります。traitを使うと、labelという一つの操作名のまま、型ごとに違う処理を定義できます。",
-    "区別するものは三つです。traitは操作の引数と戻り値を宣言します。instanceは、ある型でその操作をどう実行するか定義します。呼び出しでは、その操作に値を渡します。次の例には、この三つをすべて含めています。"
+    "区別するものは三つです。traitは操作の引数と戻り値を宣言します。instanceは、ある型でその操作をどう実行するか定義します。呼び出しでは、その操作に値を渡します。この例には、この三つをすべて含めています。"
   ],
   exampleTitle: "チケットを表示用のラベルにする",
   reading: [
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "宣言された操作を、自分の型に対して実装する方法を確認できます。",
     "型を決めずに書く関数が、必要な操作を条件として指定する方法を確認できます。"
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "異なる型から、共通の名前で操作を呼ぶには",
+  summary: "traitは共通の操作を宣言し、instanceは特定の型の処理を定義します。共通の呼び出し側は、その型の内部表現を知らずに操作を要求できます。",
+  reading: "Label<A>はAからStringを返すlabelを宣言します。Ticketは番号、Personは名前を持ち、各instanceがそれぞれのlabelを定義します。labelOf<A>は内部の形を知らずにlabelを呼びます。where Label<A>は、渡す型にこの操作の実装が必要という条件です。personLabelは\"Aki\"、mainのlabel ticketは\"ticket-42\"になります。",
+  result: "結果は\"ticket-42\"です。別の型にもLabelを実装すれば、Label<A>を要求する共通の関数を使えます。利点は共通の約束であり、自動でドット呼び出しを追加したり、値から実行時のクラスを探したりすることではありません。"
 }

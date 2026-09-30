@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "省略可能なレコードフィールドの構文",
-  summary: "レコードのフィールドを省略してよいと宣言する書き方です。値がMaybe型であることとは区別します。",
+  summary: (explanation ()).summary,
   formsTitle: "フィールド名の直後に?を付ける",
   formsBody: "id?: Stringのように、フィールド名の直後に?を付けます。この?はレコードの型とレコードのパターンに使う記号です。通常の式や関数の引数に付ける演算子ではありません。",
   typingBody: "id?: Stringはid自体を省略できるという意味です。id: Maybe<String>はidが必ずあり、その中身がJustまたはNothingという意味です。省略可能なフィールドを読むとMaybe<String>が返ります。id: Stringという必須フィールドを持つ値も、id?: Stringを要求する関数へ渡せます。",
@@ -10,4 +11,11 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "?を付けられる場所を確認する",
   invalidBody: "この形式は構造的レコードに使います。structのフィールド、関数の引数、ADTが保持する値には直接?を付けられません。省略可能なフィールドを、必ずあるものとして読むパターンも使えません。",
   diagnosticsBody: "?の位置が誤っている場合は構文エラーです。存在しないフィールドの参照や必須フィールドの不足は型エラーです。省略可能なフィールドと、必須のMaybe型フィールドを取り違えていないか確認してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "省略可能なフィールドの?は、どこに書くか",
+  summary: "構造的なレコードの型で、フィールド名の後に?を書きます。field?: Typeは、そのフィールド自体を省略できるという意味です。",
+  reading: "例のPropsではid?: Stringと書き、children: Stringは必須です。minimalとnamedはどちらもPropsに合います。props.idを読むとMaybe<String>になり、??で既存の値か代替の\"anonymous\"を使います。",
+  result: "?は、関数の省略可能な引数や汎用の参照演算子ではありません。普通の引数やstructのフィールドには付けません。Maybe型の必須フィールドなら、Nothingが入っていてもフィールド自体は存在します。"
 }

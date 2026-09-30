@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Fiberの所有と監督",
-  summary: "すべてのFiberはroot main scopeまたは最も内側のscoped resource ownerに属し、forkはunscoped daemonを作りません。",
+  summary: (explanation ()).summary,
   ruleTitle: "子の処理を、親の処理範囲の外へ残さない",
   ruleBody: "forkで作るFiberは実行入口か現在のリソースのscopeに属します。scopeが終わると未完了の子へキャンセルを要求し、解放処理が終わるまで待ちます。親の成功・型付きの失敗・キャンセルで規則は変わりません。",
   typingBody: "joinは子の成功値を受け取り、型付きの失敗を呼び出し側へ伝えます。子のキャンセルもキャンセルとして伝えます。終了理由を値で調べるならawait、停止を要求して後片付けを待つならinterruptを使います。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "forkした処理を管理外へ放置できない",
   invalidBody: "Fiberの値を捨てても管理外の処理にはなりません。親のscopeは後片付けを待ちます。テストは確認していない子の失敗を報告する場合がありますが、親の型付き戻り値を書き換えるわけではありません。",
   diagnosticsBody: "どのscopeの子か、forkの位置、終了状態、失敗を確認したかを診断で確認します。実行環境によるプロセスの強制終了は、協調的な後片付けの保証の外です。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "親の処理が終わったとき、子の処理はどうなるか",
+  summary: "Fiberは実行中の子のEffectです。作成した管理範囲が寿命を持ち、forkしただけで管理外のバックグラウンド処理にはなりません。",
+  reading: "forkで21を返す子の処理を開始し、そのFiberのハンドルを受け取ります。joinは子の完了を待って成功値を取り出します。親はその21を2倍にして42で成功します。",
+  result: "親の管理範囲が先に終わる場合は、子にキャンセルを要求し、後片付けの完了を待ちます。ハンドルを捨てても管理責任は消えません。明示的に制御する場合は、待機と中断の操作を区別します。"
 }

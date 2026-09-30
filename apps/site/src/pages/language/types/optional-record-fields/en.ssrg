@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Optional record fields",
-  summary: "Optional presence is part of a structural record type and remains distinct from a required field containing Maybe.",
+  summary: (explanation ()).summary,
   ruleTitle: "Presence has three compatible source states",
   ruleBody: "For a target optional field id?: String, the source may omit id, provide it optionally, or require id: String. A target required field must also be required in the source. Additional source fields remain permitted by width subtyping.",
   identityBody: "{ id?: String } differs from { id: Maybe<String> }. The first may lack the field and access yields Maybe<String>; the second always contains the field, so Nothing is a present value and an optional access would distinguish Just Nothing from absence.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Optional does not mean an implicit Maybe payload",
   invalidBody: "A value with id?: String cannot satisfy a required id: String target. id?: Maybe<String> has two levels of absence and is not collapsed. Optional markers on structs, parameters, or ADT payloads are rejected by their syntax boundary.",
   diagnosticsBody: "Field-access hovers report Maybe<A> for optional presence. Compatibility diagnostics distinguish missing-required, optional-to-required, and field-type mismatch. Formatter and parser preserve the field?: A marker owned by record syntax.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I accept a record that may omit a field?",
+  summary: "Write ? after a record field's name when the record may omit that field. Reading it returns Maybe, forcing the caller to handle absence.",
+  reading: "Props requires children but allows id to be absent. minimal has only children; named also has id. props.id is Just \"hero\" for named and Nothing for minimal. The ?? operator extracts an existing string or supplies \"anonymous\".",
+  result: "label minimal returns \"anonymous\" and label named returns \"hero\". A required field of type Maybe<String> is different: the field must exist, even when its value is Nothing."
 }

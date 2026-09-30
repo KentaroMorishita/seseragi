@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Packages",
-  summary: "A package gives modules a shared identity, layout and dependency boundary through seseragi.toml.",
+  summary: (explanation ()).summary,
   ruleTitle: "The manifest defines the boundary",
   ruleBody: "A package has one seseragi.toml at its root. It declares the package name, version and supported language range, and may specify layout, direct dependencies and public entry modules. The compiler does not infer this boundary from package.json or merge several parent manifests. Organizing files into directories inside a source root does not create additional packages.",
   typingBody: "A module's identity incorporates the package's identity: name, exact version and source identity. Two versions of the same dependency can have distinct internal identities. Two sources claiming the same name and exact version in one dependency graph cause a dependency-confusion error; the compiler does not silently pick one. Types imported from different package identities retain their declaring identities.",
@@ -21,3 +22,10 @@ pub fn exampleTitle -> String = "A library exposes chosen modules"
 
 pub fn exampleBody -> String =
   "In this manifest, an external import of acme/validation resolves to src/lib.ssrg; acme/validation/email resolves to src/email.ssrg. Other source files remain internal to the package. A library does not need a main entry point. An executable package adds a run table naming the entry module and host target."
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What makes a group of files one package?",
+  summary: "seseragi.toml defines a package's name, version, source layout, dependencies, and public entry modules. A directory alone is not a separate package.",
+  reading: "In the example manifest, the public path acme/validation points to src/lib.ssrg and acme/validation/email points to src/email.ssrg. Other files can support those modules internally without becoming public package paths.",
+  result: "pub on a declaration and the package's exports have different jobs: exports makes a module reachable from another package, while pub makes a declaration usable once that module is reached. A library need not have main."
+}

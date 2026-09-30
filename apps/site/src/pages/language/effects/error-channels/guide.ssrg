@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I turn library errors into application errors?"
-    "ライブラリの失敗を、アプリケーションの失敗にまとめるには",
-  summary: localized
-    "An Effect's E names its recoverable error values. Convert errors explicitly when operations use different error types."
-    "EffectのEは、回復可能な失敗の値の型です。異なる失敗型の処理を組み合わせる場合は、明示的に共通の型へ変換します。",
-  exampleId: "effects-error-channels",
-  reading: localized
-    "rawLoad succeeds with 1 for \"present\" and otherwise fails with the key String. load uses mapError MissingRecord to wrap that String in the application's AppError type. The successful Int remains unchanged."
-    "rawLoadは\"present\"なら1で成功し、それ以外ならキーのStringで失敗します。loadはmapError MissingRecordで、そのStringをAppErrorに包みます。成功したIntは変えません。",
-  result: localized
-    "Executing load \"missing\" fails with MissingRecord \"missing\". A recovery operation can handle that declared failure. It does not catch cancellation or defects, which are different termination paths."
-    "load \"missing\"を実行すると、MissingRecord \"missing\"で失敗します。回復処理はこの宣言された失敗を扱えますが、キャンセルや想定外の不具合まで捕捉するわけではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-error-channels") (en.explanation ()) (ja.explanation ())

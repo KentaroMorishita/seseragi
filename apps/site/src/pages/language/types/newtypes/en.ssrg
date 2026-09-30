@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Newtype identity and representation",
-  summary: "Wrap one representation in a distinct nominal domain type, with explicit construction and extraction.",
+  summary: (explanation ()).summary,
   ruleTitle: "Same representation, different type",
   ruleBody: "newtype UserId = Int creates a new nominal type, not an alias for Int. The generated UserId constructor wraps one Int. A UserId constructor pattern explicitly extracts it. Even if another newtype has the same representation, the two types remain incompatible. This prevents unrelated identifiers or units from crossing a boundary unnoticed.",
   identityBody: "A generic newtype's constructor quantifies every declared parameter. Parameters need not all occur in the representation; an unused parameter can distinguish domains without storing extra data. If such a parameter is not inferable, the expected type or explicit arguments must fix it. The newtype right-hand side is one type expression, not a field list.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Do not treat a newtype as its underlying value",
   invalidBody: "Passing UserId 42 to a function expecting Int fails even though the representation is Int. Extract it deliberately, as toInt does in the example. Conversely, an Int is not accepted where UserId is expected until it is wrapped. Methods and instances can define intentional domain operations without removing that boundary.",
   diagnosticsBody: "A backend may erase the physical wrapper only if observable behavior stays the same. Erasure must not weaken nominal checking or introduce implicit conversions. Opaque public newtypes can keep construction and extraction inside their defining module while exposing the type name and safe operations.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I prevent two integer IDs from being confused?",
+  summary: "A newtype makes a distinct type around one existing value type, even when its runtime representation is similar.",
+  reading: "UserId 42 and OrderId 42 contain the same integer but have different types. toInt accepts only UserId and extracts its integer with match. Passing an OrderId to it is a type error.",
+  result: "The extracted value is Int with value 42. Constructing and unpacking are explicit; declaring a newtype does not invent automatic conversions or validation. Put validation in the functions that construct it when needed."
 }

@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I prevent two integer IDs from being confused?"
-    "整数で表す二種類のIDを取り違えないようにするには",
-  summary: localized
-    "A newtype makes a distinct type around one existing value type, even when its runtime representation is similar."
-    "newtypeは、既存の型を中身に持つ別の型を作ります。実行時の形が似ていても、用途の違いを型検査で区別できます。",
-  exampleId: "types-newtypes",
-  reading: localized
-    "UserId 42 and OrderId 42 contain the same integer but have different types. toInt accepts only UserId and extracts its integer with match. Passing an OrderId to it is a type error."
-    "UserId 42とOrderId 42は同じ整数を持ちますが、型は別です。toIntはUserIdだけを受け取り、matchで中の整数を取り出します。OrderIdを渡すと型エラーになります。",
-  result: localized
-    "The extracted value is Int with value 42. Constructing and unpacking are explicit; declaring a newtype does not invent automatic conversions or validation. Put validation in the functions that construct it when needed."
-    "取り出した結果はIntの42です。包む操作と取り出す操作は明示します。newtypeを宣言しただけで、自動変換や値の検証が追加されるわけではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "types-newtypes") (en.explanation ()) (ja.explanation ())

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Custom operators and fixity",
-  summary: "Top-level declarations define one binary infix symbol, fixity, precedence, type scheme, constraints, and body.",
+  summary: (explanation ()).summary,
   formsTitle: "Declare the complete operator contract",
   formsBody: "A declaration such as operator<A> infixr 5 <+> left: A -> right: A -> A where Semigroup<A> = append left right defines the symbol, associativity, precedence, polymorphic scheme, evidence, and implementation together. Import it explicitly with import { operator <+> } from a module.",
   typingBody: "left <+> right desugars to (<+>) left right, so the operator value is curried and may be partially applied. Operators live in a namespace separate from values. Standard overloads belong to traits or struct/newtype operator sugar instead of custom declarations.",
@@ -10,4 +11,11 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "The operator alphabet is intentionally bounded",
   invalidBody: "Symbols use at least two allowed ASCII operator characters. Standard operators, ->, <-, ranges, comments, ??, and := are reserved; angle-bracket-only symbols conflict with generic delimiters. Prefix and postfix custom operators do not exist. A lone & is only contextual requirement merge syntax.",
   diagnosticsBody: "Duplicate imported symbols are ambiguous. Mixing equal-precedence operators with different fixities requires parentheses. Raw scanning remains lossless; shared header scanning, module-interface collection, flat-chain parsing, and fixity resolution keep compiler, formatter, and language server aligned.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I define a readable operator for my operation?",
+  summary: "A custom binary operator names a function used between two operands. Its declaration also states how expressions with that operator group.",
+  reading: "The example defines <+> for two strings using append. left and right are the input parameters; the result is String. infixr 4 declares right grouping at precedence level 4, so a chain groups from its right end.",
+  result: "label becomes \"Seseragi docs\". The precedence declaration changes grouping, not the operand types or evaluation rules. You must import a custom operator explicitly from another module; merely importing a similarly named value does not bring it in."
 }

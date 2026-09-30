@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I describe a value with a fixed set of cases?"
-    "値が取り得る場合を、型として列挙するには",
-  summary: localized
-    "An algebraic data type names a fixed set of alternatives. Each alternative can carry the data needed for that case."
-    "代数的データ型は、値が取り得る選択肢を列挙する型です。選択肢ごとに、必要な中身を持たせられます。",
-  exampleId: "data-algebraic-data-types",
-  reading: localized
-    "LoadState<A> is either Idle or Loaded A. Loaded \"ready\" carries a String. describe handles Idle with \"idle\" and Loaded by extracting its stored value. The parameter <A> lets other uses choose a different payload type."
-    "LoadState<A>は、Idleか、Aを持つLoadedです。Loaded \"ready\"にはStringが入ります。describeはIdleなら\"idle\"を返し、Loadedなら中身を取り出します。<A>によって、別の用途では中身の型を選べます。",
-  result: localized
-    "message is \"ready\". There is no additional undeclared case that match must discover at runtime. This fixed set lets the compiler report a missing branch when you forget one."
-    "messageは\"ready\"です。宣言していない選択肢が実行時に増えることはありません。そのため、matchで扱い忘れた選択肢をコンパイラが検出できます。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "data-algebraic-data-types") (en.explanation ()) (ja.explanation ())

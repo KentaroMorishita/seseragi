@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Immutable by default",
-  summary: "Once an ordinary value is created, it does not change. To update data, create a new value and keep the old one intact.",
+  summary: (explanation ()).summary,
   meaningTitle: "An update creates a new value",
   meaningBody: "A let gives a name to a value; it is not a variable you can reassign later. Records, structs, algebraic data values, arrays, and lists are also immutable. Reading the same value later does not reveal a field that someone else has silently changed.",
   exampleTitle: "Keep the original score and create the updated score",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "A counter, an editable form, and a file all involve change. Seseragi represents that change explicitly rather than making every value mutable. Ref is a library type for a value read and changed through operations. Signal represents a value that can change over time and notify dependent computations.",
     "Effects describe work to be executed, such as writing to a file or updating an external system. These operations do not add assignment to ordinary let bindings or record fields. Choose a new value for a data transformation; use an explicit state or Effect API when the operation really changes a system."
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I update data when values are immutable?",
+  summary: "An update normally constructs a new value while preserving the original. This makes it possible to reason about each value without hidden reassignment.",
+  reading: "original contains score 10. ...original brings its fields into updated, and score: original.score + 1 supplies 11 for the new field. name is copied unchanged.",
+  result: "The output is 10 -> 11. original remains available with 10; updated holds 11. Changing application state over time uses explicit state APIs such as Signal or Ref, not ordinary record-field assignment."
 }

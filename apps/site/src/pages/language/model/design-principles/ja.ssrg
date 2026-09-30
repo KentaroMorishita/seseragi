@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { OverviewCopy } from "../principle"
 
 pub fn copy -> OverviewCopy = OverviewCopy {
   title: "設計原則",
-  summary: "なぜ分岐が値を返すのか。なぜletに再代入できないのか。七つの原則から、Seseragiの普段の書き方がそうなっている理由を説明します。",
+  summary: (explanation ()).summary,
   introduction: "各ページでは、小さなコードとその結果を使って、規則の意味と理由を説明します。正確な構文や型の規則を調べたいときは、記事の最後にある関連ページへ進んでください。どの原則から読んでも構いません。Tourと並ぶ別の学習コースではありません。",
   section: "各原則で分かること",
   closingTitle: "原則は、互いに組み合わさる",
@@ -16,4 +17,11 @@ pub fn copy -> OverviewCopy = OverviewCopy {
     " — 記述の短さと、操作に必要な処理量やメモリを区別します。",
     " — 最短の記述より、データと処理の順番が伝わる書き方を重視します。"
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "個々の規則は、どういう考え方でつながっているか",
+  summary: "設計原則は、分岐が値を返すこと、通常のデータが不変なこと、不在や失敗を型に残すことなど、普段の書き方の理由を説明します。",
+  reading: "例えば、配列の指定した位置に要素がない可能性があるため、取得結果はMaybeです。JustとNothingを扱い、元の配列も通常の代入で勝手に変わりません。規則が互いに支え合う、具体的な例です。",
+  result: "調べたい理由に合う原則を選んでください。この一覧は別のTourではありません。個々の原則では、小さなコードと結果、規則の理由、その規則が保証しないことを説明します。"
 }

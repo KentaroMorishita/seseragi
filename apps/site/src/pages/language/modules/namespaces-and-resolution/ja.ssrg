@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "名前空間と名前解決",
-  summary: "同じ名前が型と値に使われる理由と、参照先がどのように決まるかを説明します。",
+  summary: (explanation ()).summary,
   ruleTitle: "型の名前と値の名前は、別々に扱われる",
   ruleBody: "newtype UserId = Intでは、UserIdを型の名前にも、値を作るコンストラクターの名前にも使います。型注釈のUserIdは型を、UserId 42はコンストラクターを参照します。Seseragiは名前を、型・trait・型パラメーター、値・関数・コンストラクター、フィールド・固有メソッド、モジュールの別名、独自演算子の五つに分けて扱います。この区分を名前空間と呼びます。",
   typingBody: "修飾しない名前は、近くのローカル束縛や関数、現在のモジュールの宣言、明示的にimportした名前、標準で使えるpreludeの名前の順に探します。近い段階の名前が優先されます。同じ段階に候補が複数あれば、どちらかを勝手に選ばず、曖昧な名前としてエラーにします。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "同じ名前空間には、同じ名前を重複して宣言できない",
   invalidBody: "型とコンストラクターは、書かれた位置によって区別できるため同名にできます。一方、同じスコープに二つの値を同名で宣言することはできません。importした名前が衝突する場合は、別名を付けるか、モジュール名で修飾します。宣言の順番で参照先が決まるわけではありません。",
   diagnosticsBody: "名前が見つからない場合は、その名前を使っている位置、使える範囲、importの書き方を確認してください。候補が複数ある場合は、別名や修飾名で意図した宣言を指定します。型の注釈で使う名前なのか、値の式で使う名前なのかも見分けてください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "UserIdを型名にも値の構築にも使えるのはなぜか",
+  summary: "名前は、書かれた位置と使える範囲から解決します。型の名前と値の名前は別の名前空間に属します。",
+  reading: "user: UserIdのUserIdは型名で、UserId (local ())のUserIdはコンストラクターです。localの中では、モジュールのvalue = 1より近いlet value = 42を参照します。",
+  result: "userはUserId 42で、外側のvalueは1のままです。内側の範囲で名前を使っても、外側の値への代入ではありません。importが曖昧なら別名や修飾名で区別します。"
 }

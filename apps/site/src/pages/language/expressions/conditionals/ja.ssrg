@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "条件式",
-  summary: "ifは条件に応じて二つの式の片方を選び、その値を返します。",
+  summary: (explanation ()).summary,
   ruleTitle: "thenとelseで、一つの式の結果を決める",
   ruleBody: "条件はBoolでなければなりません。elseは必須で、thenとelseは同じ型の値を返す必要があります。ただし、片方が値を返さないNeverなら、もう片方の型を結果の型として使えます。",
   typingBody: "実行されるのは片方だけですが、コンパイラは条件と両方の式を検査します。0や空文字列を偽として扱うような変換はありません。数値や文字列、コレクション、外部の値を条件にしたい場合は、Boolを返す比較や判定を明示します。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "elseを省略したり、別々の型を返したりはできない",
   invalidBody: "ifは値を返す式です。elseを省略して暗黙のUnitを返したり、異なる型を自動でまとめたりはしません。両方の結果を明示し、同じ型に揃えてください。",
   diagnosticsBody: "条件がBoolでない場合、elseがない場合、両方の結果の型が違う場合を、それぞれ報告します。Neverの分岐は許されますが、それによって他の型の不一致がなくなるわけではありません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "ifの結果を、そのまま値にできるか",
+  summary: "ifは、選んだ分岐の値を返す式です。条件はBoolで、二つの分岐が返す型を揃える必要があります。",
+  reading: "accessLabelのallowedはBoolです。Trueなら\"allowed\"、Falseなら\"denied\"を返し、どちらもStringです。let label = accessLabel Trueには、後で分岐する指示ではなく、計算済みの文字列が入ります。",
+  result: "labelは\"allowed\"です。評価するのは選ばれた分岐だけです。整数を真偽値の代わりに使ったり、片方のIntともう片方のStringを自動で一つの型にまとめたりはしません。"
 }

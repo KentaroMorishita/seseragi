@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Subscriptions and lifetime",
-  summary: "A Subscription owns ordered observation of one Signal and must be released explicitly or by its resource scope.",
+  summary: (explanation ()).summary,
   ruleTitle: "Observation has a lifetime",
   ruleBody: "subscribe first invokes the observer with the current value, then delivers updates in order. Observers on one Signal run in registration order and never receive overlapping notifications.",
   typingBody: "The observer returns Effect<R, Never, Unit>, so recoverable failure cannot escape. subscribe returns Effect<R, Never, Subscription>; unsubscribe is an idempotent Task<Unit>.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Signal is deliberately not a Monad",
   invalidBody: "Dynamic dependencies carry subscription lifetime, so they are expressed with named operations such as switchMap. Do not hide observer allocation and release behind an unrestricted bind operation.",
   diagnosticsBody: "A defect stops the affected observer under runtime policy without becoming another subscriber's typed failure. Lifetime diagnostics identify active, released, and duplicate-unsubscribe states.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I stop observing a Signal when I no longer need it?",
+  summary: "A subscription attaches an observer to a Signal and has a lifetime. Unsubscribe it explicitly or let its resource scope release it.",
+  reading: "subscribe first sends source's current value to the callback, which writes it into mirror. Setting source to 2 updates mirror. After unsubscribe, setting source to 3 no longer invokes that observer.",
+  result: "Executing observeThenRelease returns 2. The callback's argument value is the notified value, not the Signal handle. Keeping a subscription forever can retain associated work; tie it to the lifetime of the feature using it."
 }

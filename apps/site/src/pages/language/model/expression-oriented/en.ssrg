@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Expression-oriented",
-  summary: "An if, a match, or a block produces a value. You can use that value directly instead of assigning to a variable in each branch.",
+  summary: (explanation ()).summary,
   meaningTitle: "A branch chooses a value",
   meaningBody: "An expression is a piece of code that produces a value, such as 1 + 2. In Seseragi, choosing between branches is also an expression. An if does not just decide which statements to run: it produces the value of the chosen branch.",
   exampleTitle: "An if provides the function's result",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "Expressions without a meaningful result use Unit, written (). A block containing only declarations also returns Unit. The type Never is a separate special case for a branch that cannot return normally.",
     "Source files still have declarations and imports at their top level. An executable application starts from its public main function; arbitrary top-level expressions are not allowed. Expression-oriented does not mean every line is executed when a module is imported."
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Why can if be the entire body of a function?",
+  summary: "Expression-oriented means that constructs such as if, match, and blocks produce values that other expressions can use.",
+  reading: "result's if selects \"pass\" for scores at least 80 and \"retry\" otherwise. Both branches return String, matching the function's result type. There is no separate return statement assigning the selected result.",
+  result: "main prints pass for 85. Expression orientation does not make every branch type compatible: an Int branch and a String branch still need an explicitly shared result representation."
 }

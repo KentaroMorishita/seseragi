@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effectを実行するfor",
-  summary: "effectful forはIterableを順番に走査し、各要素に一つのUnit Effectを実行します。",
+  summary: (explanation ()).summary,
   ruleTitle: "各要素の処理が終わってから、次の要素へ進む",
   ruleBody: "for パターン <- 値の集合 { 本体 }は、要素を一つずつ取り出してEffectを実行します。本体も式全体も、成功値がUnitのEffectです。空の集合なら本体を一度も実行せず成功します。",
   typingBody: "値の集合には、順に要素を取り出すIterableの実装が必要です。パターンは、どの要素にも必ず当てはまるものを使います。各分岐の本体は同じサービス・失敗型を持つEffectを返し、成功値はUnitでなければなりません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "早期終了には専用の操作を使う",
   invalidBody: "一つの要素を処理しない場合は、分岐でsucceed ()を返します。正常な早期終了が必要なら、forEachUntilとContinue・Breakを使います。並列処理にはforEachParallelを選びます。",
   diagnosticsBody: "入力がIterableか、パターンが必ず当てはまるか、本体がEffectを返すかを確認します。通常の値やUnit以外の成功値を返す本体は使えません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "各要素について、処理を一つずつ実行するには",
+  summary: "Effectを実行するforは、コレクションの要素ごとに処理を順に行います。各回の処理は、成功値がUnitのEffectを返します。",
+  reading: "announceAllはArray<String>を受け取ります。for message <- messagesで各要素をmessageとして使い、その回のprintln messageを組み立てます。内包表記とは違い、結果を配列に集める処理ではありません。",
+  result: "announceAll [\"Aki\", \"Mio\"]を実行すると、Aki、Mioの順に一行ずつ出力します。一回の処理が失敗すれば、その後の要素は実行しません。空の入力なら何も出力せず完了します。"
 }

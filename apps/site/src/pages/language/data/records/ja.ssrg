@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "レコード",
-  summary: "複数の値を名前付きのフィールドにまとめる値です。型名を宣言せずに作れます。ドットで中身を読み、スプレッドで変更したコピーを作ります。",
+  summary: (explanation ()).summary,
   purpose: [
     "名前と得点のように、一緒に扱いたい値をまとめるときに使います。{ name: \"Aki\", score: 10 }は、二つのフィールドを持つ一つの値です。フィールドとは、値の中の名前付きの部分です。",
     "レコードの型は、フィールドの名前とそれぞれの型で決まります。宣言した型名で区別するわけではありません。この考え方を構造的型付けと呼びます。nameを必要とする関数には、ほかの必須フィールドも持つレコードを渡せます。"
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "型名を付けてデータを区別する場合と、構造体の更新方法を比較できます。",
     "レコードの中身を取り出して、個別の名前に束縛する方法を確認できます。"
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "元の値を変えずに、フィールドを変えるには",
+  summary: "レコードは、型名を宣言せずに名前付きフィールドをまとめる値です。ドットで読み、スプレッドで変更したコピーを作ります。",
+  reading: "originalはnameの\"Aki\"とscoreの10を持ちます。...originalで新しいレコードへフィールドを取り込み、score: 42で新しい方の得点を指定します。nameOfはStringのnameだけを要求するため、scoreも持つupdatedを渡せます。",
+  result: "出力は10、42、Akiです。最初の二行で、元の値とコピーの値が別だと分かります。original.scoreへの代入ではなく、新しい値の構築です。"
 }

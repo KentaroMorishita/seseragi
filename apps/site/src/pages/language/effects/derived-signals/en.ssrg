@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Derived Signals",
-  summary: "Derived Signals declare dependencies with pure constructors and update without observable glitches.",
+  summary: (explanation ()).summary,
   ruleTitle: "Dependencies are explicit",
   ruleBody: "map, combine, constant, distinct, and switchMap construct graph edges directly. Seseragi does not track reads performed inside arbitrary functions to infer hidden dependencies.",
   typingBody: "map and combine preserve a read-only Signal result. distinct requires Eq<A>; switchMap maps each source value to one selected inner Signal and returns Signal<B> without exposing subscription handles.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Do not depend on transient combinations",
   invalidBody: "Subscribers cannot observe one derived input before another has caught up. If duplicate values should be suppressed, request distinct explicitly; ordinary set and update notify even when Eq would consider the value unchanged.",
   diagnosticsBody: "Construction rejects dependency cycles and missing Eq evidence. Runtime graph diagnostics identify the derived node and constructor while preserving the transaction that triggered recomputation.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How can a total stay synchronized with two source values?",
+  summary: "A derived Signal computes its current value from explicitly declared source Signals. It updates when those sources change.",
+  reading: "left starts at 1 and right at 2. combine add left right creates a read-only total depending on both. A transaction changes the sources to 10 and 20; reading total after the transaction obtains the recomputed sum.",
+  result: "Executing stableTotal returns 30, not a temporary sum using one old input. Dependencies are created by named operations such as combine; the runtime does not discover arbitrary dependencies by watching reads inside any function."
 }

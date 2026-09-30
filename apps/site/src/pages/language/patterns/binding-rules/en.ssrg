@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Binding rules",
-  summary: "Every binding surface uses one pattern-typing model, with an explicit input type, scope, and refutability policy.",
+  summary: (explanation ()).summary,
   ruleTitle: "One model binds names everywhere",
   ruleBody: "Top-level and block let, do let, monadic bind, match arms, comprehension generators, and effectful for all type one pattern against one input. They differ only in the input type, resulting scope, and whether refutable patterns are allowed.",
   typingBody: "A pattern annotation constrains the complete pattern. Nested names receive types recursively and enter scope together only after the whole match succeeds; duplicate names and self-reference from the input expression are rejected.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Binding syntax does not invent a second inference rule",
   invalidBody: "A let cannot accept a refutable pattern just because the right side happens to match at runtime. Choose match or a filtering comprehension when failure is part of the control flow.",
   diagnosticsBody: "The compiler, typed representation, analysis, and language server share the same typed-pattern result, including symbol identity, nested types, refutability, and source-range diagnostics.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How does a pattern give names to parts of a value?",
+  summary: "A binding pattern extracts parts of one input and makes their names available in a defined scope.",
+  reading: "Player { name, score } on the left of let takes the corresponding fields from the Player on the right. name becomes \"Aki\" and score becomes 42. The same syntax can nest patterns to unpack more complex data.",
+  result: "summary is (\"Aki\", 42). Names become available only after the whole binding succeeds. A let pattern must accept every possible value of its input type; use match when a pattern may fail to match."
 }

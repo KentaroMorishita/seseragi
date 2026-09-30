@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "構造体",
-  summary: "名前付きのフィールドを持つ型を宣言します。フィールドの形が同じでも、別々に宣言した構造体は別の型になります。",
+  summary: (explanation ()).summary,
   purpose: [
     "構造体は、データの形に型名を付けるための仕組みです。たとえばUserにidとnameを持たせられます。Productにも同じフィールドを宣言しても、UserとProductは別の型です。",
     "この区別によって、意味の違う値を取り違えることを防げます。フィールドの形で型が決まるレコードに対し、構造体はどの宣言から作ったかで型が決まります。この考え方を名前的型付けと呼びます。"
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "Box<A>のように、型のパラメーターを使う宣言を確認できます。",
     "構造体に操作を追加する方法と、self引数の規則を確認できます。"
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "普通のレコードではなく、構造体に型名を付けるのはなぜか",
+  summary: "構造体は、フィールドの形に型名を付けます。同じフィールドを持つ別の宣言と取り違えないようにできます。",
+  reading: "struct Userでid: Intとname: Stringを宣言します。波括弧の前のUserは、その型の値を作る指定です。User { ...original, name: \"Mio\" }は、元のidを引き継ぎ、名前を変えた別のUserを作ります。",
+  result: "出力はAki、Mio、1です。二つの値はどちらもUserで、originalは変わりません。普通の{ id: 1, name: \"Aki\" }レコードが自動でUserになるわけではありません。"
 }

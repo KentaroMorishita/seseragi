@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Fiber supervision",
-  summary: "Every Fiber belongs to the root main scope or the innermost scoped resource owner; fork never creates an unscoped daemon.",
+  summary: (explanation ()).summary,
   ruleTitle: "Child lifetime cannot outlive its scope",
   ruleBody: "When a scope exits it requests cancellation from every unfinished child, waits for child finalizers, and only then closes. This applies after parent success, typed failure, and cancellation alike.",
   typingBody: "join returns child success, raises its typed failure in the caller, and propagates child cancellation as cancellation. await returns FiberExit when cancellation must be inspected as data; interrupt requests cancellation and waits for cleanup.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "fork is not fire-and-forget",
   invalidBody: "Dropping a Fiber handle does not transfer ownership to a daemon registry. The enclosing scope still waits for supervised cleanup, and tests may diagnose an unobserved child failure without changing the parent's typed result.",
   diagnosticsBody: "Fiber diagnostics retain parent scope, spawn site, completion state, and whether a failure was observed. Forced host termination after a grace period is outside the cooperative guarantee.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What happens to a child computation when its parent finishes?",
+  summary: "A Fiber is a running child Effect. Its enclosing scope owns its lifetime; fork does not create an unmanaged background daemon.",
+  reading: "fork starts the child computation that succeeds with 21 and returns its Fiber handle. join waits for that child and retrieves its success value. The parent then doubles it and succeeds with 42.",
+  result: "If the parent scope ends before a child completes, it requests cancellation and waits for the child's cleanup. Dropping the handle does not remove that ownership. Use the distinct waiting and interruption operations described below when controlling the child explicitly."
 }

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "範囲と内包表記",
-  summary: "数値の範囲や既存のコレクションから、条件を満たす要素を選んで新しいコレクションを作ります。",
+  summary: (explanation ()).summary,
   ruleTitle: "取り出す順序と残す条件を指定する",
   ruleBody: "start..endは終端を含まず、start..=endは終端を含みます。内包表記では、値を取り出す指定とBoolの条件を左から順に書きます。取り出す指定が複数ある場合、左のものが外側のループに相当します。",
   typingBody: "取り出し元の型にはIterableの実装が必要です。取り出す値のパターンは元の要素型に合い、条件式はBoolでなければなりません。最後に作る式の型が、結果のArrayやListの要素型になります。元と結果のコレクションが同じ型である必要はありません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "開始値が大きくても、降順にはならない",
   invalidBody: "範囲の刻みは1です。開始値が終端より大きい場合は空になります。降順が必要ならライブラリの操作を使います。純粋な内包表記にEffectを取り出し元として渡すことはできません。",
   diagnosticsBody: "取り出し元にIterableの実装があるか、条件がBoolか、パターンと要素の型が合うかを確認してください。すべての結果の要素は、同じ要素型でなければなりません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "範囲の中から条件に合う値を集めるには",
+  summary: "内包表記は、元の範囲やコレクションから要素を取り、条件で絞り、残った各要素から結果を作る書き方です。",
+  reading: "value <- 1 ..= limitはlimitを含む整数を取り、value % 2 == 0は偶数だけを残します。|の前のvalue * valueが、残った各値を二乗します。limitが8なら、残る値は2、4、6、8です。",
+  result: "evenSquares 8は[4, 16, 36, 64]を返します。..なら終端を含まず、..=なら含みます。外部処理を実行するループではなく、通常の値からコレクションを作る式です。"
 }

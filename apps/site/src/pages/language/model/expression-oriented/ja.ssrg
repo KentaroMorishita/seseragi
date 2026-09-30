@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "式指向",
-  summary: "if、match、ブロックは値を返します。分岐ごとに変数へ代入する代わりに、分岐の結果をそのまま使えます。",
+  summary: (explanation ()).summary,
   meaningTitle: "分岐も値を作る",
   meaningBody: "式とは、1 + 2のように、計算すると値が得られるコードのことです。Seseragiではifも式です。「どちらの処理を実行するか」を選ぶだけでなく、選んだ側の値をif全体の結果として返します。",
   exampleTitle: "ifの結果を、そのまま関数の戻り値にする",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "意味のある結果がない処理では、Unitという型の値()を使います。宣言だけを含むブロックもUnitを返します。正常に戻らない処理の型Neverは、分岐の型に関する特別な場合として扱います。",
     "ファイルの一番外側に書けるのは宣言とimportです。アプリケーションの実行は公開されたmain関数から始めます。「式指向」は、importしたファイルの任意の行をそのまま実行するという意味ではありません。"
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "ifだけを関数の本体にできるのはなぜか",
+  summary: "式指向とは、ifやmatch、ブロックなどが値を返し、その値を他の式で使えるということです。",
+  reading: "resultのifは80以上なら\"pass\"、それ以外なら\"retry\"を選びます。どちらもStringなので、関数の戻り値の型に合います。選んだ値を返すための別のreturn文は不要です。",
+  result: "85ではpassを出力します。式指向だからといって、Intの分岐とStringの分岐を自動で同じ型として扱うわけではありません。共通の結果の形を明示する必要があります。"
 }

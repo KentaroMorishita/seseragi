@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Type system",
-  summary: "Every expression is typed before execution; unresolved meaning becomes a diagnostic, never implicit Any or Unknown.",
+  summary: (explanation ()).summary,
   ruleTitle: "Static types before execution",
   ruleBody: "A Seseragi program runs only after every expression has a type. Inference is based on Hindley-Milner unification and extends it with nominal ADTs, structs and newtypes, structural immutable records, trait constraints, and bottom coercion from Never.",
   identityBody: "Nominal declarations preserve declared identity even when representations match. Record identity is structural. Types guide compilation but do not authorize a backend to change observable values, evaluation order, failure, or Effect behavior.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Static does not mean guessed",
   invalidBody: "The compiler does not infer a type from a future runtime value, silently choose among ambiguous instances, or turn a mismatch into Any. Nominal and structural compatibility, Never coercion, and record width are explicit rules rather than general conversion.",
   diagnosticsBody: "Parser diagnostics own malformed type syntax; type diagnostics own unification, missing evidence, ambiguity, and invalid coercion. The compiler, formatter, language server, and documentation examples consume the same source model rather than separate type grammars.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What mistakes does type checking prevent?",
+  summary: "Every expression has a type checked before execution. Types describe which values a function or operation may accept and return.",
+  reading: "Player groups a name, a Score, and a Rank. Score is a distinct wrapper around Int; Rank permits only Bronze, Silver, or Gold. The player value supplies a String, Score 42, and Gold in the appropriate fields.",
+  result: "A raw integer cannot silently replace Score, nor can arbitrary text replace Rank. The compiler detects these mismatches before running the program. Inference can save annotations but cannot make an invalid combination valid."
 }

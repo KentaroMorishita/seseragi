@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Ranges and comprehensions",
-  summary: "Finite Int ranges feed ordered Array or List comprehensions with explicit generators and guards.",
+  summary: (explanation ()).summary,
   ruleTitle: "Generation order is written in the source",
   ruleBody: "start..end excludes end and start..=end includes it. Comprehensions process generator and Bool guard clauses left to right; multiple generators nest with the leftmost generator outermost.",
   typingBody: "A generator source must have Iterable evidence. Its pattern receives the element type, guards are Bool, and the result expression determines the Array or List element type independently of the source collection type.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A range does not infer direction",
   invalidBody: "The step is always one and a start greater than end produces an empty range. Use library operations for descending sequences; an Effect cannot be a pure comprehension source.",
   diagnosticsBody: "Errors identify missing Iterable evidence, a non-Bool guard, a pattern mismatch, or incompatible result elements. Source and result collection kinds are never converted implicitly.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I build a collection from a range and a condition?",
+  summary: "A comprehension builds a collection by taking elements from sources, optionally filtering them, and computing a result for each remaining element.",
+  reading: "value <- 1 ..= limit takes integers including limit. value % 2 == 0 keeps even integers. The expression before | squares each kept value. For limit 8, the kept inputs are 2, 4, 6, and 8.",
+  result: "evenSquares 8 returns [4, 16, 36, 64]. Using .. instead of ..= excludes the end. This is a pure collection construction, not a loop that executes external Effect operations."
 }

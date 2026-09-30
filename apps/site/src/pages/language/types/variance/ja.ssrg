@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "型引数の不変性と例外的な変換",
-  summary: "レコードを渡せる範囲と、そのレコードを含む配列を渡せる範囲は異なります。",
+  summary: (explanation ()).summary,
   ruleTitle: "要素の型が違う配列は、そのまま代入できない",
   ruleBody: "Array<{ name: String, id: Int }>とArray<{ name: String }>は別の型です。前者の要素にはnameがありますが、配列全体を後者の型として扱うことはできません。このように、型引数が完全に一致しなければ互換としない規則を「不変性」と呼びます。Listや、自分で定義するADT・struct・newtypeの型引数にも同じ規則が適用されます。",
   identityBody: "レコードそのものなら、余分なフィールドがあっても、必要なフィールドを持つ型へ渡せます。ただし、その規則が配列の中の型にまで広がるわけではありません。例ではmapで各要素からnameだけを取り出し、必要な要素型の配列を新しく作っています。フィールドの記述順だけが違うレコードは、同じ型です。",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "配列の型を変えるには、要素を明示的に変換する",
   invalidBody: "フィールドの多いレコードを含む配列を、フィールドの少ないレコードの配列へそのまま代入すると、型エラーになります。EffectやStreamでも、成功値の型やNever以外の失敗型を勝手に変更することはできません。読み取り専用のSignalに変えても、その中身の型は変わりません。",
   diagnosticsBody: "型エラーが出たら、外側のArrayなどの名前だけでなく、型引数まで見比べてください。要素を変える場合はmap、失敗の値を変える場合はmapErrorなどを使い、どの値をどう変換するかをコードで示します。コンパイラが自動で配列を走査して変換することはありません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "レコードは渡せるのに、その配列は渡せないのはなぜか",
+  summary: "レコードの追加フィールドを許す規則は、そのレコードを含む配列の型まで自動では変更しません。通常、入れ物の型引数は一致している必要があります。",
+  reading: "usersの要素にはnameとidがあります。nameOnlyはnameだけを持つ新しいレコードを作り、mapが各要素にその処理を適用します。その結果、Array<{ name: String }>の配列ができます。",
+  result: "結果には{name: \"Aki\"}が入ります。配列の型を代入だけで変更したのではなく、要素ごとに変換しています。後述のEffectやSignalの変換は限定的な例外です。"
 }

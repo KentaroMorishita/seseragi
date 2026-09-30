@@ -1,16 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "What does the trait declaration promise?" "traitの宣言は、何を約束するか",
-  summary: localized
-    "A trait names operations and their parameter and result types. The implementation bodies are provided separately in instances."
-    "traitには、必要な操作の名前と、引数・戻り値の型を書きます。処理の本体は、別にinstanceへ書きます。",
-  exampleId: "reader-trait",
-  reading: localized
-    "Ticket and Person are two different data types. Label<A> declares one label operation whose input type is A and result is String. The Ticket and Person instances implement that declaration. labelOf<A> requires Label<A> and can call either implementation; personLabel is its Person call."
-    "TicketとPersonは異なるデータ型です。Label<A>はAを受け取りStringを返すlabelを宣言し、二つのinstanceがその処理を定義します。labelOf<A>はwhere Label<A>を条件にして、どちらの型にも使えます。personLabelはPersonを渡した結果です。",
-  result: localized
-    "The instance below the declaration fulfills this promise; main then invokes it and prints ticket-42. A trait declaration alone neither computes a label nor creates a Ticket."
-    "宣言の下のinstanceが約束を満たし、mainが呼ぶとticket-42を出力します。traitを宣言しただけでは、ラベルを計算したりTicketを作ったりしません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "reader-trait") (en.explanation ()) (ja.explanation ())

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "派生Signal",
-  summary: "derived Signalはpure constructorでdependencyを宣言し、glitchを観測させず更新します。",
+  summary: (explanation ()).summary,
   ruleTitle: "元のSignalから、変化に追従する値を作る",
   ruleBody: "mapは一つの値、combineは複数の値から派生値を作ります。constantは変わらない値、distinctは連続した同じ値を除く操作、switchMapは使うSignalを切り替える操作です。どのSignalに依存するかは、これらの関数へ明示的に渡します。通常の関数で読み取ったSignalを自動追跡する仕組みではありません。",
   typingBody: "mapとcombineは読み取り専用のSignalを返します。distinctは値の一致を調べるためにEq<A>の実装が必要です。switchMapは元の値から次に使うSignalを選び、その現在値を持つSignalを返します。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "更新途中の組み合わせに依存しない",
   invalidBody: "購読者には、一方だけが更新された途中の組み合わせを見せません。同じ値の通知を省きたい場合はdistinctを使います。通常のsetやupdateは、前の値と等しくても通知します。",
   diagnosticsBody: "依存関係が循環している、またはdistinctに必要なEqがない場合は構築や型検査で拒否されます。依存するSignalを作る関数と引数を確認してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "二つの値に追従する合計を作るには",
+  summary: "派生Signalは、明示した元のSignalから値を計算し、元の値の変化に追従します。",
+  reading: "leftは1、rightは2です。combine add left rightで、両方に依存する読み取り専用の合計を作ります。トランザクションで10と20へ更新すると、totalはその合計を再計算します。",
+  result: "stableTotalを実行すると30を返し、片方だけ古い値の一時的な合計は見せません。依存する値はcombineなどの操作で指定し、任意の関数内の読み取りから自動で推測するわけではありません。"
 }

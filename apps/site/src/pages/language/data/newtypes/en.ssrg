@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Newtype values",
-  summary: "A newtype creates a distinct nominal boundary around one representation without record boilerplate.",
+  summary: (explanation ()).summary,
   ruleTitle: "Wrapping and unwrapping are explicit",
   ruleBody: "The type name is also its one-argument constructor. A constructor pattern exposes the contained value where visibility allows it; methods and operators may be attached to the new nominal type.",
   typingBody: "A newtype and its representation never unify implicitly. Generic parameters belong to the nominal identity, and opaque visibility can expose the type while hiding its constructor and pattern.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Same representation does not mean same type",
   invalidBody: "Field access, record spread, struct update, implicit coercion, and automatic inheritance of the representation type's instances are unavailable.",
   diagnosticsBody: "A representation value used where the newtype is expected, or the reverse, reports the two nominally distinct types and requires explicit construction or matching.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I construct and unpack a newtype value?",
+  summary: "A newtype gives one existing value type a distinct name and identity. Its constructor wraps a value; a matching pattern unwraps it.",
+  reading: "UserId 42 constructs a UserId, not an ordinary Int. raw matches UserId number and returns number. The same UserId name is used in a type position, a construction expression, and an unpacking pattern.",
+  result: "number is the Int 42. Without explicit unpacking, UserId cannot be passed where Int is expected. This separation helps prevent passing an identifier to an unrelated integer operation."
 }

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "デフォルトで不変",
-  summary: "一度作った通常の値は、後から書き換わりません。データを更新するときは、元の値を残したまま新しい値を作ります。",
+  summary: (explanation ()).summary,
   meaningTitle: "更新は、別の値を作ること",
   meaningBody: "letは値に名前を付けるための宣言で、後から再代入できる変数ではありません。レコード、struct、代数的データ型、配列、リストの値も、作った後に書き換えることはできません。同じ値を後で読んだときに、誰かがフィールドを書き換えていた、ということがありません。",
   exampleTitle: "元の点数を残して、新しい点数を作る",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "カウンター、入力フォーム、ファイルなどには変化が必要です。Seseragiでは、その変化を専用の仕組みで表します。Refは操作を通して値を読み書きするライブラリの型です。Signalは、時間とともに変わる値と、その変化に応じた再計算を扱います。",
     "ファイルへの書き込みなど、外部に働きかける処理はEffectで表します。これらを使っても、通常のletやレコードのフィールドが再代入できるようになるわけではありません。データの変換なら新しい値を作り、実際に状態を変える処理なら、そのためのAPIを使います。"
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "不変な値を、どう更新するのか",
+  summary: "通常の更新は、元の値を残して新しい値を作る操作です。どこかで隠れて再代入されることなく、それぞれの値を考えられます。",
+  reading: "originalのscoreは10です。...originalでupdatedへフィールドを取り込み、score: original.score + 1で新しい得点を11にします。nameはそのまま引き継ぎます。",
+  result: "出力は10 -> 11です。originalは10のままで、updatedが11を持ちます。時間とともに変わる状態には、通常のフィールドへの代入ではなく、SignalやRefなどの専用の操作を使います。"
 }

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "必要なサービスを組み合わせる",
-  summary: "R & Sで、EffectやStreamの実行に必要なサービスを一つにまとめます。",
+  summary: (explanation ()).summary,
   ruleTitle: "複数の計算が必要とするサービスをまとめる",
   ruleBody: "コンソールを使う計算と時計を使う計算を組み合わせるなら、実行する環境には両方のサービスが必要です。EffectやStreamの第一の型引数に書くR & Sは、その必要なサービスの組み合わせを表します。R & {}は新しいサービスを加えないのでRと同じです。衝突がなければ、順序や括弧を変えても必要なサービスは変わりません。",
   identityBody: "これは型の規則であり、実行時にサービスの値を結合する操作ではありません。同じ名前と同じ型のフィールドは一つにまとまります。同じ名前なのに型が違う場合は、どちらのサービスが必要かを決められないため、SES-E0001になります。",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "&は、任意の型を組み合わせる構文ではない",
   invalidBody: "R & Sを使えるのは、EffectやStreamの必要なサービスを書く位置だけです。その他の型の位置で使うとSES-T0501になります。また、値の式で単独の&を演算子として使うことはできません。RやSは、サービスを表す完全なレコード型であり、レコードの一部だけを表す型ではありません。",
   diagnosticsBody: "SES-E0001では、衝突しているフィールド名と二つの型を見比べてください。SES-T0501では、&を書いた位置を確認します。型別名を使っている場合は、その定義もたどると、どの計算がサービスを追加しているか分かります。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "既存のサービスに時計も追加で要求するには",
+  summary: "EffectやStreamの要求に&を書くと、必要なサービスを組み合わせられます。実行時のレコードを結合する操作ではありません。",
+  reading: "Timed<R, E, A>は、Rに加えてClock型のclockを必要とするEffectの別名です。Eは回復可能な失敗、Aは成功値の型のままで、時計を追加しても変更されません。",
+  result: "同じ名前のサービスを要求する場合、型も一致している必要があります。R & {}では何も追加しません。実行入口では、最終的なフィールド一覧をすべて確定させます。"
 }

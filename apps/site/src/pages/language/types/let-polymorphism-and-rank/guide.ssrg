@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Does storing a function in let fix its argument type?"
-    "関数をletに入れると、引数の型は固定されるか",
-  summary: localized
-    "An unchanged generic function can remain reusable at different types. A value produced by a particular call already has that call's type."
-    "ジェネリック関数をそのまま別名で使う場合と、一度呼び出した結果に名前を付ける場合では、使える型の範囲が違います。",
-  exampleId: "types-let-rank",
-  reading: localized
-    "let identity = unchanged stores the function, so identity 42 and identity \"hello\" use Int and String separately. let fixed = wrap 42 instead stores Just 42, a Maybe<Int>; it is not the function wrap."
-    "let identity = unchangedでは関数を保存するため、identity 42とidentity \"hello\"を別々の型で使えます。一方、let fixed = wrap 42は呼び出し済みのJust 42を保存し、その型はMaybe<Int>です。",
-  result: localized
-    "This distinction does not make every function parameter automatically generic. A generic declaration names its type parameters. Passing a function that must itself work at many types involves additional limits described below."
-    "この違いによって、あらゆる関数の引数が自動でジェネリックになるわけではありません。宣言では型パラメーターを明示します。複数の型で使える関数を別の関数へ渡す場合には、後述の制限があります。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "types-let-rank") (en.explanation ()) (ja.explanation ())

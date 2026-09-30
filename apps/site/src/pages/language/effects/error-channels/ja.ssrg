@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effectの回復可能な失敗",
-  summary: "予測して扱える失敗を型Eで表し、呼び出し側で回復や変換を行います。",
+  summary: (explanation ()).summary,
   ruleTitle: "複数の失敗を扱うなら、共通の失敗型を用意する",
   ruleBody: "一つのEffectの合成には、一つの回復可能な失敗型を使います。異なるライブラリの失敗を組み合わせる場合は、アプリケーションの失敗を表すADTを用意し、mapErrorで変換します。コンパイラが自動で複数の失敗型をまとめるわけではありません。",
   typingBody: "Effect<R, Never, A>は回復可能な失敗を起こさないため、失敗型Eが要求される場所でも使えます。それ以外の失敗型を暗黙に変更することはできません。recoverはEに入る失敗だけを扱い、回復処理が返すEffectの失敗型へ切り替えます。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "予測して扱える失敗を、想定外の不具合として隠さない",
   invalidBody: "ネットワークへの接続拒否や不正な入力など、呼び出し側が扱うべき結果は、Eや通常のEitherで表します。アプリケーションの失敗型を用意する手間を避けるために、想定外の不具合として扱わないようにします。",
   diagnosticsBody: "失敗型が合わない場合は、各操作が返すEffectのEを確認してください。異なる失敗型を組み合わせたい場合は、共通のADTを用意し、mapErrorで変換するか、recoverで回復処理を定義します。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "ライブラリの失敗を、アプリケーションの失敗にまとめるには",
+  summary: "EffectのEは、回復可能な失敗の値の型です。異なる失敗型の処理を組み合わせる場合は、明示的に共通の型へ変換します。",
+  reading: "rawLoadは\"present\"なら1で成功し、それ以外ならキーのStringで失敗します。loadはmapError MissingRecordで、そのStringをAppErrorに包みます。成功したIntは変えません。",
+  result: "load \"missing\"を実行すると、MissingRecord \"missing\"で失敗します。回復処理はこの宣言された失敗を扱えますが、キャンセルや想定外の不具合まで捕捉するわけではありません。"
 }

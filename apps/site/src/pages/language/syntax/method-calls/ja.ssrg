@@ -1,11 +1,12 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "メソッド呼び出し",
-  summary: "型に属する関数を、値の後ろにドットを付けて呼び出す書き方です。ドットの前の値が、関数の最初の引数になります。",
+  summary: (explanation ()).summary,
   purpose: [
     "メソッドは、特定の型に対して定義した関数です。original.add 5ではCounterに属するaddを呼び、最初の引数にoriginal、次の引数に5を渡します。",
-    "下の例では、valueという整数のフィールドを持つCounter型を作ります。implは、その型に属する関数をまとめる宣言です。継承や値の書き換え、ジェネリック型を知らなくても、この例は読めます。"
+    "この例では、valueという整数のフィールドを持つCounter型を作ります。implは、その型に属する関数をまとめる宣言です。継承や値の書き換え、ジェネリック型を知らなくても、この例は読めます。"
   ],
   exampleTitle: "元の値を変えずにカウンターへ加算する",
   reading: [
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "implを宣言できる場所や、メソッドの公開方法を確認できます。",
     "ドットを使った呼び出しと演算子を組み合わせるときの読み方を確認できます。"
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "ドットの前の値は、どの引数に渡されるか",
+  summary: "メソッドは、名前付きの型に属する関数です。ドットで呼ぶと、ドットの前の値が最初の引数に渡されます。",
+  reading: "Counterは整数のvalueを持ちます。original.add 5では、selfにoriginal、amountに5を渡します。addはself.value + amountを持つ新しいCounterを作り、元のフィールドを書き換えません。",
+  result: "updatedは整数の15ではなく、Counter { value: 15 }です。original.valueは10のままで、updated.valueは15です。出力の二行で、元の値と新しい値の違いを確認できます。"
 }

@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Does a top-level Effect run when the module is imported?"
-    "モジュール直下で作ったEffectは、import時に実行されるか",
-  summary: localized
-    "Top-level declarations define module names and initialize ordinary values. Storing an Effect value does not execute its described operation."
-    "モジュール直下の宣言は名前を定義し、通常の値を初期化します。Effectの値を保存しても、その説明する処理は実行しません。",
-  exampleId: "modules-top-level",
-  reading: localized
-    "base becomes 20 and answer becomes double 21, which is 42. report () constructs the output operation and stores it in pending. The println remains part of that operation rather than printing during module initialization."
-    "baseは20で、answerはdouble 21の42になります。report ()は出力処理の説明を作り、pendingに保存します。printlnはその処理に残り、モジュールの初期化では出力しません。",
-  result: localized
-    "A runner or other designated execution boundary must execute the stored Effect. Top level does not allow arbitrary expression statements: put a computed value in a declaration, or external work inside the returned Effect."
-    "保存したEffectを実行するのは、実行入口などの定められた境界です。トップレベルに単独の式文は置かず、値は宣言に、外部操作は返すEffectの中に書きます。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "modules-top-level") (en.explanation ()) (ja.explanation ())

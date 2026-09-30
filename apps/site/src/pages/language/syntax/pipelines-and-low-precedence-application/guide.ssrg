@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How can I read a chain of transformations from left to right?"
-    "続けて呼ぶ処理を、左から右へ読みたいときは",
-  summary: localized
-    "A pipeline passes one function's result to the next. The $ form groups a right-hand expression as an argument without outer parentheses."
-    "パイプラインは、前の処理の結果を次の関数へ渡します。$は、右側の式全体を外側の括弧なしで引数にする書き方です。",
-  exampleId: "reader-pipelines",
-  reading: localized
-    "double multiplies an integer by two; addOne adds one. Starting at 3, 3 |> double produces 6, then |> addOne produces 7. addOne (double 3) and addOne $ double 3 describe the same calculation."
-    "doubleは2倍にし、addOneは1を足します。3 |> doubleで6になり、続く|> addOneで7になります。addOne (double 3)とaddOne $ double 3も同じ計算です。",
-  result: localized
-    "All three printed results are 7. These forms do not add parallelism, delayed evaluation, or new error handling. Each connection still requires the previous result's type to match the next parameter."
-    "三つの出力はすべて7です。この書き方によって並列実行や遅延評価、失敗の処理が追加されるわけではありません。前の結果の型は、次の関数が受け取る型と一致する必要があります。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "reader-pipelines") (en.explanation ()) (ja.explanation ())

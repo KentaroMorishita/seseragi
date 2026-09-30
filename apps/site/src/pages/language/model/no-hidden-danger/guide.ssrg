@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "What happens when an array position does not exist?"
-    "配列の指定した位置に値がない場合、どう分かるか",
-  summary: localized
-    "An operation that can lack a value returns a type that represents that possibility, so the caller must handle it explicitly."
-    "値がない可能性のある操作は、その可能性を表す型を返します。呼び出し側は、値がない場合も明示的に扱います。",
-  exampleId: "principle-no-hidden-danger",
-  reading: localized
-    "values has only positions 0 and 1. arrays.get 5 values therefore produces Nothing. match handles Just value with a found message and Nothing with \"not found\", so both paths return String."
-    "valuesには位置0と1しかないため、arrays.get 5 valuesはNothingです。matchで、Just valueなら見つかった値を表示し、Nothingなら\"not found\"を返します。どちらもStringです。",
-  result: localized
-    "The program prints not found instead of pretending there is an integer or leaving a missing result unchecked. This principle does not promise that programs have no defects; it keeps documented ordinary risks visible in interfaces."
-    "出力はnot foundです。整数があるふりをしたり、不在を未処理のまま使ったりしません。この原則は不具合が一切ないという保証ではなく、通常起こる可能性を型や操作に表す考え方です。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "principle-no-hidden-danger") (en.explanation ()) (ja.explanation ())

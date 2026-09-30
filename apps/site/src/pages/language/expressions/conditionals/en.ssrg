@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Conditional expressions",
-  summary: "An if expression selects one of two same-typed branches from a Bool condition.",
+  summary: (explanation ()).summary,
   ruleTitle: "Both branches are part of one expression",
   ruleBody: "The condition must be Bool, else is required, and the then and else branches must produce the same type. A Never branch coerces to the type of the other branch.",
   typingBody: "The checker validates the condition and both branch types even though only one branch runs. There is no truthiness conversion from Int, String, collection, or foreign values.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "if is not a statement",
   invalidBody: "Omitting else or mixing unrelated branch types does not create an implicit Unit result or union type. Make both alternatives explicit and type-compatible.",
   diagnosticsBody: "Diagnostics identify a non-Bool condition, a missing else, or the branch whose type differs. A diverging Never branch is accepted without hiding other mismatches.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Can I assign the result of an if directly?",
+  summary: "An if expression returns the value of one branch. Its condition must be Bool and its branch results must have compatible types.",
+  reading: "accessLabel receives allowed: Bool. True selects \"allowed\" and False selects \"denied\"; both are String. let label = accessLabel True therefore stores a String rather than an instruction to run a branch later.",
+  result: "label is \"allowed\". Only the selected branch is evaluated. An integer condition is not treated as truthy, and returning an integer from one branch and a string from the other is not automatically a union result."
 }

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Method calls",
-  summary: "Use a dot to call an operation belonging to a type. The value before the dot becomes the operation's first argument.",
+  summary: (explanation ()).summary,
   purpose: [
     "A method is a function defined for a particular type. original.add 5 calls Counter's add operation with original as its first argument and 5 as its second.",
     "The example defines Counter, a type containing an integer named value. An impl block groups functions belonging to Counter. You do not need inheritance, objects with mutable fields, or a generic type to use this syntax."
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "Look up where impl blocks may be declared and how their methods are exposed.",
     "Check how a dot call combines with arithmetic and other operators."
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What does the value before the dot become?",
+  summary: "A method is a function associated with a named type. Dot notation passes the value before the dot as its first parameter.",
+  reading: "Counter stores an integer field named value. original.add 5 passes original to self and 5 to amount. add constructs a new Counter whose field is self.value + amount; it does not write to the original field.",
+  result: "updated is Counter { value: 15 }, not the integer 15. Reading original.value still produces 10; updated.value produces 15. The printed lines demonstrate that distinction."
 }

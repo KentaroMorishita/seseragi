@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ConceptCopy } from "../concept"
 
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "Features the language does not have",
-  summary: "Some familiar constructs are intentionally absent. Find the Seseragi mechanism for the problem you want to solve.",
+  summary: (explanation ()).summary,
   ruleTitle: "Find the operation, not an identical spelling",
   ruleBody: "You cannot always translate another language by replacing keywords. Updating a record creates a new record, not a field assignment. A function produces its body expression's value rather than using return. The list below pairs absent constructs with their alternatives.",
   consequencesTitle: "Three distinctions to keep clear",
@@ -25,3 +26,10 @@ pub fn alternatives -> Array<String> = [
   "User-defined prefix or postfix operators: use a named function or a declared infix operator.",
   "return, break, and continue: use a function's result expression; use reduceUntil or forEachUntil to stop a collection traversal early."
 ]
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What should I use instead of familiar missing keywords?",
+  summary: "The absence of assignment, null, or return does not mean Seseragi cannot express updates, missing values, or function results. It uses different explicit forms.",
+  reading: "For an immutable record, construct { ...old, field: newValue } rather than assigning old.field. Use Just and Nothing for ordinary presence and absence. A function returns its body's expression, and a block returns its final expression.",
+  result: "For recoverable errors, use Either or Effect's failure type. For early collection termination, use the dedicated operations described in the list. These alternatives keep control flow and possible results visible rather than recreating another language's hidden behavior."
+}

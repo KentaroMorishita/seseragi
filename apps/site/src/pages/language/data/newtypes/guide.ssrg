@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I construct and unpack a newtype value?"
-    "newtypeの値を作り、中身を取り出すには",
-  summary: localized
-    "A newtype gives one existing value type a distinct name and identity. Its constructor wraps a value; a matching pattern unwraps it."
-    "newtypeは、既存の型の値を中身に持つ別の型を作ります。コンストラクターで包み、対応するパターンで取り出します。",
-  exampleId: "data-newtypes",
-  reading: localized
-    "UserId 42 constructs a UserId, not an ordinary Int. raw matches UserId number and returns number. The same UserId name is used in a type position, a construction expression, and an unpacking pattern."
-    "UserId 42は、通常のIntではなくUserIdを作ります。rawはUserId numberに照合してnumberを返します。型を書く位置、値を作る位置、中身を取り出す位置で、同じUserIdという名前を使います。",
-  result: localized
-    "number is the Int 42. Without explicit unpacking, UserId cannot be passed where Int is expected. This separation helps prevent passing an identifier to an unrelated integer operation."
-    "numberはIntの42です。明示的に取り出さない限り、Intが必要な場所へUserIdを渡せません。IDを無関係な整数の操作へ渡す間違いを防げます。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "data-newtypes") (en.explanation ()) (ja.explanation ())

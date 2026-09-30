@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "想定外の不具合（defect）",
-  summary: "defectはruntimeがtyped failure channelによる通常回復を約束できない状態です。",
+  summary: (explanation ()).summary,
   ruleTitle: "想定して扱う失敗と、プログラムを停止する不具合を分ける",
   ruleBody: "整数の範囲超過、0除算、実行基盤の前提の破壊、メモリ不足、安全な外部連携の約束に違反する値などは、想定外の不具合（defect）として計算を停止できます。入力の間違いや通信の失敗など、呼び出し側が扱える結果はEitherやEffectのEで表します。",
   typingBody: "defectはEffectのEに入りません。recoverは型付きの失敗だけを扱い、defectを成功へ変えるための一般的なcatch構文はありません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "想定できる失敗をdefectに変えない",
   invalidBody: "解析の失敗、権限の拒否、サービスの利用不能など、アプリケーションが想定する結果をdefectへ変えてはいけません。呼び出し側から回復方法が見えなくなるためです。",
   diagnosticsBody: "実行時の診断では、型付きの失敗とdefectを分けて確認してください。利用可能なソース位置と、その処理が呼ばれた経緯も報告されます。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "入力が不正なとき、実行を止める不具合として扱うべきか",
+  summary: "defectは、宣言した回復可能な失敗の型では扱わない想定外の不具合です。予測できる不正入力は、呼び出し側が処理できる結果として返します。",
+  reading: "checkedDivideは除算前にdivisorを調べます。0ならLeft ZeroDivisorを返すため、不正な除算をせずに、呼び出し側で理由を説明できます。それ以外なら商をRightに入れて返します。",
+  result: "checkedDivide 7 2はRight 3、checkedDivide 7 0はLeft ZeroDivisorです。想定した失敗を型に残すことと、すべての実行時の不具合を通常の失敗に変えることは異なります。"
 }

@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Why does UserId work as both a type name and a constructor?"
-    "UserIdを型名にも値の構築にも使えるのはなぜか",
-  summary: localized
-    "Names are resolved according to their position and scope. Type names and value names belong to separate namespaces."
-    "名前は、書かれた位置と使える範囲から解決します。型の名前と値の名前は別の名前空間に属します。",
-  exampleId: "modules-namespaces",
-  reading: localized
-    "In user: UserId, UserId denotes the type. In UserId (local ()), it denotes the constructor. local's let value = 42 is nearer than the module's value = 1 and is therefore the value read inside that function."
-    "user: UserIdのUserIdは型名で、UserId (local ())のUserIdはコンストラクターです。localの中では、モジュールのvalue = 1より近いlet value = 42を参照します。",
-  result: localized
-    "user becomes UserId 42; the outer value is still 1. Reusing a name in a permitted inner scope is not mutation. Ambiguous imports must be renamed or qualified rather than resolved by arbitrary import order."
-    "userはUserId 42で、外側のvalueは1のままです。内側の範囲で名前を使っても、外側の値への代入ではありません。importが曖昧なら別名や修飾名で区別します。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "modules-namespaces") (en.explanation ()) (ja.explanation ())

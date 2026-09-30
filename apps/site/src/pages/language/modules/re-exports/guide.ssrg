@@ -1,18 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized
-    "Can callers use a stable entry module instead of internal file paths?"
-    "利用側に、内部ファイルではなく共通の窓口を使わせるには",
-  summary: localized
-    "A re-export publishes another module's public declarations through a stable entry module without copying their definitions."
-    "再公開は、別のモジュールの公開宣言を共通の窓口から使えるようにします。定義を複製するものではありません。",
-  exampleId: "modules-re-exports",
-  reading: localized
-    "pub import { UserId, toInt } makes these public names available from this module too. pub import * as domain additionally exposes a namespace, so callers can use domain.UserId and domain.toInt."
-    "pub import { UserId, toInt }で、このモジュールからもその名前を公開します。pub import * as domainでは名前空間も公開し、利用側はdomain.UserIdやdomain.toIntとして使えます。",
-  result: localized
-    "Both access paths still refer to the original UserId type. The sibling modules-domain file is needed for this example; the entry file is not a standalone Playground program. You cannot re-export a private declaration to bypass its access restriction."
-    "どちらの参照経路でも、元のUserId型を使います。この例には兄弟のmodules-domainファイルが必要で、窓口のファイルだけでは単独で実行できません。非公開の宣言を再公開して制限を迂回することもできません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "modules-re-exports") (en.explanation ()) (ja.explanation ())

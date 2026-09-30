@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Built-in types",
-  summary: "Int, Float, Bool, Char, String, Unit, and Never each have one exact value domain and no implicit numeric conversion.",
+  summary: (explanation ()).summary,
   ruleTitle: "Seven primitive value meanings",
   ruleBody: "Int is an exact safe integer from -9007199254740991 through 9007199254740991. Float is IEEE 754 binary64. Bool contains True and False; Char is one Unicode scalar; String is an immutable scalar sequence; Unit contains only (); Never contains no values.",
   identityBody: "Int has no negative zero. Float may preserve negative zero and follows binary64 representation. Unit represents a completed computation with one ordinary value, while Never represents a computation that cannot return a value, so the two are not interchangeable.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Similar host representations do not merge types",
   invalidBody: "A backend number representation does not make Int and Float interchangeable. A multi-scalar character is not Char, Unit is not an empty record or Never, and out-of-safe-range Int spelling is rejected rather than rounded or wrapped.",
   diagnosticsBody: "Literal diagnostics validate spelling, scalar count, range, Float overflow, and escapes before later type checking. Arithmetic leaving the Int safe range is a runtime defect; tools display the Seseragi type rather than a backend storage type.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Which type represents this value?",
+  summary: "Use Int for integers, Float for fractional numbers, Bool for conditions, Char for one Unicode scalar, and String for text. Unit and Never describe different kinds of computation results.",
+  reading: "In the example, million is Int and avogadro is Float because of their written forms. newline and lambda are Char; quoted and template are String. A template inserts the displayed value of an expression into text.",
+  result: "Unit has one value, (), meaning completion with no useful payload. Never has no values: a computation that cannot return a result may have this type. Int and Float are not interchangeable, even when both represent a whole number."
 }

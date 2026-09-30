@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "ジェネリックな代数的データ型",
-  summary: "選択肢を持つデータ型に型パラメーターを加え、格納する値の型を選べるようにします。",
+  summary: (explanation ()).summary,
   ruleTitle: "各選択肢も、データ型全体の型引数を持つ",
   ruleBody: "Outcome<E, A>は、失敗の型Eと成功の型Aを選べる代数的データ型です。Outcome<String, Int>とOutcome<String, Bool>は別の型になります。FailureにはEの値だけが入り、SuccessにはAの値だけが入りますが、どちらの値も結果の型はOutcome<E, A>です。使わない側の型引数がなくなるわけではありません。",
   identityBody: "Success 42からは、成功値の型AがIntだと分かります。しかし、失敗値の型Eはこの値だけでは分かりません。例では、結果にOutcome<String, Int>という型注釈を付けてEも決めています。失敗値を持たないSuccessだからといって、Eが自動でNeverになるわけではありません。",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "一つの選択肢だけでは、すべての型引数が決まらないことがある",
   invalidBody: "結果に必要な型が分からない場所でSuccess 42だけを書くと、Eを決められないことがあります。結果の型注釈か、コンストラクターの明示的な型引数で補ってください。また、Treeのように必要な型引数を省いた型名は、値の型として使えません。",
   diagnosticsBody: "型を推論できない場合は、その選択肢に含まれない型パラメーターを確認してください。matchの各分岐では、対象のデータ型にすでに決まった型引数を使います。分岐ごとに別の型へ変わるわけではありません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "成功値と失敗値の型を選べるデータ型を作るには",
+  summary: "ジェネリックな代数的データ型では、選択肢を固定したまま、その中に入れる値の型を選べます。",
+  reading: "例のOutcome<E, A>には、Eを持つFailureとAを持つSuccessがあります。Outcome<String, Int>なら、Failureには文字列、Successには整数が入り、どちらも同じOutcome<String, Int>型の値です。",
+  result: "Success 42だけでAはIntと分かりますが、Eは分かりません。例では型注釈でEも指定しています。Tree<A>のNodeは子の木を持ち、すべての木で同じAを使います。"
 }

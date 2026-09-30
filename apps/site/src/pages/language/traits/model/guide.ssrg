@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How can different types share one named operation?"
-    "異なる型から、共通の名前で操作を呼ぶには",
-  summary: localized
-    "A trait declares a shared operation; an instance supplies its implementation for a particular type. A generic caller can require that operation without knowing each type's representation."
-    "traitは共通の操作を宣言し、instanceは特定の型の処理を定義します。共通の呼び出し側は、その型の内部表現を知らずに操作を要求できます。",
-  exampleId: "reader-trait",
-  reading: localized
-    "Label<A> declares label: A -> String. Ticket has an integer number; Person has a name. Each instance supplies label for its own type. labelOf<A> calls label without knowing either representation; where Label<A> requires that the supplied type supports this operation. personLabel is \"Aki\", and label ticket in main produces \"ticket-42\"."
-    "Label<A>はAからStringを返すlabelを宣言します。Ticketは番号、Personは名前を持ち、各instanceがそれぞれのlabelを定義します。labelOf<A>は内部の形を知らずにlabelを呼びます。where Label<A>は、渡す型にこの操作の実装が必要という条件です。personLabelは\"Aki\"、mainのlabel ticketは\"ticket-42\"になります。",
-  result: localized
-    "The result is \"ticket-42\". You can define Label for another owned type and reuse a caller constrained by Label<A>. The benefit is a shared contract, not making every label operation a dot method or inspecting values for a runtime class."
-    "結果は\"ticket-42\"です。別の型にもLabelを実装すれば、Label<A>を要求する共通の関数を使えます。利点は共通の約束であり、自動でドット呼び出しを追加したり、値から実行時のクラスを探したりすることではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "reader-trait") (en.explanation ()) (ja.explanation ())

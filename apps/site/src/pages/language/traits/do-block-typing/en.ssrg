@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Typing a do block",
-  summary: "Type inference chooses one Monad constructor for the whole block and propagates each payload type through its following items.",
+  summary: (explanation ()).summary,
   ruleTitle: "Every monadic item shares one M<_>",
   ruleBody: "The first bind, final expression, or expected block type can determine M. A bind checks M<A>, introduces an A binding, and types the remainder as M<B>. The final expression determines the block result M<R>.",
   typingBody: "The compiler requires unique Monad<M> evidence and equal constructors across all monadic items. A pure let does not constrain M. Partial constructors must have unary kind, and unresolved candidates produce ambiguity rather than a guessed default.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Different constructors require an explicit bridge",
   invalidBody: "Maybe and Either, two transformer stacks, or a pure value and an Effect cannot coexist as monadic items without an explicit lift or conversion that makes every item share M<_>.",
   diagnosticsBody: "Errors show the selected constructor, the item with a mismatched constructor or payload, a non-unary kind, missing Monad evidence, or an absent final result.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Can I mix Maybe and Effect inside one do block?",
+  summary: "A do block uses one computation type throughout. The payload types can change between steps, but the surrounding type constructor must agree.",
+  reading: "pair extracts first from left and second from right, both Maybe<Int>. pure (first, second) produces Maybe<(Int, Int)>. The final payload is a tuple, but the outer Maybe is unchanged.",
+  result: "present is Just (20, 22), while absent is Nothing. An ordinary let can calculate a pure value between steps; it does not convert an Either or Effect into Maybe. Such a change needs an explicit operation."
 }

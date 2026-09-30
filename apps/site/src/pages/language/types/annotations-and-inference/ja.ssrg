@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "型注釈と推論",
-  summary: "公開APIと関数の境界には型を示し、非公開の不変値は局所的な情報から推論できます。",
+  summary: (explanation ()).summary,
   ruleTitle: "関数の入口と出口には型を書く",
   ruleBody: "すべての関数の引数と戻り値には型を書きます。公開する宣言にも型が必要です。一方、非公開で再帰しないletは、初期値から型が決まるなら省略できます。fn identity<A>のように、関数名の直後に型パラメーターを書けます。",
   identityBody: "型注釈は、値をどの型として使うかを他のコードへ伝えます。実行環境の内部の格納形式を指定するものではありません。戻り値の型を書くと、関数の実装を変えても呼び出し側が要求する条件が明確になります。",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "注釈で型の矛盾を隠すことはできない",
   invalidBody: "必須の型注釈を省略すると、宣言の位置にエラーが出ます。また、Intと書いたletに文字列を渡すなど、注釈と値の型が矛盾している場合もエラーです。注釈は変換処理ではありません。",
   diagnosticsBody: "注釈不足なら、引数や戻り値の宣言に型を加えます。型の不一致なら、期待される型と実際の値の型を見比べてください。エディターで推論型が表示されても、公開宣言に必要な注釈を省けるわけではありません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "どこに型を書く必要があるか",
+  summary: "型注釈は、値や関数が扱う型を明示する書き方です。省略できる場所では、コンパイラが値から型を推論します。",
+  reading: "例のleft: Intとright: Intは整数を受け取る二つの引数で、最後のIntは戻り値の型です。let addOne = add 1では、初期値から「残りの整数一つを受け取る関数」と分かるため、型を省略できます。",
+  result: "注釈は値の検査であり、変換ではありません。整数にStringと書いても文字列にはならず、型エラーになります。署名を省略するeffect fnには別の推論規則があるため、通常のfnと区別してください。"
 }

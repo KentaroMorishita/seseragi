@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Module specifier resolution",
-  summary: "Resolve a source spelling to one canonical module without directory-index or working-directory guesses.",
+  summary: (explanation ()).summary,
   ruleTitle: "The prefix chooses the resolver",
   ruleBody: "An import specifier is classified by its leading form, not tried against several resolvers until something works. ./ and ../ resolve relative to the importing module. self/ names the current package's source modules; std/ names the standard library; gen/ names generated bindings. Other bare specifiers name a declared direct dependency and one of its public subpaths.",
   typingBody: "A relative ./user resolves exactly to user.ssrg in the importing module's directory. Writing ./user.ssrg is another spelling of that same canonical module. There is no implicit directory index, extension search or fallback to the shell's current working directory. Package identity and the normalized source path determine module identity, so equivalent relative spellings do not duplicate nominal types.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A filesystem path does not bypass a package API",
   invalidBody: "An undeclared dependency, a private package subpath or a specifier with no candidate is an error. Multiple candidates are also an error rather than an arbitrary choice. Moving a file into a directory does not make ./directory search for index.ssrg. Update the explicit import path.",
   diagnosticsBody: "Start with the importing module's location and the specifier category. Then check the manifest, export map and exact source path. The example imports one sibling both with and without .ssrg and passes its nominal UserId between those names; it needs both source files and is not a standalone Playground program.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Which file does ./user mean?",
+  summary: "An import path is resolved by its explicit form. Relative paths are relative to the importing source file, not the shell's working directory.",
+  reading: "./modules-domain and ./modules-domain.ssrg both identify the sibling file modules-domain.ssrg. In the example, constructing a UserId from one spelling and reading it through the other is valid because the target module is the same.",
+  result: "For ./user the resolver does not try user/index.ssrg or unrelated extensions as fallbacks. Prefixes such as self/, std/, and gen/ select their documented roots. An external package path must be declared and exported, not merely exist somewhere on disk."
 }

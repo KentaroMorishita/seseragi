@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Erasure and runtime representation",
-  summary: "Generic types guide checking without becoming inspectable runtime type arguments.",
+  summary: (explanation ()).summary,
   ruleTitle: "Type arguments are not runtime values",
   ruleBody: "In identity<A>, A is part of the static contract, not a value available inside the function. The same body returns its argument at Int and String. There is no typecase that branches on A, no reflection over the selected parameter and no implicit runtime specialization selected by source-level type information.",
   identityBody: "A backend can erase arguments or monomorphize an implementation. Neither strategy is a language-level guarantee about memory layout, allocation or function identity. The source program may depend on the declared semantics, but cannot inspect which compiler strategy was chosen.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Do not branch on an abstract type at runtime",
   invalidBody: "A cannot be compared, printed or inspected as a value merely because it appears in a parameter list. If behavior depends on a capability, declare a trait constraint; if it depends on a finite set of runtime cases, use an ADT and match its value. Neither mechanism is hidden type reflection.",
   diagnosticsBody: "Type checking validates generic calls before backend lowering. When profiling generated code, distinguish an observed backend layout from a portable language contract. Performance documentation describes costs explicitly; generic syntax alone does not promise zero allocation or one specialization per type.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Can a generic function inspect its type argument?",
+  summary: "Type parameters guide compilation, not runtime branching. A generic function must work using the operations allowed by its signature.",
+  reading: "identity<A> returns its input without needing to know whether A is Int or String. The two calls keep their respective result types. There is no value named A for the function to print or compare.",
+  result: "To require an operation such as displaying a value, declare a trait constraint. To choose between actual cases stored in a value, use an ADT and match. Neither approach depends on inspecting erased type arguments."
 }

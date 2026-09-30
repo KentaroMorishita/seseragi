@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Optional record field syntax",
-  summary: "field?: A marks optional presence in a structural record; it is not a Maybe-valued required field or a general ? operator.",
+  summary: (explanation ()).summary,
   formsTitle: "Attach ? directly to a record field name",
   formsBody: "Write id?: String. The formatter normalizes spacing to that form, not id? : String or id ? : String. A lone ? token is meaningful only here and in the optional-query position of a record pattern; expressions have no standalone ? operator.",
   typingBody: "An absent optional field is different from a required field of type Maybe<A>. Accessing an optional field produces Maybe<A>. A record with a required A field may satisfy the matching optional field, and a provided optional field preserves its presence information through record operations.",
@@ -10,4 +11,11 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "Optional markers belong only to structural record positions",
   invalidBody: "Do not attach ? directly to struct fields, function parameters, or ADT payloads. Spaced marker forms, a standalone expression ?, duplicate fields, unknown access, and patterns that demand a missing required field are rejected at their owning syntax or type boundary.",
   diagnosticsBody: "The formatter canonicalizes valid marker spacing. Parser diagnostics own misplaced ? tokens; record typing owns incompatible presence, field access, and pattern requirements. Diagnostics preserve the distinction between absence and a required Maybe value.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Where does the ? for an optional field go?",
+  summary: "Write field?: Type inside a structural record type. The marker means that the field itself may be absent.",
+  reading: "Props uses id?: String and required children: String. Both minimal and named satisfy Props. Reading props.id returns Maybe<String>, and ?? chooses the existing string or the fallback \"anonymous\".",
+  result: "? is not a general optional parameter or optional chaining operator. Do not attach it to ordinary function parameters or struct fields. A field whose type is Maybe is present even when its stored value is Nothing."
 }

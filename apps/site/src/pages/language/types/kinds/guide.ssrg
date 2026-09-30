@@ -1,18 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized
-    "Why can I pass Maybe as a type argument but not use it alone as a value type?"
-    "Maybeを型引数に渡せるのに、値の型として単独で使えないのはなぜか",
-  summary: localized
-    "Some type parameters accept complete types such as Int; others accept type constructors such as Maybe. A kind describes which shape is required."
-    "型引数には、Intのような完成した型を受け取る場所と、Maybeのように別の型を待つものを受け取る場所があります。その形を表す情報がkindです。",
-  exampleId: "types-kinds",
-  reading: localized
-    "Wrapped<M<_>, A> takes M, which needs one type argument, and applies it to A. Wrapped<Maybe, Int> therefore means Maybe<Int>. keep receives and returns this complete type."
-    "Wrapped<M<_>, A>は、型引数を一つ待つMにAを渡します。Wrapped<Maybe, Int>はMaybe<Int>の意味です。keepが受け取って返すのは、この完成した型です。",
-  result: localized
-    "Maybe by itself still needs its element type; Maybe<Int> does not. The _ in M<_> denotes an available type-argument position. It is not permission to leave an ordinary value's type unknown."
-    "Maybeだけでは中身の型が不足し、Maybe<Int>なら揃っています。M<_>の_は型引数の空き位置を示します。通常の値の型を不明なままにしてよい、という意味ではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "types-kinds") (en.explanation ()) (ja.explanation ())

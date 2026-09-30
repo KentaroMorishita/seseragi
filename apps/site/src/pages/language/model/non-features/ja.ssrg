@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ConceptCopy } from "../concept"
 
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "中核に存在しない機能",
-  summary: "他の言語でよく使う構文でも、Seseragiでは意図的に設けていないものがあります。何がなく、同じ目的には何を使うかを確認できます。",
+  summary: (explanation ()).summary,
   ruleTitle: "同じ記号ではなく、同じ目的の操作を探す",
   ruleBody: "他の言語のコードを、キーワードだけ変えて移せるとは限りません。例えば、レコードの更新ではフィールドへ代入せず、新しいレコードを作ります。関数の結果はreturnで返すのではなく、関数本体の式の値を使います。下の一覧で、目的に対応する仕組みを確認してください。",
   consequencesTitle: "混同しやすい三つの違い",
@@ -25,3 +26,10 @@ pub fn alternatives -> Array<String> = [
   "ユーザー定義の前置・後置演算子：名前付き関数か、宣言した中置演算子を使います。",
   "return、break、continue：関数では本体の式の値を結果にします。コレクションの走査を途中で止める場合は、reduceUntilやforEachUntilを使います。"
 ]
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "他の言語の構文がない場合、代わりに何を使うか",
+  summary: "代入、null、returnがないからといって、更新や値の不在、関数の戻り値を表せないわけではありません。それぞれ別の明示的な書き方を使います。",
+  reading: "不変なレコードはold.fieldへ代入せず、{ ...old, field: newValue }で別の値を作ります。値の有無はJustとNothingで表します。関数は本体の式、ブロックは最後の式を戻り値にします。",
+  result: "回復可能な失敗にはEitherかEffectの失敗型を使い、コレクションの途中終了には一覧にある専用の操作を使います。他言語の構文を再現するより、結果と処理の流れが見える形を選びます。"
+}

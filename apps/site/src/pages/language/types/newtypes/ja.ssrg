@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "newtypeによる型の区別",
-  summary: "UserIdとIntのように、中身が同じでも用途の違う値を別の型として扱います。",
+  summary: (explanation ()).summary,
   ruleTitle: "同じIntを使っていても、別の型として区別する",
   ruleBody: "newtype UserId = Intは、Intの別名ではなく、新しい型UserIdを作ります。UserId 42で値を作り、UserIdのパターンで中のIntを取り出します。同じIntを使うOrderIdを別に宣言しても、UserIdとは交換できません。識別子や単位を取り違える間違いを型検査で防げます。",
   identityBody: "newtypeに型パラメーターを付けることもできます。中の値に使わない型パラメーターでも、用途の異なる型を区別できます。そのパラメーターを値から推論できない場合は、結果の型注釈や明示的な型引数で指定します。宣言の右辺に書くのはフィールドの一覧ではなく、中身を表す一つの型です。",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "UserIdが必要な場所に、Intをそのまま渡さない",
   invalidBody: "Intを受け取る関数にUserId 42を渡すと型エラーになります。例のtoIntのように、意図を示して中身を取り出してください。逆にUserIdが必要な場所には、IntをUserIdで包んで渡します。メソッドやtrait実装を追加しても、この型の区別はなくなりません。",
   diagnosticsBody: "コンパイラが実行時の余分な包みを省くことがあっても、ソース上では型の区別が保たれます。また、newtypeをopaqueとして公開すれば、利用側には型名と安全な操作だけを見せ、値の構築や中身の取り出しを定義元のモジュールに限定できます。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "整数で表す二種類のIDを取り違えないようにするには",
+  summary: "newtypeは、既存の型を中身に持つ別の型を作ります。実行時の形が似ていても、用途の違いを型検査で区別できます。",
+  reading: "UserId 42とOrderId 42は同じ整数を持ちますが、型は別です。toIntはUserIdだけを受け取り、matchで中の整数を取り出します。OrderIdを渡すと型エラーになります。",
+  result: "取り出した結果はIntの42です。包む操作と取り出す操作は明示します。newtypeを宣言しただけで、自動変換や値の検証が追加されるわけではありません。"
 }

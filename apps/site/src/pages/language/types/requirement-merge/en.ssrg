@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Requirement merge",
-  summary: "R & S merges closed service requirements only inside Effect and Stream requirement positions; it is not a general intersection type.",
+  summary: (explanation ()).summary,
   ruleTitle: "Compile-time union of required service fields",
   ruleBody: "Inside the first type argument of Effect or Stream, R & S normalizes to the union of fields from two required-field structural records or parameters known to be complete record requirements. R & {} is R; grouping and order do not change a conflict-free normalized field map.",
   identityBody: "Requirement merge has no constructor, runtime tag, field access, or value representation. Equal duplicate fields collapse to one. A duplicate field with different types is SES-E0001, because one host service name cannot satisfy two incompatible requirements.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "& is not a general-purpose intersection",
   invalidBody: "Using R & S outside an Effect or Stream requirement position reports SES-T0501. A lone & in value syntax is not an operator, and requirement parameters are complete records rather than row fragments.",
   diagnosticsBody: "SES-E0001 identifies the conflicting field and both types. SES-T0501 owns invalid contexts. Alias expansion and normalization remain visible to tooling so a diagnostic can trace a service back through the generic combinator that added it.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I require both an existing environment and a clock?",
+  summary: "The & notation combines service requirements in an Effect or Stream type. It describes what execution needs, not how to merge runtime records.",
+  reading: "Timed<R, E, A> abbreviates an Effect that needs everything in R plus a clock field of type Clock. E still describes recoverable failures and A the success value; adding the service does not change either.",
+  result: "Two requirements with the same field name must agree on its type. R & {} adds nothing. At an execution boundary, the combined required fields must resolve completely so the runner can provide them."
 }

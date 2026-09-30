@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Signalの演算子",
-  summary: "prefix *はSignal snapshotを読み、:=はMutableSignalへ書きます。どちらもeffectful operationです。",
+  summary: (explanation ()).summary,
   ruleTitle: "*で読み、:=で更新する。ただし、どちらもEffect",
   ruleBody: "*sourceはSignal.read sourceと同じで、Task<A>を返します。target := valueはSignal.set value targetと同じで、Task<Unit>を返します。*が二つの値の間にある場合は、通常の乗算です。",
   typingBody: "SignalとMutableSignalはどちらも読めますが、:=で更新できるのはMutableSignalだけです。通常のletやstructのフィールドを代入可能にする記号ではありません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "現在値を読む操作もEffectである",
   invalidBody: "*sourceはAそのものではなくTask<A>です。純粋な関数からAとして返せません。また、読み取りを行って後で書き戻す操作と、updateによる一回の更新は同じではありません。",
   diagnosticsBody: ":=の左に読み取り専用のSignalや普通の値を置いていないか確認します。*の結果を使うときは、Taskを実行して中の値を受け取る必要があります。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Signalに対する*と:=は何をするか",
+  summary: "接頭辞の*はEffectとしてSignalの現在値を読み、:=はMutableSignalに書き込みます。普通の変数への代入ではありません。",
+  reading: "countは0で作られます。count := 1で現在値を1にし、signals.updateでその値に1を足します。最後の* countが更新後の現在値を読みます。",
+  result: "readAndWriteを実行すると2を返します。* countの型はTask<Int>なので、純粋な関数で直接Intとしては使えません。現在値から新しい値を作る場合は、読み取りと書き戻しを別々にせずupdateを使います。"
 }

@@ -1,18 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized
-    "How can I expose an ID without letting callers construct invalid ones?"
-    "不正なIDを直接作らせず、型と操作だけ公開するには",
-  summary: localized
-    "pub exposes a declaration. Adding opaque to a named type hides its representation from other modules while keeping the type usable in public signatures."
-    "pubは宣言を公開します。名前付きの型にopaqueも付けると、外部へは型を公開しつつ、内部の作り方や取り出し方を隠せます。",
-  exampleId: "modules-domain",
-  reading: localized
-    "UserId wraps Int but is pub opaque. The public userId function validates the input and returns Just (UserId value) only when positive. toInt is an explicitly supplied way to read the integer; external callers cannot directly use the hidden constructor."
-    "UserIdはIntを包みますが、pub opaqueです。公開関数userIdは正数か検査し、正しい場合だけJust (UserId value)を返します。toIntは意図して用意した読み取り方法で、外部からコンストラクターを直接使えるわけではありません。",
-  result: localized
-    "userId 42 returns a present ID and userId 0 returns Nothing. This controls source-level access, not runtime encryption. A public type's methods still need pub individually before other modules can call them."
-    "userId 42はIDのある結果、userId 0はNothingです。これはソース上のアクセス制限で、実行時の暗号化ではありません。型を公開しても、外部から使うメソッドには個別にpubが必要です。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "modules-domain") (en.explanation ()) (ja.explanation ())

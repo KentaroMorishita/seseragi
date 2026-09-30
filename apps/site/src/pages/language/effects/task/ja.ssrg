@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Task",
-  summary: "Task<A>は、外部サービスを必要とせず、回復可能な失敗を返さないEffectの別名です。",
+  summary: (explanation ()).summary,
   ruleTitle: "Taskは、Effect<{}, Never, A>の短い名前",
   ruleBody: "Task<A>とEffect<{}, Never, A>は同じ型です。独立した実行方式やtrait実装を持つ別の型ではありません。{}はサービスが不要であること、Neverは回復可能な失敗を返さないこと、Aは成功値の型を表します。",
   typingBody: "サービスが不要でも失敗する可能性があれば、Task<A>ではなくEffect<{}, E, A>を使います。Taskは失敗型がNeverなので、別の失敗型を要求する計算と組み合わせられます。一方、サービスを必要とする計算は、失敗型がNeverでもTaskにはなりません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "非同期処理なら何でもTaskになるわけではない",
   invalidBody: "RとEを省略してTaskと書けるのは、Rが正確に{}で、EがNeverの場合だけです。短く書くために、必要なサービスや回復可能な失敗を型から隠すことはできません。",
   diagnosticsBody: "型が合わない場合は、TaskをEffect<{}, Never, A>として見直し、必要なサービス、失敗型、成功値の型のどこが違うかを確認してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Effectの型をTaskと短く書けるのはいつか",
+  summary: "Task<A>はEffect<{}, Never, A>の別名です。外部サービスが不要で、回復可能な失敗を返さない処理を表し、実行方式はEffectと同じです。",
+  reading: "cachedはsucceedで受け取った整数を成功値にするため、Task<Int>と書けます。fallibleはStringで失敗する場合があるため、Task<Int>とは書けず、失敗の型を残しています。",
+  result: "cached 42も、実行するまでは処理の説明です。Neverは回復可能な失敗がないことを表し、キャンセルや実行時の不具合が絶対に起きないという保証ではありません。"
 }

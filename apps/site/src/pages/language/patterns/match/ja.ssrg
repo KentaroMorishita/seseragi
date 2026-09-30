@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "パターン照合",
-  summary: "matchは値に合う分岐を選び、その分岐の結果を返します。すべての場合を扱う必要があります。",
+  summary: (explanation ()).summary,
   ruleTitle: "上から順に照合し、最初に一致した分岐を使う",
   ruleBody: "リテラル、名前の束縛、_、コンストラクター、タプル、レコード、struct、Array、Listのパターンを組み合わせ、入れ子にできます。ガード条件はBoolで、その分岐のパターンで取り出した名前を使えます。どの入力値でも、いずれかの分岐に到達する必要があります。",
   typingBody: "照合する値の型から、各パターンで取り出す値の型が決まります。すべての分岐の結果は同じ型である必要があります。ただし、値を返さないNeverの分岐は例外です。ガード条件は偽になる可能性があるため、その分岐だけでは、すべての場合を扱ったとはみなしません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "ガード付きの分岐だけでは、取りこぼしが残る",
   invalidBody: "コンストラクターを照合する分岐でも、ガード条件が偽なら一致しません。同じ場合を扱うガードなしの分岐や、残りの場合を受け取る分岐を追加してください。逆に、先の分岐がすべてを受け取るなら、その後の分岐には到達できません。",
   diagnosticsBody: "パターンと型の不一致、非公開フィールドの参照、同じ名前の重複束縛、Boolでないガード条件、扱っていない場合、到達できない分岐、結果の型の不一致を報告します。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "値が取り得る場合を、漏れなく扱うには",
+  summary: "matchは最初に一致した分岐を選び、その結果を返します。入力にあり得る場合を扱い忘れていないか、コンパイラが検査します。",
+  reading: "StatusにはWaitingと、Intを持つCompleteがあります。最初のCompleteの分岐にはcount > 0という条件もあり、その後のComplete _が残りの点数を扱います。_は中の値を使わない指定です。",
+  result: "message (Complete 3)は\"3 complete\"を返します。条件付きの分岐は条件が偽になる可能性があるため、それだけですべてのCompleteを扱ったことにはなりません。各分岐の戻り値はStringです。"
 }

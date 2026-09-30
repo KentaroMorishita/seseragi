@@ -1,18 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized
-    "How do I change two observed values without exposing a half-updated state?"
-    "二つの値を、中途半端な状態を見せずに更新するには",
-  summary: localized
-    "A Signal represents a changing observable value. A transaction prepares several updates and publishes them together."
-    "Signalは、変化を観測できる値を表します。トランザクションは複数の更新を準備し、まとめて公開します。",
-  exampleId: "effects-signal-transactions",
-  reading: localized
-    "x starts at 1 and y at 2. planSet 10 x prepares x = 10; planUpdate adds 20 to y. transaction applies both plans as one update. currentX and currentY then read the stable values using *."
-    "xは1、yは2から始まります。planSet 10 xはxを10にする計画で、planUpdateはyに20を足す計画です。transactionが両方をまとめて公開し、その後の*で確定した現在値を読みます。",
-  result: localized
-    "Executing updateCoordinates succeeds with (10, 22). Observers do not receive the half-state (10, 2) from this transaction. Preparing plans alone does not change a Signal, and ordinary immutable record fields do not become writable."
-    "updateCoordinatesを実行すると(10, 22)で成功します。この更新による途中の(10, 2)を観測者に通知しません。計画を作るだけでは値は変わらず、普通の不変なフィールドが書き換え可能になるわけでもありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-signal-transactions") (en.explanation ()) (ja.explanation ())

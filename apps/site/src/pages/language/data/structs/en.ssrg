@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Structs",
-  summary: "Declare a named type with named fields. The type's declaration, not just its fields, determines which values belong to it.",
+  summary: (explanation ()).summary,
   purpose: [
     "A struct gives a data shape its own type name. User can hold an id and a name. Another struct named Product remains a different type even if it declares the same fields.",
     "This distinction helps prevent mixing values with different meanings. A plain record is identified by its fields; a struct is identified by its declaration. The latter is called nominal typing."
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "Learn how parameters such as Box<A> make a family of types.",
     "Add operations to a struct and check the rules for their self parameter."
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Why name a data shape instead of using an ordinary record?",
+  summary: "A struct gives a data shape a named identity, preventing unrelated declarations with the same fields from being confused.",
+  reading: "struct User declares id: Int and name: String. User before the braces constructs that specific type. User { ...original, name: \"Mio\" } builds another User with the copied id and the replacement name.",
+  result: "The outputs are Aki, Mio, and 1. Both values remain User, and original is unchanged. An ordinary { id: 1, name: \"Aki\" } record is not automatically a User."
 }

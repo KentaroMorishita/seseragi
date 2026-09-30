@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "純粋な式",
-  summary: "通常の式は外部状態を読んだり変更したりせず、値を計算します。",
+  summary: (explanation ()).summary,
   ruleTitle: "外部の読み書きと、値の計算を分ける",
   ruleBody: "純粋な関数は引数から結果を計算します。出力、通信、ファイル、時刻、乱数、変更可能な状態、非同期処理はEffectを通じて扱います。これにより、関数が外部で何をするかが結果の型から分かります。",
   typingBody: "純粋性は特別な注釈ではなく、操作の型で検査します。純粋な関数でEffectを組み立てて返すことはできます。ただし、そのEffectを実行済みの結果Aとして扱うことはできません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Effectを返すことと実行することは違う",
   invalidBody: "通常のUnitや時刻の値を返す関数のふりをして、内部で出力や時刻の取得、Signalの更新を行うことはできません。戻り値にEffectを残して組み合わせます。",
   diagnosticsBody: "型エラーでは、通常の値とEffectを取り違えていないか確認します。EffectのR・E・Aを分けて見ると、必要なサービスと失敗と成功値が分かります。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "通常の関数の中で、出力や時刻の取得をしてよいか",
+  summary: "純粋な式は、変化する外部状態へアクセスせずに値を計算します。外部操作を行う場合は、型にEffectとして表します。",
+  reading: "lineTotalは二つの整数を掛け、そのままIntを返します。plannedTotalは同じ結果をsucceedに入れるため、戻り値はTask<Int>です。処理を説明する値を作ったのであり、出力や実行はしていません。",
+  result: "lineTotal 20 3は60です。plannedTotal 20 3を実行すると、成功値が60になります。外部処理の型からEffectを消して、通常のIntを返す関数に見せかけることはできません。"
 }

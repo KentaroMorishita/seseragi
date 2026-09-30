@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Type identity and coercion",
-  summary: "Seseragi permits only Never coercion and structural record width generally; every numeric, nominal, optional, and foreign conversion is explicit.",
+  summary: (explanation ()).summary,
   ruleTitle: "Identity survives similar values and representations",
   ruleBody: "Int and Float are distinct; A does not become Maybe<A> or Either<E, A>; structs do not become same-field records; newtypes do not implicitly wrap or unwrap; and Js.Nullable<A> does not become Maybe<A>. Use the named boundary conversion for each case.",
   identityBody: "The only general implicit coercions are Never into any demanded type and a wider structural record into the narrower required field set. Effect, Stream, Signal, and MutableSignal capability relationships are separately specified exceptions rather than evidence of general covariance.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "A compatible backend representation grants no conversion",
   invalidBody: "Passing Int where Float is required, a newtype where its representation is expected, a struct where a record is expected, or nullable foreign data where Maybe is expected is rejected. Wrapping a value in Just or calling toFloat is an explicit program step.",
   diagnosticsBody: "Mismatch diagnostics name the source and target identities and may point to the relevant explicit boundary API. They never report success merely because TypeScript or another backend would accept the underlying representation.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Will the compiler convert a similar value for me?",
+  summary: "Seseragi keeps most type conversions explicit. A similar representation is not enough to make two types compatible.",
+  reading: "An Int such as 42 is not automatically a Float, Just 42 is a Maybe<Int> rather than an Int, and a UserId wrapping 42 is not a raw integer. These distinctions prevent accidentally dropping absence handling or mixing identifiers.",
+  result: "Use the conversion operation you intend: a numeric conversion, Just to wrap a present value, or match to unpack a newtype. The limited automatic rules below do not permit arbitrary chains of inferred conversions."
 }

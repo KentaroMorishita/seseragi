@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "再公開",
-  summary: "別のモジュールの公開名を、このモジュールからも利用できるようにします。",
+  summary: (explanation ()).summary,
   ruleTitle: "利用側が参照する窓口をまとめる",
   ruleBody: "pub import { UserId, toInt } from \"./modules-domain\"と書くと、元のモジュールで公開されているUserIdとtoIntを、このモジュールからも公開できます。利用側は、定義元のファイルを直接指定せず、この窓口をimportします。UserIdの宣言が複製されるわけではなく、どちらからimportしても同じ型です。",
   typingBody: "pub import * as domainは、domainという名前を通して元の公開名を使えるようにします。利用側ではdomain.UserIdやdomain.toIntのように修飾して参照します。元のすべての名前が、利用側に無修飾で追加されるわけではありません。名前を指定する再公開と、名前空間ごとの再公開は、同じモジュールで併用できます。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "非公開の名前を再公開することはできない",
   invalidBody: "再公開できるのは、元のモジュールが公開している名前だけです。名前を変更して公開しても、型そのものの同一性は変わりません。また、再公開するモジュール同士が互いに依存する場合も、通常の循環検査の対象になります。",
   diagnosticsBody: "名前が見つからない場合は、まず定義元でpubが付いているか、次に再公開の名前や別名が一致しているかを確認してください。この例は相対importを使うため、兄弟のmodules-domainモジュールと一緒に使います。利用側が定義元のファイル配置に依存しないようにしたいときに、再公開の窓口が役立ちます。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "利用側に、内部ファイルではなく共通の窓口を使わせるには",
+  summary: "再公開は、別のモジュールの公開宣言を共通の窓口から使えるようにします。定義を複製するものではありません。",
+  reading: "pub import { UserId, toInt }で、このモジュールからもその名前を公開します。pub import * as domainでは名前空間も公開し、利用側はdomain.UserIdやdomain.toIntとして使えます。",
+  result: "どちらの参照経路でも、元のUserId型を使います。この例には兄弟のmodules-domainファイルが必要で、窓口のファイルだけでは単独で実行できません。非公開の宣言を再公開して制限を迂回することもできません。"
 }

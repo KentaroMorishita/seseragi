@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Traits",
-  summary: "A trait names an operation that several types can support. An instance supplies the operation for one type, and the compiler checks which implementation a call needs.",
+  summary: (explanation ()).summary,
   purpose: [
     "Suppose different kinds of data should be displayed as labels. Writing one unrelated function for each type would make shared code depend on all their names. A trait gives the shared operation one name, label, while allowing a type-specific implementation.",
     "There are three separate pieces: the trait declares what an operation accepts and returns; an instance defines how it works for a type; a call uses that operation on a value. The small example contains all three."
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "Check how to implement a declared operation for your type.",
     "See how a generic function states that its argument type must support an operation."
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How can different types share one named operation?",
+  summary: "A trait declares a shared operation; an instance supplies its implementation for a particular type. A generic caller can require that operation without knowing each type's representation.",
+  reading: "Label<A> declares label: A -> String. Ticket has an integer number; Person has a name. Each instance supplies label for its own type. labelOf<A> calls label without knowing either representation; where Label<A> requires that the supplied type supports this operation. personLabel is \"Aki\", and label ticket in main produces \"ticket-42\".",
+  result: "The result is \"ticket-42\". You can define Label for another owned type and reuse a caller constrained by Label<A>. The benefit is a shared contract, not making every label operation a dot method or inspecting values for a runtime class."
 }

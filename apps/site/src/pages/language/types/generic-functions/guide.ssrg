@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I write one function that accepts different types?"
-    "異なる型で使える関数を書くには",
-  summary: localized
-    "Declare a type parameter after the function name and use it in the parameter and result types. Each call chooses a concrete type."
-    "関数名の後に型パラメーターを宣言し、引数や戻り値の型に使います。具体的な型は、呼び出しごとに決まります。",
-  exampleId: "types-generic-functions",
-  reading: localized
-    "identity<A> accepts an A and returns the same A. identity 42 infers Int; identity<String> \"hello\" explicitly selects String. empty<A> has no element from which to infer A, so its caller supplies List<Int> or an explicit <Int>."
-    "identity<A>はAを受け取り、同じAを返します。identity 42ではIntを推論し、identity<String> \"hello\"ではStringを明示しています。empty<A>には要素がないため、呼び出し側でList<Int>という注釈か<Int>を補います。",
-  result: localized
-    "A type parameter is a placeholder for a type, not an untyped value. identity<String> 42 is rejected because the selected type and the actual argument disagree. Omitted type arguments are inferred, never guessed at runtime."
-    "型パラメーターは型の置き場所であり、型のない値ではありません。identity<String> 42は、指定した型と引数の型が合わないためエラーです。省略した型引数は実行前に推論されます。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "types-generic-functions") (en.explanation ()) (ja.explanation ())

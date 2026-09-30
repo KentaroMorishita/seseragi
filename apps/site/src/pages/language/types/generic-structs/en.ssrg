@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Generic structs",
-  summary: "Infer parameters from fields, then preserve the instantiated type through access and updates.",
+  summary: (explanation ()).summary,
   ruleTitle: "Fields constrain the constructor",
   ruleBody: "struct Box<A> declares a nominal family with a field of type A. Box { value: 42 } infers Box<Int> from that field. Box<String> { value: \"hello\" } instead states the parameter explicitly and checks the field against String. All fields and any expected type contribute constraints to the same application; incompatible constraints cannot produce a mixed Box.",
   identityBody: "Field access substitutes the receiver's actual parameters. A Box<Int> has an Int value field, while Box<String> has a String value field. This is the same declaration with different static arguments, not two unrelated field lookups. A struct remains nominal: a record with a value field is not a Box.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "An update is not a type-changing constructor",
   invalidBody: "Box<Int> { value: \"hello\" } is inconsistent. If you need a Box<String> from a Box<Int>, construct a new value with a conversion, as the example's label function does. Record width subtyping cannot be used to change a generic nominal receiver's arguments.",
   diagnosticsBody: "Inspect the instantiated receiver type before diagnosing a field mismatch. If inference has no field information for a parameter, use an expected type or explicit arguments. A failed field update should be fixed with a same-type value or an explicit reconstruction, not by hiding the receiver's parameters.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How can a struct hold a value of a chosen type?",
+  summary: "A generic struct names a data shape while leaving one or more field types to be chosen when you construct it.",
+  reading: "Box<A> has one field, value, whose type is A. Box { value: 42 } is Box<Int>. unwrap reads that field. label converts the integer to text with show and constructs a different Box<String>.",
+  result: "The result of label number contains the string \"42\". Updating an existing Box<Int> must still supply an Int; changing the stored type requires constructing a new Box, as label does."
 }

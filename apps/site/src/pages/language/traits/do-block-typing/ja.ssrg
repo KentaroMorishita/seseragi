@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "doブロックの型付け",
-  summary: "型推論はblock全体で一つのMonad型構築子を選び、各payload型を後続itemへ伝えます。",
+  summary: (explanation ()).summary,
   ruleTitle: "取り出す処理を、一種類の型で揃える",
   ruleBody: "最初の取り出し、最後の式、または周囲が要求する型から、処理の種類Mを決めます。x <- mxでmxがM<A>ならxはAです。最後の式がM<R>ならdo全体もM<R>です。",
   typingBody: "Maybe、Either、Effectなど、一つのdoで同じ種類の処理を使い、対応するMonadが必要です。普通のletは処理の種類を決めません。種類が分からない場合は型注釈で補います。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "異なる種類の処理は明示的に変換する",
   invalidBody: "MaybeとEither、通常の値とEffectをそのまま混ぜることはできません。fromEitherなどの変換を使い、一種類の処理に揃えてください。",
   diagnosticsBody: "取り出す行の型、ブロック全体の型、Monad、最後の式を確認します。M<A>のAの違いは許されますが、外側のMは同じでなければなりません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "一つのdoにMaybeとEffectを混ぜてよいか",
+  summary: "一つのdoブロックでは、包む計算の種類を揃えます。取り出す中身の型は行ごとに変わっても、MaybeやEffectといった外側の種類は同じです。",
+  reading: "pairでは、leftとrightのMaybe<Int>からfirstとsecondを取り出します。pure (first, second)はMaybe<(Int, Int)>です。最後の中身はタプルになりますが、外側のMaybeは変わりません。",
+  result: "presentはJust (20, 22)、absentはNothingです。途中のletで普通の値を計算しても、EitherやEffectをMaybeへ変換したことにはなりません。種類を変えるなら明示的な操作が必要です。"
 }

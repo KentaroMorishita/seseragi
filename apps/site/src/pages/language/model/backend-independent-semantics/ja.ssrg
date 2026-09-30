@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "生成先に依存しない意味",
-  summary: "コードの意味はSeseragiの規則で決まります。実装や実行に使う言語の都合で、計算結果を勝手に変えません。",
+  summary: (explanation ()).summary,
   meaningTitle: "生成されたコードの言語に、規則を任せない",
   meaningBody: "バックエンドとは、Seseragiを実行可能なコードへ変換するコンパイラの部分です。現在はTypeScriptを生成しますが、TypeScriptやJavaScriptの規則をそのままSeseragiの規則として使うわけではありません。Seseragiで決めた振る舞いを実装する必要があります。",
   exampleTitle: "整数の除算と、小数の除算を区別する",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "この原則は、複数の実用バックエンドがすでに存在するという説明ではありません。現在の実装はTypeScriptの実行時ライブラリを使います。また、ブラウザとプロセスでは提供できるサービスが違います。ファイルを使う処理には、そのサービスを提供する実行環境が必要です。",
     "実装がデータの内部表現や最適化方法を変えることはできます。実行速度やメモリ使用量まで同じになるわけではありません。外部コードの値は、Seseragiの型に合わせて明示的に検査・変換する必要があります。"
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "計算結果を、生成先の言語の規則で判断してよいか",
+  summary: "別の言語へコードを生成しても、観測できる計算結果はSeseragiの規則で判断します。",
+  reading: "integerResultの-7 / 2は整数の除算で、0へ向かって端数を切り捨てます。decimalResultはFloat同士の除算で、小数の商を返します。二つの式は、異なる数値型の計算を明示しています。",
+  result: "出力は-3, 3.5です。生成したTypeScriptの都合ではなく、言語の規則による結果です。一方で、すべての実行環境でメモリ配置や性能が同じになるという保証ではありません。"
 }

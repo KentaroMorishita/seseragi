@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Maybeと値の不在",
-  summary: "Maybeは正常に起こりうる値の不在を、nullや隠れたfailureではなくdataとして表します。",
+  summary: (explanation ()).summary,
   ruleTitle: "値がないことも正常なら、Nothingを返す",
   ruleBody: "Maybe<A>は、値のないNothingと、Aを持つJustのどちらかです。検索で見つからない場合などに使います。失敗理由が必要ならEitherを使います。外部言語のnullを持つ値は、連携する境界でMaybeへ変換します。",
   typingBody: "value ?? fallbackは、左のMaybe<A>からAを取り出し、ない場合に右のAを返します。戻り値はMaybeではなくAです。??はMaybeだけに使え、Eitherや通常の値には使えません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "値の不在と、理由を持つ失敗を分ける",
   invalidBody: "値がないことと、失敗したことは違います。失敗理由を伝える必要がある処理をMaybeに変えると、その情報が失われます。また、Falseや0が自動でNothingになることはありません。",
   diagnosticsBody: "??の左がMaybeか、右の型がJustの中身と一致するか確認します。matchを使うなら、NothingとJustの両方を扱ってください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "値がない場合も扱いながら、中身を使うには",
+  summary: "Maybe<A>には、Aを持つJustと、値がないNothingの二つの場合があります。正常に起こる不在を表し、失敗の理由を持つ型ではありません。",
+  reading: "displayNameはcachedを先に調べ、なければrequested、それもなければ\"anonymous\"を使います。??はJustの文字列を取り出し、Nothingのときだけ右側を評価します。右からまとまるため、cachedの代替値はrequested ?? \"anonymous\"です。",
+  result: "cachedがJust \"Aki\"なら結果は\"Aki\"です。両方がNothingなら\"anonymous\"になります。有無で処理を分けたい場合はmatchを使い、不在の理由が必要ならEitherを使います。"
 }

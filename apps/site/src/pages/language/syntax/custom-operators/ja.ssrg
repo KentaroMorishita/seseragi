@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "カスタム演算子と結合規則",
-  summary: "記号を使って二つの値を組み合わせる演算子を、自分で宣言する方法を説明します。",
+  summary: (explanation ()).summary,
   formsTitle: "記号・優先順位・処理を一緒に宣言する",
   formsBody: "operator<A> infixr 5 <+> left: A -> right: A -> A where Semigroup<A> = append left rightの例では、<+>という演算子を右からまとめる規則（infixr）、優先順位5で宣言しています。leftとrightを受け取り、appendで組み合わせてAを返します。whereは、この処理を使う型がSemigroupの組み合わせ操作を持つ必要がある、という条件です。別のモジュールからはimport { operator <+> }で読み込みます。",
   typingBody: "left <+> rightは、(<+>) left rightと同じ関数呼び出しです。一方の引数だけを渡すこともできます。演算子名と通常の値の名前は別々に扱われます。既存の演算子を特定の型で使う場合は、新しい記号の宣言ではなくtraitやstruct・newtypeの演算子宣言を使います。",
@@ -10,4 +11,11 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "予約済みの記号を再定義しない",
   invalidBody: "許可されたASCIIの演算子文字を二文字以上使います。標準演算子、->、<-、範囲やコメントの記号、??、:=は予約済みです。山括弧だけの記号も使えません。値の前や後ろだけに付けるカスタム演算子はありません。単独の&は要求をまとめるための記号です。",
   diagnosticsBody: "同じ記号を複数のimportから読み込むと、どちらを使うか決められません。また、同じ優先順位で左結合と右結合を混ぜる場合は、括弧で意図を明示してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "自分の処理に演算子の記号を付けるには",
+  summary: "カスタム二項演算子は、二つの値の間に記号を書いて呼ぶ関数です。宣言では、続けて使う場合の式のまとまり方も指定します。",
+  reading: "例の<+>は二つの文字列をappendでつなぎます。leftとrightが引数で、戻り値はStringです。infixr 4は優先順位4で右からまとまる指定で、連続して使うと右側の組から計算します。",
+  result: "labelは\"Seseragi docs\"になります。優先順位は式のまとまりを決めるもので、引数の型や評価の規則を変えません。別のモジュールのカスタム演算子は、演算子として明示的にimportします。"
 }

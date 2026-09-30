@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "説明可能な振る舞い",
-  summary: "コードから決まる型はコンパイラが推論します。情報が足りない場合や矛盾する場合は、推測で通さず、問題を報告します。",
+  summary: (explanation ()).summary,
   meaningTitle: "型を省略しても、適当に決めるわけではない",
   meaningBody: "型推論は、引数、戻り値、型の注釈から型を決める仕組みです。すべての型を書き直す必要はありませんが、型を一つに決められるだけの情報は必要です。実行してから中身を調べたり、候補の中から適当に選んだりはしません。",
   exampleTitle: "空のリストに、要素の型を指定する",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "上の例なら、List<Int>と注釈するかempty<Int> ()と呼び出します。分岐の結果型が違うなら同じ型に揃え、名前が曖昧なら修飾します。エラーを無視するのではなく、どの意味で書いたのかをコードで明確にします。",
     "型が合っていても、計算式そのものを間違えることはあります。この原則は、コンパイラがアプリケーションの目的を理解するという意味ではありません。言語上の選択が、コードの情報から決まり、その理由を説明できるという意味です。"
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "型を推論できないとき、何を補えばよいか",
+  summary: "型推論には、型と使う実装を一つに決める情報が必要です。足りない場合は、注釈で意図した型を伝えます。",
+  reading: "empty<A>は空のList<A>を作り、中の要素からAを判断できません。valuesのList<Int>という注釈が整数の要素型を伝えます。empty<Int> ()と呼ぶ方法でも指定できます。",
+  result: "出力は空のリストの`[]です。空でも要素型はIntと決まっています。注釈は不足した情報を補うもので、実際に違う引数の型を無視する指定ではありません。"
 }

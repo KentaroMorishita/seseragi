@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "型構築子",
-  summary: "型引数を再帰的に組み合わせ、個数、kind、区切り、関数型の結合を検査します。",
+  summary: (explanation ()).summary,
   ruleTitle: "型引数を指定して完成した型を作る",
   ruleBody: "Maybe<A>は、Aの型を選ぶことで完成する型です。Maybe<Int>は整数があるかないか、Array<Maybe<Int>>はその値を並べた配列を表します。Either<E, A>には二個、Effect<R, E, A>には三個の型引数が必要です。型引数はカンマで区切り、中に別の完成した型を書けます。",
   identityBody: "Task<A>はEffect<{}, Never, A>の型別名です。関数型のA -> B -> CはA -> (B -> C)と同じです。Array<Maybe<Int>>の最後の>>は山括弧を二個閉じるための記号で、式の演算子ではありません。",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "型引数の個数と種類を合わせる",
   invalidBody: "Maybe<Int, String>は型引数が多すぎます。値の型注釈にMaybeだけを書くと不足しています。また、完成した型が必要な場所に、引数をまだ受け取っていないArrayなどを渡すこともできません。",
   diagnosticsBody: "エラーでは、その型が必要とする引数の個数と、各引数の種類を確認します。山括弧が入れ子の場合は、内側の型から順に読んでください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Box<A>のAには何を書くのか",
+  summary: "型構築子は、型引数を受け取って完成した型を作ります。Box<Int>とBox<String>では、中身の型が違います。",
+  reading: "Box<A>はA型のフィールドを持ちます。unwrap<A>はBox<A>からその値を返すため、unwrap (Box<Int> { value: 42 })の結果はIntです。Aはフィールドの値ではなく、その型を指定します。",
+  result: "結果は42です。Array<Maybe<Int>>のように型を入れ子にできますが、型引数の数と形を揃える必要があります。具体的な値の型を書く場所で、Maybeだけでは不完全です。"
 }

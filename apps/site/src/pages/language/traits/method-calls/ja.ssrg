@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "traitメソッドの呼び出し",
-  summary: "trait methodは、型schemeにevidence requirementを持つ通常のcurried関数として振る舞います。",
+  summary: (explanation ()).summary,
   ruleTitle: "traitの操作を、普通の関数として呼ぶ",
   ruleBody: "読み込んだtraitの操作はlabel ticketのように関数名で呼びます。引数は空白で渡します。同じ名前の操作を複数のtraitが持つ場合は、trait名で修飾して区別します。",
   typingBody: "引数や要求される戻り値から型パラメーターを決め、そのinstanceを選びます。ジェネリック関数から呼ぶ場合はwhere条件を書きます。部分適用では残りの引数から型が決まる場合もあります。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "同じ名前を区別するにはtrait名を付ける",
   invalidBody: "同じ操作名を複数のtraitが公開していて、どれか決められない場合はtrait名を付けます。関数の型が似ているだけで自動選択はしません。",
   diagnosticsBody: "名前が読み込まれているか、どのtraitの操作か、instanceがあるか、戻り値の型が合うかを分けて確認します。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "traitの操作は、ドットで呼ぶのか",
+  summary: "traitの操作は、制約を持つ関数として呼びます。名前はtraitが宣言し、処理は引数の型に対応するinstanceから選びます。",
+  reading: "Render<Status>がrenderを実装します。withPrefixはrender valueを呼び、文字列の接頭辞を付けます。withPrefix \"status: \"で最初の引数だけを渡し、renderStatus OnlineでStatusを渡します。",
+  result: "textは\"status: online\"です。traitを宣言してもvalue.renderというドットの書き方が自動で追加されるわけではありません。ドットのメソッドは型のimplに属し、ジェネリックなtrait呼び出しではwhere制約を使います。"
 }

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Dependency graphs and cycles",
-  summary: "Keep the complete module graph acyclic, including type, trait and re-export edges.",
+  summary: (explanation ()).summary,
   ruleTitle: "Every import is a dependency edge",
   ruleBody: "The module graph includes ordinary imports and re-exports. Cycles are forbidden whether the imported declaration is a value, type or trait. There is no type-only exception and no distinction that allows a cycle merely because no immediate function call crosses it. An acyclic graph gives linking and initialization one consistent dependency order.",
   typingBody: "The focused example is a one-way consumer-to-domain dependency. Importing the same domain with two equivalent spellings still points to one canonical node. Graph identity follows package identity and normalized module path, not the count of import statements. Aliasing a name does not break a cycle.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Type-only imports do not make a cycle harmless",
   invalidBody: "A imports a type from B and B imports a type from A is still a module cycle. Re-exporting either dependency through a facade also retains the edges. Adding a delayed Effect may change execution timing, but it cannot legalize a cyclic source graph.",
   diagnosticsBody: "Cycle diagnostics identify the module paths that form the loop. Read the entire loop, not only the final import reported as its closing edge. Refactor ownership so the shared declaration has one lower-level home; remove the edge rather than suppressing it with an alias.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I recognize and remove an import cycle?",
+  summary: "A module depends on every module it imports. A cycle occurs when following those imports eventually returns to the starting module.",
+  reading: "The example imports modules-domain; that module defines UserId without importing the caller back. This is one-way dependency. In contrast, user.ssrg importing order.ssrg while order.ssrg imports user.ssrg would form a cycle, even if both imports mention only types.",
+  result: "Move declarations both modules need into a third module, such as shared.ssrg, and let both import it without importing each other. An import alias changes a local name, not the dependency, so renaming alone cannot break the cycle."
 }

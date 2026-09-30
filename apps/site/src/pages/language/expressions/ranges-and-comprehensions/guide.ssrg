@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I build a collection from a range and a condition?"
-    "範囲の中から条件に合う値を集めるには",
-  summary: localized
-    "A comprehension builds a collection by taking elements from sources, optionally filtering them, and computing a result for each remaining element."
-    "内包表記は、元の範囲やコレクションから要素を取り、条件で絞り、残った各要素から結果を作る書き方です。",
-  exampleId: "expressions-ranges-comprehensions",
-  reading: localized
-    "value <- 1 ..= limit takes integers including limit. value % 2 == 0 keeps even integers. The expression before | squares each kept value. For limit 8, the kept inputs are 2, 4, 6, and 8."
-    "value <- 1 ..= limitはlimitを含む整数を取り、value % 2 == 0は偶数だけを残します。|の前のvalue * valueが、残った各値を二乗します。limitが8なら、残る値は2、4、6、8です。",
-  result: localized
-    "evenSquares 8 returns [4, 16, 36, 64]. Using .. instead of ..= excludes the end. This is a pure collection construction, not a loop that executes external Effect operations."
-    "evenSquares 8は[4, 16, 36, 64]を返します。..なら終端を含まず、..=なら含みます。外部処理を実行するループではなく、通常の値からコレクションを作る式です。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "expressions-ranges-comprehensions") (en.explanation ()) (ja.explanation ())

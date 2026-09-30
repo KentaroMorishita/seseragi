@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Polymorphism",
-  summary: "Generalized declarations are instantiated freshly at each use; forall describes the scheme but is not source syntax.",
+  summary: (explanation ()).summary,
   ruleTitle: "One binding, fresh types at every use",
   ruleBody: "A declaration with explicit type parameters and a non-recursive let value may be generalized into a type scheme. let identity = \\value -> value has the specification scheme forall A. A -> A, and separate uses may instantiate A as Int, String, or another type.",
   identityBody: "forall is notation used to explain a scheme, not a Seseragi source keyword. Instantiation creates fresh type variables for checking each use; it does not clone runtime values, attach runtime type objects, or specialize semantics by inspecting a value.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Fresh instantiation is not unresolved ambiguity",
   invalidBody: "A use still fails when its arguments impose inconsistent equations or retained trait constraints lack unique evidence. A recursive member cannot assume a different type for each call while its group is being checked, and forall cannot be written in an ordinary source annotation.",
   diagnosticsBody: "Type errors report the concrete instantiation involved at the failing use while preserving the declaration's generic scheme in tooling. Recursive-group errors identify the monomorphic group boundary rather than degrading later uses to Unknown.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Can the same function work with both integers and booleans?",
+  summary: "Polymorphism lets one declaration be used at different types while each individual use remains statically typed.",
+  reading: "identity<A> receives and returns the same type A. identity True produces Bool with value True; identity 42 produces Int with value 42. A is a placeholder selected independently for these calls.",
+  result: "This does not mix different types inside one value or inspect a value to choose a runtime overload. The formal notation forall A describes this reusable type in the specification; it is not syntax you write in Seseragi source."
 }

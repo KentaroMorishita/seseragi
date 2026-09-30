@@ -1,16 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "What do * and := do with a Signal?" "Signalに対する*と:=は何をするか",
-  summary: localized
-    "Prefix * reads a Signal's current value through an Effect. := writes a MutableSignal through an Effect; it is not assignment to ordinary variables."
-    "接頭辞の*はEffectとしてSignalの現在値を読み、:=はMutableSignalに書き込みます。普通の変数への代入ではありません。",
-  exampleId: "effects-signal-operators",
-  reading: localized
-    "count is created with 0. count := 1 sets its current value to 1. signals.update applies current + 1 as one update, and * count reads the resulting current value."
-    "countは0で作られます。count := 1で現在値を1にし、signals.updateでその値に1を足します。最後の* countが更新後の現在値を読みます。",
-  result: localized
-    "Executing readAndWrite returns 2. A pure function cannot treat * count as an immediate Int; its type is Task<Int>. Use update for read-modify-write rather than separately reading an old value and writing a replacement."
-    "readAndWriteを実行すると2を返します。* countの型はTask<Int>なので、純粋な関数で直接Intとしては使えません。現在値から新しい値を作る場合は、読み取りと書き戻しを別々にせずupdateを使います。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-signal-operators") (en.explanation ()) (ja.explanation ())

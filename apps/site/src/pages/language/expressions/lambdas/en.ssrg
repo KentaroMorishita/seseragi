@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Lambda expressions",
-  summary: "A lambda creates a curried function value and captures only lexical bindings already in scope.",
+  summary: (explanation ()).summary,
   ruleTitle: "Anonymous functions use the same function model",
   ruleBody: "A lambda is written with backslash parameters, an arrow, and a body. Multiple parameters desugar to nested one-parameter lambdas, so partial application works exactly as it does for named functions.",
   typingBody: "Parameter types may be inferred from an expected function type or annotated directly. Parameters enter scope from left to right and may be referenced by later parameter annotations and the body.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A lambda is not a multi-argument host callback",
   invalidBody: "Writing several parameters still produces curried functions. Foreign callback conversion and lifetime rules are explicit interoperability concerns, not a different lambda calling convention.",
   diagnosticsBody: "An unconstrained parameter or result reports an inference ambiguity. Add a parameter annotation or place the lambda where an expected function type is available.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I pass a small function without naming it?",
+  summary: "A lambda is a function expression. It lets you put the function where a value is needed, for example as an argument to map.",
+  reading: "In \\value -> value + 1, value names the parameter and the expression after -> is the result. The annotation Int -> Int beside increment supplies the parameter and result types. The add lambda has two parameters.",
+  result: "increment 20 is 21, and add 21 21 is 42, so answer is 42. The backslash begins the lambda; it is not an escape within a string. A captured outer value remains subject to the usual immutability rules."
 }

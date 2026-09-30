@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Can a normal function print or read the clock?"
-    "通常の関数の中で、出力や時刻の取得をしてよいか",
-  summary: localized
-    "A pure expression calculates a value without accessing changing external state. External operations remain visible as Effect values."
-    "純粋な式は、変化する外部状態へアクセスせずに値を計算します。外部操作を行う場合は、型にEffectとして表します。",
-  exampleId: "effects-pure-expressions",
-  reading: localized
-    "lineTotal multiplies its two integer inputs and directly returns an Int. plannedTotal calculates the same number and puts it inside succeed, so it returns Task<Int> instead. It has described a computation, not printed or executed it."
-    "lineTotalは二つの整数を掛け、そのままIntを返します。plannedTotalは同じ結果をsucceedに入れるため、戻り値はTask<Int>です。処理を説明する値を作ったのであり、出力や実行はしていません。",
-  result: localized
-    "lineTotal 20 3 is 60. Executing plannedTotal 20 3 succeeds with 60. You cannot disguise an external operation as a normal Int-returning function by dropping Effect from its annotation."
-    "lineTotal 20 3は60です。plannedTotal 20 3を実行すると、成功値が60になります。外部処理の型からEffectを消して、通常のIntを返す関数に見せかけることはできません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-pure-expressions") (en.explanation ()) (ja.explanation ())

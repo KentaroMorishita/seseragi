@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "import",
-  summary: "他のモジュールの公開名を取り込むか、モジュールの別名を付けて修飾して使います。",
+  summary: (explanation ()).summary,
   ruleTitle: "名前の取得元をimportで明示する",
   ruleBody: "importはモジュールの先頭に書きます。名前を指定すると、その公開名を直接使えるようになります。asで別名を付けることもできます。import * as textのようにモジュールの別名を付ける場合は、text.trimのように参照します。例では、arrayのlengthをarrayLengthという名前で取り込み、trimはtextを通して使います。",
   typingBody: "importしても、宣言の型や定義元は変わりません。関数に別名を付けても、新しい実装が作られるわけではありません。同じ名前が型と値の両方で公開されている場合は、一度のimportで両方を取り込みます。たとえば、中身を隠していないnewtypeをimportすれば、型名と値を作るコンストラクターの両方を使えます。",
@@ -21,3 +22,10 @@ pub fn exampleTitle -> String = "関数の別名と、モジュール名によ�
 
 pub fn exampleBody -> String =
   "arrayLengthはstd/arrayのlengthに付けた別名です。textはモジュールの別名なので、text.trimは公開関数の参照であり、textという値のフィールド参照ではありません。この例は標準ライブラリだけを使うため、Playgroundで単独で実行できます。相対importを使う例には、参照先のソースファイルも必要です。"
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "別のモジュールの関数を、名前の衝突を避けて使うには",
+  summary: "名前を指定するimportは、その公開宣言を直接使えるようにします。モジュールの別名を付けるimportでは、別名を前に付けて公開名を使います。",
+  reading: "length as arrayLengthは、std/arrayの関数に利用側の別名を付けます。import * as textならtext.trimとして呼びます。別名を付けても、関数の型や実装は変わりません。",
+  result: "itemCount [1, 2, 3]は3、normalize \"  Aki  \"は\"Aki\"です。名前を知っていても非公開の宣言はimportできません。importは定義を使えるようにしますが、そのEffectを実行しません。"
+}

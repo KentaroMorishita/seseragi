@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Maybe and absence",
-  summary: "Maybe represents normal absence as data, without null or a hidden failure path.",
+  summary: (explanation ()).summary,
   ruleTitle: "Use Nothing when no value is a valid result",
   ruleBody: "Maybe<A> is either Nothing or Just A. Choose Either when absence needs a reason, and convert nullable foreign values to Maybe at the interop boundary instead of extending nullish behavior into Seseragi code.",
   typingBody: "For left: Maybe<A>, left ?? fallback requires fallback: A and returns A. The operator is fixed to Maybe, associates to the right, and is not overloaded for Either, foreign nullable values, or ordinary values.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Absence and failure are different questions",
   invalidBody: "Do not discard an error reason by replacing Either with Maybe, and do not use ?? as a generic truthy fallback. Select the data type that preserves the domain information callers need.",
   diagnosticsBody: "Type errors identify a non-Maybe left operand or a fallback whose type differs from A. Exhaustive matching still requires both Nothing and Just when pattern matching directly.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I use a value that might be absent?",
+  summary: "Maybe<A> has two cases: Just carrying an A, or Nothing. It represents ordinary absence, not an error with a reason.",
+  reading: "displayName checks cached first, then requested, then uses \"anonymous\". ?? unwraps Just's string; its right side is evaluated only for Nothing. Because the operator groups from the right, requested ?? \"anonymous\" supplies the fallback for cached.",
+  result: "With cached = Just \"Aki\", the result is \"Aki\". With both inputs Nothing, it is \"anonymous\". Use match when you need different processing for presence and absence, or Either when absence must carry an explanation."
 }

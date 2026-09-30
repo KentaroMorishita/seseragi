@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effectの逐次・並列実行",
-  summary: "Effectは既定で順番に実行し、並行性は明示的なparallel APIだけが導入します。",
+  summary: (explanation ()).summary,
   ruleTitle: "並列にする操作を選ばなければ、順番に実行する",
   ruleBody: "flatMap、>>=、doは、先の処理が成功してから次を開始します。独立して見えるEffectを並べても、自動で並列にはなりません。並列にするにはparallelなどの操作を明示的に使います。",
   typingBody: "逐次処理では、先の成功値を次の関数へ渡せます。必要なサービスと失敗型は組み合わせられる必要があります。並列処理も、組み合わせられるEffectの集まりを受け取り、結果の順序はそのAPIの規則に従います。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "コンパイラはEffectを自動で並列にしない",
   invalidBody: "外部への出力順、リソースの寿命、どの失敗を返すかは観測できる動作です。そのためコンパイラが勝手にEffectを並列に変更することはありません。",
   diagnosticsBody: "必要なサービスと失敗型の不一致を、実行前の型エラーとして確認します。並列処理の実行時の診断では、選んだ操作と入力の位置を確認してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "独立して見える処理は、自動で同時実行されるか",
+  summary: "Effectは、通常は順に実行します。同時に進めたい場合は、並列実行用の操作を明示的に選びます。",
+  reading: "twiceは、入力を2倍にした値で成功する処理を作ります。sequentialはtwice 2の後にtwice 3を実行して結果を足します。parallelは二つの処理をeffects.parallelへ渡します。",
+  result: "sequentialを実行すると10で成功します。parallelは合計ではなく、入力順の[4, 6]を返します。並列実行では実行の割り当てや失敗時の管理も変わり、doの別の綴りではありません。"
 }

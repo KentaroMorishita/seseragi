@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect型",
-  summary: "Effect<R, E, A>は、サービスRを必要とし、失敗Eまたは成功値Aを返す計算を表します。",
+  summary: (explanation ()).summary,
   ruleTitle: "構築と実行は別の段階",
   ruleBody: "Rは実行に必要なサービス、Eは回復可能な失敗、Aは成功したときの値の型です。Effectを作っただけでは、入出力、状態の読み書き、非同期処理などは始まりません。まず計算の内容を組み立て、実行する境界でその処理を開始します。",
   typingBody: "複数のEffectを組み合わせると、必要なサービスも合わせて要求されます。回復可能な失敗は一つの型で表します。mapなどのFunctorの操作は成功値を変換し、Applicativeの操作は定められた順序で計算を組み合わせます。Monadの操作では、先の成功値を受け取って次の計算を選べます。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Effectを作っただけでは、処理は開始されない",
   invalidBody: "Effectを変数に保存したり、引数で渡したり、関数から返したりしても、処理は始まりません。結果が自動で保存・共有されるわけでもありません。一度だけ実行した結果を共有したい場合は、リソースや並行処理のAPIを使い、誰が処理を管理し、いつまで使うかを明示します。",
   diagnosticsBody: "型エラーでは、必要なサービスR、失敗型E、成功値の型Aのどこが合わないかを確認してください。非同期処理という一つの分類ではなく、この三つを分けて検査します。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Effectは計算結果なのか、処理の説明なのか",
+  summary: "Effect<R, E, A>は、サービスRを必要とし、Eで失敗するかAを返す処理の説明です。その値を作ることと、処理を実行することは別です。",
+  reading: "greetingは名前を受け取り、Task<String>を返します。Taskは外部サービスも回復可能な失敗もないEffectの別名です。deferの中の関数は実行時に呼ばれ、succeedが作った文字列を成功値にします。",
+  result: "greeting \"Aki\"を実行すると、成功値は\"Hello, Aki\"です。変数に保存するだけではStringを取り出せません。mapなどで成功値を変換しても、結果は引き続き処理を表すEffectです。"
 }

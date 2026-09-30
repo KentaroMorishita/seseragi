@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Sequential and parallel Effects",
-  summary: "Effect sequencing is ordered by default; concurrency appears only through an explicit parallel API.",
+  summary: (explanation ()).summary,
   ruleTitle: "flatMap, >>=, and do run in source order",
   ruleBody: "A later sequential Effect starts only after the earlier one succeeds. Merely placing independent Effects beside each other never authorizes reordering or concurrency; Effect.parallel and related APIs carry that different contract.",
   typingBody: "Sequential composition passes the prior success into the continuation and merges compatible R and E. Parallel operations require a collection of compatible Effects and return results in the order promised by their library contract.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "The compiler cannot auto-parallelize Effects",
   invalidBody: "External order, resource ownership, failure choice, and cancellation are observable. Even apparently independent Effects remain sequential until the program selects an explicit parallel operation.",
   diagnosticsBody: "Type errors identify incompatible requirements, failures, or successes before scheduling. Runtime diagnostics retain the selected operation and input position for concurrent failures.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Do independent-looking Effects run together automatically?",
+  summary: "Effect composition runs sequentially by default. Choose an explicit parallel operation when you want computations to overlap.",
+  reading: "twice describes a computation returning twice its input. sequential obtains the result of twice 2 before obtaining twice 3 and then adds them. parallel explicitly passes both computations to effects.parallel.",
+  result: "Executing sequential succeeds with 10. Executing parallel succeeds with [4, 6] in input order, not a sum. Parallel execution changes scheduling and failure management; it is not merely another spelling of do."
 }

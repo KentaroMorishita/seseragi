@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Source text and comments",
-  summary: "UTF-8 source, Unicode identifiers, line endings, apostrophes, keywords, and comments have one exact lexical contract.",
+  summary: (explanation ()).summary,
   formsTitle: "Write UTF-8 source",
   formsBody: "Seseragi source is UTF-8. LF and CRLF line endings are accepted and have the same language meaning. An identifier starts with Unicode XID_Start and continues with XID_Continue; apostrophes may follow as part of the identifier.",
   typingBody: "Identifier spelling determines a token before name resolution or typing. Keywords are ASCII, case-sensitive tokens, so True is the Bool constructor while true is an ordinary lowercase identifier if it is otherwise valid.",
@@ -10,4 +11,11 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "Do not infer identifiers from visual appearance",
   invalidBody: "An identifier cannot start with a digit or punctuation, a trailing apostrophe belongs to the identifier being scanned, and a block-comment-looking sequence has no special meaning. The lexer follows Unicode properties and token boundaries, not what two glyphs happen to look like.",
   diagnosticsBody: "The lexer owns invalid UTF-8 and token boundaries. The formatter and LSP consume the same syntax pipeline, so neither tool invents a different identifier or reinterprets account' as account followed by a Char literal.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How are comments and source characters treated?",
+  summary: "Seseragi source is UTF-8. A comment explains code to readers without contributing a value to the program.",
+  reading: "The // lines are comments. userName and 次の値 are ordinary declarations; the example also shows an apostrophe continuing a value name in account'. The characters belong to source names, not strings passed to a hidden runtime parser.",
+  result: "The commented text is not executed. Character encoding and name rules are separate: a character being valid UTF-8 does not necessarily make it a valid identifier character. See the precise lexical rules below when a name is rejected."
 }

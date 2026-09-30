@@ -1,16 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Which names can I use for values and types?" "値や型には、どんな名前を付けられるか",
-  summary: localized
-    "The language distinguishes value names, type names, and reserved syntax words. Consistent naming helps the parser and the reader recognize each role."
-    "値の名前、型の名前、構文の予約語を区別します。名前の規則は、どれが値や型なのかを読み取る手掛かりにもなります。",
-  exampleId: "syntax-reserved-words",
-  reading: localized
-    "Reading is a type name; Sample is a constructor that holds an Int. describe and value are value names. type, fn, and match introduce language constructs and cannot be used as ordinary names in their places."
-    "Readingは型名、SampleはIntを持つコンストラクターです。describeやvalueは値の名前です。type、fn、matchは構文を始める予約語で、その位置で普通の名前としては使えません。",
-  result: localized
-    "describe (Sample 42) returns the string \"42\". Uppercase spelling alone does not declare a type parameter; a generic parameter must appear in its declaration's parameter list. The exact allowed spelling and reserved names follow below."
-    "describe (Sample 42)は文字列の\"42\"を返します。大文字で書くだけでは型パラメーターにならず、宣言のパラメーター一覧が必要です。使用できる綴りと予約語の詳細は以下に示します。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "syntax-reserved-words") (en.explanation ()) (ja.explanation ())
