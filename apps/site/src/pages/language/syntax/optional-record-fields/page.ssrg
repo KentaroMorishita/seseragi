@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,34 +13,36 @@ import { syntaxPage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   syntaxPage "language.syntax.optional-record-fields" "/docs/language/syntax/optional-record-fields/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "syntax-optional-record-field",
-      localized "Optional presence and Maybe access" "optional presenceとMaybe access"
+      localized "Optional presence and Maybe access" "フィールドの不在と、Maybeを返す参照"
     ),
     BulletList [
       [
         InlineCode "id?: String",
-        Words (localized " permits the id field to be absent." " はid fieldの不在を許可します。")
+        Words
+          (localized " permits the id field to be absent." " はidフィールドのないレコードも受け取れます。")
       ],
       [
         InlineCode "id: Maybe<String>",
-        Words
-          (localized " requires the field itself to be present." " はfield自体の存在を必須にします。")
+        Words (
+          localized " requires the field itself to be present."
+          " ではフィールド自体が必ず必要です。値がNothingでも、フィールドは存在します。"
+        )
       ],
       [
         InlineCode "props.id",
         Words (
           localized " has type Maybe<String> for an optional String field."
-          " はoptional String fieldに対してMaybe<String>型です。"
+          " は、String型の省略可能なフィールドを参照した場合、Maybe<String>を返します。"
         )
       ]
     ]
   ] [CodeExample (
     "syntax-invalid-record-fields",
-    localized "Rejected record field and pattern operations"
-          "拒否されるrecord field・pattern操作"
+    localized "Rejected record field and pattern operations" "フィールド参照や分解の型が合わない場合"
   )] [
     [InternalLink (
       localized "Operator precedence" "演算子の優先順位",
@@ -50,3 +54,5 @@ pub fn page -> PageDefinition =
     )],
     [InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/")]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

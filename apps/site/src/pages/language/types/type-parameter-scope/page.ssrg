@@ -1,13 +1,26 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.type-parameter-scope" "/docs/language/types/type-parameter-scope/" (en.copy ()) (ja.copy ()) [CodeExample
       ("types-scope", localized "Type parameter scope" "型パラメーターのスコープ")] [] [
-    [InternalLink (localized "Generic functions" "ジェネリック関数", "/docs/language/types/generic-functions/")],
-    [InternalLink (localized "Recursive declarations" "再帰宣言", "/docs/language/types/recursive-declarations/")],
-    [InternalLink (localized "Generic impls and methods" "ジェネリックimplとメソッド", "/docs/language/types/generic-impls-and-methods/")]
-  ]
+        [InternalLink (
+          localized "Generic functions" "ジェネリック関数",
+          "/docs/language/types/generic-functions/"
+        )],
+        [InternalLink (
+          localized "Recursive declarations" "再帰宣言",
+          "/docs/language/types/recursive-declarations/"
+        )],
+        [InternalLink (
+          localized "Generic impls and methods" "ジェネリックimplとメソッド",
+          "/docs/language/types/generic-impls-and-methods/"
+        )]
+      ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

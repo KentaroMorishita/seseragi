@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Eitherによる成功と失敗",
   summary: "Eitherは計算済みのsuccessまたは回復可能なfailureを通常の値として保持します。",
-  ruleTitle: "LeftとRightはdataであり、実行中の計算ではない",
-  ruleBody: "Either<E, A>はLeft EまたはRight Aです。callerが明示的な理由を必要とする同期validationやparseに適し、Effectは遅延処理、Validationは独立errorの蓄積を表します。",
-  typingBody: "right側のmapはEを保ったままAを変え、left側のmapはAを保ったままEを変えます。Functor・Applicative・Monadの動作は最初のLeftで停止し、共通error unionを自動生成しません。",
-  evaluationBody: "LeftやRightを構築しても追加処理は起きません。変換は既存constructorを一度調べ、source順を保ち、そのconstructorに必要なbranchだけを呼びます。",
-  invalidTitle: "EitherはEffectのfailure channelではない",
-  invalidBody: "Either値はすでに生成済みです。Effect内で遅延して解釈するならEffect.fromEitherを使い、Effectの結果を調べられるdataにするならEffect.attemptを使います。",
-  diagnosticsBody: "EとAの位置を区別したまま、branch・mapping・期待resultの不一致を、それを導入したoperationで報告します。",
+  ruleTitle: "失敗の理由か成功値を、通常の値として返す",
+  ruleBody: "Either<E, A>はLeft EかRight Aです。文字列の解析や入力検証のように、すぐに結果が分かり、失敗理由も返したい処理に使います。Effectとは違い、これから実行する処理ではなく、計算済みの結果を表します。",
+  typingBody: "成功側のmapはAだけを変え、失敗型Eを保ちます。失敗側の変換はEだけを変えます。複数の処理をつなぐ操作では、最初のLeftで後続の成功処理が止まります。異なる失敗型を自動ではまとめません。",
+  evaluationBody: "LeftやRightを作るだけで入出力などが始まることはありません。matchなら、実際の値が持つ側の分岐だけを実行します。",
+  invalidTitle: "Eitherの値と、Effectの失敗を区別する",
+  invalidBody: "EitherのLeftとEffectの失敗は別の表現です。EitherをEffectでの処理に変えるにはfromEither、Effectの型付き失敗をEitherの結果へ変えるにはattemptを使います。",
+  diagnosticsBody: "EとAの順序を確認してください。Leftに入れる値はE、Rightに入れる値はAです。成功と失敗を取り違えると、分岐や変換で型が合わなくなります。",
 }

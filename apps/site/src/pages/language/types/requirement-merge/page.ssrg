@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,7 +13,7 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.requirement-merge" "/docs/language/types/requirement-merge/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "types-requirement-merge",
@@ -19,24 +21,29 @@ pub fn page -> PageDefinition =
         "requirement-polymorphic Effect alias"
     ),
     BulletList [
-      [InlineCode "R & {}", Words (localized " normalizes to R." " はRへnormalizeされます。")],
+      [
+        InlineCode "R & {}",
+        Words (localized " normalizes to R." " はRだけを要求する型と同じになります。空のレコードはサービスを追加しません。")
+      ],
       [Words (
         localized
         "Equal duplicate fields collapse; incompatible duplicates report SES-E0001."
-        "同型duplicate fieldは統合し、非互換ならSES-E0001です。"
+        "同じ名前で型も同じフィールドは一つにまとまります。同名で型が違う場合はSES-E0001になります。"
       )],
       [Words (
         localized
         "Associative regrouping and operand order preserve a conflict-free field map."
-        "conflictがなければ結合順序とoperand順序はfield mapを変えません。"
+        "同じフィールドに異なる型がなければ、組み合わせる順番を変えても必要なサービスの一覧は同じになります。"
       )]
     ]
   ] [CodeExample (
     "types-invalid-requirement-merge",
-    localized "Rejected requirement merge contexts" "拒否されるrequirement merge context"
+    localized "Rejected requirement merge contexts" "サービス要求の組み合わせを、使えない位置に書いた場合"
   )] [
-    [InternalLink
-        (localized "Closed records" "closed record", "/docs/language/types/closed-records/")],
+    [InternalLink (
+      localized "Closed records" "確定したサービス要求（closed record）",
+      "/docs/language/types/closed-records/"
+    )],
     [InternalLink (
       localized "Operator precedence" "演算子の優先順位",
       "/docs/language/syntax/operator-precedence/"
@@ -44,3 +51,5 @@ pub fn page -> PageDefinition =
     [InternalLink
         (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

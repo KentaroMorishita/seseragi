@@ -38,9 +38,9 @@ fn blocks english: ReferenceCopy
     ],
     ruleDetails,
     [
-      Heading ("typing", localized "Typing and scope" "型とスコープ"),
+      Heading ("typing", localized "Inputs, results, and scope" "受け取る値・戻り値・使える範囲"),
       Paragraph ([Words (localized english.typingBody japanese.typingBody)]),
-      Heading ("evaluation", localized "Evaluation" "評価"),
+      Heading ("evaluation", localized "What happens during execution" "実行すると何が起きるか"),
       Paragraph ([Words (localized english.evaluationBody japanese.evaluationBody)]),
       Callout (
         CommonMistake,
@@ -50,7 +50,7 @@ fn blocks english: ReferenceCopy
     ],
     invalidDetails,
     [
-      Heading ("diagnostics", localized "Diagnostics and tools" "診断とツール"),
+      Heading ("diagnostics", localized "When an error is reported" "エラーが出たときに確認すること"),
       Paragraph ([Words (localized english.diagnosticsBody japanese.diagnosticsBody)]),
       Heading ("related-rules", localized "Related rules" "関連する規則"),
       BulletList related

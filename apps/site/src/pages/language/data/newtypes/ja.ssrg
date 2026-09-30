@@ -2,12 +2,12 @@ import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "newtypeの値",
-  summary: "newtypeはrecordのboilerplateなしで、一つの表現を別のnominal boundaryで包みます。",
-  ruleTitle: "wrapとunwrapは明示する",
-  ruleBody: "型名が一引数constructorにもなります。visibilityが許せばconstructor patternで内部値を取り出せます。新しいnominal型へmethodとoperatorを定義できます。",
-  typingBody: "newtypeと表現型は暗黙にunifyしません。generic parameterはnominal identityの一部です。opaque visibilityなら型だけを公開しconstructorとpatternを隠せます。",
-  evaluationBody: "構築時に内部式を一度評価します。backendはwrapper表現をeraseできますが、nominalな検査と観測可能な構築・match semanticsを保つ必要があります。",
-  invalidTitle: "同じ表現でも同じ型ではない",
-  invalidBody: "field access、record spread、struct update、暗黙coercion、表現型instanceの自動継承はできません。",
-  diagnosticsBody: "表現値をnewtypeとして使う場合や逆の場合、二つのnominally distinctな型を示し、明示的な構築またはmatchを求めます。",
+  summary: "既存の値を包み、用途の違う値を混同しないための新しい型を作ります。",
+  ruleTitle: "包む操作と取り出す操作を明示する",
+  ruleBody: "newtype UserId = Intなら、UserId 42でIntを包んだUserIdの値を作ります。中身を取り出すにはUserId valueというパターンを使います。UserIdに専用のメソッドや演算子を定義することもできます。",
+  typingBody: "UserIdとIntは別の型です。UserIdを必要とする関数へIntを直接渡すことはできません。型パラメーターを持つnewtypeでも同じです。pub opaqueで公開すると、他モジュールは型名を使えますが、コンストラクターや取り出し用のパターンは使えません。",
+  evaluationBody: "包む値は一度だけ計算します。生成されたプログラムが包みの保存領域を省略しても、別の型として検査する規則は変わりません。利用側は内部の保存形式に依存せず、宣言した構築・取り出し操作を使います。",
+  invalidTitle: "中身の型の操作を自動で引き継ぐわけではない",
+  invalidBody: "Intを包んでも、Intの演算子やtraitの実装が自動で使えるわけではありません。また、レコードのようなフィールド参照や更新もできません。必要な操作をnewtypeに定義するか、中身を明示的に取り出します。",
+  diagnosticsBody: "中身の型とnewtypeの取り違えがないか確認してください。必要ならコンストラクターで包み、受け取る側ではパターンで取り出します。",
 }

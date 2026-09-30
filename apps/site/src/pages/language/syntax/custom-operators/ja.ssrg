@@ -2,12 +2,12 @@ import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "カスタム演算子と結合規則",
-  summary: "top-level宣言で二項infixの記号、結合、優先順位、型、制約、本体を一緒に定めます。",
-  formsTitle: "演算子の契約をまとめて宣言する",
-  formsBody: "operator<A> infixr 5 <+> left: A -> right: A -> A where Semigroup<A> = append left rightは、記号、右結合、優先順位、型スキーム、実装の証拠、本体をまとめて定める宣言です。import { operator <+> }でモジュールから明示的に読み込みます。",
-  typingBody: "left <+> rightは(<+>) left rightへ展開します。演算子もカリー化された関数なので、部分適用できます。演算子の名前空間は通常の値とは別です。標準演算子の型別オーバーロードにはtrait、またはstruct・newtypeの演算子用構文を使います。",
-  evaluationBody: "infixlは左、infixrは右、infixは非結合です。優先順位は0〜8で、適用とpostfix accessより強くできません。interfaceで先に宣言を収集するため、記述位置より前でも使えます。",
-  invalidTitle: "記号の集合は意図的に限定する",
-  invalidBody: "許されたASCII 演算子文字を二文字以上使います。標準演算子、->、<-、range、comment、??、:=は予約済みです。山括弧だけの記号も禁止です。custom prefix・postfixはなく、単独&は要求のマージ専用です。",
-  diagnosticsBody: "同じimport記号は曖昧です。同優先順位で異なるfixityを混ぜると括弧が必要です。losslessな走査、header scan、interface、flat chain、fixity解決を共有してコンパイラ・formatter・LSPを揃えます。",
+  summary: "記号を使って二つの値を組み合わせる演算子を、自分で宣言する方法を説明します。",
+  formsTitle: "記号・優先順位・処理を一緒に宣言する",
+  formsBody: "operator<A> infixr 5 <+> left: A -> right: A -> A where Semigroup<A> = append left rightの例では、<+>という演算子を右からまとめる規則（infixr）、優先順位5で宣言しています。leftとrightを受け取り、appendで組み合わせてAを返します。whereは、この処理を使う型がSemigroupの組み合わせ操作を持つ必要がある、という条件です。別のモジュールからはimport { operator <+> }で読み込みます。",
+  typingBody: "left <+> rightは、(<+>) left rightと同じ関数呼び出しです。一方の引数だけを渡すこともできます。演算子名と通常の値の名前は別々に扱われます。既存の演算子を特定の型で使う場合は、新しい記号の宣言ではなくtraitやstruct・newtypeの演算子宣言を使います。",
+  evaluationBody: "infixlは左から、infixrは右から式をまとめます。infixは連続した使用を許さず、括弧が必要です。優先順位は0〜8で、数が大きい方を先にまとめます。ただし関数呼び出しやドットによる参照より強くすることはできません。同じモジュール内では宣言より前でも使えます。",
+  invalidTitle: "予約済みの記号を再定義しない",
+  invalidBody: "許可されたASCIIの演算子文字を二文字以上使います。標準演算子、->、<-、範囲やコメントの記号、??、:=は予約済みです。山括弧だけの記号も使えません。値の前や後ろだけに付けるカスタム演算子はありません。単独の&は要求をまとめるための記号です。",
+  diagnosticsBody: "同じ記号を複数のimportから読み込むと、どちらを使うか決められません。また、同じ優先順位で左結合と右結合を混ぜる場合は、括弧で意図を明示してください。",
 }

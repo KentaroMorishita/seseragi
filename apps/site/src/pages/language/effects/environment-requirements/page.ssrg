@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.environment-requirements" "/docs/language/effects/environment-requirements/" (en.copy ()) (ja.copy ()) [CodeExample
       ("effects-environment", localized "Selecting one typed service" "必要なサービスを取得する")] [CodeExample
       (
@@ -24,3 +26,5 @@ pub fn page -> PageDefinition =
           "/docs/language/effects/runtime-boundaries/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

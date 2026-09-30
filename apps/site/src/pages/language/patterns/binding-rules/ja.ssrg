@@ -2,12 +2,12 @@ import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "束縛の共通規則",
-  summary: "すべてのbinding surfaceは、入力型・scope・refutabilityを明示した一つのpattern typing modelを使います。",
-  ruleTitle: "どの構文でも一つのmodelでnameをbindする",
-  ruleBody: "top-level・block let、do let、monadic bind、match arm、comprehension generator、effectful forは、いずれも一つの入力に対して一つのpatternを型検査します。違いは入力型、scope、refutable patternを許すかだけです。",
-  typingBody: "pattern注釈はpattern全体を制約します。nested nameの型を再帰的に導出し、照合全体の成功後にまとめてscopeへ入れます。重複nameと入力式からのself-referenceは拒否します。",
-  evaluationBody: "tuple、record、struct、constructor、Array、Listを入れ子にしても入力式は一度だけ評価します。refutable matchの失敗時に部分bindingは見えません。",
-  invalidTitle: "binding構文ごとに別の推論規則は作られない",
-  invalidBody: "実行時には一致すると分かっていても、letでrefutable patternは使えません。失敗をcontrol flowに含めるならmatchまたはfiltering comprehensionを使います。",
-  diagnosticsBody: "compiler、typed representation、analysis、language serverはsymbol identity、nested型、refutability、source rangeを含む同じtyped-pattern結果を共有します。",
+  summary: "値を分解して名前を付けるときの、名前の型と使える範囲を説明します。",
+  ruleTitle: "一つの入力値に対して名前を付ける",
+  ruleBody: "let、do内の束縛、matchの分岐、内包表記、Effect内のforでは、入力値をパターンで分解できます。いずれも、入力の型から各名前の型を決めます。ただし、失敗する可能性のあるパターンを使えるかどうかと、付けた名前を使える範囲は構文ごとに異なります。",
+  typingBody: "パターンの型注釈は、分解する入力全体の型を指定します。中にある名前の型はそこから決まります。同じパターン内で同名の名前を二つ定義できません。また、値を作る右辺から、これから付ける左辺の名前を参照することもできません。",
+  evaluationBody: "入れ子のタプルやレコードを分解しても、右辺の値は一度だけ計算します。照合に成功してから、取り出したすべての名前が使えるようになります。matchが失敗した分岐の名前は、ほかの分岐には漏れません。",
+  invalidTitle: "letには、必ず一致するパターンだけを使う",
+  invalidBody: "例えば配列の先頭を取り出すパターンは、空配列には一致しません。実際に渡す値が空でないと分かっていても、letでは使えません。失敗する場合も扱うにはmatchを使います。内包表記なら、一致しない要素を除外する用途で使えます。",
+  diagnosticsBody: "入力の型、フィールドや要素の数、同名の名前、パターンが失敗しうるかを確認してください。名前が使えるのは、その束縛が属するブロックや分岐の範囲内だけです。",
 }

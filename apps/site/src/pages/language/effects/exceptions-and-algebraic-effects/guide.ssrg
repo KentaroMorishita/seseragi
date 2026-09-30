@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "What replaces try and catch in ordinary Seseragi code?"
+    "通常のコードでtryやcatchの代わりに何を使うか",
+  summary: localized
+    "Expected failures are values in Either or the E of Effect. Seseragi has no throw/catch syntax or perform/handle language forms."
+    "予測して扱う失敗は、EitherかEffectのEで表します。Seseragiにはthrow/catchや、perform/handleという構文はありません。",
+  exampleId: "effects-foreign-failure",
+  reading: localized
+    "decodeForeign models an adapter result: success becomes Right 42 and rejection becomes Left with a ForeignError explanation. A real adapter must catch foreign-language exceptions at its boundary and return the declared result type."
+    "decodeForeignは、外部連携の結果の形を示す例です。成功ならRight 42、拒否なら理由を持つForeignErrorをLeftで返します。実際の連携処理では、外部言語の例外を境界で捕捉して、このような宣言した型へ変換します。",
+  result: localized
+    "For False, the caller receives Left (ForeignError \"adapter rejected the value\"). This example demonstrates result handling, not a hidden implementation of try/catch. Ordinary Seseragi callers inspect the declared result, not an arbitrary foreign exception."
+    "FalseではLeft (ForeignError \"adapter rejected the value\")を返します。この例は結果の扱い方を示し、隠れたtry/catchの実装ではありません。呼び出し側は、外部の任意の例外ではなく、宣言された結果を扱います。"
+}

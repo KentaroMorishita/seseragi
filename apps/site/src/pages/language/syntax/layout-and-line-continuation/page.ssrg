@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,43 +13,39 @@ import { syntaxPage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   syntaxPage "language.syntax.layout-and-line-continuation" "/docs/language/syntax/layout-and-line-continuation/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "web-starter-main",
-      localized "Operator-first continuation in compiled source"
-        "compile済みsourceのoperator-first continuation"
-    ),
+    CodeExample ("syntax-layout", localized "A pipeline across lines" "複数行に分けたパイプライン"),
     BulletList [
       [
         InlineCode "value +",
         Words (
           localized " continues because + still needs a right operand."
-        " は+が右operandを必要とするため継続します。"
+            " は+の右側がまだないため、次の行へ続きます。"
         )
       ],
       [
         InlineCode "|> transform",
         Words (
           localized
-        " continues the previous expression because the next token is a continuation operator."
-        " は次tokenがcontinuation operatorなので前の式を継続します。"
+            " continues the previous expression because the next token is a continuation operator."
+            " は次の行が継続できる演算子で始まるため、前の式の続きになります。"
         )
       ],
-      [InlineCode ";", Words (localized " always separates forms." " は常にformを区切ります。")]
+      [InlineCode ";", Words (localized " always separates forms." " は宣言や式の区切りを明示します。")]
     ]
   ] [BulletList [
     [Words (
       localized "Indenting a complete second expression does not join it to the first."
-        "completeな二つ目の式をindentしても一つ目とは結合しません。"
+            "二つの完成した式は、二つ目を字下げしても一つにはなりません。"
     )],
     [Words (
       localized "A closing brace cannot be inferred from indentation."
-        "closing braceをindentationから推測しません。"
+            "字下げを戻しても、閉じる}を省略することはできません。"
     )],
     [Words (
       localized "Use parentheses when neither explicit continuation condition applies."
-        "明示されたcontinuation条件を満たさない場合はparenthesesを使います。"
+            "行を続ける条件に合わない場合は、括弧で式を囲みます。"
     )]
   ]] [
     [InternalLink (
@@ -59,5 +57,7 @@ pub fn page -> PageDefinition =
       "/docs/language/syntax/source-text/"
     )],
     [InternalLink
-        (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
+            (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

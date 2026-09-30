@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Can an implementation have the right types but wrong behavior?"
+    "型は合っていても、実装の意味が間違っていることはあるか",
+  summary: localized
+    "A trait law describes behavior an implementation must preserve, beyond the parameter and result types checked by the compiler."
+    "traitの法則は、引数と戻り値の型だけでは検査できない、実装が守るべき振る舞いを表します。",
+  exampleId: "traits-laws",
+  reading: localized
+    "reflexive checks one equality property: a value should equal itself. Eq<A> lets the function compare its input. The integer and text calls show two types using that same check."
+    "reflexiveは、等しさの性質の一つである「値は自分自身と等しい」を確認します。Eq<A>があるため引数を比較でき、整数と文字列で同じ検査を使えます。",
+  result: localized
+    "Both example checks return True. An Eq implementation that always returns False may have the required Bool return type while failing this law. Compilation does not prove laws; test relevant properties with representative cases."
+    "二つの検査はどちらもTrueです。常にFalseを返すEq実装は、戻り値のBoolには合っても、この法則に違反します。コンパイルの成功だけでは法則の証明にならず、具体的な値で検査します。"
+}

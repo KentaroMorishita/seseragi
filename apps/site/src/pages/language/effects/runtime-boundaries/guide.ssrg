@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Where does a stored Effect actually start?"
+    "保存したEffectは、どこで実行を始めるか",
+  summary: localized
+    "A designated execution boundary, such as main or the test runner, starts an Effect after supplying its required services."
+    "mainやテスト実行機構など、定められた実行境界が必要なサービスを渡してEffectを開始します。通常の関数で値を作るだけでは始まりません。",
+  exampleId: "effects-runtime-boundary",
+  reading: localized
+    "program returns a Task<String> built with succeed. Calling program () gives the description, not an immediate output operation. A host integration can invoke the function and execute its returned Task under that host's contract."
+    "programはsucceedで作ったTask<String>を返します。program ()を呼ぶと処理の説明ができ、直接出力するわけではありません。ホストとの連携側がこの関数を呼び、決められた実行規則でTaskを実行します。",
+  result: localized
+    "The executed result is \"ready for the host boundary\". An arbitrary helper cannot pull A out of Effect<R, E, A> by pretending to be a runner; compose Effects and return them to the actual execution boundary."
+    "実行時の成功値は\"ready for the host boundary\"です。普通の補助関数が、Effect<R, E, A>からAを直接取り出してよいわけではありません。Effectを組み合わせ、本来の実行境界へ返します。"
+}

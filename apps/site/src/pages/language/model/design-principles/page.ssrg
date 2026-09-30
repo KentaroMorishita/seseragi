@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import * as arrays from "std/array"
 import { localized } from "../../../../model/locale"
 import {
@@ -22,7 +24,7 @@ fn entry pair: ((String, String, String), (String, String)) -> Array<Inline> =
     ]
   }
 
-pub fn page -> PageDefinition = {
+fn content -> PageDefinition = {
   let english: OverviewCopy = en.copy ()
   let japanese: OverviewCopy = ja.copy ()
   let labels = [
@@ -54,3 +56,5 @@ pub fn page -> PageDefinition = {
     ]
   }
 }
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

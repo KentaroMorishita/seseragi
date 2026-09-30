@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How do two functions call each other?" "二つの関数が互いを呼ぶには",
+  summary: localized
+    "Use rec to declare mutually recursive local functions together. A function's ordinary self-call and a let initializer follow different rules."
+    "ローカル関数が互いを呼ぶ場合は、recにまとめて宣言します。自分自身を呼ぶ関数と、letの初期値から自分を参照する場合は区別します。",
+  exampleId: "types-recursion",
+  reading: localized
+    "even checks for zero, then calls odd with one less; odd does the opposite. The rec group makes both names visible in both bodies. For a nonnegative input, repeatedly subtracting one reaches the zero case."
+    "例のevenは0かどうかを確認し、そうでなければ1減らしてoddを呼びます。oddも同様にevenを呼びます。recにまとめることで、両方の関数の本体から互いの名前を使えます。",
+  result: localized
+    "isEven 4 returns True. These functions do not define behavior for negative inputs that reaches the base case. Nor does mutual recursion carry the constant-stack guarantee given to direct self tail calls; termination and stack behavior are separate concerns."
+    "isEven 4はTrueです。この例は、負数から0へ到達する処理にはなっていません。また、互いを呼ぶ再帰には、直接の末尾自己呼び出しと同じスタック量の保証はありません。終了条件とスタックの制限を分けて確認してください。"
+}

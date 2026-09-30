@@ -1,17 +1,19 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.data.operator-overloads" "/docs/language/data/operator-overloads/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "data-operator-overloads",
-        localized "A newtype addition contract" "newtypeの加算contract"
+        localized "A newtype addition contract" "newtype同士の加算を定義する"
       )] [CodeExample (
         "data-invalid-operator-overload",
-        localized "Rejected duplicate evidence" "重複evidenceを拒否"
+        localized "Rejected duplicate evidence" "同じ演算の実装を二重に定義するとエラー"
       )] [
         [InternalLink (
           localized "Custom operators and fixity" "カスタム演算子と結合規則",
@@ -26,3 +28,5 @@ pub fn page -> PageDefinition =
           "/docs/language/data/impls-and-methods/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

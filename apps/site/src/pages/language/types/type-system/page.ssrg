@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -10,32 +12,34 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.type-system" "/docs/language/types/type-system/" (en.copy ()) (ja.copy ()) [
-    CodeExample
-      ("types-system", localized "Typed domain declarations and values" "型付きdomain宣言と値"),
+    CodeExample (
+      "types-system",
+      localized "Typed domain declarations and values" "型を定義して、用途の違う値を区別する"
+    ),
     BulletList [
       [Words (
         localized "Nominal ADTs, structs, and newtypes keep declaration identity."
-      "nominal ADT・struct・newtypeは宣言identityを保ちます。"
+          "代数的データ型・struct・newtypeは、同じ形でも別の宣言なら別の型です。"
       )],
       [Words (
         localized "Immutable records use structural compatibility."
-      "immutable recordはstructural compatibilityを使います。"
+          "レコードを渡せるかどうかは、必要なフィールドとその型で判断します。"
       )],
       [Words (
         localized "Trait constraints must resolve uniquely before execution."
-      "trait constraintは実行前に一意に解決されます。"
+          "必要なtraitの実装は、実行前に一つに決まる必要があります。"
       )],
       [Words (
         localized
-      "Never may flow to a demanded result type because it produces no value."
-      "Neverは値を生成しないため要求された結果型へflowできます。"
+          "Never may flow to a demanded result type because it produces no value."
+          "Neverは値を返さないため、値を返すはずの位置でも使えます。例えば戻らない分岐があっても、もう一方の分岐の型に合わせられます。"
       )]
     ]
   ] [] [
     [InternalLink
-      (localized "Built-in types" "組み込み型", "/docs/language/types/built-in-types/")],
+          (localized "Built-in types" "組み込み型", "/docs/language/types/built-in-types/")],
     [InternalLink (
       localized "Annotations and inference" "型注釈と推論",
       "/docs/language/types/annotations-and-inference/"
@@ -45,3 +49,5 @@ pub fn page -> PageDefinition =
       "/docs/language/model/no-hidden-danger/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

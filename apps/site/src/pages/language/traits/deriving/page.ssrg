@@ -1,15 +1,17 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.traits.deriving" "/docs/language/traits/deriving/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("traits-deriving", localized "Derived nominal evidence" "導出したnominal evidence")] [CodeExample
+      ("traits-deriving", localized "Derived nominal evidence" "自分の型のEqやShowを自動で実装する")] [CodeExample
       (
         "traits-invalid-deriving",
-        localized "Unsupported deriving target" "未対応のderiving target"
+        localized "Unsupported deriving target" "自動で導出できないtraitを指定した場合"
       )] [
         [InternalLink (
           localized "Algebraic data types" "代数的データ型",
@@ -21,3 +23,5 @@ pub fn page -> PageDefinition =
           "/docs/language/traits/coherence/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

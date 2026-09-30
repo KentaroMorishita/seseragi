@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Why can if be the entire body of a function?"
+    "ifだけを関数の本体にできるのはなぜか",
+  summary: localized
+    "Expression-oriented means that constructs such as if, match, and blocks produce values that other expressions can use."
+    "式指向とは、ifやmatch、ブロックなどが値を返し、その値を他の式で使えるということです。",
+  exampleId: "principle-expression-oriented",
+  reading: localized
+    "result's if selects \"pass\" for scores at least 80 and \"retry\" otherwise. Both branches return String, matching the function's result type. There is no separate return statement assigning the selected result."
+    "resultのifは80以上なら\"pass\"、それ以外なら\"retry\"を選びます。どちらもStringなので、関数の戻り値の型に合います。選んだ値を返すための別のreturn文は不要です。",
+  result: localized
+    "main prints pass for 85. Expression orientation does not make every branch type compatible: an Int branch and a String branch still need an explicitly shared result representation."
+    "85ではpassを出力します。式指向だからといって、Intの分岐とStringの分岐を自動で同じ型として扱うわけではありません。共通の結果の形を明示する必要があります。"
+}

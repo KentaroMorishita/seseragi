@@ -1,17 +1,19 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.derived-signals" "/docs/language/effects/derived-signals/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-derived-signals",
-        localized "A glitch-free derived graph" "glitch-freeなderived graph"
+        localized "A glitch-free derived graph" "二つの更新後の値から合計を計算する"
       )] [CodeExample (
         "effects-invalid-signal-distinct",
-        localized "Rejected distinct without Eq" "Eqなしのdistinctを拒否"
+        localized "Rejected distinct without Eq" "値の比較に必要なEqがない場合"
       )] [
         [InternalLink (
           localized "Signals and transactions" "Signalとトランザクション",
@@ -24,3 +26,5 @@ pub fn page -> PageDefinition =
           "/docs/language/effects/subscriptions-and-lifetime/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Why name a data shape instead of using an ordinary record?"
+    "普通のレコードではなく、構造体に型名を付けるのはなぜか",
+  summary: localized
+    "A struct gives a data shape a named identity, preventing unrelated declarations with the same fields from being confused."
+    "構造体は、フィールドの形に型名を付けます。同じフィールドを持つ別の宣言と取り違えないようにできます。",
+  exampleId: "reader-structs",
+  reading: localized
+    "struct User declares id: Int and name: String. User before the braces constructs that specific type. User { ...original, name: \"Mio\" } builds another User with the copied id and the replacement name."
+    "struct Userでid: Intとname: Stringを宣言します。波括弧の前のUserは、その型の値を作る指定です。User { ...original, name: \"Mio\" }は、元のidを引き継ぎ、名前を変えた別のUserを作ります。",
+  result: localized
+    "The outputs are Aki, Mio, and 1. Both values remain User, and original is unchanged. An ordinary { id: 1, name: \"Aki\" } record is not automatically a User."
+    "出力はAki、Mio、1です。二つの値はどちらもUserで、originalは変わりません。普通の{ id: 1, name: \"Aki\" }レコードが自動でUserになるわけではありません。"
+}

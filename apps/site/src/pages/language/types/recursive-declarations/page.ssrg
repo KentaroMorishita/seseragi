@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,7 +13,7 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.recursive-declarations" "/docs/language/types/recursive-declarations/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "types-recursion",
@@ -20,21 +22,21 @@ pub fn page -> PageDefinition =
     BulletList [
       [Words (
         localized "All member names enter scope for the whole rec group."
-          "全member名はrec group全体でscopeに入ります。"
+          "recにまとめた宣言の名前は、同じrec全体から使えます。"
       )],
       [Words (
         localized "The group is monomorphic until every member checks."
-          "全memberの検査完了までgroupはmonomorphicです。"
+          "同じrecの中の検査が終わるまでは、各関数に一つの型を使います。呼び出しごとに異なる型を選ぶことはできません。"
       )],
       [Words (
         localized
           "Only direct self tail calls receive the constant host-stack guarantee."
-          "direct self tail callだけがconstant host-stack保証を持ちます。"
+          "自分自身を最後に直接呼ぶ再帰では、呼び出しの深さに応じてスタックが増えることはありません。この保証は相互再帰にはありません。"
       )]
     ]
   ] [CodeExample (
     "types-invalid-recursion",
-    localized "A forward reference outside rec" "rec外のforward reference"
+    localized "A forward reference outside rec" "recにまとめず、後の宣言を参照した場合"
   )] [
     [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
     [InternalLink (
@@ -46,3 +48,5 @@ pub fn page -> PageDefinition =
       "/docs/language/types/function-types-and-currying/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

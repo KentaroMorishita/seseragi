@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Is an Effect a result, or a description of work?"
+    "Effectは計算結果なのか、処理の説明なのか",
+  summary: localized
+    "Effect<R, E, A> describes work that needs services R, may fail with E, and succeeds with A. Creating that value does not start the work."
+    "Effect<R, E, A>は、サービスRを必要とし、Eで失敗するかAを返す処理の説明です。その値を作ることと、処理を実行することは別です。",
+  exampleId: "effects-cold-value",
+  reading: localized
+    "greeting receives a name and returns a Task<String>, the service-free, recoverable-error-free form of Effect. defer delays choosing the inner computation until execution; succeed then completes with the constructed greeting."
+    "greetingは名前を受け取り、Task<String>を返します。Taskは外部サービスも回復可能な失敗もないEffectの別名です。deferの中の関数は実行時に呼ばれ、succeedが作った文字列を成功値にします。",
+  result: localized
+    "Executing greeting \"Aki\" yields \"Hello, Aki\". Merely storing greeting \"Aki\" does not obtain that String. Operations such as map transform the eventual success value while keeping the computation represented as an Effect."
+    "greeting \"Aki\"を実行すると、成功値は\"Hello, Aki\"です。変数に保存するだけではStringを取り出せません。mapなどで成功値を変換しても、結果は引き続き処理を表すEffectです。"
+}

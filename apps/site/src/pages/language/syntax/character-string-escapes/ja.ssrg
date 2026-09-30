@@ -2,12 +2,12 @@ import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "文字と文字列のエスケープ",
-  summary: "Char、String、templateで共通の閉じたescape集合と、区切りごとの違いを説明します。",
-  formsTitle: "定めたescapeだけを復号する",
-  formsBody: "backslash、改行、carriage return、tab、null、一〜六桁のUnicode scalar escapeを使えます。Charでは一重引用符、Stringでは二重引用符、templateではbacktickをescapeします。template内のliteralな${には直前のbackslashが必要ですが、$単独には不要です。",
-  typingBody: "Charの復号結果はUnicode scalar一個です。éは一個ですが、eと結合acuteは二個なのでCharになりません。surrogateはscalarでないため、どのtext literalにも入れられません。",
-  evaluationBody: "escapeは型検査前にscalarへ復号します。Stringはbyteやgraphemeでなくscalar列です。templateはraw LFを含められ、CRLFもLF一個になります。Charと二重引用符のStringにはraw改行やcontrol characterを置けません。",
-  invalidTitle: "定義していないescapeは使えない",
-  invalidBody: "hex byte、octal、名前付きUnicode、別区切りのescape、空のUnicode、六桁超、範囲外、surrogateは拒否します。別の文字へ修復したり、生成先の文字列構文解析器に意味を任せたりしません。",
-  diagnosticsBody: "不正escapeはbackslashから末尾までSES-P0201、未閉鎖literalはSES-P0001、Charが零個・複数scalarならliteral全体にSES-P0202です。formatterは有効なescapeの綴りと意味を保ちます。",
+  summary: "改行や引用符などを、文字・文字列の中に書く方法を説明します。",
+  formsTitle: "直接書けない文字をバックスラッシュで表す",
+  formsBody: "バックスラッシュ（\\）の後に決まった記号を書き、改行、復帰、タブ、ヌル、バックスラッシュ自身を表します。Unicodeのコードポイントを指定する形式には一〜六桁を使えます。Charの区切りは一重引用符、Stringは二重引用符、テンプレート文字列はバッククォートです。中に同じ区切り文字を書く場合はエスケープします。テンプレートの中で${を文字として書く場合も、直前にバックスラッシュが必要です。",
+  typingBody: "CharはUnicodeスカラー値一個を表します。é一文字は入れられますが、eと結合アクセントを別々に書いた二個の値は入れられません。見た目の一文字とUnicode上の一個は必ずしも同じではありません。サロゲート領域の値はUnicodeスカラー値ではないため使えません。",
+  evaluationBody: "エスケープは、型を検査する前に実際の文字へ変換されます。StringはUnicodeスカラー値の列です。テンプレート文字列には改行を直接書けますが、Charと二重引用符のStringには改行や制御文字を直接書けません。",
+  invalidTitle: "他の言語のエスケープを流用しない",
+  invalidBody: "八進数、十六進数のバイト、Unicodeの文字名を指定する形式は使えません。Unicode指定が空、六桁を超える、範囲外、サロゲートを指定する場合もエラーです。引用符の種類に合わないエスケープにも注意してください。",
+  diagnosticsBody: "不正なエスケープはSES-P0201、閉じる引用符がない場合はSES-P0001です。Charの中身が空または複数個ならSES-P0202です。診断が指すバックスラッシュや引用符の位置を確認してください。",
 }

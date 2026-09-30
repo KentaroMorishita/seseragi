@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How can the same result type store different payload types?"
+    "成功値と失敗値の型を選べるデータ型を作るには",
+  summary: localized
+    "A generic ADT describes a fixed set of alternatives while letting you choose the types stored in them."
+    "ジェネリックな代数的データ型では、選択肢を固定したまま、その中に入れる値の型を選べます。",
+  exampleId: "types-generic-adts",
+  reading: localized
+    "Outcome<E, A> has Failure carrying E and Success carrying A. For Outcome<String, Int>, Failure contains text and Success contains an integer. Both alternatives are values of the same complete Outcome<String, Int> type."
+    "例のOutcome<E, A>には、Eを持つFailureとAを持つSuccessがあります。Outcome<String, Int>なら、Failureには文字列、Successには整数が入り、どちらも同じOutcome<String, Int>型の値です。",
+  result: localized
+    "Success 42 determines A but says nothing about E. The annotation supplies that missing information. Tree<A> also shows recursion: a Node stores child trees whose elements use the same A, not arbitrarily different types."
+    "Success 42だけでAはIntと分かりますが、Eは分かりません。例では型注釈でEも指定しています。Tree<A>のNodeは子の木を持ち、すべての木で同じAを使います。"
+}

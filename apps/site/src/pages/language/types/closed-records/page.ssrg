@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,27 +13,27 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.closed-records" "/docs/language/types/closed-records/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "types-requirement-merge",
       localized "A generic requirement before boundary closure"
-        "boundary closure前のgeneric requirement"
+        "サービスの型を確定する前の、型パラメーターを含む要求"
     ),
     BulletList [
       [Words (
         localized "Top-level record, fixed unique required fields."
-        "top-level record、固定された一意のrequired field。"
+        "必要なサービスを必須フィールドとして持つ、一つのレコード型であること。"
       )],
       [Words (
         localized
         "No unresolved variable, row, constraint, or recursive alias affecting fields."
-        "fieldに影響する未解決variable・row・constraint・recursive aliasなし。"
+        "各フィールドの型が確定し、未確定の型変数や再帰する別名が残っていないこと。"
       )],
       [Words (
         localized
         "Extra fields in the provided host record remain valid by width subtyping."
-        "host提供recordの追加fieldはwidth subtypingで有効。"
+        "実行環境が渡すレコードには、必要なもの以外のフィールドがあっても構いません。"
       )]
     ]
   ] [BulletList [
@@ -39,14 +41,14 @@ pub fn page -> PageDefinition =
       InlineCode "Effect<R, E, A>",
       Words (
         localized " is not a closed entry requirement while R remains unresolved."
-        " はRが未解決の間closed entry requirementではありません。"
+        " のRが未確定なら、実行入口で渡すサービスを決められません。"
       )
     ],
     [
       InlineCode "{ console?: Console }",
       Words (
         localized " is not a closed Effect host requirement."
-        " はclosed Effect host requirementではありません。"
+        " はconsoleを省略できるため、実行入口のサービス要求には使えません。"
       )
     ]
   ]] [
@@ -63,3 +65,5 @@ pub fn page -> PageDefinition =
       "/docs/language/types/nominal-and-structural-types/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

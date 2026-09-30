@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import * as arrays from "std/array"
 import { localized } from "../../../../model/locale"
 import {
@@ -15,7 +17,7 @@ fn alternative pair: (String, String) -> Array<Inline> = match pair {
   (english, japanese) -> [Words (localized english japanese)]
 }
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   conceptPage "language.model.non-features" "/docs/language/model/non-features/" (en.copy ()) (ja.copy ()) [BulletList
       (map alternative (arrays.zip (ja.alternatives ()) (en.alternatives ())))] [
         [InternalLink (
@@ -29,3 +31,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

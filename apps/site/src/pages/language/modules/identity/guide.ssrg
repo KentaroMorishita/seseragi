@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Are two imports of the same file two different types?"
+    "同じファイルを二通りにimportすると、型も二つになるか",
+  summary: localized
+    "A source file is one module. Different valid spellings that resolve to that file refer to the same declarations."
+    "一つのソースファイルが一つのモジュールです。正しく解決した先が同じファイルなら、importの綴りが違っても同じ宣言を使います。",
+  exampleId: "modules-domain",
+  reading: localized
+    "modules-domain defines UserId and the public functions userId and toInt. The companion example imports UserId without .ssrg and toInt with .ssrg; both imports resolve to that one file in the same package."
+    "modules-domainにはUserId、userId、toIntを定義します。利用側の例ではUserIdを.ssrgなし、toIntを.ssrgありでimportしますが、同じパッケージの同じファイルへ解決します。",
+  result: localized
+    "A UserId constructed through one import can be passed to toInt from the other. Copying the declaration into a different module would instead create a distinct named type, even if the source text looks identical."
+    "一方のimportから作ったUserIdを、もう一方のtoIntへ渡せます。宣言を別のモジュールへコピーした場合は、文章が同じでも別の名前付き型になります。"
+}

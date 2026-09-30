@@ -1,17 +1,19 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.pure-expressions" "/docs/language/effects/pure-expressions/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-pure-expressions",
-        localized "Pure calculation returning a cold plan" "純粋な計算からcoldな計画を返す"
+        localized "Pure calculation returning a cold plan" "処理を実行せず、組み立てたEffectを返す"
       )] [CodeExample (
         "effects-invalid-pure-body",
-        localized "Rejected plain effect-function body" "Effectでないeffect fn bodyを拒否"
+        localized "Rejected plain effect-function body" "effect fnの本体がEffectを返さない場合"
       )] [
         [InternalLink
       (localized "The Effect type" "Effect型", "/docs/language/effects/effect-type/")],
@@ -22,3 +24,5 @@ pub fn page -> PageDefinition =
           "/docs/language/effects/runtime-boundaries/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

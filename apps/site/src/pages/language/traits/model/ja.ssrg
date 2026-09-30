@@ -18,7 +18,7 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "呼び出せる実装があることは、実行前に確認されます。「実装の証拠」とは、この確認を指す言葉です。呼び出すために、別途「証拠のオブジェクト」を自分で作る必要はありません。",
     "実装は型で選びます。Ticket { number: 1 }でもTicket { number: 42 }でも、使うのは同じLabel<Ticket>です。実行時に番号を見て実装を選ぶ仕組みではありません。",
     "traitを宣言しても、TicketがLabelを継承したり、その下位の型になったりはしません。フィールドやドットで呼ぶメソッドも増えません。label ticketは通常の関数呼び出しに、型に合う実装が必要という条件が付いたものです。",
-    "具体的な型を決めずに関数を書く場合は、where Label<A>で「AにはLabelの実装が必要」と指定できます。呼び出す側は、その実装が見つかる型を渡します。"
+    "labelOf<A>が共通の呼び出し側です。where Label<A>は、Aにlabelの実装が必要という条件です。Personには実装があるため、labelOf (Person { name: \"Aki\" })は\"Aki\"を返します。Ticketにも実装があるので、labelOfの本体を変えずにTicketも渡せます。"
   ],
   mistakes: [
     "Label<A>を宣言しただけでは、処理の実装はできていません。instanceがない型でlabelを呼ぶと、実行前の型検査でエラーになります。",

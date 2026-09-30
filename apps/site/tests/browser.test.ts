@@ -296,7 +296,7 @@ try {
         assert.equal(await page.locator("h1").textContent(), "Type system")
         assert.ok(
           (await page.locator("body").innerText()).includes(
-            "unresolved meaning becomes a diagnostic"
+            "The compiler detects these mismatches before running the program"
           )
         )
         const typeSystemCode = await syntaxPresentation(
@@ -1122,18 +1122,15 @@ try {
             await page.goto(
               `http://127.0.0.1:${server.port}/ja/docs/library/array/function/get/`
             )
-            assert.equal(
-              await page
-                .locator(".reference-description summary")
-                .textContent(),
-              "APIの詳細説明（英語原文）"
+            assert.ok(
+              (await page.locator(".api-reference").innerText()).includes(
+                "指定した添字の要素を返します"
+              )
             )
-            await page.locator(".reference-description summary").click()
-            assert.equal(
-              await page
-                .locator(".reference-description p")
-                .getAttribute("lang"),
-              "en"
+            assert.ok(
+              (await page.locator(".reference-reading").innerText()).includes(
+                "引数は2個です"
+              )
             )
             assert.equal(
               await page.evaluate(

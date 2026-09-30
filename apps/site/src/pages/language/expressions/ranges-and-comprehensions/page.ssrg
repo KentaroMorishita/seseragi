@@ -1,14 +1,16 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.expressions.ranges-and-comprehensions" "/docs/language/expressions/ranges-and-comprehensions/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "expressions-ranges-comprehensions",
-        localized "An ordered filtered comprehension" "順序付きfilter comprehension"
+        localized "An ordered filtered comprehension" "要素を順に取り出し、条件で絞り込む"
       )] [] [
         [InternalLink (
           localized "Tuples, arrays, and lists" "タプル・配列・リスト",
@@ -19,3 +21,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

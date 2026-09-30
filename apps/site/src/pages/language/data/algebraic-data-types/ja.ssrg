@@ -2,12 +2,12 @@ import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "代数的データ型",
-  summary: "algebraic data typeは閉じたvariant集合へ名前を付け、取りうる状態を明示します。",
-  ruleTitle: "variantは閉じたnominal sumを定義する",
-  ruleBody: "type declarationですべてのconstructorを列挙します。payloadなしのconstructorは値、payloadありは宣言した型を返す関数です。複数のpayloadは一つのtupleで渡します。",
-  typingBody: "constructorはmodule scopeへnameを導入し、payloadまたは期待結果型からgeneric type parameterをinstantiateします。matchも同じnominal型と置換済みpayload型を使います。",
-  evaluationBody: "constructor適用は一つのpayloadを一度評価し、選択した値を作ります。matchが観測するのは宣言されたconstructorとpayloadだけで、backend表現ではありません。",
-  invalidTitle: "variant集合は閉じている",
-  invalidBody: "別moduleからconstructorを追加したり、同じconstructorを並べた別declを同一型として扱ったりできません。domainが違う場合は新しい型と明示変換を使います。",
-  diagnosticsBody: "未知のconstructor、payloadのarity・型不一致、非公開constructor、非網羅matchはcompile-time diagnosticです。",
+  summary: "値が取りうる状態を列挙し、状態ごとに必要なデータを持たせる型です。",
+  ruleTitle: "選択肢と、それぞれに必要な値を宣言する",
+  ruleBody: "typeでコンストラクターを列挙します。コンストラクターは、その選択肢の値を作る名前です。引数のない選択肢はそのまま値になり、引数のある選択肢には宣言した型の値を渡します。複数の値を持たせたいときは、一つのタプルにまとめます。例えば成功と失敗を別の選択肢にすると、成功した値と失敗理由を取り違えずに扱えます。",
+  typingBody: "コンストラクターは定義したモジュールの名前として使います。型パラメーターがある場合は、渡した値や期待される結果の型から具体的な型を決めます。matchでは、選択肢を判別すると同時に、その選択肢に格納された値を取り出せます。",
+  evaluationBody: "コンストラクターへ渡す式は一度だけ計算します。matchは、どのコンストラクターで作った値かを調べて分岐します。内部で使われるタグなどの実装形式を、利用者が調べる必要はありません。",
+  invalidTitle: "宣言した後に選択肢を追加することはできない",
+  invalidBody: "選択肢はtypeの宣言で確定します。別のモジュールから追加することはできません。また、別々に宣言した型は、選択肢の名前が同じでも別の型です。違う用途の値を変換する場合は、matchで取り出して変換先のコンストラクターで作り直します。",
+  diagnosticsBody: "コンストラクターの名前、渡す値の型と個数、公開範囲を確認してください。matchで必要な選択肢を扱っていない場合も、実行する前にエラーになります。",
 }

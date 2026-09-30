@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Can I assign the result of an if directly?" "ifの結果を、そのまま値にできるか",
+  summary: localized
+    "An if expression returns the value of one branch. Its condition must be Bool and its branch results must have compatible types."
+    "ifは、選んだ分岐の値を返す式です。条件はBoolで、二つの分岐が返す型を揃える必要があります。",
+  exampleId: "expressions-conditionals",
+  reading: localized
+    "accessLabel receives allowed: Bool. True selects \"allowed\" and False selects \"denied\"; both are String. let label = accessLabel True therefore stores a String rather than an instruction to run a branch later."
+    "accessLabelのallowedはBoolです。Trueなら\"allowed\"、Falseなら\"denied\"を返し、どちらもStringです。let label = accessLabel Trueには、後で分岐する指示ではなく、計算済みの文字列が入ります。",
+  result: localized
+    "label is \"allowed\". Only the selected branch is evaluated. An integer condition is not treated as truthy, and returning an integer from one branch and a string from the other is not automatically a union result."
+    "labelは\"allowed\"です。評価するのは選ばれた分岐だけです。整数を真偽値の代わりに使ったり、片方のIntともう片方のStringを自動で一つの型にまとめたりはしません。"
+}

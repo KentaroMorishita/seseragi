@@ -1,14 +1,16 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.effectful-for" "/docs/language/effects/effectful-for/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-effectful-for",
-        localized "Sequential output in Iterable order" "Iterable順の逐次出力"
+        localized "Sequential output in Iterable order" "要素を取り出す順に、一つずつ出力する"
       )] [] [
         [InternalLink (
           localized "Ranges and comprehensions" "範囲と内包表記",
@@ -23,3 +25,5 @@ pub fn page -> PageDefinition =
           "/docs/language/effects/sequential-and-parallel/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

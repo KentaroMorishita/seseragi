@@ -18,7 +18,7 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "The implementation's availability is checked before execution. Implementation evidence means confirmation that an operation required for a type has a matching instance. You do not need to construct a separate evidence object to make the call.",
     "The choice depends on types, not on the runtime value. Ticket { number: 1 } and Ticket { number: 42 } use the same Label<Ticket> instance. An instance is not chosen by inspecting the number.",
     "A trait does not make Ticket inherit from Label or become a subtype. It does not add fields or inherent dot methods. label ticket is an ordinary function call with an additional requirement for a matching trait implementation.",
-    "Generic code can require Label<A> without choosing A in advance. It states that requirement with where Label<A>. A caller may supply a concrete type only when its matching implementation can be found."
+    "labelOf<A> is the shared caller in this example. where Label<A> means that A must support label. Person has such an instance, so labelOf (Person { name: \"Aki\" }) returns \"Aki\". Ticket also has one, so labelOf can accept a Ticket without changing its own function body."
   ],
   mistakes: [
     "Declaring Label<A> alone does not supply a label implementation. Calling label with a type lacking an instance fails during type checking; it does not wait for runtime.",

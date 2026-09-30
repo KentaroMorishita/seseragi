@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, PageDefinition } from "../../../../model/page"
 import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   readerPage "language.data.records" "/docs/language/data/records/" (en.copy ()) (ja.copy ()) "reader-records" "10\n42\nAki" [CodeExample
       (
         "data-invalid-record",
@@ -17,3 +19,5 @@ pub fn page -> PageDefinition =
         (localized "Structs" "構造体", "/docs/language/data/structs/"),
         (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

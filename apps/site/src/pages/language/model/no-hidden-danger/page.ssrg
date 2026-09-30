@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
 import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   principlePage "language.model.no-hidden-danger" "/docs/language/model/no-hidden-danger/" (en.copy ()) (ja.copy ()) "principle-no-hidden-danger" "not found" [
     [InternalLink
         (localized "Maybe and absence" "Maybeと値の不在", "/docs/language/effects/maybe/")],
@@ -17,3 +19,5 @@ pub fn page -> PageDefinition =
       "/docs/language/effects/error-channels/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

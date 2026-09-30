@@ -8,7 +8,10 @@ pipeline.
 ## Responsibilities
 
 - `src/pages/`: one directory per stable page, with `page.ssrg`, `en.ssrg` and
-  `ja.ssrg`.
+  `ja.ssrg`. Language articles also own a typed `guide.ssrg`: a reader's
+  question, a local example walkthrough, and its result or limitation. The
+  shared explanation component moves that article's existing example beside
+  its explanation; it never substitutes a Tour lesson or removes later rules.
 - `src/model/`: closed page, navigation, locale and build-input types.
 - `src/components/`: reusable documentation patterns such as code examples,
   callouts, API references, sidebars and in-page navigation.
@@ -26,6 +29,12 @@ pipeline.
   its enhancement only adds outside/Escape dismissal and focus handling.
 - `scripts/reference.ts`: validates and joins the canonical Reference and
   Prelude instance artifacts without owning routes or page prose.
+- `scripts/reference-copy.ts`: reviewed Japanese descriptions keyed by exact
+  canonical English descriptions. Unknown upstream copy fails the build rather
+  than silently falling back to English.
+- `scripts/signature-reading.ts`: derives argument and result explanations
+  from canonical signatures, keeping nested function arrows distinct from
+  top-level arguments. These explanations supplement, not replace, API prose.
 - `scripts/build.ts`: host adapter that reads canonical inputs, invokes the
   Seseragi generator and publishes static files.
 

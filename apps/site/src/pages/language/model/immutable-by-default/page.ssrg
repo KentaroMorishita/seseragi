@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
 import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   principlePage "language.model.immutable-by-default" "/docs/language/model/immutable-by-default/" (en.copy ()) (ja.copy ()) "principle-immutable-by-default" "10 -> 11" [
     [InternalLink (localized "Records" "レコード", "/docs/language/data/records/")],
     [InternalLink (
@@ -16,3 +18,5 @@ pub fn page -> PageDefinition =
       "/docs/language/effects/signals-and-transactions/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

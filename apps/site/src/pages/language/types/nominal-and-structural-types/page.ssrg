@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,37 +13,35 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.nominal-structural" "/docs/language/types/nominal-and-structural-types/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "types-nominal-structural",
       localized "Nominal recursive data and structural records"
-        "nominal recursive dataとstructural record"
+        "名前で区別する再帰データ型と、フィールドで区別するレコード"
     ),
     BulletList [
       [
         InlineCode "ADT / struct / newtype",
         Words (
           localized " — compatibility follows declaration identity."
-        " — compatibilityは宣言identityに従います。"
+        " — 別々の宣言なら、フィールドが同じでも別の型です。"
         )
       ],
       [
         InlineCode "{ id: Int, name: String }",
-        Words (
-          localized " — may flow to { name: String } by width."
-        " — widthにより{name: String}へflowできます。"
-        )
+        Words
+        (localized " — may flow to { name: String } by width." " — nameだけを要求する関数にも渡せます。")
       ],
       [Words (
         localized
         "A shared field type must match exactly; width does not recurse through fields."
-        "共有field型は完全一致し、widthはfield内へ再帰しません。"
+        "同じ名前のフィールドの型は完全に一致する必要があります。外側に余分なフィールドがあってよいことと、フィールド内の型を変更できることは別です。"
       )]
     ]
   ] [CodeExample (
     "types-invalid-structural",
-    localized "Rejected structural type differences" "拒否されるstructural type差分"
+    localized "Rejected structural type differences" "フィールド内の型や、名前付き型が異なる場合"
   )] [
     [InternalLink (
       localized "Optional record fields" "省略可能なレコードフィールド",
@@ -53,3 +53,5 @@ pub fn page -> PageDefinition =
     )],
     [InternalLink (localized "Type system" "型システム", "/docs/language/types/type-system/")]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

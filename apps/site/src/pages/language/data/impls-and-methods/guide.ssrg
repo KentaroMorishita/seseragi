@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Where do I put operations belonging to my type?"
+    "自分の型に属する操作は、どこに書くか",
+  summary: localized
+    "An impl groups methods for a named type. Define it in the module that owns the type and give each method its receiver as the first self parameter."
+    "implには、名前付きの型に属するメソッドをまとめます。型の定義元のモジュールに書き、最初のself引数で操作する値を受け取ります。",
+  exampleId: "data-impls-and-methods",
+  reading: localized
+    "Box<A> has a value field. impl<A> Box<A> defines get, whose self: Box<A> receives the Box before the dot. It returns self.value with the same element type A."
+    "Box<A>はvalueを持ちます。impl<A> Box<A>のgetでは、self: Box<A>がドットの前のBoxを受け取り、self.valueを同じA型のまま返します。",
+  result: localized
+    "Box<Int> { value: 42 }.get returns 42. get reads an existing value; it neither mutates it nor creates a trait implementation. A trait promise must be fulfilled with instance separately."
+    "Box<Int> { value: 42 }.getの結果は42です。値を読み取る操作で、書き換えやtrait実装の追加ではありません。traitの約束を満たすには別途instanceを使います。"
+}

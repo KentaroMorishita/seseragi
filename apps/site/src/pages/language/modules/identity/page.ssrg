@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   CodeExample,
@@ -11,7 +13,7 @@ import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.modules.identity" "/docs/language/modules/identity/" (en.copy ()) (ja.copy ()) [
     Heading ("boundaries", localized (en.layoutTitle ()) (ja.layoutTitle ())),
     Paragraph [Words (localized (en.layoutBody ()) (ja.layoutBody ()))],
@@ -29,3 +31,5 @@ pub fn page -> PageDefinition =
     )],
     [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

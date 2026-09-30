@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How can + add values of my own type?" "自分の型に対して+の処理を定義するには",
+  summary: localized
+    "An operator overload gives a supported standard operator a meaning for your named type. It keeps that operator's existing precedence and grouping rules."
+    "演算子オーバーロードでは、対応する標準演算子に自分の型の処理を定義します。記号の優先順位や結合規則は変わりません。",
+  exampleId: "data-operator-overloads",
+  reading: localized
+    "Score wraps Int. The + implementation unpacks both Scores, adds the integers, and wraps the sum back in Score. The first operand is received as self and the second as other."
+    "ScoreはIntを包む型です。+の実装では二つのScoreの中身を取り出し、整数を足して、結果をScoreで包みます。左の値がself、右の値がotherです。",
+  result: localized
+    "total is Score 42, not Int 42. Score does not automatically inherit Int's operators; the declaration supplies the intended operation. A new custom symbol uses a different top-level operator declaration."
+    "totalはIntの42ではなくScore 42です。ScoreがIntの演算子を自動で引き継ぐのではなく、この宣言が処理を与えます。独自の新しい記号を使う場合は、別のカスタム演算子宣言が必要です。"
+}

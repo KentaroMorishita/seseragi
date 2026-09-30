@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   CodeExample,
@@ -11,40 +13,42 @@ import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.expressions.blocks-and-local-declarations" "/docs/language/expressions/blocks-and-local-declarations/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "expressions-blocks",
-      localized "A block with a local function" "local functionを持つblock"
-    ),
+    CodeExample
+      ("expressions-blocks", localized "A block with a local function" "ブロックの中で関数を定義する"),
     BulletList [
       [
         InlineCode "let",
-        Words
-          (localized " binds from the following item onward." " は次のitemから末尾までbindします。")
+        Words (
+          localized " binds from the following item onward."
+      " で付けた名前は、次の宣言や式からブロックの末尾まで使えます。"
+        )
       ],
       [
         InlineCode "fn",
         Words (
           localized " captures earlier lexical bindings and itself."
-          " は先行するlexical bindingと自身をcaptureします。"
+      " は、宣言した位置で見えている先の名前と、自分自身の名前を参照できます。"
         )
       ],
       [
         InlineCode "rec",
         Words (
           localized " gives every member the complete group scope."
-          " は全memberへgroup全体のscopeを与えます。"
+      " にまとめた関数は、互いの名前を本体から参照できます。"
         )
       ]
     ]
   ] [] [
     [InternalLink
-          (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")],
+      (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")],
     [InternalLink
-          (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")],
+      (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")],
     [InternalLink (
       localized "Recursive declarations" "再帰宣言",
       "/docs/language/types/recursive-declarations/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

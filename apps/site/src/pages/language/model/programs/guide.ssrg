@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How does a file become an executable program?"
+    "ソースファイルを実行するプログラムにするには",
+  summary: localized
+    "Each source file is a module. An executable package chooses a module with a public main, whose returned Effect describes the program's external work."
+    "ソースファイル一つがモジュールです。実行するパッケージでは、公開mainを持つモジュールを選び、返すEffectで外部処理を表します。",
+  exampleId: "language-program-entry",
+  reading: localized
+    "pub makes main accessible to the runner. -> Unit says successful completion has no further payload; with Console requires the output service; fails ConsoleError keeps a possible output failure visible in the type."
+    "pubはmainを実行機構へ公開します。-> Unitは成功後に内容を返さない指定、with Consoleは出力サービスの要求、fails ConsoleErrorは出力が失敗する可能性の指定です。",
+  result: localized
+    "The runner supplies the service and executes the returned operation, printing Hello, Seseragi! followed by a newline. Importing a module only makes its definitions available; it is not the program's execution command."
+    "実行機構がサービスを渡して処理を実行し、Hello, Seseragi!と改行を出力します。importは定義を使えるようにするもので、プログラムを起動する命令ではありません。"
+}

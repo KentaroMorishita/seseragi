@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How do I change a field without changing the original value?"
+    "元の値を変えずに、フィールドを変えるには",
+  summary: localized
+    "A record groups named fields without declaring a type name. Read fields with a dot and construct an updated copy with a spread."
+    "レコードは、型名を宣言せずに名前付きフィールドをまとめる値です。ドットで読み、スプレッドで変更したコピーを作ります。",
+  exampleId: "reader-records",
+  reading: localized
+    "original holds name \"Aki\" and score 10. ...original copies its fields into a new record, and score: 42 replaces the new record's score. nameOf requires only a String field named name, so updated may also contain score."
+    "originalはnameの\"Aki\"とscoreの10を持ちます。...originalで新しいレコードへフィールドを取り込み、score: 42で新しい方の得点を指定します。nameOfはStringのnameだけを要求するため、scoreも持つupdatedを渡せます。",
+  result: localized
+    "The outputs are 10, 42, and Aki. The first two distinguish the original from its updated copy. This operation is construction, not an assignment to original.score."
+    "出力は10、42、Akiです。最初の二行で、元の値とコピーの値が別だと分かります。original.scoreへの代入ではなく、新しい値の構築です。"
+}

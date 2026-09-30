@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.traits.do-notation" "/docs/language/traits/do-notation/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "traits-do-notation",
@@ -26,3 +28,5 @@ pub fn page -> PageDefinition =
           "/docs/language/expressions/blocks-and-local-declarations/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

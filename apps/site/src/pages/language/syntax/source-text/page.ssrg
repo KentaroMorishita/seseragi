@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,41 +13,39 @@ import { syntaxPage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   syntaxPage "language.syntax.source-text" "/docs/language/syntax/source-text/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "syntax-source-text",
       localized "Unicode names, apostrophes, and Char boundaries"
-        "Unicode name・apostrophe・Char境界"
+        "Unicodeの名前と文字リテラルを区別する"
     ),
     BulletList [
       [
         InlineCode "userName",
-        Words (localized " starts with ASCII XID_Start." " はASCII XID_Startで始まります。")
+        Words (localized " starts with ASCII XID_Start." " はASCIIの英字から始まる名前です。")
       ],
       [
         InlineCode "次の値",
-        Words (
-          localized " uses Unicode identifier properties."
-        " はUnicode identifier propertyを使います。"
-        )
+        Words
+        (localized " uses Unicode identifier properties." " はUnicodeで識別子に使える文字からなる名前です。")
       ],
       [
         InlineCode "account'",
         Words (
           localized " is one identifier with a trailing apostrophe."
-        " は末尾apostropheを含む一つのidentifierです。"
+        " は末尾のアポストロフィーを含めて、一つの名前です。"
         )
       ]
     ]
   ] [BulletList [
     [
       InlineCode "1value",
-      Words (localized " cannot start with a digit." " はdigitで開始できません。")
+      Words (localized " cannot start with a digit." " は数字から始まるため、名前には使えません。")
     ],
     [
       InlineCode "/* text */",
-      Words (localized " is not a block comment form." " はblock commentではありません。")
+      Words (localized " is not a block comment form." " は複数行のコメントの開始ではありません。")
     ]
   ]] [
     [InternalLink (
@@ -58,3 +58,5 @@ pub fn page -> PageDefinition =
       "/docs/language/syntax/layout-and-line-continuation/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

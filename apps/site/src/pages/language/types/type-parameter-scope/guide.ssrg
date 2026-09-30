@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Where can I use a declared type parameter?"
+    "宣言した型パラメーターは、どこで使えるか",
+  summary: localized
+    "A type parameter belongs to its declaration. It is visible in that declaration's signature and body, not in unrelated declarations."
+    "型パラメーターは、それを宣言した関数や型に属します。その宣言の型注釈や本体では使えますが、別の宣言へは引き継がれません。",
+  exampleId: "types-scope",
+  reading: localized
+    "The A after identity is the same A in value: A, the result type, and let unchanged: A. If a call chooses Int, every one of these positions means Int for that call."
+    "identityの後に宣言したAは、value: A、戻り値のA、let unchanged: Aのすべてで同じものです。呼び出しでIntを選べば、その呼び出しではすべてIntになります。",
+  result: localized
+    "number is 42 and text is \"hello\" with their respective types. Writing an undeclared A elsewhere does not create a new parameter; declare it there. Do not reuse an outer parameter's name for a different inner parameter."
+    "numberはIntの42、textはStringの\"hello\"です。別の場所に未宣言のAを書いても、型パラメーターは生まれません。そこで宣言し、外側のパラメーターを隠す同名の宣言は避けます。"
+}

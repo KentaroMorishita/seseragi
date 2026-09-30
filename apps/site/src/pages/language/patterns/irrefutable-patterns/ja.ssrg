@@ -2,12 +2,12 @@ import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "反駁不能パターン",
-  summary: "irrefutable patternは、検査対象の入力型が持つすべての値へ必ず一致します。",
-  ruleTitle: "irrefutabilityはshapeと型で決まる",
-  ruleBody: "nameとwildcardは常に一致します。tuple、record、structは全nested patternがirrefutableならirrefutableです。単一constructor ADTとnewtypeもpayload patternがirrefutableなら同様です。",
-  typingBody: "collection全体をrestへbindするpatternだけがirrefutableです。literal、固定collection要素、複数variant ADTのconstructorは、example値に一致してもrefutableです。",
-  evaluationBody: "irrefutabilityはcompile-timeに判断し、letやeffectful forへruntime testを挿入しません。destructuringでも入力は一度だけ評価します。",
-  invalidTitle: "一致しそうでもrefutable",
-  invalidBody: "Arrayは空かもしれないため、let [head, ...tail] = valuesは拒否します。match、Maybeを返すtotal library operation、または長さを検査しない[...all]を使います。",
-  diagnosticsBody: "禁止されたrefutable bindingではpattern全体を指します。shape、tuple arity、field、constructor payload、要素型の不一致を先に報告します。",
+  summary: "入力の型に含まれるすべての値に、必ず一致するパターンです。letで安全に分解するための条件になります。",
+  ruleTitle: "必ず一致するかは、入力の型から判断する",
+  ruleBody: "名前だけのパターンと_は、どの入力にも一致します。タプル、レコード、structの分解は、中のすべてのパターンが必ず一致すれば使えます。選択肢が一つだけの代数的データ型やnewtypeも、中身を必ず取り出せるパターンなら同様です。",
+  typingBody: "配列やListには、空の値や異なる長さの値があります。そのため、特定の要素数を要求するパターンは必ず一致するとは言えません。全要素を残りの要素としてまとめて受け取るパターンなら、長さに依存せず一致します。",
+  evaluationBody: "必ず一致するかどうかは、実行する前に型から判断します。letを実行したときに一致失敗の検査を追加する方式ではありません。分解する値は一度だけ計算します。",
+  invalidTitle: "今回の値に一致することと、必ず一致することは違う",
+  invalidBody: "let [head, ...tail] = valuesは、valuesが空かもしれないため使えません。matchで空の場合も扱うか、Maybeを返すライブラリの操作を使います。先頭を取り出す必要がなければ、[...all]で全要素を受け取れます。",
+  diagnosticsBody: "必ず一致することが必要な場所で失敗しうるパターンを使うと、パターン全体を指すエラーになります。まず入力の型と形が合っているかを確認し、その後で空や別の選択肢にも一致するか考えてください。",
 }

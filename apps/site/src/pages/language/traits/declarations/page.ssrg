@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, PageDefinition } from "../../../../model/page"
 import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   readerPage "language.traits.declarations" "/docs/language/traits/declarations/" (en.copy ()) (ja.copy ()) "reader-trait" "ticket-42" [CodeExample
       (
         "traits-invalid-declaration",
@@ -14,3 +16,5 @@ pub fn page -> PageDefinition =
         (localized "Instances" "インスタンス", "/docs/language/traits/instances/"),
         (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

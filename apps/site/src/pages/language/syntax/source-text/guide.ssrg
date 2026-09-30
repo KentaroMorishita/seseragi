@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How are comments and source characters treated?"
+    "コメントやソースの文字は、どう扱われるか",
+  summary: localized
+    "Seseragi source is UTF-8. A comment explains code to readers without contributing a value to the program."
+    "SeseragiのソースはUTF-8です。コメントは人にコードを説明するもので、プログラムの値にはなりません。",
+  exampleId: "syntax-source-text",
+  reading: localized
+    "The // lines are comments. userName and 次の値 are ordinary declarations; the example also shows an apostrophe continuing a value name in account'. The characters belong to source names, not strings passed to a hidden runtime parser."
+    "//から始まる行はコメントです。userNameと次の値は通常の宣言で、account'は値の名前に続けてアポストロフィを使う例です。名前はソースとして解析されます。",
+  result: localized
+    "The commented text is not executed. Character encoding and name rules are separate: a character being valid UTF-8 does not necessarily make it a valid identifier character. See the precise lexical rules below when a name is rejected."
+    "コメントの文章は実行されません。文字コードと名前の規則は別なので、UTF-8で表せるすべての文字を名前に使えるわけではありません。名前が拒否された場合は、以下の具体的な規則を確認します。"
+}

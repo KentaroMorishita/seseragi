@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "標準演算子とtrait",
   summary: "標準operator構文は固定されたtrait evidenceを選び、暗黙変換やruntime overloadを行いません。",
-  ruleTitle: "各標準operatorにはtrait contractがある",
-  ruleBody: "equalityはEq、順序はOrd.compare、算術はAdd・Sub・Mul・Div・Rem・Pow、関数的operatorはFunctor・Applicative・Monadを使います。選ばれたinstanceが操作を定めます。",
-  typingBody: "算術evidenceは左・右・output型を持ち、operand pairから一つのoutputが決まります。順序比較は同じ型の二値を比較します。異型式は正確なevidenceがある場合だけ有効で、数値coercionを挿入しません。",
-  evaluationBody: "operandを左から右へ一度ずつ評価してから選択済み操作を実行します。四つの順序operatorはcompare一回の結果から導出します。Boolean short-circuitはtrait callではなくbuiltin control flowです。",
-  invalidTitle: "overloadでgrammarは変えられない",
-  invalidBody: "instanceはprecedence、associativity、別tokenの意味を変えられません。新tokenはcustom operator宣言を使い、標準構文は固定のtraitに結び付きます。",
-  diagnosticsBody: "失敗した式は具体的なoperator evidenceの欠落または競合とoperand型を報告します。Floatの順序はhost言語比較へfallbackしません。",
+  ruleTitle: "引数の型に対応するtraitの演算を使う",
+  ruleBody: "等価比較はEq、順序はOrd.compare、算術はAdd・Sub・Mul・Div・Rem・Powに対応します。<$>、<*>、>>=はFunctor・Applicative・Monadの操作です。instanceが、その型での処理を定めます。",
+  typingBody: "算術の実装は左・右・結果の型を持ちます。左と右の組み合わせから結果の型は一つに決まります。異なる型同士の計算も、その組み合わせの実装がある場合だけ使えます。IntからFloatへの自動変換はありません。",
+  evaluationBody: "左右を一度ずつ計算してから演算を行います。順序の四つの演算子はcompareを一度呼んだ結果から決まります。&&や||は右を計算しない場合がある構文で、traitの呼び出しではありません。",
+  invalidTitle: "実装で演算子の構文は変えられない",
+  invalidBody: "instanceを変えても優先順位や結合規則は変わりません。別の記号を使いたい場合はカスタム演算子を宣言します。",
+  diagnosticsBody: "左右の型と対応するinstanceを確認します。Floatの順序もSeseragiの規則に従い、生成先の比較へ任せることはありません。",
 }

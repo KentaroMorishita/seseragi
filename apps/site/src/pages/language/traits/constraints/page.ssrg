@@ -1,16 +1,20 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.traits.constraints" "/docs/language/traits/constraints/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "traits-constraints",
-        localized "A constrained generic function" "constraint付きgeneric関数"
-      )] [CodeExample
-      ("traits-invalid-constraint", localized "Missing concrete evidence" "具体的evidenceの欠落")] [
+        localized "A constrained generic function" "必要なtraitを条件にした、型を共通化する関数"
+      )] [CodeExample (
+        "traits-invalid-constraint",
+        localized "Missing concrete evidence" "必要なtraitの実装がない場合"
+      )] [
         [InternalLink
       (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
         [InternalLink (
@@ -20,3 +24,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Instances" "インスタンス", "/docs/language/traits/instances/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

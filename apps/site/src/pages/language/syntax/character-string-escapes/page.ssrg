@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,31 +13,31 @@ import { syntaxPage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   syntaxPage "language.syntax.character-string-escapes" "/docs/language/syntax/character-string-escapes/" (en.copy ()) (ja.copy ()) [
     CodeExample
-      ("syntax-char-valid", localized "Valid Char and escape forms" "有効なCharとescape"),
+      ("syntax-char-valid", localized "Valid Char and escape forms" "文字の値とエスケープの書き方"),
     BulletList [
       [
         InlineCode "\\n \\r \\t \\0",
-        Words (localized " are the common control escapes." " は共通control escapeです。")
+        Words (localized " are the common control escapes." " は改行やタブなどの制御文字を書く形式です。")
       ],
       [
         InlineCode "\\u{03BB}",
         Words
-      (localized " decodes one Unicode scalar." " は一つのUnicode scalarへdecodeされます。")
+      (localized " decodes one Unicode scalar." " はUnicodeの符号位置一つを指定して、文字に変換されます。")
       ],
       [
         InlineCode "\\${",
-        Words
-      (localized " writes literal ${ in a template." " はtemplateにliteral ${を書きます。")
+        Words (
+          localized " writes literal ${ in a template."
+      " はテンプレート文字列に、埋め込みではない文字列として${を書きます。"
+        )
       ]
     ]
   ] [
-    CodeExample (
-      "syntax-char-invalid",
-      localized "Rejected Char scalar counts" "拒否されるChar scalar count"
-    ),
+    CodeExample
+      ("syntax-char-invalid", localized "Rejected Char scalar counts" "Charに文字を二つ入れるとエラー"),
     CodeExample
       ("syntax-invalid-escape", localized "Rejected with SES-P0201" "SES-P0201で拒否")
   ] [
@@ -49,3 +51,5 @@ pub fn page -> PageDefinition =
       "/docs/language/syntax/layout-and-line-continuation/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

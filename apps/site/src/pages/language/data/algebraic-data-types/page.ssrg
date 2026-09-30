@@ -1,12 +1,17 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.data.algebraic-data-types" "/docs/language/data/algebraic-data-types/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("data-algebraic-data-types", localized "A closed generic state" "閉じたgeneric state")] [] [
+      (
+        "data-algebraic-data-types",
+        localized "A closed generic state" "選択肢を列挙した、型パラメーターを持つデータ"
+      )] [] [
         [InternalLink
       (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
         [InternalLink
@@ -16,3 +21,5 @@ pub fn page -> PageDefinition =
           "/docs/language/types/nominal-and-structural-types/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

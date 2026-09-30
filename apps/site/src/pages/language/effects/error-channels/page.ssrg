@@ -1,18 +1,20 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.error-channels" "/docs/language/effects/error-channels/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-error-channels",
         localized "Mapping a dependency error into an application ADT"
-      "dependency errorをapplication ADTへ変換"
+      "ライブラリの失敗を、アプリケーションの失敗型に変換する"
       )] [CodeExample (
         "effects-invalid-errors",
-        localized "Rejected mismatched failure contract" "failure contract不一致を拒否"
+        localized "Rejected mismatched failure contract" "宣言した失敗の型と実際の処理が違う場合"
       )] [
         [InternalLink (
           localized "Either and typed results" "Eitherによる成功と失敗",
@@ -23,3 +25,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "The Effect type" "Effect型", "/docs/language/effects/effect-type/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

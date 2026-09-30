@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How do I accept a record that may omit a field?"
+    "フィールドを省略できるレコードを受け取るには",
+  summary: localized
+    "Write ? after a record field's name when the record may omit that field. Reading it returns Maybe, forcing the caller to handle absence."
+    "レコードのフィールド名に?を付けると、そのフィールドを省略できる型になります。読み取りの結果はMaybeなので、値がない場合も扱います。",
+  exampleId: "syntax-optional-record-field",
+  reading: localized
+    "Props requires children but allows id to be absent. minimal has only children; named also has id. props.id is Just \"hero\" for named and Nothing for minimal. The ?? operator extracts an existing string or supplies \"anonymous\"."
+    "Propsのchildrenは必須で、idは省略できます。minimalにはchildrenだけがあり、namedにはidもあります。props.idはnamedならJust \"hero\"、minimalならNothingです。??で、値があるときは取り出し、ないときは\"anonymous\"を使います。",
+  result: localized
+    "label minimal returns \"anonymous\" and label named returns \"hero\". A required field of type Maybe<String> is different: the field must exist, even when its value is Nothing."
+    "label minimalは\"anonymous\"、label namedは\"hero\"を返します。必須のid: Maybe<String>とは異なり、この場合はidフィールドそのものを省略できます。"
+}

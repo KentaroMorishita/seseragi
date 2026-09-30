@@ -1,17 +1,19 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.effect-functions-contract-form" "/docs/language/effects/effect-functions-contract-form/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-contract-form",
-        localized "An explicit Console contract" "Consoleを明示するcontract"
+        localized "An explicit Console contract" "必要なConsoleと失敗の型を明示する"
       )] [CodeExample (
         "effects-invalid-contract",
-        localized "Rejected missing environment and failure" "environment・failure欠落を拒否"
+        localized "Rejected missing environment and failure" "必要なサービスや失敗の型を省略した場合"
       )] [
         [InternalLink (
           localized "Effect functions with an inferred contract" "Effect関数の型を推論する形式",
@@ -26,3 +28,5 @@ pub fn page -> PageDefinition =
           "/docs/language/types/function-types-and-currying/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

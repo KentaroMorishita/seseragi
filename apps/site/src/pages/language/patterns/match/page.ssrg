@@ -1,13 +1,18 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.patterns.match" "/docs/language/patterns/match/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("patterns-match", localized "Exhaustive match with a guard" "guardを持つ網羅match")] [CodeExample
-      ("patterns-invalid-match", localized "Rejected non-exhaustive match" "非網羅matchを拒否")] [
+      ("patterns-match", localized "Exhaustive match with a guard" "条件付きの分岐と、残りの値を扱う分岐")] [CodeExample
+      (
+        "patterns-invalid-match",
+        localized "Rejected non-exhaustive match" "扱っていない選択肢があるmatchはエラー"
+      )] [
         [InternalLink
       (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")],
         [InternalLink (
@@ -19,3 +24,5 @@ pub fn page -> PageDefinition =
           "/docs/language/data/algebraic-data-types/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

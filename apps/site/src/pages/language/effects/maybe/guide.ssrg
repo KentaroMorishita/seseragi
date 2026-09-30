@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How do I use a value that might be absent?"
+    "値がない場合も扱いながら、中身を使うには",
+  summary: localized
+    "Maybe<A> has two cases: Just carrying an A, or Nothing. It represents ordinary absence, not an error with a reason."
+    "Maybe<A>には、Aを持つJustと、値がないNothingの二つの場合があります。正常に起こる不在を表し、失敗の理由を持つ型ではありません。",
+  exampleId: "effects-maybe",
+  reading: localized
+    "displayName checks cached first, then requested, then uses \"anonymous\". ?? unwraps Just's string; its right side is evaluated only for Nothing. Because the operator groups from the right, requested ?? \"anonymous\" supplies the fallback for cached."
+    "displayNameはcachedを先に調べ、なければrequested、それもなければ\"anonymous\"を使います。??はJustの文字列を取り出し、Nothingのときだけ右側を評価します。右からまとまるため、cachedの代替値はrequested ?? \"anonymous\"です。",
+  result: localized
+    "With cached = Just \"Aki\", the result is \"Aki\". With both inputs Nothing, it is \"anonymous\". Use match when you need different processing for presence and absence, or Either when absence must carry an explanation."
+    "cachedがJust \"Aki\"なら結果は\"Aki\"です。両方がNothingなら\"anonymous\"になります。有無で処理を分けたい場合はmatchを使い、不在の理由が必要ならEitherを使います。"
+}

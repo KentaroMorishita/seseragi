@@ -1,14 +1,16 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.either" "/docs/language/effects/either/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-either",
-        localized "Typed validation and right-side mapping" "型付きvalidationとright側のmap"
+        localized "Typed validation and right-side mapping" "入力を検証し、成功した値だけを変換する"
       )] [] [
         [InternalLink
       (localized "Maybe and absence" "Maybeと値の不在", "/docs/language/effects/maybe/")],
@@ -21,3 +23,5 @@ pub fn page -> PageDefinition =
           "/docs/language/data/algebraic-data-types/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

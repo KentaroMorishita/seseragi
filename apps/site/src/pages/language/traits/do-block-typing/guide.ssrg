@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Can I mix Maybe and Effect inside one do block?"
+    "一つのdoにMaybeとEffectを混ぜてよいか",
+  summary: localized
+    "A do block uses one computation type throughout. The payload types can change between steps, but the surrounding type constructor must agree."
+    "一つのdoブロックでは、包む計算の種類を揃えます。取り出す中身の型は行ごとに変わっても、MaybeやEffectといった外側の種類は同じです。",
+  exampleId: "traits-do-block-typing",
+  reading: localized
+    "pair extracts first from left and second from right, both Maybe<Int>. pure (first, second) produces Maybe<(Int, Int)>. The final payload is a tuple, but the outer Maybe is unchanged."
+    "pairでは、leftとrightのMaybe<Int>からfirstとsecondを取り出します。pure (first, second)はMaybe<(Int, Int)>です。最後の中身はタプルになりますが、外側のMaybeは変わりません。",
+  result: localized
+    "present is Just (20, 22), while absent is Nothing. An ordinary let can calculate a pure value between steps; it does not convert an Either or Effect into Maybe. Such a change needs an explicit operation."
+    "presentはJust (20, 22)、absentはNothingです。途中のletで普通の値を計算しても、EitherやEffectをMaybeへ変換したことにはなりません。種類を変えるなら明示的な操作が必要です。"
+}

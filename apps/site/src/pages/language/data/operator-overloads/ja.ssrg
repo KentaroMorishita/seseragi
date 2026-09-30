@@ -2,12 +2,12 @@ import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "演算子オーバーロード",
-  summary: "structとnewtypeは、nominal型が所有するtypeclass evidenceとして固定の標準operatorを実装できます。",
-  ruleTitle: "overloadは型付きstandard traitの糖衣",
-  ruleBody: "impl内のoperator memberは対応するstandard trait instanceを定義します。第一operandのselfは囲むnominal型で、後続operandと結果の宣言型がevidence全体を決めます。",
-  typingBody: "静的operand型とglobal instance coherenceで解決します。generic overloadにはconstraintを付けられます。newtypeは表現型のoperatorを継承しません。",
-  evaluationBody: "operandを通常どおり左から右へ一度ずつ評価し、選ばれた実装を実行します。runtimeでoverloadを探索しません。",
-  invalidTitle: "overloadは新しい構文を作らない",
-  invalidBody: "固定されたoperatorだけをoverloadできます。precedenceとassociativityは標準のままです。custom tokenはtop-level custom operator declarationを使い、明示instanceとの重複は拒否します。",
-  diagnosticsBody: "不正operator名、operand・結果contract、equalityの不正結果、evidence重複、利用位置でのcoherent instance欠落を報告します。",
+  summary: "自分のstructやnewtypeに対する加算などの演算を定義します。",
+  ruleTitle: "標準の演算子に、自分の型の実装を与える",
+  ruleBody: "impl内のoperator宣言で、+などの標準演算子を実装します。最初の引数selfは、そのimplの型です。残りの引数と戻り値の型も宣言します。この宣言は、演算子に対応する標準traitの実装として扱われます。",
+  typingBody: "どの実装を使うかは、演算する値の型で決まります。型パラメーターを使う演算には、必要なtraitの条件を付けられます。newtypeは中身の型の演算を引き継がないため、例えばScore同士の加算はScore用に定義します。",
+  evaluationBody: "左右の値を左から順に一度ずつ計算し、対応する実装を呼びます。実行中に候補を探すのではなく、型検査の段階で呼び出し先が決まります。",
+  invalidTitle: "演算子の意味を定義しても、優先順位は変わらない",
+  invalidBody: "この形式で定義できるのは、対応する標準演算子だけです。優先順位と結合方向は元のままです。新しい記号には、モジュール直下のoperator宣言を使います。同じ演算にoperator宣言とinstance宣言で二重に実装を与えることはできません。",
+  diagnosticsBody: "使える演算子か、引数と戻り値が対応するtraitの条件に合っているかを確認してください。==などの比較は要求された結果型を返す必要があります。候補が重複する場合も、実装がない場合もエラーになります。",
 }

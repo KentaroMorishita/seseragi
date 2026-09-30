@@ -2,12 +2,12 @@ import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "リテラル",
-  summary: "綴りごとの型、値域、token境界、評価規則を説明します。",
+  summary: "数値、文字、文字列、真偽値などをソースに直接書く形式を説明します。",
   formsTitle: "リテラルの形で型が決まる",
-  formsBody: "整数の綴りはInt、小数点または指数があればFloatです。True・FalseはBool、一重引用符のscalarはChar、二重引用符はStringです。backtick直後が[ならList、それ以外ならtemplate String、()はUnitです。",
-  typingBody: "数値literalは型クラスでoverloadしません。Intには十進・二進・八進・十六進があり、別のunary minusを考慮した値域は±9007199254740991です。Floatは十進の綴りからbinary64になります。",
-  evaluationBody: "template内の式は左から右へ一度ずつ評価し、各型のShowで文字列にします。結果は純粋なStringでI/Oをしません。Floatはnearest・ties-to-evenで丸め、有限な綴りからinfinityへoverflowすると拒否します。underflowは符号付きzeroを保ちます。",
-  invalidTitle: "壊れた数値を短い有効tokenに分割しない",
-  invalidBody: "_は同じ基数のdigitの間に一個だけ置けます。十進の先行zero、baseのdigit不足、十六進Float、suffix、未完の指数、1.、.5は拒否します。短い有効tokenと後続tokenへ分割して受理しません。",
-  diagnosticsBody: "不正な綴りと範囲外は数値tokenにSES-P0203を出します。後の整数演算で範囲を越えると実行時 defectで、wrapしません。formatterは有効な数値の綴りとseparatorを保ちます。",
+  formsBody: "整数はInt、小数点または指数を含む数はFloatです。TrueとFalseはBool、一重引用符で囲む文字はChar、二重引用符で囲む文字列はStringです。バッククォートの直後が[ならList、それ以外ならテンプレート文字列です。()はUnitという値です。",
+  typingBody: "数値の書き方で型が決まり、周囲に合わせて別の数値型にはなりません。Intには十進・二進・八進・十六進の形式があり、値の範囲は-9007199254740991から9007199254740991です。負号は数値に含まれる文字ではなく、値を負にする演算子です。Floatは64ビットの浮動小数点数です。",
+  evaluationBody: "テンプレート中の式は左から右へ一度ずつ計算します。Showという型ごとの文字列化の処理で値を文字列にします。文字列を作るだけなので、出力は行いません。Floatは最も近い表現へ丸め、ちょうど中間なら末尾が偶数になる方を選びます。有限の数の綴りが無限大になる場合はエラーです。小さすぎる数は符号を保った0になることがあります。",
+  invalidTitle: "数値の区切りと小数点を確認する",
+  invalidBody: "桁区切りの_は同じ基数の数字と数字の間に一個だけ置けます。十進数の余分な先頭の0、基数の後の数字不足、十六進の小数、型を示す接尾辞、未完成の指数、1.、.5は使えません。小数は1.0、0.5のように書きます。",
+  diagnosticsBody: "不正な数値の書き方や値の範囲を超えたリテラルにはSES-P0203が出ます。正しいリテラルでも、後の整数計算が範囲を超えると実行時の欠陥として停止します。値が小さい数へ一周して戻ることはありません。",
 }

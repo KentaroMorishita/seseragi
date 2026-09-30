@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "What makes a group of files one package?"
+    "複数のファイルを、一つのパッケージにするものは何か",
+  summary: localized
+    "seseragi.toml defines a package's name, version, source layout, dependencies, and public entry modules. A directory alone is not a separate package."
+    "seseragi.tomlで、パッケージの名前・バージョン・ソースの配置・依存先・外部へ公開するモジュールを定めます。ディレクトリだけでは別のパッケージになりません。",
+  exampleId: "",
+  reading: localized
+    "In the manifest below, the public path acme/validation points to src/lib.ssrg and acme/validation/email points to src/email.ssrg. Other files can support those modules internally without becoming public package paths."
+    "下のマニフェストではacme/validationからsrc/lib.ssrg、acme/validation/emailからsrc/email.ssrgを使えます。補助のファイルを内部に置いても、自動で外部の公開パスにはなりません。",
+  result: localized
+    "pub on a declaration and the package's exports have different jobs: exports makes a module reachable from another package, while pub makes a declaration usable once that module is reached. A library need not have main."
+    "宣言のpubとパッケージのexportsは役割が違います。exportsは外部からモジュールへ到達できるか、pubはそのモジュールの宣言を使えるかを決めます。ライブラリにはmainが不要です。"
+}

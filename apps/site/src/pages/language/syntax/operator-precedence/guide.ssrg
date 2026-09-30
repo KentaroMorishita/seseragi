@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Which part of this expression is computed together?"
+    "この式は、どこからひとまとまりになるか",
+  summary: localized
+    "Precedence determines how an expression groups. Parentheses make your intended grouping explicit."
+    "優先順位は、式のどこがひとまとまりになるかを決めます。意図を明示したい場合は括弧を付けます。",
+  exampleId: "syntax-operator-precedence",
+  reading: localized
+    "In 1 + 2 * 3, multiplication groups first, so the result is 7. In (1 + 2) * 3, the parenthesized addition groups first, so the result is 9. comparison combines two Bool tests with &&."
+    "1 + 2 * 3では乗算が先にまとまり、結果は7です。(1 + 2) * 3では括弧内の加算が先で、結果は9です。comparisonは二つの真偽値を&&で組み合わせます。",
+  result: localized
+    "comparison is True. Grouping is not permission to evaluate effectful operations in an arbitrary order. && and || additionally short-circuit: they skip the right side when the left side already determines the answer."
+    "comparisonはTrueです。式のまとまり方は、副作用のある処理を勝手な順序で実行してよいという意味ではありません。&&と||には短絡評価もあり、左側だけで結果が決まれば右側を評価しません。"
+}

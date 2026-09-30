@@ -18,6 +18,24 @@ acceptance for those pages.
 
 ## Page-by-page review
 
+### Corpus-wide explanation pass (2026-10-01)
+
+This pass covers every currently implemented page, not only the original eight:
+105 conceptual language articles now own bilingual question/example/result
+explanations; the grammar appendix explains its notation locally. Original
+rule and diagnostic sections remain available after those explanations.
+Japanese prose, code captions and related-page names were edited together.
+The 63 library modules have localized purposes and usage guidance; all 1,812
+symbol/instance pages have Japanese primary descriptions and signature
+walkthroughs. Canonical descriptions and signatures remain the source of truth.
+
+Structural completeness is tested separately from reader acceptance. Native
+execution checks cover 31 concrete result claims in addition to the reader
+examples. Unknown upstream API descriptions fail translation coverage rather
+than producing an untranslated primary description. Per-route acceptance below
+is deliberately not bulk-checked by this authoring pass: the full walkthrough
+and API-specific examples still require page-by-page reader review.
+
 - [ ] `/docs/language/model/what-is-seseragi/` — English explanation / Japanese explanation / prerequisites / example walkthrough / navigation
 - [ ] `/docs/language/model/design-principles/` — English explanation / Japanese explanation / prerequisites / example walkthrough / navigation
 - [ ] `/docs/language/model/expression-oriented/` — English explanation / Japanese explanation / prerequisites / example walkthrough / navigation

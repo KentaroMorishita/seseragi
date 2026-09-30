@@ -1,14 +1,15 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.traits.laws" "/docs/language/traits/laws/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("traits-laws", localized "A law-shaped reusable check" "lawの形をした再利用可能な検査")] [] [
-        [InternalLink
-      (localized "Traits" "traitとは", "/docs/language/traits/model/")],
+      ("traits-laws", localized "A law-shaped reusable check" "型を替えて使える、traitの法則の検査")] [] [
+        [InternalLink (localized "Traits" "traitとは", "/docs/language/traits/model/")],
         [InternalLink (
           localized "Standard operators and traits" "標準演算子とtrait",
           "/docs/language/traits/standard-operators/"
@@ -18,3 +19,5 @@ pub fn page -> PageDefinition =
           "/docs/language/traits/deriving/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

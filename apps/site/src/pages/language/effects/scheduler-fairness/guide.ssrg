@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Can a long calculation prevent other Fibers from progressing?"
+    "長い計算で、他の処理を待たせてしまうことはあるか",
+  summary: localized
+    "The runtime shares execution cooperatively. Fibers give other runnable work a chance at waits and explicit yield points, not by automatic interruption of every pure calculation."
+    "実行の割り当ては協調的に行います。待機や明示的なyieldで他の処理へ機会を渡し、長い純粋な計算を自動で細切れに中断するわけではありません。",
+  exampleId: "effects-scheduler-fairness",
+  reading: localized
+    "yieldNow creates an explicit handoff point before cooperativeStep succeeds with 42. It does not request a service or produce a recoverable error; it simply allows already-runnable work an opportunity to advance."
+    "例のyieldNowは、cooperativeStepが42で成功する前に、実行を譲る機会を作ります。サービスの要求や回復可能な失敗を追加せず、実行可能な他の処理へ機会を渡します。",
+  result: localized
+    "The result is still 42. Fairness does not guarantee equal elapsed time or a fixed response deadline. A long uninterrupted pure loop can delay other work, so choose appropriate handoff points when designing CPU-heavy Effect code."
+    "結果は42のままです。公平性は、全処理の実行時間が均等になることや、決まった時間内の応答を保証しません。長い純粋な計算が続けば、他の処理を待たせる可能性があります。"
+}

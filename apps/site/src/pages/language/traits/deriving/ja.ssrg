@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "derivingによるインスタンスの導出",
   summary: "nominal data宣言はfieldとconstructor順序から、閉じた集合の標準instanceをcompilerに生成させられます。",
-  ruleTitle: "derivingは通常のcoherent evidenceを生成する",
-  ruleBody: "ADT、struct、newtypeはEq、Ord、Show、Debug、Hash、JsonEncode、JsonDecodeをderiveできます。生成instanceは明示instanceと同じvisibility、ownership、coherence規則に従います。",
-  typingBody: "すべてのfieldまたはpayloadに対象traitが要求するevidenceが必要です。generic宣言は対応constraintを生成します。HashにはEqも必要です。JSON derivingは独自のwire contractに従い、汎用serializationを発明しません。",
-  evaluationBody: "EqとHashは宣言順にfield・payloadを辿ります。Ordはconstructor順を先に比較し、その後payloadを比較します。newtypeのequalityと順序は表現へ委譲しますが、ShowとDebugはwrapper名を保ちます。",
-  invalidTitle: "derivingはmacro systemではない",
-  invalidBody: "user-defined traitや任意code生成は未対応です。同じheadへの明示instanceとderived instanceは競合し、field evidence欠落は宣言を拒否します。",
-  diagnosticsBody: "未対応trait、nested evidence欠落、Hashが必要とするEq、生成evidence重複を区別し、nominal宣言と対象field・payloadを示します。",
+  ruleTitle: "データの各部分から、標準の操作を自動で作る",
+  ruleBody: "ADT、struct、newtypeにはEq、Ord、Show、Debug、Hash、JsonEncode、JsonDecodeをderivingで指定できます。生成された実装も、手書きのinstanceと同じ公開範囲・宣言場所・重複禁止の規則に従います。",
+  typingBody: "フィールドや各選択肢の中身にも、対象のtraitの実装が必要です。ジェネリック型では、その条件が型パラメーターに加わります。HashにはEqも必要です。JSONの自動生成は定められたJSON形式を使います。",
+  evaluationBody: "EqとHashは宣言順に中身を調べます。OrdはまずADTの選択肢の宣言順を比較し、次に中身を比較します。newtypeの等しさや順序は中身に従いますが、ShowやDebugの表示には包んだ型の名前も残ります。",
+  invalidTitle: "任意のtraitやコードを自動生成する仕組みではない",
+  invalidBody: "独自traitのderivingや任意のコード生成はできません。同じ型について手書きと自動生成のinstanceを重ねるとエラーです。必要なフィールドの実装が不足する場合も生成できません。",
+  diagnosticsBody: "生成できないtraitと、原因のフィールドや中身の型を確認します。Hashを指定した場合はEqが用意されているかも確認してください。",
 }

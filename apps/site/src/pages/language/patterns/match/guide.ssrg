@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How do I handle every case stored in a value?"
+    "値が取り得る場合を、漏れなく扱うには",
+  summary: localized
+    "match selects the first matching branch and returns that branch's result. The compiler checks that no possible input case is missing."
+    "matchは最初に一致した分岐を選び、その結果を返します。入力にあり得る場合を扱い忘れていないか、コンパイラが検査します。",
+  exampleId: "patterns-match",
+  reading: localized
+    "Status has Waiting and Complete carrying an Int. The first Complete branch also requires count > 0; the next Complete _ handles all remaining counts. _ means the carried value is not needed in that branch."
+    "StatusにはWaitingと、Intを持つCompleteがあります。最初のCompleteの分岐にはcount > 0という条件もあり、その後のComplete _が残りの点数を扱います。_は中の値を使わない指定です。",
+  result: localized
+    "message (Complete 3) returns \"3 complete\". A condition on a branch may be false, so it cannot by itself cover every Complete value. All selected branch results here are String."
+    "message (Complete 3)は\"3 complete\"を返します。条件付きの分岐は条件が偽になる可能性があるため、それだけですべてのCompleteを扱ったことにはなりません。各分岐の戻り値はStringです。"
+}

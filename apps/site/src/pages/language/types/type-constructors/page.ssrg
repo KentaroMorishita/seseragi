@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,26 +13,26 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.type-constructors" "/docs/language/types/type-constructors/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "types-constructors",
       localized "Parameterized declarations and complete applications"
-        "parameterized宣言と完全な適用"
+        "型パラメーターを宣言し、必要な型引数をすべて渡す"
     ),
     BulletList [
       [
         InlineCode "Array<Array<Int>>",
         Words (
           localized " recursively applies Array at each level."
-        " は各levelでArrayを再帰的に適用します。"
+        " は配列の要素も配列である型です。内側の要素はIntです。"
         )
       ],
       [
         InlineCode "Effect<R, E, A>",
         Words (
           localized " has requirement, failure, and success arguments."
-        " はrequirement・failure・success引数を持ちます。"
+        " の型引数は、必要なサービス、失敗、成功値の順です。"
         )
       ],
       [InlineCode "A -> B -> C", Words (localized " is right-associative." " は右結合です。")]
@@ -44,7 +46,7 @@ pub fn page -> PageDefinition =
       InlineCode "Array",
       Words (
         localized " is a constructor, not a complete ordinary value type."
-        " はconstructorであり完全な通常value型ではありません。"
+        " だけでは型引数が足りず、値の型を表せません。"
       )
     ]
   ]] [
@@ -56,3 +58,5 @@ pub fn page -> PageDefinition =
     )],
     [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -1,13 +1,23 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.modules.namespaces-and-resolution" "/docs/language/modules/namespaces-and-resolution/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("modules-namespaces", localized "Namespaces and name resolution" "namespaceと名前解決")] [] [
-    [InternalLink (localized "Reserved words and naming" "予約語と名前の規則", "/docs/language/syntax/reserved-words-and-names/")],
-    [InternalLink (localized "Type parameter scope" "型パラメーターのスコープ", "/docs/language/types/type-parameter-scope/")],
-    [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")]
-  ]
+      ("modules-namespaces", localized "Namespaces and name resolution" "型の名前と値の名前を区別する")] [] [
+        [InternalLink (
+          localized "Reserved words and naming" "予約語と名前の規則",
+          "/docs/language/syntax/reserved-words-and-names/"
+        )],
+        [InternalLink (
+          localized "Type parameter scope" "型パラメーターのスコープ",
+          "/docs/language/types/type-parameter-scope/"
+        )],
+        [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")]
+      ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

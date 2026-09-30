@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "trait制約",
   summary: "where clauseはgeneric関数やinstanceが必要とするcapabilityをcontractの一部にします。",
-  ruleTitle: "constraintはpolymorphic codeと一緒に移動する",
-  ruleBody: "whereの後ろへ一つ以上のtrait適用を書きます。generic関数は対応dictionaryを暗黙parameterとして受け取ります。conditional instanceは子evidenceを要求でき、選択はそのrequirementを再帰的に解決します。",
-  typingBody: "具体的call siteでは、各requirementにvisibleでcoherentなinstanceが一つ必要です。選択は静的型だけに依存し、空collectionやNothingでも要素evidenceの要求は値がある場合と同じです。",
-  evaluationBody: "evidenceを渡すだけではconstraint対象の値を評価しません。constraint付き操作を呼ぶと、静的に選ばれたdictionaryが実装を与えます。",
-  invalidTitle: "値の状態でconstraintを免除できない",
-  invalidBody: "たまたま要素を見ないbranch、空container、特定constructorでも宣言済みrequirementは消えません。再帰選択のleaf evidenceがなければ型errorです。",
-  diagnosticsBody: "evidence欠落はnested conditional requirementを含む具体的な未充足適用を報告します。曖昧なevidenceと未確定型変数は別に報告します。",
+  ruleTitle: "共通の関数で必要な操作をwhereに書く",
+  ruleBody: "where Label<A>は、Aをラベルにできる実装が必要だという条件です。ジェネリック関数の本体はその操作を使えます。呼び出す側はAに選んだ型の実装を用意します。条件付きinstanceに別のtraitが必要なら、その条件も検査します。",
+  typingBody: "具体的な呼び出しでは各条件を満たす実装が一つ必要です。選ぶのは値の中身ではなく型です。空のコレクションやNothingでも、中身の型に対する条件がなくなるわけではありません。",
+  evaluationBody: "where自体は値を計算しません。その操作を呼んだ時点で、型に対応する実装が実行されます。",
+  invalidTitle: "空の値でも、型に必要な条件は残る",
+  invalidBody: "操作を使わない分岐を通るとしても、宣言した条件は必要です。条件付きinstanceが要求する別の実装まで揃わなければ、型エラーになります。",
+  diagnosticsBody: "どの型に対するどのtraitが不足しているかを確認します。実装がない場合と、型そのものが未確定の場合は別の問題です。",
 }

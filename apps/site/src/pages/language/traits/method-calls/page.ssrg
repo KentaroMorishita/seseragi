@@ -1,16 +1,20 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.traits.method-calls" "/docs/language/traits/method-calls/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "traits-method-calls",
-        localized "An ordinary curried trait call" "通常のcurried trait call"
-      )] [CodeExample
-      ("traits-invalid-method", localized "Ambiguous method ownership" "method所有traitの曖昧さ")] [
+        localized "An ordinary curried trait call" "traitの関数へ引数を一つずつ渡す"
+      )] [CodeExample (
+        "traits-invalid-method",
+        localized "Ambiguous method ownership" "同じ名前の操作を持つtraitが複数ある場合"
+      )] [
         [InternalLink (
           localized "Function application" "関数適用",
           "/docs/language/syntax/function-application/"
@@ -22,3 +26,5 @@ pub fn page -> PageDefinition =
           "/docs/language/traits/methods-versus-traits/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())
