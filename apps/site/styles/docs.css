@@ -252,6 +252,7 @@
 
 .breadcrumbs {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   min-width: 0;
@@ -259,8 +260,13 @@
   color: var(--text-soft);
   font-size: 12px;
   line-height: 1.5;
-  white-space: nowrap;
-  overflow: hidden;
+  white-space: normal;
+}
+
+.breadcrumbs > * {
+  flex-shrink: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .breadcrumbs a {
@@ -278,9 +284,7 @@
 
 .breadcrumb-current {
   min-width: 0;
-  overflow: hidden;
   color: var(--text-muted);
-  text-overflow: ellipsis;
 }
 
 .reference-sequence {
