@@ -15,13 +15,13 @@
 }
 
 .navigation-open-icon,
-.navigation-close-icon,
-.navigation-close-label {
+.navigation-close-icon {
   font-size: 21px;
   line-height: 1;
 }
 
-.navigation-close-icon {
+.navigation-close-icon,
+.navigation-close-label {
   display: none;
 }
 
