@@ -1,0 +1,56 @@
+import * as html from "std/web/html"
+import { Messages } from "../i18n/model"
+import { Locale, En, Ja, localeCode, localizedRoute } from "../model/locale"
+
+fn languageLink<Action> current: Locale
+  -> language: Locale
+  -> label: String
+  -> path: String
+  -> html.Html<Action> =
+  match (
+    html.parseWebUrl (localizedRoute language path),
+    html.attribute "hreflang" (localeCode language),
+    html.attribute "aria-current"
+      (if localeCode current == localeCode language then
+        "true"
+      else
+        "false")
+  ) {
+    (Right url, Right hrefLang, Right selected) -> html.a {
+      href: url,
+      lang: localeCode language,
+      class: "language-option",
+      attributes: [hrefLang, selected],
+      children: [
+        html.span { children: label },
+        html.span { class: "language-selected", ariaHidden: True, children: "✓" }
+      ]
+    }
+    _ -> html.span { class: "site-build-error", children: "Invalid language link" }
+  }
+
+pub fn languageMenu<Action> messages: Messages
+  -> locale: Locale
+  -> path: String
+  -> html.Html<Action> =
+  match html.parseWebUrl "/assets/language.svg" {
+    Right icon -> html.details {
+      class: "language-menu",
+      children: [
+        html.summary {
+          class: "language-trigger",
+          ariaLabel: messages.language,
+          children: html.img { src: icon, alt: "", width: 20, height: 20 }
+        },
+        html.nav {
+          class: "language-options",
+          ariaLabel: messages.language,
+          children: [
+            languageLink locale En "English" path,
+            languageLink locale Ja "日本語" path
+          ]
+        }
+      ]
+    }
+    Left error -> html.span { class: "site-build-error", children: show error }
+  }

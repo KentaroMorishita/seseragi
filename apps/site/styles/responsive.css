@@ -58,11 +58,6 @@
     display: none;
   }
 
-  .locale-switch {
-    font-size: 13px;
-    white-space: nowrap;
-  }
-
   .home-hero,
   .home-paths,
   .docs-frame,

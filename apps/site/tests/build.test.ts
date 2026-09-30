@@ -75,6 +75,10 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     )
     expect(mobileArticle).toContain('id="mobile-reference-drawer"')
     expect(mobileArticle).toContain("目次を閉じる")
+    expect(mobileArticle).toContain('class="language-trigger"')
+    expect(mobileArticle).toContain('aria-label="表示言語を選ぶ"')
+    expect(mobileArticle).toContain('src="/assets/language.svg"')
+    expect(mobileArticle).toContain("/assets/language-menu.js")
     expect(mobileArticle).toContain(
       '<script type="module" src="/assets/mobile-navigation.js"></script>'
     )

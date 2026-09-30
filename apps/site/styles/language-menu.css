@@ -1,0 +1,60 @@
+.language-menu {
+  position: relative;
+}
+
+.language-trigger {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.language-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.language-trigger:hover,
+.language-menu[open] > .language-trigger {
+  background: var(--surface);
+}
+
+.language-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 176px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  color: var(--text-muted);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.language-option:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.language-option[aria-current="true"] {
+  color: var(--accent);
+}
+
+.language-option:not([aria-current="true"]) .language-selected {
+  visibility: hidden;
+}

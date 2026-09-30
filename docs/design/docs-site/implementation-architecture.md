@@ -82,6 +82,12 @@ It does not render content or own routes. The host build publishes and links
 this external script; the Seseragi HTML API intentionally does not expose
 script tags. CSS keeps the same tree off-canvas when JavaScript is unavailable.
 
+`components/language-menu.ssrg` owns the globe trigger, native disclosure,
+same-page locale URLs, language names and current-language indication.
+`client/language-menu.ts` adds outside dismissal, Escape/focus return and
+closure when focus leaves the picker. It does not render or translate content.
+The picker remains usable without JavaScript on home, index and article pages.
+
 The catalog follows reader questions instead of specification file boundaries.
 Every independently useful language concept remains an addressable leaf, while
 the internal coverage map may assign several normative sections to that page.
