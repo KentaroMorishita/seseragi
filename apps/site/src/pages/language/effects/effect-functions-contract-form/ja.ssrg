@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "明示contractを持つeffect fn",
+  title: "Effect関数の型を明示する形式",
   summary: "contract formはsuccess・environment・failureをsourceへ直接書きます。",
   ruleTitle: "contractは->から書き始める",
   ruleBody: "effect fn parameters -> A with R fails E = bodyは、Effect<R, E, A>を返す関数を宣言します。surfaceのAはsuccess型、withは必要service、failsは回復可能なerrorです。",

@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/combined-re-exports@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/combined-re-exports@0.0.0#workspace:."
+name = "fixture/combined-re-exports"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:bca2ea12733bea109ed2ba9f52bfaacb287228ab000f0633b680d01aaf10c97d"
+content_digest = "sha256:dcc2081de6707dee70e33d5788d8ec40ebfa29c9817ae8676dcbd7b7ba3c8cff"
+dependencies = []

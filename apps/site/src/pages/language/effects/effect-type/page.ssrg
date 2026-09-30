@@ -8,13 +8,13 @@ pub fn page -> PageDefinition =
   referencePage "language.effects.effect-type" "/docs/language/effects/effect-type/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-cold-value",
-        localized "A cold Effect rebuilt on each execution" "実行ごとに構築されるcold Effect"
+        localized "A cold Effect rebuilt on each execution" "実行するたびに処理を始めるEffect"
       )] [CodeExample
-      ("effects-invalid-pure-body", localized "Rejected implicit lifting" "通常値の暗黙liftを拒否")] [
+      ("effects-invalid-pure-body", localized "Rejected implicit lifting" "通常の値をEffectとしてそのまま返すことはできない")] [
         [InternalLink
       (localized "Pure expressions" "純粋な式", "/docs/language/effects/pure-expressions/")],
         [InternalLink (
-          localized "Effect function contracts" "effect fn contract",
+          localized "Effect function contracts" "Effect関数の型を明示する形式",
           "/docs/language/effects/effect-functions-contract-form/"
         )],
         [InternalLink

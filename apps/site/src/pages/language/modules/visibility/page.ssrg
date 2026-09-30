@@ -26,5 +26,5 @@ pub fn page -> PageDefinition =
     [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
     [InternalLink (localized "Packages" "パッケージ", "/docs/language/modules/packages/")],
     [InternalLink
-      (localized "Module identity" "モジュールのidentity", "/docs/language/modules/identity/")]
+      (localized "Module identity" "モジュールの識別", "/docs/language/modules/identity/")]
   ]

@@ -2,13 +2,13 @@ import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "ジェネリックな代数的データ型",
-  summary: "コンストラクターの型引数を確定し、再帰的なデータの照合でもその型を保ちます。",
-  ruleTitle: "コンストラクターは宣言の全パラメーターを量化する",
-  ruleBody: "ジェネリックADTは、名前によって区別される型の族を導入します。Outcome<String, Int>とOutcome<String, Bool>は、同じ型構築子の異なる適用です。値のコンストラクターは、payloadに一部しか現れなくてもADTの全パラメーターを量化します。FailureのpayloadはEですが、結果はOutcome<E, A>です。SuccessのpayloadはAでも、結果にはEが残ります。",
-  identityBody: "構築のたびに新しい型変数を用意します。payloadで一つのパラメーターが決まり、別のパラメーターが期待型や明示した型引数によって決まる場合があります。例のsuccessは結果の注釈によってEがStringに決まります。Successにエラーpayloadがないからといって、EがNeverになったり、結果型から消えたりはしません。",
-  checkingBody: "照合では、対象の型引数を各コンストラクターのpayloadに代入します。Outcome<String, Int>ならFailureの束縛はString、Successの束縛はIntです。再帰するfieldにも型引数を明示します。Nodeが持つのはArray<Tree<A>>で、Treeだけではありません。これにより木全体で同じAを保ちます。",
-  invalidTitle: "payloadだけでADT全体の型が決まるとは限らない",
-  invalidBody: "期待型がないSuccess 42では失敗側のパラメーターが未解決になることがあります。結果型を注釈するか、コンストラクターの型引数をすべて指定してください。再帰fieldのTreeだけという注釈も完成した型ではありません。コンストラクターは期待されるADTと無関係に引数の型を選びません。",
-  diagnosticsBody: "コンストラクターが曖昧な場合は、宣言のどのパラメーターがpayloadに現れないかを確認してください。そのパラメーターには周囲の式から情報を与える必要があります。照合と網羅性検査は、各分岐から型を作り直すのではなく、具体化された同じnominal型を使います。",
-  provenanceBody: "言語仕様2.14に基づく規則です。表示する短い例はこのリファレンス専用に管理し、公式コンパイラで検査しています。Tourのレッスンではありません。"
+  summary: "選択肢を持つデータ型に型パラメーターを加え、格納する値の型を選べるようにします。",
+  ruleTitle: "各選択肢も、データ型全体の型引数を持つ",
+  ruleBody: "Outcome<E, A>は、失敗の型Eと成功の型Aを選べる代数的データ型です。Outcome<String, Int>とOutcome<String, Bool>は別の型になります。FailureにはEの値だけが入り、SuccessにはAの値だけが入りますが、どちらの値も結果の型はOutcome<E, A>です。使わない側の型引数がなくなるわけではありません。",
+  identityBody: "Success 42からは、成功値の型AがIntだと分かります。しかし、失敗値の型Eはこの値だけでは分かりません。例では、結果にOutcome<String, Int>という型注釈を付けてEも決めています。失敗値を持たないSuccessだからといって、Eが自動でNeverになるわけではありません。",
+  checkingBody: "matchでOutcome<String, Int>を調べると、Failureから取り出す値はString、Successから取り出す値はIntになります。再帰的なデータでも型引数を引き継ぎます。たとえばTree<A>の子を持つフィールドはArray<Tree<A>>と書き、木の中で同じAを使います。",
+  invalidTitle: "一つの選択肢だけでは、すべての型引数が決まらないことがある",
+  invalidBody: "結果に必要な型が分からない場所でSuccess 42だけを書くと、Eを決められないことがあります。結果の型注釈か、コンストラクターの明示的な型引数で補ってください。また、Treeのように必要な型引数を省いた型名は、値の型として使えません。",
+  diagnosticsBody: "型を推論できない場合は、その選択肢に含まれない型パラメーターを確認してください。matchの各分岐では、対象のデータ型にすでに決まった型引数を使います。分岐ごとに別の型へ変わるわけではありません。",
+  provenanceBody: "言語仕様2.14に基づきます。ページ内の例は公式コンパイラで検査しています。"
 }

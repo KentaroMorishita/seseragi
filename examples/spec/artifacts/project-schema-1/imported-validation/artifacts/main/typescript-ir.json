@@ -127,7 +127,7 @@
       "bindings": [
         {
           "imported": "combine",
-          "local": "ops_combine",
+          "local": "ops$member$combine",
           "sourceLocal": "ops.combine",
           "canonical": "fixture/imported-validation::operations::combine",
           "typeOnly": false,
@@ -139,7 +139,7 @@
         },
         {
           "imported": "display",
-          "local": "ops_display",
+          "local": "ops$member$display",
           "sourceLocal": "ops.display",
           "canonical": "fixture/imported-validation::operations::display",
           "typeOnly": false,
@@ -151,7 +151,7 @@
         },
         {
           "imported": "inspect",
-          "local": "ops_inspect",
+          "local": "ops$member$inspect",
           "sourceLocal": "ops.inspect",
           "canonical": "fixture/imported-validation::operations::inspect",
           "typeOnly": false,
@@ -163,7 +163,7 @@
         },
         {
           "imported": "same",
-          "local": "ops_same",
+          "local": "ops$member$same",
           "sourceLocal": "ops.same",
           "canonical": "fixture/imported-validation::operations::same",
           "typeOnly": false,
@@ -175,7 +175,7 @@
         },
         {
           "imported": "errors",
-          "local": "ops_errors",
+          "local": "ops$member$errors",
           "sourceLocal": "ops.errors",
           "canonical": "fixture/imported-validation::operations::errors",
           "typeOnly": false,
@@ -187,7 +187,7 @@
         },
         {
           "imported": "convert",
-          "local": "ops_convert",
+          "local": "ops$member$convert",
           "sourceLocal": "ops.convert",
           "canonical": "fixture/imported-validation::operations::convert",
           "typeOnly": false,
@@ -576,7 +576,7 @@
             },
             "initializer": {
               "kind": "call",
-              "callee": "ops_combine",
+              "callee": "ops$member$combine",
               "arguments": [
                 {
                   "kind": "tuple",
@@ -631,7 +631,7 @@
                   "kind": "checked-result",
                   "value": {
                     "kind": "call",
-                    "callee": "ops_display",
+                    "callee": "ops$member$display",
                     "arguments": [
                       {
                         "kind": "identifier",
@@ -664,7 +664,7 @@
                   "kind": "checked-result",
                   "value": {
                     "kind": "call",
-                    "callee": "ops_inspect",
+                    "callee": "ops$member$inspect",
                     "arguments": [
                       {
                         "kind": "identifier",
@@ -697,7 +697,7 @@
               "kind": "checked-result",
               "value": {
                 "kind": "call",
-                "callee": "ops_same",
+                "callee": "ops$member$same",
                 "arguments": [
                   {
                     "kind": "identifier",
@@ -787,7 +787,7 @@
                     "arguments": [
                       {
                         "kind": "call",
-                        "callee": "ops_errors",
+                        "callee": "ops$member$errors",
                         "arguments": [
                           {
                             "kind": "identifier",
@@ -843,7 +843,7 @@
             },
             "initializer": {
               "kind": "identifier",
-              "name": "ops_convert"
+              "name": "ops$member$convert"
             },
             "origin": {
               "source": "main.ssrg",

@@ -44,6 +44,12 @@
       "runners": ["cli-build", "cli-run"],
       "evidence": ["crates/seseragi-cli/tests/build.rs"]
     },
+    "combined-re-exports": {
+      "availability": "current",
+      "phase": "run",
+      "runners": ["cli-run"],
+      "evidence": ["crates/seseragi-cli/tests/run.rs"]
+    },
     "doc-tests": {
       "availability": "current",
       "phase": "tooling",

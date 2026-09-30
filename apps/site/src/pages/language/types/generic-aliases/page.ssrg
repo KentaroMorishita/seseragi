@@ -10,5 +10,5 @@ pub fn page -> PageDefinition =
       ("types-generic-alias-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
     [InternalLink (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
     [InternalLink (localized "Kinds and type constructors" "kindと型構築子", "/docs/language/types/kinds/")],
-    [InternalLink (localized "Type identity and coercion" "型の同一性とcoercion", "/docs/language/types/type-identity-and-coercion/")]
+    [InternalLink (localized "Type identity and coercion" "型の同一性と型変換", "/docs/language/types/type-identity-and-coercion/")]
   ]

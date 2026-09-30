@@ -85,7 +85,7 @@ pub(crate) fn semantic_values_are_compatible(
                 && expected_arguments
                     .iter()
                     .zip(actual_arguments)
-                    .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+                    .all(|(expected, actual)| invariant_arguments_are_compatible(expected, actual))
         }
         (SemanticTypeKey::Adt { .. }, SemanticTypeKey::ExternalNominal { .. })
         | (SemanticTypeKey::ExternalNominal { .. }, SemanticTypeKey::Adt { .. }) => {
@@ -107,7 +107,7 @@ pub(crate) fn semantic_values_are_compatible(
                 && expected_arguments
                     .iter()
                     .zip(actual_arguments)
-                    .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+                    .all(|(expected, actual)| invariant_arguments_are_compatible(expected, actual))
         }
         (SemanticTypeKey::Struct { .. }, SemanticTypeKey::ExternalNominal { .. })
         | (SemanticTypeKey::ExternalNominal { .. }, SemanticTypeKey::Struct { .. }) => {
@@ -126,10 +126,16 @@ pub(crate) fn semantic_values_are_compatible(
         ) => {
             expected_canonical == actual_canonical
                 && expected_arguments.len() == actual_arguments.len()
-                && expected_arguments
-                    .iter()
-                    .zip(actual_arguments)
-                    .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+                && if expected_canonical == "std/stream::Stream" {
+                    semantic_effect_arguments_are_compatible(expected_arguments, actual_arguments)
+                } else {
+                    expected_arguments
+                        .iter()
+                        .zip(actual_arguments)
+                        .all(|(expected, actual)| {
+                            invariant_arguments_are_compatible(expected, actual)
+                        })
+                }
         }
         (SemanticTypeKey::ExternalNominal { .. }, _)
         | (_, SemanticTypeKey::ExternalNominal { .. }) => false,
@@ -151,7 +157,9 @@ pub(crate) fn semantic_values_are_compatible(
                     expected_arguments
                         .iter()
                         .zip(actual_arguments)
-                        .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+                        .all(|(expected, actual)| {
+                            invariant_arguments_are_compatible(expected, actual)
+                        })
                 }
         }
         (SemanticTypeKey::Application { .. }, _) | (_, SemanticTypeKey::Application { .. }) => {
@@ -203,6 +211,18 @@ pub(crate) fn semantic_values_are_compatible(
     }
 }
 
+// An unresolved constructor slot is not a concrete type conversion. Keep the
+// existing error-recovery/partial-application behavior, but require exact
+// identity for every resolved argument (including record fields).
+fn invariant_arguments_are_compatible(
+    expected: &SemanticValueType,
+    actual: &SemanticValueType,
+) -> bool {
+    matches!(expected.key, SemanticTypeKey::Invalid)
+        || matches!(actual.key, SemanticTypeKey::Invalid)
+        || semantic_values_have_same_identity(expected, actual)
+}
+
 pub(crate) fn semantic_values_have_same_identity(
     expected: &SemanticValueType,
     actual: &SemanticValueType,
@@ -236,7 +256,7 @@ pub(crate) fn semantic_values_have_same_identity(
         | (SemanticTypeKey::ExternalNominal { .. }, SemanticTypeKey::Adt { .. })
         | (SemanticTypeKey::Struct { .. }, SemanticTypeKey::ExternalNominal { .. })
         | (SemanticTypeKey::ExternalNominal { .. }, SemanticTypeKey::Struct { .. }) => {
-            structural_types_are_compatible(&expected.type_ref, &actual.type_ref)
+            structural_types_have_same_identity(&expected.type_ref, &actual.type_ref)
         }
         (
             SemanticTypeKey::ExternalNominal {
@@ -266,7 +286,7 @@ pub(crate) fn semantic_values_have_same_identity(
         }
         (SemanticTypeKey::NamedGeneric { .. }, SemanticTypeKey::Other)
         | (SemanticTypeKey::Other, SemanticTypeKey::NamedGeneric { .. }) => {
-            structural_types_are_compatible(&expected.type_ref, &actual.type_ref)
+            structural_types_have_same_identity(&expected.type_ref, &actual.type_ref)
         }
         (SemanticTypeKey::Tuple(expected_keys), SemanticTypeKey::Tuple(actual_keys)) => {
             let (
@@ -322,7 +342,7 @@ pub(crate) fn semantic_values_have_same_identity(
             expected.type_ref == actual.type_ref
         }
         (SemanticTypeKey::Other, SemanticTypeKey::Other) => {
-            structural_types_are_compatible(&expected.type_ref, &actual.type_ref)
+            structural_types_have_same_identity(&expected.type_ref, &actual.type_ref)
         }
         (SemanticTypeKey::TypeParameter(expected), SemanticTypeKey::TypeParameter(actual)) => {
             expected == actual
@@ -367,12 +387,13 @@ fn semantic_effect_arguments_are_compatible(
                 .all(|(expected, actual)| semantic_values_are_compatible(expected, actual));
     };
     // Effects that need fewer services can run in a host that supplies the
-    // wider expected environment. Failure and success remain covariant.
+    // wider expected environment. Only Never can widen the failure type;
+    // all other failure types and the success type remain invariant.
     semantic_values_are_compatible(actual_environment, expected_environment)
         && ((matches!(actual_failure.key, SemanticTypeKey::Other)
             && matches!(&actual_failure.type_ref, TypedType::Named { name, arguments } if name == "Never" && arguments.is_empty()))
-            || semantic_values_are_compatible(expected_failure, actual_failure))
-        && semantic_values_are_compatible(expected_success, actual_success)
+            || semantic_values_have_same_identity(expected_failure, actual_failure))
+        && semantic_values_have_same_identity(expected_success, actual_success)
 }
 
 fn record_is_compatible(
@@ -383,11 +404,12 @@ fn record_is_compatible(
         let found = actual.iter().find(|field| field.name == required.name);
         if required.optional {
             return found.is_none_or(|field| {
-                structural_types_are_compatible(&required.type_ref, &field.type_ref)
+                structural_types_have_same_identity(&required.type_ref, &field.type_ref)
             });
         }
         found.is_some_and(|field| {
-            !field.optional && structural_types_are_compatible(&required.type_ref, &field.type_ref)
+            !field.optional
+                && structural_types_have_same_identity(&required.type_ref, &field.type_ref)
         })
     })
 }
@@ -407,7 +429,11 @@ fn structural_types_are_compatible(expected: &TypedType, actual: &TypedType) -> 
             },
         ) => {
             expected_canonical == actual_canonical
-                && type_arguments_are_compatible(expected_arguments, actual_arguments)
+                && if expected_canonical == "std/stream::Stream" {
+                    structural_effect_arguments_are_compatible(expected_arguments, actual_arguments)
+                } else {
+                    type_arguments_have_same_identity(expected_arguments, actual_arguments)
+                }
         }
         (
             TypedType::Named {
@@ -423,7 +449,7 @@ fn structural_types_are_compatible(expected: &TypedType, actual: &TypedType) -> 
                 && if expected_name == "Effect" {
                     structural_effect_arguments_are_compatible(expected_arguments, actual_arguments)
                 } else {
-                    type_arguments_are_compatible(expected_arguments, actual_arguments)
+                    type_arguments_have_same_identity(expected_arguments, actual_arguments)
                 }
         }
         (
@@ -469,6 +495,73 @@ fn type_arguments_are_compatible(expected: &[TypedType], actual: &[TypedType]) -
             .all(|(expected, actual)| structural_types_are_compatible(expected, actual))
 }
 
+fn type_arguments_have_same_identity(expected: &[TypedType], actual: &[TypedType]) -> bool {
+    expected.len() == actual.len()
+        && expected
+            .iter()
+            .zip(actual)
+            .all(|(expected, actual)| structural_types_have_same_identity(expected, actual))
+}
+
+fn structural_types_have_same_identity(expected: &TypedType, actual: &TypedType) -> bool {
+    match (expected, actual) {
+        (TypedType::Record { fields: left, .. }, TypedType::Record { fields: right, .. }) => {
+            left.len() == right.len()
+                && left.iter().all(|field| {
+                    right
+                        .iter()
+                        .find(|other| other.name == field.name)
+                        .is_some_and(|other| {
+                            field.optional == other.optional
+                                && structural_types_have_same_identity(
+                                    &field.type_ref,
+                                    &other.type_ref,
+                                )
+                        })
+                })
+        }
+        (
+            TypedType::Named {
+                name: left,
+                arguments: left_args,
+            },
+            TypedType::Named {
+                name: right,
+                arguments: right_args,
+            },
+        ) => left == right && type_arguments_have_same_identity(left_args, right_args),
+        (
+            TypedType::ExternalNamed {
+                canonical: left,
+                arguments: left_args,
+                ..
+            },
+            TypedType::ExternalNamed {
+                canonical: right,
+                arguments: right_args,
+                ..
+            },
+        ) => left == right && type_arguments_have_same_identity(left_args, right_args),
+        (TypedType::Tuple { elements: left }, TypedType::Tuple { elements: right }) => {
+            type_arguments_have_same_identity(left, right)
+        }
+        (
+            TypedType::Function {
+                parameter: left_parameter,
+                result: left_result,
+            },
+            TypedType::Function {
+                parameter: right_parameter,
+                result: right_result,
+            },
+        ) => {
+            structural_types_have_same_identity(left_parameter, right_parameter)
+                && structural_types_have_same_identity(left_result, right_result)
+        }
+        _ => expected == actual,
+    }
+}
+
 fn structural_effect_arguments_are_compatible(
     expected: &[TypedType],
     actual: &[TypedType],
@@ -482,8 +575,8 @@ fn structural_effect_arguments_are_compatible(
     };
     structural_types_are_compatible(actual_environment, expected_environment)
         && (matches!(actual_failure, TypedType::Named { name, arguments } if name == "Never" && arguments.is_empty())
-            || structural_types_are_compatible(expected_failure, actual_failure))
-        && structural_types_are_compatible(expected_success, actual_success)
+            || structural_types_have_same_identity(expected_failure, actual_failure))
+        && structural_types_have_same_identity(expected_success, actual_success)
 }
 
 #[derive(Clone, Debug)]
@@ -1212,7 +1305,7 @@ mod tests {
     }
 
     #[test]
-    fn widens_effect_requirements_but_keeps_results_covariant() {
+    fn widens_effect_requirements_but_keeps_results_invariant() {
         let empty = TypedType::Record {
             fields: Vec::new(),
             closed: true,

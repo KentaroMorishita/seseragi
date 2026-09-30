@@ -92,7 +92,7 @@
       "bindings": [
         {
           "imported": "normalize",
-          "local": "ops_normalize",
+          "local": "ops$member$normalize",
           "sourceLocal": "ops.normalize",
           "canonical": "fixture/imported-unicode::operations::normalize",
           "typeOnly": false,
@@ -104,7 +104,7 @@
         },
         {
           "imported": "scalarSlice",
-          "local": "ops_scalarSlice",
+          "local": "ops$member$scalarSlice",
           "sourceLocal": "ops.scalarSlice",
           "canonical": "fixture/imported-unicode::operations::scalarSlice",
           "typeOnly": false,
@@ -116,7 +116,7 @@
         },
         {
           "imported": "graphemeSlice",
-          "local": "ops_graphemeSlice",
+          "local": "ops$member$graphemeSlice",
           "sourceLocal": "ops.graphemeSlice",
           "canonical": "fixture/imported-unicode::operations::graphemeSlice",
           "typeOnly": false,
@@ -128,7 +128,7 @@
         },
         {
           "imported": "character",
-          "local": "ops_character",
+          "local": "ops$member$character",
           "sourceLocal": "ops.character",
           "canonical": "fixture/imported-unicode::operations::character",
           "typeOnly": false,
@@ -140,7 +140,7 @@
         },
         {
           "imported": "point",
-          "local": "ops_point",
+          "local": "ops$member$point",
           "sourceLocal": "ops.point",
           "canonical": "fixture/imported-unicode::operations::point",
           "typeOnly": false,
@@ -152,7 +152,7 @@
         },
         {
           "imported": "inspectError",
-          "local": "ops_inspectError",
+          "local": "ops$member$inspectError",
           "sourceLocal": "ops.inspectError",
           "canonical": "fixture/imported-unicode::operations::inspectError",
           "typeOnly": false,
@@ -218,7 +218,7 @@
             },
             "initializer": {
               "kind": "identifier",
-              "name": "ops_normalize"
+              "name": "ops$member$normalize"
             },
             "origin": {
               "source": "main.ssrg",
@@ -248,7 +248,7 @@
             },
             "initializer": {
               "kind": "identifier",
-              "name": "ops_scalarSlice"
+              "name": "ops$member$scalarSlice"
             },
             "origin": {
               "source": "main.ssrg",
@@ -368,7 +368,7 @@
                     "arguments": [
                       {
                         "kind": "call",
-                        "callee": "ops_graphemeSlice",
+                        "callee": "ops$member$graphemeSlice",
                         "arguments": [
                           {
                             "kind": "identifier",
@@ -418,7 +418,7 @@
                       "arguments": [
                         {
                           "kind": "call",
-                          "callee": "ops_character",
+                          "callee": "ops$member$character",
                           "arguments": [
                             {
                               "kind": "number",
@@ -464,11 +464,11 @@
                           "arguments": [
                             {
                               "kind": "identifier",
-                              "name": "ops_point"
+                              "name": "ops$member$point"
                             },
                             {
                               "kind": "call",
-                              "callee": "ops_character",
+                              "callee": "ops$member$character",
                               "arguments": [
                                 {
                                   "kind": "number",
@@ -498,7 +498,7 @@
           "arguments": [
             {
               "kind": "call",
-              "callee": "ops_inspectError",
+              "callee": "ops$member$inspectError",
               "arguments": [
                 {
                   "kind": "runtime-call",

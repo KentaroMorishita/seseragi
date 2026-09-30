@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "effectful for",
+  title: "Effectを実行するfor",
   summary: "effectful forはIterableを順番に走査し、各要素に一つのUnit Effectを実行します。",
   ruleTitle: "programが明示しない限り走査は逐次実行",
   ruleBody: "for pattern <- values { body }はirrefutable patternを持つforEachへdesugarします。bodyと式全体はEffect<R, E, Unit>で、空collectionはbodyを実行せず成功します。",

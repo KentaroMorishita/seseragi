@@ -9,15 +9,15 @@ pub fn page -> PageDefinition =
       (
         "effects-task",
         localized "Task beside a service-free fallible Effect"
-      "Taskとservice不要のfallible Effect"
+      "Taskと、サービス不要でも失敗しうるEffect"
       )] [CodeExample
-      ("effects-invalid-task", localized "Rejected fallible Task" "failureを持つTaskを拒否")] [
+      ("effects-invalid-task", localized "Rejected fallible Task" "回復可能な失敗をTaskでは表せない")] [
         [InternalLink
       (localized "The Effect type" "Effect型", "/docs/language/effects/effect-type/")],
         [InternalLink (
-          localized "Error channels" "error channel",
+          localized "Error channels" "回復可能な失敗",
           "/docs/language/effects/error-channels/"
         )],
         [InternalLink
-      (localized "Type aliases" "型alias", "/docs/language/types/type-constructors/")]
+      (localized "Type aliases" "型別名", "/docs/language/types/type-constructors/")]
       ]

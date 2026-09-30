@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "contractを推論するeffect fn",
+  title: "Effect関数の型を推論する形式",
   summary: "compact formはEffect型のbodyから完全なEffect contractを推論します。",
   ruleTitle: "推論するならsignature clauseをすべて外す",
   ruleBody: "->・with・fails・whereを一つも持たないeffect fnはbodyからR・E・Aを推論します。正規化されたEffect型はtyped artifactとpublic module interfaceへ明示されます。",

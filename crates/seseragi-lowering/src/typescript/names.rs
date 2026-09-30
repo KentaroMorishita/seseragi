@@ -55,6 +55,9 @@ pub(super) fn safe_identifier(name: &str) -> String {
             // identifier, so this spelling stays distinct from every source
             // name instead of colliding with an underscore replacement.
             output.push_str("$prime");
+        } else if char == '.' {
+            // Namespace paths must not collide with legal underscore names.
+            output.push_str("$member$");
         } else {
             output.push('_');
         }

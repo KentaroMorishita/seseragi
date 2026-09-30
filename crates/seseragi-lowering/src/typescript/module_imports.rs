@@ -67,14 +67,17 @@ pub(super) fn lower_module_imports(
             if let Some(exported) = &import.reexported_as {
                 if matches!(import.namespace.as_str(), "value" | "type") {
                     group.runtime_edge |= import.namespace == "type";
-                    group.reexports.push(TypeScriptSourceImportBinding {
-                        imported: safe_identifier(&import.imported),
-                        local: safe_identifier(exported),
-                        source_local: import.local.clone(),
-                        canonical: import.canonical.clone(),
-                        type_only: import.namespace == "type",
-                        origin: import.origin.clone(),
-                    });
+                    push_reexport(
+                        group,
+                        TypeScriptSourceImportBinding {
+                            imported: safe_identifier(&import.imported),
+                            local: safe_identifier(exported),
+                            source_local: import.local.clone(),
+                            canonical: import.canonical.clone(),
+                            type_only: import.namespace == "type",
+                            origin: import.origin.clone(),
+                        },
+                    );
                 }
             }
             match import.namespace.as_str() {
@@ -192,6 +195,19 @@ pub(super) fn lower_module_imports(
         type_names: super::types::TypeScriptTypeContext::from(type_names).with_module(module),
         instance_names,
     })
+}
+
+fn push_reexport(group: &mut TypeScriptSourceImport, binding: TypeScriptSourceImportBinding) {
+    // A named and a namespace re-export can refer to the same canonical symbol.
+    // Preserve aliases and the type/value namespaces, but emit each export once.
+    if !group.reexports.iter().any(|existing| {
+        existing.imported == binding.imported
+            && existing.local == binding.local
+            && existing.canonical == binding.canonical
+            && existing.type_only == binding.type_only
+    }) {
+        group.reexports.push(binding);
+    }
 }
 
 fn push_binding(group: &mut TypeScriptSourceImport, binding: TypeScriptSourceImportBinding) {

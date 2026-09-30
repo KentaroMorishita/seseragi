@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "cancellationとresource",
+  title: "キャンセルとリソースの管理",
   summary: "cooperative cancellationはscope内へ伝播し、登録済みresourceを正確に一度finalizeします。",
   ruleTitle: "scopeがworkとcleanupを一緒に所有する",
   ruleBody: "Effect.bracketとacquireReleaseは現在scopeへcleanupを登録します。acquire成功からfinalizer登録までのhandoffはcancellationに対してatomicで、その隙間からresourceは漏れません。",

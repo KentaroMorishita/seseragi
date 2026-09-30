@@ -2,13 +2,13 @@ import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "パターン照合",
-  summary: "matchは値を一度評価し、最初に一致してguardも真になるarmを選び、共通の結果型を返します。",
-  ruleTitle: "pattern選択は順序付きで網羅的",
-  ruleBody: "literal、binding、wildcard、constructor、tuple、record、struct、Array、Listのpatternを入れ子にできます。guardはBoolで、armがbindしたnameを使えます。全入力がどれかのarmへ到達する必要があります。",
-  typingBody: "scrutinee型から各pattern、guard、nested bindingを検査します。全arm結果は一つの型で、必要ならNever coercionを使います。guard付きarmは網羅性へ寄与しません。",
-  evaluationBody: "scrutineeを一度評価し、armをsource順に試します。patternが一致しguardも真になる最初のarm bodyだけを評価し、fallthroughしません。",
-  invalidTitle: "最後に見えるarmでも不完全なことがある",
-  invalidBody: "guardは偽になり得るため、guard付きconstructor armだけではそのconstructorをcoverしません。guardなしfallbackを追加し、先行するtotal patternに隠れたarmは削除します。",
-  diagnosticsBody: "patternと型の不一致、非公開field、binding重複、Boolでないguard、非網羅case、unreachable arm、結果型不一致を報告します。",
-  provenanceBody: "仕様3.10を扱い、binding共通規則とirrefutabilityに基づきます。"
+  summary: "matchは値に合う分岐を選び、その分岐の結果を返します。すべての場合を扱う必要があります。",
+  ruleTitle: "上から順に照合し、最初に一致した分岐を使う",
+  ruleBody: "リテラル、名前の束縛、_、コンストラクター、タプル、レコード、struct、Array、Listのパターンを組み合わせ、入れ子にできます。ガード条件はBoolで、その分岐のパターンで取り出した名前を使えます。どの入力値でも、いずれかの分岐に到達する必要があります。",
+  typingBody: "照合する値の型から、各パターンで取り出す値の型が決まります。すべての分岐の結果は同じ型である必要があります。ただし、値を返さないNeverの分岐は例外です。ガード条件は偽になる可能性があるため、その分岐だけでは、すべての場合を扱ったとはみなしません。",
+  evaluationBody: "照合する値は一度だけ評価します。分岐をソースの上から順に試し、パターンが一致してガード条件も真になった最初の分岐だけを評価します。その分岐を実行した後に、次の分岐へ処理が続くことはありません。",
+  invalidTitle: "ガード付きの分岐だけでは、取りこぼしが残る",
+  invalidBody: "コンストラクターを照合する分岐でも、ガード条件が偽なら一致しません。同じ場合を扱うガードなしの分岐や、残りの場合を受け取る分岐を追加してください。逆に、先の分岐がすべてを受け取るなら、その後の分岐には到達できません。",
+  diagnosticsBody: "パターンと型の不一致、非公開フィールドの参照、同じ名前の重複束縛、Boolでないガード条件、扱っていない場合、到達できない分岐、結果の型の不一致を報告します。",
+  provenanceBody: "言語仕様3.10に基づきます。名前の束縛や、必ず一致するパターンの規則も適用されます。"
 }

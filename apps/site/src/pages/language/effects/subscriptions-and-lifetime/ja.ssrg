@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "subscriptionとlifetime",
+  title: "Signalの購読と寿命",
   summary: "Subscriptionは一つのSignalを順序付きで観測し、明示またはresource scopeによって解放します。",
   ruleTitle: "observationにはlifetimeがある",
   ruleBody: "subscribeは最初に現在値でobserverを呼び、その後の更新を順番に届けます。同じSignalのobserverは登録順に動き、一つのobserverへ通知を重ねません。",

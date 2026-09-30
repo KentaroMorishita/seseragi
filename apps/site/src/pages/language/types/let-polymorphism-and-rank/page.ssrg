@@ -13,14 +13,14 @@ import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
   typePage "language.types.let-polymorphism-and-rank" "/docs/language/types/let-polymorphism-and-rank/" (en.copy ()) (ja.copy ()) [
-    CodeExample ("types-let-rank", localized "Let-polymorphism and rank" "let多相性とrank"),
+    CodeExample ("types-let-rank", localized "Let-polymorphism and rank" "同じ関数を異なる型で使う"),
     Callout (
       Warning,
       localized "Current compiler limitation" "現在のコンパイラの制約",
       [Words (
         localized
           "The current compiler cannot infer the parameter type of an unconstrained identity lambda at a let binding. The example uses an explicitly generic named function and then instantiates its let-bound value at different types. This workaround does not change the specified let-generalization rule."
-          "現在のコンパイラは、期待型のないlet束縛で恒等ラムダの引数型を推論できません。例では型パラメーターを明示した名前付き関数を束縛し、その値を異なる型で参照します。この回避方法によって、仕様のlet一般化規則が変わるわけではありません。"
+          "現在のコンパイラでは、引数をそのまま返すラムダをletに束縛するとき、引数の型を周囲から決められない書き方をまだ受け付けられません。この例では、型パラメーターを明示したfnを定義し、その関数をletで束縛しています。仕様では使える書き方でも、現在の実装にはこの制約が残っています。"
       )]
     )
   ] [] [

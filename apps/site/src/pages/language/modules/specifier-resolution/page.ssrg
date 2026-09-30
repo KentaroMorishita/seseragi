@@ -9,5 +9,5 @@ pub fn page -> PageDefinition =
       ("modules-identity", localized "Module specifier resolution" "module specifierの解決")] [] [
     [InternalLink (localized "Packages" "パッケージ", "/docs/language/modules/packages/")],
     [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
-    [InternalLink (localized "Module identity" "モジュールのidentity", "/docs/language/modules/identity/")]
+    [InternalLink (localized "Module identity" "モジュールの識別", "/docs/language/modules/identity/")]
   ]

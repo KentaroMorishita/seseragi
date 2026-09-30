@@ -8,18 +8,18 @@ pub fn page -> PageDefinition =
   referencePage "language.effects.signals-transactions" "/docs/language/effects/signals-and-transactions/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-signal-transactions",
-        localized "Atomically updating two sources" "二つのsourceをatomicに更新"
+        localized "Atomically updating two sources" "二つのSignalの更新をまとめて公開する"
       )] [CodeExample (
         "effects-invalid-signal-read",
-        localized "Rejected pure Signal read" "pureなSignal readを拒否"
+        localized "Rejected pure Signal read" "純粋な式ではSignalの現在値を読めない"
       )] [
         [InternalLink (localized "Task" "Task", "/docs/language/effects/task/")],
         [InternalLink (
-          localized "Derived Signals" "derived Signal",
+          localized "Derived Signals" "派生Signal",
           "/docs/language/effects/derived-signals/"
         )],
         [InternalLink (
-          localized "Signal operators" "Signal operator",
+          localized "Signal operators" "Signalの演算子",
           "/docs/language/effects/signal-operators/"
         )]
       ]

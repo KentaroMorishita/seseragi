@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.61.19] - 2026-09-30
+
+### Fixed
+
+- Enforce invariant collection and nominal type arguments, invariant record fields and Effect/Stream payloads while preserving explicit capability widening and direct record-width conversion.
+- Preserve qualified public namespace re-exports alongside named and aliased exports, without duplicate TypeScript exports or collisions with underscore names.
+- Replace the corresponding English/Japanese reference limitations with verified examples and a rejected invariant-assignment example.
+- Rewrite 24 Japanese reference explanations around concrete examples and reader-facing terminology, with matching related-link labels.
+
 ## [0.61.18] - 2026-09-27
 
 ### Fixed

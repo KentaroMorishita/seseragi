@@ -38,6 +38,20 @@ bun run build:site:production
 Run `seseragi lock update apps/site` explicitly after changing Seseragi source
 or package inputs.
 
+## Japanese editorial checks
+
+Japanese pages explain the same rules as English pages, not a reduced summary.
+Start with what the reader can do and a concrete example, then explain the
+rule and its limits. Introduce technical terms where they are first needed;
+do not stack compiler-internal terms or untranslated English nouns into prose.
+Keep source keywords, API names, type signatures and diagnostics unchanged.
+Explain why rejected examples fail and what the reader can change.
+
+Review page copy together with code captions, related links and sidebar labels.
+Read the rendered page in order: a passing build or a phrase assertion does
+not establish that the explanation is understandable. Keep current compiler
+limitations explicit and distinct from the language specification.
+
 ## Vercel ownership
 
 Until the root-site cutover is completed, the two Vercel projects have separate

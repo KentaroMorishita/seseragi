@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "defect",
+  title: "想定外の不具合（defect）",
   summary: "defectはruntimeがtyped failure channelによる通常回復を約束できない状態です。",
   ruleTitle: "defectをEと分離する",
   ruleBody: "整数overflow、zero division、runtime invariant違反、memory exhaustion、安全wrapper契約に違反したforeign値はdefectとして計算を停止できます。予測できるinput・外部failureは通常dataまたはEへ置きます。",

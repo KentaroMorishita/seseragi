@@ -443,7 +443,7 @@ fn lowers_a_namespace_member_call_to_a_selected_named_import() {
 
     let binding = &typescript.source_imports[0].bindings[0];
     assert_eq!(binding.imported, "identity");
-    assert_eq!(binding.local, "domain_identity");
+    assert_eq!(binding.local, "domain$member$identity");
     assert_eq!(binding.source_local, "domain.identity");
     assert_eq!(binding.canonical, "fixture/game::domain::identity");
     assert!(matches!(
@@ -451,16 +451,16 @@ fn lowers_a_namespace_member_call_to_a_selected_named_import() {
         TypeScriptFunction::ConstFunction {
             body: TypeScriptExpr::Call { callee, .. },
             ..
-        } if callee == "domain_identity"
+        } if callee == "domain$member$identity"
     ));
 
     let generated = emit_typescript_module(typescript, main_source);
     assert!(generated.typescript.starts_with(&with_unicode_guard(
-        "import { identity as domain_identity } from \"./domain.js\""
+        "import { identity as domain$member$identity } from \"./domain.js\""
     )));
     assert!(generated
         .typescript
-        .contains("export const run = (value: string) => domain_identity(value)"));
+        .contains("export const run = (value: string) => domain$member$identity(value)"));
 }
 
 #[test]
@@ -480,23 +480,23 @@ fn lowers_a_namespace_type_member_to_a_selected_type_import() {
 
     let binding = &typescript.source_imports[0].bindings[0];
     assert_eq!(binding.imported, "Hand");
-    assert_eq!(binding.local, "domain_Hand");
+    assert_eq!(binding.local, "domain$member$Hand");
     assert_eq!(binding.source_local, "domain.Hand");
     assert_eq!(binding.canonical, "fixture/game::domain::Hand");
     assert!(binding.type_only);
     assert!(matches!(
         &typescript.functions[0],
         TypeScriptFunction::ConstFunction { parameters, .. }
-            if parameters[0].type_name == "domain_Hand"
+            if parameters[0].type_name == "domain$member$Hand"
     ));
 
     let generated = emit_typescript_module(typescript, main_source);
     assert!(generated.typescript.starts_with(&with_unicode_guard(
-        "import { type Hand as domain_Hand } from \"./domain.js\"\nimport \"./domain.js\""
+        "import { type Hand as domain$member$Hand } from \"./domain.js\"\nimport \"./domain.js\""
     )));
     assert!(generated
         .typescript
-        .contains("export const keep = (value: domain_Hand) => value"));
+        .contains("export const keep = (value: domain$member$Hand) => value"));
 }
 
 #[test]
@@ -527,14 +527,14 @@ pub fn cycle hand: domain.Hand -> domain.Hand =
     let bindings = &typescript.source_imports[0].bindings;
     assert!(bindings.iter().any(|binding| {
         binding.imported == "Hand"
-            && binding.local == "domain_Hand"
+            && binding.local == "domain$member$Hand"
             && binding.source_local == "domain.Hand"
             && binding.canonical == "fixture/game::domain::Hand"
             && binding.type_only
     }));
     assert!(bindings.iter().any(|binding| {
         binding.imported == "Rock"
-            && binding.local == "domain_Rock_1"
+            && binding.local == "domain$member$Rock"
             && binding.source_local == "domain.Rock"
             && binding.canonical == "fixture/game::domain::Rock"
             && !binding.type_only
@@ -542,7 +542,7 @@ pub fn cycle hand: domain.Hand -> domain.Hand =
     for constructor in ["Paper", "Scissors"] {
         assert!(bindings.iter().any(|binding| {
             binding.imported == constructor
-                && binding.local == format!("domain_{constructor}")
+                && binding.local == format!("domain$member${constructor}")
                 && binding.source_local == format!("domain.{constructor}")
                 && binding.canonical == format!("fixture/game::domain::{constructor}")
                 && !binding.type_only
@@ -562,10 +562,10 @@ pub fn cycle hand: domain.Hand -> domain.Hand =
     let TypeScriptExpr::Decision { branches, .. } = body else {
         panic!("expected the qualified constructor match to lower to a decision");
     };
-    for (branch, (tag, result)) in branches[..2]
-        .iter()
-        .zip([("Rock", "domain_Paper"), ("Paper", "domain_Scissors")])
-    {
+    for (branch, (tag, result)) in branches[..2].iter().zip([
+        ("Rock", "domain$member$Paper"),
+        ("Paper", "domain$member$Scissors"),
+    ]) {
         assert!(matches!(
             branch.tests.as_slice(),
             [TypeScriptDecisionTest::TagEquals { tag: actual, .. }] if actual == tag
@@ -578,13 +578,13 @@ pub fn cycle hand: domain.Hand -> domain.Hand =
     assert!(branches[2].tests.is_empty());
     assert!(matches!(
         &branches[2].value,
-        TypeScriptExpr::Identifier { name } if name == "domain_Rock_1"
+        TypeScriptExpr::Identifier { name } if name == "domain$member$Rock"
     ));
 
     let generated = emit_typescript_module(typescript, main_source);
     assert!(
         generated.typescript.contains(
-            "import { type Hand as domain_Hand, Rock as domain_Rock_1, Paper as domain_Paper, Scissors as domain_Scissors } from \"./domain.js\""
+            "import { type Hand as domain$member$Hand, Rock as domain$member$Rock, Paper as domain$member$Paper, Scissors as domain$member$Scissors } from \"./domain.js\""
         ),
         "{}",
         generated.typescript
@@ -593,7 +593,7 @@ pub fn cycle hand: domain.Hand -> domain.Hand =
         .typescript
         .contains("const domain_Rock = (unit: undefined) => undefined"));
     assert!(generated.typescript.contains(
-        "$ssrg_match.tag === \"Rock\" ? domain_Paper : $ssrg_match.tag === \"Paper\" ? domain_Scissors : domain_Rock_1"
+        "$ssrg_match.tag === \"Rock\" ? domain$member$Paper : $ssrg_match.tag === \"Paper\" ? domain$member$Scissors : domain$member$Rock"
     ));
 }
 

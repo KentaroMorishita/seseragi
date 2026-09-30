@@ -1,0 +1,12 @@
+import * as facade from "./facade"
+import * as gateway from "./gateway"
+
+let first: facade.UserId = facade.Id 1
+let second: facade.Id = facade.domain.UserId 2
+pub effect fn main = do {
+  println $ show (facade.toInt first)
+  println $ show (facade.unwrap second)
+  println $ show (facade.domain.toInt first)
+  println $ show facade.domain_UserId
+  println $ show (gateway.publicApi.domain.toInt (gateway.publicApi.domain.UserId 3))
+}

@@ -1,0 +1,4 @@
+pub import { UserId, toInt } from "./domain"
+pub import * as domain from "./domain"
+pub import { UserId as Id, toInt as unwrap } from "./domain"
+pub let domain_UserId = 42

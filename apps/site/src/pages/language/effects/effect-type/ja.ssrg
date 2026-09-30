@@ -2,13 +2,13 @@ import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect型",
-  summary: "Effect<R, E, A>はRを要求し、Eで失敗するかAで成功するcoldな計算です。",
+  summary: "Effect<R, E, A>は、サービスRを必要とし、失敗Eまたは成功値Aを返す計算を表します。",
   ruleTitle: "構築と実行は別の段階",
-  ruleBody: "Rはstructuralなservice requirement、Eは回復可能なerror、Aはsuccess値です。Effectの構築は計算を記述するだけで、表されたI/O・scheduling・state access・非同期処理を実行しません。",
-  typingBody: "Effect合成は互換性のあるrequirement fieldをmergeし、failure型を一つに明示します。FunctorはAを変え、Applicativeは文書化された順で記述を組み合わせ、Monadは先のsuccessから後続処理を順次実行します。",
-  evaluationBody: "同じEffectを実行するたびcoldな計算を最初から開始します。逐次combinatorは左から右へ進み、選んだoperationのcontractに従ってtyped failure・defect・cancellationで停止します。",
-  invalidTitle: "EffectはPromiseでもeagerなtaskでもない",
-  invalidBody: "Effectを保存・受け渡し・returnしても実行や結果memoizeは始まりません。一度だけ実行または共有する必要があるなら、そのownershipとlifetimeを明示するresource・concurrency APIを使います。",
-  diagnosticsBody: "型表示はR・E・Aを省略しません。単なるasync errorではなく、合成できないrequirement field・failure channel・success値を指します。",
-  provenanceBody: "仕様5.4のEffectの意味を扱います。関数形式、environment、error、実行境界は独立pageです。"
+  ruleBody: "Rは実行に必要なサービス、Eは回復可能な失敗、Aは成功したときの値の型です。Effectを作っただけでは、入出力、状態の読み書き、非同期処理などは始まりません。まず計算の内容を組み立て、実行する境界でその処理を開始します。",
+  typingBody: "複数のEffectを組み合わせると、必要なサービスも合わせて要求されます。回復可能な失敗は一つの型で表します。mapなどのFunctorの操作は成功値を変換し、Applicativeの操作は定められた順序で計算を組み合わせます。Monadの操作では、先の成功値を受け取って次の計算を選べます。",
+  evaluationBody: "同じEffectを再び実行すると、計算は最初から始まります。この性質をcoldと呼びます。逐次処理は左から右へ進み、使った操作の規則に従って、回復可能な失敗、想定外の不具合、キャンセルで停止します。",
+  invalidTitle: "Effectを作っただけでは、処理は開始されない",
+  invalidBody: "Effectを変数に保存したり、引数で渡したり、関数から返したりしても、処理は始まりません。結果が自動で保存・共有されるわけでもありません。一度だけ実行した結果を共有したい場合は、リソースや並行処理のAPIを使い、誰が処理を管理し、いつまで使うかを明示します。",
+  diagnosticsBody: "型エラーでは、必要なサービスR、失敗型E、成功値の型Aのどこが合わないかを確認してください。非同期処理という一つの分類ではなく、この三つを分けて検査します。",
+  provenanceBody: "言語仕様5.4に基づきます。Effectを返す関数、必要なサービス、失敗、実行の境界は、個別のページで説明しています。"
 }

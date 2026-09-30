@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "Signal operator",
+  title: "Signalの演算子",
   summary: "prefix *はSignal snapshotを読み、:=はMutableSignalへ書きます。どちらもeffectful operationです。",
   ruleTitle: "operatorはstate accessを表し、代入構文ではない",
   ruleBody: "*sourceはSignal.read sourceへdesugarしTask<A>を持ちます。target := valueはSignal.set value targetへdesugarしTask<Unit>を持ち、二項*は乗算のままです。",

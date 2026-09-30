@@ -350,6 +350,63 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     )
     expect(textContent(typeSystem)).toContain("implicit Any or Unknown")
     expect(textContent(typeSystem)).toContain("TypesUnderstanding types")
+    for (const [route, explanation] of [
+      ["types/kinds", "Maybeだけでは、値の型はまだ決まらない"],
+      ["traits/do-notation", "値を取り出して次の計算へ渡す処理"],
+      ["effects/effect-type", "Effectを作っただけでは、処理は開始されない"],
+      [
+        "effects/environment-requirements",
+        "サービスを、暗黙のグローバル値にしない",
+      ],
+      ["effects/task", "Taskは、Effect<{}, Never, A>の短い名前"],
+      [
+        "effects/signals-and-transactions",
+        "Signalの現在値は、Effectの中で読み書きする",
+      ],
+      ["types/type-system", "Intを受け取る関数にStringを渡す"],
+      [
+        "types/generic-functions",
+        "一つの関数を、呼び出しごとに異なる型で使います",
+      ],
+      ["types/generic-adts", "失敗値の型Eはこの値だけでは分かりません"],
+      ["types/generic-structs", "更新では、フィールドの型を変更できない"],
+      ["types/generic-aliases", "型の別名は、値を作るコンストラクターではない"],
+      ["types/newtypes", "UserIdとIntのように"],
+      ["types/variance", "要素の型が違う配列は、そのまま代入できない"],
+      ["types/requirement-merge", "コンソールを使う計算と時計を使う計算"],
+      [
+        "types/let-polymorphism-and-rank",
+        "現在の実装にはこの制約が残っています",
+      ],
+      ["modules/imports", "他のモジュールの公開名を取り込む"],
+      ["modules/identity", "importの別名と、モジュールそのものを混同しない"],
+      ["modules/re-exports", "利用側が参照する窓口をまとめる"],
+      ["patterns/match", "ガード付きの分岐だけでは、取りこぼしが残る"],
+      [
+        "expressions/conditionals",
+        "0や空文字列を偽として扱うような変換はありません",
+      ],
+    ]) {
+      const prose = textContent(
+        readFileSync(
+          join(output, `ja/docs/language/${route}/index.html`),
+          "utf8"
+        )
+      )
+      expect(prose).toContain(explanation)
+      expect(prose).not.toMatch(
+        /型scheme|namespace alias|canonical identity|準備中|整備中|#[0-9]+/u
+      )
+    }
+    for (const route of ["types/variance", "modules/re-exports"]) {
+      const prose = textContent(
+        readFileSync(join(output, `docs/language/${route}/index.html`), "utf8")
+      )
+      expect(prose).not.toContain("Current compiler limitation")
+    }
+    expect(
+      manifest.examples.some(({ id }) => id === "types-variance-invalid")
+    ).toBe(true)
     const builtInTypes = readFileSync(
       join(output, "docs/language/types/built-in-types/index.html"),
       "utf8"
