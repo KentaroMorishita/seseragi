@@ -34,6 +34,12 @@ The complete planned guide hierarchy and per-page coverage obligations live in
 ledger and also verifies the complete compiler-owned Standard Library artifact:
 63 module pages and 1,812 symbol and instance pages in both locales.
 
+Use each destination page's localized title for page-name links, including
+related rules and design principles. Do not introduce a second translation or
+shortened name in a link. `check:site` compares standalone language-reference
+links against the generated destination headings in both locales and exercises
+the design-principle links in desktop and mobile browsers.
+
 ## Commands
 
 ```sh

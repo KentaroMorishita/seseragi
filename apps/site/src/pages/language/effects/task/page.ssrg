@@ -15,9 +15,9 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "The Effect type" "Effect型", "/docs/language/effects/effect-type/")],
         [InternalLink (
-          localized "Error channels" "回復可能な失敗",
+          localized "Effect error channels" "Effectの回復可能な失敗",
           "/docs/language/effects/error-channels/"
         )],
         [InternalLink
-      (localized "Type aliases" "型別名", "/docs/language/types/type-constructors/")]
+      (localized "Generic aliases" "ジェネリックな型別名", "/docs/language/types/generic-aliases/")]
       ]

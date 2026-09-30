@@ -14,15 +14,15 @@ pub fn page -> PageDefinition =
         localized "Rejected duplicate evidence" "重複evidenceを拒否"
       )] [
         [InternalLink (
-          localized "Custom operators" "custom operator",
+          localized "Custom operators and fixity" "カスタム演算子と結合規則",
           "/docs/language/syntax/custom-operators/"
         )],
         [InternalLink (
-          localized "Operator precedence" "operator precedence",
+          localized "Operator precedence" "演算子の優先順位",
           "/docs/language/syntax/operator-precedence/"
         )],
         [InternalLink (
-          localized "Inherent impls and methods" "inherent implとmethod",
+          localized "Inherent impls and methods" "固有implとメソッド",
           "/docs/language/data/impls-and-methods/"
         )]
       ]

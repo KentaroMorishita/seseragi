@@ -44,13 +44,12 @@ pub fn page -> PageDefinition =
     localized "Rejected structural type differences" "拒否されるstructural type差分"
   )] [
     [InternalLink (
-      localized "Optional record fields" "optional record field",
+      localized "Optional record fields" "省略可能なレコードフィールド",
       "/docs/language/types/optional-record-fields/"
     )],
     [InternalLink (
       localized "Type identity and coercion" "型の同一性と型変換",
       "/docs/language/types/type-identity-and-coercion/"
     )],
-    [InternalLink
-        (localized "Type system" "type system", "/docs/language/types/type-system/")]
+    [InternalLink (localized "Type system" "型システム", "/docs/language/types/type-system/")]
   ]

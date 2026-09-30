@@ -1,11 +1,11 @@
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
-  title: "custom 演算子とfixity",
+  title: "カスタム演算子と結合規則",
   summary: "top-level宣言で二項infixの記号、結合、優先順位、型、制約、本体を一緒に定めます。",
   formsTitle: "演算子の契約をまとめて宣言する",
-  formsBody: "演算子<A> infixr 5 <+> left: A -> right: A -> A where Semiグループ<A> = append left rightは記号、右結合、優先順位、型スキーム、証拠、実装を定めます。import { 演算子 <+> }で明示importします。",
-  typingBody: "left <+> rightは(<+>) left rightへ展開し、演算子値はカリー化されたで部分適用できます。値とは別のnamespaceです。標準演算子の型別overloadにはtraitまたはstruct・newtypeの演算子糖衣を使います。",
+  formsBody: "operator<A> infixr 5 <+> left: A -> right: A -> A where Semigroup<A> = append left rightは、記号、右結合、優先順位、型スキーム、実装の証拠、本体をまとめて定める宣言です。import { operator <+> }でモジュールから明示的に読み込みます。",
+  typingBody: "left <+> rightは(<+>) left rightへ展開します。演算子もカリー化された関数なので、部分適用できます。演算子の名前空間は通常の値とは別です。標準演算子の型別オーバーロードにはtrait、またはstruct・newtypeの演算子用構文を使います。",
   evaluationBody: "infixlは左、infixrは右、infixは非結合です。優先順位は0〜8で、適用とpostfix accessより強くできません。interfaceで先に宣言を収集するため、記述位置より前でも使えます。",
   invalidTitle: "記号の集合は意図的に限定する",
   invalidBody: "許されたASCII 演算子文字を二文字以上使います。標準演算子、->、<-、range、comment、??、:=は予約済みです。山括弧だけの記号も禁止です。custom prefix・postfixはなく、単独&は要求のマージ専用です。",

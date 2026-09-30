@@ -6,12 +6,14 @@ import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
   conceptPage "language.model.immutable-by-default" "/docs/language/model/immutable-by-default/" (en.copy ()) (ja.copy ()) [] [
-    [InternalLink
-        (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")],
-    [InternalLink
-        (localized "Visible costs" "costを見える形にする", "/docs/language/model/visible-costs/")],
     [InternalLink (
-      localized "Features the language does not have" "言語に存在しない機能",
+      localized "No hidden danger" "危険を暗黙に隠さない",
+      "/docs/language/model/no-hidden-danger/"
+    )],
+    [InternalLink
+        (localized "Visible costs" "コストを見えるようにする", "/docs/language/model/visible-costs/")],
+    [InternalLink (
+      localized "Features the language does not have" "中核に存在しない機能",
       "/docs/language/model/non-features/"
     )]
   ]

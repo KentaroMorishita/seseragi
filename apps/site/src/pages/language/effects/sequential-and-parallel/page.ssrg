@@ -12,8 +12,10 @@ pub fn page -> PageDefinition =
       )] [] [
         [InternalLink
       (localized "Do notation" "do記法", "/docs/language/traits/do-notation/")],
+        [InternalLink (
+          localized "Effectful for" "Effectを実行するfor",
+          "/docs/language/effects/effectful-for/"
+        )],
         [InternalLink
-      (localized "Effectful for" "effectful for", "/docs/language/effects/effectful-for/")],
-        [InternalLink
-      (localized "Visible costs" "costを見える形にする", "/docs/language/model/visible-costs/")]
+      (localized "Visible costs" "コストを見えるようにする", "/docs/language/model/visible-costs/")]
       ]

@@ -32,13 +32,13 @@ pub fn page -> PageDefinition =
   ] [CodeExample
       ("patterns-invalid-binding", localized "Rejected refutable let" "refutableなletを拒否")] [
         [InternalLink (
-          localized "Irrefutable patterns" "irrefutable pattern",
+          localized "Irrefutable patterns" "反駁不能パターン",
           "/docs/language/patterns/irrefutable-patterns/"
         )],
         [InternalLink
-      (localized "Match expressions" "match式", "/docs/language/patterns/match/")],
+      (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")],
         [InternalLink (
-          localized "Blocks and local declarations" "blockとlocal declaration",
+          localized "Blocks and local declarations" "ブロックとローカル宣言",
           "/docs/language/expressions/blocks-and-local-declarations/"
         )]
       ]

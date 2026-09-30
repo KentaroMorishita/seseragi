@@ -1,7 +1,7 @@
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
-  title: "pipelineと低優先順位の適用",
+  title: "パイプラインと低優先順位の適用",
   summary: "|>で値を前へ渡し、$で低優先順位の式を一引数として適用します。",
   formsTitle: "固定された二つの適用形式",
   formsBody: "x |> fはf xで左結合です。f $ xもf xですが右結合で、Signal更新:=以外の二項演算子より弱く結合します。単独の|はADT variantやcomprehensionの区切りで、pipelineではありません。",

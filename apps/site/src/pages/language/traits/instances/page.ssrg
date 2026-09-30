@@ -12,11 +12,13 @@ pub fn page -> PageDefinition =
         localized "Rejected method contract" "method contractの不一致"
       )] [
         [InternalLink
-      (localized "Trait model" "trait model", "/docs/language/traits/model/")],
-        [InternalLink
-      (localized "Coherence" "coherence", "/docs/language/traits/coherence/")],
+      (localized "Traits and evidence" "traitと実装の証拠", "/docs/language/traits/model/")],
         [InternalLink (
-          localized "Inherent methods" "inherent method",
+          localized "Coherence and ownership" "インスタンスの一意性と所有権",
+          "/docs/language/traits/coherence/"
+        )],
+        [InternalLink (
+          localized "Inherent impls and methods" "固有implとメソッド",
           "/docs/language/data/impls-and-methods/"
         )]
       ]

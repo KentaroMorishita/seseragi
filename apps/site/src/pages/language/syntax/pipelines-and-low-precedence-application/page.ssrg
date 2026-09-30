@@ -56,11 +56,11 @@ pub fn page -> PageDefinition =
       "/docs/language/syntax/function-application/"
     )],
     [InternalLink (
-      localized "Layout and line continuation" "layoutとline continuation",
+      localized "Layout and line continuation" "レイアウトと行継続",
       "/docs/language/syntax/layout-and-line-continuation/"
     )],
     [InternalLink (
-      localized "Operator precedence" "operator優先順位",
+      localized "Operator precedence" "演算子の優先順位",
       "/docs/language/syntax/operator-precedence/"
     )]
   ]

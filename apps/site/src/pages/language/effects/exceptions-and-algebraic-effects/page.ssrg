@@ -12,12 +12,13 @@ pub fn page -> PageDefinition =
       )] [CodeExample
       ("effects-invalid-throw", localized "Rejected throw syntax" "throw構文を拒否")] [
         [InternalLink (
-          localized "Error channels" "error channel",
+          localized "Effect error channels" "Effectの回復可能な失敗",
           "/docs/language/effects/error-channels/"
         )],
-        [InternalLink (localized "Defects" "defect", "/docs/language/effects/defects/")],
+        [InternalLink
+      (localized "Defects" "想定外の不具合（defect）", "/docs/language/effects/defects/")],
         [InternalLink (
-          localized "Backend-independent semantics" "backendに依存しない意味",
+          localized "Backend-independent semantics" "生成先に依存しない意味",
           "/docs/language/model/backend-independent-semantics/"
         )]
       ]

@@ -1,7 +1,7 @@
 import { ConceptCopy } from "../concept"
 
 pub fn copy -> ConceptCopy = ConceptCopy {
-  title: "デフォルト不変",
+  title: "デフォルトで不変",
   summary: "通常の束縛とデータは構築後に変わりません。状態の遷移は明示します。",
   ruleTitle: "値は作り、再代入しない",
   ruleBody: "letは不変の束縛を導入します。レコード、struct、ADT、Array、Listも構築後は不変です。更新では新しい値を作るか、状態を明示するライブラリの抽象を使います。",

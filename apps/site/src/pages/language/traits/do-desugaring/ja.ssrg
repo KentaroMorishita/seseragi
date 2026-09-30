@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "do blockのdesugar",
+  title: "doブロックの構文展開",
   summary: "do blockはsource順とlexical scopeを保ったまま、右からnested flatMap callとlambdaへ展開します。",
   ruleTitle: "各bindは一つのnested continuationを導入する",
   ruleBody: "x <- mxはflatMap (\\x -> rest) mxになります。結果を捨てるmxは無視するlambda parameterを使います。let x = valueはrestを囲むpure local bindのままです。最後の式はそのまま返します。",

@@ -18,5 +18,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
         [InternalLink
-      (localized "Constraints" "constraint", "/docs/language/traits/constraints/")]
+      (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/")]
       ]

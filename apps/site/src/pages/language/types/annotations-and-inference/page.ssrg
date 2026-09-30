@@ -47,8 +47,7 @@ pub fn page -> PageDefinition =
       Words (localized " omits the required return type." " は必須のreturn型を省略しています。")
     ]
   ]] [
-    [InternalLink
-        (localized "Type system" "type system", "/docs/language/types/type-system/")],
+    [InternalLink (localized "Type system" "型システム", "/docs/language/types/type-system/")],
     [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
     [InternalLink (
       localized "Function application" "関数適用",

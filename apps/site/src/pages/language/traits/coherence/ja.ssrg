@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "coherenceと所有権",
+  title: "インスタンスの一意性と所有権",
   summary: "package graphには各trait適用につき一つだけinstanceを置け、traitまたは最外nominal型の隣で所有します。",
   ruleTitle: "一つの静的な問いには一つの答え",
   ruleBody: "aliasと型parameterを考慮した後に二つのinstanceがoverlapしてはいけません。宣言moduleはtraitまたはinstance headの最外nominal型を所有する必要があります。priority、local override、orphan instanceはありません。",

@@ -51,15 +51,15 @@ pub fn page -> PageDefinition =
     ]
   ]] [
     [InternalLink (
-      localized "Requirement merge" "requirement merge",
+      localized "Requirement merge" "必要なサービスを組み合わせる",
       "/docs/language/types/requirement-merge/"
     )],
     [InternalLink (
-      localized "Optional record fields" "optional record field",
+      localized "Optional record fields" "省略可能なレコードフィールド",
       "/docs/language/types/optional-record-fields/"
     )],
     [InternalLink (
-      localized "Nominal and structural types" "nominal型とstructural型",
+      localized "Nominal and structural types" "名前付き型と構造的な型",
       "/docs/language/types/nominal-and-structural-types/"
     )]
   ]

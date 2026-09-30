@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "traitとevidence",
+  title: "traitと実装の証拠",
   summary: "traitは型のcapabilityを表し、compilerはprogram実行前に静的な型から対応する実装を一つ選びます。",
   ruleTitle: "traitはcompile時のevidence",
   ruleBody: "traitは一つ以上の型と名前付き操作の関係を宣言します。instanceは具体的な型適用へ操作を与えます。型検査は一意なinstanceを選び、その操作をdictionaryとしてconstraint付きcodeへ渡します。",

@@ -7,13 +7,13 @@ import * as ja from "./ja"
 pub fn page -> PageDefinition =
   conceptPage "language.model.visible-costs" "/docs/language/model/visible-costs/" (en.copy ()) (ja.copy ()) [] [
     [InternalLink (
-      localized "Immutable by default" "default immutable",
+      localized "Immutable by default" "デフォルトで不変",
       "/docs/language/model/immutable-by-default/"
     )],
     [InternalLink (
-      localized "Backend-independent semantics" "backend-independent semantics",
+      localized "Backend-independent semantics" "生成先に依存しない意味",
       "/docs/language/model/backend-independent-semantics/"
     )],
     [InternalLink
-        (localized "Readable density" "読める密度", "/docs/language/model/readable-density/")]
+        (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
   ]

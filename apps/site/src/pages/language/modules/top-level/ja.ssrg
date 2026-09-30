@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "top-levelの宣言",
+  title: "トップレベルの宣言",
   summary: "モジュールのtop-levelで名前を宣言します。通常の値はsource順に初期化され、Effectの値は後から実行する処理を表します。",
   ruleTitle: "top-levelには宣言を置く",
   ruleBody: "top-levelに置けるのは、importとre-export、let、fnとeffect fn、type・newtype・alias・struct、inherent impl、traitとinstance、custom operator、foreign宣言、rec groupです。それぞれが名前を導入したり、モジュールのinterfaceを構成したりします。単独の式statementはtop-levelの形式ではありません。関数呼び出しはbindingや関数bodyの中に書きます。",

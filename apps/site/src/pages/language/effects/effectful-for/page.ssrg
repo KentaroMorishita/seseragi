@@ -11,11 +11,11 @@ pub fn page -> PageDefinition =
         localized "Sequential output in Iterable order" "Iterable順の逐次出力"
       )] [] [
         [InternalLink (
-          localized "Ranges and comprehensions" "rangeとcomprehension",
+          localized "Ranges and comprehensions" "範囲と内包表記",
           "/docs/language/expressions/ranges-and-comprehensions/"
         )],
         [InternalLink (
-          localized "Irrefutable patterns" "irrefutable pattern",
+          localized "Irrefutable patterns" "反駁不能パターン",
           "/docs/language/patterns/irrefutable-patterns/"
         )],
         [InternalLink (

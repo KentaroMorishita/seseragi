@@ -12,9 +12,11 @@ pub fn page -> PageDefinition =
           "/docs/language/syntax/function-application/"
         )],
         [InternalLink (
-          localized "Blocks and local declarations" "blockとlocal declaration",
+          localized "Blocks and local declarations" "ブロックとローカル宣言",
           "/docs/language/expressions/blocks-and-local-declarations/"
         )],
-        [InternalLink
-      (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")]
+        [InternalLink (
+          localized "No hidden danger" "危険を暗黙に隠さない",
+          "/docs/language/model/no-hidden-danger/"
+        )]
       ]

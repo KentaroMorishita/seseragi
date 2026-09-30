@@ -8,7 +8,7 @@ pub fn page -> PageDefinition =
   referencePage "language.expressions.lambdas" "/docs/language/expressions/lambdas/" (en.copy ()) (ja.copy ()) [CodeExample
       ("expressions-lambdas", localized "Typed curried lambdas" "型付きcurried lambda")] [] [
         [InternalLink (
-          localized "Function types and currying" "function型とcurrying",
+          localized "Function types and currying" "関数型とカリー化",
           "/docs/language/types/function-types-and-currying/"
         )],
         [InternalLink (
@@ -16,7 +16,7 @@ pub fn page -> PageDefinition =
           "/docs/language/syntax/function-application/"
         )],
         [InternalLink (
-          localized "Blocks and local declarations" "blockとlocal declaration",
+          localized "Blocks and local declarations" "ブロックとローカル宣言",
           "/docs/language/expressions/blocks-and-local-declarations/"
         )]
       ]

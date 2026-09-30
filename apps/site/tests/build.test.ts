@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process"
 import { mkdtempSync, readFileSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
+import { assertReferenceLinkTitles, pageTitle } from "./reference-titles"
 
 const root = resolve(import.meta.dir, "../../..")
 // This test builds all 3974 routes twice to verify deterministic output.
@@ -69,6 +70,28 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   try {
     const manifest = build(output)
     expect(manifest.pages).toHaveLength(3974)
+    const languagePages = new Map(
+      manifest.pages
+        .filter((route) => /^(?:\/ja)?\/docs\/language\//u.test(route))
+        .map((route) => [
+          route,
+          readFileSync(join(output, route.slice(1), "index.html"), "utf8"),
+        ])
+    )
+    const titles = new Map(
+      [...languagePages].map(([route, html]) => [route, pageTitle(html)])
+    )
+    let checkedReferenceLinks = 0
+    for (const [route, html] of languagePages) {
+      checkedReferenceLinks += assertReferenceLinkTitles(html, titles, route)
+      if (route.startsWith("/ja/"))
+        expect(textContent(html), route).not.toContain("式中心")
+    }
+    expect(titles.get("/ja/docs/language/model/expression-oriented/")).toBe(
+      "式指向"
+    )
+    expect(checkedReferenceLinks).toBeGreaterThan(500)
+    console.info(`Verified ${checkedReferenceLinks} bilingual page-name links`)
     const mobileArticle = readFileSync(
       join(output, "ja/docs/language/syntax/function-application/index.html"),
       "utf8"

@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "trait constraint",
+  title: "trait制約",
   summary: "where clauseはgeneric関数やinstanceが必要とするcapabilityをcontractの一部にします。",
   ruleTitle: "constraintはpolymorphic codeと一緒に移動する",
   ruleBody: "whereの後ろへ一つ以上のtrait適用を書きます。generic関数は対応dictionaryを暗黙parameterとして受け取ります。conditional instanceは子evidenceを要求でき、選択はそのrequirementを再帰的に解決します。",

@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "inherent implとメソッド",
+  title: "固有implとメソッド",
   summary: "inherent implは、定義module内でnominal型へ静的解決されるmethodを追加します。",
   ruleTitle: "nominal型がmethodを所有する",
   ruleBody: "impl TはTを定義したmoduleだけに書けます。methodの第一parameterはselfという名前でimpl target型を持ち、後続parameterは通常どおりcurriedです。",

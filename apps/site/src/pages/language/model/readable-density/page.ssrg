@@ -13,7 +13,7 @@ pub fn page -> PageDefinition =
       "/docs/language/syntax/function-application/"
     )],
     [InternalLink (
-      localized "Features the language does not have" "言語に存在しない機能",
+      localized "Features the language does not have" "中核に存在しない機能",
       "/docs/language/model/non-features/"
     )]
   ]

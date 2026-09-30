@@ -10,16 +10,14 @@ pub fn page -> PageDefinition =
         "effects-signal-subscription",
         localized "Subscribe, update, and release" "subscribe・update・release"
       )] [] [
+        [InternalLink
+      (localized "Derived Signals" "派生Signal", "/docs/language/effects/derived-signals/")],
         [InternalLink (
-          localized "Derived Signals" "derived Signal",
-          "/docs/language/effects/derived-signals/"
-        )],
-        [InternalLink (
-          localized "Cancellation and resources" "cancellationとresource",
+          localized "Cancellation and resources" "キャンセルとリソースの管理",
           "/docs/language/effects/cancellation-and-resources/"
         )],
         [InternalLink (
-          localized "Signal operators" "Signal operator",
+          localized "Signal operators" "Signalの演算子",
           "/docs/language/effects/signal-operators/"
         )]
       ]

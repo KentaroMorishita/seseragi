@@ -11,15 +11,15 @@ pub fn page -> PageDefinition =
         localized "Forking and joining a scoped child" "scope childのforkとjoin"
       )] [] [
         [InternalLink (
-          localized "Scheduler fairness" "scheduler fairness",
+          localized "Scheduler fairness" "実行順と公平性",
           "/docs/language/effects/scheduler-fairness/"
         )],
         [InternalLink (
-          localized "Cancellation and resources" "cancellationとresource",
+          localized "Cancellation and resources" "キャンセルとリソースの管理",
           "/docs/language/effects/cancellation-and-resources/"
         )],
         [InternalLink (
-          localized "Runtime boundaries" "runtime境界",
+          localized "Effect runtime boundaries" "Effectを実行する境界",
           "/docs/language/effects/runtime-boundaries/"
         )]
       ]

@@ -11,13 +11,15 @@ pub fn page -> PageDefinition =
         localized "Modeling an expected zero divisor as data" "想定可能なzero divisorをdata化"
       )] [] [
         [InternalLink (
-          localized "Error channels" "error channel",
+          localized "Effect error channels" "Effectの回復可能な失敗",
           "/docs/language/effects/error-channels/"
         )],
-        [InternalLink
-      (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")],
         [InternalLink (
-          localized "Backend-independent semantics" "backendに依存しない意味",
+          localized "No hidden danger" "危険を暗黙に隠さない",
+          "/docs/language/model/no-hidden-danger/"
+        )],
+        [InternalLink (
+          localized "Backend-independent semantics" "生成先に依存しない意味",
           "/docs/language/model/backend-independent-semantics/"
         )]
       ]

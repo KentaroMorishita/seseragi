@@ -48,11 +48,10 @@ pub fn page -> PageDefinition =
     "syntax-invalid-numeric",
     localized "An invalid Int is not rounded" "invalid Intは丸められない"
   )] [
-    [InternalLink (localized "Literals" "literal", "/docs/language/syntax/literals/")],
+    [InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/")],
     [InternalLink (
-      localized "Character and string escapes" "Char・String・templateのescape",
+      localized "Character and string escapes" "文字と文字列のエスケープ",
       "/docs/language/syntax/character-string-escapes/"
     )],
-    [InternalLink
-            (localized "Type system" "type system", "/docs/language/types/type-system/")]
+    [InternalLink (localized "Type system" "型システム", "/docs/language/types/type-system/")]
   ]

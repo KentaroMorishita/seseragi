@@ -41,12 +41,12 @@ pub fn page -> PageDefinition =
           "拒否されるrecord field・pattern操作"
   )] [
     [InternalLink (
-      localized "Operator precedence" "operator優先順位",
+      localized "Operator precedence" "演算子の優先順位",
       "/docs/language/syntax/operator-precedence/"
     )],
     [InternalLink (
-      localized "Reserved words and naming" "予約語と命名",
+      localized "Reserved words and naming" "予約語と名前の規則",
       "/docs/language/syntax/reserved-words-and-names/"
     )],
-    [InternalLink (localized "Literals" "literal", "/docs/language/syntax/literals/")]
+    [InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/")]
   ]

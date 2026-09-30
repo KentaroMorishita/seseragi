@@ -13,9 +13,10 @@ pub fn page -> PageDefinition =
         "effects-invalid-finalizer",
         localized "Rejected fallible finalizer" "fallible finalizerを拒否"
       )] [
-        [InternalLink (localized "Defects" "defect", "/docs/language/effects/defects/")],
+        [InternalLink
+      (localized "Defects" "想定外の不具合（defect）", "/docs/language/effects/defects/")],
         [InternalLink (
-          localized "Scheduler fairness" "scheduler fairness",
+          localized "Scheduler fairness" "実行順と公平性",
           "/docs/language/effects/scheduler-fairness/"
         )],
         [InternalLink

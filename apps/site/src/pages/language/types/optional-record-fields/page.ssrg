@@ -34,11 +34,11 @@ pub fn page -> PageDefinition =
     localized "Missing and incompatible record fields" "不足・非互換record field"
   )] [
     [InternalLink (
-      localized "Optional record field syntax" "optional record field構文",
+      localized "Optional record field syntax" "省略可能なレコードフィールドの構文",
       "/docs/language/syntax/optional-record-fields/"
     )],
     [InternalLink (
-      localized "Nominal and structural types" "nominal型とstructural型",
+      localized "Nominal and structural types" "名前付き型と構造的な型",
       "/docs/language/types/nominal-and-structural-types/"
     )],
     [InternalLink

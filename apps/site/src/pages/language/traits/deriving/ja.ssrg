@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "instanceのderiving",
+  title: "derivingによるインスタンスの導出",
   summary: "nominal data宣言はfieldとconstructor順序から、閉じた集合の標準instanceをcompilerに生成させられます。",
   ruleTitle: "derivingは通常のcoherent evidenceを生成する",
   ruleBody: "ADT、struct、newtypeはEq、Ord、Show、Debug、Hash、JsonEncode、JsonDecodeをderiveできます。生成instanceは明示instanceと同じvisibility、ownership、coherence規則に従います。",

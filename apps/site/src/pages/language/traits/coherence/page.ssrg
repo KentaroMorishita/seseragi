@@ -14,13 +14,13 @@ pub fn page -> PageDefinition =
         localized "Rejected overlapping evidence" "overlapするevidenceを拒否"
       )] [
         [InternalLink
-      (localized "Instances" "instance", "/docs/language/traits/instances/")],
+      (localized "Instances" "インスタンス", "/docs/language/traits/instances/")],
         [InternalLink (
-          localized "Standard operators" "標準operator",
+          localized "Standard operators and traits" "標準演算子とtrait",
           "/docs/language/traits/standard-operators/"
         )],
         [InternalLink (
-          localized "Type identity" "型identity",
+          localized "Type identity and coercion" "型の同一性と型変換",
           "/docs/language/types/type-identity-and-coercion/"
         )]
       ]

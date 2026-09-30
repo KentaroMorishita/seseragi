@@ -38,11 +38,9 @@ pub fn page -> PageDefinition =
     [InternalLink
         (localized "Closed records" "closed record", "/docs/language/types/closed-records/")],
     [InternalLink (
-      localized "Operator precedence" "operator優先順位",
+      localized "Operator precedence" "演算子の優先順位",
       "/docs/language/syntax/operator-precedence/"
     )],
-    [InternalLink (
-      localized "Type constructors" "型constructor",
-      "/docs/language/types/type-constructors/"
-    )]
+    [InternalLink
+        (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")]
   ]

@@ -1,7 +1,7 @@
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
-  title: "文字と文字列のescape",
+  title: "文字と文字列のエスケープ",
   summary: "Char、String、templateで共通の閉じたescape集合と、区切りごとの違いを説明します。",
   formsTitle: "定めたescapeだけを復号する",
   formsBody: "backslash、改行、carriage return、tab、null、一〜六桁のUnicode scalar escapeを使えます。Charでは一重引用符、Stringでは二重引用符、templateではbacktickをescapeします。template内のliteralな${には直前のbackslashが必要ですが、$単独には不要です。",

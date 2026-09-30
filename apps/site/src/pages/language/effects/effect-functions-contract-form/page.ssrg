@@ -14,15 +14,15 @@ pub fn page -> PageDefinition =
         localized "Rejected missing environment and failure" "environment・failure欠落を拒否"
       )] [
         [InternalLink (
-          localized "Inferred Effect functions" "contractを推論するeffect fn",
+          localized "Effect functions with an inferred contract" "Effect関数の型を推論する形式",
           "/docs/language/effects/effect-functions-inferred-form/"
         )],
         [InternalLink (
-          localized "Environment requirements" "environment requirement",
+          localized "Effect environment requirements" "Effectが必要とするサービス",
           "/docs/language/effects/environment-requirements/"
         )],
         [InternalLink (
-          localized "Function types" "関数型",
+          localized "Function types and currying" "関数型とカリー化",
           "/docs/language/types/function-types-and-currying/"
         )]
       ]

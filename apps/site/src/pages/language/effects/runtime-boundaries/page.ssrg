@@ -11,11 +11,11 @@ pub fn page -> PageDefinition =
         localized "A cold program awaiting its host" "host実行を待つcoldなprogram"
       )] [] [
         [InternalLink (
-          localized "Programs and entry points" "programとentry point",
+          localized "Programs and entry points" "プログラムと実行入口",
           "/docs/language/model/programs/"
         )],
         [InternalLink (
-          localized "Environment requirements" "environment requirement",
+          localized "Effect environment requirements" "Effectが必要とするサービス",
           "/docs/language/effects/environment-requirements/"
         )],
         [InternalLink

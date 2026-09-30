@@ -49,12 +49,12 @@ pub fn page -> PageDefinition =
     ]
   ]] [
     [InternalLink (
-      localized "Character and string escapes" "Char・String・templateのescape",
+      localized "Character and string escapes" "文字と文字列のエスケープ",
       "/docs/language/syntax/character-string-escapes/"
     )],
-    [InternalLink (localized "Literals" "literal", "/docs/language/syntax/literals/")],
+    [InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/")],
     [InternalLink (
-      localized "Layout and line continuation" "layoutとline continuation",
+      localized "Layout and line continuation" "レイアウトと行継続",
       "/docs/language/syntax/layout-and-line-continuation/"
     )]
   ]

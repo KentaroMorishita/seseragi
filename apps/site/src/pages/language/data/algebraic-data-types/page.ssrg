@@ -7,14 +7,12 @@ import * as ja from "./ja"
 pub fn page -> PageDefinition =
   referencePage "language.data.algebraic-data-types" "/docs/language/data/algebraic-data-types/" (en.copy ()) (ja.copy ()) [CodeExample
       ("data-algebraic-data-types", localized "A closed generic state" "閉じたgeneric state")] [] [
-        [InternalLink (
-          localized "Type constructors" "type constructor",
-          "/docs/language/types/type-constructors/"
-        )],
         [InternalLink
-      (localized "Match expressions" "match式", "/docs/language/patterns/match/")],
+      (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
+        [InternalLink
+      (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")],
         [InternalLink (
-          localized "Nominal and structural types" "nominal型とstructural型",
+          localized "Nominal and structural types" "名前付き型と構造的な型",
           "/docs/language/types/nominal-and-structural-types/"
         )]
       ]

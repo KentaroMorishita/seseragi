@@ -40,11 +40,11 @@ pub fn page -> PageDefinition =
       "newtypeはrepresentationへcoerceできない"
       )] [
         [InternalLink (
-          localized "Nominal and structural types" "nominal型とstructural型",
+          localized "Nominal and structural types" "名前付き型と構造的な型",
           "/docs/language/types/nominal-and-structural-types/"
         )],
         [InternalLink
       (localized "Built-in types" "組み込み型", "/docs/language/types/built-in-types/")],
         [InternalLink
-      (localized "Type system" "type system", "/docs/language/types/type-system/")]
+      (localized "Type system" "型システム", "/docs/language/types/type-system/")]
       ]

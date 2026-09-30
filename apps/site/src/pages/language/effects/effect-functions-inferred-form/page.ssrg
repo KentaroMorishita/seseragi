@@ -12,15 +12,15 @@ pub fn page -> PageDefinition =
       )] [CodeExample
       ("effects-invalid-pure-body", localized "Rejected non-Effect body" "Effectでないbodyを拒否")] [
         [InternalLink (
-          localized "Explicit Effect contracts" "明示Effect contract",
+          localized "Effect functions with an explicit contract" "Effect関数の型を明示する形式",
           "/docs/language/effects/effect-functions-contract-form/"
         )],
         [InternalLink (
-          localized "Annotations and inference" "annotationと推論",
+          localized "Annotations and inference" "型注釈と推論",
           "/docs/language/types/annotations-and-inference/"
         )],
         [InternalLink (
-          localized "Error channels" "error channel",
+          localized "Effect error channels" "Effectの回復可能な失敗",
           "/docs/language/effects/error-channels/"
         )]
       ]
