@@ -82,6 +82,11 @@ function generatorInput(playgroundUrl: string) {
       .trimEnd(),
     examples: [
       canonicalExample(
+        "types-variance-invalid",
+        "apps/site/examples/invalid/src/language/types-variance.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "types-kind-invalid",
         "apps/site/examples/invalid/src/language/invalid-types-kind.ssrg",
         playgroundUrl

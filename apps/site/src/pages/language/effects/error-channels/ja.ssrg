@@ -1,14 +1,14 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "Effectのerror channel",
-  summary: "Eはcallerが明示的にmodel化して扱う回復可能なfailureを運びます。",
-  ruleTitle: "application failureは自動unionせず設計する",
-  ruleBody: "一つのEffect合成では一つの回復可能error型を使います。dependency errorはmapErrorでapplication ADTへ変換し、異なる失敗operationが並んでもcompilerは匿名unionを合成しません。",
-  typingBody: "Effect<R, Never, A>は回復可能failureを生成できないためEffect<R, E, A>へwidenできます。それ以外のfailure coercionはありません。recoverはEだけを扱い、置換後error型を持つEffectを返します。",
-  evaluationBody: "typed failureは現在の逐次continuationを停止し、最も近い明示recovery operationへ渡ります。defectとcancellationは別channelで、recoverは捕捉もEへの変換もしません。",
-  invalidTitle: "想定できる外部failureをdefectにしない",
-  invalidBody: "network拒否、不正inputなど予測できる結果はEまたは通常のEitherに置きます。application error型の設計を避けるためにruntime defectへ隠してはいけません。",
-  diagnosticsBody: "failure不一致は各具体Eと、それを導入したoperationを示します。inferred effect fnで複数のNever以外のfailureが合流すると、ADTとmapError・recoverを案内します。",
-  provenanceBody: "仕様5.6を扱います。defect、cancellation、foreign exception変換は別contractです。"
+  title: "Effectの回復可能な失敗",
+  summary: "予測して扱える失敗を型Eで表し、呼び出し側で回復や変換を行います。",
+  ruleTitle: "複数の失敗を扱うなら、共通の失敗型を用意する",
+  ruleBody: "一つのEffectの合成には、一つの回復可能な失敗型を使います。異なるライブラリの失敗を組み合わせる場合は、アプリケーションの失敗を表すADTを用意し、mapErrorで変換します。コンパイラが自動で複数の失敗型をまとめるわけではありません。",
+  typingBody: "Effect<R, Never, A>は回復可能な失敗を起こさないため、失敗型Eが要求される場所でも使えます。それ以外の失敗型を暗黙に変更することはできません。recoverはEに入る失敗だけを扱い、回復処理が返すEffectの失敗型へ切り替えます。",
+  evaluationBody: "回復可能な失敗が起きると、その後に続く通常の処理は止まり、最も近い明示的な回復処理へ移ります。想定外の不具合を表すdefectとキャンセルは別に扱われます。recoverは、それらを捕捉したり、Eの値に変換したりしません。",
+  invalidTitle: "予測して扱える失敗を、想定外の不具合として隠さない",
+  invalidBody: "ネットワークへの接続拒否や不正な入力など、呼び出し側が扱うべき結果は、Eや通常のEitherで表します。アプリケーションの失敗型を用意する手間を避けるために、想定外の不具合として扱わないようにします。",
+  diagnosticsBody: "失敗型が合わない場合は、各操作が返すEffectのEを確認してください。異なる失敗型を組み合わせたい場合は、共通のADTを用意し、mapErrorで変換するか、recoverで回復処理を定義します。",
+  provenanceBody: "言語仕様5.6に基づきます。想定外の不具合、キャンセル、外部の例外の取り込みは、別のページで説明しています。"
 }

@@ -5,7 +5,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: "seseragi.tomlで、モジュールが共有するidentity・配置・dependencyの境界を定めます。",
   ruleTitle: "manifestでpackageの境界を定める",
   ruleBody: "package rootにはseseragi.tomlを一つ置きます。package名、version、対応する言語versionの範囲を宣言し、必要に応じてlayout、直接dependency、公開するentry moduleを指定します。compilerはpackage.jsonから境界を推測したり、親directoryにある複数のmanifestをmergeしたりしません。source root内をdirectoryで整理するだけでは、別packageにはなりません。",
-  typingBody: "モジュールのidentityには、packageの名前・正確なversion・source identityが含まれます。同名dependencyでもversionが違えば内部identityを区別できます。同じ名前とversionを名乗る異なるsourceを一つのdependency graphへ混在させると、dependency confusionのエラーになります。compilerが片方を勝手に選ぶことはありません。異なるpackage identityからimportした型は、それぞれの定義元のidentityを保ちます。",
+  typingBody: "モジュールの識別には、packageの名前・正確なversion・source identityが含まれます。同名dependencyでもversionが違えば内部identityを区別できます。同じ名前とversionを名乗る異なるsourceを一つのdependency graphへ混在させると、dependency confusionのエラーになります。compilerが片方を勝手に選ぶことはありません。異なるpackage identityからimportした型は、それぞれの定義元のidentityを保ちます。",
   evaluationBody: "sourceがimportできるdependencyは、そのpackageのmanifestに直接宣言したものだけです。dependencyの依存先まで自動で使えるわけではありません。resolverは宣言されたdependencyと公開export mapを確認してからモジュールを読み込みます。packageの境界そのものがI/Oを起こすことはなく、モジュールの初期化とEffectの実行は別の規則に従います。",
   invalidTitle: "pubとexport mapは役割が違う",
   invalidBody: "pubは、そのモジュールを解決できる他モジュールへ宣言を公開します。packageのexport mapは、外部packageからどのsource moduleを解決できるかを決めます。pubを付けてもpackage内の全パスが公開されるわけではなく、exportsへ載せてもそのモジュールの全宣言が公開されるわけではありません。",

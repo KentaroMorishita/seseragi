@@ -13,7 +13,7 @@
       "bindings": [
         {
           "imported": "Hand",
-          "local": "domain_Hand",
+          "local": "domain$member$Hand",
           "sourceLocal": "domain.Hand",
           "canonical": "fixture/namespace-call::domain::Hand",
           "typeOnly": true,
@@ -25,7 +25,7 @@
         },
         {
           "imported": "Rock",
-          "local": "domain_Rock",
+          "local": "domain$member$Rock",
           "sourceLocal": "domain.Rock",
           "canonical": "fixture/namespace-call::domain::Rock",
           "typeOnly": false,
@@ -37,7 +37,7 @@
         },
         {
           "imported": "Paper",
-          "local": "domain_Paper",
+          "local": "domain$member$Paper",
           "sourceLocal": "domain.Paper",
           "canonical": "fixture/namespace-call::domain::Paper",
           "typeOnly": false,
@@ -49,7 +49,7 @@
         },
         {
           "imported": "Scissors",
-          "local": "domain_Scissors",
+          "local": "domain$member$Scissors",
           "sourceLocal": "domain.Scissors",
           "canonical": "fixture/namespace-call::domain::Scissors",
           "typeOnly": false,
@@ -61,7 +61,7 @@
         },
         {
           "imported": "identity",
-          "local": "domain_identity",
+          "local": "domain$member$identity",
           "sourceLocal": "domain.identity",
           "canonical": "fixture/namespace-call::domain::identity",
           "typeOnly": false,
@@ -87,7 +87,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "domain_Hand",
+          "type": "domain$member$Hand",
           "implicit": false
         }
       ],
@@ -132,7 +132,7 @@
             ],
             "value": {
               "kind": "identifier",
-              "name": "domain_Paper"
+              "name": "domain$member$Paper"
             }
           },
           {
@@ -145,20 +145,20 @@
             ],
             "value": {
               "kind": "identifier",
-              "name": "domain_Scissors"
+              "name": "domain$member$Scissors"
             }
           },
           {
             "tests": [],
             "value": {
               "kind": "identifier",
-              "name": "domain_Rock"
+              "name": "domain$member$Rock"
             }
           }
         ],
         "type": {
           "kind": "reference",
-          "name": "domain_Hand",
+          "name": "domain$member$Hand",
           "arguments": []
         }
       },
@@ -175,7 +175,7 @@
       "parameters": [
         {
           "name": "hand",
-          "type": "domain_Hand",
+          "type": "domain$member$Hand",
           "implicit": false
         }
       ],
@@ -187,7 +187,7 @@
         },
         "scrutineeType": {
           "kind": "reference",
-          "name": "domain_Hand",
+          "name": "domain$member$Hand",
           "arguments": []
         },
         "branches": [
@@ -248,7 +248,7 @@
       ],
       "body": {
         "kind": "call",
-        "callee": "domain_identity",
+        "callee": "domain$member$identity",
         "arguments": [
           {
             "kind": "call",
@@ -256,7 +256,7 @@
             "arguments": [
               {
                 "kind": "call",
-                "callee": "domain_identity",
+                "callee": "domain$member$identity",
                 "arguments": [
                   {
                     "kind": "call",

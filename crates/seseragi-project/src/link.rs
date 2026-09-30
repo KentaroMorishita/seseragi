@@ -84,7 +84,19 @@ pub fn link_module(
                         reexported_exports.push(reexport);
                         reexported_operators.push(operator.clone());
                     }
-                    LinkedImport::Namespace { .. } => {}
+                    LinkedImport::Namespace {
+                        local_name, origin, ..
+                    } => {
+                        // Retain the namespace path, not unqualified copies of its members.
+                        // Canonical identities and schemes still belong to the source module.
+                        for export in &target.interface().exports {
+                            let mut reexport = export.clone();
+                            reexport.name = format!("{local_name}.{}", export.name);
+                            reexport.visibility = Visibility::Public;
+                            reexport.declaration = *origin;
+                            reexported_exports.push(reexport);
+                        }
+                    }
                 }
             }
         }

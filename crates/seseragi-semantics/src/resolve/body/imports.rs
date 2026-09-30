@@ -176,6 +176,67 @@ fn add_dependency_nominal_members(
     }
 }
 
+pub(super) fn register_namespace_re_exports(
+    resolver: &mut Resolver,
+    dependencies: &[LinkedDependency],
+    interface: &seseragi_syntax::ModuleInterface,
+) -> Vec<ResolvedImport> {
+    let mut imports = Vec::new();
+    for dependency in dependencies {
+        for import in &dependency.imports {
+            let LinkedImport::Namespace {
+                local_name, origin, ..
+            } = import
+            else {
+                continue;
+            };
+            for export in &dependency.interface.exports {
+                let path = format!("{local_name}.{}", export.name);
+                if !interface.exports.iter().any(|public| {
+                    public.name == path
+                        && public.namespace == export.namespace
+                        && public.symbol == export.symbol
+                }) {
+                    continue;
+                }
+                let Some(namespace) = namespace(&export.namespace) else {
+                    continue;
+                };
+                let symbol = resolver.dependency_symbol(
+                    namespace,
+                    symbol_kind(namespace, export.declaration_kind.as_deref()),
+                    &export.name,
+                    export.symbol.clone(),
+                );
+                imports.push(ResolvedImport {
+                    reexported_as: Some(path.clone()),
+                    symbol,
+                    specifier: dependency.specifier.clone(),
+                    module: dependency.interface.module.clone(),
+                    local_name: path,
+                    origin: *origin,
+                    in_scope: true,
+                    export: export.clone(),
+                    member_owner: None,
+                    scheme_type_bindings: export_scheme_type_bindings(
+                        &dependency.interface,
+                        export,
+                    ),
+                    scheme_trait_bindings: export_scheme_trait_bindings(
+                        &dependency.interface,
+                        export,
+                    ),
+                    contract_trait_bindings: export_contract_trait_bindings(
+                        &dependency.interface,
+                        export,
+                    ),
+                });
+            }
+        }
+    }
+    imports
+}
+
 fn ensure_dependency_member(
     resolver: &mut Resolver,
     dependency: &LinkedDependency,

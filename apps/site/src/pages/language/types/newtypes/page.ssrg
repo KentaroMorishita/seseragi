@@ -9,6 +9,6 @@ pub fn page -> PageDefinition =
       ("types-newtypes", localized "Newtype identity and representation" "newtypeの同一性と表現")] [CodeExample
       ("types-newtype-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
     [InternalLink (localized "Newtype values" "newtypeの値", "/docs/language/data/newtypes/")],
-    [InternalLink (localized "Type identity and coercion" "型の同一性とcoercion", "/docs/language/types/type-identity-and-coercion/")],
+    [InternalLink (localized "Type identity and coercion" "型の同一性と型変換", "/docs/language/types/type-identity-and-coercion/")],
     [InternalLink (localized "Erasure and runtime representation" "型消去と実行時表現", "/docs/language/types/erasure-and-runtime-representation/")]
   ]

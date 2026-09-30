@@ -9,6 +9,6 @@ pub fn page -> PageDefinition =
       ("types-generic-functions", localized "Generic functions" "ジェネリック関数")] [CodeExample
       ("types-generic-function-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
     [InternalLink (localized "Annotations and inference" "型注釈と推論", "/docs/language/types/annotations-and-inference/")],
-    [InternalLink (localized "Let-polymorphism and rank" "let多相性とrank", "/docs/language/types/let-polymorphism-and-rank/")],
+    [InternalLink (localized "Let-polymorphism and rank" "letの多相性と使える範囲", "/docs/language/types/let-polymorphism-and-rank/")],
     [InternalLink (localized "Function types and currying" "関数型とカリー化", "/docs/language/types/function-types-and-currying/")]
   ]

@@ -40,5 +40,6 @@ import * as types_generic_adt from "./language/invalid-types-generic-adt"
 import * as types_generic_struct from "./language/invalid-types-generic-struct"
 import * as types_generic_alias from "./language/invalid-types-generic-alias"
 import * as types_newtype from "./language/invalid-types-newtype"
+import * as types_variance from "./language/types-variance"
 
 pub effect fn main -> Unit = effects.succeed ()

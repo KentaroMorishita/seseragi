@@ -2106,3 +2106,24 @@ fn runs_opaque_struct() {
         fs::read_to_string(package.join("expected.stdout")).unwrap()
     );
 }
+
+#[test]
+fn runs_combined_named_namespace_and_aliased_re_exports() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/combined-re-exports"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+}

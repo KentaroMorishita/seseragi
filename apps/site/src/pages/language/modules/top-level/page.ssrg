@@ -21,7 +21,7 @@ pub fn page -> PageDefinition =
       ("modules-top-level", localized "modules-top-level.ssrg" "modules-top-level.ssrg")
   ] [] [
     [InternalLink
-      (localized "Module identity" "モジュールのidentity", "/docs/language/modules/identity/")],
+      (localized "Module identity" "モジュールの識別", "/docs/language/modules/identity/")],
     [InternalLink (
       localized "Visibility and opaque representations" "公開範囲とopaqueな表現",
       "/docs/language/modules/visibility/"

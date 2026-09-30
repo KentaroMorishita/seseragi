@@ -23,7 +23,7 @@ pub fn page -> PageDefinition =
     )
   ] [] [
     [InternalLink
-        (localized "Module identity" "モジュールのidentity", "/docs/language/modules/identity/")],
+        (localized "Module identity" "モジュールの識別", "/docs/language/modules/identity/")],
     [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
     [InternalLink (
       localized "Visibility and opaque representations" "公開範囲とopaqueな表現",

@@ -80,6 +80,46 @@ fn benchmark_standard_module_is_available() {
 }
 
 #[test]
+fn public_namespace_keeps_qualified_paths_and_original_identities() {
+    let domain = target(
+        "fixture::domain",
+        "pub newtype UserId = Int\npub fn read value: UserId -> Int = 1\nlet hidden = 2\n",
+    );
+    let facade = parse_unlinked_module_interface(
+        "facade.ssrg",
+        "fixture::facade",
+        "pub import { UserId } from \"./domain\"\npub import * as domain from \"./domain\"\n",
+    );
+    let linked = link_module(facade, &BTreeMap::from([("./domain".to_owned(), domain)])).unwrap();
+    for namespace in ["type", "value"] {
+        let named = linked
+            .interface
+            .exports
+            .iter()
+            .find(|export| export.name == "UserId" && export.namespace == namespace)
+            .unwrap();
+        let qualified = linked
+            .interface
+            .exports
+            .iter()
+            .find(|export| export.name == "domain.UserId" && export.namespace == namespace)
+            .unwrap();
+        assert_eq!(named.symbol, qualified.symbol);
+        assert_eq!(named.scheme, qualified.scheme);
+    }
+    assert!(linked
+        .interface
+        .exports
+        .iter()
+        .any(|export| export.name == "domain.read"));
+    assert!(!linked
+        .interface
+        .exports
+        .iter()
+        .any(|export| matches!(export.name.as_str(), "read" | "hidden" | "domain.hidden")));
+}
+
+#[test]
 fn one_named_newtype_import_introduces_type_and_constructor_namespaces() {
     let domain = target("fixture/game::domain", "pub newtype UserId = Int\n");
     let main = parse_unlinked_module_interface(

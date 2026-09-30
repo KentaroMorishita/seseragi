@@ -1,31 +1,24 @@
 import { localized } from "../../../../model/locale"
-import {
-  Callout,
-  Warning,
-  Words,
-  CodeExample,
-  InternalLink,
-  PageDefinition
-} from "../../../../model/page"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  typePage "language.types.variance" "/docs/language/types/variance/" (en.copy ()) (ja.copy ()) [
-    CodeExample
-      ("types-variance", localized "Variance and capability coercions" "変性と能力固有の型変換"),
-    Callout (
-      Warning,
-      localized "Current compiler limitation" "現在のコンパイラの制約",
-      [Words (
-        localized
-      "Some array assignments involving record-width subtyping are currently accepted more broadly than the invariant rule permits. Do not rely on this acceptance: use an explicit element conversion, as shown here, to preserve the specified contract."
-      "現在のコンパイラは、レコードの幅部分型に関係する配列の代入を、不変性の規則より広く受け入れる場合があります。この受理を保証として扱わず、例のように要素を明示的に変換して仕様の契約を保ってください。"
-      )]
-    )
-  ] [] [
-    [InternalLink (localized "Requirement merge" "requirementのmerge", "/docs/language/types/requirement-merge/")],
-    [InternalLink (localized "Records" "レコード", "/docs/language/data/records/")],
-    [InternalLink (localized "Type identity and coercion" "型の同一性とcoercion", "/docs/language/types/type-identity-and-coercion/")]
-  ]
+  typePage "language.types.variance" "/docs/language/types/variance/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("types-variance", localized "Variance and capability coercions" "変性と能力固有の型変換")] [
+        CodeExample (
+          "types-variance-invalid",
+          localized "Rejected: implicit element conversion" "拒否される例：要素の暗黙変換"
+        )
+      ] [
+        [InternalLink (
+          localized "Requirement merge" "必要なサービスの組み合わせ",
+          "/docs/language/types/requirement-merge/"
+        )],
+        [InternalLink (localized "Records" "レコード", "/docs/language/data/records/")],
+        [InternalLink (
+          localized "Type identity and coercion" "型の同一性と型変換",
+          "/docs/language/types/type-identity-and-coercion/"
+        )]
+      ]

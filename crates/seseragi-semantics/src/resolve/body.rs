@@ -67,6 +67,11 @@ pub fn resolve_linked_module(
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
     register_foreign_namespaces(&mut resolver, &surface.foreign_modules);
     let mut imports = imports::register_linked_imports(&mut resolver, &linked.dependencies);
+    imports.extend(imports::register_namespace_re_exports(
+        &mut resolver,
+        &linked.dependencies,
+        &linked.interface,
+    ));
     for import in &mut imports {
         import.reexported_as = linked
             .interface
