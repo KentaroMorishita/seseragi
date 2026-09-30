@@ -54,15 +54,19 @@ or a specification chapter. In particular, failure, Effect, Task,
 cancellation, resources, Signal, modules, and interop remain separately
 addressable topics.
 
-Every article answers, in the order useful to a reader:
+Every article follows `reader-contract.md` and answers, in the order useful to a reader:
 
 1. what the concept is and when it matters;
 2. its accepted form, with a small verified example;
-3. its static rules and inferred types;
+3. how to read the example and why its output or inferred type follows;
 4. its runtime or evaluation behavior;
 5. invalid forms and the diagnostics they produce;
 6. interactions, limits, costs, and related concepts;
-7. the normative specification sections that support the explanation.
+7. necessary type rules and purpose-labelled optional links for deeper questions.
+
+The normative specification sections are internal provenance, not a public
+filler section. Unexplained vocabulary and prerequisite links do not satisfy
+these questions. Introduce the necessary ideas locally before advanced rules.
 
 Not every heading is required on a short page, but none of the applicable
 questions may be silently omitted.
@@ -129,6 +133,11 @@ closing restores the reading position. The article table of contents remains a
 separate compact disclosure. The same off-canvas tree is usable without
 JavaScript. Collapsed branches do not render thousands of symbol links. The
 active group and section remain expanded.
+
+Previous/next links stay within the current concept cluster or library module.
+They must not flatten the full sidebar into a supposedly ordered reading course.
+Show the current cluster and an overview link; related destinations explain what
+the reader can find there.
 
 The navigation levels are:
 

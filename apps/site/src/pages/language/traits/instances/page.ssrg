@@ -1,24 +1,22 @@
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  referencePage "language.traits.instances" "/docs/language/traits/instances/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("traits-instances", localized "A nominal type instance" "nominal型のinstance")] [CodeExample
+  readerPage "language.traits.instances" "/docs/language/traits/instances/" (en.copy ()) (ja.copy ()) "reader-trait" "ticket-42" [CodeExample
       (
         "traits-invalid-instance",
-        localized "Rejected method contract" "method contractの不一致"
+        localized "A mismatched method signature is rejected" "宣言と合わない関数の型はエラー"
       )] [
-        [InternalLink
-      (localized "Traits and evidence" "traitと実装の証拠", "/docs/language/traits/model/")],
-        [InternalLink (
+        (localized "Trait declarations" "trait宣言", "/docs/language/traits/declarations/"),
+        (
           localized "Coherence and ownership" "インスタンスの一意性と所有権",
           "/docs/language/traits/coherence/"
-        )],
-        [InternalLink (
+        ),
+        (
           localized "Inherent impls and methods" "固有implとメソッド",
           "/docs/language/data/impls-and-methods/"
-        )]
+        )
       ]

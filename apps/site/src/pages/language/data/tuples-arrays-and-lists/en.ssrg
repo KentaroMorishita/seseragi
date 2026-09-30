@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Tuples, arrays, and lists",
-  summary: "Tuples fix arity, arrays provide strict indexed storage, and lists provide persistent head-tail structure.",
-  ruleTitle: "Three collection shapes have different contracts",
-  ruleBody: "A tuple has two or more fixed positions. [items] creates Array, while backtick-bracket creates List. Array and List elements share one type, and empty literals need an expected element type.",
-  typingBody: "Array and List are distinct invariant types with explicit conversions. Array indexing takes Int and returns Maybe; List has no index syntax. Patterns preserve the original collection kind in rest bindings.",
-  evaluationBody: "Literal elements evaluate once from left to right. Arrays store a strict contiguous sequence; lists are immutable persistent Empty/Cons values with constant-time head and tail sharing.",
-  invalidTitle: "Similar literals do not imply the same cost",
-  invalidBody: "There is no one-element tuple or implicit Array/List conversion. Repeated Array head-rest matching can be quadratic, while List tail sharing supports linear recursive traversal.",
-  diagnosticsBody: "The checker reports unresolved empty element types, mixed element types, tuple arity mismatches, wrong index types, and Array/List confusion.",
+  summary: "Tuples group a fixed set of positions, arrays hold same-typed elements with indexed access, and lists support adding and removing elements at the front.",
+  purpose: [
+    "Use a tuple for a fixed set of values with different roles, such as a label and a number. (\"answer\", 42) has two positions; their types can differ.",
+    "Use an Array for a sequence accessed by integer positions. Use a List for operations that repeatedly add or remove a first element. They are separate immutable types, not two spellings of one collection."
+  ],
+  exampleTitle: "Choose a shape and read its values",
+  reading: [
+    "pair contains a String in its first position and an Int in its second. let (label, number) = pair takes those two parts out and gives each a name. The first two lines of output are answer and 42.",
+    "[10, 20, 30] makes an Array<Int>. Positions start at zero, so numbers[1] refers to 20. Indexed access returns Maybe<Int>, not an unconditionally present integer.",
+    "Just 20 means the element exists and has value 20. Nothing means no element exists at that index. numbers[9] produces Nothing rather than reading arbitrary data or throwing a bounds exception. show converts these result values to text before println prints them.",
+    "A backtick before the brackets makes a List: `[\"Aki\", \"Mio\"]. The colon in \"Ren\" : names makes a new list with Ren at the front. names itself is unchanged. The backtick in the final output identifies the list."
+  ],
+  rules: [
+    "A tuple has a fixed length and a type for each position. There is no one-element tuple. Array and List elements must all have one common type; an Array<Int> cannot contain a String.",
+    "An empty collection supplies no element from which to infer its type. Declare it explicitly, for example let empty: Array<Int> = [] or let empty: List<String> = `[ ]. Spaces inside the brackets do not change the list syntax.",
+    "Array indices are Int values. Negative and out-of-range indices produce Nothing. Write the index brackets immediately after the receiver: numbers[1]. f [1] instead passes an array to f. List has no index syntax.",
+    "Array-to-List and List-to-Array conversion is explicit, using std/array.toList and std/list.toArray. A list can share its unchanged tail when prepending; repeatedly copying the rest of an array during recursive traversal can instead make a large traversal expensive."
+  ],
+  mistakes: [
+    "Without the backtick, [\"Aki\", \"Mio\"] is an Array, not a List. An expected List type does not silently convert that literal.",
+    "numbers[1] has type Maybe<Int>. Handle Just and Nothing before treating the result as an Int. If you destructure a collection with a fixed number of positions, it may not match; tuple destructuring is different because the tuple's length is fixed in its type."
+  ],
+  related: [
+    "Generate collections from ranges or another collection.",
+    "Check when destructuring is guaranteed to match and when match is required.",
+    "Look up the basic element types and Maybe constructors used in results."
+  ]
 }

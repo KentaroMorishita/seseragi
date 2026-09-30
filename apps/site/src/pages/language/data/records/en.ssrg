@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Records",
-  summary: "A record is an immutable structural product with explicit field presence and ordered spread updates.",
-  ruleTitle: "Fields, not a declaration name, determine identity",
-  ruleBody: "Record literals use named fields, shorthand, and zero or more spreads. Spreads apply left to right and later explicit fields override earlier values; direct field names may appear only once.",
-  typingBody: "Required and optional fields participate in structural typing and width subtyping. Optional access returns Maybe, and a present explicit field becomes required in the resulting record type.",
-  evaluationBody: "Every record item is evaluated once in source order. A spread copies structural fields and presence; omitted optional fields do not evaluate an expression or create a runtime field.",
-  invalidTitle: "Brace forms are intentionally distinct",
-  invalidBody: "{} is the empty record, while { expression } is a block. A one-field shorthand record requires a trailing comma. Unknown access, direct duplicates, and spreading a non-record are rejected.",
-  diagnosticsBody: "Diagnostics name missing, extra, duplicate, and unknown fields and show nested structural differences. Optional presence is never silently converted into a required value.",
+  summary: "A record groups named values without declaring a named type. Read a field with a dot and use a spread to make an updated copy.",
+  purpose: [
+    "Use a record when several values belong together: for example a person's name and score. { name: \"Aki\", score: 10 } creates one value with two fields; a field is a named part of that value.",
+    "A record's type describes its field names and their types. It does not depend on a declaration name. This is structural typing: a function requiring a name field can accept a record that also contains other required fields."
+  ],
+  exampleTitle: "Read a field and make an updated record",
+  reading: [
+    "original stores a record with name equal to \"Aki\" and score equal to 10. original.score reads the integer in its score field.",
+    "...original copies the fields into the new record literal. The following score: 42 replaces score in that new value. It does not change original; the first two outputs demonstrate this.",
+    "nameOf declares a parameter of type { name: String }. This means the function needs a record with a required string field named name. It reads person.name and returns that string.",
+    "updated also has a score field, but nameOf does not need it. Passing updated is valid and prints Aki. This does not convert updated into a named struct or give the function access to an undeclared field."
+  ],
+  rules: [
+    "Record fields and spread operands are evaluated once, in their written order. Multiple spreads are allowed. If spreads contain the same field, a later spread wins; a following explicit field wins over earlier spreads.",
+    "An update can change a field's type. The result then has a new record type; the old record keeps its old type and value. A spread operand itself must be a record.",
+    "A shorthand such as { name, } means { name: name }. The comma is required for a single shorthand field, to distinguish the record from a block. {} is an empty record, not the Unit value ().",
+    "Required and optional fields are different. A required field must exist; an optional field may be absent. Reading an optional field returns Maybe, a value that distinguishes a present result from an absent result. Its detailed rules belong to the optional-fields page."
+  ],
+  mistakes: [
+    "You cannot assign updated.score = 99. Records are immutable: construct another record if the score should change.",
+    "Do not write the same field directly twice, as in { score: 10, score: 42 }. That is a duplicate-field error, unlike replacing a field copied from a spread. Do not use a record spread to copy a struct; a struct has its own update syntax."
+  ],
+  related: [
+    "Check absent fields and the Just/Nothing results of optional access.",
+    "Compare named data types and their update syntax with records.",
+    "Check destructuring a record into local names."
+  ]
 }

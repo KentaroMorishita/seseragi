@@ -1,22 +1,16 @@
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  referencePage "language.traits.declarations" "/docs/language/traits/declarations/" (en.copy ()) (ja.copy ()) [CodeExample
+  readerPage "language.traits.declarations" "/docs/language/traits/declarations/" (en.copy ()) (ja.copy ()) "reader-trait" "ticket-42" [CodeExample
       (
-        "traits-declarations",
-        localized "Value and constructor parameters" "値型と型構築子のparameter"
-      )] [CodeExample (
         "traits-invalid-declaration",
-        localized "Rejected unresolved method type" "未解決method型を拒否"
+        localized "An undeclared method type is rejected" "宣言していない型を使うとエラー"
       )] [
-        [InternalLink
-      (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
-        [InternalLink
-      (localized "Instances" "インスタンス", "/docs/language/traits/instances/")],
-        [InternalLink
-      (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/")]
+        (localized "Traits" "traitとは", "/docs/language/traits/model/"),
+        (localized "Instances" "インスタンス", "/docs/language/traits/instances/"),
+        (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")
       ]

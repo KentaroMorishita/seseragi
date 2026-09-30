@@ -1,18 +1,16 @@
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  referencePage "language.data.structs" "/docs/language/data/structs/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("data-structs", localized "Construction and immutable update" "構築とimmutable update")] [CodeExample
-      ("data-invalid-struct", localized "Rejected missing field" "field欠落を拒否")] [
-        [InternalLink (localized "Records" "レコード", "/docs/language/data/records/")],
-        [InternalLink
-      (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
-        [InternalLink (
+  readerPage "language.data.structs" "/docs/language/data/structs/" (en.copy ()) (ja.copy ()) "reader-structs" "Aki\nMio\n1" [CodeExample
+      ("data-invalid-struct", localized "A missing field is rejected" "必須フィールドの指定漏れはエラー")] [
+        (localized "Records" "レコード", "/docs/language/data/records/"),
+        (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/"),
+        (
           localized "Inherent impls and methods" "固有implとメソッド",
           "/docs/language/data/impls-and-methods/"
-        )]
+        )
       ]

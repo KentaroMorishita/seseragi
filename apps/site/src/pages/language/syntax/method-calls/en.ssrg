@@ -1,13 +1,32 @@
-import { SyntaxCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> SyntaxCopy = SyntaxCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Method calls",
-  summary: "Dot syntax is static receiver-first application, resolved from the receiver type rather than runtime dispatch.",
-  formsTitle: "Receiver-first dot syntax",
-  formsBody: "value.method arg desugars to Type.method value arg. Dot access binds more tightly than ordinary application, so account.deposit 1000 first selects deposit from account's static type and then applies 1000. There is no value method arg whitespace-only method form.",
-  typingBody: "The receiver's static nominal type selects one inherent impl; trait methods instead require visible trait evidence. Generic receiver parameters are substituted before remaining method parameters are inferred, and partial application may retain those later parameters.",
-  evaluationBody: "Method syntax does not add dynamic dispatch. Receiver and arguments follow ordinary strict, left-to-right application semantics, and the selected declaration is fixed by static name resolution.",
-  invalidTitle: "A dot does not search runtime values",
-  invalidBody: "Missing members, inaccessible methods, duplicate inherent definitions, a self parameter whose type differs from the impl target, and unresolved inherent-versus-trait ambiguity are rejected. A field and method with the same surface spelling remain distinct resolution cases.",
-  diagnosticsBody: "Name resolution reports the missing or ambiguous member at the dot access and includes the receiver type. Impl validation owns invalid self declarations and duplicate method definitions; ordinary application diagnostics own later arguments.",
+  summary: "Use a dot to call an operation belonging to a type. The value before the dot becomes the operation's first argument.",
+  purpose: [
+    "A method is a function defined for a particular type. original.add 5 calls Counter's add operation with original as its first argument and 5 as its second.",
+    "The example defines Counter, a type containing an integer named value. An impl block groups functions belonging to Counter. You do not need inheritance, objects with mutable fields, or a generic type to use this syntax."
+  ],
+  exampleTitle: "Add to a counter without changing the original",
+  reading: [
+    "struct Counter { value: Int } declares the type and its one field. Counter { value: 10 } creates a value of that type; let original gives that value a name.",
+    "fn add declares the operation. self is the first parameter and receives the value before the dot. amount is the second parameter. The final Counter in the signature is the result type.",
+    "The body creates a new Counter whose value is self.value + amount. original.add 5 therefore creates a counter holding 15. It does not assign to original.value; the first printed value remains 10.",
+    "The two outputs show both the unchanged original and the new counter. The value before the dot is called the receiver. Here the receiver is original, and the first parameter self receives it."
+  ],
+  rules: [
+    "Method lookup uses the type known during compilation, not the contents of the value at runtime. For original.add, the compiler finds add in Counter's impl. This is called static method resolution.",
+    "An inherent method must declare its first parameter as self with the enclosing type. Further parameters follow the usual space-separated, curried function syntax. A method returning a function can still be partially applied.",
+    "The receiver (the expression before the dot) is evaluated once. Field access and method access bind more tightly than ordinary function application: original.add 5 calls the selected method with 5.",
+    "Trait functions are a different mechanism. They describe operations available for several types and use instance declarations to select implementations; merely naming a function in a trait does not turn it into an inherent dot method."
+  ],
+  mistakes: [
+    "original add 5 is not a method call. The dot is required; add (original, 5) instead supplies a tuple, not two separate arguments.",
+    "A method cannot omit self or give self an unrelated type. The following declarations are rejected. Read the compiler's indicated declaration rather than looking for an implementation to be chosen at runtime."
+  ],
+  related: [
+    "Check how parameters, arguments and partial application work.",
+    "Look up where impl blocks may be declared and how their methods are exposed.",
+    "Check how a dot call combines with arithmetic and other operators."
+  ]
 }

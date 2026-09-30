@@ -8,7 +8,7 @@ pub fn page -> PageDefinition =
   referencePage "language.traits.laws" "/docs/language/traits/laws/" (en.copy ()) (ja.copy ()) [CodeExample
       ("traits-laws", localized "A law-shaped reusable check" "lawの形をした再利用可能な検査")] [] [
         [InternalLink
-      (localized "Traits and evidence" "traitと実装の証拠", "/docs/language/traits/model/")],
+      (localized "Traits" "traitとは", "/docs/language/traits/model/")],
         [InternalLink (
           localized "Standard operators and traits" "標準演算子とtrait",
           "/docs/language/traits/standard-operators/"

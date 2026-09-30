@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "traitと実装の証拠",
-  summary: "traitは型のcapabilityを表し、compilerはprogram実行前に静的な型から対応する実装を一つ選びます。",
-  ruleTitle: "traitはcompile時のevidence",
-  ruleBody: "traitは一つ以上の型と名前付き操作の関係を宣言します。instanceは具体的な型適用へ操作を与えます。型検査は一意なinstanceを選び、その操作をdictionaryとしてconstraint付きcodeへ渡します。",
-  typingBody: "trait適用は型推論とconstraintに参加します。subtype関係、object member、暗黙cast、runtime interface値は作りません。evidenceは型だけで決まり、runtimeでconstructorや値を観察して選びません。",
-  evaluationBody: "backendはdictionary渡し、specialization、選択後の消去を使えます。どの方式でも選ばれる操作と観測可能な評価順序は同じでなければなりません。",
-  invalidTitle: "traitを継承として読まない",
-  invalidBody: "Trait<A>を宣言してもAが子型になったり、各値へmethodが付いたりしません。member構文はinherent impl、trait操作は通常のconstraint付き関数です。",
-  diagnosticsBody: "evidence欠落は選べなかった具体的なtrait適用を報告します。曖昧さはruntime値を調べず、競合するmethod所有者や未確定の型情報を示します。",
+pub fn copy -> ReaderCopy = ReaderCopy {
+  title: "traitとは",
+  summary: "traitは、複数の型で使える操作に共通の名前を付ける仕組みです。instanceで型ごとの処理を定義し、呼び出せることをコンパイル時に確認します。",
+  purpose: [
+    "いろいろな種類のデータを、表示用のラベルにしたいとします。型ごとに無関係な関数名を付けると、共通の処理を書く側も、その名前をすべて知る必要があります。traitを使うと、labelという一つの操作名のまま、型ごとに違う処理を定義できます。",
+    "区別するものは三つです。traitは操作の引数と戻り値を宣言します。instanceは、ある型でその操作をどう実行するか定義します。呼び出しでは、その操作に値を渡します。次の例には、この三つをすべて含めています。"
+  ],
+  exampleTitle: "チケットを表示用のラベルにする",
+  reading: [
+    "struct Ticket { number: Int }は、整数を一つ持つチケット型です。mainのTicket { number: 42 }で、番号42のチケットを作っています。",
+    "trait Label<A>のAは型のパラメーターで、あとで具体的な型に置き換える仮の名前です。fn label value: A -> Stringは「A型の値を受け取って文字列を返すlabelが必要」という宣言です。ここには処理の本体を書きません。",
+    "instance Label<Ticket>で、Ticketに対する処理の本体を定義します。AをTicketに置き換え、value.numberをshowで文字列にして、先頭に\"ticket-\"を付けています。",
+    "label ticketを検査するとき、コンパイラーはticketがTicket型だと分かっています。そのためLabel<Ticket>の実装を選び、その実装があることを確認します。実行すると、そのlabelが呼ばれ、ticket-42が出力されます。"
+  ],
+  rules: [
+    "呼び出せる実装があることは、実行前に確認されます。「実装の証拠」とは、この確認を指す言葉です。呼び出すために、別途「証拠のオブジェクト」を自分で作る必要はありません。",
+    "実装は型で選びます。Ticket { number: 1 }でもTicket { number: 42 }でも、使うのは同じLabel<Ticket>です。実行時に番号を見て実装を選ぶ仕組みではありません。",
+    "traitを宣言しても、TicketがLabelを継承したり、その下位の型になったりはしません。フィールドやドットで呼ぶメソッドも増えません。label ticketは通常の関数呼び出しに、型に合う実装が必要という条件が付いたものです。",
+    "具体的な型を決めずに関数を書く場合は、where Label<A>で「AにはLabelの実装が必要」と指定できます。呼び出す側は、その実装が見つかる型を渡します。"
+  ],
+  mistakes: [
+    "Label<A>を宣言しただけでは、処理の実装はできていません。instanceがない型でlabelを呼ぶと、実行前の型検査でエラーになります。",
+    "Label<Ticket>があるだけではticket.labelとは書けません。ドットで呼ぶメソッドはimplで定義します。traitの関数は通常の関数適用や、Label.labelのような名前で呼びます。"
+  ],
+  related: [
+    "traitの宣言の書き方と、その本体に書ける内容を確認できます。",
+    "宣言された操作を、自分の型に対して実装する方法を確認できます。",
+    "型を決めずに書く関数が、必要な操作を条件として指定する方法を確認できます。"
+  ]
 }

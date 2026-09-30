@@ -28,9 +28,15 @@ export function assertReferenceLinkTitles(
   const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/u)
   assert.ok(article, `${route}: missing article`)
   let checked = 0
-  for (const link of article[1].matchAll(
-    /<li\b[^>]*>\s*<a\b([^>]*)>([\s\S]*?)<\/a>\s*<\/li>/gu
-  )) {
+  const links = [
+    ...article[1].matchAll(
+      /<li\b[^>]*>\s*<a\b([^>]*)>([\s\S]*?)<\/a>\s*<\/li>/gu
+    ),
+    ...article[1].matchAll(
+      /<p\b[^>]*>\s*<a\b([^>]*)>([\s\S]*?)<\/a>\s*<span>\s*(?:：|—)/gu
+    ),
+  ]
+  for (const link of links) {
     const destination = link[1].match(/\bhref="([^"]+)"/u)?.[1]
     if (!destination) continue
     const title = titles.get(destination)

@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "インスタンス",
-  summary: "instanceは一つのtrait適用が要求する操作を正確に実装し、値ではなくcompile時のevidenceになります。",
-  ruleTitle: "instanceは置換後のcontractを満たす",
-  ruleBody: "instance Trait<Type>は要求された全methodを実装します。trait parameterをinstance headで置換した型と、method宣言の型が完全に一致しなければなりません。generic instanceにはparameterとwhere constraintを書けます。",
-  typingBody: "evidenceが隠れた未確定型に依存しないよう、すべてのinstance型parameterはheadに現れる必要があります。Either<E, _>のようなheadはkindを保ちます。instanceとnominal memberを所有するimplは別物です。",
-  evaluationBody: "instance宣言は構築可能なruntime値を作りません。呼び出しは静的選択後にだけ操作を使い、user codeはinstance objectを生成・比較・保存・明示渡しできません。",
-  invalidTitle: "似たsignatureでは足りない",
-  invalidBody: "method欠落、互換性のない余分なmethod、置換後signatureと異なる結果型はinstanceを拒否します。impl Trait<Type>と書いてもevidenceにはなりません。",
-  diagnosticsBody: "contract診断はtrait method名と期待型・実際型を示します。headとconstraintの診断は、要求evidenceから決められないparameterを指します。",
+  summary: "特定の型に対するtraitの処理を定義します。traitの型パラメーターを具体的な型へ置き換え、その宣言に合う関数の本体を書きます。",
+  purpose: [
+    "traitで必要な操作を宣言したら、instanceで自分の型に対する処理を用意します。Label<Ticket>なら、TicketをLabelの操作でラベルにできる、という実装です。",
+    "instanceの宣言は、新しいTicketの値を作る操作ではありません。呼び出しごとに別のオブジェクトを作るものでもありません。コンパイラーが選べる、型ごとの実装を定義しています。"
+  ],
+  exampleTitle: "Ticketに対するLabelを実装する",
+  reading: [
+    "Label<A>は、Aを受け取ってStringを返すlabelを要求します。instance Label<Ticket>ではAをTicketに置き換えるため、必要な関数はTicketを受け取ってStringを返すものになります。",
+    "その条件に合わせて、fn label value: Ticket -> Stringを書きます。本体ではvalue.numberを読み、showで整数を文字列にし、+で\"ticket-\"につなげています。",
+    "mainは番号42のTicketを作ります。label ticketを呼ぶにはLabel<Ticket>が必要で、上に定義したinstanceがその条件を満たします。結果は文字列ticket-42です。",
+    "チケットの番号を変えると文字列は変わりますが、選ばれるinstanceは変わりません。選択に使うのは個々の値の中身ではなく、Ticketという型です。"
+  ],
+  rules: [
+    "instanceは、traitが要求するすべての操作を実装します。引数の順番と戻り値の型は、型パラメーターを置き換えた宣言に合わせます。ジェネリックなinstanceを宣言する場合、その型パラメーターはinstanceが実装する型の指定に含まれている必要があります。",
+    "ユーザーが定義するinstanceは、traitを定義したモジュールか、対象のいちばん外側の名前付き型を定義したモジュールに属します。この規則で、実装を追加できる場所を制限します。別のモジュールで両方の名前をimportしただけでは、そこで実装を追加する権限は得られません。",
+    "使える実装は一つに決まらなければなりません。重複したり、同じ型に当てはまる範囲が重なったりするinstanceはエラーです。実行時の登録順で選ぶことはありません。型の別名を付けても、別の型としてこの制限を回避することはできません。",
+    "instanceがほかのtraitを条件として要求する場合、選択時にはその条件も満たす必要があります。実装はコンパイル時の型で選び、実行中の値を分岐して選びません。組み込みの構造的な型については、コンパイラーが用意する実装の代わりに、任意のユーザーinstanceを追加できるわけではありません。"
+  ],
+  mistakes: [
+    "impl TicketはTicketに属する関数を定義しますが、Label<Ticket>を実装する宣言ではありません。traitの実装にはinstanceを使ってください。",
+    "traitの戻り値がStringなら、Intを返す実装は使えません。次の例は、関数の型がtraitの宣言に合わないためエラーになります。呼び出す側の書き方ではなく、実装の宣言を直す必要があります。"
+  ],
+  related: [
+    "必要な操作の宣言と、実装が合わせるべき型を確認できます。",
+    "instanceを宣言できる場所と、実装の重複が禁止される理由を確認できます。",
+    "ドットで呼ぶ型の関数と、traitの実装の違いを確認できます。"
+  ]
 }

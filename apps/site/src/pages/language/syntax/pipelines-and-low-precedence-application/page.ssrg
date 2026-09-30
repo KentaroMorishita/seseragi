@@ -1,66 +1,21 @@
 import { localized } from "../../../../model/locale"
-import {
-  BulletList,
-  CodeExample,
-  InlineCode,
-  InternalLink,
-  PageDefinition,
-  Words
-} from "../../../../model/page"
-import { syntaxPage } from "../article"
+import { PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  syntaxPage "language.syntax.pipelines" "/docs/language/syntax/pipelines-and-low-precedence-application/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "syntax-pipelines",
-      localized "A left-associated pipeline and a multiline $ application"
-        "左結合pipelineと複数行$適用"
-    ),
-    BulletList [
-      [
-        InlineCode "value |> normalize |> validate",
-        Words (
-          localized " expands to validate (normalize value)."
-        " はvalidate (normalize value)へ展開します。"
-        )
-      ],
-      [
-        InlineCode "show $ normalize $ load input",
-        Words (
-          localized " parses as show (normalize (load input))."
-        " はshow (normalize (load input))としてparseされます。"
-        )
-      ],
-      [
-        InlineCode "render $ values |> map toView",
-        Words (
-          localized " expands to render (map toView values)."
-        " はrender (map toView values)へ展開します。"
-        )
-      ]
-    ]
-  ] [BulletList [
-    [
-      InlineCode "left | right",
-      Words (localized " is not a pipeline." " はpipelineではありません。")
-    ],
-    [
-      InlineCode "($)",
-      Words (localized " is not an operator value." " はoperator値ではありません。")
-    ]
-  ]] [
-    [InternalLink (
+  readerPage "language.syntax.pipelines" "/docs/language/syntax/pipelines-and-low-precedence-application/" (en.copy ()) (ja.copy ()) "reader-pipelines" "7\n7\n7" [] [
+    (
       localized "Function application" "関数適用",
       "/docs/language/syntax/function-application/"
-    )],
-    [InternalLink (
+    ),
+    (
       localized "Layout and line continuation" "レイアウトと行継続",
       "/docs/language/syntax/layout-and-line-continuation/"
-    )],
-    [InternalLink (
+    ),
+    (
       localized "Operator precedence" "演算子の優先順位",
       "/docs/language/syntax/operator-precedence/"
-    )]
+    )
   ]

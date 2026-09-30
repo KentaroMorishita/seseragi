@@ -10,6 +10,7 @@ import { buildSite } from "../scripts/build"
 import { plannedReferenceRoutes } from "../scripts/coverage"
 import { verifyLanguageMenu } from "./language-menu"
 import { verifyMobileNavigation } from "./mobile-navigation"
+import { verifyReaderArticles } from "./reader-articles"
 import { verifyReferenceNavigation } from "./reference-navigation"
 
 async function codeSurface(locator: Locator) {
@@ -123,6 +124,11 @@ try {
         `http://127.0.0.1:${server.port}`,
         screenshots
       )
+      await verifyReaderArticles(
+        browser,
+        `http://127.0.0.1:${server.port}`,
+        screenshots
+      )
       for (const width of [1280, 390]) {
         const context = await browser.newContext({
           viewport: { width, height: 900 },
@@ -201,7 +207,7 @@ try {
           ),
           "Language Reference / Functions and operators / Function application"
         )
-        assert.equal(await page.locator(".reference-sequence a").count(), 2)
+        assert.equal(await page.locator(".reference-sequence a").count(), 1)
         assert.equal(
           await page.locator(".reference-next strong").textContent(),
           "Method calls"
@@ -438,10 +444,7 @@ try {
           ),
           "Language Reference / Traits and abstraction / Do notation"
         )
-        assert.equal(
-          await page.locator(".reference-previous strong").textContent(),
-          "Inherent methods versus trait operations"
-        )
+        assert.equal(await page.locator(".reference-previous").count(), 0)
         assert.equal(
           await page.locator(".reference-next strong").textContent(),
           "How do blocks desugar"
@@ -518,10 +521,7 @@ try {
           await page.locator(".reference-previous strong").textContent(),
           "Either and typed results"
         )
-        assert.equal(
-          await page.locator(".reference-next strong").textContent(),
-          "Effect functions with an explicit contract"
-        )
+        assert.equal(await page.locator(".reference-next").count(), 0)
         const effectText = await page.locator("body").innerText()
         assert.ok(
           effectText.includes("Construction and execution are separate")
@@ -593,10 +593,7 @@ try {
           ),
           "Language Reference / Signals / Signals and transactions"
         )
-        assert.equal(
-          await page.locator(".reference-previous strong").textContent(),
-          "Fiber supervision"
-        )
+        assert.equal(await page.locator(".reference-previous").count(), 0)
         assert.equal(
           await page.locator(".reference-next strong").textContent(),
           "Derived Signals"
@@ -1162,12 +1159,15 @@ try {
               assert.ok(
                 (await page.locator(".breadcrumbs").innerText()).length > 0
               )
-              assert.equal(
-                await page
-                  .locator(".reference-next, .reference-previous")
-                  .count(),
-                route.endsWith("/modules/entry-points/") ? 1 : 2
-              )
+              const adjacent = await page
+                .locator(".reference-next, .reference-previous")
+                .count()
+              assert.ok(adjacent <= 2, localizedRoute)
+              if (adjacent > 0)
+                assert.equal(
+                  await page.locator(".reference-topic-link").count(),
+                  1
+                )
               assert.equal(
                 await page.locator('link[hreflang="ja"]').getAttribute("href"),
                 `https://seseragi.example/ja${route}`

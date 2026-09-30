@@ -200,7 +200,7 @@
 
   .reference-sequence {
     grid-template-columns: 1fr;
-    margin-top: 56px;
+    margin-top: 16px;
   }
 
   .reference-sequence-spacer {

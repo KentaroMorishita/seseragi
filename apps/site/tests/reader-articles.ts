@@ -1,0 +1,162 @@
+import assert from "node:assert/strict"
+import { readFileSync } from "node:fs"
+import { join, resolve } from "node:path"
+import type { Browser } from "../../playground/node_modules/@playwright/test"
+
+const articles = [
+  {
+    route: "/docs/language/syntax/method-calls/",
+    source: "reader-method-calls",
+    output: "10\n15",
+  },
+  {
+    route: "/docs/language/syntax/pipelines-and-low-precedence-application/",
+    source: "reader-pipelines",
+    output: "7\n7\n7",
+  },
+  {
+    route: "/docs/language/data/records/",
+    source: "reader-records",
+    output: "10\n42\nAki",
+  },
+  {
+    route: "/docs/language/data/structs/",
+    source: "reader-structs",
+    output: "Aki\nMio\n1",
+  },
+  {
+    route: "/docs/language/data/tuples-arrays-and-lists/",
+    source: "reader-collections",
+    output: "answer\n42\nJust 20\nNothing\n`[Ren, Aki, Mio]",
+  },
+  {
+    route: "/docs/language/traits/model/",
+    source: "reader-trait",
+    output: "ticket-42",
+  },
+  {
+    route: "/docs/language/traits/declarations/",
+    source: "reader-trait",
+    output: "ticket-42",
+  },
+  {
+    route: "/docs/language/traits/instances/",
+    source: "reader-trait",
+    output: "ticket-42",
+  },
+] as const
+
+export async function verifyReaderArticles(
+  browser: Browser,
+  origin: string,
+  screenshots?: string
+) {
+  for (const width of [320, 390, 1280]) {
+    const context = await browser.newContext({
+      viewport: { width, height: 900 },
+      javaScriptEnabled: false,
+    })
+    try {
+      const page = await context.newPage()
+      const errors: string[] = []
+      page.on("pageerror", (error) => errors.push(error.message))
+      page.on("console", (message) => {
+        if (message.type() === "error") errors.push(message.text())
+      })
+      page.on("response", (response) => {
+        if (response.status() >= 400) errors.push(response.url())
+      })
+      for (const locale of ["en", "ja"]) {
+        const prefix = locale === "ja" ? "/ja" : ""
+        for (const item of articles) {
+          const route = prefix + item.route
+          await page.goto(origin + route)
+          const article = page.locator(".article-content")
+          for (const id of [
+            "purpose",
+            "reading-the-example",
+            "rules",
+            "mistakes",
+            "related-rules",
+          ])
+            assert.equal(await article.locator(`h2#${id}`).count(), 1, route)
+          // This is paragraph-pairing regression protection, not a quality score.
+          assert.equal(await article.locator(":scope > p").count(), 16, route)
+          const code = article.locator(".code-panel pre > code")
+          assert.equal(
+            await code.nth(0).textContent(),
+            readFileSync(
+              resolve(
+                import.meta.dir,
+                `../examples/src/language/${item.source}.ssrg`
+              ),
+              "utf8"
+            ),
+            route
+          )
+          assert.equal(await code.nth(1).textContent(), item.output, route)
+          const fontSize = await code
+            .nth(0)
+            .evaluate((code) => parseFloat(getComputedStyle(code).fontSize))
+          assert.ok(fontSize >= 13 && fontSize <= 16, `${route}: code size`)
+          const related = article.locator("h2#related-rules ~ p")
+          assert.equal(await related.count(), 3, route)
+          for (const paragraph of await related.all()) {
+            assert.equal(await paragraph.locator("a").count(), 1)
+            const reason = await paragraph.evaluate((p) => {
+              const explanation = p.cloneNode(true) as HTMLElement
+              for (const link of explanation.querySelectorAll("a"))
+                link.remove()
+              return explanation.textContent?.trim()
+            })
+            assert.ok(
+              reason,
+              `${route}: related link must have its own explanatory text`
+            )
+          }
+          const topic = await page
+            .locator(".reference-topic-link")
+            .getAttribute("href")
+          assert.ok(topic?.startsWith(`${prefix}/docs/language/`), route)
+          assert.equal(
+            await page.evaluate(
+              () => document.documentElement.scrollWidth > innerWidth
+            ),
+            false,
+            `${route}: horizontal overflow`
+          )
+          if (
+            screenshots &&
+            locale === "ja" &&
+            ["records", "model"].some((name) =>
+              item.route.endsWith(`/${name}/`)
+            )
+          )
+            await page.screenshot({
+              path: join(screenshots, `reader-${item.source}-${width}.png`),
+              fullPage: true,
+            })
+        }
+        for (const boundary of [
+          "syntax/pipelines-and-low-precedence-application",
+          "syntax/custom-operators",
+          "model/non-features",
+        ]) {
+          const route = `${prefix}/docs/language/${boundary}/`
+          await page.goto(origin + route)
+          assert.equal(
+            await page.locator(".reference-next").count(),
+            0,
+            `${route}: next must not cross a topic boundary`
+          )
+          assert.ok(
+            await page.locator(".reference-topic-link").getAttribute("href")
+          )
+        }
+      }
+      assert.deepEqual(errors, [])
+    } finally {
+      await context.close()
+    }
+  }
+}

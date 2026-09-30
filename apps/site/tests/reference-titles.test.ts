@@ -47,3 +47,20 @@ test("encoded headings and titles compare as visible text", () => {
     )
   ).toBe(1)
 })
+
+test("purpose-labelled references retain the page title", () => {
+  expect(
+    assertReferenceLinkTitles(
+      `<article><p><a href="${destination}">式指向</a><span>：値を返す制御構造を確認できます。</span></p></article>`,
+      titles,
+      route
+    )
+  ).toBe(1)
+  expect(() =>
+    assertReferenceLinkTitles(
+      `<article><p><a href="${destination}">式中心</a><span>：値を返す制御構造を確認できます。</span></p></article>`,
+      titles,
+      route
+    )
+  ).toThrow("must match its heading")
+})

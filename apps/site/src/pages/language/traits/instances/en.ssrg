@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Instances",
-  summary: "An instance supplies the exact operations required by one trait application and becomes compile-time evidence, not a value.",
-  ruleTitle: "An instance must satisfy the substituted contract",
-  ruleBody: "instance Trait<Type> provides every required method. Replacing the trait parameters with the instance head must produce exactly the declared method types. Generic instances may declare parameters and where constraints.",
-  typingBody: "Every instance type parameter must occur in its head, so evidence cannot depend on an unconstrained hidden type. Constructor heads such as Either<E, _> retain their kind. An instance is distinct from impl, which owns nominal members.",
-  evaluationBody: "The instance declaration creates no constructible runtime value. Calls use its operations only after static selection; user code cannot create, compare, store, or explicitly pass instance objects.",
-  invalidTitle: "Close names are not close enough",
-  invalidBody: "A missing method, extra incompatible method, or result type that differs from the substituted signature rejects the instance. Writing impl Trait<Type> does not declare evidence.",
-  diagnosticsBody: "Contract diagnostics name the trait method and show expected and actual types. Head and constraint diagnostics identify parameters that cannot be determined from the requested evidence.",
+  summary: "An instance implements a trait for specified types. It supplies function bodies whose signatures match the trait after replacing its type parameters.",
+  purpose: [
+    "After a trait states the required operations, an instance makes those operations usable for your type. Label<Ticket> means that Ticket supports the labeling operation declared by Label.",
+    "An instance declaration is not a new Ticket value and not an object allocated per call. It registers a type-specific implementation that the compiler can select."
+  ],
+  exampleTitle: "Implement Label for Ticket",
+  reading: [
+    "Label<A> requires label to take A and return String. In instance Label<Ticket>, replace A with Ticket. The required function now takes Ticket and returns String.",
+    "The instance supplies fn label value: Ticket -> String. Its body reads value.number; show turns that integer into text, and + joins it to \"ticket-\".",
+    "main creates a Ticket value with number 42. Calling label ticket requires Label<Ticket>, which is the instance declared above. The result is the string ticket-42.",
+    "Changing the ticket's number changes the resulting text but not the selected instance. Selection is based on Ticket, not on the contents of an individual ticket."
+  ],
+  rules: [
+    "An instance must provide every required operation, with the declared parameter order and result type after substitution. A generic instance must account for its type parameters in the instance's type application.",
+    "A user-defined instance belongs to the module that defines the trait or the outermost named type involved. This ownership rule limits where implementations may be added; importing both names alone does not make another module an owner.",
+    "There must be one applicable implementation. Duplicate or overlapping instances are rejected rather than chosen by runtime order. A type alias does not create a new type identity for bypassing those rules.",
+    "Type constraints required by an instance must also be satisfied when it is selected. Instance lookup uses static types; it does not branch on a runtime constructor. For built-in structural types, general-purpose user instances are not a substitute for compiler-provided instances."
+  ],
+  mistakes: [
+    "Writing impl Ticket defines functions belonging to Ticket, not an implementation of Label<Ticket>. Use instance for a trait implementation.",
+    "If Label declares String as the result, an implementation returning Int is invalid. The example below is rejected because its method signature does not fulfill the trait declaration; changing the call site does not repair that mismatch."
+  ],
+  related: [
+    "Compare the implementation against the required operation's declaration.",
+    "Check where an instance may be declared and why overlapping implementations are rejected.",
+    "Distinguish type-owned dot methods from trait implementations."
+  ]
 }

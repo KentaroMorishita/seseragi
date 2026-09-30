@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "Traits and evidence",
-  summary: "A trait states a capability, and the compiler selects one matching implementation from static types before a program runs.",
-  ruleTitle: "Traits are compile-time evidence",
-  ruleBody: "A trait relates one or more types to named operations. An instance supplies those operations for a concrete type application. Type checking selects the unique instance and gives its operations to constrained code as a dictionary.",
-  typingBody: "Trait applications participate in type inference and constraints. They do not add subtype relationships, object members, implicit casts, or runtime interface values. Evidence is determined from types, never from a constructor or value observed at runtime.",
-  evaluationBody: "A backend may pass a dictionary, specialize code, or erase the abstraction after selection. Every strategy must preserve the same chosen operation and observable evaluation order.",
-  invalidTitle: "Do not read a trait as inheritance",
-  invalidBody: "Declaring Trait<A> does not make A a child type or attach methods to each value. Member syntax belongs to inherent impls; trait operations are ordinary constrained functions.",
-  diagnosticsBody: "Missing evidence reports the concrete trait application that could not be selected. Ambiguity reports competing method owners or unresolved type information rather than inspecting runtime values.",
+pub fn copy -> ReaderCopy = ReaderCopy {
+  title: "Traits",
+  summary: "A trait names an operation that several types can support. An instance supplies the operation for one type, and the compiler checks which implementation a call needs.",
+  purpose: [
+    "Suppose different kinds of data should be displayed as labels. Writing one unrelated function for each type would make shared code depend on all their names. A trait gives the shared operation one name, label, while allowing a type-specific implementation.",
+    "There are three separate pieces: the trait declares what an operation accepts and returns; an instance defines how it works for a type; a call uses that operation on a value. The small example contains all three."
+  ],
+  exampleTitle: "Give a ticket a label",
+  reading: [
+    "struct Ticket { number: Int } introduces a ticket type holding one integer. Ticket { number: 42 } creates the ticket used by main.",
+    "trait Label<A> declares an operation for a type represented by A. A is a type parameter: a placeholder that will be replaced by a particular type. fn label value: A -> String requires a function taking that type and returning text. It supplies no function body.",
+    "instance Label<Ticket> supplies that body for Ticket. Here A has been replaced by Ticket. The implementation reads value.number, converts the integer to text with show, and prefixes it with \"ticket-\".",
+    "When the compiler checks label ticket, it knows ticket has type Ticket. It selects Label<Ticket> and checks its implementation exists. The program then calls that label function and prints ticket-42."
+  ],
+  rules: [
+    "The implementation's availability is checked before execution. Implementation evidence means confirmation that an operation required for a type has a matching instance. You do not need to construct a separate evidence object to make the call.",
+    "The choice depends on types, not on the runtime value. Ticket { number: 1 } and Ticket { number: 42 } use the same Label<Ticket> instance. An instance is not chosen by inspecting the number.",
+    "A trait does not make Ticket inherit from Label or become a subtype. It does not add fields or inherent dot methods. label ticket is an ordinary function call with an additional requirement for a matching trait implementation.",
+    "Generic code can require Label<A> without choosing A in advance. It states that requirement with where Label<A>. A caller may supply a concrete type only when its matching implementation can be found."
+  ],
+  mistakes: [
+    "Declaring Label<A> alone does not supply a label implementation. Calling label with a type lacking an instance fails during type checking; it does not wait for runtime.",
+    "Do not write ticket.label merely because Label<Ticket> exists. Dot methods belong to impl blocks; trait functions use ordinary application or qualified names such as Label.label."
+  ],
+  related: [
+    "Check the exact declaration syntax and what is allowed in a trait body.",
+    "Check how to implement a declared operation for your type.",
+    "See how a generic function states that its argument type must support an operation."
+  ]
 }

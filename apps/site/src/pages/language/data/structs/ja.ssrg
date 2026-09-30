@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "構造体",
-  summary: "structは宣言済みfield、明示的な構築、型が所有するmethodを持つnominal productです。",
-  ruleTitle: "shapeはdeclarationが所有する",
-  ruleBody: "構築では全fieldを一度ずつ渡すか、同じ型のspreadを先頭に一つ置いて一部fieldを上書きします。field shorthandのnameはname: nameです。",
-  typingBody: "field accessとupdateには正確なnominal struct型が必要です。通常のpublic fieldはmodule外から読めます。opaque structはpublic operationの背後へ表現を隠します。",
-  evaluationBody: "spread式を最初に一度評価し、その後に明示field式をsource順で一度ずつ評価します。updateは新しいimmutable valueを作ります。",
-  invalidTitle: "structはstructural recordではない",
-  invalidBody: "field名が同じでも別structやrecordと互換にはなりません。欠落、重複、未知field、spread位置、異なる型からのspreadを拒否します。",
-  diagnosticsBody: "構築diagnosticは欠落・重複・未知・型不一致のfieldを示します。toolingはnominal declarationからfieldを解決しvisibilityを守ります。",
+  summary: "名前付きのフィールドを持つ型を宣言します。フィールドの形が同じでも、別々に宣言した構造体は別の型になります。",
+  purpose: [
+    "構造体は、データの形に型名を付けるための仕組みです。たとえばUserにidとnameを持たせられます。Productにも同じフィールドを宣言しても、UserとProductは別の型です。",
+    "この区別によって、意味の違う値を取り違えることを防げます。フィールドの形で型が決まるレコードに対し、構造体はどの宣言から作ったかで型が決まります。この考え方を名前的型付けと呼びます。"
+  ],
+  exampleTitle: "Userを作り、名前を変えたコピーを作る",
+  reading: [
+    "struct User { id: Int, name: String }でUser型を宣言します。Intは整数、Stringは文字列の型です。この宣言だけでは、まだユーザーの値は作られません。",
+    "User { id: 1, name: \"Aki\" }で、二つのフィールドを指定したUserの値を作ります。括弧の前のUserが、どの型の値を作るかを指定しています。",
+    "User { ...original, name: \"Mio\" }で別のUserを作ります。...originalで元のフィールドを取り込み、name: \"Mio\"で新しい値の名前を置き換えます。",
+    "出力では、originalの名前はAkiのまま、renamedの名前はMio、コピーしたidは1になっています。ドットでフィールドを読みますが、コピーを作る操作は元の値への代入ではありません。"
+  ],
+  rules: [
+    "宣言したすべてのフィールドに、それぞれの型に合う値が必要です。宣言にないフィールドは指定できません。別々に宣言した構造体は、フィールドの名前と型が一致していても別の型です。",
+    "構造体の更新に使うスプレッドは一つだけで、直接指定するフィールドより前に置きます。元の値は同じ構造体型でなければなりません。レコードと違い、更新でフィールドの型を変えることはできません。",
+    "同じ名前の変数がある場合、id: idをidと省略できます。どのフィールドに入るかは名前で決まり、値を計算する順序は書いた順序で決まります。",
+    "Box<A>のように型のパラメーターを持つ構造体も宣言できますが、この例では不要です。また、implで型に属する関数を追加できます。別のモジュールから使う場合は公開範囲の制限もあり、非公開の表現やopaqueで隠した表現を自由に作ったり読んだりはできません。"
+  ],
+  mistakes: [
+    "User { id: 1 }では、必須のnameが足りません。次の例はそのためエラーになります。",
+    "{ id: 1, name: \"Aki\" }はレコードであり、Userではありません。フィールドが一致しても自動でUserにはなりません。また、renamed.name = \"Ren\"のように不変の構造体へ代入することもできません。"
+  ],
+  related: [
+    "型の決まり方やスプレッドの違いを、レコードと比較できます。",
+    "Box<A>のように、型のパラメーターを使う宣言を確認できます。",
+    "構造体に操作を追加する方法と、self引数の規則を確認できます。"
+  ]
 }

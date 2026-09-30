@@ -1,13 +1,32 @@
-import { SyntaxCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> SyntaxCopy = SyntaxCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "メソッド呼び出し",
-  summary: "dot構文はreceiverを先頭に置く静的な適用で、実行時の動的dispatchではありません。",
-  formsTitle: "receiverを先頭に渡すdot構文",
-  formsBody: "value.メソッド argはType.メソッド value argへ展開します。dotは通常適用より強いため、account.deposit 1000は静的な型からdepositを選んで1000を適用します。value メソッド argという空白だけの構文はありません。",
-  typingBody: "receiverの名前付き型がinherent implを一意に選びます。trait メソッドには可視な証拠が必要です。generic receiverの引数を代入してから残りのメソッド引数を推論し、部分適用なら後のパラメーターが残る場合があります。",
-  evaluationBody: "dotで動的dispatchを追加しません。receiverと引数は通常の正格評価な左から右の評価に従い、宣言は静的な名前解決で固定します。",
-  invalidTitle: "dotで実行時値を検索しない",
-  invalidBody: "member不足、非公開メソッド、重複定義、impl対象と異なるself、未解決の曖昧さは拒否します。同じ表記でもフィールドとメソッドは別の名前解決です。",
-  diagnosticsBody: "名前解決はdot位置にreceiver型と不足・曖昧さを示します。impl検証はselfと重複、通常適用は後の引数を検査します。",
+  summary: "型に属する関数を、値の後ろにドットを付けて呼び出す書き方です。ドットの前の値が、関数の最初の引数になります。",
+  purpose: [
+    "メソッドは、特定の型に対して定義した関数です。original.add 5ではCounterに属するaddを呼び、最初の引数にoriginal、次の引数に5を渡します。",
+    "下の例では、valueという整数のフィールドを持つCounter型を作ります。implは、その型に属する関数をまとめる宣言です。継承や値の書き換え、ジェネリック型を知らなくても、この例は読めます。"
+  ],
+  exampleTitle: "元の値を変えずにカウンターへ加算する",
+  reading: [
+    "struct Counter { value: Int }で型とフィールドを宣言します。Counter { value: 10 }が値を作り、let originalでその値に名前を付けています。",
+    "fn addが加算する関数です。最初の引数selfにはドットの前の値が入り、次の引数amountには加算する整数が入ります。型の記述の最後にあるCounterは、返す値の型です。",
+    "関数の本体は、self.value + amountを持つ新しいCounterを作ります。original.add 5の結果は15ですが、original.valueに代入しているわけではありません。最初の出力が10なのはそのためです。",
+    "二つの出力で、元の値は変わらず、新しい値だけが増えていることを確認できます。ドットの前の値をレシーバーと呼びます。この例ではoriginalがレシーバーで、最初の引数selfがその値を受け取っています。"
+  ],
+  rules: [
+    "どのメソッドを呼ぶかは、コンパイル時に分かる型で決まります。original.addならCounterのimplからaddを探します。実行中に値の中身を見て選び直す仕組みではありません。これを静的なメソッド解決と呼びます。",
+    "型に属するメソッドは、最初の引数をselfとし、その型を指定します。残りの引数は通常の関数と同じく、空白で渡します。一部の引数だけを渡して、残りを受け取る関数を作ることもできます。",
+    "ドットの前の式は一度だけ評価されます。フィールドやメソッドの選択は通常の関数適用より先にまとまるため、original.add 5はaddを選んでから5を渡す呼び出しです。",
+    "traitの関数は別の仕組みです。複数の型で使う操作を宣言し、instanceで型ごとの実装を指定します。traitに関数名を書いただけで、その名前をドットで呼べるようになるわけではありません。"
+  ],
+  mistakes: [
+    "original add 5ではメソッド呼び出しになりません。ドットが必要です。また、add (original, 5)は二つの引数ではなく、一つのタプルを渡す書き方です。",
+    "selfを省略したり、所属する型とは無関係な型にしたりすると、次の宣言はエラーになります。実行時の振り分けを探すのではなく、診断が指す引数の宣言を確認してください。"
+  ],
+  related: [
+    "引数の渡し方や、一部の引数だけを渡す書き方を確認できます。",
+    "implを宣言できる場所や、メソッドの公開方法を確認できます。",
+    "ドットを使った呼び出しと演算子を組み合わせるときの読み方を確認できます。"
+  ]
 }
