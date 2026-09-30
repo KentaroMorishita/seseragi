@@ -79,6 +79,11 @@ export async function verifyLanguageMenu(
             await english.evaluate((link) => link === document.activeElement),
             true
           )
+          await page.keyboard.press(tabKey)
+          assert.equal(
+            await japanese.evaluate((link) => link === document.activeElement),
+            true
+          )
           await page.keyboard.press("Escape")
           assert.equal(await options.isVisible(), false)
           assert.equal(
@@ -91,13 +96,7 @@ export async function verifyLanguageMenu(
           await page.locator("main").click({ position: { x: 5, y: 5 } })
           assert.equal(await options.isVisible(), false)
           await trigger.click()
-          await trigger.focus()
-          await page.keyboard.press(tabKey)
-          await page.keyboard.press(tabKey)
-          assert.equal(
-            await japanese.evaluate((link) => link === document.activeElement),
-            true
-          )
+          await japanese.focus()
           // Safari may send the next Tab into browser chrome instead of a DOM
           // element. Verify focus departure against an actual outside target.
           await page.locator(".site-brand").focus()
