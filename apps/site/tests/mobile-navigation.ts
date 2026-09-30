@@ -32,6 +32,14 @@ export async function verifyMobileNavigation(
           name: locale === "ja" ? "目次を閉じる" : "Close navigation",
         })
         await page.waitForSelector('[data-enhanced="true"]')
+        assert.equal(
+          await page.locator(".navigation-close-label").isVisible(),
+          false
+        )
+        assert.equal(
+          await menu.locator(".navigation-trigger-label").innerText(),
+          locale === "ja" ? "リファレンス" : "Reference"
+        )
         const articleTop = await page
           .locator("main")
           .evaluate((main) => main.getBoundingClientRect().top)
