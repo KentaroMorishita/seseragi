@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "タプル・配列・リスト",
-  summary: "tupleはarityを固定し、Arrayはstrictなindex storage、Listはpersistentなhead-tail構造を提供します。",
-  ruleTitle: "三つのcollection shapeは契約が異なる",
-  ruleBody: "tupleは2個以上の固定positionを持ちます。[items]はArray、backtick-bracketはListです。Array・Listの要素は同じ型で、empty literalには期待要素型が必要です。",
-  typingBody: "ArrayとListは別のinvariant型で、変換は明示します。Array indexはIntを受けMaybeを返します。Listにindex構文はありません。rest patternは元のcollection kindを保ちます。",
-  evaluationBody: "literal要素は左から右へ一度ずつ評価します。Arrayはstrictな連続列、Listはconstant-timeのhead・tail共有を持つimmutable persistentなEmpty/Consです。",
-  invalidTitle: "似たliteralでもcostは同じではない",
-  invalidBody: "1要素tupleと暗黙のArray/List変換はありません。Arrayのhead-rest再帰は二乗時間になり得ますが、Listのtail共有なら線形走査できます。",
-  diagnosticsBody: "empty要素型の未解決、混在要素型、tuple arity不一致、誤ったindex型、Array/List混同を報告します。",
+  summary: "タプルは決まった位置に値をまとめます。配列は同じ型の要素を添字で読み、リストは先頭へ要素を追加したり先頭から処理したりするときに使います。",
+  purpose: [
+    "タプルは、ラベルと数値のように役割の違う値をまとめるのに使います。(\"answer\", 42)は二つの位置を持ち、それぞれの型は違っていても構いません。",
+    "整数の位置を指定して要素を読むならArray（配列）、先頭に要素を足したり先頭から順に取り出したりするならList（リスト）が使えます。どちらも不変ですが、同じコレクションの別名ではなく、別々の型です。"
+  ],
+  exampleTitle: "三つの形で値をまとめて読む",
+  reading: [
+    "pairの最初の位置にはString、次の位置にはIntが入っています。let (label, number) = pairで中身を取り出し、名前を付けます。そのため、最初の出力はanswer、次は42です。",
+    "[10, 20, 30]はArray<Int>を作ります。位置は0から数えるので、numbers[1]が指すのは20です。ただし、添字で読んだ結果は整数そのものではなく、Maybe<Int>です。",
+    "Just 20は「要素があり、その値は20」、Nothingは「その位置に要素がない」という結果です。numbers[9]は範囲外なのでNothingになります。範囲外のデータを読んだり、境界違反の例外を投げたりはしません。showでこれらの結果を文字列にしてから、printlnで出力しています。",
+    "括弧の前にバッククォートを置いた`[\"Aki\", \"Mio\"]はListです。\"Ren\" : namesのコロンは、先頭にRenを追加した新しいリストを作ります。namesは変わりません。最後の出力にも、リストを表すバッククォートが付きます。"
+  ],
+  rules: [
+    "タプルは長さと各位置の型が決まっています。一要素のタプルはありません。ArrayとListでは、すべての要素が同じ型である必要があります。Array<Int>に文字列は入れられません。",
+    "空のコレクションには、要素型を判断する材料がありません。let empty: Array<Int> = []や、let empty: List<String> = `[ ]のように型を指定します。括弧内に空白を置いても、リストの書き方は変わりません。",
+    "配列の添字はIntです。負の添字や範囲外の添字はNothingになります。numbers[1]のように値の直後に括弧を置いてください。f [1]は、配列をfへ渡す関数呼び出しです。Listには添字で読む構文はありません。",
+    "ArrayとListの変換には、std/arrayのtoList、std/listのtoArrayを明示的に使います。リストの先頭に要素を追加すると、元の残りの部分を共有できます。一方、配列の残りを毎回コピーして再帰すると、要素数が多い場合に処理量が大きくなります。"
+  ],
+  mistakes: [
+    "バッククォートのない[\"Aki\", \"Mio\"]はArrayです。渡す先がListを要求していても、自動で変換されることはありません。",
+    "numbers[1]はMaybe<Int>なので、JustとNothingを扱ってから整数として使います。また、配列やリストを決まった個数に分解するパターンは、長さが合わない場合があります。型で長さが決まるタプルの分解とは異なります。"
+  ],
+  related: [
+    "範囲やほかのコレクションから、新しい配列やリストを作る方法を確認できます。",
+    "必ず成功する分解と、matchで失敗も扱う必要のある分解を確認できます。",
+    "要素の基本型や、結果に使うMaybeの値を確認できます。"
+  ]
 }

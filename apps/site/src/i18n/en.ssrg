@@ -9,7 +9,8 @@ pub fn messages -> Messages = Messages {
   onThisPage: "On this page",
   openPlayground: "Open in Playground",
   language: "Change language",
-  previousPage: "Previous",
-  nextPage: "Next",
+  previousPage: "Previous in this topic",
+  nextPage: "Next in this topic",
+  currentTopic: "Current topic: ",
   closeNavigation: "Close navigation"
 }

@@ -46,15 +46,21 @@ try {
   // These are runnable snippets, not merely modules that happen to typecheck.
   // Keep each article's displayed output tied to actual CLI execution.
   for (const [slug, expected] of [
-    ["expression-oriented", "pass"],
-    ["immutable-by-default", "10 -> 11"],
-    ["no-hidden-danger", "not found"],
-    ["backend-independent-semantics", "-3, 3.5"],
-    ["diagnosable-behavior", "`[]"],
-    ["visible-costs", "[2, 4, 6]"],
-    ["readable-density", "7"],
+    ["principle-expression-oriented", "pass"],
+    ["principle-immutable-by-default", "10 -> 11"],
+    ["principle-no-hidden-danger", "not found"],
+    ["principle-backend-independent-semantics", "-3, 3.5"],
+    ["principle-diagnosable-behavior", "`[]"],
+    ["principle-visible-costs", "[2, 4, 6]"],
+    ["principle-readable-density", "7"],
+    ["reader-method-calls", "10\n15"],
+    ["reader-pipelines", "7\n7\n7"],
+    ["reader-records", "10\n42\nAki"],
+    ["reader-structs", "Aki\nMio\n1"],
+    ["reader-collections", "answer\n42\nJust 20\nNothing\n`[Ren, Aki, Mio]"],
+    ["reader-trait", "ticket-42"],
   ]) {
-    const source = join(examples, "src/language", `principle-${slug}.ssrg`)
+    const source = join(examples, "src/language", `${slug}.ssrg`)
     // run <file> inside a package uses that package's declared entry point.
     // Isolate this snippet as main so its effectful entry is actually executed.
     const snippet = join(temporary, slug)

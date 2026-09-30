@@ -1,13 +1,32 @@
-import { SyntaxCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> SyntaxCopy = SyntaxCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Pipelines and low-precedence application",
-  summary: "Use |> to move a value forward and $ to extend one application across a low-precedence expression.",
-  formsTitle: "Two fixed application forms",
-  formsBody: "x |> f means f x and associates left. f $ x also means f x but associates right and binds below every binary operator except Signal update :=. A lone | remains an ADT-variant or comprehension separator, never a pipeline.",
-  typingBody: "Both forms reuse ordinary one-argument function application. They do not manufacture multi-argument calls, overloads, or delayed values. For $, the left side is the function; for |>, the right side is the function. In each case it must accept the value supplied by the other side.",
-  evaluationBody: "$ evaluates its left side once, then its right side once, then performs one application. It neither runs a returned Effect nor delays the right side. A newline may follow $, and if, match, do, or a lambda may appear there without grouping.",
-  invalidTitle: "These tokens are syntax, not user-defined operators",
-  invalidBody: "$ cannot be redefined, overloaded, or referenced as ($). Pipeline syntax uses |>, not |. A non-function left side receives the same type error as ordinary application, and := remains lower-precedence than $.",
-  diagnosticsBody: "The parser fixes associativity and precedence before type checking. Type diagnostics point to the desugared application relationship without hiding the original |> or $ source range; formatter line breaking preserves that parse.",
+  summary: "Use |> to read successive function calls from left to right. Use $ to pass the expression on its right without an outer pair of parentheses.",
+  purpose: [
+    "A pipeline is another way to write a function call, not a new kind of computation. x |> f means f x. It is useful when the result of one operation becomes the input of the next.",
+    "The example has two ordinary functions: double multiplies an integer by two, and addOne adds one. Three different spellings call those functions in the same order."
+  ],
+  exampleTitle: "Three spellings of the same calculation",
+  reading: [
+    "3 |> double calls double 3, producing 6. The following |> addOne passes that result to addOne, producing 7. Follow a chain from its leftmost value.",
+    "addOne (double 3) is the same calculation written with parentheses. The inner call finishes first; its value becomes the argument of the outer call.",
+    "addOne $ double 3 is also equivalent to addOne (double 3). $ lets the expression on its right form the argument without that outer pair of parentheses.",
+    "The three printed values are all 7. Neither symbol delays work, starts a task, or changes the parameter and result types of the functions."
+  ],
+  rules: [
+    "Pipelines group to the left: x |> f |> g means g (f x). A function needing several arguments must already have its earlier arguments supplied before the pipeline supplies its next argument.",
+    "$ groups to the right: f $ g $ x means f (g x). Ordinary binary operators bind more tightly than $, except the Signal update operator :=. Thus f $ x + 1 passes x + 1 to f.",
+    "A mixed expression render $ values |> transform means render (transform values). Here transform takes one argument. This describes grouping; the usual function-call type checks still apply.",
+    "Both forms use ordinary strict evaluation: the function and the supplied argument are evaluated before the function body uses that argument. These spellings do not make a function lazy."
+  ],
+  mistakes: [
+    "A single | is not a pipeline. It has other roles in type declarations and collection comprehensions; write |> for a pipeline.",
+    "$ is fixed call syntax, not an overloadable operator or a function value. You cannot pass ($) as an argument. If a chain gives a type error, inspect the result type of one stage and the parameter type of the following stage."
+  ],
+  related: [
+    "Look up how supplying earlier arguments produces a function for a pipeline.",
+    "Check where a pipeline may continue onto another line.",
+    "Check the complete grouping rules when several operator kinds occur together."
+  ]
 }

@@ -1,47 +1,18 @@
 import { localized } from "../../../../model/locale"
-import {
-  BulletList,
-  CodeExample,
-  InlineCode,
-  InternalLink,
-  PageDefinition,
-  Words
-} from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import { PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  referencePage "language.data.tuples-arrays-and-lists" "/docs/language/data/tuples-arrays-and-lists/" (en.copy ()) (ja.copy ()) [
-    CodeExample
-      ("data-tuples-arrays-lists", localized "Three distinct shapes" "異なる三つのshape"),
-    BulletList [
-      [
-        InlineCode "(A, B)",
-        Words (localized " fixes positions and arity." " はpositionとarityを固定します。")
-      ],
-      [
-        InlineCode "Array<A>",
-        Words
-      (localized " provides strict indexed storage." " はstrictなindexed storageです。")
-      ],
-      [
-        InlineCode "List<A>",
-        Words (
-          localized " provides persistent head-tail structure."
-      " はpersistentなhead-tail構造です。"
-        )
-      ]
-    ]
-  ] [] [
-    [InternalLink (
+  readerPage "language.data.tuples-arrays-and-lists" "/docs/language/data/tuples-arrays-and-lists/" (en.copy ()) (ja.copy ()) "reader-collections" "answer\n42\nJust 20\nNothing\n`[Ren, Aki, Mio]" [] [
+    (
       localized "Ranges and comprehensions" "範囲と内包表記",
       "/docs/language/expressions/ranges-and-comprehensions/"
-    )],
-    [InternalLink (
+    ),
+    (
       localized "Irrefutable patterns" "反駁不能パターン",
       "/docs/language/patterns/irrefutable-patterns/"
-    )],
-    [InternalLink
-      (localized "Built-in types" "組み込み型", "/docs/language/types/built-in-types/")]
+    ),
+    (localized "Built-in types" "組み込み型", "/docs/language/types/built-in-types/")
   ]

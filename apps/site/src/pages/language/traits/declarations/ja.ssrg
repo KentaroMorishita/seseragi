@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "trait宣言",
-  summary: "traitは値型または高kindの型構築子に対する操作の型と、必要ならsupertrait requirementを宣言します。",
-  ruleTitle: "宣言にはsignatureを書き、実装は書かない",
-  ruleBody: "各trait methodは関数型を宣言し、bodyを持ちません。Aのような通常parameterは値型、F<_>のようなparameterは単項型構築子を表します。where clauseでsupertrait evidenceを要求できます。",
-  typingBody: "型構築子parameterの利用は宣言したkindとarityに一致する必要があります。Either<E, _>のような部分適用は必要な構築子形を満たしますが、完全適用済みの値型をF<_>の位置には置けません。",
-  evaluationBody: "宣言単体にruntime動作はありません。signatureは各instanceが満たすdictionary形と、constraint付きcallerが利用できる操作を定めます。",
-  invalidTitle: "trait methodにdefault bodyは書けない",
-  invalidBody: "method bodyはinstanceへ置きます。型の欠落、型構築子arityの不一致、kindが違うsupertraitは宣言境界で拒否されます。",
-  diagnosticsBody: "parserは不正なmethod signatureを示します。kind・arity診断はinstance探索前に、問題のtrait parameterまたは部分適用を指します。",
+  summary: "実装に必要な操作の名前、引数、戻り値を宣言します。traitの宣言は処理の約束を定めるもので、実行する本体は書きません。",
+  purpose: [
+    "trait宣言は「この操作を共通のコードで使うために、型は何を用意すればよいか」を定めます。Label<A>なら、A型の値をラベルにする操作はStringを返す、と約束します。",
+    "宣言と実装は分けて書きます。次の例には実行できるようにinstanceも含めていますが、このページで注目するのはtraitから始まる三行の宣言です。"
+  ],
+  exampleTitle: "ラベルにする操作を宣言し、一つの実装で使う",
+  reading: [
+    "Labelはtraitの名前です。<A>で、このtraitが使う型のパラメーターを宣言しています。Aは値でも組み込み型でもなく、ラベルにする対象の型を表す仮の名前です。",
+    "括弧の中のfn labelが、必要な操作の宣言です。value: Aで引数の名前と型を指定し、-> Stringで戻り値の型を指定します。",
+    "traitのfnの行には、イコールや処理の本体がありません。この引数と戻り値の型に合う本体を、実装側に用意してもらうという意味です。",
+    "instance Label<Ticket>ではAをTicketに置き換えるので、fn labelはTicketを受け取ってStringを返します。mainがその処理を呼び、ticket-42を出力します。traitの宣言そのものが出力するわけではありません。"
+  ],
+  rules: [
+    "traitには複数の操作を宣言できます。instanceは必要な操作をすべて実装します。各操作の型には、traitの型パラメーターや、その操作自身が宣言した型パラメーターを使えます。",
+    "型パラメーターは、使う前に宣言が必要です。型名があるか、パラメーターの形が合うかはコンパイル時に検査されます。instanceを初めて呼ぶまで検査を待つわけではありません。",
+    "F<_>というパラメーターは、Intのような完成した型ではなく、Arrayのように要素型を受け取る型構築子を表します。FにAを渡すとF<A>という型になります。要素型の違う入れ物を共通に扱う操作が必要な場合に使う形です。",
+    "traitのwhereは、ほかのtraitも必要だという条件です。たとえばEq<A>を要求する宣言は、Aの等しさを比較できることを前提にできます。実装側が満たすべき条件であり、オブジェクトの継承ではありません。"
+  ],
+  mistakes: [
+    "trait宣言に、標準の処理として関数の本体を書くことはできません。traitには関数の型を書き、処理の本体はinstanceへ書きます。",
+    "MissingTypeのような名前を引数の型に書いても、それだけで型を宣言したことにはなりません。次の例はそのためエラーになります。型や型パラメーターの宣言を確認してください。instanceの選択で未宣言の型が定義されることはありません。"
+  ],
+  related: [
+    "操作の宣言、型ごとの実装、呼び出しの違いを確認できます。",
+    "必要な操作の本体を書き、型パラメーターを置き換えた署名と照合する方法を確認できます。",
+    "Intのような完成した型と、F<_>のような型パラメーターの違いを確認できます。"
+  ]
 }

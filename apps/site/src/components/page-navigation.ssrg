@@ -37,13 +37,11 @@ fn sectionPages value: NavigationSection -> Array<PageDefinition> = arrays.conca
   value.pages
 ]
 
-fn groupPages value: NavigationGroup -> Array<PageDefinition> =
-  arrays.concat [sectionPages section | section <- value.sections]
-
-fn areaPages value: NavigationArea -> Array<PageDefinition> = arrays.concat [
-  [value.landing],
-  arrays.concat [groupPages group | group <- value.groups]
-]
+fn currentSection current: String -> area: NavigationArea -> Maybe<NavigationSection> =
+  match arrays.find (groupIsCurrent current) area.groups {
+    Nothing -> Nothing
+    Just group -> arrays.find (sectionIsCurrent current) group.sections
+  }
 
 fn separator<Action> unit: Unit -> html.Html<Action> = html.span {
   class: "breadcrumb-separator",
@@ -155,13 +153,29 @@ pub fn pageSequence<Action> messages: Messages
       let empty: Array<html.Html<Action>> = []
       html.div { class: "reference-sequence", children: empty }
     }
-    Just area -> match adjacentPages page.id (areaPages area) {
-      (previous, next) -> html.nav {
-        class: "reference-sequence",
-        children: [
-          sequenceLink locale messages.previousPage "reference-previous" previous,
-          sequenceLink locale messages.nextPage "reference-next" next
-        ]
+    Just area -> match currentSection page.id area {
+      Nothing -> html.div { class: "reference-sequence-empty", children: "" }
+      Just section -> match adjacentPages page.id (sectionPages section) {
+        (previous, next) -> html.div {
+          class: "reference-navigation",
+          children: [
+            html.p {
+              class: "reference-topic",
+              children: [
+                html.span { children: messages.currentTopic },
+                anchor (translate locale section.title)
+                  (localizedRoute locale section.overview.path) "reference-topic-link"
+              ]
+            },
+            html.nav {
+              class: "reference-sequence",
+              children: [
+                sequenceLink locale messages.previousPage "reference-previous" previous,
+                sequenceLink locale messages.nextPage "reference-next" next
+              ]
+            }
+          ]
+        }
       }
     }
   }

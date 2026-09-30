@@ -92,6 +92,29 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "式指向"
     )
     expect(checkedReferenceLinks).toBeGreaterThan(500)
+    let checkedSequences = 0
+    for (const [route, html] of languagePages) {
+      const topic = html.match(
+        /<a\b(?=[^>]*\bclass="reference-topic-link")[^>]*\bhref="([^"]+)"/u
+      )?.[1]
+      if (!topic) continue
+      const sequence = html.match(
+        /<nav\b[^>]*class="reference-sequence"[^>]*>([\s\S]*?)<\/nav>/u
+      )?.[1]
+      expect(sequence, route).toBeDefined()
+      for (const [, destination] of (sequence ?? "").matchAll(
+        /\bhref="([^"]+)"/gu
+      )) {
+        const target = languagePages.get(destination)
+        expect(target, `${route} -> ${destination}`).toBeDefined()
+        const targetTopic = target?.match(
+          /<a\b(?=[^>]*\bclass="reference-topic-link")[^>]*\bhref="([^"]+)"/u
+        )?.[1]
+        expect(targetTopic, `${route}: sequence crosses topics`).toBe(topic)
+        checkedSequences++
+      }
+    }
+    expect(checkedSequences).toBeGreaterThan(100)
     console.info(`Verified ${checkedReferenceLinks} bilingual page-name links`)
     const mobileArticle = readFileSync(
       join(output, "ja/docs/language/syntax/function-application/index.html"),

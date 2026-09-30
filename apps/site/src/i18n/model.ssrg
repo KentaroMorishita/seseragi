@@ -9,5 +9,6 @@ pub struct Messages {
   language: String,
   previousPage: String,
   nextPage: String,
+  currentTopic: String,
   closeNavigation: String
 }

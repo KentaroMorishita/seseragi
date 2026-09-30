@@ -326,7 +326,7 @@ fn languageArea input: BuildInput -> NavigationArea = NavigationArea {
       sections: [
         NavigationSection {
           id: "trait-evidence",
-          title: localized "Traits and evidence" "traitと型の証拠",
+          title: localized "Trait basics" "traitの基本",
           kind: FlatSection,
           overview: traitModelPage (),
           pages: [

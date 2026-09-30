@@ -16,5 +16,5 @@ pub fn page -> PageDefinition =
           "/docs/language/types/newtypes/"
         )],
         [InternalLink
-      (localized "Traits and evidence" "traitと実装の証拠", "/docs/language/traits/model/")]
+      (localized "Traits" "traitとは", "/docs/language/traits/model/")]
       ]

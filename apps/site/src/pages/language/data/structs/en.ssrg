@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Structs",
-  summary: "A struct is a nominal product with declared fields, explicit construction, and type-owned methods.",
-  ruleTitle: "The declaration owns the shape",
-  ruleBody: "Construction supplies every field exactly once, or begins with one same-typed spread and overrides selected fields. Field shorthand name means name: name.",
-  typingBody: "Field access and update require the exact nominal struct type. Public ordinary fields remain readable outside the module; opaque structs hide their representation behind public operations.",
-  evaluationBody: "A spread expression is evaluated first once, then explicit field expressions run once in source order. An update creates a new immutable value.",
-  invalidTitle: "A struct is not a structural record",
-  invalidBody: "Matching field names do not make another struct or record interchangeable. Missing, duplicate, unknown, misplaced-spread, and cross-type spread fields are rejected.",
-  diagnosticsBody: "Construction diagnostics name missing, duplicate, unknown, and wrong-typed fields. Tooling resolves field access from the nominal declaration and respects visibility.",
+  summary: "Declare a named type with named fields. The type's declaration, not just its fields, determines which values belong to it.",
+  purpose: [
+    "A struct gives a data shape its own type name. User can hold an id and a name. Another struct named Product remains a different type even if it declares the same fields.",
+    "This distinction helps prevent mixing values with different meanings. A plain record is identified by its fields; a struct is identified by its declaration. The latter is called nominal typing."
+  ],
+  exampleTitle: "Create a User and rename a copy",
+  reading: [
+    "struct User { id: Int, name: String } declares User. Int is the integer type and String is the text type. The declaration does not create a user value yet.",
+    "User { id: 1, name: \"Aki\" } creates a User by supplying both fields. The User before the braces selects the declared type.",
+    "User { ...original, name: \"Mio\" } creates another User. The spread takes the starting fields from original, and name: \"Mio\" replaces the name in the new value.",
+    "The output shows that original still contains Aki, renamed contains Mio, and the copied id remains 1. Reading a field uses a dot; updating a copy is not assignment to the old value."
+  ],
+  rules: [
+    "Every declared field must receive a value of its declared type. Unknown fields are not allowed. Two different struct declarations are distinct even when their field names and types match.",
+    "A struct update accepts at most one spread, before any explicitly supplied fields. The spread value must have the same struct type. Unlike a record update, it cannot change a field's type.",
+    "Field shorthand is available: when a local variable is named id, id can stand for id: id inside the construction. Field names select the destinations; written item order determines evaluation order.",
+    "A struct can have generic parameters, such as Box<A>, but none are needed here. Within an impl you can add functions belonging to the declared type. Module visibility also matters: importing a private or opaque representation does not grant access to its construction or fields."
+  ],
+  mistakes: [
+    "User { id: 1 } is incomplete because name is required. The following example is rejected for a missing field.",
+    "{ id: 1, name: \"Aki\" } is a record, not a User. Merely matching the fields does not convert it to User. Also, renamed.name = \"Ren\" is not a valid way to update an immutable struct."
+  ],
+  related: [
+    "Compare structural typing and record spreads with named structs.",
+    "Learn how parameters such as Box<A> make a family of types.",
+    "Add operations to a struct and check the rules for their self parameter."
+  ]
 }

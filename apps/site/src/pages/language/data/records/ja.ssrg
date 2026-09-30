@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "レコード",
-  summary: "recordはfield presenceと順序付きspread updateを持つimmutableなstructural productです。",
-  ruleTitle: "declaration名ではなくfieldがidentityを決める",
-  ruleBody: "record literalはnamed field、shorthand、0個以上のspreadを使います。spreadは左から右へ適用し、後続の明示fieldが前の値を上書きします。直接書くfield名は一度だけです。",
-  typingBody: "required・optional fieldはstructural typingとwidth subtypingへ参加します。optional accessはMaybeを返し、明示したfieldは結果recordでrequiredになります。",
-  evaluationBody: "record itemはsource順で一度ずつ評価します。spreadはfieldとpresenceをコピーします。省略したoptional fieldは式を評価せずruntime fieldも作りません。",
-  invalidTitle: "brace formは意図的に区別される",
-  invalidBody: "{}はempty record、{ expression }はblockです。shorthand一つだけのrecordにはtrailing commaが必要です。未知field access、直接重複、non-record spreadを拒否します。",
-  diagnosticsBody: "欠落・追加・重複・未知fieldを示し、入れ子のstructural differenceも表示します。optional presenceをrequired valueへ暗黙変換しません。",
+  summary: "複数の値を名前付きのフィールドにまとめる値です。型名を宣言せずに作れます。ドットで中身を読み、スプレッドで変更したコピーを作ります。",
+  purpose: [
+    "名前と得点のように、一緒に扱いたい値をまとめるときに使います。{ name: \"Aki\", score: 10 }は、二つのフィールドを持つ一つの値です。フィールドとは、値の中の名前付きの部分です。",
+    "レコードの型は、フィールドの名前とそれぞれの型で決まります。宣言した型名で区別するわけではありません。この考え方を構造的型付けと呼びます。nameを必要とする関数には、ほかの必須フィールドも持つレコードを渡せます。"
+  ],
+  exampleTitle: "フィールドを読み、得点を変えたコピーを作る",
+  reading: [
+    "originalには、nameが\"Aki\"、scoreが10のレコードを入れています。original.scoreはscoreフィールドの整数を読み出します。",
+    "...originalは、元のフィールドを新しいレコードに取り込むスプレッドです。その後のscore: 42で、新しい値のscoreを置き換えます。originalは変わりません。最初の二つの出力で、その違いを確認できます。",
+    "nameOfの引数には{ name: String }という型を付けています。これは「nameという必須の文字列フィールドを持つレコードが必要」という意味です。関数はperson.nameを読み、その文字列を返します。",
+    "updatedにはscoreもありますが、nameOfはそれを必要としません。updatedを渡すことはでき、Akiが出力されます。名前付きの構造体へ変換されるわけでも、関数から宣言していないフィールドを読めるようになるわけでもありません。"
+  ],
+  rules: [
+    "フィールドの値やスプレッドの元になる式は、書いた順に一度ずつ評価されます。スプレッドは複数書けます。同じフィールドが含まれる場合は後のスプレッドが優先され、その後に直接書いたフィールドはそれを置き換えます。",
+    "フィールドの型を変えたコピーも作れます。その場合、結果は新しいレコード型になります。元のレコードの型や値は変わりません。スプレッドの元に指定できるのはレコードです。",
+    "{ name, }は{ name: name }の省略形です。一つのフィールドをこの形で書く場合、ブロックと区別するため末尾のカンマが必要です。また、{}は空のレコードであり、Unitの値()ではありません。",
+    "必須フィールドと省略可能なフィールドは別です。必須フィールドは必ず存在しますが、省略可能なフィールドは存在しない場合があります。後者を読むと、値があるかないかを区別するMaybeが返ります。詳しい読み方は、省略可能なフィールドのページで扱います。"
+  ],
+  mistakes: [
+    "updated.score = 99のような代入はできません。レコードは不変なので、得点を変えるには別のレコードを作ります。",
+    "{ score: 10, score: 42 }のように同じフィールドを直接二度書くとエラーです。スプレッドから取り込んだフィールドを置き換える場合とは違います。また、構造体はレコードではないため、レコードのスプレッドでコピーすることはできません。"
+  ],
+  related: [
+    "フィールドがない場合や、JustとNothingで結果を読む方法を確認できます。",
+    "型名を付けてデータを区別する場合と、構造体の更新方法を比較できます。",
+    "レコードの中身を取り出して、個別の名前に束縛する方法を確認できます。"
+  ]
 }

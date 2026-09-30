@@ -1,21 +1,19 @@
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  referencePage "language.data.records" "/docs/language/data/records/" (en.copy ()) (ja.copy ()) [CodeExample
+  readerPage "language.data.records" "/docs/language/data/records/" (en.copy ()) (ja.copy ()) "reader-records" "10\n42\nAki" [CodeExample
       (
-        "data-records",
-        localized "Structural spread and width use" "structural spreadとwidth利用"
-      )] [CodeExample
-      ("data-invalid-record", localized "Rejected duplicate field" "field重複を拒否")] [
-        [InternalLink (
+        "data-invalid-record",
+        localized "Duplicate fields are rejected" "同じフィールドを直接二度書くとエラー"
+      )] [
+        (
           localized "Optional record fields" "省略可能なレコードフィールド",
           "/docs/language/types/optional-record-fields/"
-        )],
-        [InternalLink (localized "Structs" "構造体", "/docs/language/data/structs/")],
-        [InternalLink
-      (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")]
+        ),
+        (localized "Structs" "構造体", "/docs/language/data/structs/"),
+        (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")
       ]

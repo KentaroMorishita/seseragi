@@ -1,13 +1,32 @@
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Trait declarations",
-  summary: "A trait declares operation types over value types or higher-kinded type constructors, with optional supertrait requirements.",
-  ruleTitle: "A declaration contains signatures, not implementations",
-  ruleBody: "Each trait method names a function type and omits a body. Ordinary parameters such as A range over value types; parameters such as F<_> range over unary type constructors. A where clause requires supertrait evidence.",
-  typingBody: "Every use of a constructor parameter must match its declared kind and arity. Partial constructors such as Either<E, _> fill the required constructor shape; a fully applied value type cannot stand where F<_> is required.",
-  evaluationBody: "A declaration has no standalone runtime action. Its signatures define the dictionary shape that each instance must satisfy and that constrained callers may consume.",
-  invalidTitle: "Trait methods cannot carry default bodies",
-  invalidBody: "A method body belongs in an instance. A missing type, a mismatched constructor arity, or a supertrait with the wrong kind is rejected at the declaration boundary.",
-  diagnosticsBody: "Parser diagnostics identify malformed method signatures. Kind and arity diagnostics point to the offending trait parameter or partial application before any instance is considered.",
+  summary: "Declare the names and types of operations that an implementation must provide. A trait declaration specifies a contract, not an executable body.",
+  purpose: [
+    "A trait declaration answers one question: what must a type provide for shared code to use this operation? Label<A> says that labeling an A must produce a String.",
+    "The declaration and its implementation are separate. The complete example also includes an instance so it can run, but this page focuses on the three-line trait declaration."
+  ],
+  exampleTitle: "Declare a label operation and use one implementation",
+  reading: [
+    "Label is the trait's name. <A> declares a type parameter for the trait. A is not a value or a built-in type; it stands for the type whose labels the trait describes.",
+    "Inside the braces, fn label introduces the required operation. value: A names its parameter and specifies the parameter type. -> String gives the result type.",
+    "The trait's fn line has no equals sign or expression body. It requires implementations to supply a body with the matching parameter and result types.",
+    "instance Label<Ticket> substitutes Ticket for A. Its fn label line therefore takes Ticket and returns String. main calls that implementation and prints ticket-42; the trait declaration itself never prints anything."
+  ],
+  rules: [
+    "A trait can require several operations. Every required operation must be implemented by a matching instance. A declaration can refer to its trait parameters and to type parameters declared by a method.",
+    "Type parameters must be declared before use. The compiler checks names and the shape of parameters during compilation, not when an instance is first called.",
+    "A parameter such as F<_> stands for a type constructor, such as Array, rather than a complete type such as Int. Applying F to A gives F<A>. Use this form only when the operation must work with a container whose element type varies.",
+    "where on a trait states another trait requirement. For example, a declaration requiring Eq<A> can rely on equality for A. This is a requirement for implementations to satisfy, not object inheritance."
+  ],
+  mistakes: [
+    "Do not put a default function body into a trait declaration. The declaration states the function type; its body belongs in an instance.",
+    "A name such as MissingType does not become a declared type merely because it appears in a method signature. The following declaration is rejected. Fix the missing type declaration or parameter rather than expecting instance selection to define it."
+  ],
+  related: [
+    "Review the distinction between declaring an operation, implementing it and calling it.",
+    "Supply a body for each operation and check the substituted signatures.",
+    "Look up the difference between a complete type and a type parameter such as F<_>."
+  ]
 }

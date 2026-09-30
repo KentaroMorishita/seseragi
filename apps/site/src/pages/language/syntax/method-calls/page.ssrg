@@ -1,49 +1,22 @@
 import { localized } from "../../../../model/locale"
-import {
-  BulletList,
-  CodeExample,
-  InlineCode,
-  InternalLink,
-  PageDefinition,
-  Words
-} from "../../../../model/page"
-import { syntaxPage } from "../article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  syntaxPage "language.syntax.method-calls" "/docs/language/syntax/method-calls/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "syntax-method-calls",
-      localized "Generic inherent methods" "generic inherent method"
-    ),
-    BulletList [
-      [
-        InlineCode "answer.map transform",
-        Words (
-          localized " resolves map from the static type of answer."
-            " はanswerのstatic型からmapを解決します。"
+  readerPage "language.syntax.method-calls" "/docs/language/syntax/method-calls/" (en.copy ()) (ja.copy ()) "reader-method-calls" "10\n15" [CodeExample
+      ("syntax-invalid-methods", localized "Invalid method declarations" "誤ったメソッド宣言")] [
+        (
+          localized "Function application" "関数適用",
+          "/docs/language/syntax/function-application/"
+        ),
+        (
+          localized "Inherent impls and methods" "固有implとメソッド",
+          "/docs/language/data/impls-and-methods/"
+        ),
+        (
+          localized "Operator precedence" "演算子の優先順位",
+          "/docs/language/syntax/operator-precedence/"
         )
-      ],
-      [
-        InlineCode "Type.method answer transform",
-        Words (localized " is the receiver-first expansion." " はreceiver-firstの展開形です。")
       ]
-    ]
-  ] [CodeExample (
-    "syntax-invalid-methods",
-    localized "Rejected inherent method declarations" "拒否されるinherent method宣言"
-  )] [
-    [InternalLink (
-      localized "Function application" "関数適用",
-      "/docs/language/syntax/function-application/"
-    )],
-    [InternalLink (
-      localized "Operator precedence" "演算子の優先順位",
-      "/docs/language/syntax/operator-precedence/"
-    )],
-    [InternalLink (
-      localized "Reserved words and naming" "予約語と名前の規則",
-      "/docs/language/syntax/reserved-words-and-names/"
-    )]
-  ]

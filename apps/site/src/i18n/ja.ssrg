@@ -9,7 +9,8 @@ pub fn messages -> Messages = Messages {
   onThisPage: "このページの内容",
   openPlayground: "Playgroundで開く",
   language: "表示言語を選ぶ",
-  previousPage: "前へ",
-  nextPage: "次へ",
+  previousPage: "同じ項目の前のページ",
+  nextPage: "同じ項目の次のページ",
+  currentTopic: "このページの項目：",
   closeNavigation: "目次を閉じる"
 }

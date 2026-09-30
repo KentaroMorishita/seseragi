@@ -1,0 +1,80 @@
+import * as arrays from "std/array"
+import { LocalizedText, localized } from "../../model/locale"
+import {
+  Article,
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../model/page"
+
+// Page-owned explanations, not a one-sentence specification digest.
+pub struct ReaderCopy {
+  title: String,
+  summary: String,
+  purpose: Array<String>,
+  exampleTitle: String,
+  reading: Array<String>,
+  rules: Array<String>,
+  mistakes: Array<String>,
+  related: Array<String>
+}
+
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  map paragraph (arrays.zip japanese english)
+
+fn readingLink pair: ((LocalizedText, String), (String, String)) -> Block = match pair {
+  ((title, path), (english, japanese)) -> Paragraph ([
+    InternalLink (title, path),
+    Words (localized (" — " + english) ("：" + japanese))
+  ])
+}
+
+pub fn readerPage id: String
+  -> path: String
+  -> english: ReaderCopy
+  -> japanese: ReaderCopy
+  -> exampleId: String
+  -> output: String
+  -> rejected: Array<Block>
+  -> related: Array<(LocalizedText, String)>
+  -> PageDefinition =
+  PageDefinition {
+    id,
+    path,
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [Heading ("purpose", localized "What this is for" "何のための機能か")],
+      paragraphs english.purpose japanese.purpose,
+      [
+        CodeExample (exampleId, localized english.exampleTitle japanese.exampleTitle),
+        Paragraph (
+          [Words (
+            localized
+              "main starts the program. println prints a value followed by a newline. The do block runs these operations in order; _ <- waits for an operation and discards its result. The complete example produces:"
+              "mainが実行開始の関数です。printlnは値を一行ずつ出力します。doはこれらの処理を順に実行するブロックで、_ <-はその処理を待ち、戻り値を使わずに次へ進みます。実行結果は次のとおりです。"
+          )]
+        ),
+        Terminal (localized "Output" "実行結果", output),
+        Heading ("reading-the-example", localized "Reading the example" "例を順に読む")
+      ],
+      paragraphs english.reading japanese.reading,
+      [Heading ("rules", localized "Rules and boundaries" "詳しい規則と制限")],
+      paragraphs english.rules japanese.rules,
+      [Heading ("mistakes", localized "Common mistakes" "間違いやすい点")],
+      paragraphs english.mistakes japanese.mistakes,
+      rejected,
+      [Heading ("related-rules", localized "Look up a specific question" "必要なことを詳しく調べる")],
+      map readingLink (arrays.zip (arrays.zip japanese.related english.related) related)
+    ]
+  }

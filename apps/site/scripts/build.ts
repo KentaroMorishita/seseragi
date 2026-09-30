@@ -276,6 +276,20 @@ function generatorInput(playgroundUrl: string) {
         "apps/site/examples/src/language/method-calls.ssrg",
         playgroundUrl
       ),
+      ...[
+        "method-calls",
+        "pipelines",
+        "records",
+        "structs",
+        "collections",
+        "trait",
+      ].map((name) =>
+        canonicalExample(
+          `reader-${name}`,
+          `apps/site/examples/src/language/reader-${name}.ssrg`,
+          playgroundUrl
+        )
+      ),
       canonicalExample(
         "syntax-invalid-methods",
         "apps/site/examples/invalid/src/language/invalid-methods.ssrg",

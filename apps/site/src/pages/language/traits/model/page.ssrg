@@ -1,16 +1,12 @@
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import { PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  referencePage "language.traits.model" "/docs/language/traits/model/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("traits-model", localized "Evidence selected from types" "型から選ぶevidence")] [] [
-        [InternalLink
-      (localized "Trait declarations" "trait宣言", "/docs/language/traits/declarations/")],
-        [InternalLink
-      (localized "Instances" "インスタンス", "/docs/language/traits/instances/")],
-        [InternalLink
-      (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")]
-      ]
+  readerPage "language.traits.model" "/docs/language/traits/model/" (en.copy ()) (ja.copy ()) "reader-trait" "ticket-42" [] [
+    (localized "Trait declarations" "trait宣言", "/docs/language/traits/declarations/"),
+    (localized "Instances" "インスタンス", "/docs/language/traits/instances/"),
+    (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/")
+  ]
