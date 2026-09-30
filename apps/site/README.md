@@ -18,6 +18,10 @@ pipeline.
 - `src/reference/`: compiler-owned Standard Library modules and symbols are
   projected into module sections and individual Reference pages in Seseragi.
 - `styles/`: split visual responsibilities compiled into one static asset.
+- `client/`: browser-only enhancements. Mobile navigation uses a native modal
+  dialog for focus isolation, Escape and backdrop dismissal, and preserves the
+  reader's scroll position. The same Seseragi-rendered tree remains an off-canvas
+  sidebar without JavaScript; no client routing or second content tree is used.
 - `scripts/reference.ts`: validates and joins the canonical Reference and
   Prelude instance artifacts without owning routes or page prose.
 - `scripts/build.ts`: host adapter that reads canonical inputs, invokes the

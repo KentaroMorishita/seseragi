@@ -8,5 +8,6 @@ pub struct Messages {
   openPlayground: String,
   language: String,
   previousPage: String,
-  nextPage: String
+  nextPage: String,
+  closeNavigation: String
 }

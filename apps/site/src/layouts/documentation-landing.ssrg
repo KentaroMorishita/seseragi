@@ -7,7 +7,8 @@ import {
   referenceDirectory
 } from "../components/reference-directory"
 import { mobileOnThisPage, onThisPage } from "../components/on-this-page"
-import { mobileSidebar, sidebar } from "../components/sidebar"
+import { sidebar } from "../components/sidebar"
+import { mobileSidebar } from "../components/mobile-sidebar"
 import { Messages } from "../i18n/model"
 import { BuildInput } from "../model/build"
 import { Locale, translate } from "../model/locale"

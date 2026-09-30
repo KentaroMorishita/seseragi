@@ -28,6 +28,7 @@ const styleFiles = [
   "shell.css",
   "home.css",
   "docs.css",
+  "mobile-navigation.css",
   "article.css",
   "code.css",
   "responsive.css",
@@ -849,7 +850,15 @@ function publishAssets(output: string): string[] {
     join(root, "assets/brand/public/brand/seseragi-icon.svg"),
     join(assets, "seseragi-icon.svg")
   )
-  return ["assets/seseragi-icon.svg", "assets/site.css"]
+  const client = new Bun.Transpiler({ loader: "ts" }).transformSync(
+    readFileSync(join(app, "client/mobile-navigation.ts"), "utf8")
+  )
+  writeFileSync(join(assets, "mobile-navigation.js"), client)
+  return [
+    "assets/seseragi-icon.svg",
+    "assets/site.css",
+    "assets/mobile-navigation.js",
+  ]
 }
 
 export function buildSite(options: BuildOptions) {
@@ -895,7 +904,15 @@ export function buildSite(options: BuildOptions) {
       assert.ok(!page.html.includes("site-build-error"), page.route)
       const path = routeFile(output, page.route)
       mkdirSync(dirname(path), { recursive: true })
-      writeFileSync(path, page.html)
+      // Browser-only enhancement is linked by the host publisher, not embedded
+      // in page prose. Content, navigation and component markup stay in Seseragi.
+      const html = page.html.includes('class="mobile-docs-navigation"')
+        ? page.html.replace(
+            "</body>",
+            '<script type="module" src="/assets/mobile-navigation.js"></script></body>'
+          )
+        : page.html
+      writeFileSync(path, html)
     }
     const assets = publishAssets(output)
     const files = [

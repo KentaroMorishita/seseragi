@@ -123,21 +123,11 @@ pub fn sidebar<Action> locale: Locale
   -> html.Html<Action> =
   html.aside {
     class: "docs-sidebar",
-    children: [area locale current item | item <- currentAreas current areas]
+    children: navigationTree locale current areas
   }
 
-pub fn mobileSidebar<Action> messages: Messages
-  -> locale: Locale
+pub fn navigationTree<Action> locale: Locale
   -> current: String
   -> areas: Array<NavigationArea>
-  -> html.Html<Action> =
-  html.details {
-    class: "mobile-docs-navigation",
-    children: [
-      html.summary { children: messages.documentation },
-      html.div {
-        children: [area locale current item | item <- currentAreas current areas]
-      }
-    ]
-  }
-import { Messages } from "../i18n/model"
+  -> Array<html.Html<Action>> =
+  [area locale current item | item <- currentAreas current areas]

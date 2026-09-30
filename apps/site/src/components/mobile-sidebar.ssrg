@@ -1,0 +1,55 @@
+import * as html from "std/web/html"
+import { Messages } from "../i18n/model"
+import { Locale } from "../model/locale"
+import { NavigationArea } from "../model/page"
+import { navigationTree } from "./sidebar"
+
+pub fn mobileSidebar<Action> messages: Messages
+  -> locale: Locale
+  -> current: String
+  -> areas: Array<NavigationArea>
+  -> html.Html<Action> =
+  html.details {
+    class: "mobile-docs-navigation",
+    children: [
+      html.summary {
+        class: "mobile-navigation-trigger",
+        children: [
+          html.span { class: "navigation-open-icon", ariaHidden: True, children: "☰" },
+          html.span { class: "navigation-close-icon", ariaHidden: True, children: "×" },
+          html.span {
+            class: "navigation-trigger-label",
+            children: messages.documentation
+          },
+          html.span {
+            class: "navigation-close-label",
+            children: messages.closeNavigation
+          }
+        ]
+      },
+      html.dialog {
+        id: "mobile-reference-drawer",
+        class: "mobile-navigation-drawer",
+        ariaLabel: messages.documentation,
+        children: [
+          html.header {
+            class: "mobile-navigation-header",
+            children: [
+              html.span { children: messages.documentation },
+              html.button {
+                buttonType: "button",
+                class: "mobile-navigation-close",
+                ariaLabel: messages.closeNavigation,
+                children: html.span { ariaHidden: True, children: "×" }
+              }
+            ]
+          },
+          html.nav {
+            class: "mobile-navigation-content",
+            ariaLabel: messages.documentation,
+            children: navigationTree locale current areas
+          }
+        ]
+      }
+    ]
+  }

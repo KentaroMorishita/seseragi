@@ -6,7 +6,8 @@ import { NavigationArea, PageDefinition } from "../model/page"
 import { article } from "../components/article"
 import { mobileOnThisPage, onThisPage } from "../components/on-this-page"
 import { breadcrumbs, pageSequence } from "../components/page-navigation"
-import { mobileSidebar, sidebar } from "../components/sidebar"
+import { sidebar } from "../components/sidebar"
+import { mobileSidebar } from "../components/mobile-sidebar"
 
 pub fn articleLayout<Action> input: BuildInput
   -> messages: Messages
