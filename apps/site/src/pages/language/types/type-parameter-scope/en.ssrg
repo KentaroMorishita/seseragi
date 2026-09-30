@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Type parameter scope",
-  summary: "Follow a declared type parameter from its parameter list to the end of its declaration.",
+  summary: (explanation ()).summary,
   ruleTitle: "The declaration owns the parameter",
   ruleBody: "In identity<A>, A becomes available after the type-parameter list and remains in scope until the declaration ends. It can appear in value-parameter types, the return type, constraints and annotations inside the body. A different function's A is a separate parameter even when both use the same spelling.",
   identityBody: "A type parameter takes precedence over a module-level type of the same name within its declaration. This is static name resolution, not a change to either type's runtime identity. Capitalized spelling is required, but capitalization alone never declares a parameter. You must introduce it in the parameter list.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "A repeated name does not introduce a second parameter",
   invalidBody: "Duplicate names in one parameter list are rejected, as is shadowing an enclosing type parameter in a nested declaration. Writing an undeclared uppercase name does not request implicit generic inference. If the name is not an accessible type or a declared parameter, it cannot be used as a type.",
   diagnosticsBody: "For an unresolved type name, inspect the declaration's parameter list and its imports. For a shadowing error, rename the inner parameter and update its annotations consistently. Scope ends with the declaration, so a later declaration must introduce its own parameter.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Where can I use a declared type parameter?",
+  summary: "A type parameter belongs to its declaration. It is visible in that declaration's signature and body, not in unrelated declarations.",
+  reading: "The A after identity is the same A in value: A, the result type, and let unchanged: A. If a call chooses Int, every one of these positions means Int for that call.",
+  result: "number is 42 and text is \"hello\" with their respective types. Writing an undeclared A elsewhere does not create a new parameter; declare it there. Do not reuse an outer parameter's name for a different inner parameter."
 }

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Signals and transactions",
-  summary: "Signal<A> is a read-only node in a typed dependency graph; MutableSignal<A> adds an explicit update capability.",
+  summary: (explanation ()).summary,
   ruleTitle: "Signal state is accessed through Effect",
   ruleBody: "Creating, reading, updating, and subscribing touch runtime state and therefore return Task or Effect. MutableSignal<A> can lose write capability by coercing to Signal<A>, but the reverse conversion does not exist.",
   typingBody: "planSet and planUpdate produce opaque SignalChange values, allowing heterogeneous changes in one Array without exposing their targets. transaction accepts those plans and returns Task<Unit>.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A Signal is not an implicitly changing pure value",
   invalidBody: "Pure code may hold a Signal but cannot read its current value. Use Signal.read or the prefix * operator in an Effect, and use update when a write depends on the current value.",
   diagnosticsBody: "Type errors distinguish read-only Signal from MutableSignal and report the exact planned value mismatch. Runtime diagnostics identify staging, commit, derived recomputation, and subscriber notification phases.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I change two observed values without exposing a half-updated state?",
+  summary: "A Signal represents a changing observable value. A transaction prepares several updates and publishes them together.",
+  reading: "x starts at 1 and y at 2. planSet 10 x prepares x = 10; planUpdate adds 20 to y. transaction applies both plans as one update. currentX and currentY then read the stable values using *.",
+  result: "Executing updateCoordinates succeeds with (10, 22). Observers do not receive the half-state (10, 2) from this transaction. Preparing plans alone does not change a Signal, and ordinary immutable record fields do not become writable."
 }

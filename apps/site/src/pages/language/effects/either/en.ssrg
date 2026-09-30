@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Either and typed results",
-  summary: "Either stores an already computed success or recoverable failure as an ordinary value.",
+  summary: (explanation ()).summary,
   ruleTitle: "Left and Right are data, not running computations",
   ruleBody: "Either<E, A> is Left E or Right A. It suits synchronous validation and parsing where a caller needs an explicit reason, while Effect represents deferred work and Validation represents accumulating independent errors.",
   typingBody: "Mapping the right side changes A while preserving E; mapping the left side changes E while preserving A. Its Functor, Applicative, and Monad behavior stops at the first Left and never invents a common error union.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Either is not an Effect failure channel",
   invalidBody: "An Either value has already been produced. Use Effect.fromEither to defer its interpretation inside Effect, and use Effect.attempt when an Effect outcome must become inspectable data.",
   diagnosticsBody: "Diagnostics retain the distinct E and A positions and report branch, mapping, or expected-result mismatches at the operation that introduced them.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I return a successful value or an error reason?",
+  summary: "Either<E, A> stores Right A for success or Left E for failure. Both are ordinary already-calculated values.",
+  reading: "positive returns Right value when the integer is positive and Left (NotPositive value) otherwise. increment uses mapRight to add one only to a successful value, preserving any failure reason.",
+  result: "increment (positive 2) is Right 3. For zero, the result remains Left (NotPositive 0). Use match to display or recover from each case. Unlike Effect, this value does not wait for a runner to execute its construction."
 }

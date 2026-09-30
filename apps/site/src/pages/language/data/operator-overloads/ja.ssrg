@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "演算子オーバーロード",
-  summary: "自分のstructやnewtypeに対する加算などの演算を定義します。",
+  summary: (explanation ()).summary,
   ruleTitle: "標準の演算子に、自分の型の実装を与える",
   ruleBody: "impl内のoperator宣言で、+などの標準演算子を実装します。最初の引数selfは、そのimplの型です。残りの引数と戻り値の型も宣言します。この宣言は、演算子に対応する標準traitの実装として扱われます。",
   typingBody: "どの実装を使うかは、演算する値の型で決まります。型パラメーターを使う演算には、必要なtraitの条件を付けられます。newtypeは中身の型の演算を引き継がないため、例えばScore同士の加算はScore用に定義します。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "演算子の意味を定義しても、優先順位は変わらない",
   invalidBody: "この形式で定義できるのは、対応する標準演算子だけです。優先順位と結合方向は元のままです。新しい記号には、モジュール直下のoperator宣言を使います。同じ演算にoperator宣言とinstance宣言で二重に実装を与えることはできません。",
   diagnosticsBody: "使える演算子か、引数と戻り値が対応するtraitの条件に合っているかを確認してください。==などの比較は要求された結果型を返す必要があります。候補が重複する場合も、実装がない場合もエラーになります。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "自分の型に対して+の処理を定義するには",
+  summary: "演算子オーバーロードでは、対応する標準演算子に自分の型の処理を定義します。記号の優先順位や結合規則は変わりません。",
+  reading: "ScoreはIntを包む型です。+の実装では二つのScoreの中身を取り出し、整数を足して、結果をScoreで包みます。左の値がself、右の値がotherです。",
+  result: "totalはIntの42ではなくScore 42です。ScoreがIntの演算子を自動で引き継ぐのではなく、この宣言が処理を与えます。独自の新しい記号を使う場合は、別のカスタム演算子宣言が必要です。"
 }

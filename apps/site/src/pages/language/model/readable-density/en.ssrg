@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Readable density",
-  summary: "Concise code should make the data and its path through the program easier to see, not merely use fewer characters.",
+  summary: (explanation ()).summary,
   meaningTitle: "Write the flow in the order you read it",
   meaningBody: "Seseragi offers concise forms for common ideas, such as applying part of a function's arguments and passing a value along a pipeline. Their purpose is to expose the processing steps without surrounding bookkeeping. More symbols are not automatically better or worse; what matters is whether the code communicates the operation.",
   exampleTitle: "Double a value, then add one",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "Name an intermediate value when it helps explain a decision or when the value is used more than once. Split a long pipeline when its individual steps need explanation. The formatter supplies consistent layout, but it cannot choose meaningful names or decide how much a reader needs to know.",
     "This principle is not a promise that the shortest program is the best program, and it does not introduce arbitrary syntax macros. Dedicated syntax must remain understandable from the language's stated rules."
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "When is a compact expression still easy to follow?",
+  summary: "Concise code should make the data flow visible. Prefer a small named function or a clear pipeline over compression that hides inputs and intermediate meaning.",
+  reading: "double multiplies by two, and add 1 is the function adding one to its next argument. Starting at 3, the pipeline computes 6 and then 7. Each step's input is the preceding result.",
+  result: "The output is 7. Compactness does not change evaluation or type rules. If the chain needs explanation at every symbol, name a meaningful intermediate value or split the expression instead of relying on cleverness."
 }

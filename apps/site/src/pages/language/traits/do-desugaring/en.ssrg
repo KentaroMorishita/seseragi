@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "How do blocks desugar",
-  summary: "A do block expands from right to left into nested flatMap calls and lambdas while preserving source order and lexical scope.",
+  summary: (explanation ()).summary,
   ruleTitle: "Each bind introduces one nested continuation",
   ruleBody: "x <- mx becomes flatMap (\\x -> rest) mx. A discarded mx uses an ignored lambda parameter. let x = value remains a pure local binding around the rest. A final expression is returned unchanged.",
   typingBody: "The lambda parameter has the payload type A from M<A>, not the monadic type. Pattern typing and irrefutability are checked at that parameter. Constraints required by flatMap remain attached to the expansion.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Desugaring does not erase monad semantics",
   invalidBody: "Expansion removes only surface syntax. Failure, branching, state, scheduling, and resource behavior still come from the selected Monad implementation and cannot be optimized into pure sequencing indiscriminately.",
   diagnosticsBody: "Source diagnostics map failures in generated flatMap structure back to the original bind or item. Users should not need to debug backend-generated dictionary or lambda names.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How is do related to flatMap?",
+  summary: "do is a readable syntax for nested flatMap calls. Each step's remaining work becomes a function receiving the preceding payload.",
+  reading: "value <- source followed by increment value corresponds to flatMap (\\value -> increment value) source. The lambda receives the Int inside the Maybe, not the Maybe itself. The two functions shown express the same operation.",
+  result: "Both return Just 42 for Just 41 and Nothing for Nothing. The equality check is True. Expanding the syntax does not remove Maybe's absence handling or change Effect sequencing into ordinary pure evaluation."
 }

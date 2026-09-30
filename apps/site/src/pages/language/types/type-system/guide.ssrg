@@ -1,16 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "What mistakes does type checking prevent?" "型検査は、どんな取り違えを防ぐか",
-  summary: localized
-    "Every expression has a type checked before execution. Types describe which values a function or operation may accept and return."
-    "すべての式の型を実行前に検査します。型は、関数や操作に渡せる値と、返される値を表します。",
-  exampleId: "types-system",
-  reading: localized
-    "Player groups a name, a Score, and a Rank. Score is a distinct wrapper around Int; Rank permits only Bronze, Silver, or Gold. The player value supplies a String, Score 42, and Gold in the appropriate fields."
-    "例のPlayerは、名前、Score、Rankをまとめます。ScoreはIntと区別する型で、RankはBronze・Silver・Goldのいずれかです。値の構築では、対応するフィールドへ文字列、Score 42、Goldを渡します。",
-  result: localized
-    "A raw integer cannot silently replace Score, nor can arbitrary text replace Rank. The compiler detects these mismatches before running the program. Inference can save annotations but cannot make an invalid combination valid."
-    "Scoreが必要な場所へ生の整数を、Rankが必要な場所へ任意の文字列を、そのまま渡すことはできません。実行前に型エラーになります。型推論は注釈を省くための仕組みであり、不正な組み合わせを通すものではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "types-system") (en.explanation ()) (ja.explanation ())

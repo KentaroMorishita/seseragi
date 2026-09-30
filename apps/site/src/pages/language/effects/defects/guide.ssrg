@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Should invalid user input stop the runtime?"
-    "入力が不正なとき、実行を止める不具合として扱うべきか",
-  summary: localized
-    "A defect is an unexpected failure outside the declared recoverable error type. Expected bad input should instead have an explicit result the caller can handle."
-    "defectは、宣言した回復可能な失敗の型では扱わない想定外の不具合です。予測できる不正入力は、呼び出し側が処理できる結果として返します。",
-  exampleId: "effects-defects",
-  reading: localized
-    "checkedDivide tests the divisor before division. For zero it returns Left ZeroDivisor, so the caller can explain the problem instead of performing invalid integer division. Otherwise it returns Right with the quotient."
-    "checkedDivideは除算前にdivisorを調べます。0ならLeft ZeroDivisorを返すため、不正な除算をせずに、呼び出し側で理由を説明できます。それ以外なら商をRightに入れて返します。",
-  result: localized
-    "checkedDivide 7 2 is Right 3, while checkedDivide 7 0 is Left ZeroDivisor. Recoverable result handling does not turn every runtime defect into an ordinary error. Keep predictable failures visible in the public function type."
-    "checkedDivide 7 2はRight 3、checkedDivide 7 0はLeft ZeroDivisorです。想定した失敗を型に残すことと、すべての実行時の不具合を通常の失敗に変えることは異なります。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-defects") (en.explanation ()) (ja.explanation ())

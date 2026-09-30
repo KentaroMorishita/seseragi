@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "What does a function return when I supply only one argument?"
-    "引数を一つだけ渡すと、何が返るか",
-  summary: localized
-    "Supplying some of a function's arguments creates a function waiting for the rest. This is partial application; the nested function types that make it possible are called currying."
-    "関数に一部の引数だけを渡すと、残りの引数を待つ関数が返ります。これを部分適用と呼び、その仕組みを表す関数型の組み立て方をカリー化と呼びます。",
-  exampleId: "function-application",
-  reading: localized
-    "add receives left, then right, and returns their sum. add 1 is not the integer 1: it is a function that remembers 1 and adds its next argument. addOne 2 therefore produces 3."
-    "addはleftとrightを受け取り、その和を返します。add 1の結果は整数ではなく、「次の引数に1を足す関数」です。その関数にaddOneという名前を付け、addOne 2で呼ぶと3になります。",
-  result: localized
-    "Int -> Int -> Int means Int -> (Int -> Int). A function with no named parameters still receives Unit; invoke it with (). Passing a tuple is a different interface, not a substitute for supplying arguments one by one."
-    "Int -> Int -> IntはInt -> (Int -> Int)の意味です。引数名を書かない関数もUnitを一つ受け取るため、()を渡して呼びます。タプルを一つ渡す関数とは、引数の型も呼び方も異なります。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "function-application") (en.explanation ()) (ja.explanation ())

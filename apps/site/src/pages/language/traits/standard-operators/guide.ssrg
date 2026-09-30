@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Which implementation does a standard operator call?"
-    "標準演算子は、どの実装を呼ぶのか",
-  summary: localized
-    "Supported standard operators use trait implementations selected from operand types. Your named types can supply the corresponding operation."
-    "対応する標準演算子は、引数の型から選ぶtrait実装を使います。名前付きの自分の型にも、その処理を用意できます。",
-  exampleId: "traits-standard-operators",
-  reading: localized
-    "Distance wraps Int. The + member unpacks its two Distance values, adds their integer payloads, and returns another Distance. This supplies addition for Distance rather than using an implicit conversion to Int."
-    "DistanceはIntを包みます。+の実装では二つのDistanceの中身を取り出して足し、再びDistanceを返します。Intへの暗黙変換ではなく、Distanceの加算を定義しています。",
-  result: localized
-    "total is Distance 42. Operator spelling, precedence, and grouping stay the same; the statically selected operation changes. Avoid defining a conflicting explicit instance for the same operation and types."
-    "totalはDistance 42です。記号・優先順位・まとまり方はそのままで、型に対応する処理が選ばれます。同じ操作と型に対する重複したinstanceは定義できません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "traits-standard-operators") (en.explanation ()) (ja.explanation ())

@@ -1,18 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized
-    "Why can I unpack a tuple in let but not demand a first array element?"
-    "letでタプルは取り出せるのに、配列の先頭は要求できないのはなぜか",
-  summary: localized
-    "An irrefutable pattern must match every value of the known input type. This is why let can bind without a failure branch."
-    "反駁不能パターンは、入力型のすべての値に必ず一致するパターンです。letに失敗時の分岐が不要なのは、その性質があるためです。",
-  exampleId: "patterns-irrefutable",
-  reading: localized
-    "A UserId always has its wrapped integer, and a (String, Int) tuple always has two positions. The example can therefore extract rawId, name, and score with let without testing whether those parts exist."
-    "UserIdには必ず中の整数があり、(String, Int)のタプルには必ず二つの位置があります。例では存在を検査せずに、letでrawId、name、scoreを取り出せます。",
-  result: localized
-    "identity is (42, \"Aki\", 100). An Array may be empty, so [head, ...tail] is not guaranteed to match; use match with an empty case, or an operation returning Maybe. Knowing one example array is nonempty does not change the general rule."
-    "identityは(42, \"Aki\", 100)です。Arrayは空の場合があるため、[head, ...tail]は必ず一致するとは限りません。空の場合も扱うmatchやMaybeを返す操作を使います。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "patterns-irrefutable") (en.explanation ()) (ja.explanation ())

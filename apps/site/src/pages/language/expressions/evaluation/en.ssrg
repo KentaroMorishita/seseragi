@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Evaluation order",
-  summary: "Seseragi evaluates strict expressions from left to right and never evaluates an argument twice.",
+  summary: (explanation ()).summary,
   ruleTitle: "Strict, ordered, exactly once",
   ruleBody: "A function body begins when the function is applied. Arguments, operator operands, fields, and collection elements are evaluated once in source order before their result is used.",
   typingBody: "Evaluation order does not change a type. It defines which expression is evaluated first after type checking has accepted the complete expression.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Do not infer hidden laziness",
   invalidBody: "A pure function call, record field, or collection element is not delayed because its value is unused later. Use an explicit function or Effect when work must be deferred.",
   diagnosticsBody: "Type and name errors are reported before execution. There is no reference-identity operator, so a program cannot distinguish two equal immutable values by allocation identity.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "When are function arguments computed?",
+  summary: "Ordinary expressions evaluate their inputs before producing a result. Function arguments are evaluated left to right, once each.",
+  reading: "place receives a tens digit and a ones digit and computes tens * 10 + ones. In place (1 + 1) (2 + 1), the first argument becomes 2 and the second becomes 3 before the corresponding body calculation uses them.",
+  result: "result is 23. This is not lazy evaluation of ordinary arguments. Creating an Effect value is different: the ordinary expressions used to build it run now, while its described external operation waits for execution."
 }

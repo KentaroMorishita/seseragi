@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "標準演算子とtrait",
-  summary: "標準operator構文は固定されたtrait evidenceを選び、暗黙変換やruntime overloadを行いません。",
+  summary: (explanation ()).summary,
   ruleTitle: "引数の型に対応するtraitの演算を使う",
   ruleBody: "等価比較はEq、順序はOrd.compare、算術はAdd・Sub・Mul・Div・Rem・Powに対応します。<$>、<*>、>>=はFunctor・Applicative・Monadの操作です。instanceが、その型での処理を定めます。",
   typingBody: "算術の実装は左・右・結果の型を持ちます。左と右の組み合わせから結果の型は一つに決まります。異なる型同士の計算も、その組み合わせの実装がある場合だけ使えます。IntからFloatへの自動変換はありません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "実装で演算子の構文は変えられない",
   invalidBody: "instanceを変えても優先順位や結合規則は変わりません。別の記号を使いたい場合はカスタム演算子を宣言します。",
   diagnosticsBody: "左右の型と対応するinstanceを確認します。Floatの順序もSeseragiの規則に従い、生成先の比較へ任せることはありません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "標準演算子は、どの実装を呼ぶのか",
+  summary: "対応する標準演算子は、引数の型から選ぶtrait実装を使います。名前付きの自分の型にも、その処理を用意できます。",
+  reading: "DistanceはIntを包みます。+の実装では二つのDistanceの中身を取り出して足し、再びDistanceを返します。Intへの暗黙変換ではなく、Distanceの加算を定義しています。",
+  result: "totalはDistance 42です。記号・優先順位・まとまり方はそのままで、型に対応する処理が選ばれます。同じ操作と型に対する重複したinstanceは定義できません。"
 }

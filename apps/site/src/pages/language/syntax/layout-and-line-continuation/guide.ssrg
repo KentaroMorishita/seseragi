@@ -1,16 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Does indentation start a block?" "字下げだけでブロックになるか",
-  summary: localized
-    "Blocks use braces, not indentation. Newlines can separate items or continue an unfinished expression under explicit rules."
-    "ブロックは波括弧で囲みます。字下げだけではブロックになりません。改行が区切りになるか、式の続きになるかには決まった規則があります。",
-  exampleId: "syntax-layout",
-  reading: localized
-    "In a multi-line function, = followed by an expression continues the declaration because the right-hand side is still needed. Inside parentheses you may break lines freely. For a pipeline, placing |> at the beginning of the next line marks continuation."
-    "複数行の関数では、=の後にまだ本体が必要なため、次の行へ式を続けられます。括弧内では自由に改行できます。パイプラインを折り返す場合は、次の行の先頭に|>を置いて継続を示します。",
-  result: localized
-    "Indenting a complete expression does not join it to the next expression. Use braces for a block and parentheses when grouping is unclear. A semicolon always separates items; the next line cannot turn it back into continuation."
-    "完成した式の次行を字下げしても、二つの式はつながりません。ブロックには波括弧を使い、まとまりが不明なら括弧を補います。セミコロンは常に区切りで、次行が続きを表すことはありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "syntax-layout") (en.explanation ()) (ja.explanation ())

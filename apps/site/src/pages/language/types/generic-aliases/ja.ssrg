@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "ジェネリックな型別名",
-  summary: "長い型に名前を付け、型引数を使って繰り返し書けるようにします。",
+  summary: (explanation ()).summary,
   ruleTitle: "aliasは新しい型ではなく、型の別名を作る",
   ruleBody: "alias Pair<A> = (A, A)と書くと、Pair<Int>を(Int, Int)の代わりに使えます。この二つは同じ型です。値を包んだり取り出したりする操作は必要ありません。例のfirstも、Pairという型注釈を使いながら、普通のタプルを直接受け取ります。",
   identityBody: "型別名を使っても、元の型とは別の型にはなりません。エラーメッセージなどでは読みやすさのために別名が表示されることがありますが、型検査ではその定義を展開して扱います。同じIntでもUserIdとOrderIdを区別したい場合のように、別の型が必要ならnewtypeを使います。",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "型の別名は、値を作るコンストラクターではない",
   invalidBody: "Pair 1 2と書いてもタプルを作ることはできません。値は(1, 2)のように書きます。非公開の型別名はimportできず、公開する型別名の定義から非公開の型を露出させることもできません。別名にするだけでは公開範囲や型の互換性は変わりません。",
   diagnosticsBody: "型別名のエラーでは、その定義をたどり、実際にどの型と型引数へ展開されるかを確認してください。再帰的なデータを表したい場合は、循環するaliasではなく、再帰的なADTなどを使います。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "繰り返す型に短い名前を付けるには",
+  summary: "型別名は、既存の型に別の名前を付ける仕組みです。型パラメーターを付ければ、中身の型を変えて同じ別名を使えます。",
+  reading: "Pair<A>は(A, A)の別名です。Pair<Int>は(Int, Int)なので、first (42, 7)には普通のタプルを渡します。(left, _)は先頭の42を取り出し、二つ目の値を使わないパターンです。",
+  result: "結果はIntの42です。Pairという値のコンストラクターができるわけでも、別の型ができるわけでもありません。同じ中身でも用途の取り違えを防ぎたい場合はnewtypeを使います。"
 }

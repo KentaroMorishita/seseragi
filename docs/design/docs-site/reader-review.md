@@ -36,6 +36,10 @@ than producing an untranslated primary description. Per-route acceptance below
 is deliberately not bulk-checked by this authoring pass: the full walkthrough
 and API-specific examples still require page-by-page reader review.
 
+Explanation text is owned by each page's `en.ssrg` and `ja.ssrg`. Its summary
+is reused by the article copy; `guide.ssrg` only selects the optional example
+and pairs locale copies. Absence is `WithoutExample`, not an empty-string identity.
+
 - [ ] `/docs/language/model/what-is-seseragi/` — English explanation / Japanese explanation / prerequisites / example walkthrough / navigation
 - [ ] `/docs/language/model/design-principles/` — English explanation / Japanese explanation / prerequisites / example walkthrough / navigation
 - [ ] `/docs/language/model/expression-oriented/` — English explanation / Japanese explanation / prerequisites / example walkthrough / navigation

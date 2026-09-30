@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "タプル・配列・リスト",
-  summary: "タプルは決まった位置に値をまとめます。配列は同じ型の要素を添字で読み、リストは先頭へ要素を追加したり先頭から処理したりするときに使います。",
+  summary: (explanation ()).summary,
   purpose: [
     "タプルは、ラベルと数値のように役割の違う値をまとめるのに使います。(\"answer\", 42)は二つの位置を持ち、それぞれの型は違っていても構いません。",
     "整数の位置を指定して要素を読むならArray（配列）、先頭に要素を足したり先頭から順に取り出したりするならList（リスト）が使えます。どちらも不変ですが、同じコレクションの別名ではなく、別々の型です。"
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "必ず成功する分解と、matchで失敗も扱う必要のある分解を確認できます。",
     "要素の基本型や、結果に使うMaybeの値を確認できます。"
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "タプル・配列・リストを、どう使い分けるか",
+  summary: "タプルは固定した位置に、異なる型の値もまとめられます。ArrayとListは、同じ型の要素を任意の個数持ち、読み方や作り方が異なります。",
+  reading: "(label, number)でタプルを分解します。配列の位置は0から数えるため、numbers[1]はJust 20、numbers[9]はNothingです。selectedのmatchはJustからvalueを取り出し、Nothingなら0を選びます。selectedはInt型の20となり、整数として計算に使えます。",
+  result: "リストの表記には先頭のバッククォートがあり、\"Ren\" : namesは元を変えずに先頭を追加します。ArrayとListは自動では変換されません。表示されたMaybeは検索結果であり、そのまま整数の計算には使えません。"
 }

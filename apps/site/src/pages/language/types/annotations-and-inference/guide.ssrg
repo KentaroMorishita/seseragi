@@ -1,16 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Which types must I write?" "どこに型を書く必要があるか",
-  summary: localized
-    "Type annotations state what a value or function accepts. Inference fills in types only where the language allows you to omit them."
-    "型注釈は、値や関数が扱う型を明示する書き方です。省略できる場所では、コンパイラが値から型を推論します。",
-  exampleId: "function-application",
-  reading: localized
-    "In add, left: Int and right: Int name two integer parameters; the final Int after -> is the result type. let addOne = add 1 needs no annotation: its initializer tells the compiler that it is a function waiting for one more integer."
-    "例のleft: Intとright: Intは整数を受け取る二つの引数で、最後のIntは戻り値の型です。let addOne = add 1では、初期値から「残りの整数一つを受け取る関数」と分かるため、型を省略できます。",
-  result: localized
-    "An annotation checks the value; it does not convert it. Writing String beside an integer produces a type error, not text. An effect fn without signature clauses has its own inference rules, described separately below."
-    "注釈は値の検査であり、変換ではありません。整数にStringと書いても文字列にはならず、型エラーになります。署名を省略するeffect fnには別の推論規則があるため、通常のfnと区別してください。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "function-application") (en.explanation ()) (ja.explanation ())

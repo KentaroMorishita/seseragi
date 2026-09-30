@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I recognize and remove an import cycle?"
-    "importの循環を見つけ、解消するには",
-  summary: localized
-    "A module depends on every module it imports. A cycle occurs when following those imports eventually returns to the starting module."
-    "モジュールはimport先に依存します。importを順にたどって、出発したモジュールへ戻ってしまう状態が循環です。",
-  exampleId: "modules-identity",
-  reading: localized
-    "The example imports modules-domain; that module defines UserId without importing the caller back. This is one-way dependency. In contrast, user.ssrg importing order.ssrg while order.ssrg imports user.ssrg would form a cycle, even if both imports mention only types."
-    "例はmodules-domainを使い、その定義側は利用側をimportしていないので、一方向の依存です。一方、user.ssrgがorder.ssrgを、order.ssrgがuser.ssrgをimportすれば、型だけを使っていても循環になります。",
-  result: localized
-    "Move declarations both modules need into a third module, such as shared.ssrg, and let both import it without importing each other. An import alias changes a local name, not the dependency, so renaming alone cannot break the cycle."
-    "共通の宣言をshared.ssrgなどの第三のモジュールへ移し、双方がそこをimportする形にします。importの別名を変えても依存先は変わらず、名前を変えるだけでは循環を解消できません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "modules-identity") (en.explanation ()) (ja.explanation ())

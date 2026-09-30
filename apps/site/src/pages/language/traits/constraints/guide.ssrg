@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How can a generic function call a trait operation?"
-    "ジェネリック関数からtraitの操作を呼ぶには",
-  summary: localized
-    "A where constraint states which operations must exist for a type parameter. Without it, a generic function cannot assume every type has a label or comparison operation."
-    "whereの制約で、型パラメーターに必要な操作を指定します。ジェネリック関数は、すべての型に表示や比較の操作があるとは仮定できません。",
-  exampleId: "traits-constraints",
-  reading: localized
-    "describe<A> adds a prefix to label value. where Label<A> gives its body permission to call label and requires the caller to choose a type with that implementation. Badge has a Label instance, so describe Ready is accepted."
-    "describe<A>はlabel valueに接頭辞を付けます。where Label<A>により、本体でlabelを使え、呼び出し側はLabelの実装がある型を選びます。Badgeには実装があるため、describe Readyを呼べます。",
-  result: localized
-    "description is \"badge: ready\". A different type can use the same function after supplying its Label instance. Without such an instance, the call is rejected before execution; the compiler does not guess how to label an arbitrary value."
-    "descriptionは\"badge: ready\"です。別の型もLabelのinstanceを用意すれば、この関数を使えます。実装がない型を渡すと実行前にエラーになり、任意の値の表示方法を勝手に推測しません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "traits-constraints") (en.explanation ()) (ja.explanation ())

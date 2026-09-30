@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Should I use the generated language's arithmetic rules?"
-    "計算結果を、生成先の言語の規則で判断してよいか",
-  summary: localized
-    "Seseragi's observable calculation rules belong to Seseragi, even when the compiler emits another language."
-    "別の言語へコードを生成しても、観測できる計算結果はSeseragiの規則で判断します。",
-  exampleId: "principle-backend-independent-semantics",
-  reading: localized
-    "integerResult uses integer division -7 / 2, which truncates toward zero. decimalResult uses Float operands and produces the fractional quotient. The two source forms deliberately choose different arithmetic types."
-    "integerResultの-7 / 2は整数の除算で、0へ向かって端数を切り捨てます。decimalResultはFloat同士の除算で、小数の商を返します。二つの式は、異なる数値型の計算を明示しています。",
-  result: localized
-    "The program prints -3, 3.5. These results must follow the language contract rather than an accidental property of generated TypeScript. Backend independence does not promise identical machine layout or performance on every host."
-    "出力は-3, 3.5です。生成したTypeScriptの都合ではなく、言語の規則による結果です。一方で、すべての実行環境でメモリ配置や性能が同じになるという保証ではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "principle-backend-independent-semantics") (en.explanation ()) (ja.explanation ())

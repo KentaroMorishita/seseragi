@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How does a pattern give names to parts of a value?"
-    "値の一部を取り出して名前を付けるには",
-  summary: localized
-    "A binding pattern extracts parts of one input and makes their names available in a defined scope."
-    "束縛のパターンは、一つの入力から値の一部を取り出し、決まった範囲で使える名前を付けます。",
-  exampleId: "patterns-binding-rules",
-  reading: localized
-    "Player { name, score } on the left of let takes the corresponding fields from the Player on the right. name becomes \"Aki\" and score becomes 42. The same syntax can nest patterns to unpack more complex data."
-    "letの左側のPlayer { name, score }で、右側のPlayerから対応するフィールドを取り出します。nameは\"Aki\"、scoreは42です。パターンを入れ子にすれば、さらに中の値も取り出せます。",
-  result: localized
-    "summary is (\"Aki\", 42). Names become available only after the whole binding succeeds. A let pattern must accept every possible value of its input type; use match when a pattern may fail to match."
-    "summaryは(\"Aki\", 42)です。名前は、束縛全体が成立してから使えます。letでは入力型のどの値にも一致する必要があるため、一致しない場合があるパターンにはmatchを使います。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "patterns-binding-rules") (en.explanation ()) (ja.explanation ())

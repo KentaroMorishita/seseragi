@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "ソーステキストとコメント",
-  summary: "ソースファイルの文字コード、名前に使える文字、コメントの書き方を説明します。",
+  summary: (explanation ()).summary,
   formsTitle: "ファイルはUTF-8で保存する",
   formsBody: "ソースファイルはUTF-8で保存します。改行はLFでもCRLFでも同じ意味です。名前にはUnicodeの識別子として使える文字を使います。先頭はXID_Start、続く文字はXID_ContinueというUnicodeの分類に従います。名前に付けた末尾のアポストロフィ（'）も、その名前の一部です。",
   typingBody: "大文字・小文字は区別されます。Trueは真を表すBoolの値ですが、trueは別の名前です。予約語は変数や関数の名前にはできません。名前が示す値の型は、この文字の規則を確認した後で検査されます。",
@@ -10,4 +11,11 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "コメントや名前の境界を確認する",
   invalidBody: "数字や句読記号で名前を始めることはできません。また、/* ... */形式の複数行コメントはありません。見た目が似ている文字でも、Unicode上で別の文字なら別の名前になる場合があります。",
   diagnosticsBody: "文字コードや名前として使えない文字のエラーは、その文字の位置を指します。account'は一つの名前であり、accountの後に文字リテラルを置いた意味にはなりません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "コメントやソースの文字は、どう扱われるか",
+  summary: "SeseragiのソースはUTF-8です。コメントは人にコードを説明するもので、プログラムの値にはなりません。",
+  reading: "//から始まる行はコメントです。userNameと次の値は通常の宣言で、account'は値の名前に続けてアポストロフィを使う例です。名前はソースとして解析されます。",
+  result: "コメントの文章は実行されません。文字コードと名前の規則は別なので、UTF-8で表せるすべての文字を名前に使えるわけではありません。名前が拒否された場合は、以下の具体的な規則を確認します。"
 }

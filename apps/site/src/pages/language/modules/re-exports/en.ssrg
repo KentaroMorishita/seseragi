@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Re-exports",
-  summary: "Expose a selected dependency through a public facade without copying its declarations.",
+  summary: (explanation ()).summary,
   ruleTitle: "A facade extends its public interface",
   ruleBody: "pub import { UserId, toInt } from \"./modules-domain\" adds the named public declarations to this module's API. A consumer can import those names from the facade rather than their original file. A named re-export preserves the original declaration identity, so a UserId arriving through the facade is the same nominal UserId defined by the domain module.",
   typingBody: "pub import * as domain exposes a public namespace. Consumers use qualified access through that namespace; it is not an unqualified wildcard. Re-exporting a namespace introduces a namespace in the public API rather than duplicating all its declarations. The facade's own private names remain private.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Re-export does not manufacture visibility or identity",
   invalidBody: "A private declaration cannot become accessible just because a facade names it. Export only names that the source module makes public. Renaming a public declaration changes its exposed spelling, not its nominal identity. Avoid facade cycles: a re-export graph has no special cycle exception.",
   diagnosticsBody: "The example facade re-exports the domain's public type and operation and retains its opaque representation. Its source intentionally contains a relative import, so use it with the sibling domain module. A consumer should see a stable public interface, not depend on private files behind the facade.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Can callers use a stable entry module instead of internal file paths?",
+  summary: "A re-export publishes another module's public declarations through a stable entry module without copying their definitions.",
+  reading: "pub import { UserId, toInt } makes these public names available from this module too. pub import * as domain additionally exposes a namespace, so callers can use domain.UserId and domain.toInt.",
+  result: "Both access paths still refer to the original UserId type. The sibling modules-domain file is needed for this example; the entry file is not a standalone Playground program. You cannot re-export a private declaration to bypass its access restriction."
 }

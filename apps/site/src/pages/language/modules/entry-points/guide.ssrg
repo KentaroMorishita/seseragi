@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "What function does the runner execute first?"
-    "実行時に、最初に呼ばれる関数はどれか",
-  summary: localized
-    "An executable package selects an entry module with a public main function returning an Effect whose success value is Unit."
-    "実行可能なパッケージは、公開mainを持つモジュールを入口に選びます。mainは、成功値がUnitのEffectを返します。",
-  exampleId: "language-program-entry",
-  reading: localized
-    "pub makes main visible to the runner. effect fn returns an Effect; with Console and fails ConsoleError state the needed output service and possible output failure. println describes printing the message followed by a newline."
-    "pubはmainを実行機構から使えるように公開します。effect fnはEffectを返し、with Consoleとfails ConsoleErrorが出力サービスと失敗の可能性を表します。printlnはメッセージと改行を出力する処理です。",
-  result: localized
-    "Execution prints Hello, Seseragi! and completes with (). Importing this module does not call main. A library can expose functions without an entry point, and a program's main is not an arbitrary integer exit-code function."
-    "実行するとHello, Seseragi!を一行出力し、()で完了します。モジュールをimportするだけではmainを呼びません。ライブラリにはmainが不要で、mainは任意の整数の終了コードを返す関数ではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "language-program-entry") (en.explanation ()) (ja.explanation ())

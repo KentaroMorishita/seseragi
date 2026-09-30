@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I return a successful value or an error reason?"
-    "成功した値か、失敗の理由を返すには",
-  summary: localized
-    "Either<E, A> stores Right A for success or Left E for failure. Both are ordinary already-calculated values."
-    "Either<E, A>は、成功時のRight Aか、失敗時のLeft Eを持ちます。どちらも計算済みの通常の値です。",
-  exampleId: "effects-either",
-  reading: localized
-    "positive returns Right value when the integer is positive and Left (NotPositive value) otherwise. increment uses mapRight to add one only to a successful value, preserving any failure reason."
-    "positiveは正の整数ならRight value、それ以外ならLeft (NotPositive value)を返します。incrementのmapRightは成功値だけに1を足し、失敗の理由はそのまま残します。",
-  result: localized
-    "increment (positive 2) is Right 3. For zero, the result remains Left (NotPositive 0). Use match to display or recover from each case. Unlike Effect, this value does not wait for a runner to execute its construction."
-    "increment (positive 2)はRight 3です。0ならLeft (NotPositive 0)のままです。表示や回復をする場合はmatchで両方の場合を扱います。Effectとは違い、この値を作るために実行環境の処理開始を待つ必要はありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-either") (en.explanation ()) (ja.explanation ())

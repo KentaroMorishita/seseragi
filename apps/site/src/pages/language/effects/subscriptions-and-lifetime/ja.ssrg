@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Signalの購読と寿命",
-  summary: "Subscriptionは一つのSignalを順序付きで観測し、明示またはresource scopeによって解放します。",
+  summary: (explanation ()).summary,
   ruleTitle: "変化を受け取る期間を決め、購読を解放する",
   ruleBody: "subscribeは、最初に現在値を通知し、その後の更新を順に届けます。この通知を受ける関数を購読者と呼びます。同じSignalの購読者は登録順に呼ばれ、一つの購読者へ複数の通知を重ねて実行しません。",
   typingBody: "通知の関数はEffect<R, Never, Unit>を返します。回復可能な失敗を外へ残せないため、必要なら関数の中で処理します。subscribeは購読の値Subscriptionを返し、unsubscribeで解放できます。何度解放しても二重に処理しません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "依存先を変えるにはswitchMapを使う",
   invalidBody: "Signalには一般的なMonadの実装はありません。依存するSignalを動的に切り替える場合はswitchMapを使い、購読の開始と終了が明確な操作にします。",
   diagnosticsBody: "通知の中でdefectが起きた場合、その購読者が停止します。別の購読者の型付きの失敗にはなりません。購読を続けたい期間と解放の位置を確認してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Signalの監視が不要になったら、どう止めるか",
+  summary: "購読は、Signalの変化を観測する処理を登録します。寿命があるため、不要になったら明示的に解除するか、管理範囲の終了時に解放します。",
+  reading: "subscribeは最初にsourceの現在値をコールバックへ渡し、mirrorへ書き込みます。sourceを2にするとmirrorも2になります。unsubscribeした後の3への更新では、その観測処理は呼ばれません。",
+  result: "observeThenReleaseの結果は2です。コールバックのvalueは通知された値であり、Signalのハンドルではありません。必要な機能の寿命に合わせて購読を管理します。"
 }

@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  WithoutExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "What should I use instead of familiar missing keywords?"
-    "他の言語の構文がない場合、代わりに何を使うか",
-  summary: localized
-    "The absence of assignment, null, or return does not mean Seseragi cannot express updates, missing values, or function results. It uses different explicit forms."
-    "代入、null、returnがないからといって、更新や値の不在、関数の戻り値を表せないわけではありません。それぞれ別の明示的な書き方を使います。",
-  exampleId: "",
-  reading: localized
-    "For an immutable record, construct { ...old, field: newValue } rather than assigning old.field. Use Just and Nothing for ordinary presence and absence. A function returns its body's expression, and a block returns its final expression."
-    "不変なレコードはold.fieldへ代入せず、{ ...old, field: newValue }で別の値を作ります。値の有無はJustとNothingで表します。関数は本体の式、ブロックは最後の式を戻り値にします。",
-  result: localized
-    "For recoverable errors, use Either or Effect's failure type. For early collection termination, use the dedicated operations described in the list. These alternatives keep control flow and possible results visible rather than recreating another language's hidden behavior."
-    "回復可能な失敗にはEitherかEffectの失敗型を使い、コレクションの途中終了には一覧にある専用の操作を使います。他言語の構文を再現するより、結果と処理の流れが見える形を選びます。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation WithoutExample (en.explanation ()) (ja.explanation ())

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect関数の型を明示する形式",
-  summary: "contract formはsuccess・environment・failureをsourceへ直接書きます。",
+  summary: (explanation ()).summary,
   ruleTitle: "成功値・必要なサービス・失敗を宣言に書く",
   ruleBody: "effect fn 引数 -> A with R fails E = 本体は、Effect<R, E, A>を返す関数です。Aは成功したときの値、Rは必要なサービス、Eは回復可能な失敗です。withやfailsを読むと、呼び出し側に何が必要か分かります。",
   typingBody: "withを省くとサービス不要の{}、failsを省くと回復可能な失敗がないNeverです。本体のEffectは、この宣言に合う必要があります。通常の値を返すだけでは、暗黙にEffectへ変換されません。成功値がNeverの、成功しない処理だけは別の成功型の場所にも使えます。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "省略したwithやfailsにも意味がある",
   invalidBody: "-> Unitだけを指定すると、Effect<{}, Never, Unit>になります。本体にConsoleやClockが必要でも、コンパイラが宣言へ勝手に追加することはありません。必要なwithやfailsを書いてください。",
   diagnosticsBody: "型エラーでは、宣言したサービス・失敗・成功値と、本体の操作が返す型を見比べます。省略したwithやfailsにも固定の意味がある点に注意してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "関数が使うサービスと失敗を、明示するには",
+  summary: "effect fnの署名では、->の後に成功値の型、withの後に必要なサービス、failsの後に回復可能な失敗の型を書きます。",
+  reading: "announceはStringのmessageを受け取ります。-> Unitは成功時に内容を返さないこと、with Consoleは出力サービスが必要なこと、fails ConsoleErrorは出力が失敗する可能性を表します。本体のprintln messageもEffectです。",
+  result: "announceを呼ぶと出力処理の説明ができ、実行するとメッセージを出力します。明示形式でwithやfailsを省略すると、それぞれ{}とNeverを約束したことになり、本体から補ってもらう指定ではありません。"
 }

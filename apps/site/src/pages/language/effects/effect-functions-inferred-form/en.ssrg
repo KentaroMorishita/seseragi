@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect functions with an inferred contract",
-  summary: "The compact form infers a complete Effect contract from an Effect-typed body.",
+  summary: (explanation ()).summary,
   ruleTitle: "Remove every signature clause to request inference",
   ruleBody: "An effect fn with no ->, with, fails, or where clause infers R, E, and A from its body. The normalized Effect type is still emitted in typed artifacts and public module interfaces.",
   typingBody: "Requirement fields merge by canonical name and identical type. Zero non-Never failures infer Never; one infers that type; multiple distinct recoverable failures are rejected instead of synthesized into a union. Branch success values must converge normally.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Compact does not mean partly explicit",
   invalidBody: "with, fails, and where cannot appear without ->. Either write the complete contract beginning with its success type or remove all clauses and let the body determine the whole Effect type.",
   diagnosticsBody: "Diagnostics distinguish a non-Effect body, conflicting requirement fields, multiple failure types, and incompatible success branches, with the source spans that contributed each type.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Can the compiler derive an Effect signature from its body?",
+  summary: "Omit all signature clauses after the parameters to infer an effect fn's required services, failure type, and successful result together.",
+  reading: "announceInferred receives a String and returns println message. Since println needs Console and may fail with ConsoleError, the inferred return is Effect<Console, ConsoleError, Unit>. No output happens merely from constructing it.",
+  result: "Use this form when the body should determine the full Effect type. Adding only with or fails does not partially constrain it: choose either the complete explicit form or the clause-free inferred form."
 }

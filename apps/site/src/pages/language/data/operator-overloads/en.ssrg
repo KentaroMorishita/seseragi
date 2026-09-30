@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Operator overloads",
-  summary: "Structs and newtypes may implement a fixed standard operator through typeclass evidence owned by the nominal type.",
+  summary: (explanation ()).summary,
   ruleTitle: "Overloading is typed standard-trait sugar",
   ruleBody: "An operator member inside impl defines the corresponding standard trait instance. The first self operand is the enclosing nominal type; the declared later operand and result types determine the full evidence.",
   typingBody: "Resolution uses static operand types and global instance coherence. Generic overloads may require constraints. The representation type's operators are not inherited by a newtype.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Overloading does not create new syntax",
   invalidBody: "Only the fixed supported operators may be overloaded. Precedence and associativity stay standard; custom tokens use a top-level custom operator declaration. Duplicate explicit and sugared instances are rejected.",
   diagnosticsBody: "Diagnostics cover invalid operator names, operand or result contracts, illegal equality results, duplicate evidence, and a missing coherent instance at the use site.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How can + add values of my own type?",
+  summary: "An operator overload gives a supported standard operator a meaning for your named type. It keeps that operator's existing precedence and grouping rules.",
+  reading: "Score wraps Int. The + implementation unpacks both Scores, adds the integers, and wraps the sum back in Score. The first operand is received as self and the second as other.",
+  result: "total is Score 42, not Int 42. Score does not automatically inherit Int's operators; the declaration supplies the intended operation. A new custom symbol uses a different top-level operator declaration."
 }

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "traitの法則",
-  summary: "一部の標準traitには、通常の型検査では証明できなくても実装が守るべき意味上のlawがあります。",
+  summary: (explanation ()).summary,
   ruleTitle: "型が合うだけでなく、操作同士の関係も守る",
   ruleBody: "Eqは同じ値を自分自身と比較したら等しい、という規則を持ちます。Functorのmapで値をそのまま返す関数を使うと、元と同じ結果になる必要があります。こうした意味上の約束を法則と呼びます。",
   typingBody: "法則は操作を組み合わせたときの結果の関係です。追加の隠れた型検査や、別のinstanceを選ぶ規則ではありません。比較に使う等しさは、その型で観測できる結果に基づきます。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "コンパイル成功は法則の証明ではない",
   invalidBody: "型検査に通っても、常にFalseを返す等価比較など、法則に反する実装を作れてしまいます。コンパイル成功は意味上の正しさの証明ではありません。",
   diagnosticsBody: "型の間違いはコンパイラ、法則違反はテストで確認します。期待する関係、入力、再現できる最小の例をテストへ残してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "型は合っていても、実装の意味が間違っていることはあるか",
+  summary: "traitの法則は、引数と戻り値の型だけでは検査できない、実装が守るべき振る舞いを表します。",
+  reading: "reflexiveは、等しさの性質の一つである「値は自分自身と等しい」を確認します。Eq<A>があるため引数を比較でき、整数と文字列で同じ検査を使えます。",
+  result: "二つの検査はどちらもTrueです。常にFalseを返すEq実装は、戻り値のBoolには合っても、この法則に違反します。コンパイルの成功だけでは法則の証明にならず、具体的な値で検査します。"
 }

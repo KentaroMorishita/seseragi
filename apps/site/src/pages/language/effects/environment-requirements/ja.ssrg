@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effectが必要とするサービス",
-  summary: "型Rに、計算を実行するために必要なサービスをレコードのフィールドとして書きます。",
+  summary: (explanation ()).summary,
   ruleTitle: "サービスを、暗黙のグローバル値にしない",
   ruleBody: "複数のEffectを組み合わせると、それぞれが必要とするサービスをまとめて要求します。同じ名前のサービスは型も一致しなければならず、省略可能なフィールドにはできません。計算の中では、暗黙のグローバル値ではなくEffect.serviceを通して取得します。",
   typingBody: "ある計算が必要とするサービスをすべて同じ型で備えていれば、追加のサービスを持つ環境でもその計算を使えます。これはEffectに対して定めた規則であり、任意のジェネリック型に適用できるものではありません。ジェネリックな関数の型では、R & { service: Service }のように必要なサービスを加えられます。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "使えるかどうかが変わる機能は、操作の結果で表す",
   invalidBody: "サービスのフィールド自体を省略可能にすると、計算の途中で存在確認が必要になってしまいます。機能が使えない場合を表したいなら、Maybeを返す操作をサービスに用意するか、実行前に使えるサービスを選んでprovideします。",
   diagnosticsBody: "必要なサービスが合わない場合は、フィールド名と型、問題の位置を確認してください。実行する環境で提供できないサービスは、処理を開始する前に報告されます。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "処理がアプリケーションの設定を要求するには",
+  summary: "Effectの第一の型引数に、必要なサービスをレコードとして書きます。サービスは実行する環境から渡す値であり、暗黙のグローバル変数ではありません。",
+  reading: "Settingsはlabelを持ちます。effects.serviceは実行時にenvironment.settingsを取り出し、{ settings: Settings }はそのフィールドが必要なことを宣言します。mapで、得られるSettingsからlabelのStringを取り出します。",
+  result: "宣言した型のSettingsがなければ、この計算を実行できません。計算を作ることと、実行用の環境を渡すことは別です。関数のコードを変えずに、環境ごとに異なる設定を渡せます。"
 }

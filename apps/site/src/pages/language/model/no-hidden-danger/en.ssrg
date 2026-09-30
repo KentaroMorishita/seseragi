@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "No hidden danger",
-  summary: "If a result can be missing or an operation can fail, its type says so. The caller must decide how to handle that possibility.",
+  summary: (explanation ()).summary,
   meaningTitle: "A missing result is a case to handle",
   meaningBody: "Ordinary Seseragi values are never null or undefined. An operation that might not find a value returns Maybe<A>: Just contains an A, and Nothing means no value was found. This makes absence visible before the program runs.",
   exampleTitle: "Look up an array element that does not exist",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "Programmer errors can still stop execution. For example, integer division by zero is a runtime defect, not an Either returned by /. When zero is an expected input, use std/int.checkedDivide, which reports the failure as an Either so you can handle it.",
     "Foreign code can still provide null or throw exceptions. Interop adapters must validate or translate those cases before exposing ordinary Seseragi values. Conditions also require Bool, and different numeric types are not silently converted."
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What happens when an array position does not exist?",
+  summary: "An operation that can lack a value returns a type that represents that possibility, so the caller must handle it explicitly.",
+  reading: "values has only positions 0 and 1. arrays.get 5 values therefore produces Nothing. match handles Just value with a found message and Nothing with \"not found\", so both paths return String.",
+  result: "The program prints not found instead of pretending there is an integer or leaving a missing result unchecked. This principle does not promise that programs have no defects; it keeps documented ordinary risks visible in interfaces."
 }

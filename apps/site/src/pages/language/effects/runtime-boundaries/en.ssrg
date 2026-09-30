@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect runtime boundaries",
-  summary: "Only declared host boundaries may provide services and execute a Seseragi Effect.",
+  summary: (explanation ()).summary,
   ruleTitle: "Ordinary code has no general Effect runner",
   ruleBody: "main, the test runner, and defined callback adapters are execution boundaries. They assemble one environment, validate target capabilities, invoke the cold Effect, and translate its terminal outcome to the host contract.",
   typingBody: "A boundary wrapper must satisfy every field in R before execution. An application-specific service is provided while constructing main's returned Effect; unsupported target services reject build or startup instead of becoming a dynamic missing-service lookup.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A helper function cannot escape the boundary",
   invalidBody: "There is no runEffect available to ordinary application code. Nested execution would split environments, cancellation trees, and resource ownership, so programs compose Effect values instead.",
   diagnosticsBody: "Build and startup diagnostics list the exact unsupported service and selected target. Runtime reports keep the boundary, typed failure display, defect, and cancellation reason distinct.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Where does a stored Effect actually start?",
+  summary: "A designated execution boundary, such as main or the test runner, starts an Effect after supplying its required services.",
+  reading: "program returns a Task<String> built with succeed. Calling program () gives the description, not an immediate output operation. A host integration can invoke the function and execute its returned Task under that host's contract.",
+  result: "The executed result is \"ready for the host boundary\". An arbitrary helper cannot pull A out of Effect<R, E, A> by pretending to be a runner; compose Effects and return them to the actual execution boundary."
 }

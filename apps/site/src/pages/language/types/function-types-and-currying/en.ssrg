@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Function types and currying",
-  summary: "Every function consumes one parameter at a time; multi-parameter declarations are nested right-associative function types.",
+  summary: (explanation ()).summary,
   ruleTitle: "One parameter per function layer",
   ruleBody: "fn add x: Int -> y: Int -> Int has type Int -> (Int -> Int). The source spelling omits those grouping parentheses because -> associates right. Applying add 1 consumes the outer parameter and produces a function of type Int -> Int.",
   identityBody: "Currying is the function's type and calling model, not an optimizer rewrite or tuple-call convention. Parameters bind left to right. A declaration with no written parameter has one anonymous Unit parameter, type Unit -> A, and must be invoked with ().",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "No parameter does not mean an eager value",
   invalidBody: "Referencing clock without clock () yields the function value rather than Instant. f(x, y) is not a curried multi-argument call, and A -> B -> C never means (A -> B) -> C unless parentheses state that type explicitly.",
   diagnosticsBody: "Function hovers display the right-associated signature and the remaining type after partial application. Application diagnostics identify the single argument layer that failed instead of flattening every parameter into one host-style call.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What does a function return when I supply only one argument?",
+  summary: "Supplying some of a function's arguments creates a function waiting for the rest. This is partial application; the nested function types that make it possible are called currying.",
+  reading: "add receives left, then right, and returns their sum. add 1 is not the integer 1: it is a function that remembers 1 and adds its next argument. addOne 2 therefore produces 3.",
+  result: "Int -> Int -> Int means Int -> (Int -> Int). A function with no named parameters still receives Unit; invoke it with (). Passing a tuple is a different interface, not a substitute for supplying arguments one by one."
 }

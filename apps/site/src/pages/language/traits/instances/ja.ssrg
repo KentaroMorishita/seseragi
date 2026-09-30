@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "インスタンス",
-  summary: "特定の型に対するtraitの処理を定義します。traitの型パラメーターを具体的な型へ置き換え、その宣言に合う関数の本体を書きます。",
+  summary: (explanation ()).summary,
   purpose: [
     "traitで必要な操作を宣言したら、instanceで自分の型に対する処理を用意します。Label<Ticket>なら、TicketをLabelの操作でラベルにできる、という実装です。",
     "instanceの宣言は、新しいTicketの値を作る操作ではありません。呼び出しごとに別のオブジェクトを作るものでもありません。コンパイラーが選べる、型ごとの実装を定義しています。"
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "instanceを宣言できる場所と、実装の重複が禁止される理由を確認できます。",
     "ドットで呼ぶ型の関数と、traitの実装の違いを確認できます。"
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "型ごとのtraitの処理は、どこに書くか",
+  summary: "instanceは、指定した型に対してtraitの必要な操作を実装する宣言です。オブジェクトの値を作る操作ではありません。",
+  reading: "Ticketは番号を持ち、そのLabelの実装は番号の前に\"ticket-\"を付けます。Personは名前を持ち、そのLabelの実装は名前を返します。labelOf<A>はwhere Label<A>を条件にして、同じ関数から引数の型に合う処理を呼びます。",
+  result: "Ticket { number: 42 }を渡すと\"ticket-42\"を返します。番号を変えれば文字列は変わりますが、選ぶinstanceは変わりません。型によって選び、重複する実装はエラーになります。"
 }

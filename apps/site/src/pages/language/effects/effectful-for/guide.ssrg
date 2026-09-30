@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I execute an operation for each element?"
-    "各要素について、処理を一つずつ実行するには",
-  summary: localized
-    "An effectful for builds a sequential operation over a collection. Each iteration returns an Effect with Unit as its success value."
-    "Effectを実行するforは、コレクションの要素ごとに処理を順に行います。各回の処理は、成功値がUnitのEffectを返します。",
-  exampleId: "effects-effectful-for",
-  reading: localized
-    "announceAll receives an Array<String>. for message <- messages binds each element to message and describes println message for that iteration. Unlike a comprehension, it is not collecting the returned messages into a new array."
-    "announceAllはArray<String>を受け取ります。for message <- messagesで各要素をmessageとして使い、その回のprintln messageを組み立てます。内包表記とは違い、結果を配列に集める処理ではありません。",
-  result: localized
-    "Executing announceAll [\"Aki\", \"Mio\"] prints Aki and then Mio on separate lines. If one iteration fails, later iterations do not start. An empty input completes without printing."
-    "announceAll [\"Aki\", \"Mio\"]を実行すると、Aki、Mioの順に一行ずつ出力します。一回の処理が失敗すれば、その後の要素は実行しません。空の入力なら何も出力せず完了します。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-effectful-for") (en.explanation ()) (ja.explanation ())

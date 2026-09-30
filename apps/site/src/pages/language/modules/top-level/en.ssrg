@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Top-level declarations",
-  summary: "A module declares names at top level. Ordinary values initialize in order, while Effect values describe work for later execution.",
+  summary: (explanation ()).summary,
   ruleTitle: "Top level contains declarations",
   ruleBody: "A module may contain imports and re-exports, let bindings, fn and effect fn declarations, type, newtype, alias and struct declarations, inherent impl blocks, trait declarations and instances, custom operators, foreign declarations and rec groups. Each form introduces declarations or changes the module interface. Arbitrary expression statements are not a top-level form; a call belongs in a binding or function body.",
   typingBody: "A top-level let needs an irrefutable binding pattern and a pure right-hand expression. Pure does not mean that the resulting value must be a scalar: constructing an Effect is pure because it describes work without running it. In the example, report is an Effect function and pending holds the Effect returned by report (). No console operation runs when pending is initialized.",
@@ -21,3 +22,10 @@ pub fn exampleTitle -> String = "Initialization constructs work without running 
 
 pub fn exampleBody -> String =
   "base initializes first, then answer becomes 42. Calling report () constructs pending; the println remains inside the returned Effect. Even if another module imports this file, that import does not print the answer."
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Does a top-level Effect run when the module is imported?",
+  summary: "Top-level declarations define module names and initialize ordinary values. Storing an Effect value does not execute its described operation.",
+  reading: "base becomes 20 and answer becomes double 21, which is 42. report () constructs the output operation and stores it in pending. The println remains part of that operation rather than printing during module initialization.",
+  result: "A runner or other designated execution boundary must execute the stored Effect. Top level does not allow arbitrary expression statements: put a computed value in a declaration, or external work inside the returned Effect."
+}

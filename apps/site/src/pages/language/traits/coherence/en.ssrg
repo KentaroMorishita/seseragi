@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Coherence and ownership",
-  summary: "The package graph may contain only one instance for each trait application, owned beside the trait or its outer nominal type.",
+  summary: (explanation ()).summary,
   ruleTitle: "One static question has one answer",
   ruleBody: "Two instances may not overlap after aliases and type parameters are considered. The declaring module must own the trait or the outermost nominal type in the instance head. There are no priorities, local overrides, or orphan instances.",
   typingBody: "Visible instances come from the module's transitive import closure. Standard structural instances are sealed. Functional dependencies can reject heads that disagree on a determined output even when their full argument lists differ.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Aliases and specificity do not escape overlap",
   invalidBody: "An alias expands before identity checks, and a more specific head does not outrank a generic one. Conflicting evidence must be removed or expressed through distinct nominal types.",
   diagnosticsBody: "Overlap diagnostics identify both declarations. Orphan diagnostics identify the unowned trait and outer type. Functional-dependency diagnostics show the inputs that would determine incompatible outputs.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What prevents a new import from changing which implementation runs?",
+  summary: "Each trait application must have one unambiguous implementation. Ownership rules limit where an instance can be declared.",
+  reading: "Title<Stage> is implemented once and handles both Draft and Published. title Published can therefore select a single known implementation from the static Stage type; the constructor only affects the branch inside that implementation.",
+  result: "publishedTitle is \"published\". Adding another overlapping Title<Stage> is an error, not a later override. A type alias does not create a distinct type that can evade this restriction."
 }

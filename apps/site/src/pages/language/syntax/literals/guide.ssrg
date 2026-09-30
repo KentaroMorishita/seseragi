@@ -1,16 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I write a value directly in source?" "数値や文字列をソースに直接書くには",
-  summary: localized
-    "A literal is a value written directly, such as 42, True, or \"hello\". Its written form determines its initial type."
-    "リテラルは、42、True、\"hello\"など、ソースに直接書く値です。その書き方によって型が決まります。",
-  exampleId: "syntax-literals",
-  reading: localized
-    "million uses underscores between digits and is still Int. avogadro includes an exponent and is Float. Single quotes enclose a Char, double quotes a String, and backticks a template that can insert an expression's displayed value."
-    "millionは数字の間を_で区切ったIntで、avogadroは指数を含むFloatです。一重引用符はChar、二重引用符はString、バッククォートは式の表示結果を埋め込めるテンプレート文字列です。",
-  result: localized
-    "Writing 42.0 rather than 42 selects Float, not an Int with different formatting. Separators do not affect a number's value. A literal must be valid and in range before the program runs; invalid spelling is not repaired silently."
-    "42ではなく42.0と書くと、表示方法が違うIntではなくFloatになります。数字の区切りは値を変えません。不正な綴りや範囲外のリテラルは実行前に拒否されます。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "syntax-literals") (en.explanation ()) (ja.explanation ())

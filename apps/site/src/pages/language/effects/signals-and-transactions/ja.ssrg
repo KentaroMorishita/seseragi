@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Signalとトランザクション",
-  summary: "時間とともに変わる値をSignalで読み取り、MutableSignalで更新します。複数の更新はまとめて公開できます。",
+  summary: (explanation ()).summary,
   ruleTitle: "Signalの現在値は、Effectの中で読み書きする",
   ruleBody: "Signalの生成、読み取り、更新、購読は状態にアクセスするため、TaskまたはEffectを返します。MutableSignal<A>を読み取り専用のSignal<A>として渡すことはできますが、その逆はできません。読み取り専用にしても、中身の型Aは変わりません。",
   typingBody: "planSetとplanUpdateで更新の計画を作り、transactionに渡します。計画の型SignalChangeは更新対象を外から隠すため、中身の型が違うSignalへの更新も同じArrayにまとめられます。transactionはTask<Unit>を返します。計画を作るだけでは、まだ更新は公開されません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "純粋な式の中では、Signalの現在値を読めない",
   invalidBody: "純粋なコードでSignal自体を受け渡すことはできますが、現在値は読めません。Effectの中でSignal.readか接頭辞*を使います。現在値をもとに新しい値を決めたい場合は、読み取った古い値を後で書き戻すのではなく、updateを使います。",
   diagnosticsBody: "読み取り専用のSignalを更新しようとした場合や、更新する値の型が合わない場合は型エラーになります。実行時の診断では、更新の準備、公開、派生値の再計算、購読者への通知のどの段階で問題が起きたかを区別します。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "二つの値を、中途半端な状態を見せずに更新するには",
+  summary: "Signalは、変化を観測できる値を表します。トランザクションは複数の更新を準備し、まとめて公開します。",
+  reading: "xは1、yは2から始まります。planSet 10 xはxを10にする計画で、planUpdateはyに20を足す計画です。transactionが両方をまとめて公開し、その後の*で確定した現在値を読みます。",
+  result: "updateCoordinatesを実行すると(10, 22)で成功します。この更新による途中の(10, 2)を観測者に通知しません。計画を作るだけでは値は変わらず、普通の不変なフィールドが書き換え可能になるわけでもありません。"
 }

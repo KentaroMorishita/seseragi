@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect関数の型を推論する形式",
-  summary: "compact formはEffect型のbodyから完全なEffect contractを推論します。",
+  summary: (explanation ()).summary,
   ruleTitle: "本体の操作からEffectの型を決める",
   ruleBody: "->、with、fails、whereを一つも書かないeffect fnは、本体から必要なサービスR、失敗型E、成功型Aを推論します。推論された型は、公開されるモジュールの情報にも残ります。",
   typingBody: "サービスは名前と型が一致する場合にまとめます。失敗しないNeverを除き、失敗型が一種類ならその型を使います。複数種類の失敗を自動で一つにまとめることはありません。分岐の成功値も同じ型になる必要があります。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "明示する形式と推論する形式を混ぜない",
   invalidBody: "一部だけの推論指定はできません。->で成功型を明示してwithやfailsを書くか、四つの指定をすべて省いて本体から全体を推論させます。",
   diagnosticsBody: "本体がEffectでない場合、同じ名前のサービスの型が衝突する場合、失敗型や成功型が一致しない場合を区別して確認してください。失敗型はmapErrorなどで明示的に揃えます。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Effectの型を、本体から決めてもらうには",
+  summary: "引数の後の署名をすべて省略すると、effect fnのサービス・失敗・成功値の型を、本体からまとめて推論します。",
+  reading: "announceInferredの本体はprintln messageです。printlnはConsoleを必要とし、ConsoleErrorで失敗する可能性があるため、Effect<Console, ConsoleError, Unit>を推論します。値を作るだけでは出力しません。",
+  result: "本体にEffect型全体を決めさせたい場合に使います。withやfailsだけを追加する部分的な指定はできません。完全な明示形式か、署名をすべて省略する推論形式を選びます。"
 }

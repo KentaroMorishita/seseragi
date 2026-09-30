@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "When is a compact expression still easy to follow?"
-    "短い式でも、処理の流れを読み取れるようにするには",
-  summary: localized
-    "Concise code should make the data flow visible. Prefer a small named function or a clear pipeline over compression that hides inputs and intermediate meaning."
-    "簡潔なコードでも、値と処理の流れが見えることを重視します。引数や途中の意味が分からない圧縮より、短い名前付き関数や明確なパイプラインを使います。",
-  exampleId: "principle-readable-density",
-  reading: localized
-    "double multiplies by two, and add 1 is the function adding one to its next argument. Starting at 3, the pipeline computes 6 and then 7. Each step's input is the preceding result."
-    "doubleは2倍にし、add 1は次の引数に1を足す関数です。3から始め、パイプラインで6、次に7になります。前の結果を次の処理の入力にします。",
-  result: localized
-    "The output is 7. Compactness does not change evaluation or type rules. If the chain needs explanation at every symbol, name a meaningful intermediate value or split the expression instead of relying on cleverness."
-    "出力は7です。短く書いても、評価や型の規則は変わりません。記号ごとに説明が必要な連鎖なら、途中の値に意味のある名前を付けたり、式を分けたりします。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "principle-readable-density") (en.explanation ()) (ja.explanation ())

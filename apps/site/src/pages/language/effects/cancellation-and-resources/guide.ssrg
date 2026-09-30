@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Who releases a resource if work stops early?"
-    "処理が途中で止まったとき、誰が後片付けするか",
-  summary: localized
-    "A resource scope owns work and its cleanup. Register release when acquiring a resource so success, failure, or cancellation cannot skip it."
-    "リソースの管理範囲は、処理と後片付けをまとめて管理します。取得時に解放処理を登録し、成功・失敗・キャンセルのいずれでも後片付けするようにします。",
-  exampleId: "effects-cancellation-resources",
-  reading: localized
-    "The example uses a mutable Ref as a small observable cleanup marker rather than opening a real file. released starts False. acquireRelease registers refs.set True released as cleanup inside scoped; leaving scoped runs that cleanup."
-    "例では本物のファイルを開く代わりに、後片付けを確認するためのRefを使います。releasedは最初Falseです。scopedの中でacquireReleaseがrefs.set True releasedを解放処理として登録し、その範囲を抜けると実行します。",
-  result: localized
-    "Executing useScoped yields True, proving the registered release ran. For a file, the same pattern would acquire a handle and register its close operation. A finalizer is this registered cleanup, not the normal success result; it must handle its own recoverable errors."
-    "useScopedを実行するとTrueになり、登録した解放処理が動いたと分かります。ファイルなら、取得したハンドルを閉じる処理を同じ形で登録します。この後片付けをfinalizerと呼び、そこで起こる回復可能な失敗は内部で扱います。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-cancellation-resources") (en.explanation ()) (ja.explanation ())

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "依存グラフと循環",
-  summary: "型、trait、再公開の辺も含め、モジュール全体のグラフを非循環に保ちます。",
+  summary: (explanation ()).summary,
   ruleTitle: "すべてのimportが依存の辺になる",
   ruleBody: "モジュール依存グラフは通常のimportと再公開を含みます。対象が値、型、traitのどれでも循環は禁止です。type-onlyの例外はなく、直ちに関数を呼ばないからといって循環を許しません。非循環のグラフにより、linkと初期化の依存順序を一貫して決められます。",
   typingBody: "例は利用側からdomainへの一方向の依存です。同じdomainを等価な二つの表記でimportしても同一のノードは一つです。グラフの同一性はimport文の個数ではなくパッケージの同一性と正規化パスで決まります。名前にaliasを付けても循環は切れません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "型だけのimportでも循環は禁止",
   invalidBody: "AがBの型をimportし、BがAの型をimportすればモジュールの循環です。窓口経由の再公開でも辺は残ります。遅延Effectを加えると実行時期は変わりますが、循環したソースの依存グラフを合法にはできません。",
   diagnosticsBody: "循環の診断は循環経路を作るモジュールパスを示します。最後に循環経路を閉じたimportだけでなく、循環経路全体を読んでください。共有宣言の所属をより下位の一つのモジュールへ移し、aliasで隠すのではなく依存の辺を取り除きます。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "importの循環を見つけ、解消するには",
+  summary: "モジュールはimport先に依存します。importを順にたどって、出発したモジュールへ戻ってしまう状態が循環です。",
+  reading: "例はmodules-domainを使い、その定義側は利用側をimportしていないので、一方向の依存です。一方、user.ssrgがorder.ssrgを、order.ssrgがuser.ssrgをimportすれば、型だけを使っていても循環になります。",
+  result: "共通の宣言をshared.ssrgなどの第三のモジュールへ移し、双方がそこをimportする形にします。importの別名を変えても依存先は変わらず、名前を変えるだけでは循環を解消できません。"
 }

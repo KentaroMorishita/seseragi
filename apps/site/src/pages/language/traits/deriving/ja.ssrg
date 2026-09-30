@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "derivingによるインスタンスの導出",
-  summary: "nominal data宣言はfieldとconstructor順序から、閉じた集合の標準instanceをcompilerに生成させられます。",
+  summary: (explanation ()).summary,
   ruleTitle: "データの各部分から、標準の操作を自動で作る",
   ruleBody: "ADT、struct、newtypeにはEq、Ord、Show、Debug、Hash、JsonEncode、JsonDecodeをderivingで指定できます。生成された実装も、手書きのinstanceと同じ公開範囲・宣言場所・重複禁止の規則に従います。",
   typingBody: "フィールドや各選択肢の中身にも、対象のtraitの実装が必要です。ジェネリック型では、その条件が型パラメーターに加わります。HashにはEqも必要です。JSONの自動生成は定められたJSON形式を使います。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "任意のtraitやコードを自動生成する仕組みではない",
   invalidBody: "独自traitのderivingや任意のコード生成はできません。同じ型について手書きと自動生成のinstanceを重ねるとエラーです。必要なフィールドの実装が不足する場合も生成できません。",
   diagnosticsBody: "生成できないtraitと、原因のフィールドや中身の型を確認します。Hashを指定した場合はEqが用意されているかも確認してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "データ型の比較や表示を、自動で用意できるか",
+  summary: "derivingは、宣言した選択肢やフィールドをもとに、対応する標準traitの実装をコンパイラに用意させます。",
+  reading: "PriorityのEq・Ord・Showは、等しさの比較、順序比較、表示です。Taskもtitleとpriorityを使う比較と表示を導出します。task == taskは、オブジェクトの同一性ではなく、生成した比較操作です。",
+  result: "sameTaskはTrueです。外側の型で導出する操作には、中の各フィールドも対応する操作を持つ必要があります。対象は定められた標準traitであり、任意のtraitの処理を生成する仕組みではありません。"
 }

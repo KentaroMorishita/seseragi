@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Reserved words and naming",
-  summary: "Reserved and contextual words define parse boundaries, while initial letter case separates type-level and value-level names.",
+  summary: (explanation ()).summary,
   formsTitle: "Reserved, contextual, and ordinary names",
   formsBody: "The reserved set is: as, alias, deprecated, deriving, do, effect, else, fails, False, fn, for, foreign, from, if, impl, import, infix, infixl, infixr, instance, let, match, newtype, opaque, operator, pub, rec, struct, then, trait, True, type, when, where, and with.",
   typingBody: "Types, constructors, and traits start uppercase. Values, functions, fields, and module aliases start lowercase. These casing rules participate in name classification before later type resolution, and source names remain case-sensitive.",
@@ -10,4 +11,11 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "A wildcard is not a binding you can read",
   invalidBody: "_ discards a value and cannot be referenced. A reserved word cannot name a declaration, uppercase value names and lowercase type names are rejected, and changing case creates a different name rather than an alias.",
   diagnosticsBody: "The lexer preserves identifier spelling and the parser applies contextual keyword rules only in their owning grammar. Naming diagnostics point at the declaration name; unresolved-name diagnostics never reinterpret _ or a reserved word as a value.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Which names can I use for values and types?",
+  summary: "The language distinguishes value names, type names, and reserved syntax words. Consistent naming helps the parser and the reader recognize each role.",
+  reading: "Reading is a type name; Sample is a constructor that holds an Int. describe and value are value names. type, fn, and match introduce language constructs and cannot be used as ordinary names in their places.",
+  result: "describe (Sample 42) returns the string \"42\". Uppercase spelling alone does not declare a type parameter; a generic parameter must appear in its declaration's parameter list. The exact allowed spelling and reserved names follow below."
 }

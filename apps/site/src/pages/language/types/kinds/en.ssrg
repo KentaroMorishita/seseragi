@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Kinds and type constructors",
-  summary: "Distinguish a complete value type from a constructor that still needs type arguments.",
+  summary: (explanation ()).summary,
   ruleTitle: "A constructor is not yet a value type",
   ruleBody: "A kind describes what a type expression accepts. Int has kind Type: it can be the type of a value. Maybe has kind Type -> Type: it needs one Type argument before it can describe a value. Maybe<Int> is complete, while a bare Maybe is not. A two-parameter constructor has kind Type -> Type -> Type; supplying only its first argument does not make it a value type.",
   identityBody: "Constructor parameters are written M<_> for one slot, and can appear in functions, ADTs, structs, aliases, traits and impls. They let one declaration refer to a family of containers without choosing a particular container. The example's Wrapped accepts Maybe as that family and applies it to Int. Kinds exist for static checking; M is not a runtime object.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Do not use a constructor where a value type is required",
   invalidBody: "A parameter annotated Maybe has not selected the contained type. Annotate Maybe<Int> or introduce a type parameter. Passing Int as M<_> also fails: Int cannot be applied to another type. Extra arguments are not ignored and missing slots do not become Unknown.",
   diagnosticsBody: "Kind and arity errors are compile-time errors. Read the expected constructor shape, then check whether each argument is a complete type or a constructor of that shape. Add the missing argument rather than treating _ as a general inference escape hatch.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Why can I pass Maybe as a type argument but not use it alone as a value type?",
+  summary: "Some type parameters accept complete types such as Int; others accept type constructors such as Maybe. A kind describes which shape is required.",
+  reading: "Wrapped<M<_>, A> takes M, which needs one type argument, and applies it to A. Wrapped<Maybe, Int> therefore means Maybe<Int>. keep receives and returns this complete type.",
+  result: "Maybe by itself still needs its element type; Maybe<Int> does not. The _ in M<_> denotes an available type-argument position. It is not permission to leave an ordinary value's type unknown."
 }

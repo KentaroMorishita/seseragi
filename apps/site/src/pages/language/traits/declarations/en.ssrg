@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Trait declarations",
-  summary: "Declare the names and types of operations that an implementation must provide. A trait declaration specifies a contract, not an executable body.",
+  summary: (explanation ()).summary,
   purpose: [
     "A trait declaration answers one question: what must a type provide for shared code to use this operation? Label<A> says that labeling an A must produce a String.",
     "The declaration and its implementation are separate. The complete example also includes an instance so it can run, but this page focuses on the three-line trait declaration."
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "Supply a body for each operation and check the substituted signatures.",
     "Look up the difference between a complete type and a type parameter such as F<_>."
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What does the trait declaration promise?",
+  summary: "A trait names operations and their parameter and result types. The implementation bodies are provided separately in instances.",
+  reading: "Ticket and Person are two different data types. Label<A> declares one label operation whose input type is A and result is String. The Ticket and Person instances implement that declaration. labelOf<A> requires Label<A> and can call either implementation; personLabel is its Person call.",
+  result: "The instance below the declaration fulfills this promise; main then invokes it and prints ticket-42. A trait declaration alone neither computes a label nor creates a Ticket."
 }

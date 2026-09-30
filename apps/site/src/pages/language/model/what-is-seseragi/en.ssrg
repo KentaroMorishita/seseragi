@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ConceptCopy } from "../concept"
 
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "What Seseragi is",
-  summary: "Seseragi builds programs from functions and immutable values. Types are checked before execution, and missing values and failures are explicit.",
+  summary: (explanation ()).summary,
   ruleTitle: "Three ideas to start with",
   ruleBody: "Expression-oriented means a decision such as if produces a value. Statically typed means the compiler checks types before the program runs. Immutable means an ordinary value cannot be changed after creation. The example's function chooses a String based on an Int score; each design-principle page explains a rule with its own example.",
   consequencesTitle: "How this appears in code",
@@ -11,4 +12,11 @@ pub fn copy -> ConceptCopy = ConceptCopy {
   consequenceThree: "Effect describes work such as file or console access. Its type states the required services, possible errors, and successful result. Creating this description is separate from executing it.",
   boundaryTitle: "Reference or Tour?",
   boundaryBody: "Use the reference to understand one concept and check its rules. The interactive Tour is the step-by-step learning path. You do not need to read every reference article in order; follow the links from the concept you are investigating."
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What will feel different when I write Seseragi?",
+  summary: "Seseragi is a statically typed, expression-oriented language built around immutable values and functions. External work is represented explicitly with Effect.",
+  reading: "result accepts an integer score and returns a String chosen by if. if is a value-producing expression, so the function can use it directly as its body. main uses println to turn that result into an explicit output operation.",
+  result: "The program prints pass for score 85. You do not need to read the entire specification before using this reference: each topic introduces its own necessary terms, then explains the exact rules. The Tour is the separate ordered practice path."
 }

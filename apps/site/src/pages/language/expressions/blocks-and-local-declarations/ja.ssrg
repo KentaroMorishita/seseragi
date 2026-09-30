@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "ブロックとローカル宣言",
-  summary: "中間の値に名前を付けながら計算し、最後の式を結果にする構文です。",
+  summary: (explanation ()).summary,
   ruleTitle: "ブロックの値は最後の式の値",
   ruleBody: "{と}の中にローカル宣言と式を書きます。最後の式がブロック全体の結果です。宣言だけで最後の式がない場合はUnitを返します。ブロックで定義した名前は、そのブロックの外には出ません。",
   typingBody: "let、fn、effect fn、再帰宣言のrecを使えます。名前は宣言した位置からブロックの末尾まで使えます。同名の外側の名前を隠すことはできますが、まだ宣言していない後続の名前は参照できません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "{}は空のレコードであり、Unitではない",
   invalidBody: "何もしないブロックを書くなら{ () }です。{}は空のレコードの値になります。型、trait、impl、instance、演算子、foreign、公開宣言はブロック内ではなくモジュール直下に置きます。",
   diagnosticsBody: "後で宣言するローカル名を先に使うと、名前が見つからないエラーになります。ローカル関数同士を相互再帰させる場合は、同じrecにまとめて宣言します。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "ブロックの戻り値は、どの式か",
+  summary: "ブロックは波括弧内にローカル宣言と式をまとめます。最後の式の値が、そのブロックの戻り値になります。",
+  reading: "例のlabelはnormalizedを作り、その値を表示するローカル関数renderを定義します。最後のrender normalizedが戻り値です。別のreturn文を置くのではありません。",
+  result: "label 42は\"score=42\"を返し、負の点数なら0として表示します。ローカルの名前はブロック外から使えません。普通のブロックと、Effectの処理を順に実行するdoブロックは異なります。"
 }

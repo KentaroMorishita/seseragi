@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Algebraic data types",
-  summary: "An algebraic data type names a closed set of variants and makes every state explicit.",
+  summary: (explanation ()).summary,
   ruleTitle: "Variants define a closed nominal sum",
   ruleBody: "A type declaration lists every constructor. A constructor with no payload is a value; a constructor with a payload is a function into the declared type. Multiple payload values are carried by one tuple.",
   typingBody: "Constructors introduce module-scope names and instantiate generic type parameters from their payload or expected result type. Matching uses the same nominal type and substituted payload types.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A variant list is closed",
   invalidBody: "Code cannot add a constructor from another module or treat two declarations with identical constructors as the same type. Use a new declaration and explicit conversion when the domain differs.",
   diagnosticsBody: "Unknown constructors, wrong payload arity or type, inaccessible constructors, and non-exhaustive matches are compile-time diagnostics.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I describe a value with a fixed set of cases?",
+  summary: "An algebraic data type names a fixed set of alternatives. Each alternative can carry the data needed for that case.",
+  reading: "LoadState<A> is either Idle or Loaded A. Loaded \"ready\" carries a String. describe handles Idle with \"idle\" and Loaded by extracting its stored value. The parameter <A> lets other uses choose a different payload type.",
+  result: "message is \"ready\". There is no additional undeclared case that match must discover at runtime. This fixed set lets the compiler report a missing branch when you forget one."
 }

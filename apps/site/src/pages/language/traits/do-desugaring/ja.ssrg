@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "doブロックの構文展開",
-  summary: "do blockはsource順とlexical scopeを保ったまま、右からnested flatMap callとlambdaへ展開します。",
+  summary: (explanation ()).summary,
   ruleTitle: "doはflatMapを重ねた処理として読める",
   ruleBody: "x <- mxの後にrestが続く場合、flatMapでmxの結果xを受け取り、その関数の中でrestを行います。結果を使わない行も同じようにつなぎます。letは通常のローカル宣言のままで、最後の式を結果とします。",
   typingBody: "結果を受け取る関数の引数はM<A>全体ではなく、中のAです。パターンもAに合い、必ず一致する必要があります。flatMapに必要なtraitの条件は、doでも残ります。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "短い構文にしても、処理の規則は残る",
   invalidBody: "短い構文になるだけで、失敗や状態、待機、リソースの規則は消えません。選んだMonadの動作を使います。",
   diagnosticsBody: "診断は元のdoの行を指します。生成コードの内部名ではなく、該当する取り出しや最後の式を確認してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "doとflatMapは、どう対応するか",
+  summary: "doは、入れ子のflatMapを読みやすく書く構文です。前の結果を受け取る関数の中へ、残りの計算をまとめます。",
+  reading: "value <- sourceの後にincrement valueと書く形は、flatMap (\\value -> increment value) sourceに対応します。ラムダのvalueはMaybe自体ではなく、中のIntです。二つの関数は同じ処理を表します。",
+  result: "Just 41ではどちらもJust 42、NothingではどちらもNothingです。比較結果はTrueです。構文を展開しても、Maybeの不在の扱いや、Effectの処理順が消えるわけではありません。"
 }

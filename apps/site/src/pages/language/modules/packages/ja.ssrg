@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "パッケージ",
-  summary: "複数のモジュールを一つの単位として扱い、名前、バージョン、依存先、公開するモジュールをseseragi.tomlに指定します。",
+  summary: (explanation ()).summary,
   ruleTitle: "seseragi.tomlでパッケージの範囲を決める",
   ruleBody: "パッケージのルートにseseragi.tomlを一つ置きます。名前、バージョン、対応する言語のバージョンを宣言し、必要に応じてソースの配置、直接の依存先、公開するモジュールを指定します。ディレクトリーを分けるだけでは、別のパッケージにはなりません。package.jsonから設定を推測したり、親ディレクトリーの設定を自動で混ぜたりもしません。",
   typingBody: "パッケージは、名前、正確なバージョン、取得元で区別します。同じ名前とバージョンでも取得元が異なるものを一つの依存関係に混ぜるとエラーになります。別のパッケージで定義した型は、その定義元の型として扱います。型名が同じという理由で同一の型にはなりません。",
@@ -20,4 +21,11 @@ pub fn layoutBody -> String =
 pub fn exampleTitle -> String = "ライブラリで公開するモジュールを選ぶ"
 
 pub fn exampleBody -> String =
-  "下の設定では、外部からacme/validationをimportするとsrc/lib.ssrgを、acme/validation/emailならsrc/email.ssrgを使います。exportsに載せていないファイルは、パッケージ内部だけで使います。ライブラリにはmainは不要です。実行するパッケージにする場合は、[run]に実行入口のモジュールと実行環境を指定します。"
+  "この設定では、外部からacme/validationをimportするとsrc/lib.ssrgを、acme/validation/emailならsrc/email.ssrgを使います。exportsに載せていないファイルは、パッケージ内部だけで使います。ライブラリにはmainは不要です。実行するパッケージにする場合は、[run]に実行入口のモジュールと実行環境を指定します。"
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "複数のファイルを、一つのパッケージにするものは何か",
+  summary: "seseragi.tomlで、パッケージの名前・バージョン・ソースの配置・依存先・外部へ公開するモジュールを定めます。ディレクトリだけでは別のパッケージになりません。",
+  reading: "このマニフェストではacme/validationからsrc/lib.ssrg、acme/validation/emailからsrc/email.ssrgを使えます。補助のファイルを内部に置いても、自動で外部の公開パスにはなりません。",
+  result: "宣言のpubとパッケージのexportsは役割が違います。exportsは外部からモジュールへ到達できるか、pubはそのモジュールの宣言を使えるかを決めます。ライブラリにはmainが不要です。"
+}

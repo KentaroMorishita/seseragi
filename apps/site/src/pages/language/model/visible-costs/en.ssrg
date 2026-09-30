@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Visible costs",
-  summary: "Short code can still do substantial work. APIs should explain which operations traverse data, allocate results, or manage ongoing work.",
+  summary: (explanation ()).summary,
   meaningTitle: "Short syntax does not make work disappear",
   meaningBody: "Cost means the processing and memory an operation needs. A type name or a pipeline symbol need not introduce extra runtime work, but transforming an array still needs to process its elements. The language distinguishes a convenient spelling from the work that spelling asks for.",
   exampleTitle: "A one-line transformation visits every element",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "The compiler may remove unnecessary layers, inline a function, or combine compatible traversals when the result and observable behavior stay the same. Immutability does not force a full copy on every operation.",
     "It cannot make sequential visible work concurrent, omit required calls, or change failure and resource cleanup merely to improve a benchmark. Exact running time depends on inputs and the runtime; use measurements as well as the documented operation costs."
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Does a short expression mean little work?",
+  summary: "Syntax length and computational cost are different. Collection operations can visit or allocate for many elements even in one short line.",
+  reading: "values |> map double applies double separately to 1, 2, and 3. It constructs the mapped Array instead of overwriting values. With more elements, the transform is called correspondingly more times.",
+  result: "The output is [2, 4, 6]. The example shows traversal, not a performance benchmark or a zero-allocation guarantee. Choose APIs using their documented complexity and lifetime behavior, not just the shortest spelling."
 }

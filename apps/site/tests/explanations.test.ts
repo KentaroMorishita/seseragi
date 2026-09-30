@@ -66,13 +66,23 @@ test("every conceptual article owns a bilingual example explanation", () => {
       expect(source, directory).toContain(
         "explainPage (guide.explanation ()) (content ())"
       )
-      for (const field of ["question", "summary", "reading", "result"])
-        expect(guide, directory).toMatch(
-          new RegExp(`  ${field}: localized\\s+"[^"]`)
+      expect(guide, directory).toContain("(en.explanation ())")
+      expect(guide, directory).toContain("(ja.explanation ())")
+      expect(guide, directory).not.toContain("localized")
+      for (const locale of ["en", "ja"]) {
+        const copy = readFileSync(resolve(directory, `${locale}.ssrg`), "utf8")
+        expect(copy, directory).toContain(
+          "pub fn explanation -> ExplanationCopy"
         )
-      const id = guide.match(/exampleId: "([^"]*)"/u)?.[1]
-      expect(id, directory).toBeDefined()
+        expect(copy, directory).toContain("summary: (explanation ()).summary")
+        for (const field of ["question", "summary", "reading", "result"])
+          expect(copy, directory).toMatch(new RegExp(`  ${field}: "[^"]`))
+      }
+      const id = guide.match(
+        /makeExplanation\s+\(ArticleExample "([^"]+)"\)/u
+      )?.[1]
       if (id) expect(source, directory).toContain(`"${id}"`)
+      else expect(guide, directory).toContain("makeExplanation WithoutExample")
       count++
     }
   expect(count).toBe(105)

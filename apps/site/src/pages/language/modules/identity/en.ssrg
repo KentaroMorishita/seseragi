@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Module identity",
-  summary: "A module is one source file. Its identity comes from its package and path, even when imports use different spellings.",
+  summary: (explanation ()).summary,
   ruleTitle: "One file defines one module",
   ruleBody: "A .ssrg file contains one module; it does not start with a module-name declaration. Within an ordinary source root, the relative file path names that module. For example, src/domain/user.ssrg has the module path domain/user when src is the package's source root. The package identity supplies the other half of its name, so domain/user in two different packages does not become the same module.",
   typingBody: "A nominal type belongs to its declaring module. An import changes how you refer to that declaration, not which type it is. In the example, UserId and toInt come from the same file through spellings with and without the .ssrg suffix. The UserId produced by userId is therefore accepted by toInt. Copying the declaration into a second file would create a different nominal type.",
@@ -21,3 +22,10 @@ pub fn exampleTitle -> String = "Two imports, one defining module"
 
 pub fn exampleBody -> String =
   "Place these files next to each other in the same source root. The first file owns the type and public functions. The second refers to that file twice; the second spelling explicitly includes its extension. These panels form a two-file example."
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Are two imports of the same file two different types?",
+  summary: "A source file is one module. Different valid spellings that resolve to that file refer to the same declarations.",
+  reading: "modules-domain defines UserId and the public functions userId and toInt. The companion example imports UserId without .ssrg and toInt with .ssrg; both imports resolve to that one file in the same package.",
+  result: "A UserId constructed through one import can be passed to toInt from the other. Copying the declaration into a different module would instead create a distinct named type, even if the source text looks identical."
+}

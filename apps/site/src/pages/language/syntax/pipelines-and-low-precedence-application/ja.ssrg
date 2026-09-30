@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "パイプラインと低優先順位の適用",
-  summary: "|>は、関数を順に呼び出す処理を左から右へ書くための記号です。$は、右側の式を括弧で囲まずに引数として渡すための記号です。",
+  summary: (explanation ()).summary,
   purpose: [
     "パイプラインは関数呼び出しの別の書き方であり、特別な処理の種類ではありません。x |> fはf xと同じ意味です。一つの処理の結果を次の処理へ渡すときに使います。",
     "例に出てくる関数は二つだけです。doubleは整数を2倍にし、addOneは1を足します。同じ計算を三通りの書き方で表します。"
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "パイプラインを複数行に分けるときの規則を確認できます。",
     "複数の種類の演算子を混ぜた式が、どこでまとまるかを確認できます。"
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "続けて呼ぶ処理を、左から右へ読みたいときは",
+  summary: "パイプラインは、前の処理の結果を次の関数へ渡します。$は、右側の式全体を外側の括弧なしで引数にする書き方です。",
+  reading: "doubleは2倍にし、addOneは1を足します。3 |> doubleで6になり、続く|> addOneで7になります。addOne (double 3)とaddOne $ double 3も同じ計算です。",
+  result: "三つの出力はすべて7です。この書き方によって並列実行や遅延評価、失敗の処理が追加されるわけではありません。前の結果の型は、次の関数が受け取る型と一致する必要があります。"
 }

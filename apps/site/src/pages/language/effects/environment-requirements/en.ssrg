@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect environment requirements",
-  summary: "R is the exact structural record of services an Effect needs from its execution boundary.",
+  summary: (explanation ()).summary,
   ruleTitle: "Required services are fields, not globals",
   ruleBody: "Composing Effects takes the union of their required fields. Equal names must have the same canonical type, fields cannot be optional, and a program obtains a service with Effect.service rather than consulting ambient singletons.",
   typingBody: "Effect<R1, E, A> may widen to a requirement record R2 that contains every R1 field with the same type. This special Effect rule is not general generic covariance. Public generic signatures use restricted requirement merge R & { service: Service }.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Optional capabilities are explicit service operations",
   invalidBody: "An optional record field would move a missing-service decision into runtime lookup. Model optional capability as an operation returning Maybe, or choose and provide a concrete service before executing the Effect.",
   diagnosticsBody: "Requirement errors name conflicting fields, both canonical types and their source spans. Boundary validation lists services a selected target cannot provide before work begins.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How does a computation request application settings?",
+  summary: "Effect's first type argument lists required services as a record. A service is a value supplied by the execution environment, not an implicit global variable.",
+  reading: "Settings stores a label. effects.service reads environment.settings when the computation runs; the requirement { settings: Settings } declares that field. map then transforms the retrieved Settings into its label String.",
+  result: "The computation cannot run without a Settings service of the declared type. Supplying an environment is separate from creating the computation. Different environments can provide different settings without changing the function's code."
 }

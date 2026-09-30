@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Pipelines and low-precedence application",
-  summary: "Use |> to read successive function calls from left to right. Use $ to pass the expression on its right without an outer pair of parentheses.",
+  summary: (explanation ()).summary,
   purpose: [
     "A pipeline is another way to write a function call, not a new kind of computation. x |> f means f x. It is useful when the result of one operation becomes the input of the next.",
     "The example has two ordinary functions: double multiplies an integer by two, and addOne adds one. Three different spellings call those functions in the same order."
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "Check where a pipeline may continue onto another line.",
     "Check the complete grouping rules when several operator kinds occur together."
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How can I read a chain of transformations from left to right?",
+  summary: "A pipeline passes one function's result to the next. The $ form groups a right-hand expression as an argument without outer parentheses.",
+  reading: "double multiplies an integer by two; addOne adds one. Starting at 3, 3 |> double produces 6, then |> addOne produces 7. addOne (double 3) and addOne $ double 3 describe the same calculation.",
+  result: "All three printed results are 7. These forms do not add parallelism, delayed evaluation, or new error handling. Each connection still requires the previous result's type to match the next parameter."
 }

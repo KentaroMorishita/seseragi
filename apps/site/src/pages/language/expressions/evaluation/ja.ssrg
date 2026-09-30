@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "評価順序",
-  summary: "式のどの部分が、いつ、どの順番で計算されるかを説明します。",
+  summary: (explanation ()).summary,
   ruleTitle: "通常の式は、必要な値をその場で計算する",
   ruleBody: "関数を呼ぶと、引数を計算してから本体を計算します。演算子の左右、レコードのフィールド、コレクションの要素は、ソースに書いた順に一度ずつ計算します。値を後で使わない場合でも、この計算は省略されるという前提でコードを書けません。",
   typingBody: "評価順序は、計算する順番を定める規則です。型が合うかどうかを定める規則とは別です。プログラム全体が型検査を通った後に実行されます。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "通常の式が自動で遅延されるわけではない",
   invalidBody: "計算を後回しにするなら、その計算を関数の本体に置き、必要なときに呼びます。入出力などの処理を記述するならEffectを返します。通常のフィールドや要素に式を書くだけでは、遅延する指定になりません。",
   diagnosticsBody: "型の不一致や未定義の名前は実行前に報告されます。値が同じかどうかを比較することと、保存領域が同じかどうかを比較することも別です。通常の不変値には保存領域の同一性を調べる演算子はありません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "関数の引数は、いつ計算されるか",
+  summary: "通常の式は、入力を評価してから結果を作ります。関数の引数は左から右へ、一度ずつ評価します。",
+  reading: "placeは十の位と一の位を受け取り、tens * 10 + onesを計算します。place (1 + 1) (2 + 1)では、最初の引数が2、次が3になり、その値を本体の計算に使います。",
+  result: "resultは23です。通常の引数を必要になるまで計算しない方式ではありません。Effectの場合は、計算の説明を組み立てる式の評価と、説明された外部処理の実行を区別します。"
 }

@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ConceptCopy } from "../concept"
 
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "Programs and entry points",
-  summary: "A source file is a module. An executable starts from the public main function in the module selected by its package.",
+  summary: (explanation ()).summary,
   ruleTitle: "Files define code; main starts the program",
   ruleBody: "Modules contain declarations, such as functions and types, and imports of other modules. Importing makes definitions available; it is not a place to write application actions. An executable package selects its entry module in seseragi.toml, and that module exports main.",
   consequencesTitle: "Read the entry point in the example",
@@ -11,4 +12,11 @@ pub fn copy -> ConceptCopy = ConceptCopy {
   consequenceThree: "The runtime supplies the declared services and executes main's Effect. If main can report errors, they need a Show implementation so the host can display an unhandled failure.",
   boundaryTitle: "Libraries do not need main",
   boundaryBody: "A library exports definitions for other code and needs no executable entry point. A package may offer both a library and an executable. The selected execution target, such as a process or browser, must provide the services the executable needs."
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How does a file become an executable program?",
+  summary: "Each source file is a module. An executable package chooses a module with a public main, whose returned Effect describes the program's external work.",
+  reading: "pub makes main accessible to the runner. -> Unit says successful completion has no further payload; with Console requires the output service; fails ConsoleError keeps a possible output failure visible in the type.",
+  result: "The runner supplies the service and executes the returned operation, printing Hello, Seseragi! followed by a newline. Importing a module only makes its definitions available; it is not the program's execution command."
 }

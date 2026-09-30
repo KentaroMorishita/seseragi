@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Diagnosable behavior",
-  summary: "The compiler infers what the code determines. When information is missing or conflicting, it reports the problem instead of guessing.",
+  summary: (explanation ()).summary,
   meaningTitle: "Omitting a type does not mean choosing an arbitrary type",
   meaningBody: "Type inference works out types from arguments, results, and annotations. You do not have to repeat every type, but the program still needs enough information for a definite answer. The compiler does not use runtime values or an arbitrary priority to settle an unclear choice.",
   exampleTitle: "Tell the compiler what an empty list contains",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "For this example, supply List<Int> or call empty<Int> (). For conflicting branch types, change the branches to return the same type. For an unclear name, qualify it. Each repair makes the intended choice part of the program rather than suppressing the error.",
     "Inference is not a proof that the program meets your business requirements. A well-typed formula can still be the wrong formula. This principle concerns whether language choices can be determined and explained, not whether the compiler understands the application's intent."
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What should I add when the compiler cannot infer a type?",
+  summary: "Inference requires enough information to determine one type and implementation. When information is missing, an annotation expresses your intent.",
+  reading: "empty<A> creates an empty List<A> and has no element that could reveal A. List<Int> on values tells the call to choose integer elements. empty<Int> () is another way to supply the same information.",
+  result: "The printed result is the empty list `[]. Its element type is still Int. An annotation resolves missing information; it cannot excuse an actual disagreement between an argument and a required type."
 }

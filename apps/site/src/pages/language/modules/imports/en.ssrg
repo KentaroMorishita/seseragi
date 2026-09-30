@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Imports",
-  summary: "Bring selected public names into scope, or keep them qualified under a namespace alias.",
+  summary: (explanation ()).summary,
   ruleTitle: "Imports state where names come from",
   ruleBody: "Imports appear at the beginning of a module. A named import introduces the selected public declarations; as changes their local spelling. A namespace import introduces an alias and keeps access qualified, such as text.trim. The example gives array length the local name arrayLength and uses trim through text. Neither form imports every exported name into unqualified scope.",
   typingBody: "Imports carry declarations' canonical identities and type schemes. Renaming a function does not alter its type or create a new implementation. If one spelling is exported in both the type and value namespaces, one named import brings both into scope and an alias renames both. This lets a non-opaque newtype be imported once for its type name and constructor, with the reference position choosing the namespace.",
@@ -21,3 +22,10 @@ pub fn exampleTitle -> String = "Use a local alias and a qualified namespace"
 
 pub fn exampleBody -> String =
   "The arrayLength binding refers to std/array's length function. text is a module alias, so text.trim refers to an exported function rather than a field lookup on a text value. The standard-library modules are available to the standalone Playground example; relative imports require their sibling source files."
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I use a function from another module without a name collision?",
+  summary: "A named import brings selected public declarations into scope. A namespace import lets you qualify public names with a module alias.",
+  reading: "length as arrayLength brings std/array's function in under a different local name. import * as text lets normalize call text.trim. The imported signatures stay unchanged; an alias does not wrap or duplicate the function.",
+  result: "itemCount [1, 2, 3] returns 3 and normalize \"  Aki  \" returns \"Aki\". Private declarations cannot be imported even when their names are known. Imports make definitions available but do not execute their Effects."
+}

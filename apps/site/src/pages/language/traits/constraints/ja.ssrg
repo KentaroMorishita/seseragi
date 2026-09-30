@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "trait制約",
-  summary: "where clauseはgeneric関数やinstanceが必要とするcapabilityをcontractの一部にします。",
+  summary: (explanation ()).summary,
   ruleTitle: "共通の関数で必要な操作をwhereに書く",
   ruleBody: "where Label<A>は、Aをラベルにできる実装が必要だという条件です。ジェネリック関数の本体はその操作を使えます。呼び出す側はAに選んだ型の実装を用意します。条件付きinstanceに別のtraitが必要なら、その条件も検査します。",
   typingBody: "具体的な呼び出しでは各条件を満たす実装が一つ必要です。選ぶのは値の中身ではなく型です。空のコレクションやNothingでも、中身の型に対する条件がなくなるわけではありません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "空の値でも、型に必要な条件は残る",
   invalidBody: "操作を使わない分岐を通るとしても、宣言した条件は必要です。条件付きinstanceが要求する別の実装まで揃わなければ、型エラーになります。",
   diagnosticsBody: "どの型に対するどのtraitが不足しているかを確認します。実装がない場合と、型そのものが未確定の場合は別の問題です。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "ジェネリック関数からtraitの操作を呼ぶには",
+  summary: "whereの制約で、型パラメーターに必要な操作を指定します。ジェネリック関数は、すべての型に表示や比較の操作があるとは仮定できません。",
+  reading: "describe<A>はlabel valueに接頭辞を付けます。where Label<A>により、本体でlabelを使え、呼び出し側はLabelの実装がある型を選びます。Badgeには実装があるため、describe Readyを呼べます。",
+  result: "descriptionは\"badge: ready\"です。別の型もLabelのinstanceを用意すれば、この関数を使えます。実装がない型を渡すと実行前にエラーになり、任意の値の表示方法を勝手に推測しません。"
 }

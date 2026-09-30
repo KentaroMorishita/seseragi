@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Eitherによる成功と失敗",
-  summary: "Eitherは計算済みのsuccessまたは回復可能なfailureを通常の値として保持します。",
+  summary: (explanation ()).summary,
   ruleTitle: "失敗の理由か成功値を、通常の値として返す",
   ruleBody: "Either<E, A>はLeft EかRight Aです。文字列の解析や入力検証のように、すぐに結果が分かり、失敗理由も返したい処理に使います。Effectとは違い、これから実行する処理ではなく、計算済みの結果を表します。",
   typingBody: "成功側のmapはAだけを変え、失敗型Eを保ちます。失敗側の変換はEだけを変えます。複数の処理をつなぐ操作では、最初のLeftで後続の成功処理が止まります。異なる失敗型を自動ではまとめません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Eitherの値と、Effectの失敗を区別する",
   invalidBody: "EitherのLeftとEffectの失敗は別の表現です。EitherをEffectでの処理に変えるにはfromEither、Effectの型付き失敗をEitherの結果へ変えるにはattemptを使います。",
   diagnosticsBody: "EとAの順序を確認してください。Leftに入れる値はE、Rightに入れる値はAです。成功と失敗を取り違えると、分岐や変換で型が合わなくなります。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "成功した値か、失敗の理由を返すには",
+  summary: "Either<E, A>は、成功時のRight Aか、失敗時のLeft Eを持ちます。どちらも計算済みの通常の値です。",
+  reading: "positiveは正の整数ならRight value、それ以外ならLeft (NotPositive value)を返します。incrementのmapRightは成功値だけに1を足し、失敗の理由はそのまま残します。",
+  result: "increment (positive 2)はRight 3です。0ならLeft (NotPositive 0)のままです。表示や回復をする場合はmatchで両方の場合を扱います。Effectとは違い、この値を作るために実行環境の処理開始を待つ必要はありません。"
 }

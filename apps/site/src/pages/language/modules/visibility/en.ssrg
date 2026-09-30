@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Visibility and opaque representations",
-  summary: "Choose which declarations other modules may use, and whether they may construct or inspect your data.",
+  summary: (explanation ()).summary,
   ruleTitle: "Declarations are private by default",
   ruleBody: "A declaration without pub belongs to its defining module. Add pub to expose a let, fn, effect fn, type, newtype, alias, struct, trait, custom operator or foreign block. A public declaration can still call private helpers in its body: callers need its public contract, not access to its implementation. Public lets and functions require complete type annotations, and public type signatures must not expose private types.",
   typingBody: "A public ADT normally exposes its constructors, a public newtype its constructor and representation type, and a public struct its fields. Add opaque to a public struct, ADT or newtype to expose only the type name. Outside its defining module, code may pass values of that type but cannot construct, inspect or destructure its representation. The defining module retains those operations.",
@@ -22,3 +23,10 @@ pub fn exampleTitle -> String =
 
 pub fn exampleBody -> String =
   "The UserId type crosses the module boundary, while its Int representation stays hidden. userId is the construction boundary and returns Nothing for invalid input. toInt is an intentional observation; it does not make the UserId constructor accessible to a caller."
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How can I expose an ID without letting callers construct invalid ones?",
+  summary: "pub exposes a declaration. Adding opaque to a named type hides its representation from other modules while keeping the type usable in public signatures.",
+  reading: "UserId wraps Int but is pub opaque. The public userId function validates the input and returns Just (UserId value) only when positive. toInt is an explicitly supplied way to read the integer; external callers cannot directly use the hidden constructor.",
+  result: "userId 42 returns a present ID and userId 0 returns Nothing. This controls source-level access, not runtime encryption. A public type's methods still need pub individually before other modules can call them."
+}

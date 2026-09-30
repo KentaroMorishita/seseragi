@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Namespaces and name resolution",
-  summary: "Use a name's syntactic position and lexical scope to identify the declaration it refers to.",
+  summary: (explanation ()).summary,
   ruleTitle: "Names live in five separate namespaces",
   ruleBody: "Seseragi separates type/trait/type-parameter names, value/function/constructor names, field/inherent-method names, module aliases and custom operators. A newtype can therefore have a type name and a constructor with the same spelling. UserId in an annotation selects the type; UserId 42 selects the constructor. A namespace-qualified name is resolved statically, not by inspecting an arbitrary runtime object.",
   typingBody: "Unqualified lookup proceeds through local bindings and local functions, current-module declarations, explicit imports and finally the prelude. A nearer binding wins over a farther stage. Within one stage, multiple candidates are an ambiguity error. Adding another import does not silently select a different declaration from an ambiguous set.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "The same spelling is not permission for same-namespace duplicates",
   invalidBody: "A type and its constructor can share a spelling because positions distinguish their namespaces. Two value declarations cannot use that reasoning to coexist in the same scope. To disambiguate imported values, use distinct aliases or qualified imports rather than hoping that declaration order chooses one.",
   diagnosticsBody: "The example uses UserId in both a type annotation and a constructor expression and shadows a module value with a local binding. When a name is unresolved, check its position, scope and import spelling. When it is ambiguous, make the intended declaration explicit; the compiler will not inspect runtime values to decide.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Why does UserId work as both a type name and a constructor?",
+  summary: "Names are resolved according to their position and scope. Type names and value names belong to separate namespaces.",
+  reading: "In user: UserId, UserId denotes the type. In UserId (local ()), it denotes the constructor. local's let value = 42 is nearer than the module's value = 1 and is therefore the value read inside that function.",
+  result: "user becomes UserId 42; the outer value is still 1. Reusing a name in a permitted inner scope is not mutation. Ambiguous imports must be renamed or qualified rather than resolved by arbitrary import order."
 }

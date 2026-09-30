@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { OverviewCopy } from "../principle"
 
 pub fn copy -> OverviewCopy = OverviewCopy {
   title: "Design principles",
-  summary: "Why do branches return values? Why can't you reassign a let? These seven principles explain the choices behind Seseragi's everyday rules.",
+  summary: (explanation ()).summary,
   introduction: "These pages explain the reason for a language rule, using a small example and its result. For the exact syntax or type rules, follow the related reference links at the end of each article. You can read the principles in any order; this is not a second lesson sequence alongside the Tour.",
   section: "What each principle explains",
   closingTitle: "The principles work together",
@@ -16,4 +17,11 @@ pub fn copy -> OverviewCopy = OverviewCopy {
     " — Distinguish concise notation from the processing and memory an operation needs.",
     " — Show the data and processing order clearly, rather than aiming for the fewest characters."
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Why do these language rules fit together?",
+  summary: "The design principles explain practical choices: branches return values, ordinary data stays immutable, and possible absence or failure remains visible.",
+  reading: "For example, an array lookup returns Maybe because the requested position may not exist. You must handle Just and Nothing, and the array cannot be changed behind your back by an ordinary field assignment. These rules support each other rather than merely sharing a slogan.",
+  result: "Read the principle that answers your current question; the list is not a second Tour. Each detailed principle contains a small program, its result, the reason for the rule, and what the rule does not guarantee."
 }

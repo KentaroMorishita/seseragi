@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I write quotes, newlines, or Unicode characters?"
-    "引用符・改行・Unicode文字を書くには",
-  summary: localized
-    "An escape starts with a backslash and writes a character that is difficult to include directly in a literal."
-    "エスケープは、文字の前にバックスラッシュを付けて、引用符など直接書きにくい文字を表す書き方です。",
-  exampleId: "syntax-char-valid",
-  reading: localized
-    "The values array contains three Char values: 'a', the Greek letter lambda written as a Unicode escape, and '瀬'. quote writes a single quote inside single quotes; slash writes a backslash by escaping it."
-    "例のvaluesには'a'、Unicodeエスケープで書いたギリシャ文字λ、'瀬'の三つが入ります。quoteでは一重引用符自体を、slashではバックスラッシュ自体をエスケープして書いています。",
-  result: localized
-    "A Char must decode to exactly one Unicode scalar. A visually combined character can consist of more than one scalar, so visual width alone does not decide whether it fits Char. The supported escapes and invalid forms are listed below."
-    "Charは、復号後にUnicodeスカラー値が一つだけ必要です。画面では一文字に見えても、複数のスカラー値からなる場合があります。見た目の幅だけではCharにできるか判断できません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "syntax-char-valid") (en.explanation ()) (ja.explanation ())

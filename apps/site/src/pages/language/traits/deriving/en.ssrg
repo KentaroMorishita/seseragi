@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Deriving instances",
-  summary: "Nominal data declarations may ask the compiler to generate a closed set of standard instances from their fields and constructor order.",
+  summary: (explanation ()).summary,
   ruleTitle: "Deriving generates ordinary coherent evidence",
   ruleBody: "ADT, struct, and newtype declarations may derive Eq, Ord, Show, Debug, Hash, JsonEncode, or JsonDecode. The generated instance follows the same visibility, ownership, and coherence rules as an explicit instance.",
   typingBody: "Every field or payload must provide the evidence required by the derived trait. Generic declarations produce corresponding constraints. Hash also requires Eq. JSON deriving follows its separate wire contract rather than inventing a generic serialization.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Deriving is not a macro system",
   invalidBody: "User-defined traits and arbitrary code generation are not supported. An explicit instance and a derived instance for the same head conflict, and missing field evidence rejects the declaration.",
   diagnosticsBody: "Diagnostics identify an unsupported trait, missing nested evidence, Eq required by Hash, or duplicate generated evidence. They point back to the nominal declaration and affected field or payload.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Can I generate equality and display for my data type?",
+  summary: "deriving asks the compiler to implement supported standard traits from the declared constructors and fields.",
+  reading: "Priority derives Eq, Ord, and Show: equality, ordering, and display. Task derives equality and display from its title and priority fields. task == task uses the generated equality operation, not object identity.",
+  result: "sameTask is True. Every stored field must support the trait needed to derive the outer type's operation. Deriving is limited to documented standard traits; it is not arbitrary code generation for any user-defined trait."
 }

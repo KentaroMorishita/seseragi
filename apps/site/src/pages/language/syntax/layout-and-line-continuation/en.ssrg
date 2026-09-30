@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Layout and line continuation",
-  summary: "Braces define blocks; newlines and semicolons separate forms under two explicit continuation rules.",
+  summary: (explanation ()).summary,
   formsTitle: "Use braces for every block",
   formsBody: "Indentation never creates or closes a block. Braces are the block boundary, and a newline or semicolon separates declarations and expressions. Newlines inside parentheses are free. Outside parentheses, a line continues only when the previous token still requires a right-hand side or the next token is |>, $, arithmetic, or comparison operator.",
   typingBody: "Layout decides how tokens group before typing; indentation width contributes no type or scope information. Bind, pure let, and ordinary expressions can therefore use the same operator-first continuation style without introducing an indentation grammar.",
@@ -10,4 +11,11 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "Indentation is not a continuation signal",
   invalidBody: "Moving a line to the right does not join two complete expressions. If neither continuation condition holds, use parentheses or rewrite the operator at the beginning of the following line. A semicolon always terminates the current form.",
   diagnosticsBody: "Incomplete-source recovery may retain a partial tree for editor tooling, but a build still reports the parser boundary. The formatter writes two-space indentation and operator-first continuation while preserving the brace and separator semantics.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Does indentation start a block?",
+  summary: "Blocks use braces, not indentation. Newlines can separate items or continue an unfinished expression under explicit rules.",
+  reading: "In a multi-line function, = followed by an expression continues the declaration because the right-hand side is still needed. Inside parentheses you may break lines freely. For a pipeline, placing |> at the beginning of the next line marks continuation.",
+  result: "Indenting a complete expression does not join it to the next expression. Use braces for a block and parentheses when grouping is unclear. A semicolon always separates items; the next line cannot turn it back into continuation."
 }

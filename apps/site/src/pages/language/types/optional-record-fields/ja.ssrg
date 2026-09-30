@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "省略可能なレコードフィールド",
-  summary: "フィールドの存在が省略可能であることと、必須フィールドにMaybeを格納することを区別します。",
+  summary: (explanation ()).summary,
   ruleTitle: "省略可能フィールドに合う三つの状態",
   ruleBody: "期待するid?: Stringに対し、元のレコードはidを持たない、省略可能として持つ、id: Stringを必須として持つ、のいずれでも構いません。期待する必須フィールドは元でも必須である必要があり、追加フィールドは幅部分型で許されます。",
   identityBody: "{id?: String}ではidフィールド自体がなくても構いません。{id: Maybe<String>}ではidは必ず存在し、その値がJustかNothingです。id?: Maybe<String>を参照するとMaybe<Maybe<String>>になり、フィールドの不在であるNothingと、フィールドが存在して値がNothingであるJust Nothingを区別します。",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "省略可能なフィールドを、必須のフィールドとは扱えない",
   invalidBody: "id?: Stringはid: Stringを要求する場所には渡せません。id?: Maybe<String>では、フィールドがない場合と値がNothingの場合を一段にまとめません。structのフィールド、関数の引数、代数的データ型の中身に?:を直接付けることもできません。",
   diagnosticsBody: "エディターで省略可能なフィールドを参照すると、型はMaybe<A>と表示されます。診断は、必須フィールドがない場合、省略可能なものを必須として使った場合、値の型が違う場合を区別します。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "フィールドを省略できるレコードを受け取るには",
+  summary: "レコードのフィールド名に?を付けると、そのフィールドを省略できる型になります。読み取りの結果はMaybeなので、値がない場合も扱います。",
+  reading: "Propsのchildrenは必須で、idは省略できます。minimalにはchildrenだけがあり、namedにはidもあります。props.idはnamedならJust \"hero\"、minimalならNothingです。??で、値があるときは取り出し、ないときは\"anonymous\"を使います。",
+  result: "label minimalは\"anonymous\"、label namedは\"hero\"を返します。必須のid: Maybe<String>とは異なり、この場合はidフィールドそのものを省略できます。"
 }

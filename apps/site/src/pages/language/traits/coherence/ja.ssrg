@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "インスタンスの一意性と所有権",
-  summary: "package graphには各trait適用につき一つだけinstanceを置け、traitまたは最外nominal型の隣で所有します。",
+  summary: (explanation ()).summary,
   ruleTitle: "同じ型に当てはまる実装を二つ置かない",
   ruleBody: "型別名を展開し、型パラメーターを考慮した後で、同じ型に当てはまる二つのinstanceを置くことはできません。instanceはtraitを定義したモジュールか、対象のいちばん外側の名前付き型を定義したモジュールに置きます。",
   typingBody: "使える実装はimport先と、その先が読み込むモジュールから集まります。コンパイラが提供する構造的な型の実装は置き換えられません。入力型から結果型を決めるtraitでは、同じ入力から異なる結果型を選ぶ実装も拒否されます。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "型別名や具体的な型でも重複は回避できない",
   invalidBody: "型別名を付けても元の型と同じです。具体的な型向けの実装を、ジェネリックな実装より優先する規則もありません。重複を除くか、newtypeなどで別の型を作ってください。",
   diagnosticsBody: "重複の診断は二つの宣言を指します。宣言場所のエラーでは、traitと対象型をどこで定義したかを確認します。結果型の矛盾では、それを決める入力型を見比べてください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "importを増やしても、既存の実装が勝手に変わらないのはなぜか",
+  summary: "一つの型に対するtrait実装は、一つに決まる必要があります。宣言できる場所も、traitか対象の型の定義元に制限します。",
+  reading: "例のTitle<Stage>は一度だけ実装し、DraftとPublishedをその本体で扱います。title Publishedでは、Stageという型から一つの実装を選べます。選択肢によって変わるのは、その本体の分岐です。",
+  result: "publishedTitleは\"published\"です。重なるTitle<Stage>を追加すると、後勝ちの上書きではなくエラーになります。型別名を付けても別の型にはならず、この制限を回避できません。"
 }

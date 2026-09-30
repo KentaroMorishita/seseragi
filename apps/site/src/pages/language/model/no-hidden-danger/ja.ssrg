@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "危険を暗黙に隠さない",
-  summary: "値が見つからない可能性や処理が失敗する可能性は、型に表します。呼ぶ側が、その場合にどうするかを決めます。",
+  summary: (explanation ()).summary,
   meaningTitle: "「見つからない」を、扱うべき場合として表す",
   meaningBody: "Seseragiの通常の値にはnullやundefinedがありません。値が見つからない可能性のある操作はMaybe<A>を返します。JustはA型の値が見つかった場合、Nothingは見つからなかった場合です。結果がない可能性を、実行前に型から確認できます。",
   exampleTitle: "存在しない配列の要素を取り出そうとする",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "プログラムの誤りによって実行が停止することはあります。例えば整数の/で0除算をすると、Eitherが返るのではなく、実行時の異常になります。0が入力される可能性を通常のケースとして扱うなら、std/int.checkedDivideを使います。失敗をEitherで受け取って対応できます。",
     "外部コードからはnullや例外が来ることもあります。外部連携の処理で検査や変換を行い、そのまま通常のSeseragiの値として持ち込まないようにします。また、条件に使えるのはBoolだけで、異なる数値型の暗黙変換もありません。"
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "配列の指定した位置に値がない場合、どう分かるか",
+  summary: "値がない可能性のある操作は、その可能性を表す型を返します。呼び出し側は、値がない場合も明示的に扱います。",
+  reading: "valuesには位置0と1しかないため、arrays.get 5 valuesはNothingです。matchで、Just valueなら見つかった値を表示し、Nothingなら\"not found\"を返します。どちらもStringです。",
+  result: "出力はnot foundです。整数があるふりをしたり、不在を未処理のまま使ったりしません。この原則は不具合が一切ないという保証ではなく、通常起こる可能性を型や操作に表す考え方です。"
 }

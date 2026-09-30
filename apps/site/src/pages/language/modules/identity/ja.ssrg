@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "モジュールの識別",
-  summary: "一つのソースファイルが一つのモジュールです。importの書き方が違っても、同じファイルは同じモジュールとして扱います。",
+  summary: (explanation ()).summary,
   ruleTitle: "一つのファイルが一つのモジュールを定義する",
   ruleBody: "一つの.ssrgファイルが一つのモジュールになります。ファイルの先頭でモジュール名を宣言する必要はありません。通常は、ソースのルートディレクトリからの相対パスがモジュールのパスになります。ルートがsrcなら、src/domain/user.ssrgのパスはdomain/userです。パッケージも識別に使うため、別のパッケージにある同名のファイルとは区別されます。",
   typingBody: "名前付きの型は、定義元のモジュールに属します。importで変わるのは呼び方であり、型そのものではありません。例では、拡張子.ssrgを省略したパスと明示したパスの両方から、同じファイルのUserIdとtoIntを取り込んでいます。そのため、一方から作ったUserIdを他方のtoIntへ渡せます。同じ宣言を別ファイルにコピーした場合は、別の型になります。",
@@ -21,3 +22,10 @@ pub fn exampleTitle -> String = "二つのimportから、同じ定義を使う"
 
 pub fn exampleBody -> String =
   "二つのファイルを、同じソースのルート内の同じディレクトリに置きます。一つ目に型と公開関数を定義し、二つ目から拡張子を省略したパスと明示したパスで参照します。二つのコードパネルを合わせて一つの例です。"
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "同じファイルを二通りにimportすると、型も二つになるか",
+  summary: "一つのソースファイルが一つのモジュールです。正しく解決した先が同じファイルなら、importの綴りが違っても同じ宣言を使います。",
+  reading: "modules-domainにはUserId、userId、toIntを定義します。利用側の例ではUserIdを.ssrgなし、toIntを.ssrgありでimportしますが、同じパッケージの同じファイルへ解決します。",
+  result: "一方のimportから作ったUserIdを、もう一方のtoIntへ渡せます。宣言を別のモジュールへコピーした場合は、文章が同じでも別の名前付き型になります。"
+}

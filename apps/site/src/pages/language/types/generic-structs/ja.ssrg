@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "ジェネリックなstruct",
-  summary: "フィールドに格納する値の型を、型パラメーターで指定します。",
+  summary: (explanation ()).summary,
   ruleTitle: "フィールドの値から型引数を決める",
   ruleBody: "struct Box<A>は、型Aの値をフィールドに持つ構造体です。Box { value: 42 }なら、valueがIntなのでBox<Int>になります。Box<String> { value: \"hello\" }のように型引数を明示することもできます。フィールドの値、指定した型引数、周囲の型注釈は、すべて一致する必要があります。",
   identityBody: "Box<Int>のvalueはInt、Box<String>のvalueはStringとして扱います。フィールドを読むときも、値の型に決まった型引数を使います。Boxは名前付きの型なので、valueというフィールドを持つ普通のレコードが、そのままBoxとして使えるわけではありません。",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "更新では、フィールドの型を変更できない",
   invalidBody: "Box<Int> { value: \"hello\" }は、IntとStringが一致しないため型エラーです。Box<Int>からBox<String>へ変えたい場合は、例のlabelのように値を変換し、新しいBoxを作ります。レコードの追加フィールドを許す規則によって、structの型引数を変えることもできません。",
   diagnosticsBody: "まず、更新・参照する値がBox<Int>なのかBox<String>なのかを確認してください。構築時に型引数を決められない場合は、型注釈か明示的な型引数を補います。異なる型のフィールドを持たせたい場合は、更新ではなく新しい値を構築します。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "中身の型を選べる構造体を作るには",
+  summary: "ジェネリックな構造体では、フィールドの形に名前を付け、その中身の型を値の構築時に選べます。",
+  reading: "Box<A>のvalueフィールドはA型です。Box { value: 42 }ならBox<Int>になります。unwrapは中身を取り出し、labelはshowで整数を文字列にして、別のBox<String>を作ります。",
+  result: "label numberの結果には文字列の\"42\"が入ります。既存のBox<Int>を更新するなら、値はIntのままです。中身の型を変える場合は、例のように新しいBoxを作ります。"
 }

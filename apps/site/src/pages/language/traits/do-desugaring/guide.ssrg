@@ -1,16 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How is do related to flatMap?" "doとflatMapは、どう対応するか",
-  summary: localized
-    "do is a readable syntax for nested flatMap calls. Each step's remaining work becomes a function receiving the preceding payload."
-    "doは、入れ子のflatMapを読みやすく書く構文です。前の結果を受け取る関数の中へ、残りの計算をまとめます。",
-  exampleId: "traits-do-desugaring",
-  reading: localized
-    "value <- source followed by increment value corresponds to flatMap (\\value -> increment value) source. The lambda receives the Int inside the Maybe, not the Maybe itself. The two functions shown express the same operation."
-    "value <- sourceの後にincrement valueと書く形は、flatMap (\\value -> increment value) sourceに対応します。ラムダのvalueはMaybe自体ではなく、中のIntです。二つの関数は同じ処理を表します。",
-  result: localized
-    "Both return Just 42 for Just 41 and Nothing for Nothing. The equality check is True. Expanding the syntax does not remove Maybe's absence handling or change Effect sequencing into ordinary pure evaluation."
-    "Just 41ではどちらもJust 42、NothingではどちらもNothingです。比較結果はTrueです。構文を展開しても、Maybeの不在の扱いや、Effectの処理順が消えるわけではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "traits-do-desugaring") (en.explanation ()) (ja.explanation ())

@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  WithoutExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Will the compiler convert a similar value for me?"
-    "似た値なら自動で型を変えてくれるか",
-  summary: localized
-    "Seseragi keeps most type conversions explicit. A similar representation is not enough to make two types compatible."
-    "Seseragiでは、多くの型変換をコードで明示します。実行時の形が似ているだけでは、同じ型として扱えません。",
-  exampleId: "",
-  reading: localized
-    "An Int such as 42 is not automatically a Float, Just 42 is a Maybe<Int> rather than an Int, and a UserId wrapping 42 is not a raw integer. These distinctions prevent accidentally dropping absence handling or mixing identifiers."
-    "42というIntは自動でFloatにはなりません。Just 42はIntではなくMaybe<Int>です。UserIdで包んだ42も、そのまま整数としては使えません。値の不在を見落としたり、IDを取り違えたりするのを防ぐ区別です。",
-  result: localized
-    "Use the conversion operation you intend: a numeric conversion, Just to wrap a present value, or match to unpack a newtype. The limited automatic rules below do not permit arbitrary chains of inferred conversions."
-    "数値の変換、Justでの包み込み、matchでのnewtypeの取り出しなど、意図した操作を示します。後述する限定的な自動変換は、任意の変換を勝手につなぐ規則ではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation WithoutExample (en.explanation ()) (ja.explanation ())

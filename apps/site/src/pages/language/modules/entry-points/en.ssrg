@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Executable entry points",
-  summary: "Expose one public Effectful main with a concrete environment, failure and Unit result.",
+  summary: (explanation ()).summary,
   ruleTitle: "The manifest selects the entry module",
   ruleBody: "An executable package resolves one public main from the module selected by its manifest. pub effect fn main -> Unit with AppEnv fails AppError declares a function of type Unit -> Effect<AppEnv, AppError, Unit>. The host passes (), supplies the environment to the returned Effect and runs it. Merely importing a module with main never invokes it.",
   typingBody: "AppEnv must be a closed structural record: every required service field is statically known. Generic main, free type variables and unresolved requirement fields cannot cross this boundary. The host may supply extra fields under record width subtyping, but application services that the target cannot supply must be provided while composing the Effect returned by main.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "main does not return an arbitrary process exit code",
   invalidBody: "Application code has no direct exit primitive or entry overload returning an integer status. The host derives status from success, typed failure, defect, cancellation and process signals under its target contract. This keeps ordinary application code from skipping finalizers. Defects and cancellation must not be disguised as AppError.",
   diagnosticsBody: "Entry checking validates the public binding, signature, concrete requirements and failure evidence before execution. If build rejects main, inspect those parts separately from ordinary function typing. The shown console example uses the official Console capability; an unsupported target cannot invent that service by a runtime name lookup.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What function does the runner execute first?",
+  summary: "An executable package selects an entry module with a public main function returning an Effect whose success value is Unit.",
+  reading: "pub makes main visible to the runner. effect fn returns an Effect; with Console and fails ConsoleError state the needed output service and possible output failure. println describes printing the message followed by a newline.",
+  result: "Execution prints Hello, Seseragi! and completes with (). Importing this module does not call main. A library can expose functions without an entry point, and a program's main is not an arbitrary integer exit-code function."
 }

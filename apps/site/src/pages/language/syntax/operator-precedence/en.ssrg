@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Operator precedence",
-  summary: "The complete built-in precedence table fixes parsing, associativity, short-circuiting, and operator-value boundaries.",
+  summary: (explanation ()).summary,
   formsTitle: "Precedence from access through Signal update",
   formsBody: "From strongest to weakest: field/method/index access; application; prefix !, unary -, and Signal read *; **; multiplicative operators; additive operators and list cons; comparisons; &&; ||; Maybe fallback ??; >>=, <$>, <*>, and |>; $; then Signal update :=.",
   typingBody: "Arithmetic, comparison, cons, and typeclass-backed binary operators may be parenthesized as curried function values. Expected types and trait constraints must select one overload. Short-circuit, pipeline, $, Signal, and prefix operators cannot become function values.",
@@ -10,4 +11,11 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "Precedence never licenses an ambiguous chain",
   invalidBody: "a < b < c is rejected; write a < b && b < c. Ambiguous overloaded operator references need a type annotation. Unary * and - are distinguished by position from binary multiplication and subtraction, and parentheses are required whenever a different grouping is intended.",
   diagnosticsBody: "The shared parser and formatter use one precedence table. Non-associative chains are syntax diagnostics; missing trait evidence and ambiguous operator values are type diagnostics; short-circuit forms retain their source operator rather than lowering to an ordinary function call in tooling.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Which part of this expression is computed together?",
+  summary: "Precedence determines how an expression groups. Parentheses make your intended grouping explicit.",
+  reading: "In 1 + 2 * 3, multiplication groups first, so the result is 7. In (1 + 2) * 3, the parenthesized addition groups first, so the result is 9. comparison combines two Bool tests with &&.",
+  result: "comparison is True. Grouping is not permission to evaluate effectful operations in an arbitrary order. && and || additionally short-circuit: they skip the right side when the left side already determines the answer."
 }

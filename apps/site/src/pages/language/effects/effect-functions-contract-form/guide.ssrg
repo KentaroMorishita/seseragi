@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I state a function's services and errors explicitly?"
-    "関数が使うサービスと失敗を、明示するには",
-  summary: localized
-    "An effect fn signature names the successful result after ->, required services after with, and recoverable failure after fails."
-    "effect fnの署名では、->の後に成功値の型、withの後に必要なサービス、failsの後に回復可能な失敗の型を書きます。",
-  exampleId: "effects-contract-form",
-  reading: localized
-    "announce takes message: String. -> Unit says that success has no useful payload; with Console requires output support, and fails ConsoleError permits an output error. println message is itself the Effect returned by the body."
-    "announceはStringのmessageを受け取ります。-> Unitは成功時に内容を返さないこと、with Consoleは出力サービスが必要なこと、fails ConsoleErrorは出力が失敗する可能性を表します。本体のprintln messageもEffectです。",
-  result: localized
-    "Calling announce constructs the output operation; execution prints the message. Omitting with or fails in an explicit signature means {} or Never, not an invitation to infer missing services or errors."
-    "announceを呼ぶと出力処理の説明ができ、実行するとメッセージを出力します。明示形式でwithやfailsを省略すると、それぞれ{}とNeverを約束したことになり、本体から補ってもらう指定ではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-contract-form") (en.explanation ()) (ja.explanation ())

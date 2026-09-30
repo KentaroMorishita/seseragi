@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How can a total stay synchronized with two source values?"
-    "二つの値に追従する合計を作るには",
-  summary: localized
-    "A derived Signal computes its current value from explicitly declared source Signals. It updates when those sources change."
-    "派生Signalは、明示した元のSignalから値を計算し、元の値の変化に追従します。",
-  exampleId: "effects-derived-signals",
-  reading: localized
-    "left starts at 1 and right at 2. combine add left right creates a read-only total depending on both. A transaction changes the sources to 10 and 20; reading total after the transaction obtains the recomputed sum."
-    "leftは1、rightは2です。combine add left rightで、両方に依存する読み取り専用の合計を作ります。トランザクションで10と20へ更新すると、totalはその合計を再計算します。",
-  result: localized
-    "Executing stableTotal returns 30, not a temporary sum using one old input. Dependencies are created by named operations such as combine; the runtime does not discover arbitrary dependencies by watching reads inside any function."
-    "stableTotalを実行すると30を返し、片方だけ古い値の一時的な合計は見せません。依存する値はcombineなどの操作で指定し、任意の関数内の読み取りから自動で推測するわけではありません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-derived-signals") (en.explanation ()) (ja.explanation ())

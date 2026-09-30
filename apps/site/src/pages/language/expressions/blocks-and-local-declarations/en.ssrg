@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Blocks and local declarations",
-  summary: "A block introduces local immutable bindings and returns its final expression.",
+  summary: (explanation ()).summary,
   ruleTitle: "A block is an expression with a lexical scope",
   ruleBody: "A block contains one or more local declarations and an optional final expression, or one final expression by itself. The final expression is the block value; a declaration-only block returns Unit.",
   typingBody: "Local let, fn, effect fn, and rec groups are allowed. A binding is visible after its declaration through the end of the block; shadowing is allowed, but later bindings cannot be captured from an earlier declaration.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Empty braces are a record",
   invalidBody: "{} is the empty record literal, not a Unit block. Write { () } for an explicit no-op Unit block. Type, trait, impl, instance, operator, foreign, and pub declarations are not local block items.",
   diagnosticsBody: "A reference to a later local binding is unresolved. Mutually recursive local functions must be placed in one rec group so every member has a defined scope.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Which value does a block return?",
+  summary: "A block groups local declarations and expressions inside braces. Its final expression supplies its value.",
+  reading: "label defines normalized locally, then defines a local render function. The final render normalized is not a separate return statement: it is the expression that gives the function its String result.",
+  result: "label 42 returns \"score=42\"; a negative score is normalized to zero. The local names cannot be referenced outside the block. A block of pure expressions is not the same as a do block sequencing Effect operations."
 }

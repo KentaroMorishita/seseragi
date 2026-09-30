@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "再帰宣言",
-  summary: "名前付き関数と型は再帰でき、相互再帰は一つの単相検査するrec グループに置きます。",
+  summary: (explanation ()).summary,
   ruleTitle: "互いを呼ぶ関数はrecでまとめる",
   ruleBody: "名前付きの関数とtypeは、自分自身の名前を使えます。再帰関数にも戻り値の型を書きます。通常のletは自分自身を参照できません。互いを呼ぶ関数は同じrecの中へまとめます。その関数名はグループの中全体と、その後のコードで使えます。",
   identityBody: "ローカル関数は自分の本体と、その後のコードから使えます。後に宣言したローカル関数を、前の関数から呼ぶことはできません。recは、この前後の制限をグループ内だけで緩め、互いの名前を使えるようにします。",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "後の関数を呼ぶ必要があれば、同じrecへ入れる",
   invalidBody: "letの初期値からそのlet自身を参照することはできません。前のローカル関数から後の関数を呼ぶにはrecが必要です。グループ内で同じ名前を重複させたり、戻り値の型を矛盾させたりした場合もエラーになります。",
   diagnosticsBody: "名前が見つからないエラーでは、宣言の順番とrecの範囲を確認してください。再帰の回数が多い計算では、直接の自己呼び出しが本当に最後の操作かも確認してください。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "二つの関数が互いを呼ぶには",
+  summary: "ローカル関数が互いを呼ぶ場合は、recにまとめて宣言します。自分自身を呼ぶ関数と、letの初期値から自分を参照する場合は区別します。",
+  reading: "例のevenは0かどうかを確認し、そうでなければ1減らしてoddを呼びます。oddも同様にevenを呼びます。recにまとめることで、両方の関数の本体から互いの名前を使えます。",
+  result: "isEven 4はTrueです。この例は、負数から0へ到達する処理にはなっていません。また、互いを呼ぶ再帰には、直接の末尾自己呼び出しと同じスタック量の保証はありません。終了条件とスタックの制限を分けて確認してください。"
 }

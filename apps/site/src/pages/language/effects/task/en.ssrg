@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Task",
-  summary: "Task<A> is the transparent alias Effect<{}, Never, A> for infallible work needing no services.",
+  summary: (explanation ()).summary,
   ruleTitle: "Task is a convenient name, not another runtime",
   ruleBody: "Task has no separate nominal identity, execution model, ABI, or instances. Every Task operation is the corresponding Effect operation with an empty environment and an uninhabited recoverable error channel.",
   typingBody: "A service-free computation that can fail is Effect<{}, E, A>, not Task<A>. Task may compose where a broader E is expected through Never widening, while a required service keeps the type outside Task even when failure is Never.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Task does not mean arbitrary async work",
   invalidBody: "Removing R or E from notation is valid only when they are exactly {} and Never. Do not erase a service requirement or recoverable failure merely to obtain the shorter alias.",
   diagnosticsBody: "Alias expansion reports mismatches against Effect<{}, Never, A>, showing whether the problem is a required service, a non-Never failure, or the success type.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "When can I shorten an Effect type to Task?",
+  summary: "Task<A> is exactly Effect<{}, Never, A>: no required external services and no recoverable failure value. It is not a different execution mechanism.",
+  reading: "cached uses succeed to return its input when executed, so Task<Int> is appropriate. fallible may use fail with a String, so its type must retain String as the failure type rather than claim to be Task<Int>.",
+  result: "cached 42 is still a description of work until execution. Never excludes recoverable errors; it does not promise immunity to cancellation or defects such as runtime invariant violations."
 }

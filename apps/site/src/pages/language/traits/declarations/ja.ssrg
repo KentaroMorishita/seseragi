@@ -1,11 +1,12 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "trait宣言",
-  summary: "実装に必要な操作の名前、引数、戻り値を宣言します。traitの宣言は処理の約束を定めるもので、実行する本体は書きません。",
+  summary: (explanation ()).summary,
   purpose: [
     "trait宣言は「この操作を共通のコードで使うために、型は何を用意すればよいか」を定めます。Label<A>なら、A型の値をラベルにする操作はStringを返す、と約束します。",
-    "宣言と実装は分けて書きます。次の例には実行できるようにinstanceも含めていますが、このページで注目するのはtraitから始まる三行の宣言です。"
+    "宣言と実装は分けて書きます。この例には実行できるようにinstanceも含めていますが、このページで注目するのはtraitから始まる三行の宣言です。"
   ],
   exampleTitle: "ラベルにする操作を宣言し、一つの実装で使う",
   reading: [
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "必要な操作の本体を書き、型パラメーターを置き換えた署名と照合する方法を確認できます。",
     "Intのような完成した型と、F<_>のような型パラメーターの違いを確認できます。"
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "traitの宣言は、何を約束するか",
+  summary: "traitには、必要な操作の名前と、引数・戻り値の型を書きます。処理の本体は、別にinstanceへ書きます。",
+  reading: "TicketとPersonは異なるデータ型です。Label<A>はAを受け取りStringを返すlabelを宣言し、二つのinstanceがその処理を定義します。labelOf<A>はwhere Label<A>を条件にして、どちらの型にも使えます。personLabelはPersonを渡した結果です。",
+  result: "宣言の下のinstanceが約束を満たし、mainが呼ぶとticket-42を出力します。traitを宣言しただけでは、ラベルを計算したりTicketを作ったりしません。"
 }

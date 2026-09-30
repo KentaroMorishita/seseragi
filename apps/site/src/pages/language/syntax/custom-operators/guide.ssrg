@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I define a readable operator for my operation?"
-    "自分の処理に演算子の記号を付けるには",
-  summary: localized
-    "A custom binary operator names a function used between two operands. Its declaration also states how expressions with that operator group."
-    "カスタム二項演算子は、二つの値の間に記号を書いて呼ぶ関数です。宣言では、続けて使う場合の式のまとまり方も指定します。",
-  exampleId: "syntax-custom-operator",
-  reading: localized
-    "The example defines <+> for two strings using append. left and right are the input parameters; the result is String. infixr 4 declares right grouping at precedence level 4, so a chain groups from its right end."
-    "例の<+>は二つの文字列をappendでつなぎます。leftとrightが引数で、戻り値はStringです。infixr 4は優先順位4で右からまとまる指定で、連続して使うと右側の組から計算します。",
-  result: localized
-    "label becomes \"Seseragi docs\". The precedence declaration changes grouping, not the operand types or evaluation rules. You must import a custom operator explicitly from another module; merely importing a similarly named value does not bring it in."
-    "labelは\"Seseragi docs\"になります。優先順位は式のまとまりを決めるもので、引数の型や評価の規則を変えません。別のモジュールのカスタム演算子は、演算子として明示的にimportします。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "syntax-custom-operator") (en.explanation ()) (ja.explanation ())

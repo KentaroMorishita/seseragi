@@ -1,5 +1,5 @@
 import * as arrays from "std/array"
-import { LocalizedText } from "../../model/locale"
+import { LocalizedText, localized } from "../../model/locale"
 import {
   Block,
   CodeExample,
@@ -11,29 +11,61 @@ import {
 
 // Each page owns its question and explanation. Existing canonical source is
 // moved beside that explanation; it is neither copied nor replaced by prose.
+pub struct ExplanationCopy {
+  question: String,
+  summary: String,
+  reading: String,
+  result: String
+}
+
+pub type ExampleSelection =
+  | WithoutExample
+  | ArticleExample String
+
 pub struct Explanation {
   question: LocalizedText,
   summary: LocalizedText,
-  exampleId: String,
+  exampleId: ExampleSelection,
   reading: LocalizedText,
   result: LocalizedText
 }
+
+pub fn makeExplanation exampleId: ExampleSelection
+  -> english: ExplanationCopy
+  -> japanese: ExplanationCopy
+  -> Explanation =
+  Explanation {
+    question: localized english.question japanese.question,
+    summary: localized english.summary japanese.summary,
+    exampleId,
+    reading: localized english.reading japanese.reading,
+    result: localized english.result japanese.result
+  }
 
 fn isExample id: String -> block: Block -> Bool = match block {
   CodeExample (exampleId, _) -> exampleId == id
   _ -> False
 }
 
-fn keepExample id: String -> block: Block -> Bool = !(isExample id block)
+fn keepExample id: ExampleSelection -> block: Block -> Bool = match id {
+  WithoutExample -> True
+  ArticleExample value -> !(isExample value block)
+}
 
 pub fn explainPage explanation: Explanation -> page: PageDefinition -> PageDefinition =
   {
-    let source = match arrays.find (isExample explanation.exampleId) page.blocks {
-      Nothing -> {
+    let source = match explanation.exampleId {
+      WithoutExample -> {
         let empty: Array<Block> = []
         empty
       }
-      Just block -> [block]
+      ArticleExample id -> match arrays.find (isExample id) page.blocks {
+        Nothing -> {
+          let empty: Array<Block> = []
+          empty
+        }
+        Just block -> [block]
+      }
     }
     PageDefinition {
       ...page,

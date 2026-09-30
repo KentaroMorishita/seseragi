@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReaderCopy } from "../../reader-article"
 
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Records",
-  summary: "A record groups named values without declaring a named type. Read a field with a dot and use a spread to make an updated copy.",
+  summary: (explanation ()).summary,
   purpose: [
     "Use a record when several values belong together: for example a person's name and score. { name: \"Aki\", score: 10 } creates one value with two fields; a field is a named part of that value.",
     "A record's type describes its field names and their types. It does not depend on a declaration name. This is structural typing: a function requiring a name field can accept a record that also contains other required fields."
@@ -29,4 +30,11 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "Compare named data types and their update syntax with records.",
     "Check destructuring a record into local names."
   ]
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How do I change a field without changing the original value?",
+  summary: "A record groups named fields without declaring a type name. Read fields with a dot and construct an updated copy with a spread.",
+  reading: "original holds name \"Aki\" and score 10. ...original copies its fields into a new record, and score: 42 replaces the new record's score. nameOf requires only a String field named name, so updated may also contain score.",
+  result: "The outputs are 10, 42, and Aki. The first two distinguish the original from its updated copy. This operation is construction, not an assignment to original.score."
 }

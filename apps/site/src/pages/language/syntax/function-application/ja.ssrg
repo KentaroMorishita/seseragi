@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { SyntaxCopy } from "../article"
 
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "関数適用",
-  summary: "関数適用はカリー化と正格評価に従い、左結合します。括弧によるグループ化、タプル、Effectの実行とは区別します。",
+  summary: (explanation ()).summary,
   formsTitle: "空白で引数を一つずつ渡す",
   formsBody: "add(1, 2)ではなくadd 1 2と書きます。左結合なので(add 1) 2です。括弧は式のグループ、タプル、Unit値に使い、複数引数の呼び出し形式ではありません。",
   typingBody: "A -> B -> CはA -> (B -> C)です。最初の引数を渡すとB -> Cが返ります。明示型引数は呼び出す関数に空白なしで続けます。identity<String> valueは型適用と値適用で、identity < valueは比較です。",
@@ -10,4 +11,11 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "渡す値の型と式のまとまりを確認する",
   invalidBody: "関数でない値は呼び出せません。また、関数が要求する型と違う引数を渡すと型エラーです。if、match、do、ラムダ式の全体を一つの引数にするときは括弧で囲みます。カスタムの二項演算子の前後には空白が必要です。",
   diagnosticsBody: "型エラーが出たら、まず関数が受け取る引数の数と型を確認してください。add (1, 2)はタプル一個、add 1 2は整数二個を渡す書き方で、同じ意味ではありません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "関数に引数を渡すには",
+  summary: "関数名の後に空白で区切って引数を書きます。一部の引数だけを渡して、残りを待つ関数を作ることもできます。",
+  reading: "宣言のleftとrightはIntの引数で、最後のIntは戻り値の型です。add 1でleftに1を渡すと、rightを待つ関数が返ります。その関数をaddOne 2で呼ぶと、1 + 2を計算します。",
+  result: "answerは3です。add 1 2も(add 1) 2の意味なので3になります。add (1, 2)はタプルを一つ渡す書き方であり、addが必要とするIntの引数には合いません。"
 }

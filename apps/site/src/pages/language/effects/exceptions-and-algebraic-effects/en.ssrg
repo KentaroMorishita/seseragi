@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Exceptions and algebraic effects",
-  summary: "Seseragi has neither throw/catch/try syntax nor perform/handle algebraic-effect syntax.",
+  summary: (explanation ()).summary,
   ruleTitle: "One explicit effect model owns failure and capabilities",
   ruleBody: "Expected failure travels through Either or Effect E. Foreign adapters catch host exceptions at the boundary and convert them to Either<ForeignError, A> or Effect<R, ForeignError, A>.",
   typingBody: "Because exception edges do not exist in ordinary Seseragi expressions, every recoverable failure remains visible in a return type. Environment requirements, resources, and cancellation remain visible in Effect rather than a second handler system.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "throw, catch, try, perform, and handle are not language forms",
   invalidBody: "Do not write pseudo-syntax that bypasses E or R. Model a domain error as data, lift a recoverable operation into Effect, and keep adapter-specific exception handling at the interop boundary.",
   diagnosticsBody: "The parser reports unsupported exception or handler forms at their source range. Interop diagnostics retain the adapter operation and normalized ForeignError without exposing an arbitrary host stack as typed program data.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "What replaces try and catch in ordinary Seseragi code?",
+  summary: "Expected failures are values in Either or the E of Effect. Seseragi has no throw/catch syntax or perform/handle language forms.",
+  reading: "decodeForeign models an adapter result: success becomes Right 42 and rejection becomes Left with a ForeignError explanation. A real adapter must catch foreign-language exceptions at its boundary and return the declared result type.",
+  result: "For False, the caller receives Left (ForeignError \"adapter rejected the value\"). This example demonstrates result handling, not a hidden implementation of try/catch. Ordinary Seseragi callers inspect the declared result, not an arbitrary foreign exception."
 }

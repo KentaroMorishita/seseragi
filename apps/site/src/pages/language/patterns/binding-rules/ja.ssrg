@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "束縛の共通規則",
-  summary: "値を分解して名前を付けるときの、名前の型と使える範囲を説明します。",
+  summary: (explanation ()).summary,
   ruleTitle: "一つの入力値に対して名前を付ける",
   ruleBody: "let、do内の束縛、matchの分岐、内包表記、Effect内のforでは、入力値をパターンで分解できます。いずれも、入力の型から各名前の型を決めます。ただし、失敗する可能性のあるパターンを使えるかどうかと、付けた名前を使える範囲は構文ごとに異なります。",
   typingBody: "パターンの型注釈は、分解する入力全体の型を指定します。中にある名前の型はそこから決まります。同じパターン内で同名の名前を二つ定義できません。また、値を作る右辺から、これから付ける左辺の名前を参照することもできません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "letには、必ず一致するパターンだけを使う",
   invalidBody: "例えば配列の先頭を取り出すパターンは、空配列には一致しません。実際に渡す値が空でないと分かっていても、letでは使えません。失敗する場合も扱うにはmatchを使います。内包表記なら、一致しない要素を除外する用途で使えます。",
   diagnosticsBody: "入力の型、フィールドや要素の数、同名の名前、パターンが失敗しうるかを確認してください。名前が使えるのは、その束縛が属するブロックや分岐の範囲内だけです。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "値の一部を取り出して名前を付けるには",
+  summary: "束縛のパターンは、一つの入力から値の一部を取り出し、決まった範囲で使える名前を付けます。",
+  reading: "letの左側のPlayer { name, score }で、右側のPlayerから対応するフィールドを取り出します。nameは\"Aki\"、scoreは42です。パターンを入れ子にすれば、さらに中の値も取り出せます。",
+  result: "summaryは(\"Aki\", 42)です。名前は、束縛全体が成立してから使えます。letでは入力型のどの値にも一致する必要があるため、一致しない場合があるパターンにはmatchを使います。"
 }

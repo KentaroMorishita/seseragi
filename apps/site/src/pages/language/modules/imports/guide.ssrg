@@ -1,18 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized
-    "How do I use a function from another module without a name collision?"
-    "別のモジュールの関数を、名前の衝突を避けて使うには",
-  summary: localized
-    "A named import brings selected public declarations into scope. A namespace import lets you qualify public names with a module alias."
-    "名前を指定するimportは、その公開宣言を直接使えるようにします。モジュールの別名を付けるimportでは、別名を前に付けて公開名を使います。",
-  exampleId: "modules-imports",
-  reading: localized
-    "length as arrayLength brings std/array's function in under a different local name. import * as text lets normalize call text.trim. The imported signatures stay unchanged; an alias does not wrap or duplicate the function."
-    "length as arrayLengthは、std/arrayの関数に利用側の別名を付けます。import * as textならtext.trimとして呼びます。別名を付けても、関数の型や実装は変わりません。",
-  result: localized
-    "itemCount [1, 2, 3] returns 3 and normalize \"  Aki  \" returns \"Aki\". Private declarations cannot be imported even when their names are known. Imports make definitions available but do not execute their Effects."
-    "itemCount [1, 2, 3]は3、normalize \"  Aki  \"は\"Aki\"です。名前を知っていても非公開の宣言はimportできません。importは定義を使えるようにしますが、そのEffectを実行しません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "modules-imports") (en.explanation ()) (ja.explanation ())

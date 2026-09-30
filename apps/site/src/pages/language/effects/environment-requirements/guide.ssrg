@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How does a computation request application settings?"
-    "処理がアプリケーションの設定を要求するには",
-  summary: localized
-    "Effect's first type argument lists required services as a record. A service is a value supplied by the execution environment, not an implicit global variable."
-    "Effectの第一の型引数に、必要なサービスをレコードとして書きます。サービスは実行する環境から渡す値であり、暗黙のグローバル変数ではありません。",
-  exampleId: "effects-environment",
-  reading: localized
-    "Settings stores a label. effects.service reads environment.settings when the computation runs; the requirement { settings: Settings } declares that field. map then transforms the retrieved Settings into its label String."
-    "Settingsはlabelを持ちます。effects.serviceは実行時にenvironment.settingsを取り出し、{ settings: Settings }はそのフィールドが必要なことを宣言します。mapで、得られるSettingsからlabelのStringを取り出します。",
-  result: localized
-    "The computation cannot run without a Settings service of the declared type. Supplying an environment is separate from creating the computation. Different environments can provide different settings without changing the function's code."
-    "宣言した型のSettingsがなければ、この計算を実行できません。計算を作ることと、実行用の環境を渡すことは別です。関数のコードを変えずに、環境ごとに異なる設定を渡せます。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-environment") (en.explanation ()) (ja.explanation ())

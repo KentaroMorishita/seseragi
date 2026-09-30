@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Calling trait methods",
-  summary: "A trait method behaves like an ordinary curried function whose type scheme carries an evidence requirement.",
+  summary: (explanation ()).summary,
   ruleTitle: "Calls use function syntax and static evidence",
   ruleBody: "A method in scope may be called by its unqualified name. Its explicit arguments are curried normally; its trait application is an implicit requirement. A trait-qualified name disambiguates two traits that expose the same method name.",
   typingBody: "Concrete arguments or an expected result infer the trait parameters and select an instance. Generic callers must state the matching constraint. A partial application can retain unresolved evidence until later arguments determine its type.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A shared method name may need qualification",
   invalidBody: "If type information cannot determine which trait owns an unqualified name, the call is ambiguous even when both candidates have similar signatures. Qualify the trait or add useful type information.",
   diagnosticsBody: "Diagnostics distinguish unknown names, ambiguous trait ownership, missing instance evidence, and a method result that cannot satisfy the expected type.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Do trait operations use a dot call?",
+  summary: "A trait operation is called as a constrained function. Its name comes from the trait, and its implementation is selected from the argument types.",
+  reading: "Render<Status> provides render. withPrefix calls render value and prepends text. withPrefix \"status: \" partially applies the first parameter; renderStatus Online then provides the Status value.",
+  result: "text is \"status: online\". Declaring a trait does not automatically add value.render dot syntax. Dot methods belong to an impl of a named type, while a generic trait caller declares the corresponding where constraint."
 }

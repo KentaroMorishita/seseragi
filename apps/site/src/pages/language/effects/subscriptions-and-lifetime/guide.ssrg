@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "How do I stop observing a Signal when I no longer need it?"
-    "Signalの監視が不要になったら、どう止めるか",
-  summary: localized
-    "A subscription attaches an observer to a Signal and has a lifetime. Unsubscribe it explicitly or let its resource scope release it."
-    "購読は、Signalの変化を観測する処理を登録します。寿命があるため、不要になったら明示的に解除するか、管理範囲の終了時に解放します。",
-  exampleId: "effects-signal-subscription",
-  reading: localized
-    "subscribe first sends source's current value to the callback, which writes it into mirror. Setting source to 2 updates mirror. After unsubscribe, setting source to 3 no longer invokes that observer."
-    "subscribeは最初にsourceの現在値をコールバックへ渡し、mirrorへ書き込みます。sourceを2にするとmirrorも2になります。unsubscribeした後の3への更新では、その観測処理は呼ばれません。",
-  result: localized
-    "Executing observeThenRelease returns 2. The callback's argument value is the notified value, not the Signal handle. Keeping a subscription forever can retain associated work; tie it to the lifetime of the feature using it."
-    "observeThenReleaseの結果は2です。コールバックのvalueは通知された値であり、Signalのハンドルではありません。必要な機能の寿命に合わせて購読を管理します。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "effects-signal-subscription") (en.explanation ()) (ja.explanation ())

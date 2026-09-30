@@ -1,17 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "Should this operation be a method or a trait?"
-    "この操作をメソッドにするか、traitにするか",
-  summary: localized
-    "Use an impl for operations specific to one named type. Use a trait when multiple types should satisfy a shared operation required by common code."
-    "一つの型に固有の操作にはimplを使います。複数の型で共通の操作を要求し、共通のコードから使う場合にはtraitを使います。",
-  exampleId: "traits-methods-versus-traits",
-  reading: localized
-    "User's displayName is a dot method defined in impl User. DebugName<User> supplies the separate debugName operation. Both read the same user's name but offer different interfaces and output formats."
-    "UserのdisplayNameはimpl Userにあるドットのメソッドです。DebugName<User>は別のdebugName操作を実装します。同じ名前のフィールドを読んでも、呼び方と結果の形式が異なります。",
-  result: localized
-    "publicName is \"Aki\" and diagnosticName is \"User(Aki)\". Defining displayName does not fulfill DebugName<User>, nor does that instance create a dot method. The shared contract and the owned method are separate declarations."
-    "publicNameは\"Aki\"、diagnosticNameは\"User(Aki)\"です。displayNameを定義しただけではDebugName<User>を満たさず、instanceを定義しただけでドットのメソッドにもなりません。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "traits-methods-versus-traits") (en.explanation ()) (ja.explanation ())

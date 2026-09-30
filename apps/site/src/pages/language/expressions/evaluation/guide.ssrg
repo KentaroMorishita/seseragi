@@ -1,16 +1,10 @@
-import { localized } from "../../../../model/locale"
-import { Explanation } from "../../explanation"
+import {
+  Explanation,
+  makeExplanation,
+  ArticleExample
+} from "../../explanation"
+import * as en from "./en"
+import * as ja from "./ja"
 
-pub fn explanation -> Explanation = Explanation {
-  question: localized "When are function arguments computed?" "関数の引数は、いつ計算されるか",
-  summary: localized
-    "Ordinary expressions evaluate their inputs before producing a result. Function arguments are evaluated left to right, once each."
-    "通常の式は、入力を評価してから結果を作ります。関数の引数は左から右へ、一度ずつ評価します。",
-  exampleId: "expressions-evaluation",
-  reading: localized
-    "place receives a tens digit and a ones digit and computes tens * 10 + ones. In place (1 + 1) (2 + 1), the first argument becomes 2 and the second becomes 3 before the corresponding body calculation uses them."
-    "placeは十の位と一の位を受け取り、tens * 10 + onesを計算します。place (1 + 1) (2 + 1)では、最初の引数が2、次が3になり、その値を本体の計算に使います。",
-  result: localized
-    "result is 23. This is not lazy evaluation of ordinary arguments. Creating an Effect value is different: the ordinary expressions used to build it run now, while its described external operation waits for execution."
-    "resultは23です。通常の引数を必要になるまで計算しない方式ではありません。Effectの場合は、計算の説明を組み立てる式の評価と、説明された外部処理の実行を区別します。"
-}
+pub fn explanation -> Explanation =
+  makeExplanation (ArticleExample "expressions-evaluation") (en.explanation ()) (ja.explanation ())

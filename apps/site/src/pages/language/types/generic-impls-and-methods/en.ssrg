@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { TypeCopy } from "../article"
 
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Generic impls and methods",
-  summary: "Separate parameters fixed by the receiver from parameters introduced by one method.",
+  summary: (explanation ()).summary,
   ruleTitle: "The receiver determines the impl parameters",
   ruleBody: "impl<A> Box<A> attaches methods to every application of Box. A belongs to the impl and must occur in the target type; it is not a free choice made independently when calling get. For Box<Int>, the receiver fixes A to Int before the method's remaining parameters are checked.",
   identityBody: "A method can introduce its own parameters, such as B in replace<B>. They belong to that method, not to every other method in the impl. They must not shadow an enclosing parameter. The example's replace returns Box<B> by constructing a new Box; the original Box<A> remains unchanged.",
@@ -10,4 +11,11 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "An impl parameter cannot float free of its target",
   invalidBody: "A parameter declared by impl must appear in the target type. Introducing impl<A> for a concrete unrelated target leaves no receiver information for A and is rejected. A method cannot redeclare A while the impl's A is in scope. Use a distinct method-local name.",
   diagnosticsBody: "Distinguish receiver mismatches from method-argument mismatches. First check which impl the receiver selects, then check the method's own constraints. Inherent methods are statically associated with nominal owners and do not acquire trait-instance dispatch merely because they are generic.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Which type parameters belong to the value, and which to the call?",
+  summary: "An impl parameter comes from the receiver's type. A method may introduce additional parameters chosen for that call.",
+  reading: "number is Box<Int>, so A in impl<A> Box<A> is Int. In number.replace \"hello\", replace<B> selects B as String and constructs a new Box<String>. self names the original Box passed before the dot.",
+  result: "The original number remains Box<Int>; this is construction, not mutation of its field's type. Keep A and B distinct because they describe different choices. The impl cannot declare a parameter unrelated to its receiver type."
 }

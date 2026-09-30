@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Scheduler fairness",
-  summary: "The Effect runtime uses cooperative FIFO scheduling with an explicit weak-fairness guarantee at checkpoints.",
+  summary: (explanation ()).summary,
   ruleTitle: "Progress depends on reaching checkpoints",
   ruleBody: "Async waits, yieldNow, Queue, Deferred and Semaphore waits, sleep, I/O boundaries, and cancellation observation are checkpoints. Runnable Fibers enter a FIFO queue and eventually run while other Fibers keep reaching checkpoints.",
   typingBody: "Scheduling does not change an Effect type or expose a Fiber priority. yieldNow is a Task<Unit>; inserting it makes a cooperative boundary explicit without adding a service or recoverable failure.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Do not infer a global order for concurrent cleanup",
   invalidBody: "Input order and waiter registration determine enqueue order only where an operation states it. Independent sibling finalizers have no global order even when an API waits for all of them before returning.",
   diagnosticsBody: "Runtime tracing may expose checkpoint and enqueue events, but changing worker counts cannot change specified result order, failure selection, or the LIFO order within one resource scope.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Can a long calculation prevent other Fibers from progressing?",
+  summary: "The runtime shares execution cooperatively. Fibers give other runnable work a chance at waits and explicit yield points, not by automatic interruption of every pure calculation.",
+  reading: "yieldNow creates an explicit handoff point before cooperativeStep succeeds with 42. It does not request a service or produce a recoverable error; it simply allows already-runnable work an opportunity to advance.",
+  result: "The result is still 42. Fairness does not guarantee equal elapsed time or a fixed response deadline. A long uninterrupted pure loop can delay other work, so choose appropriate handoff points when designing CPU-heavy Effect code."
 }

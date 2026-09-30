@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Trait constraints",
-  summary: "A where clause makes required capabilities part of a generic function or instance contract.",
+  summary: (explanation ()).summary,
   ruleTitle: "Constraints travel with polymorphic code",
   ruleBody: "Write one or more trait applications after where. A generic function receives matching dictionaries as implicit parameters. A conditional instance may request child evidence and selection resolves those requirements recursively.",
   typingBody: "At a concrete call site every required application must have one visible coherent instance. Selection depends on static types alone: an empty collection or Nothing still requires the same element evidence as a populated value.",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Values cannot waive a constraint",
   invalidBody: "A branch that happens not to inspect an element, an empty container, or a particular constructor does not remove its declared requirement. Missing recursive leaf evidence remains a type error.",
   diagnosticsBody: "Missing-evidence diagnostics report the concrete unsatisfied application, including nested conditional requirements. Ambiguous evidence and unresolved type variables are reported separately.",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "How can a generic function call a trait operation?",
+  summary: "A where constraint states which operations must exist for a type parameter. Without it, a generic function cannot assume every type has a label or comparison operation.",
+  reading: "describe<A> adds a prefix to label value. where Label<A> gives its body permission to call label and requires the caller to choose a type with that implementation. Badge has a Label instance, so describe Ready is accepted.",
+  result: "description is \"badge: ready\". A different type can use the same function after supplying its Label instance. Without such an instance, the call is rejected before execution; the compiler does not guess how to label an arbitrary value."
 }

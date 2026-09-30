@@ -8,8 +8,10 @@ pipeline.
 ## Responsibilities
 
 - `src/pages/`: one directory per stable page, with `page.ssrg`, `en.ssrg` and
-  `ja.ssrg`. Language articles also own a typed `guide.ssrg`: a reader's
-  question, a local example walkthrough, and its result or limitation. The
+  `ja.ssrg`. All explanation prose lives in those locale modules as typed
+  `ExplanationCopy`; the article summary reads the same explanation copy, so
+  it cannot drift into a second translation. A small `guide.ssrg` selects the
+  example with `ArticleExample` or `WithoutExample` and pairs the locale copies. The
   shared explanation component moves that article's existing example beside
   its explanation; it never substitutes a Tour lesson or removes later rules.
 - `src/model/`: closed page, navigation, locale and build-input types.

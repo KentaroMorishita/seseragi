@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "モジュールの初期化",
-  summary: "importしたモジュールの値が、いつ、どの順番で作られるかを説明します。",
+  summary: (explanation ()).summary,
   ruleTitle: "依存先を一度だけ初期化し、letをソース順に評価する",
   ruleBody: "まず依存先を初期化してから、それを使うモジュールを初期化します。各モジュールは一度だけ初期化します。同じファイル内のモジュール直下のletは、ソースに書いた順に計算します。関数や型の名前はその前から参照できますが、関数同士を相互再帰させる場合はrecにまとめる必要があります。",
   typingBody: "モジュールの関数は、letを計算する前に呼び出せる状態になります。letの右辺から、先のletと関数を参照できますが、後のletを直接参照することはできません。関数の本体から後のletを参照することはできます。ただし、その値の初期化が済んでから関数を呼ぶ必要があります。ローカル関数は宣言した位置から使えるため、別の規則です。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "関数名の解決は、その関数が読む値の初期化ではない",
   invalidBody: "未初期化の値への参照を関数の中へ移しても、その関数を早すぎる時点で呼べば問題は同じです。複数のモジュールから同じ依存先をimportしても、初期化を繰り返すことはありません。また、importはEffectを実行する操作ではありません。",
   diagnosticsBody: "初期化前の参照では、どのletの計算からどの関数を呼び、どの未初期化の値を読んだかを確認してください。foreignでpure-loadを指定した外部モジュールは初期化時に読み込みますが、task-loadなら最初のTask実行時まで待ちます。コンパイラやエディターが調べるだけで、外部コードを実行することはありません。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "後で宣言する値を、関数から読んでもよいか",
+  summary: "モジュールの値はソース順に初期化します。関数が後の値を参照していても、呼び出した時点でその値が初期化済みである必要があります。",
+  reading: "readLaterはlaterを参照しています。firstが1、次にlaterが2になり、その後でresultがreadLaterを呼びます。呼ぶ時点ではlaterが準備済みなので、有効です。",
+  result: "resultは2です。呼び出しをlaterの初期化前へ移すと、関数の中に参照を隠していても初期化前参照になります。複数箇所からimportしても、同じモジュールを繰り返し初期化しません。"
 }

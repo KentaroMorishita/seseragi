@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Backend-independent semantics",
-  summary: "Seseragi defines what your code means. The language used to implement or run it does not quietly change its results.",
+  summary: (explanation ()).summary,
   meaningTitle: "The generated language does not define the rules",
   meaningBody: "A compiler backend turns Seseragi into code that a runtime can execute. The current backend emits TypeScript, but TypeScript and JavaScript rules are not automatically Seseragi rules. The backend must implement Seseragi's specified behavior.",
   exampleTitle: "Integer division is different from floating-point division",
@@ -21,4 +22,11 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
     "This principle does not claim that multiple production backends already exist, or that every program can run in every environment. The current implementation uses a TypeScript runtime. A browser and a process also provide different services, so code requiring a file service needs an appropriate host.",
     "Implementations may choose different data layouts and optimizations, and their speed or memory use may differ. Values from foreign code still need explicit conversion into Seseragi types; backend independence does not make arbitrary external values safe."
   ],
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "Should I use the generated language's arithmetic rules?",
+  summary: "Seseragi's observable calculation rules belong to Seseragi, even when the compiler emits another language.",
+  reading: "integerResult uses integer division -7 / 2, which truncates toward zero. decimalResult uses Float operands and produces the fractional quotient. The two source forms deliberately choose different arithmetic types.",
+  result: "The program prints -3, 3.5. These results must follow the language contract rather than an accidental property of generated TypeScript. Backend independence does not promise identical machine layout or performance on every host."
 }

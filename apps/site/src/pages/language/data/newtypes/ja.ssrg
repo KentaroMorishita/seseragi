@@ -1,8 +1,9 @@
+import { ExplanationCopy } from "../../explanation"
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "newtypeの値",
-  summary: "既存の値を包み、用途の違う値を混同しないための新しい型を作ります。",
+  summary: (explanation ()).summary,
   ruleTitle: "包む操作と取り出す操作を明示する",
   ruleBody: "newtype UserId = Intなら、UserId 42でIntを包んだUserIdの値を作ります。中身を取り出すにはUserId valueというパターンを使います。UserIdに専用のメソッドや演算子を定義することもできます。",
   typingBody: "UserIdとIntは別の型です。UserIdを必要とする関数へIntを直接渡すことはできません。型パラメーターを持つnewtypeでも同じです。pub opaqueで公開すると、他モジュールは型名を使えますが、コンストラクターや取り出し用のパターンは使えません。",
@@ -10,4 +11,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "中身の型の操作を自動で引き継ぐわけではない",
   invalidBody: "Intを包んでも、Intの演算子やtraitの実装が自動で使えるわけではありません。また、レコードのようなフィールド参照や更新もできません。必要な操作をnewtypeに定義するか、中身を明示的に取り出します。",
   diagnosticsBody: "中身の型とnewtypeの取り違えがないか確認してください。必要ならコンストラクターで包み、受け取る側ではパターンで取り出します。",
+}
+
+pub fn explanation -> ExplanationCopy = ExplanationCopy {
+  question: "newtypeの値を作り、中身を取り出すには",
+  summary: "newtypeは、既存の型の値を中身に持つ別の型を作ります。コンストラクターで包み、対応するパターンで取り出します。",
+  reading: "UserId 42は、通常のIntではなくUserIdを作ります。rawはUserId numberに照合してnumberを返します。型を書く位置、値を作る位置、中身を取り出す位置で、同じUserIdという名前を使います。",
+  result: "numberはIntの42です。明示的に取り出さない限り、Intが必要な場所へUserIdを渡せません。IDを無関係な整数の操作へ渡す間違いを防げます。"
 }
