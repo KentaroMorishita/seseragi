@@ -94,7 +94,13 @@ export async function verifyLanguageMenu(
           await trigger.focus()
           await page.keyboard.press(tabKey)
           await page.keyboard.press(tabKey)
-          await page.keyboard.press(tabKey)
+          assert.equal(
+            await japanese.evaluate((link) => link === document.activeElement),
+            true
+          )
+          // Safari may send the next Tab into browser chrome instead of a DOM
+          // element. Verify focus departure against an actual outside target.
+          await page.locator(".site-brand").focus()
           await options.waitFor({ state: "hidden" })
           assert.equal(await options.isVisible(), false)
           if (screenshots && route === "/docs/") {
