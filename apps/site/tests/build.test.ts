@@ -351,6 +351,18 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     expect(textContent(typeSystem)).toContain("implicit Any or Unknown")
     expect(textContent(typeSystem)).toContain("TypesUnderstanding types")
     for (const [route, explanation] of [
+      ["types/kinds", "Maybeだけでは、値の型はまだ決まらない"],
+      ["traits/do-notation", "値を取り出して次の計算へ渡す処理"],
+      ["effects/effect-type", "Effectを作っただけでは、処理は開始されない"],
+      [
+        "effects/environment-requirements",
+        "サービスを、暗黙のグローバル値にしない",
+      ],
+      ["effects/task", "Taskは、Effect<{}, Never, A>の短い名前"],
+      [
+        "effects/signals-and-transactions",
+        "Signalの現在値は、Effectの中で読み書きする",
+      ],
       ["types/type-system", "Intを受け取る関数にStringを渡す"],
       [
         "types/generic-functions",
