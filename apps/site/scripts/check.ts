@@ -17,6 +17,7 @@ for (const command of [
     "--moduleResolution",
     "Bundler",
     "apps/site/scripts/build.ts",
+    "apps/site/client/mobile-navigation.ts",
     "apps/site/scripts/check-examples.ts",
     "apps/site/scripts/check-content-map.ts",
     "apps/site/tests/build.test.ts",

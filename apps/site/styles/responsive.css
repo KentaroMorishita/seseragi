@@ -102,17 +102,17 @@
 
   .mobile-docs-navigation {
     display: block;
+    position: sticky;
+    top: var(--header-height);
+    z-index: 19;
+    min-height: 61px;
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
-    padding: 24px 0;
+    padding: 8px 0;
   }
 
-  .mobile-docs-navigation > summary {
-    cursor: pointer;
-    font-weight: 760;
-  }
-
-  .mobile-docs-navigation > div {
-    padding-top: 24px;
+  .mobile-docs-navigation[open] {
+    z-index: 30;
   }
 
   .mobile-on-this-page {

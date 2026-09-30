@@ -1,0 +1,175 @@
+.mobile-navigation-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  width: fit-content;
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mobile-navigation-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.navigation-open-icon,
+.navigation-close-icon,
+.navigation-close-label {
+  font-size: 21px;
+  line-height: 1;
+}
+
+.navigation-close-icon {
+  display: none;
+}
+
+.mobile-navigation-drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(360px, 88vw);
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid var(--border-strong);
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.mobile-navigation-drawer[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-navigation-drawer::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.mobile-navigation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  min-height: 64px;
+  padding: max(10px, env(safe-area-inset-top)) 16px 10px 24px;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.mobile-navigation-close {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 28px;
+}
+
+[data-enhanced] .mobile-navigation-close {
+  display: flex;
+}
+
+.mobile-navigation-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 24px max(24px, env(safe-area-inset-bottom));
+}
+
+.mobile-navigation-content summary,
+.mobile-navigation-content .sidebar-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.mobile-navigation-content .sidebar-group {
+  margin-top: 12px;
+}
+
+.mobile-navigation-content .sidebar-group > summary {
+  font-size: 13px;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.mobile-navigation-content .sidebar-section {
+  margin-top: 4px;
+}
+
+.mobile-navigation-content .sidebar-link {
+  font-size: 14px;
+}
+
+.mobile-navigation-close:hover {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+/* Fixed body preserves the reader's place, including on mobile Safari. */
+.navigation-is-open {
+  overflow: hidden;
+}
+
+.navigation-is-open body {
+  position: fixed;
+  width: 100%;
+}
+
+/* No-JavaScript fallback uses the same off-canvas tree, not an inline list. */
+.mobile-docs-navigation:not([data-enhanced])[open] .mobile-navigation-drawer {
+  z-index: 41;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-docs-navigation:not([data-enhanced])[open] > summary {
+  position: fixed;
+  z-index: 42;
+  top: max(10px, env(safe-area-inset-top));
+  left: min(300px, calc(88vw - 60px));
+  justify-content: center;
+  width: 44px;
+}
+
+.mobile-docs-navigation:not([data-enhanced])[open] .mobile-navigation-drawer {
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6);
+}
+
+.mobile-docs-navigation:not([data-enhanced])[open] .navigation-trigger-label,
+.mobile-docs-navigation:not([data-enhanced])[open] .navigation-open-icon {
+  display: none;
+}
+
+.mobile-docs-navigation:not([data-enhanced])[open] .navigation-close-icon {
+  display: block;
+}
+
+.mobile-docs-navigation:not([data-enhanced])[open] .navigation-close-label {
+  display: block;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  html:has(.mobile-docs-navigation:not([data-enhanced])[open]) {
+    overflow: hidden;
+  }
+}

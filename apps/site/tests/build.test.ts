@@ -69,6 +69,18 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   try {
     const manifest = build(output)
     expect(manifest.pages).toHaveLength(3974)
+    const mobileArticle = readFileSync(
+      join(output, "ja/docs/language/syntax/function-application/index.html"),
+      "utf8"
+    )
+    expect(mobileArticle).toContain('id="mobile-reference-drawer"')
+    expect(mobileArticle).toContain("目次を閉じる")
+    expect(mobileArticle).toContain(
+      '<script type="module" src="/assets/mobile-navigation.js"></script>'
+    )
+    expect(readFileSync(join(output, "index.html"), "utf8")).not.toContain(
+      '<script type="module" src="/assets/mobile-navigation.js"></script>'
+    )
     expect(
       manifest.referenceCoverage.find(({ area }) => area === "language")
     ).toEqual({

@@ -120,9 +120,15 @@ Desktop uses:
 2. the article;
 3. the current article's table of contents.
 
-Mobile turns the current reference tree and article table of contents into two
-separate disclosures. Collapsed branches do not render thousands of symbol
-links. The active group and section remain expanded.
+Mobile opens the current reference tree as a left off-canvas sidebar above the
+article, not an accordion that pushes the article down. A compact sticky menu
+trigger remains available while reading. The drawer scrolls independently,
+locks background scrolling, and closes with its close button, backdrop tap,
+Escape, or page selection. Native dialog modality isolates keyboard focus;
+closing restores the reading position. The article table of contents remains a
+separate compact disclosure. The same off-canvas tree is usable without
+JavaScript. Collapsed branches do not render thousands of symbol links. The
+active group and section remain expanded.
 
 The navigation levels are:
 

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict"
-import { mkdirSync, mkdtempSync, rmSync } from "node:fs"
+import { mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import {
@@ -8,6 +8,7 @@ import {
 } from "../../playground/node_modules/@playwright/test"
 import { buildSite } from "../scripts/build"
 import { plannedReferenceRoutes } from "../scripts/coverage"
+import { verifyMobileNavigation } from "./mobile-navigation"
 
 async function codeSurface(locator: Locator) {
   return locator.evaluate((code) => {
@@ -92,6 +93,12 @@ if (screenshots) mkdirSync(screenshots, { recursive: true })
 
 try {
   buildSite({ output, origin: "https://seseragi.example" })
+  const configuredHeaders = JSON.parse(
+    readFileSync(resolve(import.meta.dir, "../vercel.json"), "utf8")
+  ).headers[0].headers as Array<{ name: string; value: string }>
+  const securityHeaders = Object.fromEntries(
+    configuredHeaders.map(({ name, value }) => [name, value])
+  )
   const server = Bun.serve({
     port: 0,
     hostname: "127.0.0.1",
@@ -103,7 +110,7 @@ try {
       const path = resolve(output, relative || "index.html")
       if (!path.startsWith(`${output}/`))
         return new Response("Not found", { status: 404 })
-      return new Response(Bun.file(path))
+      return new Response(Bun.file(path), { headers: securityHeaders })
     },
   })
   try {
@@ -1070,6 +1077,11 @@ try {
         assert.deepEqual(failures, [])
         await context.close()
       }
+      await verifyMobileNavigation(
+        browser,
+        `http://127.0.0.1:${server.port}`,
+        screenshots
+      )
       let auditedArticles = 0
       for (const width of [320, 1280]) {
         const context = await browser.newContext({

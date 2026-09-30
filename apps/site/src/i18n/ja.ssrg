@@ -10,5 +10,6 @@ pub fn messages -> Messages = Messages {
   openPlayground: "Playgroundで開く",
   language: "English",
   previousPage: "前へ",
-  nextPage: "次へ"
+  nextPage: "次へ",
+  closeNavigation: "目次を閉じる"
 }

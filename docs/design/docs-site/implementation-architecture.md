@@ -74,6 +74,14 @@ area, group and section tree. The same typed page values provide routes, titles,
 sidebar entries and rendered output. There is no separate page-ID JSON file
 that can drift from the sidebar.
 
+`components/mobile-sidebar.ssrg` renders the mobile trigger, drawer header and
+the same navigation tree as the desktop sidebar. Shared labels belong to the
+locale modules. `client/mobile-navigation.ts` is a narrow browser API adapter:
+native dialog opening/dismissal, focus isolation and scroll restoration only.
+It does not render content or own routes. The host build publishes and links
+this external script; the Seseragi HTML API intentionally does not expose
+script tags. CSS keeps the same tree off-canvas when JavaScript is unavailable.
+
 The catalog follows reader questions instead of specification file boundaries.
 Every independently useful language concept remains an addressable leaf, while
 the internal coverage map may assign several normative sections to that page.
@@ -90,8 +98,10 @@ The TypeScript build host may supply only data that is not site-authored:
 - compiler-owned Standard Library symbol metadata;
 - deployment origin and product version.
 
-The host does not supply page prose, navigation, layout or HTML. Seseragi
-decodes the closed build input and renders complete documents through pure Html.
+The host does not supply page prose, navigation, layout or content HTML.
+Seseragi decodes the closed build input and renders complete documents through
+pure Html. Publishing may attach the external browser-enhancement asset, but
+must not alter the content tree or author browser UI markup.
 
 ## Compiler-owned Reference
 
