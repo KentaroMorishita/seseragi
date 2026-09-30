@@ -10,13 +10,14 @@ pub fn page -> PageDefinition =
         "effects-either",
         localized "Typed validation and right-side mapping" "型付きvalidationとright側のmap"
       )] [] [
-        [InternalLink (localized "Maybe" "Maybe", "/docs/language/effects/maybe/")],
+        [InternalLink
+      (localized "Maybe and absence" "Maybeと値の不在", "/docs/language/effects/maybe/")],
         [InternalLink (
-          localized "Effect error channels" "Effectのerror channel",
+          localized "Effect error channels" "Effectの回復可能な失敗",
           "/docs/language/effects/error-channels/"
         )],
         [InternalLink (
-          localized "Algebraic data types" "代数的data型",
+          localized "Algebraic data types" "代数的データ型",
           "/docs/language/data/algebraic-data-types/"
         )]
       ]

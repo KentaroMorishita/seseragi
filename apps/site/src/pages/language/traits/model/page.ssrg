@@ -10,7 +10,7 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Trait declarations" "trait宣言", "/docs/language/traits/declarations/")],
         [InternalLink
-      (localized "Instances" "instance", "/docs/language/traits/instances/")],
+      (localized "Instances" "インスタンス", "/docs/language/traits/instances/")],
         [InternalLink
-      (localized "Polymorphism" "polymorphism", "/docs/language/types/polymorphism/")]
+      (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")]
       ]

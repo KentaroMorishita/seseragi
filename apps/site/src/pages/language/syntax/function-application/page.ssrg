@@ -61,13 +61,13 @@ pub fn page -> PageDefinition =
     ]
   ]] [
     [InternalLink
-        (localized "Method calls" "method呼び出し", "/docs/language/syntax/method-calls/")],
+        (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/")],
     [InternalLink (
-      localized "Pipelines and low-precedence application" "pipelineと低優先順位適用",
+      localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
       "/docs/language/syntax/pipelines-and-low-precedence-application/"
     )],
     [InternalLink (
-      localized "Operator precedence" "operator優先順位",
+      localized "Operator precedence" "演算子の優先順位",
       "/docs/language/syntax/operator-precedence/"
     )]
   ]

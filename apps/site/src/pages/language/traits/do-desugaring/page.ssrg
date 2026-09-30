@@ -10,7 +10,7 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Do notation" "do記法", "/docs/language/traits/do-notation/")],
         [InternalLink
-      (localized "Lambdas" "lambda", "/docs/language/expressions/lambdas/")],
+      (localized "Lambda expressions" "ラムダ式", "/docs/language/expressions/lambdas/")],
         [InternalLink
-      (localized "Evaluation" "評価", "/docs/language/expressions/evaluation/")]
+      (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")]
       ]

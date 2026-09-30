@@ -33,7 +33,7 @@ pub fn page input: BuildInput -> PageDefinition = PageDefinition {
     BulletList (
       [
         [InternalLink (
-          localized "Source text and comments" "ソースとコメント",
+          localized "Source text and comments" "ソーステキストとコメント",
           "/docs/language/syntax/source-text/"
         )],
         [InternalLink (
@@ -45,17 +45,17 @@ pub fn page input: BuildInput -> PageDefinition = PageDefinition {
           "/docs/language/syntax/operator-precedence/"
         )],
         [InternalLink (
-          localized "Blocks and declarations" "ブロックとローカル宣言",
+          localized "Blocks and local declarations" "ブロックとローカル宣言",
           "/docs/language/expressions/blocks-and-local-declarations/"
         )],
         [InternalLink
-            (localized "Pattern matching" "パターンマッチ", "/docs/language/patterns/match/")],
+            (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")],
         [InternalLink (
           localized "Type constructors" "型構築子",
           "/docs/language/types/type-constructors/"
         )],
         [InternalLink (
-          localized "Module declarations" "モジュールの宣言",
+          localized "Top-level declarations" "トップレベルの宣言",
           "/docs/language/modules/top-level/"
         )]
       ]

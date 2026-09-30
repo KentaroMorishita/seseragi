@@ -47,12 +47,14 @@ pub fn page -> PageDefinition =
       "return, break, and continue: use expression results, matching, reduceUntil, or forEachUntil."
       "return、break、continueはありません。式の結果、matching、reduceUntil、forEachUntilを使います。"
       ]] [
-        [InternalLink
-      (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")],
         [InternalLink (
-          localized "Immutable by default" "default immutable",
+          localized "No hidden danger" "危険を暗黙に隠さない",
+          "/docs/language/model/no-hidden-danger/"
+        )],
+        [InternalLink (
+          localized "Immutable by default" "デフォルトで不変",
           "/docs/language/model/immutable-by-default/"
         )],
         [InternalLink
-      (localized "Readable density" "読める密度", "/docs/language/model/readable-density/")]
+      (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
       ]

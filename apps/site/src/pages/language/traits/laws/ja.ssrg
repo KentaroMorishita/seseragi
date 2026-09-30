@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "trait law",
+  title: "traitの法則",
   summary: "一部の標準traitには、通常の型検査では証明できなくても実装が守るべき意味上のlawがあります。",
   ruleTitle: "正しいsignatureだけでは十分でない",
   ruleBody: "Eq、Ord、Functor、Applicative、Monadなど文書化された抽象は等式または観測上の性質を定めます。instance作者はmethod型に加えてそのcontractを受け入れます。",

@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "trait methodの呼び出し",
+  title: "traitメソッドの呼び出し",
   summary: "trait methodは、型schemeにevidence requirementを持つ通常のcurried関数として振る舞います。",
   ruleTitle: "関数構文と静的evidenceで呼び出す",
   ruleBody: "scope内のmethodは非修飾名で呼べます。明示引数は通常どおりcurry化され、trait適用が暗黙requirementになります。同名methodを公開するtraitが複数ある場合はtrait修飾名で区別します。",

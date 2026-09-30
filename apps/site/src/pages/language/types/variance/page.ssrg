@@ -6,14 +6,13 @@ import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
   typePage "language.types.variance" "/docs/language/types/variance/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("types-variance", localized "Variance and capability coercions" "変性と能力固有の型変換")] [
-        CodeExample (
-          "types-variance-invalid",
-          localized "Rejected: implicit element conversion" "拒否される例：要素の暗黙変換"
-        )
-      ] [
+      ("types-variance", localized "Variance and capability coercions" "変性と能力固有の型変換")] [CodeExample
+      (
+        "types-variance-invalid",
+        localized "Rejected: implicit element conversion" "拒否される例：要素の暗黙変換"
+      )] [
         [InternalLink (
-          localized "Requirement merge" "必要なサービスの組み合わせ",
+          localized "Requirement merge" "必要なサービスを組み合わせる",
           "/docs/language/types/requirement-merge/"
         )],
         [InternalLink (localized "Records" "レコード", "/docs/language/data/records/")],

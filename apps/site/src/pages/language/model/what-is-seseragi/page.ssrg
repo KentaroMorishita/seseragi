@@ -13,11 +13,11 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Design principles" "設計原則", "/docs/language/model/design-principles/")],
         [InternalLink (
-          localized "Programs and entry points" "programとentry point",
+          localized "Programs and entry points" "プログラムと実行入口",
           "/docs/language/model/programs/"
         )],
         [InternalLink (
-          localized "Features the language does not have" "言語に存在しない機能",
+          localized "Features the language does not have" "中核に存在しない機能",
           "/docs/language/model/non-features/"
         )]
       ]

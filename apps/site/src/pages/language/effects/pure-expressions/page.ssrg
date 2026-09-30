@@ -16,9 +16,9 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "The Effect type" "Effect型", "/docs/language/effects/effect-type/")],
         [InternalLink
-      (localized "Evaluation" "評価", "/docs/language/expressions/evaluation/")],
+      (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")],
         [InternalLink (
-          localized "Runtime boundaries" "runtime境界",
+          localized "Effect runtime boundaries" "Effectを実行する境界",
           "/docs/language/effects/runtime-boundaries/"
         )]
       ]

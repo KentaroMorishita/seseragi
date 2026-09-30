@@ -11,11 +11,11 @@ pub fn page -> PageDefinition =
         localized "An ordered filtered comprehension" "順序付きfilter comprehension"
       )] [] [
         [InternalLink (
-          localized "Tuples, arrays, and lists" "tuple・Array・List",
+          localized "Tuples, arrays, and lists" "タプル・配列・リスト",
           "/docs/language/data/tuples-arrays-and-lists/"
         )],
         [InternalLink
-      (localized "Binding rules" "binding共通規則", "/docs/language/patterns/binding-rules/")],
+      (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")],
         [InternalLink
       (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")]
       ]

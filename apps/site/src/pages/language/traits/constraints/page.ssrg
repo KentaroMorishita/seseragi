@@ -12,11 +12,11 @@ pub fn page -> PageDefinition =
       )] [CodeExample
       ("traits-invalid-constraint", localized "Missing concrete evidence" "具体的evidenceの欠落")] [
         [InternalLink
-      (localized "Polymorphism" "polymorphism", "/docs/language/types/polymorphism/")],
+      (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
         [InternalLink (
-          localized "Trait method calls" "trait method call",
+          localized "Calling trait methods" "traitメソッドの呼び出し",
           "/docs/language/traits/method-calls/"
         )],
         [InternalLink
-      (localized "Instances" "instance", "/docs/language/traits/instances/")]
+      (localized "Instances" "インスタンス", "/docs/language/traits/instances/")]
       ]

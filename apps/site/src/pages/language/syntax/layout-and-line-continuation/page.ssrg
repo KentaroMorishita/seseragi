@@ -55,9 +55,9 @@ pub fn page -> PageDefinition =
       "/docs/language/syntax/function-application/"
     )],
     [InternalLink (
-      localized "Source text and comments" "source textとcomment",
+      localized "Source text and comments" "ソーステキストとコメント",
       "/docs/language/syntax/source-text/"
     )],
     [InternalLink
-        (localized "Readable density" "読める密度", "/docs/language/model/readable-density/")]
+        (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
   ]

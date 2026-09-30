@@ -42,7 +42,7 @@ pub fn page -> PageDefinition =
     [InternalLink
           (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")],
     [InternalLink
-          (localized "Binding rules" "binding共通規則", "/docs/language/patterns/binding-rules/")],
+          (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")],
     [InternalLink (
       localized "Recursive declarations" "再帰宣言",
       "/docs/language/types/recursive-declarations/"

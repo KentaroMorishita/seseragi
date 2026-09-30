@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "do blockの型付け",
+  title: "doブロックの型付け",
   summary: "型推論はblock全体で一つのMonad型構築子を選び、各payload型を後続itemへ伝えます。",
   ruleTitle: "すべてのmonadic itemは一つのM<_>を共有する",
   ruleBody: "最初のbind、最後の式、期待block型のいずれかからMを決められます。bindはM<A>を検査してAのbindingを導入し、残りをM<B>として型付けします。最後の式がblock結果M<R>を決めます。",

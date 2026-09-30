@@ -60,13 +60,13 @@ pub fn page -> PageDefinition =
     ]
   ]] [
     [InternalLink (
-      localized "Source text and comments" "source textとcomment",
+      localized "Source text and comments" "ソーステキストとコメント",
       "/docs/language/syntax/source-text/"
     )],
     [InternalLink
-        (localized "Method calls" "method呼び出し", "/docs/language/syntax/method-calls/")],
+        (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/")],
     [InternalLink (
-      localized "Custom operators and fixity" "custom operatorとfixity",
+      localized "Custom operators and fixity" "カスタム演算子と結合規則",
       "/docs/language/syntax/custom-operators/"
     )]
   ]

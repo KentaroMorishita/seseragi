@@ -11,11 +11,11 @@ pub fn page -> PageDefinition =
         localized "An explicit cooperative checkpoint" "明示的なcooperative checkpoint"
       )] [] [
         [InternalLink (
-          localized "Cancellation and resources" "cancellationとresource",
+          localized "Cancellation and resources" "キャンセルとリソースの管理",
           "/docs/language/effects/cancellation-and-resources/"
         )],
         [InternalLink (
-          localized "Fiber supervision" "Fiber supervision",
+          localized "Fiber supervision" "Fiberの所有と監督",
           "/docs/language/effects/fiber-supervision/"
         )],
         [InternalLink (localized "Task" "Task", "/docs/language/effects/task/")]

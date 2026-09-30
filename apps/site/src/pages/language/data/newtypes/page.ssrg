@@ -8,7 +8,7 @@ pub fn page -> PageDefinition =
   referencePage "language.data.newtypes" "/docs/language/data/newtypes/" (en.copy ()) (ja.copy ()) [CodeExample
       ("data-newtypes", localized "Explicit wrap and extraction" "明示的なwrapと取り出し")] [] [
         [InternalLink (
-          localized "Nominal and structural types" "nominal型とstructural型",
+          localized "Nominal and structural types" "名前付き型と構造的な型",
           "/docs/language/types/nominal-and-structural-types/"
         )],
         [InternalLink (
@@ -16,7 +16,7 @@ pub fn page -> PageDefinition =
           "/docs/language/types/type-identity-and-coercion/"
         )],
         [InternalLink (
-          localized "Operator overloads" "operator overload",
+          localized "Operator overloads" "演算子オーバーロード",
           "/docs/language/data/operator-overloads/"
         )]
       ]

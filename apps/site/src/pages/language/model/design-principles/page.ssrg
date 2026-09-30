@@ -17,22 +17,23 @@ pub fn page -> PageDefinition =
       [
         principle "Expression-oriented" "式指向"
       "/docs/language/model/expression-oriented/",
-        principle "Immutable by default" "default immutable"
+        principle "Immutable by default" "デフォルトで不変"
       "/docs/language/model/immutable-by-default/",
-        principle "No hidden danger" "危険を隠さない" "/docs/language/model/no-hidden-danger/",
-        principle "Backend-independent semantics" "backend-independent semantics"
+        principle "No hidden danger" "危険を暗黙に隠さない"
+      "/docs/language/model/no-hidden-danger/",
+        principle "Backend-independent semantics" "生成先に依存しない意味"
       "/docs/language/model/backend-independent-semantics/",
-        principle "Diagnosable behavior" "診断可能な挙動"
+        principle "Diagnosable behavior" "説明可能な振る舞い"
       "/docs/language/model/diagnosable-behavior/",
-        principle "Visible costs" "costを見える形にする" "/docs/language/model/visible-costs/",
-        principle "Readable density" "読める密度" "/docs/language/model/readable-density/"
+        principle "Visible costs" "コストを見えるようにする" "/docs/language/model/visible-costs/",
+        principle "Readable density" "読みやすい密度" "/docs/language/model/readable-density/"
       ]] [
         [InternalLink (
-          localized "What Seseragi is" "Seseragiとは何か",
+          localized "What Seseragi is" "Seseragiとは",
           "/docs/language/model/what-is-seseragi/"
         )],
         [InternalLink (
-          localized "Features the language does not have" "言語に存在しない機能",
+          localized "Features the language does not have" "中核に存在しない機能",
           "/docs/language/model/non-features/"
         )]
       ]

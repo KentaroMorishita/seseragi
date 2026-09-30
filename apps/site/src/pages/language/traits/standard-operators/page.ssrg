@@ -15,13 +15,15 @@ pub fn page -> PageDefinition =
       "重複operator evidenceはincoherent"
       )] [
         [InternalLink (
-          localized "Operator overloads" "operator overload",
+          localized "Operator overloads" "演算子オーバーロード",
           "/docs/language/data/operator-overloads/"
         )],
         [InternalLink (
-          localized "Operator precedence" "operator precedence",
+          localized "Operator precedence" "演算子の優先順位",
           "/docs/language/syntax/operator-precedence/"
         )],
-        [InternalLink
-      (localized "Coherence" "coherence", "/docs/language/traits/coherence/")]
+        [InternalLink (
+          localized "Coherence and ownership" "インスタンスの一意性と所有権",
+          "/docs/language/traits/coherence/"
+        )]
       ]

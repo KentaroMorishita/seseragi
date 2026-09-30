@@ -7,13 +7,13 @@ import * as ja from "./ja"
 pub fn page -> PageDefinition =
   conceptPage "language.model.backend-independent-semantics" "/docs/language/model/backend-independent-semantics/" (en.copy ()) (ja.copy ()) [] [
     [InternalLink (
-      localized "What Seseragi is" "Seseragiとは何か",
+      localized "What Seseragi is" "Seseragiとは",
       "/docs/language/model/what-is-seseragi/"
     )],
     [InternalLink
-        (localized "Visible costs" "costを見える形にする", "/docs/language/model/visible-costs/")],
+        (localized "Visible costs" "コストを見えるようにする", "/docs/language/model/visible-costs/")],
     [InternalLink (
-      localized "Programs and entry points" "programとentry point",
+      localized "Programs and entry points" "プログラムと実行入口",
       "/docs/language/model/programs/"
     )]
   ]

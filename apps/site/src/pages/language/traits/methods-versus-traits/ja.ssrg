@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "inherent methodとtrait操作",
+  title: "固有メソッドとtrait操作",
   summary: "inherent methodは一つのnominal型に属し、trait操作はevidenceで選ばれる抽象に属します。",
   ruleTitle: "二つの形式は異なるlookup問題を解く",
   ruleBody: "impl UserはUser receiverから解決するmemberを追加し、member構文で呼びます。instance Eq<User>は既存の抽象操作を実装し、evidence選択後にconstraint付き関数として呼びます。",

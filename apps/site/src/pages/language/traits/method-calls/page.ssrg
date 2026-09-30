@@ -12,13 +12,13 @@ pub fn page -> PageDefinition =
       )] [CodeExample
       ("traits-invalid-method", localized "Ambiguous method ownership" "method所有traitの曖昧さ")] [
         [InternalLink (
-          localized "Function application" "関数application",
+          localized "Function application" "関数適用",
           "/docs/language/syntax/function-application/"
         )],
         [InternalLink
-      (localized "Constraints" "constraint", "/docs/language/traits/constraints/")],
+      (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/")],
         [InternalLink (
-          localized "Methods versus traits" "methodとtrait",
+          localized "Inherent methods versus trait operations" "固有メソッドとtrait操作",
           "/docs/language/traits/methods-versus-traits/"
         )]
       ]

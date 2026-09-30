@@ -13,7 +13,7 @@ pub fn page -> PageDefinition =
         )],
         [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
         [InternalLink (
-          localized "Dependency graphs and cycles" "依存関係と循環",
+          localized "Dependency graphs and cycles" "依存グラフと循環",
           "/docs/language/modules/dependency-graphs/"
         )]
       ]

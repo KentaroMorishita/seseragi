@@ -14,15 +14,13 @@ pub fn page -> PageDefinition =
         localized "Rejected distinct without Eq" "Eqなしのdistinctを拒否"
       )] [
         [InternalLink (
-          localized "Signals and transactions" "Signalとtransaction",
+          localized "Signals and transactions" "Signalとトランザクション",
           "/docs/language/effects/signals-and-transactions/"
         )],
+        [InternalLink
+      (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/")],
         [InternalLink (
-          localized "Trait constraints" "trait constraint",
-          "/docs/language/traits/constraints/"
-        )],
-        [InternalLink (
-          localized "Subscriptions and lifetime" "subscriptionとlifetime",
+          localized "Subscriptions and lifetime" "Signalの購読と寿命",
           "/docs/language/effects/subscriptions-and-lifetime/"
         )]
       ]

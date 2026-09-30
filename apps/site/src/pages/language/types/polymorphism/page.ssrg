@@ -52,10 +52,8 @@ pub fn page -> PageDefinition =
       localized "Annotations and inference" "型注釈と推論",
       "/docs/language/types/annotations-and-inference/"
     )],
-    [InternalLink (
-      localized "Type constructors" "型constructor",
-      "/docs/language/types/type-constructors/"
-    )],
+    [InternalLink
+        (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
     [InternalLink (
       localized "Function application" "関数適用",
       "/docs/language/syntax/function-application/"

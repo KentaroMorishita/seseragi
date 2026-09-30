@@ -11,9 +11,14 @@ pub fn page -> PageDefinition =
         localized "Lazy fallback through two optional values" "二つのoptional値を順にfallback"
       )] [CodeExample
       ("effects-invalid-maybe", localized "Rejected Either fallback" "Eitherへの??を拒否")] [
-        [InternalLink (localized "Either" "Either", "/docs/language/effects/either/")],
+        [InternalLink (
+          localized "Either and typed results" "Eitherによる成功と失敗",
+          "/docs/language/effects/either/"
+        )],
         [InternalLink
-      (localized "Pattern matching" "パターン照合", "/docs/language/patterns/match/")],
-        [InternalLink
-      (localized "No hidden danger" "危険を隠さない", "/docs/language/model/no-hidden-danger/")]
+      (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")],
+        [InternalLink (
+          localized "No hidden danger" "危険を暗黙に隠さない",
+          "/docs/language/model/no-hidden-danger/"
+        )]
       ]

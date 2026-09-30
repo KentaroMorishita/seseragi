@@ -10,6 +10,7 @@ import { buildSite } from "../scripts/build"
 import { plannedReferenceRoutes } from "../scripts/coverage"
 import { verifyLanguageMenu } from "./language-menu"
 import { verifyMobileNavigation } from "./mobile-navigation"
+import { verifyReferenceNavigation } from "./reference-navigation"
 
 async function codeSurface(locator: Locator) {
   return locator.evaluate((code) => {
@@ -117,6 +118,11 @@ try {
   try {
     const browser = await chromium.launch()
     try {
+      await verifyReferenceNavigation(
+        browser,
+        `http://127.0.0.1:${server.port}`,
+        screenshots
+      )
       for (const width of [1280, 390]) {
         const context = await browser.newContext({
           viewport: { width, height: 900 },

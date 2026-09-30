@@ -57,15 +57,15 @@ pub fn page -> PageDefinition =
     ]
   ]] [
     [InternalLink (
-      localized "Pipelines and low-precedence application" "pipelineと低優先順位適用",
+      localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
       "/docs/language/syntax/pipelines-and-low-precedence-application/"
     )],
     [InternalLink (
-      localized "Custom operators and fixity" "custom operatorとfixity",
+      localized "Custom operators and fixity" "カスタム演算子と結合規則",
       "/docs/language/syntax/custom-operators/"
     )],
     [InternalLink (
-      localized "Optional record fields" "optional record field",
+      localized "Optional record field syntax" "省略可能なレコードフィールドの構文",
       "/docs/language/syntax/optional-record-fields/"
     )]
   ]

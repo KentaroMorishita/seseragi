@@ -12,11 +12,11 @@ pub fn page -> PageDefinition =
           "/docs/language/syntax/function-application/"
         )],
         [InternalLink (
-          localized "Backend-independent semantics" "backend-independent semantics",
+          localized "Backend-independent semantics" "生成先に依存しない意味",
           "/docs/language/model/backend-independent-semantics/"
         )],
         [InternalLink (
-          localized "What Seseragi is" "Seseragiとは何か",
+          localized "What Seseragi is" "Seseragiとは",
           "/docs/language/model/what-is-seseragi/"
         )]
       ]

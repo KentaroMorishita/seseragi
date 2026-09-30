@@ -12,15 +12,15 @@ pub fn page -> PageDefinition =
         localized "Rejected missing Console requirement" "Consoleの要求が不足する例"
       )] [
         [InternalLink (
-          localized "Requirement merge" "必要なサービスの組み合わせ",
+          localized "Requirement merge" "必要なサービスを組み合わせる",
           "/docs/language/types/requirement-merge/"
         )],
         [InternalLink (
-          localized "Effect function contracts" "Effect関数の型を明示する形式",
+          localized "Effect functions with an explicit contract" "Effect関数の型を明示する形式",
           "/docs/language/effects/effect-functions-contract-form/"
         )],
         [InternalLink (
-          localized "Runtime boundaries" "実行の境界",
+          localized "Effect runtime boundaries" "Effectを実行する境界",
           "/docs/language/effects/runtime-boundaries/"
         )]
       ]

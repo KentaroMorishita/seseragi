@@ -42,7 +42,7 @@ pub fn page -> PageDefinition =
       "/docs/language/types/annotations-and-inference/"
     )],
     [InternalLink (
-      localized "Function types and currying" "関数型とcurrying",
+      localized "Function types and currying" "関数型とカリー化",
       "/docs/language/types/function-types-and-currying/"
     )]
   ]

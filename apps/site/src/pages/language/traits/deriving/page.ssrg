@@ -15,7 +15,9 @@ pub fn page -> PageDefinition =
           localized "Algebraic data types" "代数的データ型",
           "/docs/language/data/algebraic-data-types/"
         )],
-        [InternalLink (localized "Structs" "struct", "/docs/language/data/structs/")],
-        [InternalLink
-      (localized "Coherence" "coherence", "/docs/language/traits/coherence/")]
+        [InternalLink (localized "Structs" "構造体", "/docs/language/data/structs/")],
+        [InternalLink (
+          localized "Coherence and ownership" "インスタンスの一意性と所有権",
+          "/docs/language/traits/coherence/"
+        )]
       ]

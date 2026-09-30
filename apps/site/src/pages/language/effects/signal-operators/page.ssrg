@@ -14,15 +14,13 @@ pub fn page -> PageDefinition =
         localized "Rejected write to a read-only Signal" "read-only Signalへのwriteを拒否"
       )] [
         [InternalLink (
-          localized "Signals and transactions" "Signalとtransaction",
+          localized "Signals and transactions" "Signalとトランザクション",
           "/docs/language/effects/signals-and-transactions/"
         )],
         [InternalLink (
-          localized "Operator precedence" "operator precedence",
+          localized "Operator precedence" "演算子の優先順位",
           "/docs/language/syntax/operator-precedence/"
         )],
-        [InternalLink (
-          localized "Derived Signals" "derived Signal",
-          "/docs/language/effects/derived-signals/"
-        )]
+        [InternalLink
+      (localized "Derived Signals" "派生Signal", "/docs/language/effects/derived-signals/")]
       ]

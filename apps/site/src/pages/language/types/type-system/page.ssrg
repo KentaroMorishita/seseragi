@@ -41,7 +41,7 @@ pub fn page -> PageDefinition =
       "/docs/language/types/annotations-and-inference/"
     )],
     [InternalLink (
-      localized "No hidden danger" "隠れた危険を作らない",
+      localized "No hidden danger" "危険を暗黙に隠さない",
       "/docs/language/model/no-hidden-danger/"
     )]
   ]

@@ -14,7 +14,7 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Built-in types" "組み込み型", "/docs/language/types/built-in-types/")],
         [InternalLink
-      (localized "Match expressions" "match式", "/docs/language/patterns/match/")],
+      (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")],
         [InternalLink
       (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")]
       ]

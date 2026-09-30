@@ -9,13 +9,13 @@ pub fn page -> PageDefinition =
       ("patterns-match", localized "Exhaustive match with a guard" "guardを持つ網羅match")] [CodeExample
       ("patterns-invalid-match", localized "Rejected non-exhaustive match" "非網羅matchを拒否")] [
         [InternalLink
-      (localized "Binding rules" "binding共通規則", "/docs/language/patterns/binding-rules/")],
+      (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")],
         [InternalLink (
-          localized "Irrefutable patterns" "irrefutable pattern",
+          localized "Irrefutable patterns" "反駁不能パターン",
           "/docs/language/patterns/irrefutable-patterns/"
         )],
         [InternalLink (
-          localized "Algebraic data types" "algebraic data type",
+          localized "Algebraic data types" "代数的データ型",
           "/docs/language/data/algebraic-data-types/"
         )]
       ]

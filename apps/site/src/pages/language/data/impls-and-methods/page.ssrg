@@ -14,11 +14,11 @@ pub fn page -> PageDefinition =
         localized "Rejected foreign impl target" "外部impl targetを拒否"
       )] [
         [InternalLink
-      (localized "Method calls" "method call", "/docs/language/syntax/method-calls/")],
+      (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/")],
         [InternalLink
-      (localized "Polymorphism" "polymorphism", "/docs/language/types/polymorphism/")],
+      (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
         [InternalLink (
-          localized "Nominal and structural types" "nominal型とstructural型",
+          localized "Nominal and structural types" "名前付き型と構造的な型",
           "/docs/language/types/nominal-and-structural-types/"
         )]
       ]

@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "標準operatorとtrait",
+  title: "標準演算子とtrait",
   summary: "標準operator構文は固定されたtrait evidenceを選び、暗黙変換やruntime overloadを行いません。",
   ruleTitle: "各標準operatorにはtrait contractがある",
   ruleBody: "equalityはEq、順序はOrd.compare、算術はAdd・Sub・Mul・Div・Rem・Pow、関数的operatorはFunctor・Applicative・Monadを使います。選ばれたinstanceが操作を定めます。",

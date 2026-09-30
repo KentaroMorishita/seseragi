@@ -39,13 +39,13 @@ pub fn page -> PageDefinition =
     CodeExample
       ("syntax-invalid-escape", localized "Rejected with SES-P0201" "SES-P0201で拒否")
   ] [
-    [InternalLink (localized "Literals" "literal", "/docs/language/syntax/literals/")],
+    [InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/")],
     [InternalLink (
-      localized "Source text and comments" "source textとcomment",
+      localized "Source text and comments" "ソーステキストとコメント",
       "/docs/language/syntax/source-text/"
     )],
     [InternalLink (
-      localized "Layout and line continuation" "layoutとline continuation",
+      localized "Layout and line continuation" "レイアウトと行継続",
       "/docs/language/syntax/layout-and-line-continuation/"
     )]
   ]

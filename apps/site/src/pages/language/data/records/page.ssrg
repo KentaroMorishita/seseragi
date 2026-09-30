@@ -12,10 +12,10 @@ pub fn page -> PageDefinition =
       )] [CodeExample
       ("data-invalid-record", localized "Rejected duplicate field" "field重複を拒否")] [
         [InternalLink (
-          localized "Optional record fields" "optional record field",
+          localized "Optional record fields" "省略可能なレコードフィールド",
           "/docs/language/types/optional-record-fields/"
         )],
-        [InternalLink (localized "Structs" "struct", "/docs/language/data/structs/")],
+        [InternalLink (localized "Structs" "構造体", "/docs/language/data/structs/")],
         [InternalLink
-      (localized "Binding rules" "binding共通規則", "/docs/language/patterns/binding-rules/")]
+      (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")]
       ]

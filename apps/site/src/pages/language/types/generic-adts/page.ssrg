@@ -8,7 +8,16 @@ pub fn page -> PageDefinition =
   typePage "language.types.generic-adts" "/docs/language/types/generic-adts/" (en.copy ()) (ja.copy ()) [CodeExample
       ("types-generic-adts", localized "Generic algebraic data types" "ジェネリックな代数的データ型")] [CodeExample
       ("types-generic-adt-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
-    [InternalLink (localized "Algebraic data types" "代数的データ型", "/docs/language/data/algebraic-data-types/")],
-    [InternalLink (localized "Generic structs" "ジェネリックstruct", "/docs/language/types/generic-structs/")],
-    [InternalLink (localized "Kinds and type constructors" "kindと型構築子", "/docs/language/types/kinds/")]
-  ]
+        [InternalLink (
+          localized "Algebraic data types" "代数的データ型",
+          "/docs/language/data/algebraic-data-types/"
+        )],
+        [InternalLink (
+          localized "Generic structs" "ジェネリックなstruct",
+          "/docs/language/types/generic-structs/"
+        )],
+        [InternalLink (
+          localized "Kinds and type constructors" "型の形を表すkind",
+          "/docs/language/types/kinds/"
+        )]
+      ]

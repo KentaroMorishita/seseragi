@@ -36,11 +36,11 @@ pub fn page -> PageDefinition =
     localized "Rejected length-dependent binding" "長さに依存するbindingを拒否"
   )] [
     [InternalLink
-      (localized "Binding rules" "binding共通規則", "/docs/language/patterns/binding-rules/")],
+      (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")],
     [InternalLink
-      (localized "Match expressions" "match式", "/docs/language/patterns/match/")],
+      (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")],
     [InternalLink (
-      localized "Tuples, arrays, and lists" "tuple・Array・List",
+      localized "Tuples, arrays, and lists" "タプル・配列・リスト",
       "/docs/language/data/tuples-arrays-and-lists/"
     )]
   ]

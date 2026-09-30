@@ -35,11 +35,11 @@ pub fn page -> PageDefinition =
   ] [CodeExample
       ("syntax-invalid-numeric", localized "Rejected with SES-P0203" "SES-P0203で拒否")] [
         [InternalLink (
-          localized "Character and string escapes" "Char・String・templateのescape",
+          localized "Character and string escapes" "文字と文字列のエスケープ",
           "/docs/language/syntax/character-string-escapes/"
         )],
         [InternalLink (
-          localized "Source text and comments" "source textとcomment",
+          localized "Source text and comments" "ソーステキストとコメント",
           "/docs/language/syntax/source-text/"
         )],
         [InternalLink (localized "std/number" "std/number", "/docs/library/number/")]

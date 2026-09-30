@@ -12,9 +12,9 @@ pub fn page -> PageDefinition =
           "/docs/language/syntax/function-application/"
         )],
         [InternalLink (
-          localized "Programs and entry points" "programとentry point",
+          localized "Programs and entry points" "プログラムと実行入口",
           "/docs/language/model/programs/"
         )],
         [InternalLink
-      (localized "Readable density" "読める密度", "/docs/language/model/readable-density/")]
+      (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
       ]
