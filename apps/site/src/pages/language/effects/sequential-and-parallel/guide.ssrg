@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Do independent-looking Effects run together automatically?"
+    "独立して見える処理は、自動で同時実行されるか",
+  summary: localized
+    "Effect composition runs sequentially by default. Choose an explicit parallel operation when you want computations to overlap."
+    "Effectは、通常は順に実行します。同時に進めたい場合は、並列実行用の操作を明示的に選びます。",
+  exampleId: "effects-execution-order",
+  reading: localized
+    "twice describes a computation returning twice its input. sequential obtains the result of twice 2 before obtaining twice 3 and then adds them. parallel explicitly passes both computations to effects.parallel."
+    "twiceは、入力を2倍にした値で成功する処理を作ります。sequentialはtwice 2の後にtwice 3を実行して結果を足します。parallelは二つの処理をeffects.parallelへ渡します。",
+  result: localized
+    "Executing sequential succeeds with 10. Executing parallel succeeds with [4, 6] in input order, not a sum. Parallel execution changes scheduling and failure management; it is not merely another spelling of do."
+    "sequentialを実行すると10で成功します。parallelは合計ではなく、入力順の[4, 6]を返します。並列実行では実行の割り当てや失敗時の管理も変わり、doの別の綴りではありません。"
+}

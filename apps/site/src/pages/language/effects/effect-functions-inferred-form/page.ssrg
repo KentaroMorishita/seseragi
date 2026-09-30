@@ -1,16 +1,19 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.effect-functions-inferred-form" "/docs/language/effects/effect-functions-inferred-form/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-inferred-form",
-        localized "A complete contract inferred from println" "printlnから完全なcontractを推論"
+        localized "A complete contract inferred from println"
+      "printlnからサービス・失敗・結果の型を推論する"
       )] [CodeExample
-      ("effects-invalid-pure-body", localized "Rejected non-Effect body" "Effectでないbodyを拒否")] [
+      ("effects-invalid-pure-body", localized "Rejected non-Effect body" "本体がEffectを返さない場合")] [
         [InternalLink (
           localized "Effect functions with an explicit contract" "Effect関数の型を明示する形式",
           "/docs/language/effects/effect-functions-contract-form/"
@@ -24,3 +27,5 @@ pub fn page -> PageDefinition =
           "/docs/language/effects/error-channels/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

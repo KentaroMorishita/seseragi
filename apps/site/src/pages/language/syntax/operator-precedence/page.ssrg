@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,12 +13,11 @@ import { syntaxPage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   syntaxPage "language.syntax.operator-precedence" "/docs/language/syntax/operator-precedence/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "syntax-operator-precedence",
-      localized "Operators in the grammar coverage fixture"
-        "grammar coverage fixtureのoperator"
+      localized "Operators in the grammar coverage fixture" "標準の演算子を組み合わせる"
     ),
     BulletList [
       [
@@ -28,7 +29,7 @@ pub fn page -> PageDefinition =
         InlineCode "7..4",
         Words (
           localized ": prefix, power, multiplicative, then additive and cons."
-        ": prefix・power・multiplicative・additiveとcons。"
+            ": 単項演算、累乗、乗除、加減、リストの先頭追加の順です。"
         )
       ],
       [
@@ -39,20 +40,23 @@ pub fn page -> PageDefinition =
         InlineCode "-1..-3",
         Words (
           localized ": monadic/applicative/pipeline, $, then :=."
-        ": monad/applicative/pipeline・$・:=。"
+            ": monad/applicative/pipeline・$・:=。"
         )
       ]
     ]
   ] [BulletList [
     [
       InlineCode "a < b < c",
-      Words (localized " is a rejected comparison chain." " は拒否されるcomparison chainです。")
+      Words (
+        localized " is a rejected comparison chain."
+            " は比較を二つつないでいるため、エラーになります。二つのBool式に分けて&&でつなぎます。"
+      )
     ],
     [
       InlineCode "(&&)",
       Words (
         localized " cannot be referenced as a function because it short-circuits."
-        " は短絡評価するため関数値として参照できません。"
+            " は短絡評価するため関数値として参照できません。"
       )
     ]
   ]] [
@@ -69,3 +73,5 @@ pub fn page -> PageDefinition =
       "/docs/language/syntax/optional-record-fields/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Can the compiler derive an Effect signature from its body?"
+    "Effectの型を、本体から決めてもらうには",
+  summary: localized
+    "Omit all signature clauses after the parameters to infer an effect fn's required services, failure type, and successful result together."
+    "引数の後の署名をすべて省略すると、effect fnのサービス・失敗・成功値の型を、本体からまとめて推論します。",
+  exampleId: "effects-inferred-form",
+  reading: localized
+    "announceInferred receives a String and returns println message. Since println needs Console and may fail with ConsoleError, the inferred return is Effect<Console, ConsoleError, Unit>. No output happens merely from constructing it."
+    "announceInferredの本体はprintln messageです。printlnはConsoleを必要とし、ConsoleErrorで失敗する可能性があるため、Effect<Console, ConsoleError, Unit>を推論します。値を作るだけでは出力しません。",
+  result: localized
+    "Use this form when the body should determine the full Effect type. Adding only with or fails does not partially constrain it: choose either the complete explicit form or the clause-free inferred form."
+    "本体にEffect型全体を決めさせたい場合に使います。withやfailsだけを追加する部分的な指定はできません。完全な明示形式か、署名をすべて省略する推論形式を選びます。"
+}

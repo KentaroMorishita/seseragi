@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.erasure-and-runtime-representation" "/docs/language/types/erasure-and-runtime-representation/" (en.copy ()) (ja.copy ()) [CodeExample
       ("types-erasure", localized "Erasure and runtime representation" "型消去と実行時表現")] [] [
         [InternalLink (
@@ -15,6 +17,7 @@ pub fn page -> PageDefinition =
           localized "Newtype identity and representation" "newtypeによる型の区別",
           "/docs/language/types/newtypes/"
         )],
-        [InternalLink
-      (localized "Traits" "traitとは", "/docs/language/traits/model/")]
+        [InternalLink (localized "Traits" "traitとは", "/docs/language/traits/model/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -2,20 +2,20 @@ import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "トップレベルの宣言",
-  summary: "モジュールのtop-levelで名前を宣言します。通常の値はsource順に初期化され、Effectの値は後から実行する処理を表します。",
-  ruleTitle: "top-levelには宣言を置く",
-  ruleBody: "top-levelに置けるのは、importとre-export、let、fnとeffect fn、type・newtype・alias・struct、inherent impl、traitとinstance、custom operator、foreign宣言、rec groupです。それぞれが名前を導入したり、モジュールのinterfaceを構成したりします。単独の式statementはtop-levelの形式ではありません。関数呼び出しはbindingや関数bodyの中に書きます。",
-  typingBody: "top-levelのletにはirrefutableなbinding patternと純粋な右辺が必要です。純粋であることは、結果が数値などに限られるという意味ではありません。Effectの構築は処理を記述するだけで実行しないため、純粋です。例のreportはEffect関数で、pendingはreport ()が返すEffectを保持します。pendingの初期化ではconsoleへの出力は起きません。",
-  evaluationBody: "top-levelのletはsource順に一度だけ評価します。右辺から直接参照できるのは先行するletと、モジュール内の全関数宣言です。後続のletは直接読めません。関数や型の宣言はletの評価より前から名前解決でき、関数のruntime bindingも先に確立します。そのため、呼び出す関数の宣言がletより後にあっても構いません。",
-  invalidTitle: "関数で参照を遅らせても、初期化順は変わらない",
-  invalidBody: "関数bodyから後続のletを参照しても、初期化後にその関数を実行するなら構いません。しかし先行するletの初期化中に呼び、そのcall chainが現在または後続の未初期化letを読むと、SES-N0201で拒否します。関数宣言だけ並べ替えても、値の初期化は早まりません。関数同士の相互再帰にも同じrec groupが必要です。",
-  diagnosticsBody: "不正なbinding patternや解決できない名前は宣言位置で診断されます。SES-N0201は関数呼び出し経由の初期化前参照を示します。Effectの値をimportしても、それだけでは実行しません。通常は選択された公開mainなど、明示的なruntime境界で実行します。toolingがモジュールを調べるためにforeignのruntime codeを実行してはいけません。",
+  summary: "ファイルの直下に書ける宣言と、値の初期化順を説明します。",
+  ruleTitle: "ファイルの直下には宣言を置く",
+  ruleBody: "モジュール直下にはimport、再公開、let、fn、effect fn、型、impl、trait、instance、演算子、foreign、recなどの宣言を置きます。単独の関数呼び出しを文として並べることはできません。計算結果を保持するならletの右辺、処理を定義するなら関数の本体に書きます。",
+  typingBody: "モジュール直下のletの右辺は、純粋な計算である必要があります。Effectの値を作ることは、処理を記述するだけなので純粋な計算です。例のpendingはreport ()が返すEffectを保持します。pendingの初期化だけでは、printlnの出力は起きません。",
+  evaluationBody: "letは上から順に一度だけ計算します。先のletとモジュールの関数を参照できますが、後のletを直接読むことはできません。関数の宣言はletの後にあっても呼べます。ただし、その関数がまだ初期化していないletを読むことはできません。",
+  invalidTitle: "関数に移しても、未初期化の値は読めない",
+  invalidBody: "関数の本体から後のletを参照すること自体はできます。問題になるのは、そのletの初期化前に関数を呼んでしまう場合です。SES-N0201はこの呼び出しを拒否します。関数宣言を上へ移すだけでは解消しません。関数同士の相互再帰には同じrecが必要です。",
+  diagnosticsBody: "使う名前が宣言済みか、letのパターンが必ず一致するか、初期化中に未初期化の値へ到達していないかを確認してください。Effectをimportしただけでは実行しません。実行はmainなどの明示的な入口で行います。",
 }
 
-pub fn layoutTitle -> String = "privateの型推論とpublicの契約"
+pub fn layoutTitle -> String = "公開する型を明示し、名前の範囲を区別する"
 
 pub fn layoutBody -> String =
-  "private関数では型推論を使えます。公開APIの型契約はvisibilityの規則に従って明示します。importは宣言より前へ置きます。また、モジュール直下の宣言とblock内のlocal宣言ではscopeが異なります。local関数は宣言位置からscopeへ入り、モジュール関数の名前解決規則は適用されません。"
+  "非公開のletでは、右辺から型を推論できます。通常のfnでは、非公開でも引数と戻り値の型注釈が必要です。型を推論する短いeffect fnの形式とは区別してください。公開APIの型は公開範囲の規則に従って明示します。importは他の宣言より前に置きます。ブロック内のローカル関数は、宣言した位置からだけ使えます。"
 
 pub fn exampleTitle -> String = "初期化では処理を構築し、実行は後へ残す"
 

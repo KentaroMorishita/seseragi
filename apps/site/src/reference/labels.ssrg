@@ -1,0 +1,17 @@
+import { LocalizedText, localized } from "../model/locale"
+
+pub fn itemKindLabel kind: String -> LocalizedText = match kind {
+  "function" -> localized "Function" "関数"
+  "effect-function" -> localized "Effect function" "Effect関数"
+  "constructor" -> localized "Constructor" "コンストラクター"
+  "operator" -> localized "Operator" "演算子"
+  "alias" -> localized "Type alias" "型の別名"
+  "instance" -> localized "Trait instance" "traitの実装"
+  "trait" -> localized "Trait" "trait"
+  "opaque-type" -> localized "Opaque type" "内部表現が非公開の型"
+  "opaque-struct" -> localized "Opaque struct" "フィールドが非公開のstruct"
+  "struct" -> localized "Struct" "struct"
+  "value" -> localized "Value" "値"
+  "type" -> localized "Type" "型"
+  _ -> localized kind kind
+}

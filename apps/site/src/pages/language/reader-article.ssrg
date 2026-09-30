@@ -61,8 +61,8 @@ pub fn readerPage id: String
         Paragraph (
           [Words (
             localized
-              "main starts the program. println prints a value followed by a newline. The do block runs these operations in order; _ <- waits for an operation and discards its result. The complete example produces:"
-              "mainが実行開始の関数です。printlnは値を一行ずつ出力します。doはこれらの処理を順に実行するブロックで、_ <-はその処理を待ち、戻り値を使わずに次へ進みます。実行結果は次のとおりです。"
+              "pub exposes main as the entry function. effect fn means it returns an Effect describing external work. The runner executes that work; println writes each displayed value followed by a newline. This program produces:"
+              "pubはmainを実行入口として公開する指定です。effect fnは外部処理を表すEffectを返す関数で、実行機構がその処理を開始します。printlnは表示する値と改行を出力します。このプログラムの実行結果は次のとおりです。"
           )]
         ),
         Terminal (localized "Output" "実行結果", output),

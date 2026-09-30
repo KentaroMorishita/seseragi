@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Maybeと値の不在",
   summary: "Maybeは正常に起こりうる値の不在を、nullや隠れたfailureではなくdataとして表します。",
-  ruleTitle: "値がなくても正常ならNothingを使う",
-  ruleBody: "Maybe<A>はNothingまたはJust Aです。不在理由が必要ならEitherを選び、foreignのnullable値はinterop境界でMaybeへ変換して、Seseragi codeへnullishな振る舞いを広げません。",
-  typingBody: "left: Maybe<A>に対するleft ?? fallbackはfallback: Aを要求し、Aを返します。??はMaybe専用の右結合operatorで、Either・foreign nullable・通常値へoverloadしません。",
-  evaluationBody: "左operandを先に評価します。Just valueならfallbackを評価せずvalueを返し、Nothingの場合だけ右operandを評価します。chainでも意図したlazyなfallback順を保ちます。",
-  invalidTitle: "不在と失敗は別の問い",
-  invalidBody: "EitherをMaybeへ置き換えてerror理由を捨てたり、??をtruthyな汎用fallbackとして使ったりしません。callerに必要なdomain情報を保つdata型を選びます。",
-  diagnosticsBody: "Maybeでない左operand、またはAと異なるfallback型を示します。直接matchする場合はNothingとJustの両方を網羅する必要があります。",
+  ruleTitle: "値がないことも正常なら、Nothingを返す",
+  ruleBody: "Maybe<A>は、値のないNothingと、Aを持つJustのどちらかです。検索で見つからない場合などに使います。失敗理由が必要ならEitherを使います。外部言語のnullを持つ値は、連携する境界でMaybeへ変換します。",
+  typingBody: "value ?? fallbackは、左のMaybe<A>からAを取り出し、ない場合に右のAを返します。戻り値はMaybeではなくAです。??はMaybeだけに使え、Eitherや通常の値には使えません。",
+  evaluationBody: "まず左を計算します。Justなら中身を返し、右を計算しません。Nothingのときだけ右を計算します。そのため、右に置いた高価な計算は、値がないときにだけ行われます。",
+  invalidTitle: "値の不在と、理由を持つ失敗を分ける",
+  invalidBody: "値がないことと、失敗したことは違います。失敗理由を伝える必要がある処理をMaybeに変えると、その情報が失われます。また、Falseや0が自動でNothingになることはありません。",
+  diagnosticsBody: "??の左がMaybeか、右の型がJustの中身と一致するか確認します。matchを使うなら、NothingとJustの両方を扱ってください。",
 }

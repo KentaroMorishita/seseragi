@@ -1,14 +1,16 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.runtime-boundaries" "/docs/language/effects/runtime-boundaries/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-runtime-boundary",
-        localized "A cold program awaiting its host" "host実行を待つcoldなprogram"
+        localized "A cold program awaiting its host" "実行環境へ渡す、まだ実行していない処理"
       )] [] [
         [InternalLink (
           localized "Programs and entry points" "プログラムと実行入口",
@@ -21,3 +23,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Pure expressions" "純粋な式", "/docs/language/effects/pure-expressions/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

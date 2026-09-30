@@ -1,17 +1,19 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.data.impls-and-methods" "/docs/language/data/impls-and-methods/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "data-impls-and-methods",
         localized "A generic inherent method" "generic inherent method"
       )] [CodeExample (
         "data-invalid-impl-owner",
-        localized "Rejected foreign impl target" "外部impl targetを拒否"
+        localized "Rejected foreign impl target" "別のモジュールの型にメソッドを追加するとエラー"
       )] [
         [InternalLink
       (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/")],
@@ -22,3 +24,5 @@ pub fn page -> PageDefinition =
           "/docs/language/types/nominal-and-structural-types/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

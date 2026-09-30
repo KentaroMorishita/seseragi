@@ -11,7 +11,7 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   reading: [
     "struct Counter { value: Int }で型とフィールドを宣言します。Counter { value: 10 }が値を作り、let originalでその値に名前を付けています。",
     "fn addが加算する関数です。最初の引数selfにはドットの前の値が入り、次の引数amountには加算する整数が入ります。型の記述の最後にあるCounterは、返す値の型です。",
-    "関数の本体は、self.value + amountを持つ新しいCounterを作ります。original.add 5の結果は15ですが、original.valueに代入しているわけではありません。最初の出力が10なのはそのためです。",
+    "関数の本体は、self.value + amountを持つ新しいCounterを作ります。original.add 5の結果はCounter { value: 15 }です。整数の15そのものではなく、original.valueへの代入でもありません。最初の出力が10なのはそのためです。",
     "二つの出力で、元の値は変わらず、新しい値だけが増えていることを確認できます。ドットの前の値をレシーバーと呼びます。この例ではoriginalがレシーバーで、最初の引数selfがその値を受け取っています。"
   ],
   rules: [

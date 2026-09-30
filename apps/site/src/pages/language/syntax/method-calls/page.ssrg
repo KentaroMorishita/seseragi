@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, PageDefinition } from "../../../../model/page"
 import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   readerPage "language.syntax.method-calls" "/docs/language/syntax/method-calls/" (en.copy ()) (ja.copy ()) "reader-method-calls" "10\n15" [CodeExample
       ("syntax-invalid-methods", localized "Invalid method declarations" "誤ったメソッド宣言")] [
         (
@@ -20,3 +22,5 @@ pub fn page -> PageDefinition =
           "/docs/language/syntax/operator-precedence/"
         )
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

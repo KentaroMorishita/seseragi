@@ -2,12 +2,12 @@ import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "固有implとメソッド",
-  summary: "inherent implは、定義module内でnominal型へ静的解決されるmethodを追加します。",
-  ruleTitle: "nominal型がmethodを所有する",
-  ruleBody: "impl TはTを定義したmoduleだけに書けます。methodの第一parameterはselfという名前でimpl target型を持ち、後続parameterは通常どおりcurriedです。",
-  typingBody: "receiver型でimplを選び、generic type argumentを置換した後、通常のmethod推論を続けます。impl blockは複数書けますが、同じtargetのmethod名は一意です。",
-  evaluationBody: "method構文は静的に解決し、receiverへ通常の関数を適用します。runtime class dispatchやreceiver mutationは行いません。",
-  invalidTitle: "implはtrait instanceではない",
-  invalidBody: "typeclass evidenceにはinstance Trait<T>を使います。impl Trait<T>、外部nominal型へのimpl、self名の欠落、self型不一致は拒否します。",
-  diagnosticsBody: "localでないtarget、不正self parameter、method重複、visibility違反、該当methodを持たないreceiver型を示します。",
+  summary: "自分で定義した型に、値を操作するメソッドを追加します。",
+  ruleTitle: "型と同じモジュールにメソッドを定義する",
+  ruleBody: "impl Tの中に、型Tのメソッドを書きます。最初の引数はselfという名前で、型はTです。value.methodと呼ぶと、valueがselfに渡されます。残りの引数は、通常の関数と同じく空白で順番に渡します。",
+  typingBody: "呼び出し先は、selfに渡す値の型から決まります。型パラメーターがあれば具体的な型を当てはめて検査します。一つの型に複数のimplを書けますが、同じ名前のメソッドを二重に定義することはできません。",
+  evaluationBody: "メソッド呼び出しは、選ばれた関数へselfを渡す呼び出しです。オブジェクトの状態をその場で書き換える操作ではありません。値を変えたいメソッドでは、新しい値を返します。self以外に引数がないメソッドはvalue.getのように呼び、余分な()を渡しません。",
+  invalidTitle: "メソッドの追加とtraitの実装は別の宣言",
+  invalidBody: "impl Tは、Tを定義したモジュールにだけ書けます。traitの条件を満たす実装にはinstance Trait<T>を使います。impl Trait<T>を書いてもtraitの実装にはなりません。",
+  diagnosticsBody: "定義する型の所属、selfの名前と型、メソッド名の重複を確認してください。他モジュールから呼ぶメソッドにはpubが必要です。",
 }

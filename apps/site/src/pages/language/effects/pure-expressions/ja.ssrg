@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "純粋な式",
   summary: "通常の式は外部状態を読んだり変更したりせず、値を計算します。",
-  ruleTitle: "値が外部処理を隠れて実行することはない",
-  ruleBody: "純粋な関数は引数から結果を計算します。console、network、filesystem、時刻、乱数、runtimeの可変状態、非同期処理は、境界を型に表すEffect値を通してだけ扱います。",
-  typingBody: "純粋性はpure annotationではなく、operationの型で保証します。純粋な関数はEffect<R, E, A>を構築して返せますが、その値をAへ変えたり、effectful operationを通常値を返す関数として呼んだりはできません。",
-  evaluationBody: "通常の式は値operationの規則に従ってstrictに評価します。coldなEffectを構築するときは、その記述を作るための純粋なcodeだけを評価し、表された処理は許可されたruntime境界まで実行しません。",
+  ruleTitle: "外部の読み書きと、値の計算を分ける",
+  ruleBody: "純粋な関数は引数から結果を計算します。出力、通信、ファイル、時刻、乱数、変更可能な状態、非同期処理はEffectを通じて扱います。これにより、関数が外部で何をするかが結果の型から分かります。",
+  typingBody: "純粋性は特別な注釈ではなく、操作の型で検査します。純粋な関数でEffectを組み立てて返すことはできます。ただし、そのEffectを実行済みの結果Aとして扱うことはできません。",
+  evaluationBody: "通常の式は引数から順に計算します。Effectを組み立てる際にも、その記述を作る純粋な式だけを計算します。表している入出力や更新は、実行する境界で初めて始まります。",
   invalidTitle: "Effectを返すことと実行することは違う",
-  invalidBody: "UnitやInstantなどの通常値を返すふりをして、出力・時刻取得・Signal更新はできません。結果型にEffectを残し、明示的に合成します。",
-  diagnosticsBody: "診断はEffect値が必要な位置、またはEffectを満たせない通常値を示します。toolはR・E・Aを省略せず表示し、欠けた境界を明らかにします。",
+  invalidBody: "通常のUnitや時刻の値を返す関数のふりをして、内部で出力や時刻の取得、Signalの更新を行うことはできません。戻り値にEffectを残して組み合わせます。",
+  diagnosticsBody: "型エラーでは、通常の値とEffectを取り違えていないか確認します。EffectのR・E・Aを分けて見ると、必要なサービスと失敗と成功値が分かります。",
 }

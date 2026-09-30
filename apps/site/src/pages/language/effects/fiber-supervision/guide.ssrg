@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "What happens to a child computation when its parent finishes?"
+    "親の処理が終わったとき、子の処理はどうなるか",
+  summary: localized
+    "A Fiber is a running child Effect. Its enclosing scope owns its lifetime; fork does not create an unmanaged background daemon."
+    "Fiberは実行中の子のEffectです。作成した管理範囲が寿命を持ち、forkしただけで管理外のバックグラウンド処理にはなりません。",
+  exampleId: "effects-fiber-supervision",
+  reading: localized
+    "fork starts the child computation that succeeds with 21 and returns its Fiber handle. join waits for that child and retrieves its success value. The parent then doubles it and succeeds with 42."
+    "forkで21を返す子の処理を開始し、そのFiberのハンドルを受け取ります。joinは子の完了を待って成功値を取り出します。親はその21を2倍にして42で成功します。",
+  result: localized
+    "If the parent scope ends before a child completes, it requests cancellation and waits for the child's cleanup. Dropping the handle does not remove that ownership. Use the distinct waiting and interruption operations described below when controlling the child explicitly."
+    "親の管理範囲が先に終わる場合は、子にキャンセルを要求し、後片付けの完了を待ちます。ハンドルを捨てても管理責任は消えません。明示的に制御する場合は、待機と中断の操作を区別します。"
+}

@@ -1,0 +1,51 @@
+import * as arrays from "std/array"
+import { LocalizedText } from "../../model/locale"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  PageDefinition,
+  Paragraph,
+  Words
+} from "../../model/page"
+
+// Each page owns its question and explanation. Existing canonical source is
+// moved beside that explanation; it is neither copied nor replaced by prose.
+pub struct Explanation {
+  question: LocalizedText,
+  summary: LocalizedText,
+  exampleId: String,
+  reading: LocalizedText,
+  result: LocalizedText
+}
+
+fn isExample id: String -> block: Block -> Bool = match block {
+  CodeExample (exampleId, _) -> exampleId == id
+  _ -> False
+}
+
+fn keepExample id: String -> block: Block -> Bool = !(isExample id block)
+
+pub fn explainPage explanation: Explanation -> page: PageDefinition -> PageDefinition =
+  {
+    let source = match arrays.find (isExample explanation.exampleId) page.blocks {
+      Nothing -> {
+        let empty: Array<Block> = []
+        empty
+      }
+      Just block -> [block]
+    }
+    PageDefinition {
+      ...page,
+      summary: explanation.summary,
+      blocks: arrays.concat [
+        [Heading ("understand-this", explanation.question)],
+        source,
+        [
+          Paragraph ([Words explanation.reading]),
+          Paragraph ([Words explanation.result])
+        ],
+        arrays.filter (keepExample explanation.exampleId) page.blocks
+      ]
+    }
+  }

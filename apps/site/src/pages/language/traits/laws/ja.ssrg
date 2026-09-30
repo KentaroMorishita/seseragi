@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "traitの法則",
   summary: "一部の標準traitには、通常の型検査では証明できなくても実装が守るべき意味上のlawがあります。",
-  ruleTitle: "正しいsignatureだけでは十分でない",
-  ruleBody: "Eq、Ord、Functor、Applicative、Monadなど文書化された抽象は等式または観測上の性質を定めます。instance作者はmethod型に加えてそのcontractを受け入れます。",
-  typingBody: "lawは隠れた型規則を追加せず、instance選択も変えません。well-typedな呼び出し同士の関係を記述します。law内のequalityは対象値について文書化された観測的同値に従います。",
-  evaluationBody: "compilerは型検査中に任意の証明を実行しません。標準library instanceは保守されたlaw suiteで検査し、user instanceは代表値を生成するlaw helperを利用できます。",
-  invalidTitle: "compile成功はlawの証明書ではない",
-  invalidBody: "実装は型検査に通ってもreflexivity、順序整合性、identity、associativityを破れます。compiler診断が不可能でも、そのinstanceは意味上不正です。",
-  diagnosticsBody: "型診断は不正methodとevidence欠落を引き続き検出します。law failureはtestでproperty、生成input、最小の再現counterexampleを報告します。",
+  ruleTitle: "型が合うだけでなく、操作同士の関係も守る",
+  ruleBody: "Eqは同じ値を自分自身と比較したら等しい、という規則を持ちます。Functorのmapで値をそのまま返す関数を使うと、元と同じ結果になる必要があります。こうした意味上の約束を法則と呼びます。",
+  typingBody: "法則は操作を組み合わせたときの結果の関係です。追加の隠れた型検査や、別のinstanceを選ぶ規則ではありません。比較に使う等しさは、その型で観測できる結果に基づきます。",
+  evaluationBody: "コンパイラは任意の関数の法則を証明しません。標準実装は法則のテストで検証します。自分のinstanceにも、代表的な値や生成した入力でテストを用意してください。",
+  invalidTitle: "コンパイル成功は法則の証明ではない",
+  invalidBody: "型検査に通っても、常にFalseを返す等価比較など、法則に反する実装を作れてしまいます。コンパイル成功は意味上の正しさの証明ではありません。",
+  diagnosticsBody: "型の間違いはコンパイラ、法則違反はテストで確認します。期待する関係、入力、再現できる最小の例をテストへ残してください。",
 }

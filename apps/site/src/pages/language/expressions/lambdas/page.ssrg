@@ -1,12 +1,14 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.expressions.lambdas" "/docs/language/expressions/lambdas/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("expressions-lambdas", localized "Typed curried lambdas" "型付きcurried lambda")] [] [
+      ("expressions-lambdas", localized "Typed curried lambdas" "引数の型を付けたラムダ式")] [] [
         [InternalLink (
           localized "Function types and currying" "関数型とカリー化",
           "/docs/language/types/function-types-and-currying/"
@@ -20,3 +22,5 @@ pub fn page -> PageDefinition =
           "/docs/language/expressions/blocks-and-local-declarations/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

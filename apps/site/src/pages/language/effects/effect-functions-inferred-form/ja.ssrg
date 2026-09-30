@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect関数の型を推論する形式",
   summary: "compact formはEffect型のbodyから完全なEffect contractを推論します。",
-  ruleTitle: "推論するならsignature clauseをすべて外す",
-  ruleBody: "->・with・fails・whereを一つも持たないeffect fnはbodyからR・E・Aを推論します。正規化されたEffect型はtyped artifactとpublic module interfaceへ明示されます。",
-  typingBody: "requirement fieldはcanonical名と同じ型でmergeします。Never以外のfailureが0種類ならNever、1種類ならその型、複数ならunionを合成せず拒否します。branchのsuccess値も通常どおり一つの型へ合流する必要があります。",
-  evaluationBody: "推論formを同値な明示contractへ展開しても動作は変わりません。違いはsourceでAPIを固定するか、生成typed interfaceでreviewするかです。",
-  invalidTitle: "compact formは部分的な明示ではない",
-  invalidBody: "with・fails・whereを->なしでは書けません。success型から完全なcontractを書くか、clauseをすべて外してbodyにEffect型全体を決めさせます。",
-  diagnosticsBody: "Effectでないbody、requirement field競合、複数failure型、合流できないsuccess branchを区別し、各型を導入したsource spanを示します。",
+  ruleTitle: "本体の操作からEffectの型を決める",
+  ruleBody: "->、with、fails、whereを一つも書かないeffect fnは、本体から必要なサービスR、失敗型E、成功型Aを推論します。推論された型は、公開されるモジュールの情報にも残ります。",
+  typingBody: "サービスは名前と型が一致する場合にまとめます。失敗しないNeverを除き、失敗型が一種類ならその型を使います。複数種類の失敗を自動で一つにまとめることはありません。分岐の成功値も同じ型になる必要があります。",
+  evaluationBody: "型を推論する形式でも、同じ型を明示した形式でも実行結果は変わりません。呼び出しただけでは処理を実行しない点も同じです。",
+  invalidTitle: "明示する形式と推論する形式を混ぜない",
+  invalidBody: "一部だけの推論指定はできません。->で成功型を明示してwithやfailsを書くか、四つの指定をすべて省いて本体から全体を推論させます。",
+  diagnosticsBody: "本体がEffectでない場合、同じ名前のサービスの型が衝突する場合、失敗型や成功型が一致しない場合を区別して確認してください。失敗型はmapErrorなどで明示的に揃えます。",
 }

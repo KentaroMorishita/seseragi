@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Which file does ./user mean?" "./userは、どのファイルを指すか",
+  summary: localized
+    "An import path is resolved by its explicit form. Relative paths are relative to the importing source file, not the shell's working directory."
+    "importの指定は、書いた形式によって解決します。相対パスの基準はimportを書くソースファイルであり、シェルの作業ディレクトリではありません。",
+  exampleId: "modules-identity",
+  reading: localized
+    "./modules-domain and ./modules-domain.ssrg both identify the sibling file modules-domain.ssrg. In the example, constructing a UserId from one spelling and reading it through the other is valid because the target module is the same."
+    "./modules-domainと./modules-domain.ssrgは、どちらも兄弟のmodules-domain.ssrgです。一方からUserIdを作り、もう一方の関数へ渡せるのは、同じモジュールを指しているためです。",
+  result: localized
+    "For ./user the resolver does not try user/index.ssrg or unrelated extensions as fallbacks. Prefixes such as self/, std/, and gen/ select their documented roots. An external package path must be declared and exported, not merely exist somewhere on disk."
+    "./userからuser/index.ssrgや別の拡張子を総当たりしません。self/・std/・gen/は決まった参照先を選びます。外部パッケージのパスは、ファイルがあるだけでなく、依存と公開パスの宣言が必要です。"
+}

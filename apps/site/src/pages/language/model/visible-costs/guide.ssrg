@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Does a short expression mean little work?" "短く書いた式なら、処理量も小さいのか",
+  summary: localized
+    "Syntax length and computational cost are different. Collection operations can visit or allocate for many elements even in one short line."
+    "コードの短さと計算のコストは別です。一行のコレクション操作でも、多くの要素を処理したり、新しい値のためにメモリを使ったりします。",
+  exampleId: "principle-visible-costs",
+  reading: localized
+    "values |> map double applies double separately to 1, 2, and 3. It constructs the mapped Array instead of overwriting values. With more elements, the transform is called correspondingly more times."
+    "values |> map doubleは、1、2、3にそれぞれdoubleを適用します。valuesを上書きせず、変換後のArrayを作ります。要素数が増えれば、変換関数の呼び出し回数も増えます。",
+  result: localized
+    "The output is [2, 4, 6]. The example shows traversal, not a performance benchmark or a zero-allocation guarantee. Choose APIs using their documented complexity and lifetime behavior, not just the shortest spelling."
+    "出力は[2, 4, 6]です。この例は走査を示すもので、性能測定や割り当てゼロの保証ではありません。記述の短さだけでなく、操作の計算量と寿命の規則を確認します。"
+}

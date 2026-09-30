@@ -26,6 +26,7 @@ for (const command of [
     "apps/site/tests/deployment.test.ts",
     "apps/site/tests/coverage.test.ts",
     "apps/site/tests/reference-titles.test.ts",
+    "apps/site/tests/explanations.test.ts",
   ],
   ["cargo", "build", "-p", "seseragi-cli"],
   ["bun", "apps/site/scripts/check-examples.ts"],
@@ -63,6 +64,7 @@ const test = Bun.spawnSync(
     "apps/site/tests/deployment.test.ts",
     "apps/site/tests/coverage.test.ts",
     "apps/site/tests/reference-titles.test.ts",
+    "apps/site/tests/explanations.test.ts",
   ],
   {
     cwd: root,

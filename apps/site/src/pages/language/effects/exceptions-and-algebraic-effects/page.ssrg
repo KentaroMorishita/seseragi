@@ -1,16 +1,18 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.exceptions-algebraic" "/docs/language/effects/exceptions-and-algebraic-effects/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-foreign-failure",
-        localized "A foreign failure made explicit" "foreign failureを明示"
+        localized "A foreign failure made explicit" "外部の処理が失敗する可能性を型に残す"
       )] [CodeExample
-      ("effects-invalid-throw", localized "Rejected throw syntax" "throw構文を拒否")] [
+      ("effects-invalid-throw", localized "Rejected throw syntax" "throw文は使えない")] [
         [InternalLink (
           localized "Effect error channels" "Effectの回復可能な失敗",
           "/docs/language/effects/error-channels/"
@@ -22,3 +24,5 @@ pub fn page -> PageDefinition =
           "/docs/language/model/backend-independent-semantics/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

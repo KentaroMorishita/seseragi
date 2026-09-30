@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How do I require both an existing environment and a clock?"
+    "既存のサービスに時計も追加で要求するには",
+  summary: localized
+    "The & notation combines service requirements in an Effect or Stream type. It describes what execution needs, not how to merge runtime records."
+    "EffectやStreamの要求に&を書くと、必要なサービスを組み合わせられます。実行時のレコードを結合する操作ではありません。",
+  exampleId: "types-requirement-merge",
+  reading: localized
+    "Timed<R, E, A> abbreviates an Effect that needs everything in R plus a clock field of type Clock. E still describes recoverable failures and A the success value; adding the service does not change either."
+    "Timed<R, E, A>は、Rに加えてClock型のclockを必要とするEffectの別名です。Eは回復可能な失敗、Aは成功値の型のままで、時計を追加しても変更されません。",
+  result: localized
+    "Two requirements with the same field name must agree on its type. R & {} adds nothing. At an execution boundary, the combined required fields must resolve completely so the runner can provide them."
+    "同じ名前のサービスを要求する場合、型も一致している必要があります。R & {}では何も追加しません。実行入口では、最終的なフィールド一覧をすべて確定させます。"
+}

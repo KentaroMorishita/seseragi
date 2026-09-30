@@ -77,9 +77,9 @@ export async function verifyReferenceNavigation(
             "related-rules",
           ])
             assert.equal(await article.locator(`h2#${section}`).count(), 1)
-          // Six explanation paragraphs plus the meaning and output introduction.
+          // The local walkthrough precedes the existing principle explanation.
           // A missing locale paragraph must not disappear silently through zip.
-          assert.equal(await article.locator(":scope > p").count(), 8)
+          assert.equal(await article.locator(":scope > p").count(), 10)
           assert.equal(await article.locator(".callout").count(), 0)
           assert.equal(
             await page.locator(".breadcrumb-current").innerText(),

@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effectの逐次・並列実行",
   summary: "Effectは既定で順番に実行し、並行性は明示的なparallel APIだけが導入します。",
-  ruleTitle: "flatMap・>>=・doはsource順に実行する",
-  ruleBody: "逐次Effectでは先の処理が成功してから後続を開始します。独立したEffectを並べてもreorderやconcurrencyは許可されず、Effect.parallelなどが異なるcontractを明示します。",
-  typingBody: "逐次合成は先のsuccessをcontinuationへ渡し、互換R・Eをmergeします。parallel operationは互換Effectのcollectionを要求し、そのlibrary contractが約束する順序でresultを返します。",
-  evaluationBody: "逐次failureなら後続処理を開始しません。parallelのresult順、failure選択、sibling cancellation、cleanupは完了時刻やcompiler推測ではなく、選んだAPIに従います。",
-  invalidTitle: "compilerはEffectを自動parallel化できない",
-  invalidBody: "外部順序、resource ownership、failure選択、cancellationは観測可能です。独立して見えるEffectでも、programが明示parallel operationを選ぶまでは逐次です。",
-  diagnosticsBody: "schedule前にrequirement・failure・successの不一致を示します。runtime診断はconcurrent failureでも選択operationとinput位置を保持します。",
+  ruleTitle: "並列にする操作を選ばなければ、順番に実行する",
+  ruleBody: "flatMap、>>=、doは、先の処理が成功してから次を開始します。独立して見えるEffectを並べても、自動で並列にはなりません。並列にするにはparallelなどの操作を明示的に使います。",
+  typingBody: "逐次処理では、先の成功値を次の関数へ渡せます。必要なサービスと失敗型は組み合わせられる必要があります。並列処理も、組み合わせられるEffectの集まりを受け取り、結果の順序はそのAPIの規則に従います。",
+  evaluationBody: "逐次処理が失敗すると、後続の処理は始まりません。並列処理で複数の失敗があるときの選択、他の処理のキャンセル、後片付けも、使用したAPIで定められています。",
+  invalidTitle: "コンパイラはEffectを自動で並列にしない",
+  invalidBody: "外部への出力順、リソースの寿命、どの失敗を返すかは観測できる動作です。そのためコンパイラが勝手にEffectを並列に変更することはありません。",
+  diagnosticsBody: "必要なサービスと失敗型の不一致を、実行前の型エラーとして確認します。並列処理の実行時の診断では、選んだ操作と入力の位置を確認してください。",
 }

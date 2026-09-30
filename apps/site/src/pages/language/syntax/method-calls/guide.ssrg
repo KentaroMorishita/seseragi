@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "What does the value before the dot become?" "ドットの前の値は、どの引数に渡されるか",
+  summary: localized
+    "A method is a function associated with a named type. Dot notation passes the value before the dot as its first parameter."
+    "メソッドは、名前付きの型に属する関数です。ドットで呼ぶと、ドットの前の値が最初の引数に渡されます。",
+  exampleId: "reader-method-calls",
+  reading: localized
+    "Counter stores an integer field named value. original.add 5 passes original to self and 5 to amount. add constructs a new Counter whose field is self.value + amount; it does not write to the original field."
+    "Counterは整数のvalueを持ちます。original.add 5では、selfにoriginal、amountに5を渡します。addはself.value + amountを持つ新しいCounterを作り、元のフィールドを書き換えません。",
+  result: localized
+    "updated is Counter { value: 15 }, not the integer 15. Reading original.value still produces 10; updated.value produces 15. The printed lines demonstrate that distinction."
+    "updatedは整数の15ではなく、Counter { value: 15 }です。original.valueは10のままで、updated.valueは15です。出力の二行で、元の値と新しい値の違いを確認できます。"
+}

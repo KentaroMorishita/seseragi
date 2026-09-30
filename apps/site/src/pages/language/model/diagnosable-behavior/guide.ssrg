@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "What should I add when the compiler cannot infer a type?"
+    "型を推論できないとき、何を補えばよいか",
+  summary: localized
+    "Inference requires enough information to determine one type and implementation. When information is missing, an annotation expresses your intent."
+    "型推論には、型と使う実装を一つに決める情報が必要です。足りない場合は、注釈で意図した型を伝えます。",
+  exampleId: "principle-diagnosable-behavior",
+  reading: localized
+    "empty<A> creates an empty List<A> and has no element that could reveal A. List<Int> on values tells the call to choose integer elements. empty<Int> () is another way to supply the same information."
+    "empty<A>は空のList<A>を作り、中の要素からAを判断できません。valuesのList<Int>という注釈が整数の要素型を伝えます。empty<Int> ()と呼ぶ方法でも指定できます。",
+  result: localized
+    "The printed result is the empty list `[]. Its element type is still Int. An annotation resolves missing information; it cannot excuse an actual disagreement between an argument and a required type."
+    "出力は空のリストの`[]です。空でも要素型はIntと決まっています。注釈は不足した情報を補うもので、実際に違う引数の型を無視する指定ではありません。"
+}

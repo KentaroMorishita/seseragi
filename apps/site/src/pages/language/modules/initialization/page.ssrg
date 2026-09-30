@@ -1,13 +1,22 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.modules.initialization" "/docs/language/modules/initialization/" (en.copy ()) (ja.copy ()) [CodeExample
       ("modules-initialization", localized "Module initialization" "モジュールの初期化")] [] [
-    [InternalLink (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")],
-    [InternalLink (localized "Blocks and local declarations" "ブロックとローカル宣言", "/docs/language/expressions/blocks-and-local-declarations/")],
-    [InternalLink (localized "Executable entry points" "実行入口", "/docs/language/modules/entry-points/")]
-  ]
+        [InternalLink
+      (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")],
+        [InternalLink (
+          localized "Blocks and local declarations" "ブロックとローカル宣言",
+          "/docs/language/expressions/blocks-and-local-declarations/"
+        )],
+        [InternalLink
+      (localized "Executable entry points" "実行入口", "/docs/language/modules/entry-points/")]
+      ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

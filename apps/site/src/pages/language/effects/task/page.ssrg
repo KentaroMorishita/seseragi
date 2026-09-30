@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.task" "/docs/language/effects/task/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-task",
@@ -21,3 +23,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Generic aliases" "ジェネリックな型別名", "/docs/language/types/generic-aliases/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

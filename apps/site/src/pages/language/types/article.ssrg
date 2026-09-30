@@ -38,10 +38,15 @@ fn blocks english: TypeCopy
     ],
     ruleDetails,
     [
-      Heading
-        ("identity-and-representation", localized "Identity and representation" "同一性と表現"),
+      Heading (
+        "identity-and-representation",
+        localized "What the type distinguishes" "この型が区別するもの"
+      ),
       Paragraph ([Words (localized english.identityBody japanese.identityBody)]),
-      Heading ("checking-and-inference", localized "Checking and inference" "検査と推論"),
+      Heading (
+        "checking-and-inference",
+        localized "How the compiler checks the type" "型をどう検査するか"
+      ),
       Paragraph ([Words (localized english.checkingBody japanese.checkingBody)]),
       Callout (
         CommonMistake,
@@ -51,7 +56,7 @@ fn blocks english: TypeCopy
     ],
     invalidDetails,
     [
-      Heading ("diagnostics", localized "Diagnostics and tools" "診断とツール"),
+      Heading ("diagnostics", localized "When an error is reported" "エラーが出たときに確認すること"),
       Paragraph ([Words (localized english.diagnosticsBody japanese.diagnosticsBody)]),
       Heading ("related-rules", localized "Related rules" "関連する規則"),
       BulletList related

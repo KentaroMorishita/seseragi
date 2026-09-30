@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Fiberの所有と監督",
   summary: "すべてのFiberはroot main scopeまたは最も内側のscoped resource ownerに属し、forkはunscoped daemonを作りません。",
-  ruleTitle: "child lifetimeはscopeを越えない",
-  ruleBody: "scope終了時は未完了childすべてへcancellationを要求し、child finalizerを待ってから閉じます。parentがsuccess・typed failure・cancellationのどれで終わっても同じです。",
-  typingBody: "joinはchild successを返し、typed failureをcallerのfailureにし、child cancellationをcancellationとして伝播します。cancellationをdataで調べる場合はawaitでFiberExitを取り、interruptはcancel要求後cleanupを待ちます。",
-  evaluationBody: "child typed failureはjoinまたはawaitが観測するまでFiberに保存されます。待機中Fiberのcancelはwaitだけを解除してtargetをcancelせず、targetを止めるidempotent operationはinterruptです。",
-  invalidTitle: "forkはfire-and-forgetではない",
-  invalidBody: "Fiber handleを捨ててもownershipはdaemon registryへ移りません。enclosing scopeはsupervised cleanupを待ち、testは未観測child failureを診断してもparentのtyped resultを変えません。",
-  diagnosticsBody: "Fiber診断はparent scope、spawn site、completion state、failure観測有無を保持します。grace period後のhost forced terminationはcooperative保証外です。",
+  ruleTitle: "子の処理を、親の処理範囲の外へ残さない",
+  ruleBody: "forkで作るFiberは実行入口か現在のリソースのscopeに属します。scopeが終わると未完了の子へキャンセルを要求し、解放処理が終わるまで待ちます。親の成功・型付きの失敗・キャンセルで規則は変わりません。",
+  typingBody: "joinは子の成功値を受け取り、型付きの失敗を呼び出し側へ伝えます。子のキャンセルもキャンセルとして伝えます。終了理由を値で調べるならawait、停止を要求して後片付けを待つならinterruptを使います。",
+  evaluationBody: "子の型付き失敗はjoinやawaitが調べるまでFiberに保たれます。待つ側だけをキャンセルしても子は止まりません。子を止める操作はinterruptで、重ねて呼んでも二重に停止処理をしません。",
+  invalidTitle: "forkした処理を管理外へ放置できない",
+  invalidBody: "Fiberの値を捨てても管理外の処理にはなりません。親のscopeは後片付けを待ちます。テストは確認していない子の失敗を報告する場合がありますが、親の型付き戻り値を書き換えるわけではありません。",
+  diagnosticsBody: "どのscopeの子か、forkの位置、終了状態、失敗を確認したかを診断で確認します。実行環境によるプロセスの強制終了は、協調的な後片付けの保証の外です。",
 }

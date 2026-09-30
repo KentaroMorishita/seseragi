@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "When can I shorten an Effect type to Task?"
+    "Effectの型をTaskと短く書けるのはいつか",
+  summary: localized
+    "Task<A> is exactly Effect<{}, Never, A>: no required external services and no recoverable failure value. It is not a different execution mechanism."
+    "Task<A>はEffect<{}, Never, A>の別名です。外部サービスが不要で、回復可能な失敗を返さない処理を表し、実行方式はEffectと同じです。",
+  exampleId: "effects-task",
+  reading: localized
+    "cached uses succeed to return its input when executed, so Task<Int> is appropriate. fallible may use fail with a String, so its type must retain String as the failure type rather than claim to be Task<Int>."
+    "cachedはsucceedで受け取った整数を成功値にするため、Task<Int>と書けます。fallibleはStringで失敗する場合があるため、Task<Int>とは書けず、失敗の型を残しています。",
+  result: localized
+    "cached 42 is still a description of work until execution. Never excludes recoverable errors; it does not promise immunity to cancellation or defects such as runtime invariant violations."
+    "cached 42も、実行するまでは処理の説明です。Neverは回復可能な失敗がないことを表し、キャンセルや実行時の不具合が絶対に起きないという保証ではありません。"
+}

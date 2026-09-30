@@ -1,0 +1,18 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized
+    "Which type parameters belong to the value, and which to the call?"
+    "値の型とメソッドの型パラメーターを区別するには",
+  summary: localized
+    "An impl parameter comes from the receiver's type. A method may introduce additional parameters chosen for that call."
+    "implの型パラメーターは、ドットの前の値の型から決まります。メソッド自身には、その呼び出しで決まる別の型パラメーターを追加できます。",
+  exampleId: "types-generic-methods",
+  reading: localized
+    "number is Box<Int>, so A in impl<A> Box<A> is Int. In number.replace \"hello\", replace<B> selects B as String and constructs a new Box<String>. self names the original Box passed before the dot."
+    "numberはBox<Int>なので、impl<A> Box<A>のAはIntです。number.replace \"hello\"ではメソッドのBがStringになり、新しいBox<String>を作ります。selfはドットの前のnumberを受け取る引数です。",
+  result: localized
+    "The original number remains Box<Int>; this is construction, not mutation of its field's type. Keep A and B distinct because they describe different choices. The impl cannot declare a parameter unrelated to its receiver type."
+    "元のnumberはBox<Int>のままです。フィールドの型を書き換えたのではなく、新しい値を作っています。AとBは異なる型の選択を表すため、別の名前にします。"
+}

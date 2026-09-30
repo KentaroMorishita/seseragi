@@ -2,6 +2,8 @@ import assert from "node:assert/strict"
 import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
+import { japaneseReferenceDescription } from "./reference-copy"
+import { signatureReading } from "./signature-reading"
 
 const root = resolve(import.meta.dir, "../../..")
 const referencePath = join(
@@ -331,6 +333,16 @@ export function compilerReferenceModules() {
           itemKind: item.kind,
           signature: item.signature,
           description: item.description,
+          descriptionJa:
+            item.description === ""
+              ? ""
+              : japaneseReferenceDescription(item.description),
+          reading: signatureReading(
+            item.signature,
+            item.kind,
+            item.typeParameters,
+            item.constraints
+          ),
           typeParameters: item.typeParameters,
           constraints: item.constraints,
           instanceClass: item.instanceClass ?? "",

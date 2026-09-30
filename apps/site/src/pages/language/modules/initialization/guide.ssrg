@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Can a function read a value declared later in the module?"
+    "後で宣言する値を、関数から読んでもよいか",
+  summary: localized
+    "Module values initialize in source order. A function may mention a later value, but a call must not read that value before it is initialized."
+    "モジュールの値はソース順に初期化します。関数が後の値を参照していても、呼び出した時点でその値が初期化済みである必要があります。",
+  exampleId: "modules-initialization",
+  reading: localized
+    "readLater mentions later. first initializes to 1, then later to 2, then result calls readLater. At that point later is ready, so the call is valid."
+    "readLaterはlaterを参照しています。firstが1、次にlaterが2になり、その後でresultがreadLaterを呼びます。呼ぶ時点ではlaterが準備済みなので、有効です。",
+  result: localized
+    "result is 2. Moving the call before later's initialization would be an early-read error even if the reference is hidden inside a function. Importing a module from multiple places does not repeat its initialization."
+    "resultは2です。呼び出しをlaterの初期化前へ移すと、関数の中に参照を隠していても初期化前参照になります。複数箇所からimportしても、同じモジュールを繰り返し初期化しません。"
+}

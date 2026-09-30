@@ -1,14 +1,16 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.traits.do-block-typing" "/docs/language/traits/do-block-typing/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "traits-do-block-typing",
-        localized "One constructor across every item" "全itemで一つの型構築子"
+        localized "One constructor across every item" "すべての段階で同じ種類の計算をつなぐ"
       )] [CodeExample (
         "traits-invalid-do",
         localized "Constructor mismatch and missing result" "型構築子の不一致と結果欠落"
@@ -20,3 +22,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

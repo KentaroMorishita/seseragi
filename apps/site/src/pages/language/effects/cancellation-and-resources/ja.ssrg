@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "キャンセルとリソースの管理",
   summary: "cooperative cancellationはscope内へ伝播し、登録済みresourceを正確に一度finalizeします。",
-  ruleTitle: "scopeがworkとcleanupを一緒に所有する",
-  ruleBody: "Effect.bracketとacquireReleaseは現在scopeへcleanupを登録します。acquire成功からfinalizer登録までのhandoffはcancellationに対してatomicで、その隙間からresourceは漏れません。",
-  typingBody: "cancellationはEの値ではありません。success・typed failure・cancellationを観測するcodeはEffectExit<E, A>を受け取り、finalizer自身のtyped failure channelは生成不能でなければなりません。",
-  evaluationBody: "scope終了時は未完了childへcancellationを要求し、success・typed failure・cancellationのどの場合もfinalizerをLIFO順に一度だけ実行します。明示closeとscope cleanupが重なってもidempotentです。",
-  invalidTitle: "finalizerから回復可能failureを漏らさない",
-  invalidBody: "想定できるclose failureはfinalizer内で処理してNeverへ変換します。一つのfinalizerがdefectになっても、runtimeは残りを試してから最初のdefectを報告し、後続defectを診断へ添付します。",
-  diagnosticsBody: "resource診断はacquire・use・release phaseを区別し、元の終了結果とfinalizer defectを併記します。永久に完了しないfinalizerはscope完了も止めます。",
+  ruleTitle: "処理の終了時に、確保したリソースを必ず後片付けする",
+  ruleBody: "bracketやacquireReleaseは、ファイルや接続などを確保した後の解放処理を、現在の処理範囲へ登録します。この範囲をscopeと呼びます。確保に成功してから解放を登録するまでの間にキャンセルが入っても、解放の登録を飛ばしてリソースを残すことはありません。",
+  typingBody: "キャンセルはEffectの失敗型Eの値ではありません。終了理由を調べる場合はEffectExit<E, A>で成功・型付きの失敗・キャンセルを区別します。解放処理自身は回復可能な失敗を外へ残せないため、失敗型をNeverにする必要があります。",
+  evaluationBody: "scopeの終了時は、未完了の子の処理へキャンセルを要求し、登録した解放処理を逆順に一度ずつ実行します。明示的な解放とscope終了の解放が重なっても、同じ解放処理を二重に実行しません。",
+  invalidTitle: "解放処理の失敗は、その処理の中で扱う",
+  invalidBody: "解放で想定される失敗は、解放処理の中で扱います。解放中に想定外の不具合が起きても、残りの解放を試してから、最初の不具合を報告します。後で起きた不具合も診断に残ります。",
+  diagnosticsBody: "診断では確保・使用・解放のどこで失敗したかを確認します。解放処理が永久に完了しないとscopeも終了できないため、解放には必ず完了できる処理を用意してください。",
 }

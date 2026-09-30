@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,10 +13,10 @@ import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.patterns.irrefutable-patterns" "/docs/language/patterns/irrefutable-patterns/" (en.copy ()) (ja.copy ()) [
     CodeExample
-      ("patterns-irrefutable", localized "Bindings that cannot fail" "失敗しないbinding"),
+      ("patterns-irrefutable", localized "Bindings that cannot fail" "必ず一致するパターンで値を取り出す"),
     BulletList [
       [
         InlineCode "name",
@@ -24,16 +26,16 @@ pub fn page -> PageDefinition =
       ],
       [Words (
         localized "Product patterns inherit refutability from every nested pattern."
-      "product patternは全nested patternからrefutabilityを引き継ぎます。"
+      "タプルやレコードの中に失敗しうるパターンが一つでもあれば、全体も失敗する可能性があります。"
       )],
       [Words (
         localized "Only a rest-only Array or List pattern matches every length."
-      "restだけのArray・List patternがすべての長さに一致します。"
+      "全要素をまとめて受け取るArrayやListのパターンは、空を含めどの長さにも一致します。"
       )]
     ]
   ] [CodeExample (
     "patterns-invalid-irrefutable",
-    localized "Rejected length-dependent binding" "長さに依存するbindingを拒否"
+    localized "Rejected length-dependent binding" "空や短い配列に一致しないパターンをletに使うとエラー"
   )] [
     [InternalLink
       (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")],
@@ -44,3 +46,5 @@ pub fn page -> PageDefinition =
       "/docs/language/data/tuples-arrays-and-lists/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

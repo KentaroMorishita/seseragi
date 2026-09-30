@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,11 +13,11 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.function-types" "/docs/language/types/function-types-and-currying/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "function-application",
-      localized "Curried declaration and partial application" "curried宣言と部分適用"
+      localized "Curried declaration and partial application" "引数を一つずつ渡し、残りを待つ関数を作る"
     ),
     BulletList [
       [
@@ -27,15 +29,17 @@ pub fn page -> PageDefinition =
         InlineCode "fn clock -> Instant",
         Words (
           localized " has type Unit -> Instant and is called as clock ()."
-            " はUnit -> Instant型でclock ()として呼びます。"
+            " は()を受け取りInstantを返す関数です。clock ()で呼びます。"
         )
       ]
     ]
   ] [BulletList [
     [
       InlineCode "(Int -> Int) -> Int",
-      Words
-            (localized " is a different explicitly grouped type." " は明示的にgroup化された別の型です。")
+      Words (
+        localized " is a different explicitly grouped type."
+            " は括弧でまとめた関数を一つ受け取るため、括弧のない型とは異なります。"
+      )
     ],
     [
       InlineCode "clock",
@@ -52,3 +56,5 @@ pub fn page -> PageDefinition =
     )],
     [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

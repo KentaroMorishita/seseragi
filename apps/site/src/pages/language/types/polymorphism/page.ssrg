@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,27 +13,28 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.polymorphism" "/docs/language/types/polymorphism/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "types-polymorphism",
-      localized "One generic identity at two concrete types"
-        "二つのconcrete型で使うgeneric identity"
+      localized "One generic identity at two concrete types" "同じidentityをBoolとIntに使う"
     ),
     BulletList [
       [
         InlineCode "forall A. A -> A",
-        Words
-        (localized " is the specification notation for the scheme." " はschemeの仕様表記です。")
+        Words (
+          localized " is the specification notation for the scheme."
+            " は、どの型にも使えることを説明する記法です。ソースに書く構文ではありません。"
+        )
       ],
       [
         InlineCode "identity True",
-        Words (localized " instantiates A as Bool." " はAをBoolとしてinstantiateします。")
+        Words (localized " instantiates A as Bool." " はAにBoolを当てはめて使います。")
       ],
       [
         InlineCode "identity 42",
         Words
-        (localized " independently instantiates A as Int." " は独立にAをIntとしてinstantiateします。")
+            (localized " independently instantiates A as Int." " は別の呼び出しとして、AにIntを当てはめて使います。")
       ]
     ]
   ] [BulletList [
@@ -39,13 +42,13 @@ pub fn page -> PageDefinition =
       InlineCode "let id: forall A. A -> A",
       Words (
         localized " uses notation that is not source syntax."
-        " はsource syntaxではない表記を使っています。"
+            " は説明用の記法をソースに書いているため、エラーです。"
       )
     ],
     [Words (
       localized
-        "A recursive group is checked monomorphically before any generalization."
-        "recursive groupは一般化前にmonomorphicに検査されます。"
+            "A recursive group is checked monomorphically before any generalization."
+            "再帰する宣言は、rec内では一つの型で検査します。検査が済むまで、呼び出しごとに型を変えることはできません。"
     )]
   ]] [
     [InternalLink (
@@ -53,9 +56,11 @@ pub fn page -> PageDefinition =
       "/docs/language/types/annotations-and-inference/"
     )],
     [InternalLink
-        (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
+            (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
     [InternalLink (
       localized "Function application" "関数適用",
       "/docs/language/syntax/function-application/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

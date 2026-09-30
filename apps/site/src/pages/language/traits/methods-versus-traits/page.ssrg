@@ -1,16 +1,18 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.traits.methods-versus-traits" "/docs/language/traits/methods-versus-traits/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "traits-methods-versus-traits",
-        localized "Two distinct lookup paths" "二つの異なるlookup経路"
+        localized "Two distinct lookup paths" "固有メソッドとtraitの関数を区別する"
       )] [CodeExample
-      ("traits-invalid-method", localized "Ambiguous trait method" "曖昧なtrait method")] [
+      ("traits-invalid-method", localized "Ambiguous trait method" "同名のtraitの関数を区別できない場合")] [
         [InternalLink (
           localized "Inherent impls and methods" "固有implとメソッド",
           "/docs/language/data/impls-and-methods/"
@@ -22,3 +24,5 @@ pub fn page -> PageDefinition =
           "/docs/language/traits/method-calls/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

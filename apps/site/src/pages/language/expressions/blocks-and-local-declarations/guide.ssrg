@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Which value does a block return?" "ブロックの戻り値は、どの式か",
+  summary: localized
+    "A block groups local declarations and expressions inside braces. Its final expression supplies its value."
+    "ブロックは波括弧内にローカル宣言と式をまとめます。最後の式の値が、そのブロックの戻り値になります。",
+  exampleId: "expressions-blocks",
+  reading: localized
+    "label defines normalized locally, then defines a local render function. The final render normalized is not a separate return statement: it is the expression that gives the function its String result."
+    "例のlabelはnormalizedを作り、その値を表示するローカル関数renderを定義します。最後のrender normalizedが戻り値です。別のreturn文を置くのではありません。",
+  result: localized
+    "label 42 returns \"score=42\"; a negative score is normalized to zero. The local names cannot be referenced outside the block. A block of pure expressions is not the same as a do block sequencing Effect operations."
+    "label 42は\"score=42\"を返し、負の点数なら0として表示します。ローカルの名前はブロック外から使えません。普通のブロックと、Effectの処理を順に実行するdoブロックは異なります。"
+}

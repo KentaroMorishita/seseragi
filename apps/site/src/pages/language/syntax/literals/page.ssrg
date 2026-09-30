@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,24 +13,20 @@ import { syntaxPage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   syntaxPage "language.syntax.literals" "/docs/language/syntax/literals/" (en.copy ()) (ja.copy ()) [
     CodeExample
       ("syntax-literals", localized "Canonical literal forms" "canonical literal form"),
     BulletList [
-      [InlineCode "0b1010_0110", Words (localized " is binary Int." " はbinary Intです。")],
-      [InlineCode "0o755", Words (localized " is octal Int." " はoctal Intです。")],
-      [
-        InlineCode "0xFF_00",
-        Words (localized " is hexadecimal Int." " はhexadecimal Intです。")
-      ],
-      [InlineCode "6.022e23", Words
-      (localized " is decimal Float." " はdecimal Floatです。")],
+      [InlineCode "0b1010_0110", Words (localized " is binary Int." " は2進数の整数です。")],
+      [InlineCode "0o755", Words (localized " is octal Int." " は8進数の整数です。")],
+      [InlineCode "0xFF_00", Words (localized " is hexadecimal Int." " は16進数の整数です。")],
+      [InlineCode "6.022e23", Words (localized " is decimal Float." " は10進表記の浮動小数点数です。")],
       [
         InlineCode "`[1, 2]",
         Words (
           localized " starts a List literal; other backticks start a template."
-      " はList literalを開始し、それ以外のbacktickはtemplateを開始します。"
+      " はListの値を表します。バッククォートが[の直前でない場合は、テンプレート文字列の始まりです。"
         )
       ]
     ]
@@ -44,3 +42,5 @@ pub fn page -> PageDefinition =
         )],
         [InternalLink (localized "std/number" "std/number", "/docs/library/number/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

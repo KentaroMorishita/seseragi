@@ -40,7 +40,10 @@ fn blocks english: SyntaxCopy
     [
       Heading ("typing-and-values", localized "Typing and values" "型と値"),
       Paragraph ([Words (localized english.typingBody japanese.typingBody)]),
-      Heading ("evaluation", localized "Evaluation and normalization" "評価と正規化"),
+      Heading (
+        "evaluation",
+        localized "When and in what order values are computed" "いつ、どの順番で計算するか"
+      ),
       Paragraph ([Words (localized english.evaluationBody japanese.evaluationBody)]),
       Callout (
         CommonMistake,

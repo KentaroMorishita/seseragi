@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How do I pass arguments to a function?" "関数に引数を渡すには",
+  summary: localized
+    "Write the function name followed by space-separated arguments. You can pass all arguments, or keep a function waiting for the remaining ones."
+    "関数名の後に空白で区切って引数を書きます。一部の引数だけを渡して、残りを待つ関数を作ることもできます。",
+  exampleId: "function-application",
+  reading: localized
+    "The declaration names left and right as Int parameters; the final Int is the result type. add 1 supplies left and returns a function. addOne 2 supplies right to that function, which computes 1 + 2."
+    "宣言のleftとrightはIntの引数で、最後のIntは戻り値の型です。add 1でleftに1を渡すと、rightを待つ関数が返ります。その関数をaddOne 2で呼ぶと、1 + 2を計算します。",
+  result: localized
+    "answer is 3. add 1 2 also computes 3, because it means (add 1) 2. add (1, 2) instead passes one tuple; that tuple does not match add's first Int parameter."
+    "answerは3です。add 1 2も(add 1) 2の意味なので3になります。add (1, 2)はタプルを一つ渡す書き方であり、addが必要とするIntの引数には合いません。"
+}

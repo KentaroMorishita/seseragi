@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.kinds" "/docs/language/types/kinds/" (en.copy ()) (ja.copy ()) [CodeExample
       ("types-kinds", localized "Kinds and type constructors" "kindと型構築子")] [CodeExample
       ("types-kind-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
@@ -17,3 +19,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

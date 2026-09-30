@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Can I generate equality and display for my data type?"
+    "データ型の比較や表示を、自動で用意できるか",
+  summary: localized
+    "deriving asks the compiler to implement supported standard traits from the declared constructors and fields."
+    "derivingは、宣言した選択肢やフィールドをもとに、対応する標準traitの実装をコンパイラに用意させます。",
+  exampleId: "traits-deriving",
+  reading: localized
+    "Priority derives Eq, Ord, and Show: equality, ordering, and display. Task derives equality and display from its title and priority fields. task == task uses the generated equality operation, not object identity."
+    "PriorityのEq・Ord・Showは、等しさの比較、順序比較、表示です。Taskもtitleとpriorityを使う比較と表示を導出します。task == taskは、オブジェクトの同一性ではなく、生成した比較操作です。",
+  result: localized
+    "sameTask is True. Every stored field must support the trait needed to derive the outer type's operation. Deriving is limited to documented standard traits; it is not arbitrary code generation for any user-defined trait."
+    "sameTaskはTrueです。外側の型で導出する操作には、中の各フィールドも対応する操作を持つ必要があります。対象は定められた標準traitであり、任意のtraitの処理を生成する仕組みではありません。"
+}

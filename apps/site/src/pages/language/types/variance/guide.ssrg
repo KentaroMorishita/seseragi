@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Why does a record fit, but an array of those records does not?"
+    "レコードは渡せるのに、その配列は渡せないのはなぜか",
+  summary: localized
+    "Compatibility of an outer record does not automatically extend inside arrays or other generic containers. Their type arguments normally have to match."
+    "レコードの追加フィールドを許す規則は、そのレコードを含む配列の型まで自動では変更しません。通常、入れ物の型引数は一致している必要があります。",
+  exampleId: "types-variance",
+  reading: localized
+    "users is an array of records containing name and id. nameOnly constructs a new record containing just name. map applies that conversion to each element, producing the explicitly requested Array<{ name: String }>."
+    "usersの要素にはnameとidがあります。nameOnlyはnameだけを持つ新しいレコードを作り、mapが各要素にその処理を適用します。その結果、Array<{ name: String }>の配列ができます。",
+  result: localized
+    "The result contains { name: \"Aki\" }. This is an explicit element-by-element transformation, not an assignment that changes the array's type. The special Effect and Signal conversions below are limited exceptions, not a general container rule."
+    "結果には{name: \"Aki\"}が入ります。配列の型を代入だけで変更したのではなく、要素ごとに変換しています。後述のEffectやSignalの変換は限定的な例外です。"
+}

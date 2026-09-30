@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "What does the A inside Box<A> mean?" "Box<A>のAには何を書くのか",
+  summary: localized
+    "A type constructor makes a complete type from one or more type arguments. Box<Int> and Box<String> choose different stored value types."
+    "型構築子は、型引数を受け取って完成した型を作ります。Box<Int>とBox<String>では、中身の型が違います。",
+  exampleId: "types-constructors",
+  reading: localized
+    "Box<A> declares one field of type A. unwrap<A> takes a Box<A> and returns that field, so unwrap (Box<Int> { value: 42 }) returns an Int. The A is not the field's value; it tells the compiler the field's type."
+    "Box<A>はA型のフィールドを持ちます。unwrap<A>はBox<A>からその値を返すため、unwrap (Box<Int> { value: 42 })の結果はIntです。Aはフィールドの値ではなく、その型を指定します。",
+  result: localized
+    "The result is 42. Types can nest, for example Array<Maybe<Int>>, but each constructor needs the right number and shape of type arguments. Maybe alone is incomplete where a concrete value type is required."
+    "結果は42です。Array<Maybe<Int>>のように型を入れ子にできますが、型引数の数と形を揃える必要があります。具体的な値の型を書く場所で、Maybeだけでは不完全です。"
+}

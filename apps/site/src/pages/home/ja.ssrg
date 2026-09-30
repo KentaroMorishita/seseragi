@@ -1,3 +1,4 @@
 pub fn title -> String = "Seseragi"
-pub fn summary -> String = "小さな関数からアプリケーション全体まで、境界を明示して組み立てる式指向の静的型付き言語です。"
+pub fn summary -> String =
+  "値を返す式と不変のデータを組み合わせる、静的型付きの言語です。型を実行前に検査し、値がない場合や失敗する場合も明示して扱います。"
 pub fn codeTitle -> String = "小さなSeseragiプログラム"

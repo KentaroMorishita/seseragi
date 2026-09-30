@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "doブロックの型付け",
   summary: "型推論はblock全体で一つのMonad型構築子を選び、各payload型を後続itemへ伝えます。",
-  ruleTitle: "すべてのmonadic itemは一つのM<_>を共有する",
-  ruleBody: "最初のbind、最後の式、期待block型のいずれかからMを決められます。bindはM<A>を検査してAのbindingを導入し、残りをM<B>として型付けします。最後の式がblock結果M<R>を決めます。",
-  typingBody: "一意なMonad<M> evidenceと全monadic itemの型構築子一致が必要です。pure letはMを制約しません。部分適用constructorは単項kindでなければならず、候補が未確定なら既定値を推測せず曖昧errorにします。",
-  evaluationBody: "型付けはsequencingを変えず、各payloadはcontinuationに入ってから利用可能になります。short-circuitするmonadはflatMap contractに従い後続itemをskipできます。",
-  invalidTitle: "異なる型構築子には明示的bridgeが必要",
-  invalidBody: "MaybeとEither、異なるtransformer stack、pure値とEffectは、全itemを同じM<_>にする明示liftまたは変換なしにmonadic itemとして混在できません。",
-  diagnosticsBody: "選択済みconstructor、不一致itemとpayload、非単項kind、Monad evidence欠落、最後の結果欠落を具体的に示します。",
+  ruleTitle: "取り出す処理を、一種類の型で揃える",
+  ruleBody: "最初の取り出し、最後の式、または周囲が要求する型から、処理の種類Mを決めます。x <- mxでmxがM<A>ならxはAです。最後の式がM<R>ならdo全体もM<R>です。",
+  typingBody: "Maybe、Either、Effectなど、一つのdoで同じ種類の処理を使い、対応するMonadが必要です。普通のletは処理の種類を決めません。種類が分からない場合は型注釈で補います。",
+  evaluationBody: "取り出した値はその行より後で使えます。MaybeでNothing、EitherでLeftなど、後続を進めない結果では、そのMonadの規則で後の行を実行しません。",
+  invalidTitle: "異なる種類の処理は明示的に変換する",
+  invalidBody: "MaybeとEither、通常の値とEffectをそのまま混ぜることはできません。fromEitherなどの変換を使い、一種類の処理に揃えてください。",
+  diagnosticsBody: "取り出す行の型、ブロック全体の型、Monad、最後の式を確認します。M<A>のAの違いは許されますが、外側のMは同じでなければなりません。",
 }

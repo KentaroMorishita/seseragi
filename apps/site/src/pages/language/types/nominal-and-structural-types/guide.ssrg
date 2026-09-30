@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "When are two similarly shaped values interchangeable?"
+    "同じフィールドを持つ値を、そのまま交換できるか",
+  summary: localized
+    "A named struct is identified by its declaration. An ordinary record is accepted by the fields its type requires."
+    "構造体は、その型を宣言したものとして区別します。普通のレコードは、必要な名前と型のフィールドを持つかで判断します。",
+  exampleId: "types-nominal-structural",
+  reading: localized
+    "playerName takes Player, so it accepts the explicitly constructed Player value. recordName takes { name: String }, so the ordinary summary record is accepted even though it also has active. The two functions both return a name but accept different interfaces."
+    "playerNameはPlayerを受け取り、recordNameは{name: String}を受け取ります。普通のsummaryレコードにはactiveもありますが、必要なnameがあるためrecordNameへ渡せます。同じ名前を返す関数でも、受け取る型は違います。",
+  result: localized
+    "The resulting names are \"Aki\" and \"Mio\". A Player does not automatically become a record merely because it has name. Construct { name: player.name } explicitly if the record interface is what you need."
+    "結果の名前は\"Aki\"と\"Mio\"です。Playerがnameを持っていても、自動では普通のレコードになりません。レコードを渡したい場合は、{ name: player.name }のように明示的に作ります。"
+}

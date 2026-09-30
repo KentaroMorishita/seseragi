@@ -1,5 +1,5 @@
 pub fn title -> String = "Seseragi リファレンス"
-pub fn summary -> String = "知りたい概念から、正確な構文・意味論・診断・関連APIへ辿れるリファレンスです。"
+pub fn summary -> String = "書き方の意味と、コードがどう動くかを調べるリファレンスです。言語の規則と、標準ライブラリの操作を分けて探せます。"
 pub fn tourTitle -> String = "順番に学ぶ"
 pub fn tourBody -> String =
-  "順番に手を動かして学ぶ導線はinteractive Tourが担当します。リファレンス側で同じcourseを重複させません。"
+  "コードを動かしながら順番に学びたい場合はTourを使ってください。このリファレンスは、知りたい概念や操作を調べるためのものです。各記事では、小さな例の読み方と規則を説明します。"

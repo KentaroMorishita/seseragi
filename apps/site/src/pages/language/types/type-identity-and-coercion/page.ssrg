@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,7 +13,7 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.identity-coercion" "/docs/language/types/type-identity-and-coercion/" (en.copy ()) (ja.copy ()) [BulletList
       [
         [
@@ -21,7 +23,8 @@ pub fn page -> PageDefinition =
         ],
         [
           InlineCode "{ id: Int, name: String } -> { name: String }",
-          Words (localized " is allowed by record width." " はrecord widthで許可されます。")
+          Words
+      (localized " is allowed by record width." " は、必要なフィールドに加えて余分なフィールドがあるため渡せます。")
         ],
         [
           InlineCode "Int -> Float",
@@ -31,13 +34,13 @@ pub fn page -> PageDefinition =
           InlineCode "A -> Maybe<A>",
           Words (
             localized " requires Just or another explicit constructor."
-      " はJustなどの明示constructorが必要です。"
+      " をMaybeにするには、Justなどで明示的に包みます。"
           )
         ]
       ]] [CodeExample (
         "types-invalid-coercion",
         localized "A newtype cannot coerce to its representation"
-      "newtypeはrepresentationへcoerceできない"
+      "newtypeの値を、そのまま中身の型として使えない"
       )] [
         [InternalLink (
           localized "Nominal and structural types" "名前付き型と構造的な型",
@@ -48,3 +51,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Type system" "型システム", "/docs/language/types/type-system/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

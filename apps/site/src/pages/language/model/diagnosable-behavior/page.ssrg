@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
 import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   principlePage "language.model.diagnosable-behavior" "/docs/language/model/diagnosable-behavior/" (en.copy ()) (ja.copy ()) "principle-diagnosable-behavior" "`[]" [
     [InternalLink (
       localized "Generic functions" "ジェネリック関数",
@@ -19,3 +21,5 @@ pub fn page -> PageDefinition =
       "/docs/language/traits/coherence/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

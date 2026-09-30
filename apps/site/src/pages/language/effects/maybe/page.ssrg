@@ -1,14 +1,16 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.maybe" "/docs/language/effects/maybe/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-maybe",
-        localized "Lazy fallback through two optional values" "二つのoptional値を順にfallback"
+        localized "Lazy fallback through two optional values" "最初の値がなければ、次の値を使う"
       )] [CodeExample
       ("effects-invalid-maybe", localized "Rejected Either fallback" "Eitherへの??を拒否")] [
         [InternalLink (
@@ -22,3 +24,5 @@ pub fn page -> PageDefinition =
           "/docs/language/model/no-hidden-danger/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

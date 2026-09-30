@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "実行順と公平性",
   summary: "Effect runtimeはcheckpointを境界に、cooperative FIFO schedulingとweak fairnessを保証します。",
-  ruleTitle: "progressにはcheckpoint到達が必要",
-  ruleBody: "async wait、yieldNow、Queue・Deferred・Semaphoreの待機、sleep、I/O境界、cancellation観測がcheckpointです。runnable FiberはFIFO queueへ入り、他のFiberがcheckpointへ到達し続ける限り最終的に実行されます。",
-  typingBody: "schedulingはEffect型を変えず、Fiber priorityも公開しません。yieldNowはTask<Unit>で、serviceや回復可能failureを追加せずcooperative boundaryを明示します。",
-  evaluationBody: "weak fairnessが保証するのは再実行であり、wall-clock時間やstep数の均等性ではありません。長いpure計算は自動preemptされず、yieldするまで他のFiberをstarveさせられます。",
-  invalidTitle: "並行cleanupへglobal orderを仮定しない",
-  invalidBody: "input順やwaiter登録順がenqueue順を決めるのはAPIが明示した箇所だけです。すべてのcleanupを待つAPIでも、独立sibling finalizer間にglobal orderはありません。",
-  diagnosticsBody: "runtime traceはcheckpointやenqueue eventを示せますが、worker数の違いが仕様上のresult順・failure選択・同一scope内LIFOを変えてはいけません。",
+  ruleTitle: "待機やyieldの地点で、別の処理へ実行を渡す",
+  ruleBody: "非同期の待機、yieldNow、Queue・Deferred・Semaphoreの待機、sleep、入出力、キャンセルの確認が、実行を切り替えられる地点です。実行可能なFiberは待ち行列へ入り、他の処理もこの地点へ到達し続ける限り、順に実行されます。",
+  typingBody: "yieldNowはTask<Unit>です。サービスや回復可能な失敗を追加せず、明示的に実行を譲ります。Fiberに優先度を付ける操作はありません。",
+  evaluationBody: "保証されるのは、実行可能な処理がいずれ実行されることです。実時間や実行ステップ数が全処理で等しくなる保証ではありません。長い純粋な計算の途中で自動的に割り込むことはないため、他の処理を長く待たせる場合があります。",
+  invalidTitle: "独立した後片付けの全体順序は保証されない",
+  invalidBody: "順序が必要なら、使うAPIが何の順序を保証するか確認してください。独立した子の処理の解放が、全体で必ず一定の順番になるとは限りません。",
+  diagnosticsBody: "実行の記録では、待機・再開・待ち行列への追加を確認できます。ただし、実行方法の違いでAPIが保証する結果順や、同じscope内の逆順の解放を変えることはできません。",
 }

@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,18 +13,20 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.optional-record-fields" "/docs/language/types/optional-record-fields/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "syntax-optional-record-field",
-      localized "Optional presence in compiled source" "compileされるoptional presence"
+      localized "Optional presence in compiled source" "フィールドのあるレコードと、ないレコード"
     ),
     BulletList [
       [InlineCode "absent -> optional", Words (localized " is accepted." " は受理されます。")],
       [
         InlineCode "required A -> optional A",
-        Words
-          (localized " is accepted and preserves known presence." " は受理され既知のpresenceを保ちます。")
+        Words (
+          localized " is accepted and preserves known presence."
+            " は渡せます。実際にフィールドが存在する情報も保持します。"
+        )
       ],
       [
         InlineCode "optional A -> required A",
@@ -31,7 +35,7 @@ pub fn page -> PageDefinition =
     ]
   ] [CodeExample (
     "syntax-invalid-record-fields",
-    localized "Missing and incompatible record fields" "不足・非互換record field"
+    localized "Missing and incompatible record fields" "必須フィールドの不足と、値の型の不一致"
   )] [
     [InternalLink (
       localized "Optional record field syntax" "省略可能なレコードフィールドの構文",
@@ -41,6 +45,10 @@ pub fn page -> PageDefinition =
       localized "Nominal and structural types" "名前付き型と構造的な型",
       "/docs/language/types/nominal-and-structural-types/"
     )],
-    [InternalLink
-          (localized "Closed records" "closed record", "/docs/language/types/closed-records/")]
+    [InternalLink (
+      localized "Closed records" "確定したサービス要求（closed record）",
+      "/docs/language/types/closed-records/"
+    )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

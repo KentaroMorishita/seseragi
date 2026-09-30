@@ -81,7 +81,7 @@ export async function verifyReaderArticles(
           ])
             assert.equal(await article.locator(`h2#${id}`).count(), 1, route)
           // This is paragraph-pairing regression protection, not a quality score.
-          assert.equal(await article.locator(":scope > p").count(), 16, route)
+          assert.equal(await article.locator(":scope > p").count(), 18, route)
           const code = article.locator(".code-panel pre > code")
           assert.equal(
             await code.nth(0).textContent(),

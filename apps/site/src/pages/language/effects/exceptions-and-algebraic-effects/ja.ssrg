@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "例外と代数的Effect",
   summary: "Seseragiにはthrow・catch・try構文も、perform・handleによるalgebraic effect構文もありません。",
-  ruleTitle: "failureとcapabilityは一つの明示effect modelが所有する",
-  ruleBody: "想定可能failureはEitherまたはEffectのEを通ります。foreign adapterは境界でhost例外を捕捉し、Either<ForeignError, A>またはEffect<R, ForeignError, A>へ変換します。",
-  typingBody: "通常のSeseragi式にexception edgeがないため、回復可能failureはreturn型に残ります。environment requirement・resource・cancellationも第二のhandler systemではなくEffectに現れます。",
-  evaluationBody: "foreign adapterがhost固有catchとnormalizeを行ってからSeseragi codeを再開します。safe wrapper契約違反はdefectであり、通常codeがcatchできるhidden exceptionではありません。",
-  invalidTitle: "throw・catch・try・perform・handleはlanguage formではない",
-  invalidBody: "EやRを迂回するpseudo syntaxを書きません。domain errorはdataにし、回復可能operationはEffectへ持ち上げ、adapter固有exception処理はinterop境界へ置きます。",
-  diagnosticsBody: "parserは未対応exception・handler formをsource range付きで報告します。interop診断はadapter operationとnormalize済みForeignErrorを保持し、任意host stackをtyped program dataとして公開しません。",
+  ruleTitle: "失敗をthrowではなく戻り値の型に残す",
+  ruleBody: "想定して扱う失敗はEitherやEffectのEで返します。外部言語の例外は外部連携のアダプターが捕捉し、ForeignErrorを持つEitherやEffectへ変換します。",
+  typingBody: "Seseragiにはthrow・catch・tryや、perform・handleの構文がありません。必要なサービス、回復可能な失敗、リソース、キャンセルは、別々の隠れた仕組みではなくEffectで扱います。",
+  evaluationBody: "外部アダプターが生成先の例外を整理してから、Seseragiの処理へ戻します。安全なアダプターが守るべき約束に違反する値は、通常の回復可能な失敗ではなくdefectです。",
+  invalidTitle: "他の言語の例外構文は使えない",
+  invalidBody: "他の言語のtryやcatchをそのまま書かないでください。アプリケーションの失敗は型付きの値、外部の例外の捕捉は連携する境界に置きます。",
+  diagnosticsBody: "未対応の構文では、そのソース位置に構文エラーが出ます。外部連携の失敗では、操作名とForeignErrorの内容を確認してください。",
 }

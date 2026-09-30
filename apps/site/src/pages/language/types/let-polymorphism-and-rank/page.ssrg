@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   Callout,
@@ -11,7 +13,7 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.let-polymorphism-and-rank" "/docs/language/types/let-polymorphism-and-rank/" (en.copy ()) (ja.copy ()) [
     CodeExample ("types-let-rank", localized "Let-polymorphism and rank" "同じ関数を異なる型で使う"),
     Callout (
@@ -25,6 +27,14 @@ pub fn page -> PageDefinition =
     )
   ] [] [
     [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
-    [InternalLink (localized "Recursive declarations" "再帰宣言", "/docs/language/types/recursive-declarations/")],
-    [InternalLink (localized "Generic functions" "ジェネリック関数", "/docs/language/types/generic-functions/")]
+    [InternalLink (
+      localized "Recursive declarations" "再帰宣言",
+      "/docs/language/types/recursive-declarations/"
+    )],
+    [InternalLink (
+      localized "Generic functions" "ジェネリック関数",
+      "/docs/language/types/generic-functions/"
+    )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

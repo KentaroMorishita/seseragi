@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.generic-aliases" "/docs/language/types/generic-aliases/" (en.copy ()) (ja.copy ()) [CodeExample
       ("types-generic-aliases", localized "Generic aliases" "ジェネリックalias")] [CodeExample
       ("types-generic-alias-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
@@ -19,3 +21,5 @@ pub fn page -> PageDefinition =
           "/docs/language/types/type-identity-and-coercion/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

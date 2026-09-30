@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How do I update data when values are immutable?" "不変な値を、どう更新するのか",
+  summary: localized
+    "An update normally constructs a new value while preserving the original. This makes it possible to reason about each value without hidden reassignment."
+    "通常の更新は、元の値を残して新しい値を作る操作です。どこかで隠れて再代入されることなく、それぞれの値を考えられます。",
+  exampleId: "principle-immutable-by-default",
+  reading: localized
+    "original contains score 10. ...original brings its fields into updated, and score: original.score + 1 supplies 11 for the new field. name is copied unchanged."
+    "originalのscoreは10です。...originalでupdatedへフィールドを取り込み、score: original.score + 1で新しい得点を11にします。nameはそのまま引き継ぎます。",
+  result: localized
+    "The output is 10 -> 11. original remains available with 10; updated holds 11. Changing application state over time uses explicit state APIs such as Signal or Ref, not ordinary record-field assignment."
+    "出力は10 -> 11です。originalは10のままで、updatedが11を持ちます。時間とともに変わる状態には、通常のフィールドへの代入ではなく、SignalやRefなどの専用の操作を使います。"
+}

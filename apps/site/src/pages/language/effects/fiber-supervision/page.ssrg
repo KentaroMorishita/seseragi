@@ -1,14 +1,16 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.fiber-supervision" "/docs/language/effects/fiber-supervision/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-fiber-supervision",
-        localized "Forking and joining a scoped child" "scope childのforkとjoin"
+        localized "Forking and joining a scoped child" "子の処理を開始し、完了を待つ"
       )] [] [
         [InternalLink (
           localized "Scheduler fairness" "実行順と公平性",
@@ -23,3 +25,5 @@ pub fn page -> PageDefinition =
           "/docs/language/effects/runtime-boundaries/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Signalの購読と寿命",
   summary: "Subscriptionは一つのSignalを順序付きで観測し、明示またはresource scopeによって解放します。",
-  ruleTitle: "observationにはlifetimeがある",
-  ruleBody: "subscribeは最初に現在値でobserverを呼び、その後の更新を順番に届けます。同じSignalのobserverは登録順に動き、一つのobserverへ通知を重ねません。",
-  typingBody: "observerはEffect<R, Never, Unit>を返すため回復可能failureを外へ残せません。subscribeはEffect<R, Never, Subscription>、unsubscribeはidempotentなTask<Unit>です。",
-  evaluationBody: "observer内の更新は現在transaction終了後の新transactionへqueueされ、同期re-entrancyを防ぎます。scope終了・typed failure・cancellationは登録subscriptionを解放し、未購読derived Signalもdependencyを解放します。",
-  invalidTitle: "Signalは意図的にMonadではない",
-  invalidBody: "dynamic dependencyにはsubscription lifetimeが伴うため、switchMapなど名前付きoperationで表します。observer確保と解放を制限のないbindへ隠してはいけません。",
-  diagnosticsBody: "observer defectはruntime policyに従って該当observerを停止し、他subscriberのtyped failureにはなりません。lifetime診断はactive・released・重複unsubscribeを識別します。",
+  ruleTitle: "変化を受け取る期間を決め、購読を解放する",
+  ruleBody: "subscribeは、最初に現在値を通知し、その後の更新を順に届けます。この通知を受ける関数を購読者と呼びます。同じSignalの購読者は登録順に呼ばれ、一つの購読者へ複数の通知を重ねて実行しません。",
+  typingBody: "通知の関数はEffect<R, Never, Unit>を返します。回復可能な失敗を外へ残せないため、必要なら関数の中で処理します。subscribeは購読の値Subscriptionを返し、unsubscribeで解放できます。何度解放しても二重に処理しません。",
+  evaluationBody: "通知の中でSignalを更新した場合、現在の更新が終わった後に別の更新として実行します。scopeの終了や失敗、キャンセルでは登録済みの購読を解放します。使わなくなった派生Signalの依存も解放されます。",
+  invalidTitle: "依存先を変えるにはswitchMapを使う",
+  invalidBody: "Signalには一般的なMonadの実装はありません。依存するSignalを動的に切り替える場合はswitchMapを使い、購読の開始と終了が明確な操作にします。",
+  diagnosticsBody: "通知の中でdefectが起きた場合、その購読者が停止します。別の購読者の型付きの失敗にはなりません。購読を続けたい期間と解放の位置を確認してください。",
 }

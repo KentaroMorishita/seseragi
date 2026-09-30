@@ -1,12 +1,14 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.expressions.conditionals" "/docs/language/expressions/conditionals/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("expressions-conditionals", localized "A total conditional" "全caseを持つ条件式")] [CodeExample
+      ("expressions-conditionals", localized "A total conditional" "どちらの分岐でも値を返す条件式")] [CodeExample
       (
         "expressions-invalid-conditional",
         localized "Rejected non-Bool condition" "Boolでない条件を拒否"
@@ -18,3 +20,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect関数の型を明示する形式",
   summary: "contract formはsuccess・environment・failureをsourceへ直接書きます。",
-  ruleTitle: "contractは->から書き始める",
-  ruleBody: "effect fn parameters -> A with R fails E = bodyは、Effect<R, E, A>を返す関数を宣言します。surfaceのAはsuccess型、withは必要service、failsは回復可能なerrorです。",
-  typingBody: "with省略は{}、fails省略はNeverを意味します。bodyは必要field、宣言failure、宣言successを持つEffectでなければならず、通常値を暗黙liftしません。成功しないbodyのNever successだけはwidenできます。",
-  evaluationBody: "このformが変えるのは関数型のsource表記だけです。関数callはcoldなEffectを構築し、実行は引き続き許可された境界が管理します。",
-  invalidTitle: "contractの省略値は推論依頼ではなく約束",
-  invalidBody: "withとfailsなしで-> Unitと書くとEffect<{}, Never, Unit>に固定されます。compilerがbodyからConsole・Clock・error型を調べて明示APIへ勝手に追加することはありません。",
-  diagnosticsBody: "追加requirement、異なるfailure、異なるsuccessを導入した宣言側とbody operation・result側の両方を示します。",
+  ruleTitle: "成功値・必要なサービス・失敗を宣言に書く",
+  ruleBody: "effect fn 引数 -> A with R fails E = 本体は、Effect<R, E, A>を返す関数です。Aは成功したときの値、Rは必要なサービス、Eは回復可能な失敗です。withやfailsを読むと、呼び出し側に何が必要か分かります。",
+  typingBody: "withを省くとサービス不要の{}、failsを省くと回復可能な失敗がないNeverです。本体のEffectは、この宣言に合う必要があります。通常の値を返すだけでは、暗黙にEffectへ変換されません。成功値がNeverの、成功しない処理だけは別の成功型の場所にも使えます。",
+  evaluationBody: "明示するのは型の書き方です。関数を呼ぶとEffectが作られますが、その時点では処理を実行しません。実行入口や別のEffectから実行します。",
+  invalidTitle: "省略したwithやfailsにも意味がある",
+  invalidBody: "-> Unitだけを指定すると、Effect<{}, Never, Unit>になります。本体にConsoleやClockが必要でも、コンパイラが宣言へ勝手に追加することはありません。必要なwithやfailsを書いてください。",
+  diagnosticsBody: "型エラーでは、宣言したサービス・失敗・成功値と、本体の操作が返す型を見比べます。省略したwithやfailsにも固定の意味がある点に注意してください。",
 }

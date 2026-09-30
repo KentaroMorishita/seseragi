@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.variance" "/docs/language/types/variance/" (en.copy ()) (ja.copy ()) [CodeExample
       ("types-variance", localized "Variance and capability coercions" "変性と能力固有の型変換")] [CodeExample
       (
@@ -21,3 +23,5 @@ pub fn page -> PageDefinition =
           "/docs/language/types/type-identity-and-coercion/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

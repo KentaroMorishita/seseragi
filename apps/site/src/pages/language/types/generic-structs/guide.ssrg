@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How can a struct hold a value of a chosen type?"
+    "中身の型を選べる構造体を作るには",
+  summary: localized
+    "A generic struct names a data shape while leaving one or more field types to be chosen when you construct it."
+    "ジェネリックな構造体では、フィールドの形に名前を付け、その中身の型を値の構築時に選べます。",
+  exampleId: "types-generic-structs",
+  reading: localized
+    "Box<A> has one field, value, whose type is A. Box { value: 42 } is Box<Int>. unwrap reads that field. label converts the integer to text with show and constructs a different Box<String>."
+    "Box<A>のvalueフィールドはA型です。Box { value: 42 }ならBox<Int>になります。unwrapは中身を取り出し、labelはshowで整数を文字列にして、別のBox<String>を作ります。",
+  result: localized
+    "The result of label number contains the string \"42\". Updating an existing Box<Int> must still supply an Int; changing the stored type requires constructing a new Box, as label does."
+    "label numberの結果には文字列の\"42\"が入ります。既存のBox<Int>を更新するなら、値はIntのままです。中身の型を変える場合は、例のように新しいBoxを作ります。"
+}

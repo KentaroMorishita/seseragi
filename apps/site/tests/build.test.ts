@@ -160,8 +160,10 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       join(output, "ja/docs/library/array/function/get/index.html"),
       "utf8"
     )
-    expect(japaneseApi).toContain("APIの詳細説明（英語原文）")
-    expect(japaneseApi).toContain('<p lang="en">')
+    expect(japaneseApi).not.toContain("APIの詳細説明（英語原文）")
+    expect(textContent(japaneseApi)).toContain("指定した添字の要素を返します")
+    expect(textContent(japaneseApi)).toContain("この宣言の読み方")
+    expect(textContent(japaneseApi)).toContain("引数は2個です")
     expect(textContent(japaneseApi)).not.toMatch(/準備中|整備中/u)
     expect(japaneseApi).toContain("型パラメーター")
     expect(japaneseApi).toContain('href="/ja/docs/library/array/"')
@@ -391,7 +393,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(japanese).toContain('<html lang="ja">')
-    expect(textContent(japanese)).toContain("空白で引数を一つずつ適用する")
+    expect(textContent(japanese)).toContain("空白で引数を一つずつ渡す")
     expect(textContent(japanese)).not.toMatch(/準備中|整備中|#[0-9]+/u)
     expect(textContent(japanese)).not.toMatch(/#[0-9]+/u)
     expect(japanese).toContain("言語リファレンス")
@@ -423,17 +425,17 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       join(output, "docs/language/types/type-system/index.html"),
       "utf8"
     )
-    expect(textContent(typeSystem)).toContain("implicit Any or Unknown")
+    expect(textContent(typeSystem)).toContain("turn a mismatch into Any")
     expect(textContent(typeSystem)).toContain("TypesUnderstanding types")
     for (const [route, explanation] of [
       ["types/kinds", "Maybeだけでは、値の型はまだ決まらない"],
-      ["traits/do-notation", "値を取り出して次の計算へ渡す処理"],
+      ["traits/do-notation", "Nothingなら残りの計算をせずNothingになります"],
       ["effects/effect-type", "Effectを作っただけでは、処理は開始されない"],
       [
         "effects/environment-requirements",
         "サービスを、暗黙のグローバル値にしない",
       ],
-      ["effects/task", "Taskは、Effect<{}, Never, A>の短い名前"],
+      ["effects/task", "Task<A>はEffect<{}, Never, A>の別名です"],
       [
         "effects/signals-and-transactions",
         "Signalの現在値は、Effectの中で読み書きする",
@@ -441,19 +443,22 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       ["types/type-system", "Intを受け取る関数にStringを渡す"],
       [
         "types/generic-functions",
-        "一つの関数を、呼び出しごとに異なる型で使います",
+        "指定した型と引数の型が合わないためエラーです",
       ],
       ["types/generic-adts", "失敗値の型Eはこの値だけでは分かりません"],
       ["types/generic-structs", "更新では、フィールドの型を変更できない"],
       ["types/generic-aliases", "型の別名は、値を作るコンストラクターではない"],
-      ["types/newtypes", "UserIdとIntのように"],
+      [
+        "types/newtypes",
+        "UserId 42とOrderId 42は同じ整数を持ちますが、型は別です",
+      ],
       ["types/variance", "要素の型が違う配列は、そのまま代入できない"],
       ["types/requirement-merge", "コンソールを使う計算と時計を使う計算"],
       [
         "types/let-polymorphism-and-rank",
         "現在の実装にはこの制約が残っています",
       ],
-      ["modules/imports", "他のモジュールの公開名を取り込む"],
+      ["modules/imports", "名前を知っていても非公開の宣言はimportできません"],
       ["modules/identity", "importの別名と、モジュールそのものを混同しない"],
       ["modules/re-exports", "利用側が参照する窓口をまとめる"],
       ["patterns/match", "ガード付きの分岐だけでは、取りこぼしが残る"],

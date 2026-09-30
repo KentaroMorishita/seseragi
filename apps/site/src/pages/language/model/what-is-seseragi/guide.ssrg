@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "What will feel different when I write Seseragi?"
+    "他の言語から来たとき、何が違って見えるか",
+  summary: localized
+    "Seseragi is a statically typed, expression-oriented language built around immutable values and functions. External work is represented explicitly with Effect."
+    "Seseragiは、実行前に型を検査する式指向の言語です。不変の値と関数を組み合わせ、外部処理はEffectとして明示します。",
+  exampleId: "principle-expression-oriented",
+  reading: localized
+    "result accepts an integer score and returns a String chosen by if. if is a value-producing expression, so the function can use it directly as its body. main uses println to turn that result into an explicit output operation."
+    "resultは整数の点数を受け取り、ifで選んだStringを返します。if自体が値を返す式なので、関数の本体に直接使えます。mainのprintlnは、その結果を表示する外部処理です。",
+  result: localized
+    "The program prints pass for score 85. You do not need to read the entire specification before using this reference: each topic introduces its own necessary terms, then explains the exact rules. The Tour is the separate ordered practice path."
+    "点数85ではpassを出力します。仕様全体を先に読む必要はなく、各記事で必要な用語と規則を説明します。順を追って実践する学習経路は、別に用意されたTourです。"
+}

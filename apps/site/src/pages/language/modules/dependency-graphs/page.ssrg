@@ -1,13 +1,21 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.modules.dependency-graphs" "/docs/language/modules/dependency-graphs/" (en.copy ()) (ja.copy ()) [CodeExample
       ("modules-identity", localized "Dependency graphs and cycles" "依存関係と循環")] [] [
-    [InternalLink (localized "Module initialization" "モジュールの初期化", "/docs/language/modules/initialization/")],
-    [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
-    [InternalLink (localized "Re-exports" "再公開", "/docs/language/modules/re-exports/")]
-  ]
+        [InternalLink (
+          localized "Module initialization" "モジュールの初期化",
+          "/docs/language/modules/initialization/"
+        )],
+        [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
+        [InternalLink
+      (localized "Re-exports" "再公開", "/docs/language/modules/re-exports/")]
+      ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

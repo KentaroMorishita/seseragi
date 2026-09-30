@@ -1,17 +1,17 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.effects.signal-operators" "/docs/language/effects/signal-operators/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("effects-signal-operators", localized "Explicit read and write steps" "現在値を読み、更新する")] [CodeExample
       (
-        "effects-signal-operators",
-        localized "Explicit read and write steps" "明示的なreadとwrite step"
-      )] [CodeExample (
         "effects-invalid-signal-write",
-        localized "Rejected write to a read-only Signal" "read-only Signalへのwriteを拒否"
+        localized "Rejected write to a read-only Signal" "読み取り専用のSignalには書き込めない"
       )] [
         [InternalLink (
           localized "Signals and transactions" "Signalとトランザクション",
@@ -24,3 +24,5 @@ pub fn page -> PageDefinition =
         [InternalLink
       (localized "Derived Signals" "派生Signal", "/docs/language/effects/derived-signals/")]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

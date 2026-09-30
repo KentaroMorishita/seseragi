@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,38 +13,42 @@ import { syntaxPage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   syntaxPage "language.syntax.custom-operators" "/docs/language/syntax/custom-operators/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "syntax-custom-operator",
-      localized "A declared and used custom operator" "宣言して使うcustom operator"
+      localized "A declared and used custom operator" "自分の演算子を宣言して使う"
     ),
     BulletList [
       [
         InlineCode "infixl",
-        Words
-          (localized " groups equal-precedence uses from the left." " は同優先順位を左からgroup化します。")
+        Words (
+          localized " groups equal-precedence uses from the left."
+            " は同じ優先順位の演算を、左から順にまとめます。"
+        )
       ],
       [
         InlineCode "infixr",
-        Words (localized " groups them from the right." " は右からgroup化します。")
+        Words (localized " groups them from the right." " は同じ優先順位の演算を、右から順にまとめます。")
       ],
       [
         InlineCode "infix",
-        Words
-          (localized " rejects an unparenthesized repeated chain." " は括弧なしの反復chainを拒否します。")
+        Words (
+          localized " rejects an unparenthesized repeated chain."
+            " は同じ優先順位の演算子を、括弧なしで繰り返すことを許しません。"
+        )
       ],
       [
         InlineCode "(<+>) left",
         Words (
           localized " partially applies the curried operator value."
-          " はcurried operator値を部分適用します。"
+            " は演算子を関数として扱い、一つ目の引数だけを渡します。"
         )
       ]
     ]
   ] [CodeExample (
     "syntax-invalid-custom-operator",
-    localized "Rejected symbol and arity forms" "拒否されるsymbol・arity form"
+    localized "Rejected symbol and arity forms" "使えない演算子の記号や引数の個数"
   )] [
     [InternalLink (
       localized "Operator precedence" "演算子の優先順位",
@@ -57,3 +63,5 @@ pub fn page -> PageDefinition =
       "/docs/language/syntax/function-application/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

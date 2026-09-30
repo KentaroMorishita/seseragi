@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "派生Signal",
   summary: "derived Signalはpure constructorでdependencyを宣言し、glitchを観測させず更新します。",
-  ruleTitle: "dependencyを明示する",
-  ruleBody: "map・combine・constant・distinct・switchMapがgraph edgeを直接構築します。任意関数内のreadを追跡してhidden dependencyを推論する仕組みはありません。",
-  typingBody: "mapとcombineはread-only Signalを返します。distinctにはEq<A>が必要で、switchMapはsource値を選択inner Signalへ写し、subscription handleを公開せずSignal<B>を返します。",
-  evaluationBody: "一つのsource transactionは影響nodeをtopological orderで高々一度再計算し、graph安定後だけ通知します。switchMapは同一transaction内で旧innerを解除してstableな新値を公開します。",
-  invalidTitle: "一時的な値の組み合わせへ依存しない",
-  invalidBody: "subscriberが一方のderived inputだけ更新済みの状態を観測することはありません。重複値を除きたい場合はdistinctを明示し、通常のset・updateはEqで同値でも通知します。",
-  diagnosticsBody: "構築時はdependency cycleとEq evidence不足を拒否します。runtime graph診断はderived nodeとconstructorを示し、再計算を起こしたtransactionを保持します。",
+  ruleTitle: "元のSignalから、変化に追従する値を作る",
+  ruleBody: "mapは一つの値、combineは複数の値から派生値を作ります。constantは変わらない値、distinctは連続した同じ値を除く操作、switchMapは使うSignalを切り替える操作です。どのSignalに依存するかは、これらの関数へ明示的に渡します。通常の関数で読み取ったSignalを自動追跡する仕組みではありません。",
+  typingBody: "mapとcombineは読み取り専用のSignalを返します。distinctは値の一致を調べるためにEq<A>の実装が必要です。switchMapは元の値から次に使うSignalを選び、その現在値を持つSignalを返します。",
+  evaluationBody: "一回の更新では、元の値に近い派生値から順に再計算します。同じ派生値をその更新中に何度も計算せず、すべてが揃った後に通知します。switchMapで切り替える場合も、古いSignalの購読を終了してから新しい安定した値を公開します。",
+  invalidTitle: "更新途中の組み合わせに依存しない",
+  invalidBody: "購読者には、一方だけが更新された途中の組み合わせを見せません。同じ値の通知を省きたい場合はdistinctを使います。通常のsetやupdateは、前の値と等しくても通知します。",
+  diagnosticsBody: "依存関係が循環している、またはdistinctに必要なEqがない場合は構築や型検査で拒否されます。依存するSignalを作る関数と引数を確認してください。",
 }

@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Can the same function work with both integers and booleans?"
+    "同じ関数を整数にも真偽値にも使えるか",
+  summary: localized
+    "Polymorphism lets one declaration be used at different types while each individual use remains statically typed."
+    "多相性は、一つの宣言を異なる型で使える仕組みです。一回ごとの呼び出しには、実行前に決まる具体的な型があります。",
+  exampleId: "types-polymorphism",
+  reading: localized
+    "identity<A> receives and returns the same type A. identity True produces Bool with value True; identity 42 produces Int with value 42. A is a placeholder selected independently for these calls."
+    "identity<A>は同じA型の値を受け取って返します。identity TrueはBoolのTrue、identity 42はIntの42を返します。Aは型の置き場所で、二つの呼び出しでは独立に決まります。",
+  result: localized
+    "This does not mix different types inside one value or inspect a value to choose a runtime overload. The formal notation forall A describes this reusable type in the specification; it is not syntax you write in Seseragi source."
+    "一つの値に型を混ぜたり、実行中の値を見て別の処理を選んだりする仕組みではありません。仕様のforall Aは、複数の型で使えることを説明する表記で、ソースに書く構文ではありません。"
+}

@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -10,35 +12,39 @@ import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.patterns.binding-rules" "/docs/language/patterns/binding-rules/" (en.copy ()) (ja.copy ()) [
     CodeExample
-      ("patterns-binding-rules", localized "Nested struct binding" "入れ子のstruct binding"),
+      ("patterns-binding-rules", localized "Nested struct binding" "入れ子のstructから値を取り出す"),
     BulletList [
       [Words (
         localized "let and effectful for require an irrefutable pattern."
-      "letとeffectful forはirrefutable patternを要求します。"
+      "letとEffect内のforには、必ず一致するパターンを使います。"
       )],
       [Words (
         localized "match permits refutable patterns and scopes names to one arm."
-      "matchはrefutable patternを許可し、nameを一つのarmへscopeします。"
+      "matchには失敗しうるパターンも使えます。取り出した名前は、その分岐の中だけで使えます。"
       )],
       [Words (
         localized
       "a comprehension filters values that do not match its generator pattern."
-      "comprehensionはgenerator patternに一致しない値を除外します。"
+      "内包表記では、取り出し用のパターンに合わない要素を除外します。"
       )]
     ]
-  ] [CodeExample
-      ("patterns-invalid-binding", localized "Rejected refutable let" "refutableなletを拒否")] [
-        [InternalLink (
-          localized "Irrefutable patterns" "反駁不能パターン",
-          "/docs/language/patterns/irrefutable-patterns/"
-        )],
-        [InternalLink
+  ] [CodeExample (
+    "patterns-invalid-binding",
+    localized "Rejected refutable let" "失敗しうるパターンをletに使うとエラー"
+  )] [
+    [InternalLink (
+      localized "Irrefutable patterns" "反駁不能パターン",
+      "/docs/language/patterns/irrefutable-patterns/"
+    )],
+    [InternalLink
       (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")],
-        [InternalLink (
-          localized "Blocks and local declarations" "ブロックとローカル宣言",
-          "/docs/language/expressions/blocks-and-local-declarations/"
-        )]
-      ]
+    [InternalLink (
+      localized "Blocks and local declarations" "ブロックとローカル宣言",
+      "/docs/language/expressions/blocks-and-local-declarations/"
+    )]
+  ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

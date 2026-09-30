@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.generic-adts" "/docs/language/types/generic-adts/" (en.copy ()) (ja.copy ()) [CodeExample
       ("types-generic-adts", localized "Generic algebraic data types" "ジェネリックな代数的データ型")] [CodeExample
       ("types-generic-adt-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
@@ -21,3 +23,5 @@ pub fn page -> PageDefinition =
           "/docs/language/types/kinds/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

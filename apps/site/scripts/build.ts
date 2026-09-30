@@ -786,6 +786,11 @@ function generatorInput(playgroundUrl: string) {
         playgroundUrl
       ),
       canonicalExample(
+        "syntax-layout",
+        "apps/site/examples/src/language/syntax-layout.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "web-starter-main",
         "examples/samples/web-starter/src/main.ssrg",
         playgroundUrl

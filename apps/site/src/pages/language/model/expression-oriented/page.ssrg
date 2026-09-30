@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
 import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   principlePage "language.model.expression-oriented" "/docs/language/model/expression-oriented/" (en.copy ()) (ja.copy ()) "principle-expression-oriented" "pass" [
     [InternalLink (
       localized "Conditional expressions" "条件式",
@@ -17,3 +19,5 @@ pub fn page -> PageDefinition =
     [InternalLink
         (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

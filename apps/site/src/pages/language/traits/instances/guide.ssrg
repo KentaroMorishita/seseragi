@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Where do I write a type's implementation of a trait?"
+    "型ごとのtraitの処理は、どこに書くか",
+  summary: localized
+    "An instance implements the operations a trait requires for one type application. It is a declaration of behavior, not construction of an object."
+    "instanceは、指定した型に対してtraitの必要な操作を実装する宣言です。オブジェクトの値を作る操作ではありません。",
+  exampleId: "reader-trait",
+  reading: localized
+    "Ticket holds a number; its Label instance prefixes that number with \"ticket-\". Person holds a name; its Label instance returns that name. labelOf<A> has the condition Label<A>, so the same function can call the correct implementation for either argument type."
+    "Ticketは番号を持ち、そのLabelの実装は番号の前に\"ticket-\"を付けます。Personは名前を持ち、そのLabelの実装は名前を返します。labelOf<A>はwhere Label<A>を条件にして、同じ関数から引数の型に合う処理を呼びます。",
+  result: localized
+    "The call for Ticket { number: 42 } returns \"ticket-42\". Changing the number changes the returned string, but not the selected instance. Selection is based on Ticket's type, and overlapping instances are rejected."
+    "Ticket { number: 42 }を渡すと\"ticket-42\"を返します。番号を変えれば文字列は変わりますが、選ぶinstanceは変わりません。型によって選び、重複する実装はエラーになります。"
+}

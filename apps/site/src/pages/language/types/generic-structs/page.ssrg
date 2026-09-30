@@ -1,14 +1,24 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.generic-structs" "/docs/language/types/generic-structs/" (en.copy ()) (ja.copy ()) [CodeExample
       ("types-generic-structs", localized "Generic structs" "ジェネリックstruct")] [CodeExample
       ("types-generic-struct-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
-    [InternalLink (localized "Structs" "構造体", "/docs/language/data/structs/")],
-    [InternalLink (localized "Generic algebraic data types" "ジェネリックな代数的データ型", "/docs/language/types/generic-adts/")],
-    [InternalLink (localized "Generic impls and methods" "ジェネリックimplとメソッド", "/docs/language/types/generic-impls-and-methods/")]
-  ]
+        [InternalLink (localized "Structs" "構造体", "/docs/language/data/structs/")],
+        [InternalLink (
+          localized "Generic algebraic data types" "ジェネリックな代数的データ型",
+          "/docs/language/types/generic-adts/"
+        )],
+        [InternalLink (
+          localized "Generic impls and methods" "ジェネリックimplとメソッド",
+          "/docs/language/types/generic-impls-and-methods/"
+        )]
+      ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

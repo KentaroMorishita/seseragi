@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,32 +13,30 @@ import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   typePage "language.types.built-in-types" "/docs/language/types/built-in-types/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "syntax-literals",
-      localized "Built-in values in canonical source" "canonical sourceの組み込み値"
-    ),
+    CodeExample
+      ("syntax-literals", localized "Built-in values in canonical source" "組み込み型に対応する値"),
     BulletList [
       [
         InlineCode "Int",
         Words (
           localized " — exact safe integer, without negative zero."
-            " — negative zeroを持たないexact safe integer。"
+      " — 正確に表せる範囲が決まった整数です。負のゼロはありません。"
         )
       ],
       [
         InlineCode "Float",
         Words (
           localized " — IEEE 754 binary64, including signed zero."
-            " — signed zeroを含むIEEE 754 binary64。"
+      " — IEEE 754の64ビット浮動小数点数です。正と負のゼロを区別します。"
         )
       ],
       [
         InlineCode "Char / String",
         Words (
           localized " — one Unicode scalar / an immutable scalar sequence."
-            " — Unicode scalar一個 / immutable scalar列。"
+      " — CharはUnicodeの符号位置一つ、Stringはその不変の列です。"
         )
       ],
       [
@@ -46,7 +46,7 @@ pub fn page -> PageDefinition =
     ]
   ] [CodeExample (
     "syntax-invalid-numeric",
-    localized "An invalid Int is not rounded" "invalid Intは丸められない"
+    localized "An invalid Int is not rounded" "Intの範囲外の値を丸めて受け取ることはない"
   )] [
     [InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/")],
     [InternalLink (
@@ -55,3 +55,5 @@ pub fn page -> PageDefinition =
     )],
     [InternalLink (localized "Type system" "型システム", "/docs/language/types/type-system/")]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

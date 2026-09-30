@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Can a generic function inspect its type argument?"
+    "ジェネリック関数の中で型引数を調べられるか",
+  summary: localized
+    "Type parameters guide compilation, not runtime branching. A generic function must work using the operations allowed by its signature."
+    "型パラメーターはコンパイル時の検査に使います。実行中にその型を調べて処理を分けるための値ではありません。",
+  exampleId: "types-erasure",
+  reading: localized
+    "identity<A> returns its input without needing to know whether A is Int or String. The two calls keep their respective result types. There is no value named A for the function to print or compare."
+    "例のidentity<A>は、AがIntでもStringでも引数をそのまま返します。二つの呼び出しの戻り値はそれぞれの型を保ちます。関数の中に、表示や比較のできるAという値があるわけではありません。",
+  result: localized
+    "To require an operation such as displaying a value, declare a trait constraint. To choose between actual cases stored in a value, use an ADT and match. Neither approach depends on inspecting erased type arguments."
+    "値を表示するような操作が必要なら、trait制約でその操作を要求します。値が持つ選択肢によって分けるなら、代数的データ型とmatchを使います。型引数を実行時に調べる必要はありません。"
+}

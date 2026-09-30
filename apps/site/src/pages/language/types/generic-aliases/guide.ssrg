@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Can I give a repeated type expression a shorter name?"
+    "繰り返す型に短い名前を付けるには",
+  summary: localized
+    "A type alias abbreviates an existing type. Adding parameters lets the same abbreviation work for different element types."
+    "型別名は、既存の型に別の名前を付ける仕組みです。型パラメーターを付ければ、中身の型を変えて同じ別名を使えます。",
+  exampleId: "types-generic-aliases",
+  reading: localized
+    "Pair<A> means (A, A). Pair<Int> therefore means (Int, Int), and first (42, 7) passes an ordinary tuple. The pattern (left, _) extracts 42 and ignores the second element."
+    "Pair<A>は(A, A)の別名です。Pair<Int>は(Int, Int)なので、first (42, 7)には普通のタプルを渡します。(left, _)は先頭の42を取り出し、二つ目の値を使わないパターンです。",
+  result: localized
+    "The result is Int with value 42. Pair does not construct a value and does not create a distinct type. Use a newtype when confusing two values with the same underlying representation must be prevented."
+    "結果はIntの42です。Pairという値のコンストラクターができるわけでも、別の型ができるわけでもありません。同じ中身でも用途の取り違えを防ぎたい場合はnewtypeを使います。"
+}

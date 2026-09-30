@@ -1,12 +1,14 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.data.newtypes" "/docs/language/data/newtypes/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("data-newtypes", localized "Explicit wrap and extraction" "明示的なwrapと取り出し")] [] [
+      ("data-newtypes", localized "Explicit wrap and extraction" "値を包み、パターンで取り出す")] [] [
         [InternalLink (
           localized "Nominal and structural types" "名前付き型と構造的な型",
           "/docs/language/types/nominal-and-structural-types/"
@@ -20,3 +22,5 @@ pub fn page -> PageDefinition =
           "/docs/language/data/operator-overloads/"
         )]
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

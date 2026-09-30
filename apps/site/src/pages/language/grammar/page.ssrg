@@ -22,6 +22,15 @@ pub fn page input: BuildInput -> PageDefinition = PageDefinition {
   blocks: [
     Heading ("reading", localized (en.readingTitle ()) (ja.readingTitle ())),
     Paragraph ([Words (localized (en.reading ()) (ja.reading ()))]),
+    Terminal
+      (localized "A small grammar rule" "文法の記法の例", "boolean = \"True\" | \"False\" ;"),
+    Paragraph (
+      [Words (
+        localized
+      "This example rule permits exactly the source words True and False. The name boolean labels the rule; | means either alternative. Neither boolean = nor the final semicolon is part of a boolean literal you write in a program."
+      "この例の規則が許すソースはTrueかFalseです。booleanは規則の名前、|は選択肢を表します。boolean =や末尾のセミコロンを、真偽値のリテラルとしてプログラムに書くわけではありません。"
+      )]
+    ),
     Paragraph ([Words (localized (en.lexical ()) (ja.lexical ()))]),
     Heading ("productions", localized (en.grammarTitle ()) (ja.grammarTitle ())),
     Paragraph ([Words (localized (en.grammarBody ()) (ja.grammarBody ()))]),
@@ -49,7 +58,7 @@ pub fn page input: BuildInput -> PageDefinition = PageDefinition {
           "/docs/language/expressions/blocks-and-local-declarations/"
         )],
         [InternalLink
-            (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")],
+      (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")],
         [InternalLink (
           localized "Type constructors" "型構築子",
           "/docs/language/types/type-constructors/"

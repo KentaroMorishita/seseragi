@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "固有メソッドとtrait操作",
   summary: "inherent methodは一つのnominal型に属し、trait操作はevidenceで選ばれる抽象に属します。",
-  ruleTitle: "二つの形式は異なるlookup問題を解く",
-  ruleBody: "impl UserはUser receiverから解決するmemberを追加し、member構文で呼びます。instance Eq<User>は既存の抽象操作を実装し、evidence選択後にconstraint付き関数として呼びます。",
-  typingBody: "inherent lookupはreceiverのnominal identity、宣言visibility、generic substitutionを使います。trait lookupは操作を所有するtrait、推論型引数、constraint、visible instance、coherenceを使います。",
-  evaluationBody: "どちらも最終的に静的に既知のcodeを呼びますが、既定でdynamic object dispatchは行いません。表面構文がnamespaceやownership規則を統合することもありません。",
-  invalidTitle: "instanceをextension-method namespaceとして使わない",
-  invalidBody: "trait instanceを定義しても全trait操作がvalue.methodで使えるわけではありません。implもrequired coherent instanceを別途定義しない限りtrait requirementを満たしません。",
-  diagnosticsBody: "member診断はreceiverとvisible impl候補を示します。trait診断は所有trait、evidence requirement、曖昧さまたはinstance欠落を示し、修正箇所を分離します。",
+  ruleTitle: "一つの型に属する操作と、型をまたぐ共通の操作を分ける",
+  ruleBody: "impl UserはUserにメソッドを作り、user.methodの形で呼びます。instance Eq<User>は共通の等価比較をUserに実装し、==やtraitの関数から使います。",
+  typingBody: "implの操作はドットの前の型から探します。traitの操作は必要なtrait、引数の型、whereの条件とinstanceから選びます。二つは別の仕組みです。",
+  evaluationBody: "どちらもコンパイル時に決まる実装を呼びます。実行時にクラスを探して選び直すことはありません。",
+  invalidTitle: "traitを実装してもドット呼び出しは増えない",
+  invalidBody: "traitを実装しても、すべての操作がドットで呼べるようにはなりません。implで似た名前のメソッドを書くだけではtraitの実装になりません。",
+  diagnosticsBody: "ドットの呼び出しなら対象型とimpl、traitならinstanceを確認します。修正する宣言を取り違えないようにしてください。",
 }

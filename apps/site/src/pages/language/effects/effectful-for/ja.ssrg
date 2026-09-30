@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effectを実行するfor",
   summary: "effectful forはIterableを順番に走査し、各要素に一つのUnit Effectを実行します。",
-  ruleTitle: "programが明示しない限り走査は逐次実行",
-  ruleBody: "for pattern <- values { body }はirrefutable patternを持つforEachへdesugarします。bodyと式全体はEffect<R, E, Unit>で、空collectionはbodyを実行せず成功します。",
-  typingBody: "valuesにはIterable evidenceが必要で、patternは一要素を受け取るirrefutable pattern、すべてのbody pathは同じEffect<R, E, Unit>を返します。requirement mergeとfailureは他のEffect合成と同じく明示的です。",
-  evaluationBody: "Iterable順に要素を取り出し、一つのbody完了後に次へ進み、最初のtyped failureで停止します。暗黙parallel化、break、continueは行わず、forEachParallelとforEachUntilが別contractを表します。",
-  invalidTitle: "for blockは汎用的なloop脱出ではない",
-  invalidBody: "要素をskipするならsucceed ()を返す明示branch、正常な早期終了ならforEachUntilのContinue・Breakを使います。別関数やFiberからの非local jumpにはなりません。",
-  diagnosticsBody: "Iterableでない入力、refutable pattern、Effectでないbody、Unitでないsuccess、requirement・failure不一致を該当itemで報告します。",
+  ruleTitle: "各要素の処理が終わってから、次の要素へ進む",
+  ruleBody: "for パターン <- 値の集合 { 本体 }は、要素を一つずつ取り出してEffectを実行します。本体も式全体も、成功値がUnitのEffectです。空の集合なら本体を一度も実行せず成功します。",
+  typingBody: "値の集合には、順に要素を取り出すIterableの実装が必要です。パターンは、どの要素にも必ず当てはまるものを使います。各分岐の本体は同じサービス・失敗型を持つEffectを返し、成功値はUnitでなければなりません。",
+  evaluationBody: "要素の順に取り出し、本体が完了してから次へ進みます。最初の型付きの失敗で止まります。自動で並列になったり、breakやcontinue構文を使えたりはしません。",
+  invalidTitle: "早期終了には専用の操作を使う",
+  invalidBody: "一つの要素を処理しない場合は、分岐でsucceed ()を返します。正常な早期終了が必要なら、forEachUntilとContinue・Breakを使います。並列処理にはforEachParallelを選びます。",
+  diagnosticsBody: "入力がIterableか、パターンが必ず当てはまるか、本体がEffectを返すかを確認します。通常の値やUnit以外の成功値を返す本体は使えません。",
 }

@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Which type represents this value?" "この値にはどの型を使うか",
+  summary: localized
+    "Use Int for integers, Float for fractional numbers, Bool for conditions, Char for one Unicode scalar, and String for text. Unit and Never describe different kinds of computation results."
+    "整数にはInt、小数にはFloat、真偽値にはBool、文字にはChar、文字列にはStringを使います。UnitとNeverは、計算の結果について異なる意味を持ちます。",
+  exampleId: "syntax-literals",
+  reading: localized
+    "In the example, million is Int and avogadro is Float because of their written forms. newline and lambda are Char; quoted and template are String. A template inserts the displayed value of an expression into text."
+    "例のmillionはInt、avogadroはFloatです。newlineとlambdaはChar、quotedとtemplateはStringです。テンプレート文字列では、埋め込んだ式の値を表示用の文字列にして挿入します。",
+  result: localized
+    "Unit has one value, (), meaning completion with no useful payload. Never has no values: a computation that cannot return a result may have this type. Int and Float are not interchangeable, even when both represent a whole number."
+    "Unitには()という値が一つあり、「返す内容のない正常な完了」を表します。Neverには値がなく、「結果を返せないこと」を表します。整数に見える値でも、IntとFloatは自動では変換されません。"
+}

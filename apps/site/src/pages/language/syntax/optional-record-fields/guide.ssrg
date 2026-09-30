@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Where does the ? for an optional field go?"
+    "省略可能なフィールドの?は、どこに書くか",
+  summary: localized
+    "Write field?: Type inside a structural record type. The marker means that the field itself may be absent."
+    "構造的なレコードの型で、フィールド名の後に?を書きます。field?: Typeは、そのフィールド自体を省略できるという意味です。",
+  exampleId: "syntax-optional-record-field",
+  reading: localized
+    "Props uses id?: String and required children: String. Both minimal and named satisfy Props. Reading props.id returns Maybe<String>, and ?? chooses the existing string or the fallback \"anonymous\"."
+    "例のPropsではid?: Stringと書き、children: Stringは必須です。minimalとnamedはどちらもPropsに合います。props.idを読むとMaybe<String>になり、??で既存の値か代替の\"anonymous\"を使います。",
+  result: localized
+    "? is not a general optional parameter or optional chaining operator. Do not attach it to ordinary function parameters or struct fields. A field whose type is Maybe is present even when its stored value is Nothing."
+    "?は、関数の省略可能な引数や汎用の参照演算子ではありません。普通の引数やstructのフィールドには付けません。Maybe型の必須フィールドなら、Nothingが入っていてもフィールド自体は存在します。"
+}

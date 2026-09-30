@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, PageDefinition } from "../../../../model/page"
 import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   readerPage "language.data.structs" "/docs/language/data/structs/" (en.copy ()) (ja.copy ()) "reader-structs" "Aki\nMio\n1" [CodeExample
       ("data-invalid-struct", localized "A missing field is rejected" "必須フィールドの指定漏れはエラー")] [
         (localized "Records" "レコード", "/docs/language/data/records/"),
@@ -14,3 +16,5 @@ pub fn page -> PageDefinition =
           "/docs/language/data/impls-and-methods/"
         )
       ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

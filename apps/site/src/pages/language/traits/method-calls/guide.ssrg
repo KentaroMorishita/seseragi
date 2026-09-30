@@ -1,0 +1,16 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "Do trait operations use a dot call?" "traitの操作は、ドットで呼ぶのか",
+  summary: localized
+    "A trait operation is called as a constrained function. Its name comes from the trait, and its implementation is selected from the argument types."
+    "traitの操作は、制約を持つ関数として呼びます。名前はtraitが宣言し、処理は引数の型に対応するinstanceから選びます。",
+  exampleId: "traits-method-calls",
+  reading: localized
+    "Render<Status> provides render. withPrefix calls render value and prepends text. withPrefix \"status: \" partially applies the first parameter; renderStatus Online then provides the Status value."
+    "Render<Status>がrenderを実装します。withPrefixはrender valueを呼び、文字列の接頭辞を付けます。withPrefix \"status: \"で最初の引数だけを渡し、renderStatus OnlineでStatusを渡します。",
+  result: localized
+    "text is \"status: online\". Declaring a trait does not automatically add value.render dot syntax. Dot methods belong to an impl of a named type, while a generic trait caller declares the corresponding where constraint."
+    "textは\"status: online\"です。traitを宣言してもvalue.renderというドットの書き方が自動で追加されるわけではありません。ドットのメソッドは型のimplに属し、ジェネリックなtrait呼び出しではwhere制約を使います。"
+}

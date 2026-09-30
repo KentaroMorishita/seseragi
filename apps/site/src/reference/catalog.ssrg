@@ -2,6 +2,8 @@ import * as arrays from "std/array"
 import * as text from "std/text"
 import { ReferenceModule, ReferenceSymbol } from "../model/build"
 import { LocalizedText, localized } from "../model/locale"
+import { modulePurpose } from "./module-copy"
+import { itemKindLabel } from "./labels"
 import {
   ApiReference,
   BulletList,
@@ -70,32 +72,34 @@ fn referenceSlug symbol: ReferenceSymbol -> String = {
 pub fn referenceRoute symbol: ReferenceSymbol -> String =
   moduleRoute symbol.module + symbol.itemKind + "/" + referenceSlug symbol + "/"
 
-fn referenceLabel symbol: ReferenceSymbol -> String =
-  symbol.name + " · " + symbol.namespace + " · " + symbol.itemKind
+fn referenceLabel symbol: ReferenceSymbol -> LocalizedText = {
+  let kind = itemKindLabel symbol.itemKind
+  localized (symbol.name + " · " + kind.en) (symbol.name + " · " + kind.ja)
+}
 
 fn instanceSummary symbol: ReferenceSymbol -> LocalizedText = {
   let english = match symbol.instanceClass {
     "standard" -> "Standard " + symbol.name + " instance provided by the compiler."
     "conditional" -> "Conditional " + symbol.name + " instance. Its constraints must also be available."
-    "dictionary" -> "Compiler-provided " + symbol.name + " dictionary instance."
-    "operator-abi" -> "Compiler-provided " + symbol.name + " instance using operator ABI dispatch."
+    "dictionary" -> "The standard implementation of " + symbol.name + "."
+    "operator-abi" -> "The standard operator implementation of " + symbol.name + "."
     "structural" -> "Structural " + symbol.name + " instance synthesized by the compiler."
     _ -> "Compiler-provided " + symbol.name + " instance."
   }
   let japanese = match symbol.instanceClass {
-    "standard" -> "compilerが提供する標準" + symbol.name + " instanceです。"
-    "conditional" -> "条件付き" + symbol.name + " instanceです。constraintも利用可能である必要があります。"
-    "dictionary" -> "compilerがdictionaryとして提供する" + symbol.name + " instanceです。"
-    "operator-abi" -> "operator ABI dispatchを使うcompiler提供の" + symbol.name + " instanceです。"
-    "structural" -> "compilerが合成する構造的な" + symbol.name + " instanceです。"
-    _ -> "compilerが提供する" + symbol.name + " instanceです。"
+    "standard" -> symbol.name + "の標準実装です。"
+    "conditional" -> symbol.name + "の条件付き実装です。宣言のwhere節にある操作も、この型で使える必要があります。"
+    "dictionary" -> symbol.name + "の標準実装です。"
+    "operator-abi" -> symbol.name + "に対する標準の演算子の実装です。"
+    "structural" -> symbol.name + "の実装です。レコードやタプルの各要素の型から、必要な操作が組み立てられます。"
+    _ -> symbol.name + "の標準実装です。"
   }
   localized english japanese
 }
 
 pub fn referenceSummary symbol: ReferenceSymbol -> LocalizedText =
   if symbol.itemKind != "instance" then
-    localized symbol.description "公開APIの署名と型制約を確認できます。詳細説明は英語原文で参照できます。"
+    localized symbol.description symbol.descriptionJa
   else
     instanceSummary symbol
 
@@ -115,8 +119,10 @@ fn symbolPage symbol: ReferenceSymbol -> PageDefinition = PageDefinition {
             "Browse the owning module for related public symbols, or consult the language reference for syntax and typing rules."
             "関連する公開シンボルは所属するモジュール、構文や型付けの規則は言語リファレンスで確認できます。"
         ),
-        InternalLink
-            (localized (" " + symbol.module) (" " + symbol.module), moduleRoute symbol.module),
+        InternalLink (
+          localized (" " + symbol.module) (" " + symbol.module),
+          moduleRoute symbol.module
+        ),
         InternalLink (localized " Language Reference" " 言語リファレンス", "/docs/language/")
       ]
     )
@@ -128,14 +134,27 @@ fn modulePage value: ReferenceModule -> PageDefinition = PageDefinition {
   path: moduleRoute value.specifier,
   kind: Reference,
   title: localized value.specifier value.specifier,
-  summary: localized (`Compiler-owned public API for ${value.specifier}.`)
-    (`${value.specifier}の公開APIを参照できます。`),
+  summary: modulePurpose value.specifier,
   blocks: [
+    Heading ("using-this-module", localized "Using this module" "このモジュールを使うには"),
     Paragraph (
       [Words (
         localized
-    "Signatures and availability on this page come from the compiler reference artifact."
-    "署名と利用可能な環境は、コンパイラが管理する公開APIの情報に基づきます。"
+          "Choose an operation below to see what it does, its argument order, and its result type. Functions take arguments separated by spaces. Types and constructors are listed separately from functions."
+          "下の一覧から操作を選ぶと、役割・引数の順序・戻り値の型を確認できます。関数には空白で区切って引数を渡します。型や値を作るコンストラクターは、関数とは別の種類として表示しています。"
+      )]
+    ),
+    Paragraph (
+      [Words (
+        localized
+          (if value.specifier == "std/prelude" then
+            "Prelude is available without an import."
+          else
+            "Import this module with: import * as api from \"" + value.specifier + "\". Call its functions as api.name argument.")
+          (if value.specifier == "std/prelude" then
+            "Preludeはimportを書かずに使えます。"
+          else
+            "import * as api from \"" + value.specifier + "\"で読み込みます。関数はapi.関数名 引数の形で呼びます。")
       )]
     ),
     Paragraph (
@@ -143,16 +162,16 @@ fn modulePage value: ReferenceModule -> PageDefinition = PageDefinition {
         localized (
           "Availability: " + value.availability + ". Targets: " + join ", " value.targets + "."
         ) (
-          "利用可能な環境: " + value.availability + "。対象: " + join ", " value.targets + "。"
+          "利用方法: " + (if value.availability == "implicit" then
+            "importなしで使えます"
+          else
+            "importして使います") + "。対象: " + join ", " value.targets + "。"
         )
       )]
     ),
     Heading ("public-api", localized "Public API" "公開API"),
     BulletList (
-      [[InternalLink (
-        localized (referenceLabel symbol) (referenceLabel symbol),
-        referenceRoute symbol
-      )] | symbol <- value.items]
+      [[InternalLink (referenceLabel symbol, referenceRoute symbol)] | symbol <- value.items]
     )
   ]
 }

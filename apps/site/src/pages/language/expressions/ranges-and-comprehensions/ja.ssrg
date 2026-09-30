@@ -2,12 +2,12 @@ import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "範囲と内包表記",
-  summary: "有限のInt rangeを、明示的なgeneratorとguardを持つArray・List comprehensionへ渡します。",
-  ruleTitle: "生成順序はsourceに書かれる",
-  ruleBody: "start..endはendを含まず、start..=endは含みます。comprehensionはgeneratorとBool guardを左から右へ処理し、複数generatorでは左端が最も外側になります。",
-  typingBody: "generator sourceにはIterable evidenceが必要です。patternは要素型を受け、guardはBool、結果式がArray・Listの要素型を決めます。sourceと結果のcollection型は独立です。",
-  evaluationBody: "source式は、それを囲むgeneratorの各要素につき一度評価され、Iterable順に走査されます。refutableなgenerator patternに一致しない要素は、部分bindingを残さず除外します。",
-  invalidTitle: "rangeは方向を推測しない",
-  invalidBody: "stepは常に1で、startがendより大きければ空です。降順はlibrary operationを使います。pureなcomprehension sourceへEffectは渡せません。",
-  diagnosticsBody: "Iterable evidenceの欠落、Boolでないguard、pattern不一致、結果要素型の不一致を指します。sourceと結果のcollection kindを暗黙変換しません。",
+  summary: "数値の範囲や既存のコレクションから、条件を満たす要素を選んで新しいコレクションを作ります。",
+  ruleTitle: "取り出す順序と残す条件を指定する",
+  ruleBody: "start..endは終端を含まず、start..=endは終端を含みます。内包表記では、値を取り出す指定とBoolの条件を左から順に書きます。取り出す指定が複数ある場合、左のものが外側のループに相当します。",
+  typingBody: "取り出し元の型にはIterableの実装が必要です。取り出す値のパターンは元の要素型に合い、条件式はBoolでなければなりません。最後に作る式の型が、結果のArrayやListの要素型になります。元と結果のコレクションが同じ型である必要はありません。",
+  evaluationBody: "取り出し元を順番に走査します。内側の取り出し元の式は、外側の要素ごとに一度計算します。取り出した値がパターンに合わない場合は、その要素を結果へ含めません。",
+  invalidTitle: "開始値が大きくても、降順にはならない",
+  invalidBody: "範囲の刻みは1です。開始値が終端より大きい場合は空になります。降順が必要ならライブラリの操作を使います。純粋な内包表記にEffectを取り出し元として渡すことはできません。",
+  diagnosticsBody: "取り出し元にIterableの実装があるか、条件がBoolか、パターンと要素の型が合うかを確認してください。すべての結果の要素は、同じ要素型でなければなりません。",
 }

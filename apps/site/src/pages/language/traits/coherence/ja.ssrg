@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "インスタンスの一意性と所有権",
   summary: "package graphには各trait適用につき一つだけinstanceを置け、traitまたは最外nominal型の隣で所有します。",
-  ruleTitle: "一つの静的な問いには一つの答え",
-  ruleBody: "aliasと型parameterを考慮した後に二つのinstanceがoverlapしてはいけません。宣言moduleはtraitまたはinstance headの最外nominal型を所有する必要があります。priority、local override、orphan instanceはありません。",
-  typingBody: "visible instanceはmoduleのtransitive import closureから集まります。標準structural instanceはsealedです。functional dependencyは、全引数列が異なっても決定済みoutputが食い違うheadを拒否できます。",
-  evaluationBody: "coherenceによりinstance選択はruntime値とimport順序から独立します。無関係なimportを追加しても、既存のwell-typed codeが実行する実装は密かに変わりません。",
-  invalidTitle: "aliasやspecificityでoverlapを回避できない",
-  invalidBody: "identity判定前にaliasを展開し、specificなheadもgeneric headより優先されません。競合evidenceを除くか、異なるnominal型で表現します。",
-  diagnosticsBody: "overlap診断は両方の宣言を示します。orphan診断は所有していないtraitと外側の型を示します。functional dependency診断は矛盾するoutputを決定するinputを示します。",
+  ruleTitle: "同じ型に当てはまる実装を二つ置かない",
+  ruleBody: "型別名を展開し、型パラメーターを考慮した後で、同じ型に当てはまる二つのinstanceを置くことはできません。instanceはtraitを定義したモジュールか、対象のいちばん外側の名前付き型を定義したモジュールに置きます。",
+  typingBody: "使える実装はimport先と、その先が読み込むモジュールから集まります。コンパイラが提供する構造的な型の実装は置き換えられません。入力型から結果型を決めるtraitでは、同じ入力から異なる結果型を選ぶ実装も拒否されます。",
+  evaluationBody: "型から実装が一つに決まるため、値の中身やimportの順番で処理が変わりません。無関係なimportを追加して、既存の呼び出しが別の実装へ切り替わることもありません。",
+  invalidTitle: "型別名や具体的な型でも重複は回避できない",
+  invalidBody: "型別名を付けても元の型と同じです。具体的な型向けの実装を、ジェネリックな実装より優先する規則もありません。重複を除くか、newtypeなどで別の型を作ってください。",
+  diagnosticsBody: "重複の診断は二つの宣言を指します。宣言場所のエラーでは、traitと対象型をどこで定義したかを確認します。結果型の矛盾では、それを決める入力型を見比べてください。",
 }

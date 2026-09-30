@@ -1,0 +1,17 @@
+import { localized } from "../../../../model/locale"
+import { Explanation } from "../../explanation"
+
+pub fn explanation -> Explanation = Explanation {
+  question: localized "How do I use a wrapped result in the next calculation?"
+    "包まれた結果を取り出し、次の計算へ渡すには",
+  summary: localized
+    "do writes successive dependent computations in order. The <- form names the successful or present value without forgetting the surrounding computation type."
+    "doは、結果を次へ渡す計算を順に書く構文です。<-で中の値に名前を付けても、MaybeやEffectなどの計算全体の型を失いません。",
+  exampleId: "traits-do-notation",
+  reading: localized
+    "number <- value extracts Int from Just in this Maybe computation. let next performs ordinary arithmetic. pure next wraps the result back into the same kind of computation, so this function returns Maybe<Int>."
+    "この例ではnumber <- valueがMaybeのJustからIntを取り出します。let nextで普通の加算をし、pure nextで同じMaybeに包み直すため、戻り値はMaybe<Int>です。",
+  result: localized
+    "increment (Just 41) is Just 42; increment Nothing is Nothing and skips the remaining steps. In an Effect do block, the same syntax sequences work instead. The behavior comes from the selected computation type."
+    "increment (Just 41)はJust 42です。Nothingなら残りの計算をせずNothingになります。Effectのdoでは同じ構文が処理の順次実行を表し、具体的な振る舞いは使う型の実装で決まります。"
+}

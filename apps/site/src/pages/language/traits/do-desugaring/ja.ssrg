@@ -3,11 +3,11 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "doブロックの構文展開",
   summary: "do blockはsource順とlexical scopeを保ったまま、右からnested flatMap callとlambdaへ展開します。",
-  ruleTitle: "各bindは一つのnested continuationを導入する",
-  ruleBody: "x <- mxはflatMap (\\x -> rest) mxになります。結果を捨てるmxは無視するlambda parameterを使います。let x = valueはrestを囲むpure local bindのままです。最後の式はそのまま返します。",
-  typingBody: "lambda parameterはmonadic型ではなくM<A>のpayload型Aです。その位置でpattern typingとirrefutabilityを検査します。flatMapが要求するconstraintは展開後も保持します。",
-  evaluationBody: "外側のmonadic expressionをcontinuationより先に実行します。後続itemを早期に構築・評価しません。backend最適化はscopeと順序を保つ場合だけlambdaのmaterializeを省けます。",
-  invalidTitle: "desugarしてもmonad semanticsは消えない",
-  invalidBody: "展開で消えるのは表面構文だけです。failure、branch、state、scheduling、resource動作は選択したMonad実装に残り、無条件にpure sequencingへ最適化できません。",
-  diagnosticsBody: "生成flatMap構造での失敗を元のbindまたはitemへsource mappingします。userがbackend生成dictionary名やlambda名をdebugする必要はありません。",
+  ruleTitle: "doはflatMapを重ねた処理として読める",
+  ruleBody: "x <- mxの後にrestが続く場合、flatMapでmxの結果xを受け取り、その関数の中でrestを行います。結果を使わない行も同じようにつなぎます。letは通常のローカル宣言のままで、最後の式を結果とします。",
+  typingBody: "結果を受け取る関数の引数はM<A>全体ではなく、中のAです。パターンもAに合い、必ず一致する必要があります。flatMapに必要なtraitの条件は、doでも残ります。",
+  evaluationBody: "先の処理が結果を返してから後へ進みます。後の行を先に計算することはありません。コンパイラが関数の生成を省いても、この順番と変数の使える範囲は保たれます。",
+  invalidTitle: "短い構文にしても、処理の規則は残る",
+  invalidBody: "短い構文になるだけで、失敗や状態、待機、リソースの規則は消えません。選んだMonadの動作を使います。",
+  diagnosticsBody: "診断は元のdoの行を指します。生成コードの内部名ではなく、該当する取り出しや最後の式を確認してください。",
 }

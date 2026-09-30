@@ -1,4 +1,5 @@
 struct Ticket { number: Int }
+struct Person { name: String }
 
 trait Label<A> {
   fn label value: A -> String
@@ -7,6 +8,14 @@ trait Label<A> {
 instance Label<Ticket> {
   fn label value: Ticket -> String = "ticket-" + show value.number
 }
+
+instance Label<Person> {
+  fn label value: Person -> String = value.name
+}
+
+fn labelOf<A> value: A -> String where Label<A> = label value
+
+let personLabel = labelOf (Person { name: "Aki" })
 
 pub effect fn main = do {
   let ticket = Ticket { number: 42 }

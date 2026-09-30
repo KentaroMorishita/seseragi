@@ -1,3 +1,5 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
   BulletList,
@@ -11,38 +13,38 @@ import { syntaxPage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   syntaxPage "language.syntax.function-application" "/docs/language/syntax/function-application/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "function-application",
-      localized "Curried application in a complete program"
-        "curried applicationのprogram"
+      localized "Curried application in a complete program" "引数を一つずつ渡し、残りを待つ関数を作る"
     ),
     BulletList [
       [
         InlineCode "add 1 2",
-        Words (localized " parses as (add 1) 2." " は(add 1) 2としてparseされます。")
+        Words
+          (localized " parses as (add 1) 2." " は(add 1) 2の意味です。先に1を渡し、その結果の関数へ2を渡します。")
       ],
       [
         InlineCode "add 1",
         Words (
           localized
-        " has the remaining function type Int -> Int when add is Int -> Int -> Int."
-        " はaddがInt -> Int -> Intなら残りのInt -> Int型を持ちます。"
+          " has the remaining function type Int -> Int when add is Int -> Int -> Int."
+          " はaddがInt -> Int -> Intなら残りのInt -> Int型を持ちます。"
         )
       ],
       [
         InlineCode "fn clock -> Instant",
         Words (
           localized " declares an anonymous Unit parameter; invoke it as clock ()."
-        " は名前のないUnit parameterを宣言し、clock ()で呼びます。"
+          " は()を受け取り、Instant型の時刻を返す関数の宣言の形です。clock ()で呼びます。"
         )
       ],
       [
         InlineCode "identity<String> value",
         Words (
           localized " keeps the explicit type argument attached to the callee."
-        " は明示型引数をcalleeに接続します。"
+          " はidentityの型引数にStringを指定してから、値valueを渡します。"
         )
       ]
     ]
@@ -51,17 +53,17 @@ pub fn page -> PageDefinition =
       InlineCode "add(1, 2)",
       Words (
         localized " is not Seseragi's multi-argument call syntax."
-        " はSeseragiの複数引数call構文ではありません。"
+          " は複数の引数を渡す形式ではありません。整数二つならadd 1 2と書きます。"
       )
     ],
     [
       InlineCode "identity < value",
       Words
-        (localized " is comparison, not explicit type application." " は明示型適用ではなく比較です。")
+          (localized " is comparison, not explicit type application." " は明示型適用ではなく比較です。")
     ]
   ]] [
     [InternalLink
-        (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/")],
+          (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/")],
     [InternalLink (
       localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
       "/docs/language/syntax/pipelines-and-low-precedence-application/"
@@ -71,3 +73,5 @@ pub fn page -> PageDefinition =
       "/docs/language/syntax/operator-precedence/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

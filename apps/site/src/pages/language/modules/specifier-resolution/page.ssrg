@@ -1,13 +1,18 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   referencePage "language.modules.specifier-resolution" "/docs/language/modules/specifier-resolution/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("modules-identity", localized "Module specifier resolution" "module specifierの解決")] [] [
-    [InternalLink (localized "Packages" "パッケージ", "/docs/language/modules/packages/")],
-    [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
-    [InternalLink (localized "Module identity" "モジュールの識別", "/docs/language/modules/identity/")]
-  ]
+      ("modules-identity", localized "Module specifier resolution" "importの指定からファイルを決める")] [] [
+        [InternalLink (localized "Packages" "パッケージ", "/docs/language/modules/packages/")],
+        [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
+        [InternalLink
+      (localized "Module identity" "モジュールの識別", "/docs/language/modules/identity/")]
+      ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

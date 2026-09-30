@@ -1,10 +1,12 @@
+import { explainPage } from "../../explanation"
+import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
 import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page -> PageDefinition =
+fn content -> PageDefinition =
   principlePage "language.model.backend-independent-semantics" "/docs/language/model/backend-independent-semantics/" (en.copy ()) (ja.copy ()) "principle-backend-independent-semantics" "-3, 3.5" [
     [InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/")],
     [InternalLink
@@ -14,3 +16,5 @@ pub fn page -> PageDefinition =
       "/docs/language/types/erasure-and-runtime-representation/"
     )]
   ]
+
+pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())
